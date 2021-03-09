@@ -1,0 +1,37 @@
+.category {
+    display: flex;
+    height: 300px;
+    width: 300px;
+    position: relative;
+    cursor: pointer;
+}
+
+.category:hover {
+    filter: brightness(0.8);
+}
+
+.category:hover .category-name {
+    color: yellow;
+}
+
+#main {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+img {
+    width: 100%;
+    height: 100%;
+}
+
+.category-name {
+    width: 100%;
+    color: white;
+    background-color: black;
+    position: absolute;
+    top: 0;
+    padding: 10px 0;
+    text-align: center;
+    text-transform: uppercase;
+}
+

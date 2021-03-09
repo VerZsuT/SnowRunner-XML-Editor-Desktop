@@ -1,0 +1,59 @@
+body {
+    text-align: center;
+}
+
+#path-to-initial {
+    display: none;
+    margin-bottom: 20px;
+    text-decoration: none;
+    color: black;
+}
+
+#path-to-initial:hover {
+    text-decoration: underline;
+}
+
+input:disabled {
+    background: white;
+}
+
+button {
+    display: inline-block;
+    padding: 10px;
+    width: auto;
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+
+#game-folder-select,
+#classes-folder-select {
+    padding: 5px;
+    font-size: small;
+    background-color: white;
+    box-shadow: none;
+    color: black;
+    border: 1px solid gray;
+}
+
+#game-folder-select:hover,
+#classes-folder-select:hover {
+    background-color: lightgray;
+}
+
+header {
+    margin-bottom: 0;
+}
+
+header h1 {
+    color: #f1f118;
+    margin: 10px;
+}
+
+h2 {
+    margin-top: 10px;
+    margin-bottom: 30px;
+}
+
+label {
+    font-weight: bold;
+}

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>SnowRunner XML Editor v0.1.0</title>
+        <link rel="stylesheet" href="../styles/style.css">
+        <meta http-equiv="Content-Security-Policy" content="script-src 'self'">
+        <link rel="stylesheet" href="../styles/firstSteps.css">
+    </head>
+    <body>
+        <header>
+            <h1 class="red-text">Добро пожаловать в SnowRunner XML Editor!</h1>
+        </header>
+        <h2>Первоначальная настройка программы.</h2>
+
+        <div class="steps">
+            <label>Папка с игрой</label><br>
+            <input type="text" id="game-folder-input" disabled>
+            <button id="game-folder-select">Открыть</button><br>
+            <a id="path-to-initial">Открыть папку с intial.pak</a><br>
+
+            <label>Распакованная папка classes</label><br>
+            <input type="folder" id="classes-folder-input" disabled>
+            <button id="classes-folder-select">Открыть</button><br>
+
+            <button id="save-to-config">Сохранить</button>
+        </div>
+
+        <script src="../scripts/modules/firstSteps.js" type="module"></script>
+        <script src="../scripts/service/translate.js" type="module"></script>
+    </body>
+</html>
