@@ -25,14 +25,20 @@ process.once('loaded', () => {
                 else if (listType === 'cargo') {
                     return fromDir(join(config.pathToClasses, 'trucks', 'cargo'), '.xml')
                 }
+            },
+            setFileData(obj) {
+                try {
+                    writeFileSync(obj.path, obj.data)
+                    return true
+                }
+                catch {
+                    return null
+                }
             }
         },
         methods: {
             backupInitial() {
                 ipcRenderer.send('saveBackup')
-            },
-            setFileData(obj) {
-                writeFileSync(obj.path, obj.data)
             },
             openWindow(windowType) {
                 ipcRenderer.send(`open-${windowType}`)

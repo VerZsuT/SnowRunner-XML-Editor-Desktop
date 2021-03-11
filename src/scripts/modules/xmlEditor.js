@@ -333,9 +333,10 @@ function generateAndSaveFile() {
     }
 
     const xmlString = copyrightText + serializer.serializeToString(fileDOM).replace('<root>', '').replace('</root>', '')
-    dataTunnel.invoke('setFileData', {
+    dataTunnel.call('setFileData', {
         path: filePath,
         data: xmlString
+    }).then(() => {
+        window.close()
     })
-    window.close()
 }

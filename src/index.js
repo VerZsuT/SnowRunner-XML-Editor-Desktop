@@ -1,5 +1,5 @@
 const { ipcMain, app, BrowserWindow, Menu, shell } = require('electron')
-const { readFileSync, writeFileSync, copyFileSync } = require('fs')
+const { readFileSync, writeFileSync, copyFileSync, unlinkSync } = require('fs')
 const { join } = require('path')
 
 const locations = {
@@ -67,6 +67,7 @@ function openMain() {
 }
 
 function saveBackup() {
+    unlinkSync(locations.backupInitial)
     copyFileSync(config.pathToInitial, locations.backupInitial)
 }
 
