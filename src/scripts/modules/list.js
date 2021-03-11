@@ -6,9 +6,10 @@ const $list = get('#list')
 const listType = localStorage.getItem('listType')
 const dataTunnel = new DataTunnel()
 
-dataTunnel.call('getList', listType, addItems)
+addItems()
 
-function addItems(array) {
+async function addItems() {
+    const array = await dataTunnel.call('getList', listType)
     for (const item of array) {
         $list.append(createListItem(item.name, item.path))
     }

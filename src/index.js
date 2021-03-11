@@ -1,6 +1,15 @@
-const { ipcMain, app, BrowserWindow } = require('electron')
-const { readFileSync, writeFileSync } = require('fs')
+const { ipcMain, app, BrowserWindow, Menu, shell } = require('electron')
+const { readFileSync, writeFileSync, copyFileSync } = require('fs')
 const { join } = require('path')
+
+const locations = {
+    config: join(__dirname, '..', 'config.json'),
+    icon: join(__dirname, 'icons', 'favicon.png'),
+    preload: join(__dirname, 'preload.js'),
+    backupFolder: join(__dirname, 'backups'),
+    backupInitial: join(__dirname, 'backups', 'initial.pak'),
+    HTMLFolder: join(__dirname, 'editors')
+}
 
 let xmlEditorWindow = null
 let settingsWindow = null
@@ -8,14 +17,15 @@ let firstStepsWindow = null
 let mainWindow = null
 let listWindow = null
 
-let config = null
+config = getConfig()
+const menu = getMenu()
 
 ipcMain.on('open-xmlEditor', openXMLEditor)
-ipcMain.on('open-new-xmlEditor', openNewXMLEditor)
 ipcMain.on('open-settings', openSettings)
 ipcMain.on('open-main', openMain)
 ipcMain.on('open-list', openList)
 ipcMain.on('save-config', saveConfig)
+ipcMain.on('save-backup', saveBackup)
 
 app.whenReady().then(init)
 app.on('window-all-closed', () => {
@@ -30,7 +40,6 @@ app.on('activate', () => {
 })
 
 function init() {
-    config = getConfig()
     if (!config.pathToInitial) {
         openFirstSteps()
     }
@@ -49,7 +58,7 @@ function openList() {
 function openMain() {
     mainWindow = createWindow('main.html', {
         width: 1000, 
-        height: 450, 
+        height: 470, 
         resizable: false
     })
     if (firstStepsWindow) {
@@ -57,17 +66,19 @@ function openMain() {
     }
 }
 
-function saveConfig(_event, data) {
-    writeFileSync(join(__dirname, '..', 'config.json'), JSON.stringify(data))
+function saveBackup() {
+    copyFileSync(config.pathToInitial, locations.backupInitial)
 }
 
-function closeFirstSteps() {
-    firstStepsWindow.close()
-    openMain()
+function saveConfig(_event, data) {
+    config = data
+    writeFileSync(locations.config, JSON.stringify(data))
 }
+
 
 function openFirstSteps() {
     firstStepsWindow = createWindow('firstSteps.html')
+    firstStepsWindow.setMenuBarVisibility(false)
 }
 
 function openSettings() {
@@ -79,15 +90,8 @@ function openSettings() {
     })
 }
 
-function openNewXMLEditor() {
-    createWindow('xmlEditor.html', {
-        width: 1000,
-        height: 800
-    })
-}
-
 function openXMLEditor() {
-    xmlEditorWindow = createWindow('xmlEditor.html', {
+    createWindow('xmlEditor.html', {
         width: 1000,
         height: 800
     })
@@ -98,20 +102,89 @@ function createWindow(fileName, args={}) {
         width: args.width || 800,
         height: args.height || 600,
         resizable: args.resizable !== undefined ? args.resizable : true,
-        icon: join(__dirname, 'icons', 'favicon.png'),
+        icon: locations.icon,
         webPreferences: {
             nodeIntegration: false,
             enableRemoteModule: true,
             contextIsolation: true,
-            preload: join(__dirname, 'preload.js')
+            preload: locations.preload
         }
     })
-    window.setMenuBarVisibility(false)
-    window.loadFile(join(__dirname, 'editors', fileName))
+    window.setMenu(menu)
+    window.loadFile(join(locations.HTMLFolder, fileName)).then(() => {
+        window.webContents.executeJavaScript(`let title = document.querySelector('title');title.innerText = title.innerText.replace('{--VERSION--}', 'v${config.programVersion}');`)
+        //window.webContents.openDevTools()
+    })
     return window
 }
 
+function restoreInitial() {
+    copyFileSync(locations.backupInitial, config.pathToInitial)
+}
+
 function getConfig() {
-    let data = readFileSync(join(__dirname, '..', 'config.json'))
+    let data = readFileSync(locations.config)
     return JSON.parse(data.toString())
+}
+
+function getMenu() {
+    return Menu.buildFromTemplate([
+        {
+            label: 'Файл',
+            submenu: [
+                {
+                    label: 'Открыть',
+                    submenu: [
+                        {
+                            label: 'initial',
+                            click() {
+                                shell.showItemInFolder(config.pathToInitial)
+                            }
+                        },
+                        {
+                            label: 'classes',
+                            click() {
+                                shell.openPath(config.pathToClasses)
+                            }
+                        }
+                    ]
+                },
+                // {
+                //     label: 'Настройки',
+                //     click() {
+                //         openSettings()
+                //     }
+                // },
+                {
+                    label: 'Выход',
+                    click() {
+                        app.quit()
+                    }
+                }
+            ]
+        },
+        {
+            label: 'Бэкап',
+            submenu: [
+                {
+                    label: 'Открыть папку',
+                    click() {
+                        shell.openPath(locations.backupFolder)
+                    }
+                },
+                {
+                    label: 'Сохранить',
+                    click() {
+                        saveBackup()
+                    }
+                },
+                {
+                    label: 'Восстановить',
+                    click() {
+                        restoreInitial()
+                    }
+                }
+            ]
+        }
+    ])
 }

@@ -26,24 +26,32 @@ export default class DataTunnel {
     }
 
     /**
-     * Вызывает функцию с переданными параметрами, после чего вызывается callback с результатом вызова.
+     * Вызывает функцию с переданными параметрами и возвращает результат
      * @param {string} funcName - имя функции
      * @param {any} args - агрументы
-     * @param {Function} callback - обработчик
      */
-    call(funcName, args, callback) {
-        this.addListener(`funcSend_${funcName}`, callback)
-        this.send(`funcGet_${funcName}`, args)
+    call(funcName, args) {
+        return new Promise((resolve, reject) => {
+            this.listen(`funcSend_${funcName}`, data => {
+                if (!data) reject()
+                resolve(data)
+            })
+            this.send(`funcGet_${funcName}`, args)
+        })
     }
 
     /**
-     * Получает значение свойства и передаёт его обработчику
+     * Получает значение свойства и возвращает его
      * @param {string} propertyName - название свойства
-     * @param {Function} callback - обработчик
      */
-    get(propertyName, callback) {
-        this.addListener(`send_${propertyName}`, callback)
-        this.send(`get_${propertyName}`)
+    get(propertyName) {
+        return new Promise((resolve, reject) => {
+            this.listen(`send_${propertyName}`, data => {
+                if (!data) reject()
+                resolve(data)
+            })
+            this.send(`get_${propertyName}`)
+        })
     }
 
     /**
@@ -84,7 +92,7 @@ export default class DataTunnel {
      * @param {Function} listener - обработчик
      */
     createMethod(name, listener) {
-        this.addListener(`method_${name}`, listener)
+        this.listen(`method_${name}`, listener)
     }
 
     /**
@@ -93,7 +101,7 @@ export default class DataTunnel {
      * @param {*} func - функция обработчик
      */
     createFunc(name, func) {
-        this.addListener(`funcGet_${name}`, (args) => {
+        this.listen(`funcGet_${name}`, (args) => {
             let data = func(args)
             if (!data) return
             this.send(`funcSend_${name}`, data)
@@ -110,14 +118,14 @@ export default class DataTunnel {
         const setter = object.set
 
         if (getter) {
-            this.addListener(`get_${name}`, () => {
+            this.listen(`get_${name}`, () => {
                 let data = getter()
                 if (!data) return
                 this.send(`send_${name}`, data)
             })
         }
         if (setter) {
-            this.addListener(`set_${name}`, setter)
+            this.listen(`set_${name}`, setter)
         }
     }
 
@@ -126,7 +134,7 @@ export default class DataTunnel {
      * @param {string} name - название события
      * @param {Function} func - обработчик
      */
-    addListener(name, func) {
+    listen(name, func) {
         if (!this.#listeners[name]) {
             this.#listeners[name] = []
         }

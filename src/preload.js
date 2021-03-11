@@ -1,6 +1,6 @@
 const { ipcRenderer, shell } = require('electron')
 const { dialog } = require('electron').remote
-const { readFileSync, existsSync, readdirSync, lstatSync, writeFileSync, copyFile, copyFileSync } = require('fs')
+const { readFileSync, existsSync, readdirSync, lstatSync, writeFileSync } = require('fs')
 const { join } = require('path')
 const DataTunnel = require('./scripts/service/DataTunnel_preload.js')
 
@@ -8,7 +8,6 @@ const dataTunnel = new DataTunnel()
 let config = getConfig()
 
 localStorage.setItem('language', config.selectedLanguage)
-localStorage.setItem('pathToFiles', config.pathToFiles)
 
 process.once('loaded', () => {
     dataTunnel.create({
@@ -18,28 +17,25 @@ process.once('loaded', () => {
             },
             getList(listType) {
                 if (listType === 'trucks') {
-                    return fromDir(join(config.pathToFiles, 'trucks'), '.xml')
+                    return fromDir(join(config.pathToClasses, 'trucks'), '.xml')
                 }
                 else if (listType === 'trailers') {
-                    return fromDir(join(config.pathToFiles, 'trucks', 'trailers'), '.xml')
+                    return fromDir(join(config.pathToClasses, 'trucks', 'trailers'), '.xml')
                 }
                 else if (listType === 'cargo') {
-                    return fromDir(join(config.pathToFiles, 'trucks', 'cargo'), '.xml')
+                    return fromDir(join(config.pathToClasses, 'trucks', 'cargo'), '.xml')
                 }
             }
         },
         methods: {
             backupInitial() {
-                copyFileSync(config.pathToInitial.replace('file:///', ''), join(__dirname, 'backups', 'initial.pak'))
+                ipcRenderer.send('saveBackup')
             },
             setFileData(obj) {
                 writeFileSync(obj.path, obj.data)
             },
             openWindow(windowType) {
                 ipcRenderer.send(`open-${windowType}`)
-            },
-            openNewWindow(windowType) {
-                ipcRenderer.send(`open-new-${windowType}`)
             },
             showFile(path) {
                 shell.showItemInFolder(path)

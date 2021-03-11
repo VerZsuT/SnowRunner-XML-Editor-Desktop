@@ -8,42 +8,46 @@ const $pathToInitial = document.querySelector('#path-to-initial')
 const $saveToConfig = document.querySelector('#save-to-config')
 
 const dataTunnel = new DataTunnel()
+let pathToClasses = null
+let pathToInitial = null
 
 $saveToConfig.addEventListener('click', () => {
-    const initialFolder = $pathToInitial.href
-    const classesFolder = $classesFolderInput.value
-    if (!initialFolder) {
+    if (!pathToInitial) {
         alert('Выбор папки с игрой обязателен!')
         return
     }
-    else if (!classesFolder) {
+    else if (!pathToClasses) {
         alert('Выбор папки classes обязателен!')
         return
     }
 
     dataTunnel.set('config', {
-        pathToInitial: initialFolder,
-        pathToFiles: classesFolder
+        pathToInitial: pathToInitial,
+        pathToClasses: pathToClasses
     })
     dataTunnel.invoke('backupInitial')
     dataTunnel.invoke('openWindow', 'main')
 })
 
-$gameFolderSelect.addEventListener('click', () => {
-    dataTunnel.get('gameFolder', data => {
-        $gameFolderInput.value = data.folder
-        $pathToInitial.href = data.initial
-        $pathToInitial.style.display = 'inline-block'
-    })
-})
-
-$classesFolderSelect.addEventListener('click', () => {
-    dataTunnel.get('classesFolder', data => {
-        $classesFolderInput.value = data.folder
-    })
-})
+$gameFolderSelect.addEventListener('click', getGameFolder)
+$classesFolderSelect.addEventListener('click', getClassesFolder)
 
 $pathToInitial.addEventListener('click', event => {
     event.preventDefault()
     dataTunnel.invoke('showFile', $pathToInitial.href)
 })
+
+async function getClassesFolder() {
+    const data = await dataTunnel.get('classesFolder')
+    pathToClasses = data.folder
+    $classesFolderInput.value = data.folder
+}
+
+async function getGameFolder() {
+    const data = await dataTunnel.get('gameFolder')
+    pathToInitial = data.initial
+
+    $gameFolderInput.value = data.folder
+    $pathToInitial.href = data.initial
+    $pathToInitial.style.display = 'inline-block'
+}

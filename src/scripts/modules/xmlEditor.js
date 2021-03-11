@@ -7,6 +7,7 @@ const $saveParamsButton = get('#save-params')
 const $title = get('#title')
 
 const dataTunnel = new DataTunnel()
+let config = null
 let filePath = null
 let fileDOM = null
 
@@ -14,7 +15,8 @@ $saveParamsButton.onclick = generateAndSaveFile
 
 checkData()
 
-function checkData() {
+async function checkData() {
+    config = await dataTunnel.get('config')
     filePath = localStorage.getItem('filePath')
     if (filePath.split('/').length !== 1) {
         let a = filePath.split('/')
@@ -25,11 +27,8 @@ function checkData() {
         $title.innerText = prettify(a[a.length-1].replace('.xml', '')).toUpperCase()
     }
     
-    dataTunnel.call('getFileData', filePath, data => {
-        if (data) {
-            loadFile(data)
-        }
-    })
+    let data = await dataTunnel.call('getFileData', filePath)
+    loadFile(data)
 }
 
 function loadFile(file) {
@@ -162,9 +161,8 @@ function createItems(params, $parentGroupCont=null, tabs=1) {
                         innerText: 'Посмотреть'
                     })
                     $input.addEventListener('click', () => {
-                        const pathToFiles = localStorage.getItem('pathToFiles')
-                        localStorage.setItem('filePath', `${pathToFiles}/${param.fileType}/${param.value}.xml`)
-                        dataTunnel.invoke('openNewWindow', 'xmlEditor')
+                        localStorage.setItem('filePath', `${config.pathToClasses}/${param.fileType}/${param.value}.xml`)
+                        dataTunnel.invoke('openWindow', 'xmlEditor')
                     })
                 }
                 else if (param.type === 'coordinates') {
@@ -308,38 +306,36 @@ function toCoordsString($div) {
 }
 
 function generateAndSaveFile() {
-    dataTunnel.get('config', config => {
-        const serializer = new XMLSerializer()
-        const $$params = $paramsTable.querySelectorAll('.param')
-        const copyrightText = `<!--\n\tEdited by: SnowRunner XML Editor Desktop\n\tVersion: v${config.programVersion}\n\tAuthor: VerZsuT\n\tSite: https://verzsut.github.io/SnowRunner-XML-Editor-Desktop/\n-->`
-    
-        for (const $param of $$params) {
-            const selector = $param.getAttribute('selector')
-            const $obj = fileDOM.querySelector(selector)
-            const name = $param.getAttribute('name')
-            const $input = $param.querySelector('.param-input')
-            const value = $input.value
-    
-            if (value === undefined) {
-                value = toCoordsString($input)
-            }
-    
-            if (value == '__DefaultSelectValue__') {
-                continue
-            }
-    
-            $obj.setAttribute(name, value)
+    const serializer = new XMLSerializer()
+    const $$params = $paramsTable.querySelectorAll('.param')
+    const copyrightText = `<!--\n\tEdited by: SnowRunner XML Editor Desktop\n\tVersion: v${config.programVersion}\n\tAuthor: VerZsuT\n\tSite: https://verzsut.github.io/SnowRunner-XML-Editor-Desktop/\n-->`
+
+    for (const $param of $$params) {
+        const selector = $param.getAttribute('selector')
+        const $obj = fileDOM.querySelector(selector)
+        const name = $param.getAttribute('name')
+        const $input = $param.querySelector('.param-input')
+        const value = $input.value
+
+        if (value === undefined) {
+            value = toCoordsString($input)
         }
-    
-        for (const item of fileDOM.querySelectorAll('[SXMLE_ID]')) {
-            item.removeAttribute('SXMLE_ID')
+
+        if (value == '__DefaultSelectValue__') {
+            continue
         }
-    
-        const xmlString = copyrightText + serializer.serializeToString(fileDOM).replace('<root>', '').replace('</root>', '')
-        dataTunnel.invoke('setFileData', {
-            path: filePath,
-            data: xmlString
-        })
-        window.close()
+
+        $obj.setAttribute(name, value)
+    }
+
+    for (const item of fileDOM.querySelectorAll('[SXMLE_ID]')) {
+        item.removeAttribute('SXMLE_ID')
+    }
+
+    const xmlString = copyrightText + serializer.serializeToString(fileDOM).replace('<root>', '').replace('</root>', '')
+    dataTunnel.invoke('setFileData', {
+        path: filePath,
+        data: xmlString
     })
+    window.close()
 }

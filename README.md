@@ -1,2 +1,3 @@
-# SnowRunner XML Editor Desktop
-Работает аналогично веб-версии программы, за исключением того, что тут поиск файлов происходит автоматически.
+# SnowRunner XML Editor Desktop (RU)
+
+<https://youtu.be/BezaStgqvEY>
