@@ -113,7 +113,6 @@ function createWindow(fileName, args={}) {
     window.setMenu(menu)
     window.loadFile(join(locations.HTMLFolder, fileName)).then(() => {
         window.webContents.executeJavaScript(`let title = document.querySelector('title');title.innerText = title.innerText.replace('{--VERSION--}', 'v${config.programVersion}');`)
-        //window.webContents.openDevTools()
     })
     return window
 }

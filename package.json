@@ -1,14 +1,12 @@
 {
   "name": "snowrunner-xml-editor-desktop",
   "productName": "SnowRunner XML Editor",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Allows you to visually edit the game's XML files.",
   "main": "src/index.js",
   "scripts": {
     "start": "electron-forge start",
-    "package": "electron-forge package",
-    "make": "electron-forge make",
-    "publish": "electron-forge publish"
+    "build": "electron-forge package"
   },
   "keywords": [],
   "author": {
@@ -19,7 +17,8 @@
   "config": {
     "forge": {
       "packagerConfig": {
-        "icon": "./src/icons/favicon.ico"
+        "icon": "./src/icons/favicon.ico",
+        "platform": "win32"
       },
       "makers": [
         {
