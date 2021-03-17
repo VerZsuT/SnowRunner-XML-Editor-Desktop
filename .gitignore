@@ -90,3 +90,5 @@ out/
 
 # program backup
 src/backups/
+
+.vscode/

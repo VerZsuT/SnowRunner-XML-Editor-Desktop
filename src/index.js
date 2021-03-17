@@ -1,5 +1,5 @@
 const { ipcMain, app, BrowserWindow, Menu, shell } = require('electron')
-const { readFileSync, writeFileSync, copyFileSync, unlinkSync } = require('fs')
+const { readFileSync, writeFileSync, copyFileSync, unlinkSync, existsSync } = require('fs')
 const { join } = require('path')
 
 const locations = {
@@ -16,8 +16,9 @@ let settingsWindow = null
 let firstStepsWindow = null
 let mainWindow = null
 let listWindow = null
+let currentWindow = null
 
-config = getConfig()
+const config = getConfig()
 const menu = getMenu()
 
 ipcMain.on('open-xmlEditor', openXMLEditor)
@@ -67,8 +68,11 @@ function openMain() {
 }
 
 function saveBackup() {
-    unlinkSync(locations.backupInitial)
+    if (existsSync(locations.backupInitial)) {
+        unlinkSync(locations.backupInitial)
+    }
     copyFileSync(config.pathToInitial, locations.backupInitial)
+    alert('Успешно сохранено')
 }
 
 function saveConfig(_event, data) {
@@ -99,7 +103,7 @@ function openXMLEditor() {
 }
 
 function createWindow(fileName, args={}) {
-    let window = new BrowserWindow({
+    currentWindow = new BrowserWindow({
         width: args.width || 800,
         height: args.height || 600,
         resizable: args.resizable !== undefined ? args.resizable : true,
@@ -111,15 +115,27 @@ function createWindow(fileName, args={}) {
             preload: locations.preload
         }
     })
-    window.setMenu(menu)
-    window.loadFile(join(locations.HTMLFolder, fileName)).then(() => {
-        window.webContents.executeJavaScript(`let title = document.querySelector('title');title.innerText = title.innerText.replace('{--VERSION--}', 'v${config.programVersion}');`)
+    currentWindow.setMenu(menu)
+    currentWindow.loadFile(join(locations.HTMLFolder, fileName)).then(() => {
+        currentWindow.webContents.executeJavaScript(`let title = document.querySelector('title');title.innerText = title.innerText.replace('{--VERSION--}', 'v${config.programVersion}');`)
     })
-    return window
+    return currentWindow
+}
+
+function alert(message) {
+    currentWindow.webContents.executeJavaScript(`alert('${message}');`)
 }
 
 function restoreInitial() {
+    if (!existsSync(locations.backupInitial)) {
+        alert('Бэкап не найден.')
+        return
+    }
+    if (existsSync(config.pathToInitial)) {
+        unlinkSync(config.pathToInitial)
+    }
     copyFileSync(locations.backupInitial, config.pathToInitial)
+    alert('Восстановлено')
 }
 
 function getConfig() {
