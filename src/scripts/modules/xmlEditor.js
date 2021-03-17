@@ -34,7 +34,7 @@ async function checkData() {
 function loadFile(file) {
     const parser = new DOMParser()
 
-    fileDOM = parser.parseFromString(`<root>\n${file}\n</root>`, 'text/xml')
+    fileDOM = parser.parseFromString(`<root>${file}</root>`, 'text/xml')
     if (fileDOM.querySelector('root').childNodes[1].nodeType === 8) {
         fileDOM.querySelector('root').childNodes[1].remove()
     }
