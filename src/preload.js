@@ -38,7 +38,7 @@ process.once('loaded', () => {
         },
         methods: {
             backupInitial() {
-                ipcRenderer.send('saveBackup')
+                ipcRenderer.send('save-backup')
             },
             openWindow(windowType) {
                 ipcRenderer.send(`open-${windowType}`)
