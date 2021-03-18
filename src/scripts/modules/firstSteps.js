@@ -26,7 +26,10 @@ $saveToConfig.addEventListener('click', () => {
         pathToClasses: pathToClasses
     })
     dataTunnel.invoke('backupInitial')
-    dataTunnel.invoke('openWindow', 'main')
+	setTimeout(() => {
+		dataTunnel.invoke('openWindow', 'main')
+	},1000)
+    
 })
 
 $gameFolderSelect.addEventListener('click', getGameFolder)
