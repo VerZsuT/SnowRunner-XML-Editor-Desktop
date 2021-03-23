@@ -1,15 +1,20 @@
 /**
  * Позволяет общаться между Renderer и Preload процессами.
  */
-export default class DataTunnel {
+export default class MainProc {
     #listeners = {}
 
     constructor() {
         window.addEventListener('message', event => {
+            const data = event.data.data
             for (const type in this.#listeners) {
                 if (type === event.data.type) {
-                    for (const listener of this.#listeners[type]) {
-                        listener(event.data.data)
+                    const listener = this.#listeners[type]
+                    if (data) {
+                        listener(data)
+                    }
+                    else {
+                        listener()
                     }
                 }
             }
@@ -17,26 +22,14 @@ export default class DataTunnel {
     }
 
     /**
-     * Вызывает метод с указанными аргументами.
-     * @param {string} methodName - имя метода
-     * @param {any} args - агрументы (опционально)
-     */
-    invoke(methodName, args = null) {
-        this.send(`method_${methodName}`, args)
-    }
-
-    /**
      * Вызывает функцию с переданными параметрами и возвращает результат
      * @param {string} funcName - имя функции
      * @param {any} args - агрументы
      */
-    call(funcName, args) {
+    call(funcName, data=null) {
         return new Promise((resolve, reject) => {
-            this.listen(`funcSend_${funcName}`, data => {
-                if (!data) reject()
-                resolve(data)
-            })
-            this.send(`funcGet_${funcName}`, args)
+            this.#resAndRej(`func_${funcName}_call`, resolve, reject)
+            this.#send(`func_${funcName}_call`, data)
         })
     }
 
@@ -44,13 +37,10 @@ export default class DataTunnel {
      * Получает значение свойства и возвращает его
      * @param {string} propertyName - название свойства
      */
-    get(propertyName) {
+    get(propertyName, data=null) {
         return new Promise((resolve, reject) => {
-            this.listen(`send_${propertyName}`, data => {
-                if (!data) reject()
-                resolve(data)
-            })
-            this.send(`get_${propertyName}`)
+            this.#resAndRej(`prop_${propertyName}_get`, resolve, reject)
+            this.#send(`prop_${propertyName}_get`, data)
         })
     }
 
@@ -60,21 +50,20 @@ export default class DataTunnel {
      * @param {any} data - новое значение
      */
     set(propertyName, data) {
-        this.send(`set_${propertyName}`, data)
+        return new Promise((resolve, reject) => {
+            this.#resAndRej(`prop_${propertyName}_set`, resolve, reject)
+            this.#send(`prop_${propertyName}_set`, data)
+        })
     }
 
     /**
      * На основе объекта создаёт функции/методы/свойства
      * @param {object} object - инициализируемый объект
      */
-    create(object) {
-        const methods = object.methods
-        const funcs = object.funcs
+    init(object) {
+        const funcs = object.functions
         const props = object.props
 
-        for (const methodName in methods) {
-            this.createMethod(methodName, methods[methodName])
-        }
         for (const propName in props) {
             this.createProperty(propName, {
                 get: props[propName].get,
@@ -87,25 +76,15 @@ export default class DataTunnel {
     }
 
     /**
-     * Создаёт метод с данным названием и устанавливает обработчик для него
-     * @param {string} name - имя метода
-     * @param {Function} listener - обработчик
-     */
-    createMethod(name, listener) {
-        this.listen(`method_${name}`, listener)
-    }
-
-    /**
      * Создаёт функцию с данным названием и устанавливает её
      * @param {*} name - название функции
      * @param {*} func - функция обработчик
      */
     createFunc(name, func) {
-        this.listen(`funcGet_${name}`, (args) => {
-            let data = func(args)
-            if (!data) return
-            this.send(`funcSend_${name}`, data)
-        })
+        this.#on(`func_${name}_call`, func.bind({
+            resolve: this.#resolve(`func_${name}_call_resolve`),
+            reject: this.#reject(`func_${name}_call_reject`)
+        }))
     }
 
     /**
@@ -118,14 +97,28 @@ export default class DataTunnel {
         const setter = object.set
 
         if (getter) {
-            this.listen(`get_${name}`, () => {
-                let data = getter()
-                if (!data) return
-                this.send(`send_${name}`, data)
-            })
+            this.#on(`prop_${name}_get`, getter.bind({
+                resolve: this.#resolve(`prop_${name}_get_resolve`),
+                reject: this.#reject(`prop_${name}_get_reject`)
+            }))
         }
         if (setter) {
-            this.listen(`set_${name}`, setter)
+            this.#on(`prop_${name}_set`, setter.bind({
+                resolve: this.#resolve(`prop_${name}_set_resolve`),
+                reject: this.#reject(`prop_${name}_set_reject`)
+            }))
+        }
+    }
+
+    #resolve(name) {
+        return (value=null) => {
+            this.#send(name, value)
+        }
+    }
+
+    #reject(name) {
+        return (message) => {
+            this.#send(name, new Error(message))
         }
     }
 
@@ -134,11 +127,21 @@ export default class DataTunnel {
      * @param {string} name - название события
      * @param {Function} func - обработчик
      */
-    listen(name, func) {
-        if (!this.#listeners[name]) {
-            this.#listeners[name] = []
+    #on(name, func) {
+        this.#listeners[name] = func
+    }
+
+    #resAndRej(name, resolve, reject) {
+        this.#listeners[`${name}_resolve`] = (...args) => {
+            resolve(...args)
+            this.#listeners[`${name}_resolve`] = () => {}
+            this.#listeners[`${name}_reject`] = () => {}
         }
-        this.#listeners[name].push(func)
+        this.#listeners[`${name}_reject`] = (...args) => {
+            reject(...args)
+            this.#listeners[`${name}_resolve`] = () => {}
+            this.#listeners[`${name}_reject`] = () => {}
+        }
     }
 
     /**
@@ -146,10 +149,17 @@ export default class DataTunnel {
      * @param {string} name - название события
      * @param {any} data - данные
      */
-    send(name, data = null) {
-        window.postMessage({
-            type: name,
-            data: data
-        }, '*')
+    #send(name, data=null) {
+        if (data) {
+            window.postMessage({
+                type: name,
+                data: data
+            }, '*')
+        }
+        else {
+            window.postMessage({
+                type: name
+            }, '*')
+        }
     }
 }

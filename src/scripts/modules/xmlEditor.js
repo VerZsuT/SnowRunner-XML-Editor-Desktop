@@ -1,12 +1,12 @@
 import { get, getText, create, prettify } from '../service/funcs.js'
-import DataTunnel from '../service/DataTunnel.js'
+import MainProc from '../service/MainProc.js'
 import templates from '../templates/getTemplates.js'
 
 const $paramsTable = get('#parameters')
 const $saveParamsButton = get('#save-params')
 const $title = get('#title')
 
-const dataTunnel = new DataTunnel()
+const mainProc = new MainProc()
 let config = null
 let filePath = null
 let fileDOM = null
@@ -15,29 +15,46 @@ $saveParamsButton.onclick = generateAndSaveFile
 
 checkData()
 
-async function checkData() {
-    config = await dataTunnel.get('config')
-    filePath = localStorage.getItem('filePath')
-    if (filePath.split('/').length !== 1) {
-        let a = filePath.split('/')
-        $title.innerText = prettify(a[a.length-1].replace('.xml', '')).toUpperCase()
-    }
-    else {
-        let a = filePath.split('\\')
-        $title.innerText = prettify(a[a.length-1].replace('.xml', '')).toUpperCase()
-    }
-    
-    let data = await dataTunnel.call('getFileData', filePath)
-    loadFile(data)
+function checkData() {
+    mainProc.get('config')
+    .then(data => {
+        config = data
+        filePath = localStorage.getItem('filePath')
+        if (filePath.split('/').length !== 1) {
+            let a = filePath.split('/')
+            $title.innerText = prettify(a[a.length-1].replace('.xml', '')).toUpperCase()
+        }
+        else {
+            let a = filePath.split('\\')
+            $title.innerText = prettify(a[a.length-1].replace('.xml', '')).toUpperCase()
+        }
+        
+        mainProc.call('getFileData', filePath)
+        .then(data => {
+            loadFile(data)
+        }, alert)
+    }, alert)
 }
 
 function loadFile(file) {
     const parser = new DOMParser()
 
     fileDOM = parser.parseFromString(`<root>${file}</root>`, 'text/xml')
-    if (fileDOM.querySelector('root').childNodes[1].nodeType === 8) {
-        fileDOM.querySelector('root').childNodes[1].remove()
+    const comments = []
+    for (const child of fileDOM.querySelector('root').childNodes) {
+        if (child.nodeType === 8) {
+            comments.push(child)
+        }
     }
+    
+    for (const comment of comments) {
+        comment.remove()
+    }
+
+    if (fileDOM.querySelector('root').childNodes[0].nodeValue === '\n') {
+        fileDOM.querySelector('root').childNodes[0].remove()
+    }
+
     initParams()
 }
 
@@ -156,14 +173,19 @@ function createItems(params, $parentGroupCont=null, tabs=1) {
                     $input = createSelect(param.selectParams, param.value)
                 }
                 else if (param.type === 'file') {
-                    $input = create('button', {
-                        class: 'openFile',
-                        innerText: 'Посмотреть'
-                    })
-                    $input.addEventListener('click', () => {
-                        localStorage.setItem('filePath', `${config.pathToClasses}/${param.fileType}/${param.value}.xml`)
-                        dataTunnel.invoke('openWindow', 'xmlEditor')
-                    })
+                    $input = create('div')
+                    for (let fileName of param.value.split(',')) {
+                        fileName = fileName.replaceAll(' ', '')
+                        const $button = create('button', {
+                            class: 'openFile',
+                            innerText: 'Посмотреть'
+                        })
+                        $button.addEventListener('click', () => {
+                            localStorage.setItem('filePath', `${config.pathToClasses}/${param.fileType}/${fileName}.xml`)
+                            mainProc.call('openWindow', 'xmlEditor').catch(alert)
+                        })
+                        $input.append($button)
+                    }
                 }
                 else if (param.type === 'coordinates') {
                     const [x, y, z] = parseCoords(param.value)
@@ -210,6 +232,7 @@ function createItems(params, $parentGroupCont=null, tabs=1) {
                             let value = $input.value
                             const min = $input.min
                             const max = $input.max
+                            $input.step = '0.1'
                             
 
                             if (min !== '' && value < +min) {
@@ -308,7 +331,7 @@ function toCoordsString($div) {
 function generateAndSaveFile() {
     const serializer = new XMLSerializer()
     const $$params = $paramsTable.querySelectorAll('.param')
-    const copyrightText = `<!--\n\tEdited by: SnowRunner XML Editor Desktop\n\tVersion: v${config.programVersion}\n\tAuthor: VerZsuT\n\tSite: https://verzsut.github.io/SnowRunner-XML-Editor-Desktop/\n-->`
+    const copyrightText = `<!--\n\tEdited by: SnowRunner XML Editor Desktop\n\tVersion: v${config.programVersion}\n\tAuthor: VerZsuT\n\tSite: https://verzsut.github.io/SnowRunner-XML-Editor-Desktop/\n-->\n`
 
     for (const $param of $$params) {
         const selector = $param.getAttribute('selector')
@@ -333,10 +356,10 @@ function generateAndSaveFile() {
     }
 
     const xmlString = copyrightText + serializer.serializeToString(fileDOM).replace('<root>', '').replace('</root>', '')
-    dataTunnel.call('setFileData', {
+    mainProc.call('setFileData', {
         path: filePath,
         data: xmlString
     }).then(() => {
         window.close()
-    })
+    }, alert)
 }

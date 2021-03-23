@@ -1,5 +1,5 @@
-const { ipcMain, app, BrowserWindow, Menu, shell } = require('electron')
-const { readFileSync, writeFileSync, copyFileSync, unlinkSync, existsSync } = require('fs')
+const { ipcMain, app, BrowserWindow, Menu, shell, Notification, dialog } = require('electron')
+const { readFileSync, writeFile, copyFile, unlink, existsSync } = require('fs')
 const { join } = require('path')
 
 const locations = {
@@ -20,10 +20,28 @@ let listWindow = null
 let config = getConfig()
 const menu = getMenu()
 
-ipcMain.on('open-xmlEditor', openXMLEditor)
-ipcMain.on('open-settings', openSettings)
-ipcMain.on('open-main', openMain)
-ipcMain.on('open-list', openList)
+ipcMain.on('open-xmlEditor', event => {
+    openXMLEditor()
+    event.reply('open-xmlEditor-reply', {status: 'success'})
+})
+ipcMain.on('open-dialog', event => {
+    const result = dialog.showOpenDialogSync({
+        properties: ['openDirectory']
+    })
+    event.reply('open-dialog-reply', result)
+})
+ipcMain.on('open-settings', event => {
+    openSettings()
+    event.reply('open-settings-reply', {status: 'success'})
+})
+ipcMain.on('open-main', event => {
+    openMain()
+    event.reply('open-main-reply', {status: 'success'})
+})
+ipcMain.on('open-list', event => {
+    openList()
+    event.reply('open-list-reply', {status: 'success'})
+})
 ipcMain.on('save-config', saveConfig)
 ipcMain.on('save-backup', saveBackup)
 
@@ -48,6 +66,14 @@ function init() {
     }
 }
 
+function showNotification(title, message) {
+    const notification = {
+      title: title,
+      body: message
+    }
+    new Notification(notification).show()
+  }
+
 function openList() {
     listWindow = createWindow('list.html', {
         width: 800,
@@ -61,21 +87,53 @@ function openMain() {
         height: 470, 
         resizable: false
     })
-    if (firstStepsWindow) {
-        firstStepsWindow.close()
-    }
 }
 
-function saveBackup() {
+function saveBackup(event=null) {
     if (existsSync(locations.backupInitial)) {
-        unlinkSync(locations.backupInitial)
+        unlink(locations.backupInitial, error => {
+            if (error) {
+                if (event) {
+                    event.reply('save-backup-reply', {status: 'error', error: 'Не удалось удалить старый бэкап.'})
+                }
+                else {
+                    showNotification('Ошибка', `Не удалось удалить старый бэкап initial.\nТекст ошибки:\n${error}`)
+                }
+                return
+            }
+            copyBackup(event)
+        })
     }
-    copyFileSync(config.pathToInitial, locations.backupInitial)
+    else {
+        copyBackup(event)
+    }
 }
 
-function saveConfig(_event, data) {
+function copyBackup(event=null) {
+    copyFile(config.pathToInitial, locations.backupInitial, error => {
+        if (error) {
+            if (event) {
+                event.reply('save-backup-reply', {status: 'error', error: 'Не удалось скопировать файл intial в папку.'})
+            }
+            else {
+                showNotification('Ошибка', `Не удалось скопировать бэкап initial.\nТекст ошибки:\n${error}`)
+            }
+            return
+        }
+        if (event) event.reply('save-backup-reply', {status: 'success'})
+        else showNotification('Уведомление', `Бэкап initial успешно сохранён.`)
+    })
+}
+
+function saveConfig(event, data) {
     config = data
-    writeFileSync(locations.config, JSON.stringify(data))
+    writeFile(locations.config, JSON.stringify(data), error => {
+        if (error) {
+            event.reply('save-config-reply', {status: 'error', error: 'Не удалось записать конфиг в файл.'})
+            return
+        }
+        event.reply('save-config-reply', {status: 'success'})
+    })
 }
 
 
@@ -107,9 +165,6 @@ function createWindow(fileName, args={}) {
         resizable: args.resizable !== undefined ? args.resizable : true,
         icon: locations.icon,
         webPreferences: {
-            nodeIntegration: false,
-            enableRemoteModule: true,
-            contextIsolation: true,
             preload: locations.preload
         }
     })
@@ -125,9 +180,14 @@ function restoreInitial() {
         return
     }
     if (existsSync(config.pathToInitial)) {
-        unlinkSync(config.pathToInitial)
+        unlink(config.pathToInitial, error => {
+            if (error) showNotification('Ошибка', `Не удалось удалить текущий бэкап initial.\nТекст ошибки:\n${error}`)
+        })
     }
-    copyFileSync(locations.backupInitial, config.pathToInitial)
+    copyFile(locations.backupInitial, config.pathToInitial, error => {
+        if (error) showNotification('Ошибка', `Не удалось скопировать бэкап initial.\nТекст ошибки:\n${error}`)
+        else showNotification('Уведомление', `initial успешно восстановлен.`)
+    })
 }
 
 function getConfig() {
@@ -144,25 +204,83 @@ function getMenu() {
                     label: 'Открыть',
                     submenu: [
                         {
-                            label: 'initial',
+                            label: 'initial.pak',
                             click() {
                                 shell.showItemInFolder(config.pathToInitial)
                             }
                         },
                         {
                             label: 'classes',
-                            click() {
-                                shell.openPath(config.pathToClasses)
-                            }
+                            submenu: [
+                                {
+                                    label: '<--',
+                                    click() {
+                                        shell.openPath(config.pathToClasses)
+                                    }
+                                },
+                                {
+                                    label: 'trucks',
+                                    submenu: [
+                                        {
+                                            label: '<--',
+                                            click() {
+                                                shell.openPath(join(config.pathToClasses, 'trucks'))
+                                            }
+                                        },
+                                        {
+                                            label: 'addons',
+                                            click() {
+                                                shell.openPath(join(config.pathToClasses, 'trucks', 'addons'))
+                                            }
+                                        },
+                                        {
+                                            label: 'cargo',
+                                            click() {
+                                                shell.openPath(join(config.pathToClasses, 'trucks', 'cargo'))
+                                            }
+                                        },
+                                        {
+                                            label: 'trailers',
+                                            click() {
+                                                shell.openPath(join(config.pathToClasses, 'trucks', 'trailers'))
+                                            }
+                                        }
+                                    ]
+                                },
+                                {
+                                    label: 'wheels',
+                                    click() {
+                                        shell.openPath(join(config.pathToClasses, 'wheels'))
+                                    }
+                                },
+                                {
+                                    label: 'winches',
+                                    click() {
+                                        shell.openPath(join(config.pathToClasses, 'winches'))
+                                    }
+                                },
+                                {
+                                    label: 'gearboxes',
+                                    click() {
+                                        shell.openPath(join(config.pathToClasses, 'gearboxes'))
+                                    }
+                                },
+                                {
+                                    label: 'engines',
+                                    click() {
+                                        shell.openPath(join(config.pathToClasses, 'engines'))
+                                    }
+                                },
+                                {
+                                    label: 'suspensions',
+                                    click() {
+                                        shell.openPath(join(config.pathToClasses, 'suspensions'))
+                                    }
+                                }
+                            ]
                         }
                     ]
                 },
-                // {
-                //     label: 'Настройки',
-                //     click() {
-                //         openSettings()
-                //     }
-                // },
                 {
                     label: 'Выход',
                     click() {

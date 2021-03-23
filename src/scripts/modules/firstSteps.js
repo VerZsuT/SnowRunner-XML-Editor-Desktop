@@ -1,4 +1,4 @@
-import DataTunnel from '../service/DataTunnel.js'
+import MainProc from '../service/MainProc.js'
 
 const $gameFolderSelect = document.querySelector('#game-folder-select')
 const $classesFolderSelect = document.querySelector('#classes-folder-select')
@@ -7,7 +7,7 @@ const $classesFolderInput = document.querySelector('#classes-folder-input')
 const $pathToInitial = document.querySelector('#path-to-initial')
 const $saveToConfig = document.querySelector('#save-to-config')
 
-const dataTunnel = new DataTunnel()
+const mainProc = new MainProc()
 let pathToClasses = null
 let pathToInitial = null
 
@@ -21,15 +21,19 @@ $saveToConfig.addEventListener('click', () => {
         return
     }
 
-    dataTunnel.set('config', {
+    mainProc.set('config', {
         pathToInitial: pathToInitial,
         pathToClasses: pathToClasses
     })
-    dataTunnel.invoke('backupInitial')
-	setTimeout(() => {
-		dataTunnel.invoke('openWindow', 'main')
-	},1000)
-    
+    .then(() => {
+        mainProc.call('backupInitial')
+        .then(() => {
+            mainProc.call('openWindow', 'main')
+            .then(() => {
+                window.close()
+            }, alert)
+        }, alert)
+    }, alert)
 })
 
 $gameFolderSelect.addEventListener('click', getGameFolder)
@@ -37,20 +41,24 @@ $classesFolderSelect.addEventListener('click', getClassesFolder)
 
 $pathToInitial.addEventListener('click', event => {
     event.preventDefault()
-    dataTunnel.invoke('showFile', $pathToInitial.href)
+    mainProc.call('showFile', $pathToInitial.href)
 })
 
-async function getClassesFolder() {
-    const data = await dataTunnel.get('classesFolder')
-    pathToClasses = data.folder
-    $classesFolderInput.value = data.folder
+function getClassesFolder() {
+    mainProc.get('classesFolder')
+    .then(data => {
+        pathToClasses = data.folder
+        $classesFolderInput.value = data.folder
+    }, alert)
 }
 
-async function getGameFolder() {
-    const data = await dataTunnel.get('gameFolder')
-    pathToInitial = data.initial
+function getGameFolder() {
+    mainProc.get('gameFolder')
+    .then(data => {
+        pathToInitial = data.initial
 
-    $gameFolderInput.value = data.folder
-    $pathToInitial.href = data.initial
-    $pathToInitial.style.display = 'inline-block'
+        $gameFolderInput.value = data.folder
+        $pathToInitial.href = data.initial
+        $pathToInitial.style.display = 'inline-block'
+    }, alert)
 }

@@ -1,22 +1,22 @@
-import DataTunnel from '../service/DataTunnel.js'
+import MainProc from '../service/MainProc.js'
 
 const trucks = document.getElementById('trucks')
 const trailers = document.getElementById('trailers')
 const cargo = document.getElementById('cargo')
 
-const dataTunnel = new DataTunnel()
+const mainProc = new MainProc()
 
 trucks.addEventListener('click', () => {
     localStorage.setItem('listType', 'trucks')
-    dataTunnel.invoke('openWindow', 'list')
+    mainProc.call('openWindow', 'list').catch(alert)
 })
 
 trailers.addEventListener('click', () => {
     localStorage.setItem('listType', 'trailers')
-    dataTunnel.invoke('openWindow', 'list')
+    mainProc.call('openWindow', 'list').catch(alert)
 })
 
 cargo.addEventListener('click', () => {
     localStorage.setItem('listType', 'cargo')
-    dataTunnel.invoke('openWindow', 'list')
+    mainProc.call('openWindow', 'list').catch(alert)
 })

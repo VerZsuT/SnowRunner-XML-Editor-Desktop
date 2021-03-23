@@ -1,18 +1,20 @@
-import DataTunnel from '../service/DataTunnel.js'
+import MainProc from '../service/MainProc.js'
 import { create, get, prettify } from '../service/funcs.js'
 
 const $list = get('#list')
 
 const listType = localStorage.getItem('listType')
-const dataTunnel = new DataTunnel()
+const mainProc = new MainProc()
 
 addItems()
 
-async function addItems() {
-    const array = await dataTunnel.call('getList', listType)
-    for (const item of array) {
-        $list.append(createListItem(item.name, item.path))
-    }
+function addItems() {
+    mainProc.call('getList', listType)
+    .then((array) => {
+        for (const item of array) {
+            $list.append(createListItem(item.name, item.path))
+        }
+    }, alert)
 }
 
 function createListItem(name, path) {
@@ -35,10 +37,15 @@ function createListItem(name, path) {
             src: `../truck_images/${name}.jpg`
         }))
     }
+    else if (listType === 'trailers') {
+        $item.append(create('img', {
+            src: `../icons/trailer_item.png`
+        }))
+    }
 
     $item.addEventListener('click', () => {
         localStorage.setItem('filePath', $item.getAttribute('file_path'))
-        dataTunnel.invoke('openWindow', 'xmlEditor')
+        mainProc.call('openWindow', 'xmlEditor')
     })
 
     return $item

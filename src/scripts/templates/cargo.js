@@ -1,4 +1,4 @@
-import { Template, Group, Input, Select, Opt, Selectors, Selector } from '../service/templateItems.js'
+import { Template, Group, Input, Selectors, Selector } from '../service/templateItems.js'
 
 const cargo = {
 	main: [
