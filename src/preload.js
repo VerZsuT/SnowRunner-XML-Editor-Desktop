@@ -23,13 +23,13 @@ process.once('loaded', () => {
             },
             getList(listType) {
                 if (listType === 'trucks') {
-                    this.resolve(fromDir(join(config.pathToClasses, 'trucks'), '.xml'))
+                    this.resolve(fromDir(join(config.pathToClasses, 'trucks')))
                 }
                 else if (listType === 'trailers') {
-                    this.resolve(fromDir(join(config.pathToClasses, 'trucks', 'trailers'), '.xml'))
+                    this.resolve(fromDir(join(config.pathToClasses, 'trucks', 'trailers')))
                 }
                 else if (listType === 'cargo') {
-                    this.resolve(fromDir(join(config.pathToClasses, 'trucks', 'cargo'), '.xml'))
+                    this.resolve(fromDir(join(config.pathToClasses, 'trucks', 'cargo')))
                 }
                 else {
                     this.reject(`Неправильный тип листа. Тип '${listType}' не является одним из ['trucks', 'trailers', 'cargo'].`)
@@ -84,6 +84,14 @@ process.once('loaded', () => {
             }
         },
         props: {
+            filePath: {
+                get() {
+                    ipcRenderer.once('get-file-path-reply', (event, data) => {
+                        this.resolve(data)
+                    })
+                    ipcRenderer.send('get-file-path')
+                }
+            },
             config: {
                 get() {
                     this.resolve(config)
@@ -157,7 +165,7 @@ process.once('loaded', () => {
     })
 })
 
-function fromDir(startPath, filter) {
+function fromDir(startPath) {
     if (!existsSync(startPath)) {
         return
     }
@@ -169,7 +177,7 @@ function fromDir(startPath, filter) {
         if (stat.isDirectory()) {
             continue
         }
-        else if (files[i].indexOf(filter) >= 0) {
+        else if (files[i].indexOf('.xml') >= 0) {
             array.push({
                 name: files[i].replace('.xml', ''),
                 path: filePath

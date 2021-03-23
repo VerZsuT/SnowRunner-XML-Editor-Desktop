@@ -19,19 +19,22 @@ function checkData() {
     mainProc.get('config')
     .then(data => {
         config = data
-        filePath = localStorage.getItem('filePath')
-        if (filePath.split('/').length !== 1) {
-            let a = filePath.split('/')
-            $title.innerText = prettify(a[a.length-1].replace('.xml', '')).toUpperCase()
-        }
-        else {
-            let a = filePath.split('\\')
-            $title.innerText = prettify(a[a.length-1].replace('.xml', '')).toUpperCase()
-        }
-        
-        mainProc.call('getFileData', filePath)
+        mainProc.get('filePath')
         .then(data => {
-            loadFile(data)
+            filePath = data || localStorage.getItem('filePath')
+            if (filePath.split('/').length !== 1) {
+                let a = filePath.split('/')
+                $title.innerText = prettify(a[a.length-1].replace('.xml', '')).toUpperCase()
+            }
+            else {
+                let a = filePath.split('\\')
+                $title.innerText = prettify(a[a.length-1].replace('.xml', '')).toUpperCase()
+            }
+            
+            mainProc.call('getFileData', filePath)
+            .then(data => {
+                loadFile(data)
+            }, alert)
         }, alert)
     }, alert)
 }

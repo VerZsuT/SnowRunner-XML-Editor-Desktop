@@ -1,5 +1,5 @@
 const { ipcMain, app, BrowserWindow, Menu, shell, Notification, dialog } = require('electron')
-const { readFileSync, writeFile, copyFile, unlink, existsSync } = require('fs')
+const { readFileSync, readdirSync, lstatSync, writeFile, copyFile, unlink, existsSync } = require('fs')
 const { join } = require('path')
 
 const locations = {
@@ -16,10 +16,14 @@ let settingsWindow = null
 let firstStepsWindow = null
 let mainWindow = null
 let listWindow = null
+let pathToReturn = null
 
 let config = getConfig()
 const menu = getMenu()
 
+ipcMain.on('get-file-path', event => {
+    event.reply('get-file-path-reply', pathToReturn)
+})
 ipcMain.on('open-xmlEditor', event => {
     openXMLEditor()
     event.reply('open-xmlEditor-reply', {status: 'success'})
@@ -151,10 +155,11 @@ function openSettings() {
     })
 }
 
-function openXMLEditor() {
+function openXMLEditor(path=null) {
     createWindow('xmlEditor.html', {
         width: 1000,
-        height: 800
+        height: 800,
+        path: path
     })
 }
 
@@ -169,6 +174,7 @@ function createWindow(fileName, args={}) {
         }
     })
     wind.setMenu(menu)
+    pathToReturn = args.path
     wind.loadFile(join(locations.HTMLFolder, fileName)).then(() => {
         wind.webContents.executeJavaScript(`let title = document.querySelector('title');title.innerText = title.innerText.replace('{--VERSION--}', 'v${config.programVersion}');`)
     })
@@ -213,69 +219,131 @@ function getMenu() {
                             label: 'classes',
                             submenu: [
                                 {
-                                    label: '<--',
+                                    label: 'Просмотр',
                                     click() {
                                         shell.openPath(config.pathToClasses)
                                     }
                                 },
+                                { type: 'separator' },
                                 {
                                     label: 'trucks',
                                     submenu: [
                                         {
-                                            label: '<--',
+                                            label: 'Просмотр',
                                             click() {
                                                 shell.openPath(join(config.pathToClasses, 'trucks'))
                                             }
                                         },
+                                        { type: 'separator' },
                                         {
                                             label: 'addons',
-                                            click() {
-                                                shell.openPath(join(config.pathToClasses, 'trucks', 'addons'))
-                                            }
+                                            enabled: false,
+                                            submenu: [
+                                                {
+                                                    label: 'Просмотр',
+                                                    click() {
+                                                        shell.openPath(join(config.pathToClasses, 'trucks', 'addons'))
+                                                    }
+                                                },
+                                                { type: 'separator' },
+                                                ...getItems(join(config.pathToClasses, 'trucks', 'addons'))
+                                            ]
                                         },
                                         {
                                             label: 'cargo',
-                                            click() {
-                                                shell.openPath(join(config.pathToClasses, 'trucks', 'cargo'))
-                                            }
+                                            submenu: [
+                                                {
+                                                    label: 'Просмотр',
+                                                    click() {
+                                                        shell.openPath(join(config.pathToClasses, 'trucks', 'cargo'))
+                                                    }
+                                                },
+                                                { type: 'separator' },
+                                                ...getItems(join(config.pathToClasses, 'trucks', 'cargo'))
+                                            ]
                                         },
                                         {
                                             label: 'trailers',
-                                            click() {
-                                                shell.openPath(join(config.pathToClasses, 'trucks', 'trailers'))
-                                            }
-                                        }
+                                            submenu: [
+                                                {
+                                                    label: 'Просмотр',
+                                                    click() {
+                                                        shell.openPath(join(config.pathToClasses, 'trucks', 'trailers'))
+                                                    }
+                                                },
+                                                { type: 'separator' },
+                                                ...getItems(join(config.pathToClasses, 'trucks', 'trailers'))
+                                            ]
+                                            
+                                        },
+                                        { type: 'separator' },
+                                        ...getItems(join(config.pathToClasses, 'trucks'))
                                     ]
                                 },
                                 {
                                     label: 'wheels',
-                                    click() {
-                                        shell.openPath(join(config.pathToClasses, 'wheels'))
-                                    }
+                                    submenu: [
+                                        {
+                                            label: 'Просмотр',
+                                            click() {
+                                                shell.openPath(join(config.pathToClasses, 'wheels'))
+                                            }
+                                        },
+                                        { type: 'separator' },
+                                        ...getItems(join(config.pathToClasses, 'wheels'))
+                                    ]
                                 },
                                 {
                                     label: 'winches',
-                                    click() {
-                                        shell.openPath(join(config.pathToClasses, 'winches'))
-                                    }
+                                    submenu: [
+                                        {
+                                            label: 'Просмотр',
+                                            click() {
+                                                shell.openPath(join(config.pathToClasses, 'winches'))
+                                            }
+                                        },
+                                        { type: 'separator' },
+                                        ...getItems(join(config.pathToClasses, 'winches'))
+                                    ]
                                 },
                                 {
                                     label: 'gearboxes',
-                                    click() {
-                                        shell.openPath(join(config.pathToClasses, 'gearboxes'))
-                                    }
+                                    submenu: [
+                                        {
+                                            label: 'Просмотр',
+                                            click() {
+                                                shell.openPath(join(config.pathToClasses, 'gearboxes'))
+                                            }
+                                        },
+                                        { type: 'separator' },
+                                        ...getItems(join(config.pathToClasses, 'gearboxes'))
+                                    ]
                                 },
                                 {
                                     label: 'engines',
-                                    click() {
-                                        shell.openPath(join(config.pathToClasses, 'engines'))
-                                    }
+                                    submenu: [
+                                        {
+                                            label: 'Просмотр',
+                                            click() {
+                                                shell.openPath(join(config.pathToClasses, 'engines'))
+                                            }
+                                        },
+                                        { type: 'separator' },
+                                        ...getItems(join(config.pathToClasses, 'engines'))
+                                    ]
                                 },
                                 {
                                     label: 'suspensions',
-                                    click() {
-                                        shell.openPath(join(config.pathToClasses, 'suspensions'))
-                                    }
+                                    submenu: [
+                                        {
+                                            label: 'Просмотр',
+                                            click() {
+                                                shell.openPath(join(config.pathToClasses, 'suspensions'))
+                                            }
+                                        },
+                                        { type: 'separator' },
+                                        ...getItems(join(config.pathToClasses, 'suspensions'))
+                                    ]
                                 }
                             ]
                         }
@@ -313,4 +381,43 @@ function getMenu() {
             ]
         }
     ])
+}
+
+
+function getItems(path) {
+    const array = []
+    const items = fromDir(path)
+
+    for (const item of items) {
+        array.push({
+            label: item.name,
+            click: () => {
+                openXMLEditor(item.path)
+            }
+        })
+    }
+
+    return array
+}
+
+function fromDir(startPath) {
+    if (!existsSync(startPath)) {
+        return
+    }
+    const array = []
+    const files = readdirSync(startPath)
+    for(let i = 0; i < files.length; i++) {
+        const filePath = join(startPath, files[i])
+        const stat = lstatSync(filePath)
+        if (stat.isDirectory()) {
+            continue
+        }
+        else if (files[i].indexOf('.xml') >= 0) {
+            array.push({
+                name: files[i].replace('.xml', ''),
+                path: filePath
+            })
+        }
+    }
+    return array
 }
