@@ -19,7 +19,7 @@ let listWindow = null
 let pathToReturn = null
 
 let config = getConfig()
-const menu = getMenu()
+let menu = null
 
 ipcMain.on('get-file-path', event => {
     event.reply('get-file-path-reply', pathToReturn)
@@ -86,6 +86,7 @@ function openList() {
 }
 
 function openMain() {
+    menu = getMenu()
     mainWindow = createWindow('main.html', {
         width: 1000, 
         height: 470, 
@@ -173,7 +174,7 @@ function createWindow(fileName, args={}) {
             preload: locations.preload
         }
     })
-    wind.setMenu(menu)
+    if (menu) wind.setMenu(menu)
     pathToReturn = args.path
     wind.loadFile(join(locations.HTMLFolder, fileName)).then(() => {
         wind.webContents.executeJavaScript(`let title = document.querySelector('title');title.innerText = title.innerText.replace('{--VERSION--}', 'v${config.programVersion}');`)
