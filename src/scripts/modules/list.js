@@ -2,6 +2,7 @@ import MainProc from '../service/MainProc.js'
 import { create, get, prettify } from '../service/funcs.js'
 
 const $list = get('#list')
+const $dlcList = get('#dlc-list')
 
 const listType = localStorage.getItem('listType')
 const mainProc = new MainProc()
@@ -9,18 +10,26 @@ const mainProc = new MainProc()
 addItems()
 
 function addItems() {
-    mainProc.call('getList', listType)
-    .then((array) => {
-        for (const item of array) {
-            $list.append(createListItem(item.name, item.path))
+    mainProc.call('getList', {type: listType, fromDLC: true}, array => {
+        for (const dlc of array) {
+            for (const item of dlc.items) {
+                $dlcList.append(createListItem(item.name, item.path, dlc.name))
+            }
         }
-    }, alert)
+
+        mainProc.call('getList', {type: listType, fromDLC: false}, array => {
+            for (const item of array) {
+                $list.append(createListItem(item.name, item.path))
+            }
+        })
+    })
 }
 
-function createListItem(name, path) {
+function createListItem(name, path, dlcName=null) {
     const $item = create('div', {
         class: 'item',
-        file_path: path
+        file_path: path,
+        dlc_name: dlcName
     })
 
     $item.append(create('span', {
@@ -45,6 +54,7 @@ function createListItem(name, path) {
 
     $item.addEventListener('click', () => {
         localStorage.setItem('filePath', $item.getAttribute('file_path'))
+        localStorage.setItem('currentDLC', $item.getAttribute('dlc_name'))
         mainProc.call('openWindow', 'xmlEditor')
     })
 

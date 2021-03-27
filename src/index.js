@@ -18,7 +18,7 @@ let mainWindow = null
 let listWindow = null
 let pathToReturn = null
 
-let config = getConfig()
+let config = null
 let menu = null
 
 ipcMain.on('get-file-path', event => {
@@ -39,7 +39,7 @@ ipcMain.on('open-settings', event => {
     event.reply('open-settings-reply', {status: 'success'})
 })
 ipcMain.on('open-main', event => {
-    openMain()
+    init()
     event.reply('open-main-reply', {status: 'success'})
 })
 ipcMain.on('open-list', event => {
@@ -62,12 +62,19 @@ app.on('activate', () => {
 })
 
 function init() {
+    config = getConfig()
     if (!config.pathToInitial) {
         openFirstSteps()
     }
     else {
+        initDLC()
         openMain()
     }
+}
+
+function initDLC() {
+    config.dlc = fromDir(config.pathToDLC, true)
+    saveConfig(null, config)
 }
 
 function showNotification(title, message) {
@@ -133,11 +140,13 @@ function copyBackup(event=null) {
 function saveConfig(event, data) {
     config = data
     writeFile(locations.config, JSON.stringify(data), error => {
-        if (error) {
-            event.reply('save-config-reply', {status: 'error', error: 'Не удалось записать конфиг в файл.'})
-            return
+        if (event) {
+            if (error) {
+                event.reply('save-config-reply', {status: 'error', error: 'Не удалось записать конфиг в файл.'})
+                return
+            }
+            event.reply('save-config-reply', {status: 'success'})
         }
-        event.reply('save-config-reply', {status: 'success'})
     })
 }
 
@@ -177,6 +186,7 @@ function createWindow(fileName, args={}) {
     if (menu) wind.setMenu(menu)
     pathToReturn = args.path
     wind.loadFile(join(locations.HTMLFolder, fileName)).then(() => {
+        //wind.webContents.toggleDevTools()
         wind.webContents.executeJavaScript(`let title = document.querySelector('title');title.innerText = title.innerText.replace('{--VERSION--}', 'v${config.programVersion}');`)
     })
     return wind
@@ -401,17 +411,24 @@ function getItems(path) {
     return array
 }
 
-function fromDir(startPath) {
-    if (!existsSync(startPath)) {
-        return
-    }
+function fromDir(startPath, onlyDirs=false) {
+    if (!existsSync(startPath)) return
+
     const array = []
     const files = readdirSync(startPath)
     for(let i = 0; i < files.length; i++) {
         const filePath = join(startPath, files[i])
         const stat = lstatSync(filePath)
-        if (stat.isDirectory()) {
-            continue
+        if (onlyDirs) {
+            if (!stat.isDirectory()) {
+                continue
+            }
+            else {
+                array.push({
+                    name: files[i],
+                    path: filePath
+                })
+            }
         }
         else if (files[i].indexOf('.xml') >= 0) {
             array.push({

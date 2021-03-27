@@ -12,27 +12,75 @@ process.once('loaded', () => {
     mainProc.init({
         functions: {
             getFileData(filePath) {
-                readFile(filePath, (error, data) => {
-                    if (error) {
-                        this.reject(`Не удалось считать файл по пути '${filePath}' либо он пуст.`)
-                        return
-                    }
-
-                    this.resolve(data.toString())
-                })
-            },
-            getList(listType) {
-                if (listType === 'trucks') {
-                    this.resolve(fromDir(join(config.pathToClasses, 'trucks')))
-                }
-                else if (listType === 'trailers') {
-                    this.resolve(fromDir(join(config.pathToClasses, 'trucks', 'trailers')))
-                }
-                else if (listType === 'cargo') {
-                    this.resolve(fromDir(join(config.pathToClasses, 'trucks', 'cargo')))
+                if (typeof filePath === 'object') {
+                    readFile(filePath[0], (error, data) => {
+                        if (error) {
+                            readFile(filePath[1], (error2, data2) => {
+                                if (error2) {
+                                    
+                                    this.reject(`Не удалось считать файл по пути '${filePath}' либо он пуст.`)
+                                    return
+                                }
+                                else {
+                                    this.resolve(data2.toString())
+                                }
+                            })
+                        }
+                        else {
+                            this.resolve(data.toString())
+                        }
+                    })
                 }
                 else {
-                    this.reject(`Неправильный тип листа. Тип '${listType}' не является одним из ['trucks', 'trailers', 'cargo'].`)
+                    readFile(filePath, (error, data) => {
+                        if (error) {
+                            
+                            this.reject(`Не удалось считать файл по пути '${filePath}' либо он пуст.`)
+                            return
+                        }
+    
+                        this.resolve(data.toString())
+                    })
+                }
+            },
+            getList(args) {
+                const listType = args.type
+                const fromDLC = args.fromDLC
+
+                if (fromDLC) {
+                    const array = []
+                    for (const dlc of config.dlc) {
+                        const path = `${dlc.path}\\classes`
+
+                        if (listType === 'trucks') {
+                            array.push({name: dlc.name, items: fromDir(join(path, 'trucks')) || []})
+                        }
+                        else if (listType === 'trailers') {
+                            array.push({name: dlc.name, items: fromDir(join(path, 'trucks', 'trailers')) || []})
+                        }
+                        else if (listType === 'cargo') {
+                            array.push({name: dlc.name, items: fromDir(join(path, 'trucks', 'cargo')) || []})
+                        }
+                        else {
+                            this.reject(`Неправильный тип листа. Тип '${listType}' не является одним из ['trucks', 'trailers', 'cargo'].`)
+                        }
+
+                    }
+                    this.resolve(array)
+                }
+                else {
+                    if (listType === 'trucks') {
+                        this.resolve(fromDir(join(config.pathToClasses, 'trucks')))
+                    }
+                    else if (listType === 'trailers') {
+                        this.resolve(fromDir(join(config.pathToClasses, 'trucks', 'trailers')))
+                    }
+                    else if (listType === 'cargo') {
+                        this.resolve(fromDir(join(config.pathToClasses, 'trucks', 'cargo')))
+                    }
+                    else {
+                        this.reject(`Неправильный тип листа. Тип '${listType}' не является одним из ['trucks', 'trailers', 'cargo'].`)
+                    }
                 }
             },
             setFileData(obj) {
@@ -46,7 +94,7 @@ process.once('loaded', () => {
                 })
             },
             backupInitial() {
-                ipcRenderer.once('save-backup-reply', (event, data) => {
+                ipcRenderer.once('save-backup-reply', (_event, data) => {
                     switch (data.status) {
                         case 'success':
                             this.resolve()
@@ -63,7 +111,7 @@ process.once('loaded', () => {
                 
             },
             openWindow(windowType) {
-                ipcRenderer.once(`open-${windowType}-reply`, (event, data) => {
+                ipcRenderer.once(`open-${windowType}-reply`, (_event, data) => {
                     switch (data.status) {
                         case 'success':
                             this.resolve()
@@ -86,7 +134,7 @@ process.once('loaded', () => {
         props: {
             filePath: {
                 get() {
-                    ipcRenderer.once('get-file-path-reply', (event, data) => {
+                    ipcRenderer.once('get-file-path-reply', (_event, data) => {
                         this.resolve(data)
                     })
                     ipcRenderer.send('get-file-path')
@@ -100,7 +148,7 @@ process.once('loaded', () => {
                     for (const key in data) {
                         config[key] = data[key]
                     }
-                    ipcRenderer.once('save-config-reply', (event, data) => {
+                    ipcRenderer.once('save-config-reply', (_event, data) => {
                         switch (data.status) {
                             case 'success':
                                 this.resolve()
@@ -118,7 +166,7 @@ process.once('loaded', () => {
             },
             gameFolder: {
                 get() {
-                    ipcRenderer.once('open-dialog-reply', (event, result) => {
+                    ipcRenderer.once('open-dialog-reply', (_event, result) => {
                         if (!result) {
                             this.reject('Вы не выбрали папку!')
                             return
@@ -139,16 +187,16 @@ process.once('loaded', () => {
                     ipcRenderer.send('open-dialog')
                 }
             },
-            classesFolder: {
+            mediaFolder: {
                 get() {
-                    ipcRenderer.once('open-dialog-reply', (event, result) => {
+                    ipcRenderer.once('open-dialog-reply', (_event, result) => {
                         if (!result) {
                             this.reject('Вы не выбрали папку!')
                             return
                         }
                         const folder = result[0]
                 
-                        let trucksPath = join(folder, 'trucks')
+                        let trucksPath = join(folder, 'classes')
                         if (!existsSync(trucksPath)) {
                             this.reject('Вы выбрали неправильную папку!')
                             return

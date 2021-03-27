@@ -26,22 +26,26 @@ export default class MainProc {
      * @param {string} funcName - имя функции
      * @param {any} args - агрументы
      */
-    call(funcName, data=null) {
-        return new Promise((resolve, reject) => {
+    call(funcName, data=null, then=null) {
+        const promise = new Promise((resolve, reject) => {
             this.#resAndRej(`func_${funcName}_call`, resolve, reject)
             this.#send(`func_${funcName}_call`, data)
         })
+        if (then) promise.then(then)
+        promise.catch(alert)
     }
 
     /**
      * Получает значение свойства и возвращает его
      * @param {string} propertyName - название свойства
      */
-    get(propertyName, data=null) {
-        return new Promise((resolve, reject) => {
+    get(propertyName, then=null) {
+        const promise = new Promise((resolve, reject) => {
             this.#resAndRej(`prop_${propertyName}_get`, resolve, reject)
-            this.#send(`prop_${propertyName}_get`, data)
+            this.#send(`prop_${propertyName}_get`)
         })
+        if (then) promise.then(then)
+        promise.catch(alert)
     }
 
     /**
@@ -49,11 +53,13 @@ export default class MainProc {
      * @param {string} propertyName - название свойства
      * @param {any} data - новое значение
      */
-    set(propertyName, data) {
-        return new Promise((resolve, reject) => {
+    set(propertyName, data, then=null) {
+        const promise = new Promise((resolve, reject) => {
             this.#resAndRej(`prop_${propertyName}_set`, resolve, reject)
             this.#send(`prop_${propertyName}_set`, data)
         })
+        if (then) promise.then(then)
+        promise.catch(alert)
     }
 
     /**

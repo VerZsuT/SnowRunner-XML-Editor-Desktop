@@ -1,15 +1,16 @@
 import MainProc from '../service/MainProc.js'
 
 const $gameFolderSelect = document.querySelector('#game-folder-select')
-const $classesFolderSelect = document.querySelector('#classes-folder-select')
+const $mediaFolderSelect = document.querySelector('#media-folder-select')
 const $gameFolderInput = document.querySelector('#game-folder-input')
-const $classesFolderInput = document.querySelector('#classes-folder-input')
+const $mediaFolderInput = document.querySelector('#media-folder-input')
 const $pathToInitial = document.querySelector('#path-to-initial')
 const $saveToConfig = document.querySelector('#save-to-config')
 
 const mainProc = new MainProc()
 let pathToClasses = null
 let pathToInitial = null
+let pathToMedia = null
 
 $saveToConfig.addEventListener('click', () => {
     if (!pathToInitial) {
@@ -23,42 +24,39 @@ $saveToConfig.addEventListener('click', () => {
 
     mainProc.set('config', {
         pathToInitial: pathToInitial,
-        pathToClasses: pathToClasses
-    })
-    .then(() => {
-        mainProc.call('backupInitial')
-        .then(() => {
-            mainProc.call('openWindow', 'main')
-            .then(() => {
+        pathToClasses: pathToClasses,
+        pathToDLC: `${pathToMedia}\\_dlc`
+    }, () => {
+        mainProc.call('backupInitial', null, () => {
+            mainProc.call('openWindow', 'main', () => {
                 window.close()
-            }, alert)
-        }, alert)
-    }, alert)
+            })
+        })
+    })
 })
 
 $gameFolderSelect.addEventListener('click', getGameFolder)
-$classesFolderSelect.addEventListener('click', getClassesFolder)
+$mediaFolderSelect.addEventListener('click', getMeidaFolder)
 
 $pathToInitial.addEventListener('click', event => {
     event.preventDefault()
     mainProc.call('showFile', $pathToInitial.href)
 })
 
-function getClassesFolder() {
-    mainProc.get('classesFolder')
-    .then(data => {
-        pathToClasses = data.folder
-        $classesFolderInput.value = data.folder
-    }, alert)
+function getMeidaFolder() {
+    mainProc.get('mediaFolder', data => {
+        pathToMedia = data.folder
+        pathToClasses = `${data.folder}\\classes`
+        $mediaFolderInput.value = pathToClasses
+    })
 }
 
 function getGameFolder() {
-    mainProc.get('gameFolder')
-    .then(data => {
+    mainProc.get('gameFolder', data => {
         pathToInitial = data.initial
 
         $gameFolderInput.value = data.folder
         $pathToInitial.href = data.initial
         $pathToInitial.style.display = 'inline-block'
-    }, alert)
+    })
 }

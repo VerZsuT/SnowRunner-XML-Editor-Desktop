@@ -9,6 +9,7 @@ const $title = get('#title')
 const mainProc = new MainProc()
 let config = null
 let filePath = null
+let currentDLC = localStorage.getItem('currentDLC')
 let fileDOM = null
 
 $saveParamsButton.onclick = generateAndSaveFile
@@ -16,11 +17,9 @@ $saveParamsButton.onclick = generateAndSaveFile
 checkData()
 
 function checkData() {
-    mainProc.get('config')
-    .then(data => {
+    mainProc.get('config', data => {
         config = data
-        mainProc.get('filePath')
-        .then(data => {
+        mainProc.get('filePath', data => {
             filePath = data || localStorage.getItem('filePath')
             if (filePath.split('/').length !== 1) {
                 let a = filePath.split('/')
@@ -31,12 +30,11 @@ function checkData() {
                 $title.innerText = prettify(a[a.length-1].replace('.xml', '')).toUpperCase()
             }
             
-            mainProc.call('getFileData', filePath)
-            .then(data => {
+            mainProc.call('getFileData', [filePath, localStorage.getItem('fileDLCPath')], data => {
                 loadFile(data)
-            }, alert)
-        }, alert)
-    }, alert)
+            })
+        })
+    })
 }
 
 function loadFile(file) {
@@ -184,8 +182,12 @@ function createItems(params, $parentGroupCont=null, tabs=1) {
                             innerText: 'Посмотреть'
                         })
                         $button.addEventListener('click', () => {
-                            localStorage.setItem('filePath', `${config.pathToClasses}/${param.fileType}/${fileName}.xml`)
-                            mainProc.call('openWindow', 'xmlEditor').catch(alert)
+                            if (currentDLC) {
+                                localStorage.setItem('fileDLCPath', `${config.pathToDLC}\\${currentDLC}\\classes\\${param.fileType}\\${fileName}.xml`)
+                            }
+                            localStorage.setItem('filePath', `${config.pathToClasses}\\${param.fileType}\\${fileName}.xml`)
+                            
+                            mainProc.call('openWindow', 'xmlEditor')
                         })
                         $input.append($button)
                     }
@@ -362,7 +364,5 @@ function generateAndSaveFile() {
     mainProc.call('setFileData', {
         path: filePath,
         data: xmlString
-    }).then(() => {
-        window.close()
-    }, alert)
+    }, window.close)
 }

@@ -36,10 +36,23 @@
     color: yellow;
 }
 
-#list {
+#list, 
+#dlc-list {
     display: flex;
     justify-content: space-evenly;
     flex-wrap: wrap;
     width: 100%;
     height: 100%;
+}
+
+#dlc-list {
+    margin-bottom: 20px;
+}
+
+.list-title {
+    display: block;
+    text-align: center;
+    font-weight: bold;
+    font-size: large;
+    margin-bottom: 10px;
 }

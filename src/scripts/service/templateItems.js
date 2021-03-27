@@ -57,16 +57,18 @@ export function Template(params, children) {
                         multiply: false,
                         tCycleNumber: currentNum,
                         fileDOM: fileDOM,
+                        tNumber: multiply ? tNumber + 1 : tNumber,
                         templateId: templateId
                     }))
                     currentNum++
                 }
                 params = params.concat(this.getParams({
-                    seletors: newSelectors, 
+                    selectors: newSelectors, 
                     defaultSelector: defaultSelector, 
                     onlySingle: true, 
                     multiply: false,
                     fileDOM: fileDOM,
+                    tNumber: tNumber,
                     templateId: templateId
                 }))
                 return params
@@ -80,7 +82,7 @@ export function Template(params, children) {
                     defaultSelector: defaultSelector,
                     onlySingle: onlySingle,
                     cycleNumber: tCycleNumber,
-                    tNumber: multiply? tNumber + 1 : tNumber,
+                    tNumber: multiply ? tNumber + 1 : tNumber,
                     fileDOM: fileDOM,
                     templateId: templateId
                 }))
