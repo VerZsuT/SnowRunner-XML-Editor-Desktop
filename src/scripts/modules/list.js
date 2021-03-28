@@ -1,23 +1,22 @@
-import MainProc from '../service/MainProc.js'
+import renderer from '../service/RendererProcess.js'
 import { create, get, prettify } from '../service/funcs.js'
 
 const $list = get('#list')
 const $dlcList = get('#dlc-list')
 
 const listType = localStorage.getItem('listType')
-const mainProc = new MainProc()
 
 addItems()
 
 function addItems() {
-    mainProc.call('getList', {type: listType, fromDLC: true}, array => {
+    renderer.call('getList', [listType, true], array => {
         for (const dlc of array) {
             for (const item of dlc.items) {
                 $dlcList.append(createListItem(item.name, item.path, dlc.name))
             }
         }
 
-        mainProc.call('getList', {type: listType, fromDLC: false}, array => {
+        renderer.call('getList', listType, array => {
             for (const item of array) {
                 $list.append(createListItem(item.name, item.path))
             }
@@ -55,7 +54,7 @@ function createListItem(name, path, dlcName=null) {
     $item.addEventListener('click', () => {
         localStorage.setItem('filePath', $item.getAttribute('file_path'))
         localStorage.setItem('currentDLC', $item.getAttribute('dlc_name'))
-        mainProc.call('openWindow', 'xmlEditor')
+        renderer.call('openWindow', 'xmlEditor')
     })
 
     return $item

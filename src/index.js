@@ -11,13 +11,15 @@ const locations = {
     HTMLFolder: join(__dirname, 'editors')
 }
 
+const enableDevTools = false
+
 let xmlEditorWindow = null
 let settingsWindow = null
 let firstStepsWindow = null
 let mainWindow = null
 let listWindow = null
-let pathToReturn = null
 
+let pathToReturn = null
 let config = null
 let menu = null
 
@@ -181,13 +183,15 @@ function createWindow(fileName, args={}) {
         icon: locations.icon,
         webPreferences: {
             preload: locations.preload
-        }
+        },
+        show: false
     })
     if (menu) wind.setMenu(menu)
     pathToReturn = args.path
     wind.loadFile(join(locations.HTMLFolder, fileName)).then(() => {
-        //wind.webContents.toggleDevTools()
+        if (enableDevTools) wind.webContents.toggleDevTools()
         wind.webContents.executeJavaScript(`let title = document.querySelector('title');title.innerText = title.innerText.replace('{--VERSION--}', 'v${config.programVersion}');`)
+        wind.show()
     })
     return wind
 }
@@ -205,6 +209,24 @@ function restoreInitial() {
         if (error) showNotification('Ошибка', `Не удалось скопировать бэкап initial.\nТекст ошибки:\n${error}`)
         else showNotification('Уведомление', `initial успешно восстановлен.`)
     })
+}
+
+function resetConfig() {
+    config.pathToDLC = null
+    config.pathToInitial = null
+    config.pathToClasses = null
+    config.dlc = null
+    if (existsSync(locations.backupInitial)) {
+        unlink(locations.backupInitial, error => {
+            if (error) {
+                showNotification('Ошибка', `Не удалось удалить старый бэкап initial.\nТекст ошибки:\n${error}`)
+                return
+            }
+            saveConfig(null, config)
+            app.relaunch()
+            app.quit()
+        })
+    }
 }
 
 function getConfig() {
@@ -357,6 +379,17 @@ function getMenu() {
                                     ]
                                 }
                             ]
+                        }
+                    ]
+                },
+                {
+                    label: 'Настройки',
+                    submenu: [
+                        {
+                            label: 'Сбросить',
+                            click() {
+                                resetConfig()
+                            }
                         }
                     ]
                 },

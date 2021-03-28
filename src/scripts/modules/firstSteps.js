@@ -1,4 +1,4 @@
-import MainProc from '../service/MainProc.js'
+import renderer from '../service/RendererProcess.js'
 
 const $gameFolderSelect = document.querySelector('#game-folder-select')
 const $mediaFolderSelect = document.querySelector('#media-folder-select')
@@ -7,7 +7,6 @@ const $mediaFolderInput = document.querySelector('#media-folder-input')
 const $pathToInitial = document.querySelector('#path-to-initial')
 const $saveToConfig = document.querySelector('#save-to-config')
 
-const mainProc = new MainProc()
 let pathToClasses = null
 let pathToInitial = null
 let pathToMedia = null
@@ -22,29 +21,27 @@ $saveToConfig.addEventListener('click', () => {
         return
     }
 
-    mainProc.set('config', {
+    renderer.set('config', {
         pathToInitial: pathToInitial,
         pathToClasses: pathToClasses,
         pathToDLC: `${pathToMedia}\\_dlc`
     }, () => {
-        mainProc.call('backupInitial', null, () => {
-            mainProc.call('openWindow', 'main', () => {
-                window.close()
-            })
+        renderer.call('backupInitial', null, () => {
+            renderer.call('openWindow', 'main', window.close)
         })
     })
 })
 
 $gameFolderSelect.addEventListener('click', getGameFolder)
-$mediaFolderSelect.addEventListener('click', getMeidaFolder)
+$mediaFolderSelect.addEventListener('click', getMediaFolder)
 
 $pathToInitial.addEventListener('click', event => {
     event.preventDefault()
-    mainProc.call('showFile', $pathToInitial.href)
+    renderer.call('showFile', $pathToInitial.href)
 })
 
-function getMeidaFolder() {
-    mainProc.get('mediaFolder', data => {
+function getMediaFolder() {
+    renderer.get('mediaFolder', data => {
         pathToMedia = data.folder
         pathToClasses = `${data.folder}\\classes`
         $mediaFolderInput.value = pathToClasses
@@ -52,7 +49,7 @@ function getMeidaFolder() {
 }
 
 function getGameFolder() {
-    mainProc.get('gameFolder', data => {
+    renderer.get('gameFolder', data => {
         pathToInitial = data.initial
 
         $gameFolderInput.value = data.folder

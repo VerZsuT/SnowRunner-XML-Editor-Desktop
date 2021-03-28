@@ -1,12 +1,11 @@
 import { get, getText, create, prettify } from '../service/funcs.js'
-import MainProc from '../service/MainProc.js'
+import renderer from '../service/RendererProcess.js'
 import templates from '../templates/getTemplates.js'
 
 const $paramsTable = get('#parameters')
 const $saveParamsButton = get('#save-params')
 const $title = get('#title')
 
-const mainProc = new MainProc()
 let config = null
 let filePath = null
 let currentDLC = localStorage.getItem('currentDLC')
@@ -17,9 +16,9 @@ $saveParamsButton.onclick = generateAndSaveFile
 checkData()
 
 function checkData() {
-    mainProc.get('config', data => {
+    renderer.get('config', data => {
         config = data
-        mainProc.get('filePath', data => {
+        renderer.get('filePath', data => {
             filePath = data || localStorage.getItem('filePath')
             if (filePath.split('/').length !== 1) {
                 let a = filePath.split('/')
@@ -30,7 +29,7 @@ function checkData() {
                 $title.innerText = prettify(a[a.length-1].replace('.xml', '')).toUpperCase()
             }
             
-            mainProc.call('getFileData', [filePath, localStorage.getItem('fileDLCPath')], data => {
+            renderer.call('getFileData', [filePath, localStorage.getItem('fileDLCPath')], data => {
                 loadFile(data)
             })
         })
@@ -187,7 +186,7 @@ function createItems(params, $parentGroupCont=null, tabs=1) {
                             }
                             localStorage.setItem('filePath', `${config.pathToClasses}\\${param.fileType}\\${fileName}.xml`)
                             
-                            mainProc.call('openWindow', 'xmlEditor')
+                            renderer.call('openWindow', 'xmlEditor')
                         })
                         $input.append($button)
                     }
@@ -361,8 +360,5 @@ function generateAndSaveFile() {
     }
 
     const xmlString = copyrightText + serializer.serializeToString(fileDOM).replace('<root>', '').replace('</root>', '')
-    mainProc.call('setFileData', {
-        path: filePath,
-        data: xmlString
-    }, window.close)
+    renderer.call('setFileData', [filePath, xmlString], window.close)
 }
