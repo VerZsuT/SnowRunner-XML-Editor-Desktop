@@ -81,18 +81,9 @@ const truck = {
 			Selector({id: 'FUEL_TANK', value: '{TRUCK_DATA}.FuelTank'})
 		])
 	],
-	systemData: {
-		name: 'Truck',
-		author: 'VerZsuT',
-		description: '[media]/classes/trucks/...',
-		id: 7918027603,
-		defaultState: 'enabled',
-		type: 'system',
-		selector: 'Truck',
-		version: '1.2'
-	},
+	selector: 'Truck',
 	translation: {
-		3478485900: {
+		EN: {
 			"NONE": "None",
 			"TEXT_GROUP_NAME": "Texts",
 			"UIDESC": "Description",
@@ -140,8 +131,8 @@ const truck = {
 			"COMPATIBLE_WHEELS": "Allowed wheels",
 			"COMPATIBLE_WHEELS_SCALE": "Scale",
 		},
-		7081350102: {
-			"NONE": "Отсутсвует",
+		RU: {
+			"NONE": "Отсутствует",
 			"TEXT_GROUP_NAME": "Тексты",
 			"UIDESC": "Описание",
 			"UINAME": "Название",
@@ -188,7 +179,7 @@ const truck = {
 			"COMPATIBLE_WHEELS": "Доступные колёса",
 			"COMPATIBLE_WHEELS_SCALE": "Размер",
 		},
-		6042577539: {
+		DE: {
 			"NONE": "Fehlt",
 			"TEXT_GROUP_NAME": "Texte",
 			"UINAME": "Der Name",

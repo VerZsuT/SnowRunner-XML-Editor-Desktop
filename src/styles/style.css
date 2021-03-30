@@ -9,6 +9,7 @@ input,
 select {
     padding: 5px;
     font-size: 1em;
+    width: 200px;
 }
 
 table {

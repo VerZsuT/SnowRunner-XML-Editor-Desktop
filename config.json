@@ -1,1 +1,8 @@
-{"configVersion":"2","programVersion":"0.3.1","selectedLanguage":"RU","pathToInitial":null,"pathToClasses":null,"pathToDLC":null,"dlc":null}
+{
+    "version": "0.4.0",
+    "language": "EN",
+    "pathToInitial": null,
+    "pathToClasses": null,
+    "pathToDLC": null,
+    "dlc": null
+}

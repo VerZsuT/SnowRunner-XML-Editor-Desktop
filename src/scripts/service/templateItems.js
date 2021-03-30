@@ -1,5 +1,13 @@
 import { removePars, getTextFromTemplate, getText } from './funcs.js'
 
+/**
+ * params: 
+ * - **type** ['multiply', 'single'] = *'single'*
+ * - **itemSelector** [string]
+ * - **replaceName** [string] = *'CYCLE'*
+ * - **single** [bool]
+ * @returns {object} Template
+ */
 export function Template(params, children) {
     return ({
         type: params.type,
@@ -23,7 +31,7 @@ export function Template(params, children) {
             let tNumber = props.tNumber || 1
             let multiply = props.multiply
             let fileDOM = props.fileDOM
-            let templateId = props.templateId
+            let templateName = props.templateName
 
             if (multiply === undefined) {
                 multiply = (this.type === 'Multiply')
@@ -58,7 +66,7 @@ export function Template(params, children) {
                         tCycleNumber: currentNum,
                         fileDOM: fileDOM,
                         tNumber: multiply ? tNumber + 1 : tNumber,
-                        templateId: templateId
+                        templateName: templateName
                     }))
                     currentNum++
                 }
@@ -69,7 +77,7 @@ export function Template(params, children) {
                     multiply: false,
                     fileDOM: fileDOM,
                     tNumber: tNumber,
-                    templateId: templateId
+                    templateName: templateName
                 }))
                 return params
             }
@@ -84,7 +92,7 @@ export function Template(params, children) {
                     cycleNumber: tCycleNumber,
                     tNumber: multiply ? tNumber + 1 : tNumber,
                     fileDOM: fileDOM,
-                    templateId: templateId
+                    templateName: templateName
                 }))
             }
             return params
@@ -92,6 +100,17 @@ export function Template(params, children) {
     })
 }
 
+/**
+ * params: 
+ * - **name** [string]
+ * - **nameType** ['TagName', 'Computed', 'Static'] = *'Static'*
+ * - **nameSelector** [string]
+ * - **nameAttribute** [string]
+ * - **defaultSelector** [string]
+ * - **single** [bool]
+ * - **withCounter** [bool]
+ * @returns {object} Group
+ */
 export function Group(params, children) {
     return ({
         name: params.name,
@@ -116,7 +135,7 @@ export function Group(params, children) {
             let onlySingle = props.onlySingle || false
             let cycleNumber = props.cycleNumber
             let fileDOM = props.fileDOM
-            let templateId = props.templateId
+            let templateName = props.templateName
 
             let param = null
             let params = []
@@ -155,10 +174,10 @@ export function Group(params, children) {
                     onlySingle: onlySingle,
                     tNumber: props.tNumber,
                     fileDOM: fileDOM,
-                    templateId: templateId
+                    templateName: templateName
                 }))
             }
-            groupName = getTextFromTemplate(groupName, templateId) || getText(groupName)
+            groupName = getTextFromTemplate(groupName, templateName)
             if (this.withCounter) {
                 groupName += ` ${cycleNumber}`
             }
@@ -173,6 +192,20 @@ export function Group(params, children) {
     })
 }
 
+/**
+ * params:
+ * - **attribute** [string]
+ * - **text** [string]
+ * - **selector** [string]
+ * - **single** [bool]
+ * - **onlyDeveloper** [bool]
+ * - **type** ['text', 'file', 'coordinates', 'number'] = *'number'*
+ * - **numberType** ['int', 'float'] = *'int'*
+ * - **fileType** [string]
+ * - **min** [number]
+ * - **max** [number]
+ * @returns {object} Input
+ */
 export function Input(params) {
     return ({
         attribute: params.attribute,
@@ -197,7 +230,7 @@ export function Input(params) {
             let selectors = props.selectors
             let defaultSelector = props.defaultSelector
             let fileDOM = props.fileDOM
-            let templateId = props.templateId
+            let templateName = props.templateName
 
             let param = null
             const selectorType = removePars(this.selector)
@@ -210,7 +243,7 @@ export function Input(params) {
 
             param = {
                 name: this.attribute,
-                text: getTextFromTemplate(this.text, templateId) || getText(this.text),
+                text: getTextFromTemplate(this.text, templateName),
                 value: value,
                 selector: selector,
                 paramType: 'input',
@@ -228,6 +261,14 @@ export function Input(params) {
     })
 }
 
+/**
+ * params:
+ * - **attribute** [string]
+ * - **text** [string]
+ * - **single** [bool]
+ * - **onlyDeveloper** [bool]
+ * @returns {object} Info
+ */
 export function Info(params) {
     return ({
         attribute: params.attribute,
@@ -247,7 +288,7 @@ export function Info(params) {
             let selectors = props.selectors
             let defaultSelector = props.defaultSelector
             let fileDOM = props.fileDOM
-            let templateId = props.templateId
+            let templateName = props.templateName
 
             let param = null
             const selectorType = removePars(this.selector)
@@ -258,7 +299,7 @@ export function Info(params) {
             }
             const value = fileDOM.querySelector(selector).getAttribute(this.attribute)
             param = {
-                text: getTextFromTemplate(this.text, templateId) || getText(this.text),
+                text: getTextFromTemplate(this.text, templateName),
                 value: value,
                 paramType: 'info'
             }
@@ -268,6 +309,15 @@ export function Info(params) {
     })
 }
 
+/**
+ * params: 
+ * - **attribute** [string]
+ * - **text** [string]
+ * - **selector** [string]
+ * - **single** [bool]
+ * - **onlyDeveloper** [bool]
+ * @returns {object} Select
+ */
 export function Select(params, children) {
     return ({
         attribute: params.attribute,
@@ -288,7 +338,7 @@ export function Select(params, children) {
             let selectors = props.selectors
             let defaultSelector = props.defaultSelector
             let fileDOM = props.fileDOM
-            let templateId = props.templateId
+            let templateName = props.templateName
 
             let param = null
             const selectorType = removePars(this.selector)
@@ -315,13 +365,13 @@ export function Select(params, children) {
             for (const option of this.children) {
                 const text_1 = option.text
                 options.push({
-                    text: getTextFromTemplate(text_1, templateId) || getText(text_1),
+                    text: getTextFromTemplate(text_1, templateName),
                     value: option.value
                 })
             }
             param = {
                 name: this.attribute,
-                text: getTextFromTemplate(this.text, templateId) || getText(this.text),
+                text: getTextFromTemplate(this.text, templateName),
                 value: value,
                 selectParams: options,
                 selector: selector,
@@ -335,6 +385,12 @@ export function Select(params, children) {
     })
 }
 
+/**
+ * params:
+ * - **text** [string]
+ * - **value** [string]
+ * @returns {object} Option
+ */
 export function Opt(params) {
     return ({
         text: params.text,
@@ -350,6 +406,9 @@ export function Opt(params) {
     })
 }
 
+/**
+ * @returns {object} Selectors
+ */
 export function Selectors(children) {
     return ({
         children: children,
@@ -380,6 +439,12 @@ export function Selectors(children) {
     })
 }
 
+/**
+ * params: 
+ * - **id** [string]
+ * - **value** [string]
+ * @returns {object} Selector
+ */
 export function Selector(params) {
     return ({
         id: params.id,

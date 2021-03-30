@@ -1,23 +1,31 @@
-import renderer from '../service/RendererProcess.js'
+import renderer from '../service/renderer.js'
+import { get, getText } from '../service/funcs.js'
 
-const $gameFolderSelect = document.querySelector('#game-folder-select')
-const $mediaFolderSelect = document.querySelector('#media-folder-select')
-const $gameFolderInput = document.querySelector('#game-folder-input')
-const $mediaFolderInput = document.querySelector('#media-folder-input')
-const $pathToInitial = document.querySelector('#path-to-initial')
-const $saveToConfig = document.querySelector('#save-to-config')
+const $gameFolderSelect = get('#game-folder-select')
+const $mediaFolderSelect = get('#media-folder-select')
+const $gameFolderInput = get('#game-folder-input')
+const $mediaFolderInput = get('#media-folder-input')
+const $pathToInitial = get('#path-to-initial')
+const $saveToConfig = get('#save-to-config')
+const $languageSelect = get('#language-select')
 
 let pathToClasses = null
 let pathToInitial = null
 let pathToMedia = null
 
+$languageSelect.value = localStorage.getItem('language')
+
+$languageSelect.addEventListener('change', () => {
+    renderer.call('setLanguage', $languageSelect.value)
+})
+
 $saveToConfig.addEventListener('click', () => {
     if (!pathToInitial) {
-        alert('Выбор папки с игрой обязателен!')
+        alert(getText('[NO_GAME_FOLDER]'))
         return
     }
     else if (!pathToClasses) {
-        alert('Выбор папки classes обязателен!')
+        alert(getText('[NO_MEDIA_FOLDER]'))
         return
     }
 

@@ -27,18 +27,9 @@ const engine = {
 			Selector({id: 'GAME_DATA', value: '{ENGINE}#every.GameData'})
 		])
 	],
-	systemData: {
-		name: 'Engine',
-		author: 'VerZsuT',
-		description: '[media]/classes/engines/...',
-		id: 7911531728,
-		defaultState: 'enabled',
-		type: 'system',
-		selector: 'EngineVariants',
-		version: '1.2'
-	},
+	selector: 'EngineVariants',
 	translation: {
-		3478485900: {
+		EN: {
 			"CRITICAL_DAMAGE_THRESHOLD": "Critical damage threshold",
 			"DAMAGE_CAPACITY": "Damage capacity",
 			"DAMAGE_CONSUMPTION_MODIFIER": "Damage consumption modifier",
@@ -54,7 +45,7 @@ const engine = {
 			"BY_RANK": "By rank",
 			"BY_RANK_LEVEL": "Unlock level",
 		},
-		7081350102: {
+		RU: {
 			"CRITICAL_DAMAGE_THRESHOLD": "Порог критического повреждения",
 			"DAMAGE_CAPACITY": "Прочность",
 			"DAMAGE_CONSUMPTION_MODIFIER": "Множитель потребления топлива при повреждении",
@@ -70,7 +61,7 @@ const engine = {
 			"BY_RANK": "По достижению уровня",
 			"BY_RANK_LEVEL": "Уровень разблокировки",
 		},
-		6042577539: {
+		DE: {
 			"CRITICAL_DAMAGE_THRESHOLD": "Kritische Schadensschwelle",
 			"DAMAGE_CAPACITY": "Schadenskapazität",
 			"DAMAGE_CONSUMPTION_MODIFIER": "Schadensverbrauchsmodifikator",

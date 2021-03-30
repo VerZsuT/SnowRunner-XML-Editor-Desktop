@@ -1,4 +1,4 @@
-import renderer from '../service/RendererProcess.js'
+import renderer from '../service/renderer.js'
 import { create, get, prettify } from '../service/funcs.js'
 
 const $list = get('#list')

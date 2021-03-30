@@ -1,4 +1,4 @@
-import renderer from '../service/RendererProcess.js'
+import renderer from '../service/renderer.js'
 
 const trucks = document.getElementById('trucks')
 const trailers = document.getElementById('trailers')

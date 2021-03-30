@@ -62,18 +62,9 @@ const gearbox = {
 			Selector({id: 'GEARBOX_PARAMS', value: '{GAME_DATA}.GearboxParams'})
 		])
 	],
-	systemData: {
-		name: 'Gearbox',
-		author: 'VerZsut',
-		description: '[media]/classes/gearboxes/...',
-		id: 7464356502,
-		defaultState: 'enabled',
-		type: 'system',
-		selector: 'GearboxVariants',
-		version: '1.2'
-	},
+	selector: 'GearboxVariants',
 	translation: {
-		3478485900: {
+		EN: {
 			"AWD_CONSUMPTION_MODIFIER": "AWD consumption modifier",
 			"CRITICAL_DAMAGE_THRESHOLD": "Critical damage threshold",
 			"DAMAGE_CAPACITY": "Damage capacity",
@@ -98,7 +89,7 @@ const gearbox = {
 			"BY_RANK": "By rank",
 			"BY_RANK_LEVEL": "Unlock level",
 		},
-		7081350102: {
+		RU: {
 			"AWD_CONSUMPTION_MODIFIER": "Модификатор потребления топлива при полном приводе",
 			"CRITICAL_DAMAGE_THRESHOLD": "Порог критического повреждения",
 			"DAMAGE_CAPACITY": "Прочность",
@@ -123,7 +114,7 @@ const gearbox = {
 			"BY_RANK": "По достижению уровня",
 			"BY_RANK_LEVEL": "Уровень разблокировки",
 		},
-		6042577539: {
+		DE: {
 			"AWD_CONSUMPTION_MODIFIER": "AWD-Verbrauchsmodifikator",
 			"CRITICAL_DAMAGE_THRESHOLD": "Kritische Schadensschwelle",
 			"DAMAGE_CAPACITY": "Schadenskapazität",

@@ -28,18 +28,9 @@ const wheels = {
 			Selector({id: 'GAME_DATA', value: '{TRUCK_TIRE_ITEM}.GameData'})
 		])
 	],
-	systemData: {
-		name: 'Wheels',
-		author: 'VerZsuT',
-		description: '[media]/classes/wheels/...',
-		id: 4086480433,
-		defaultState: 'enabled',
-		type: 'system',
-		selector: 'TruckWheels',
-		version: '1.2'
-	},
+	selector: 'TruckWheels',
 	translation: {
-		3478485900: {
+		EN: {
 			"GENERAL_SETTINGS": "General",
 			"DAMAGE_CAPACITY": "Damage capacity",
 			"BODY_FRICTION": "Body friction",
@@ -55,7 +46,7 @@ const wheels = {
 			"BY_RANK": "By rank",
 			"BY_RANK_LEVEL": "Unlock level",
 		},
-		7081350102: {
+		RU: {
 			"GENERAL_SETTINGS": "Общие настройки",
 			"DAMAGE_CAPACITY": "Прочность",
 			"BODY_FRICTION": "Сцепление на бездорожье",
@@ -71,7 +62,7 @@ const wheels = {
 			"BY_RANK": "По достижению уровня",
 			"BY_RANK_LEVEL": "Уровень разблокировки",
 		},
-		6042577539: {
+		DE: {
 			"GENERAL_SETTINGS": "Allgemeines",
 			"DAMAGE_CAPACITY": "Schadenskapazität",
 			"BODY_FRICTION": "Körperreibung",

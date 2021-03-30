@@ -20,18 +20,9 @@ const cargo = {
 			Selector({id: 'SLOT', value: 'TruckAddon.GameData.InstallSlot'})
 		])
 	],
-	systemData: {
-		name: 'Cargo',
-		author: 'VerZsuT',
-		description: '[media]/classes/trucks/cargo/...',
-		id: 9388306582,
-		defaultState: 'enabled',
-		type: 'system',
-		selector: 'TruckAddon > GameData > InstallSlot[CargoType]',
-		version: '1.2'
-	},
+	selector: 'TruckAddon > GameData > InstallSlot[CargoType]',
 	translation: {
-		3478485900: {
+		EN: {
 			"MASS": "Mass",
 			"PART": "Parts",
 			"MAIN": "Main",
@@ -39,7 +30,7 @@ const cargo = {
 			"TYPE": "Type",
 			"OFFSET": "Offset",
 		},
-		7081350102: {
+		RU: {
 			"MASS": "Масса",
 			"PART": "Части",
 			"MAIN": "Основное",
@@ -47,7 +38,7 @@ const cargo = {
 			"TYPE": "Тип",
 			"OFFSET": "Смещение",
 		},
-		6042577539: {
+		DE: {
 			"MASS": "Masse",
 			"PART": "Teilе",
 			"MAIN": "Grundlegende",

@@ -2,9 +2,12 @@
 <html>
     <head>
         <title>SnowRunner XML Editor {--VERSION--}</title>
-        <link rel="stylesheet" href="../styles/style.css">
+        <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
         <meta http-equiv="Content-Security-Policy" content="script-src 'self'">
+        <link rel="stylesheet" href="../styles/style.css">
         <link rel="stylesheet" href="../styles/main.css">
+        <script defer src="../scripts/modules/main.js" type="module"></script>
+        <script defer src="../scripts/service/translate.js" type="module"></script>
     </head>
     <body>
         <header>
@@ -13,19 +16,16 @@
         <div id="main">
             <div class="category" id="trucks">
                 <img src="../category_images/trucks_category.png">
-                <span class="category-name">Автомобили</span>
+                <span class="category-name" to-translate>[TRUCKS_CATEGORY_TITLE]</span>
             </div>
             <div class="category" id="trailers">
                 <img src="../category_images/trailers_category.png">
-                <span class="category-name">Прицепы</span>
+                <span class="category-name" to-translate>[TRAILERS_CATEGORY_TITLE]</span>
             </div>
             <div class="category" id="cargo">
                 <img src="../category_images/cargo_category.png">
-                <span class="category-name">Грузы</span>
+                <span class="category-name" to-translate>[CARGO_CATEGORY_TITLE]</span>
             </div>
         </div>
-
-        <script src="../scripts/modules/main.js" type="module"></script>
-        <script src="../scripts/service/translate.js" type="module"></script>
     </body>
 </html>

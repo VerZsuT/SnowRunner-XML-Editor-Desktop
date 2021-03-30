@@ -21,18 +21,9 @@ const suspension = {
 			Selector({id: 'GAME_DATA', value: '{SUSPENSION_SET_ITEM}.GameData'})
 		])
 	],
-	systemData: {
-		name: 'Suspension',
-		author: 'VerZsuT',
-		description: '[media]/classes/suspensions/...',
-		id: 5650269143,
-		defaultState: 'enabled',
-		type: 'system',
-		selector: 'SuspensionSetVariants',
-		version: '1.2'
-	},
+	selector: 'SuspensionSetVariants',
 	translation: {
-		3478485900: {
+		EN: {
 			"CRITICAL_DAMAGE_THRESHOLD": "Critical damage threshold",
 			"DAMAGE_CAPACITY": "Damage capacity",
 			"UNLOCK_GROUP_NAME": "Unlock",
@@ -42,7 +33,7 @@ const suspension = {
 			"BY_RANK": "By rank",
 			"BY_RANK_LEVEL": "Unlock level",
 		},
-		7081350102: {
+		RU: {
 			"CRITICAL_DAMAGE_THRESHOLD": "Порог критического повреждения",
 			"DAMAGE_CAPACITY": "Прочность",
 			"UNLOCK_GROUP_NAME": "Разблокировка",
@@ -52,7 +43,7 @@ const suspension = {
 			"BY_RANK": "По достижению уровня",
 			"BY_RANK_LEVEL": "Уровень разблокировки",
 		},
-		6042577539: {
+		DE: {
 			"CRITICAL_DAMAGE_THRESHOLD": "Kritische Schadensschwelle",
 			"DAMAGE_CAPACITY": "Schadenskapazität",
 			"UNLOCK_GROUP_NAME": "Freischalten",

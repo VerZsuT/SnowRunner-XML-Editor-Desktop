@@ -1,6 +1,6 @@
 import { get, getText, create, prettify } from '../service/funcs.js'
-import renderer from '../service/RendererProcess.js'
-import templates from '../templates/getTemplates.js'
+import renderer from '../service/renderer.js'
+import templates from '../service/templates.js'
 
 const $paramsTable = get('#parameters')
 const $saveParamsButton = get('#save-params')
@@ -59,25 +59,27 @@ function loadFile(file) {
 }
 
 function initParams() {
-    let template;
+    let template
+    let name
 
-    for (let tmp of templates) {
-        let selector = `root > ${tmp.systemData.selector}`
+    for (let tmp in templates) {
+        let selector = `root > ${templates[tmp].selector}`
         if (fileDOM.querySelector(selector)) {
-            template = tmp
+            template = templates[tmp]
+            name = tmp
             break
         }
     }
 
-    const params = parseTemplate(template.main, template.systemData.id)
+    const params = parseTemplate(template.main, name)
     createItems(params)
 }
 
-function parseTemplate(obj, id) {
+function parseTemplate(obj, name) {
     const selectors = obj[1].toObject()
     const template = obj[0]
     
-    return template.getParams({selectors: selectors, fileDOM: fileDOM, templateId: id})
+    return template.getParams({selectors: selectors, fileDOM: fileDOM, templateName: name})
 }
 
 function parseCoords(string) {
@@ -236,9 +238,7 @@ function createItems(params, $parentGroupCont=null, tabs=1) {
                             let value = $input.value
                             const min = $input.min
                             const max = $input.max
-                            $input.step = '0.1'
                             
-
                             if (min !== '' && value < +min) {
                                 $input.value = value = min
                             }
@@ -247,9 +247,11 @@ function createItems(params, $parentGroupCont=null, tabs=1) {
                             }
 
                             if (param.numberType === 'int') {
+                                $input.step = '1'
                                 $input.value = parseInt(value)
                             }
                             else if (param.numberType === 'float') {
+                                $input.step = '0.1'
                                 $input.value = parseFloat(value)
                             }
                         })
@@ -335,7 +337,7 @@ function toCoordsString($div) {
 function generateAndSaveFile() {
     const serializer = new XMLSerializer()
     const $$params = $paramsTable.querySelectorAll('.param')
-    const copyrightText = `<!--\n\tEdited by: SnowRunner XML Editor Desktop\n\tVersion: v${config.programVersion}\n\tAuthor: VerZsuT\n\tSite: https://verzsut.github.io/SnowRunner-XML-Editor-Desktop/\n-->\n`
+    const copyrightText = `<!--\n\tEdited by: SnowRunner XML Editor Desktop\n\tVersion: v${config.version}\n\tAuthor: VerZsuT\n\tSite: https://verzsut.github.io/SnowRunner-XML-Editor-Desktop/\n-->\n`
 
     for (const $param of $$params) {
         const selector = $param.getAttribute('selector')

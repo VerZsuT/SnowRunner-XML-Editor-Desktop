@@ -1,13 +1,22 @@
 const { ipcRenderer, shell } = require('electron')
 const { readFile, readFileSync, existsSync, readdirSync, lstatSync, writeFile } = require('fs')
 const { join } = require('path')
-const preload = require('./scripts/service/PreloadProcess.js')
+const preload = require('./scripts/service/preload.js')
 
 let config = getConfig()
 
-localStorage.setItem('language', config.selectedLanguage)
+localStorage.setItem('language', config.language)
 
 process.once('loaded', () => {
+    preload.setLanguage = (_event, language) => {
+        config.language = language
+
+        ipcRenderer.once('save-config-reply', () => {
+            ipcRenderer.send('reload')
+        })
+        ipcRenderer.send('save-config', config)
+    }
+
     preload.getFileData = (event, filePath, reserveFilePath=null) => {
         readFile(filePath, (error, data) => {
             if (error) {
@@ -15,7 +24,7 @@ process.once('loaded', () => {
                     readFile(reserveFilePath, (error2, data2) => {
                         if (error2) {
                             
-                            event.reject(`Не удалось считать файл по пути '${reserveFilePath}' либо он пуст.`)
+                            event.reject('[READ_FILE_ERROR]')
                             return
                         }
                         else {
@@ -24,7 +33,7 @@ process.once('loaded', () => {
                     })
                 }
                 else {
-                    event.reject(`Не удалось считать файл по пути '${filePath}' либо он пуст.`)
+                    event.reject('[READ_FILE_ERROR]')
                 }
             }
             else {
@@ -49,7 +58,7 @@ process.once('loaded', () => {
                     array.push({name: dlc.name, items: fromDir(join(path, 'trucks', 'cargo')) || []})
                 }
                 else {
-                    event.reject(`Неправильный тип листа. Тип '${listType}' не является одним из ['trucks', 'trailers', 'cargo'].`)
+                    event.reject('[UNDEFINED_LIST_TYPE]')
                 }
 
             }
@@ -66,7 +75,7 @@ process.once('loaded', () => {
                 event.resolve(fromDir(join(config.pathToClasses, 'trucks', 'cargo')))
             }
             else {
-                event.reject(`Неправильный тип листа. Тип '${listType}' не является одним из ['trucks', 'trailers', 'cargo'].`)
+                event.reject('[UNDEFINED_LIST_TYPE]')
             }
         }
     }
@@ -74,7 +83,7 @@ process.once('loaded', () => {
     preload.setFileData = (event, path, data) => {
         writeFile(path, data, error => {
             if (error) {
-                event.reject(`Не удалось записать в файл '${path}'.`)
+                event.reject('[WRITE_FILE_ERROR]')
                 return
             }
 
@@ -88,11 +97,8 @@ process.once('loaded', () => {
                 case 'success':
                     event.resolve()
                 break
-                case 'error':
-                    event.reject(`Не удалось сохранить бэкап.\nВнутренняя ошибка: ${data.error}.`)
-                break
                 default:
-                    event.reject('Неизвестная ошибка при сохранении бэкапа.')
+                    event.reject('[BACKUP_ERROR]')
                 break
             }
         })
@@ -105,11 +111,8 @@ process.once('loaded', () => {
                 case 'success':
                     event.resolve()
                 break
-                case 'error':
-                    event.reject(`Не удалось открыть окно '${windowType}'.`)
-                break
                 default:
-                    event.reject('Неизвестная ошибка при открытии окна.')
+                    event.reject('[OPEN_WINDOW_ERROR]')
                 break
             }
         })
@@ -143,11 +146,8 @@ process.once('loaded', () => {
                     case 'success':
                         event.resolve()
                     break
-                    case 'error':
-                        event.reject(`Не удалось сохранить конфиг.\nВнутренняя ошибка: ${data.error}.`)
-                    break
                     default:
-                        event.reject('Неизвестная ошибка при сохранении конфига.')
+                        event.reject('[SAVE_CONFIG_ERROR]')
                     break
                 }
             })
@@ -159,14 +159,14 @@ process.once('loaded', () => {
         get(event) {
             ipcRenderer.once('open-dialog-reply', (_event, result) => {
                 if (!result) {
-                    event.reject('Вы не выбрали папку!')
+                    event.reject('[EMPTY_FOLDER_ERROR]')
                     return
                 }
                 const folder = result[0]
         
                 let initialPath = join(folder, 'en_us', 'preload', 'paks', 'client', 'initial.pak')
                 if (!existsSync(initialPath)) {
-                    event.reject('Вы выбрали неправильную папку!')
+                    event.reject('[INVALID_FOLDER_ERROR]')
                     return
                 }
                 
@@ -183,14 +183,14 @@ process.once('loaded', () => {
         get(event) {
             ipcRenderer.once('open-dialog-reply', (_event, result) => {
                 if (!result) {
-                    event.reject('Вы не выбрали папку!')
+                    event.reject('[EMPTY_FOLDER_ERROR]')
                     return
                 }
                 const folder = result[0]
         
                 let trucksPath = join(folder, 'classes')
                 if (!existsSync(trucksPath)) {
-                    event.reject('Вы выбрали неправильную папку!')
+                    event.reject('[INVALID_FOLDER_ERROR]')
                     return
                 }
                 

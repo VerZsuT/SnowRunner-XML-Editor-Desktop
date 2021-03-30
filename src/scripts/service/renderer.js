@@ -1,3 +1,5 @@
+import { getText } from './funcs.js'
+
 /**
  * Позволяет общаться между Renderer и Preload процессами.
  * Предоставляет методы для Renderer процесса.
@@ -21,13 +23,13 @@ class RendererProcess {
     }
 
    /**
-    * Вызывает функцию с переданными параметрами и возвращает результат.
+    * Вызывает функцию с переданными параметрами.
     * @param {string} funcName - имя функции.
     * @param {any} args - агрументы. Может быть как одиночным, так и массивом (автоматически распакуется при передаче в функцию).
     * @param {Function} onSuccess - вызывается при удачном завершении операции.
-    * @param {Function} onError - вызывается при возникновении ошибки (default=alert). Функции передаётся ошибка.
+    * @param {Function} onError - вызывается при возникновении ошибки. Функции передаётся ошибка. По умолчанию: alert.
     */
-    call(funcName, args=null, onSuccess=(()=>{}), onError=alert) {
+    call(funcName, args=null, onSuccess=(()=>{}), onError=(error => alert(getText(error)))) {
         new Promise((resolve, reject) => {
            this.#listenResAndRej(`func_${funcName}_call`, resolve, reject)
            this.#send(`func_${funcName}_call`, args)
@@ -35,12 +37,12 @@ class RendererProcess {
     }
 
    /**
-    * Получает значение свойства и возвращает его.
+    * Получает значение свойства.
     * @param {string} propertyName - название свойства.
     * @param {Function} onSuccess - вызывается при удачном завершении операции.
-    * @param {Function} onError - вызывается при возникновении ошибки (default=alert). Функции передаётся ошибка.
+    * @param {Function} onError - вызывается при возникновении ошибки. Функции передаётся ошибка. По умолчанию: alert.
     */
-    get(propertyName, onSuccess=(()=>{}), onError=alert) {
+    get(propertyName, onSuccess=(()=>{}), onError=(error => alert(getText(error)))) {
         new Promise((resolve, reject) => {
             this.#listenResAndRej(`prop_${propertyName}_get`, resolve, reject)
             this.#send(`prop_${propertyName}_get`)
@@ -48,13 +50,13 @@ class RendererProcess {
     }
 
    /**
-    * Устанавливает значение свойства на данное.
+    * Устанавливает значение свойства.
     * @param {string} propertyName - название свойства.
     * @param {any} data - новое значение.
     * @param {Function} onSuccess - вызывается при удачном завершении операции.
-    * @param {Function} onError - вызывается при возникновении ошибки (default=alert). Функции передаётся ошибка.
+    * @param {Function} onError - вызывается при возникновении ошибки. Функции передаётся ошибка. По умолчанию: alert.
     */
-    set(propertyName, data, onSuccess=(()=>{}), onError=alert) {
+    set(propertyName, data, onSuccess=(()=>{}), onError=(error => alert(getText(error)))) {
         new Promise((resolve, reject) => {
             this.#listenResAndRej(`prop_${propertyName}_set`, resolve, reject)
             this.#send(`prop_${propertyName}_set`, data)

@@ -83,7 +83,7 @@ class PreloadProcess {
      */
     #getRejecter(name) {
         return (message) => {
-            this.#send(`${name}_reject`, new Error(message))
+            this.#send(`${name}_reject`, message)
         }
     }
 

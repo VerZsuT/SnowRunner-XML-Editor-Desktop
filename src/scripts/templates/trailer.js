@@ -26,18 +26,9 @@ const trailer = {
 			Selector({id: 'GAME_DATA', value: 'Truck.GameData'})
 		])
 	],
-	systemData: {
-		name: 'Trailer',
-		author: 'VerZsuT',
-		description: '[media]/classes/trucks/trailers/...',
-		id: 703088956,
-		defaultState: 'enabled',
-		type: 'system',
-		selector: 'Truck[Type="Trailer"]',
-		version: '1.2'
-	},
+	selector: 'Truck[Type="Trailer"]',
 	translation: {
-		3478485900: {
+		EN: {
 			"INNER": "Useful content",
 			"MASS": "Mass",
 			"OTHER": "Other",
@@ -51,7 +42,7 @@ const trailer = {
 			"TRAILER_MASS": "Trailer mass",
 			"FUEL_MASS": "Fuel mass",
 		},
-		7081350102: {
+		RU: {
 			"INNER": "Полезное содержимое",
 			"MASS": "Масса",
 			"OTHER": "Прочее",
@@ -65,7 +56,7 @@ const trailer = {
 			"TRAILER_MASS": "Масса прицепа",
 			"FUEL_MASS": "Масса топлива",
 		},
-		6042577539: {
+		DE: {
 			"INNER": "Nützliche Inhalte",
 			"MASS": "Masse",
 			"OTHER": "Ander",

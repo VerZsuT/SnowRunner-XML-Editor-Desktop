@@ -25,18 +25,9 @@ const whinch = {
 			Selector({id: 'GAME_DATA', value: '{WINCH_ITEM}.GameData'})
 		])
 	],
-	systemData: {
-		name: 'Winch',
-		author: 'VerZsuT',
-		description: '[media]/classes/winches/...',
-		id: 3347326080,
-		defaultState: 'enabled',
-		type: 'system',
-		selector: 'WinchVariants',
-		version: '1.2'
-	},
+	selector: 'WinchVariants',
 	translation: {
-		3478485900: {
+		EN: {
 			"LENGTH": "Length",
 			"STRENGTH": "Strength",
 			"IS_ENGINE_IGNITION_REQUIRED": "Works from",
@@ -49,7 +40,7 @@ const whinch = {
 			"BY_RANK": "By rank",
 			"BY_RANK_LEVEL": "Unlock level",
 		},
-		7081350102: {
+		RU: {
 			"LENGTH": "Длина",
 			"STRENGTH": "Сила",
 			"IS_ENGINE_IGNITION_REQUIRED": "Работает от",
@@ -62,7 +53,7 @@ const whinch = {
 			"BY_RANK": "По достижению уровня",
 			"BY_RANK_LEVEL": "Уровень разблокировки",
 		},
-		6042577539: {
+		DE: {
 			"LENGTH": "Länge",
 			"STRENGTH": "Stärke",
 			"IS_ENGINE_IGNITION_REQUIRED": "Arbeitet von",

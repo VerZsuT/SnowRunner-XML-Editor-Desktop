@@ -1,4 +1,4 @@
-const { ipcMain, app, BrowserWindow, Menu, shell, Notification, dialog } = require('electron')
+const { ipcMain, app, shell, dialog, BrowserWindow, Menu, Notification } = require('electron')
 const { readFileSync, readdirSync, lstatSync, writeFile, copyFile, unlink, existsSync } = require('fs')
 const { join } = require('path')
 
@@ -23,6 +23,10 @@ let pathToReturn = null
 let config = null
 let menu = null
 
+ipcMain.on('reload', () => {
+    app.relaunch()
+    app.quit()
+})
 ipcMain.on('get-file-path', event => {
     event.reply('get-file-path-reply', pathToReturn)
 })
@@ -108,10 +112,10 @@ function saveBackup(event=null) {
         unlink(locations.backupInitial, error => {
             if (error) {
                 if (event) {
-                    event.reply('save-backup-reply', {status: 'error', error: 'Не удалось удалить старый бэкап.'})
+                    event.reply('save-backup-reply', {status: 'error'})
                 }
                 else {
-                    showNotification('Ошибка', `Не удалось удалить старый бэкап initial.\nТекст ошибки:\n${error}`)
+                    showNotification('Error', `Failed to delete the old initial backup.`)
                 }
                 return
             }
@@ -127,15 +131,15 @@ function copyBackup(event=null) {
     copyFile(config.pathToInitial, locations.backupInitial, error => {
         if (error) {
             if (event) {
-                event.reply('save-backup-reply', {status: 'error', error: 'Не удалось скопировать файл intial в папку.'})
+                event.reply('save-backup-reply', {status: 'error'})
             }
             else {
-                showNotification('Ошибка', `Не удалось скопировать бэкап initial.\nТекст ошибки:\n${error}`)
+                showNotification('Error', `Failed to delete the old initial backup.`)
             }
             return
         }
         if (event) event.reply('save-backup-reply', {status: 'success'})
-        else showNotification('Уведомление', `Бэкап initial успешно сохранён.`)
+        else showNotification('Success', `The initial backup was saved successfully.`)
     })
 }
 
@@ -144,7 +148,7 @@ function saveConfig(event, data) {
     writeFile(locations.config, JSON.stringify(data), error => {
         if (event) {
             if (error) {
-                event.reply('save-config-reply', {status: 'error', error: 'Не удалось записать конфиг в файл.'})
+                event.reply('save-config-reply', {status: 'error'})
                 return
             }
             event.reply('save-config-reply', {status: 'success'})
@@ -190,7 +194,7 @@ function createWindow(fileName, args={}) {
     pathToReturn = args.path
     wind.loadFile(join(locations.HTMLFolder, fileName)).then(() => {
         if (enableDevTools) wind.webContents.toggleDevTools()
-        wind.webContents.executeJavaScript(`let title = document.querySelector('title');title.innerText = title.innerText.replace('{--VERSION--}', 'v${config.programVersion}');`)
+        wind.webContents.executeJavaScript(`let title = document.querySelector('title');title.innerText = title.innerText.replace('{--VERSION--}', 'v${config.version}');`)
         wind.show()
     })
     return wind
@@ -202,12 +206,12 @@ function restoreInitial() {
     }
     if (existsSync(config.pathToInitial)) {
         unlink(config.pathToInitial, error => {
-            if (error) showNotification('Ошибка', `Не удалось удалить текущий бэкап initial.\nТекст ошибки:\n${error}`)
+            if (error) showNotification('Error', `Failed to delete the current initial backup.`)
         })
     }
     copyFile(locations.backupInitial, config.pathToInitial, error => {
-        if (error) showNotification('Ошибка', `Не удалось скопировать бэкап initial.\nТекст ошибки:\n${error}`)
-        else showNotification('Уведомление', `initial успешно восстановлен.`)
+        if (error) showNotification('Error', `Failed to delete the current initial backup.`)
+        else showNotification('Success', `initial.pak was successfully restored.`)
     })
 }
 
@@ -219,13 +223,18 @@ function resetConfig() {
     if (existsSync(locations.backupInitial)) {
         unlink(locations.backupInitial, error => {
             if (error) {
-                showNotification('Ошибка', `Не удалось удалить старый бэкап initial.\nТекст ошибки:\n${error}`)
+                showNotification('Error', `Failed to delete the old initial backup.`)
                 return
             }
             saveConfig(null, config)
             app.relaunch()
             app.quit()
         })
+    }
+    else {
+        saveConfig(null, config)
+        app.relaunch()
+        app.quit()
     }
 }
 
@@ -237,10 +246,10 @@ function getConfig() {
 function getMenu() {
     return Menu.buildFromTemplate([
         {
-            label: 'Файл',
+            label: 'File',
             submenu: [
                 {
-                    label: 'Открыть',
+                    label: 'Open',
                     submenu: [
                         {
                             label: 'initial.pak',
@@ -252,7 +261,7 @@ function getMenu() {
                             label: 'classes',
                             submenu: [
                                 {
-                                    label: 'Просмотр',
+                                    label: '<--',
                                     click() {
                                         shell.openPath(config.pathToClasses)
                                     }
@@ -262,7 +271,7 @@ function getMenu() {
                                     label: 'trucks',
                                     submenu: [
                                         {
-                                            label: 'Просмотр',
+                                            label: '<--',
                                             click() {
                                                 shell.openPath(join(config.pathToClasses, 'trucks'))
                                             }
@@ -273,7 +282,7 @@ function getMenu() {
                                             enabled: false,
                                             submenu: [
                                                 {
-                                                    label: 'Просмотр',
+                                                    label: '<--',
                                                     click() {
                                                         shell.openPath(join(config.pathToClasses, 'trucks', 'addons'))
                                                     }
@@ -286,7 +295,7 @@ function getMenu() {
                                             label: 'cargo',
                                             submenu: [
                                                 {
-                                                    label: 'Просмотр',
+                                                    label: '<--',
                                                     click() {
                                                         shell.openPath(join(config.pathToClasses, 'trucks', 'cargo'))
                                                     }
@@ -299,7 +308,7 @@ function getMenu() {
                                             label: 'trailers',
                                             submenu: [
                                                 {
-                                                    label: 'Просмотр',
+                                                    label: '<--',
                                                     click() {
                                                         shell.openPath(join(config.pathToClasses, 'trucks', 'trailers'))
                                                     }
@@ -317,7 +326,7 @@ function getMenu() {
                                     label: 'wheels',
                                     submenu: [
                                         {
-                                            label: 'Просмотр',
+                                            label: '<--',
                                             click() {
                                                 shell.openPath(join(config.pathToClasses, 'wheels'))
                                             }
@@ -330,7 +339,7 @@ function getMenu() {
                                     label: 'winches',
                                     submenu: [
                                         {
-                                            label: 'Просмотр',
+                                            label: '<--',
                                             click() {
                                                 shell.openPath(join(config.pathToClasses, 'winches'))
                                             }
@@ -343,7 +352,7 @@ function getMenu() {
                                     label: 'gearboxes',
                                     submenu: [
                                         {
-                                            label: 'Просмотр',
+                                            label: '<--',
                                             click() {
                                                 shell.openPath(join(config.pathToClasses, 'gearboxes'))
                                             }
@@ -356,7 +365,7 @@ function getMenu() {
                                     label: 'engines',
                                     submenu: [
                                         {
-                                            label: 'Просмотр',
+                                            label: '<--',
                                             click() {
                                                 shell.openPath(join(config.pathToClasses, 'engines'))
                                             }
@@ -369,7 +378,7 @@ function getMenu() {
                                     label: 'suspensions',
                                     submenu: [
                                         {
-                                            label: 'Просмотр',
+                                            label: '<--',
                                             click() {
                                                 shell.openPath(join(config.pathToClasses, 'suspensions'))
                                             }
@@ -383,10 +392,10 @@ function getMenu() {
                     ]
                 },
                 {
-                    label: 'Настройки',
+                    label: 'Settings',
                     submenu: [
                         {
-                            label: 'Сбросить',
+                            label: 'Reset',
                             click() {
                                 resetConfig()
                             }
@@ -394,7 +403,7 @@ function getMenu() {
                     ]
                 },
                 {
-                    label: 'Выход',
+                    label: 'Exit',
                     click() {
                         app.quit()
                     }
@@ -402,22 +411,22 @@ function getMenu() {
             ]
         },
         {
-            label: 'Бэкап',
+            label: 'Backup',
             submenu: [
                 {
-                    label: 'Открыть папку',
+                    label: 'Open folder',
                     click() {
                         shell.openPath(locations.backupFolder)
                     }
                 },
                 {
-                    label: 'Сохранить',
+                    label: 'Save',
                     click() {
                         saveBackup()
                     }
                 },
                 {
-                    label: 'Восстановить',
+                    label: 'Restore',
                     click() {
                         restoreInitial()
                     }
