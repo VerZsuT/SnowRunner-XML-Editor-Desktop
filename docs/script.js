@@ -1,3 +1,7 @@
+if (navigator && navigator.platform !== 'Win32') {
+    alert('Ваша платформа не поддерживается, только windows.')
+}
+
 for (const $downloadButton of document.querySelectorAll('.download')) {
     const version = $downloadButton.getAttribute('version')
     let arch = 'x86'
