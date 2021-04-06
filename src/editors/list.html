@@ -10,14 +10,19 @@
         <script defer src="../scripts/service/translate.js" type="module"></script>
     </head>
     <body>
-        <header>
-            <h1 class="red-text" to-translate>[LIST_TITLE]</h1>
-        </header>
-
-        <span class="list-title" to-translate>[DLC_LIST_TITLE]</span>
-        <div id="dlc-list"></div>
-
-        <span class="list-title" to-translate>[MAIN_LIST_TITLE]</span>
-        <div id="list"></div>
+        <div id="loading">
+            <h1>...</h1>
+        </div>
+        <div id="main">
+            <header>
+                <h1 class="red-text" to-translate>[LIST_TITLE]</h1>
+            </header>
+    
+            <span class="list-title" to-translate>[DLC_LIST_TITLE]</span>
+            <div id="dlc-list"></div>
+    
+            <span class="list-title" to-translate>[MAIN_LIST_TITLE]</span>
+            <div id="list"></div>
+        </div>
     </body>
 </html>

@@ -2,7 +2,8 @@ import { Template, Group, Input, Select, Opt, Selectors, Selector } from '../ser
 const whinch = {
 	main: [
 		Template({type: 'Multiply', itemSelector: '[WINCH]'}, [
-			Group({nameType: 'Computed', nameSelector: '[WINCH_ITEM]', nameAttribute: 'Name', defaultSelector: '[WINCH_ITEM]'}, [
+			Group({nameType: 'Computed', nameSelector: '[WINCH_ITEM_TEXT]', resNameSelector: '[WINCH_ITEM]', nameAttribute: 'UiName', resNameAttribute: 'Name', defaultSelector: '[WINCH_ITEM]'}, [
+				Input({attribute: 'Name', text: '[ID]', type: 'text', onlyDeveloper: 'true'}),
 				Input({attribute: 'Length', text: '[LENGTH]', min: '0.0', max: '100.0'}),
 				Input({attribute: 'StrengthMult', text: '[STRENGTH]', min: '0.0', max: '10.0'}),
 				Select({attribute: 'IsEngineIgnitionRequired', text: '[IS_ENGINE_IGNITION_REQUIRED]'}, [
@@ -22,12 +23,14 @@ const whinch = {
 		Selectors([
 			Selector({id: 'WINCH', value: 'WinchVariants.Winch'}),
 			Selector({id: 'WINCH_ITEM', value: '{WINCH}#every'}),
+			Selector({id: 'WINCH_ITEM_TEXT', value: '{WINCH_ITEM}.GameData.UiDesc'}),
 			Selector({id: 'GAME_DATA', value: '{WINCH_ITEM}.GameData'})
 		])
 	],
 	selector: 'WinchVariants',
 	translation: {
 		EN: {
+			"ID": "ID",
 			"LENGTH": "Length",
 			"STRENGTH": "Strength",
 			"IS_ENGINE_IGNITION_REQUIRED": "Works from",
@@ -41,6 +44,7 @@ const whinch = {
 			"BY_RANK_LEVEL": "Unlock level",
 		},
 		RU: {
+			"ID": "ID",
 			"LENGTH": "Длина",
 			"STRENGTH": "Сила",
 			"IS_ENGINE_IGNITION_REQUIRED": "Работает от",
@@ -54,6 +58,7 @@ const whinch = {
 			"BY_RANK_LEVEL": "Уровень разблокировки",
 		},
 		DE: {
+			"ID": "ID",
 			"LENGTH": "Länge",
 			"STRENGTH": "Stärke",
 			"IS_ENGINE_IGNITION_REQUIRED": "Arbeitet von",

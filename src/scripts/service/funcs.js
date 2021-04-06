@@ -1,7 +1,6 @@
-import translations from './translations.js'
 import templates from './templates.js'
 
-const language = localStorage.getItem('language')
+const language = config.language
 
 /**
  * Делает первую букву слова заглавной, а также заменяет _ на пробелы.
@@ -48,6 +47,11 @@ export function create(tag, attrs={}) {
                 continue
             case 'checked':
                 element.checked = attrValue
+                continue
+            case 'disabled':
+                if (attrValue) {
+                    element.disabled = 'disabled'
+                }
                 continue
             case 'listeners':
                 for (const eventName in attrValue) {
@@ -120,8 +124,14 @@ export function getTextFromTemplate(key, name) {
     }
     else {
         return getText(key)
+    }   
+}
+
+export function getIngameText(key) {
+    let value = translations.ingame[key]
+    if (value) {
+        return value
     }
-    
 }
 
 /**

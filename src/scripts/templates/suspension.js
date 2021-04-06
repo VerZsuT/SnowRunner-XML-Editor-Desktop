@@ -2,7 +2,8 @@ import { Template, Group, Input, Select, Opt, Selectors, Selector } from '../ser
 const suspension = {
 	main: [
 		Template({type: 'Multiply', itemSelector: '[SUSPENSION_SET]'}, [
-			Group({nameType: 'Computed', nameSelector: '[SUSPENSION_SET_ITEM]', nameAttribute: 'Name', defaultSelector: '[SUSPENSION_SET_ITEM]'}, [
+			Group({nameType: 'Computed', nameSelector: '[SUSPENSION_SET_ITEM_TEXT]', resNameSelector: '[SUSPENSION_SET_ITEM]', nameAttribute: 'UiName', resNameAttribute: 'Name', defaultSelector: '[SUSPENSION_SET_ITEM]'}, [
+				Input({attribute: 'Name', text: '[ID]', type: 'text', onlyDeveloper: 'true'}),
 				Input({attribute: 'CriticalDamageThreshold', text: '[CRITICAL_DAMAGE_THRESHOLD]', numberType: 'float', max: '0.999'}),
 				Input({attribute: 'DamageCapacity', text: '[DAMAGE_CAPACITY]', max: '64000'}),
 				Group({name: '[UNLOCK_GROUP_NAME]', defaultSelector: '[GAME_DATA]'}, [
@@ -18,12 +19,14 @@ const suspension = {
 		Selectors([
 			Selector({id: 'SUSPENSION_SET', value: 'SuspensionSetVariants.SuspensionSet'}),
 			Selector({id: 'SUSPENSION_SET_ITEM', value: '{SUSPENSION_SET}#every'}),
+			Selector({id: 'SUSPENSION_SET_ITEM_TEXT', value: '{SUSPENSION_SET_ITEM}.GameData.UiDesc'}),
 			Selector({id: 'GAME_DATA', value: '{SUSPENSION_SET_ITEM}.GameData'})
 		])
 	],
 	selector: 'SuspensionSetVariants',
 	translation: {
 		EN: {
+			"ID": "ID",
 			"CRITICAL_DAMAGE_THRESHOLD": "Critical damage threshold",
 			"DAMAGE_CAPACITY": "Damage capacity",
 			"UNLOCK_GROUP_NAME": "Unlock",
@@ -34,6 +37,7 @@ const suspension = {
 			"BY_RANK_LEVEL": "Unlock level",
 		},
 		RU: {
+			"ID": "ID",
 			"CRITICAL_DAMAGE_THRESHOLD": "Порог критического повреждения",
 			"DAMAGE_CAPACITY": "Прочность",
 			"UNLOCK_GROUP_NAME": "Разблокировка",
@@ -44,6 +48,7 @@ const suspension = {
 			"BY_RANK_LEVEL": "Уровень разблокировки",
 		},
 		DE: {
+			"ID": "ID",
 			"CRITICAL_DAMAGE_THRESHOLD": "Kritische Schadensschwelle",
 			"DAMAGE_CAPACITY": "Schadenskapazität",
 			"UNLOCK_GROUP_NAME": "Freischalten",

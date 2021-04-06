@@ -2,7 +2,8 @@ import { Template, Group, Input, Select, Opt, Selectors, Selector } from '../ser
 const wheels = {
 	main: [
 		Template({type: 'Multiply', itemSelector: '[TRUCK_TIRE]'}, [
-			Group({nameType: 'Computed', nameSelector: '[TRUCK_TIRE_ITEM]', nameAttribute: 'Name', defaultSelector: '[WHEEL_FRICTION]'}, [
+			Group({nameType: 'Computed', nameSelector: '[TRUCK_TIRE_ITEM_TEXT]', resNameSelector: '[TRUCK_TIRE_ITEM]', nameAttribute: 'UiName', resNameAttribute: 'Name', defaultSelector: '[WHEEL_FRICTION]'}, [
+				Input({attribute: 'Name', text: '[ID]', type: 'text', onlyDeveloper: 'true', selector: 'TRUCK_TIRE_ITEM'}),
 				Input({attribute: 'BodyFriction', text: '[BODY_FRICTION]', numberType: 'float', max: '10'}),
 				Input({attribute: 'BodyFrictionAsphalt', text: '[BODY_FRICTION_ASPHALT]', numberType: 'float', max: '10'}),
 				Input({attribute: 'SubstanceFriction', text: '[SUBSTANCE_FRICTION]', numberType: 'float', max: '10'}),
@@ -24,6 +25,7 @@ const wheels = {
 			Selector({id: 'TRUCK_WHEELS', value: 'TruckWheels'}),
 			Selector({id: 'TRUCK_TIRE', value: 'TruckWheels.TruckTires.TruckTire'}),
 			Selector({id: 'TRUCK_TIRE_ITEM', value: '{TRUCK_TIRE}#every'}),
+			Selector({id: 'TRUCK_TIRE_ITEM_TEXT', value: '{TRUCK_TIRE_ITEM}.GameData.UiDesc'}),
 			Selector({id: 'WHEEL_FRICTION', value: '{TRUCK_TIRE_ITEM}.WheelFriction'}),
 			Selector({id: 'GAME_DATA', value: '{TRUCK_TIRE_ITEM}.GameData'})
 		])
@@ -31,6 +33,7 @@ const wheels = {
 	selector: 'TruckWheels',
 	translation: {
 		EN: {
+			"ID": "ID",
 			"GENERAL_SETTINGS": "General",
 			"DAMAGE_CAPACITY": "Damage capacity",
 			"BODY_FRICTION": "Body friction",
@@ -47,6 +50,7 @@ const wheels = {
 			"BY_RANK_LEVEL": "Unlock level",
 		},
 		RU: {
+			"ID": "ID",
 			"GENERAL_SETTINGS": "Общие настройки",
 			"DAMAGE_CAPACITY": "Прочность",
 			"BODY_FRICTION": "Сцепление на бездорожье",
@@ -63,6 +67,7 @@ const wheels = {
 			"BY_RANK_LEVEL": "Уровень разблокировки",
 		},
 		DE: {
+			"ID": "ID",
 			"GENERAL_SETTINGS": "Allgemeines",
 			"DAMAGE_CAPACITY": "Schadenskapazität",
 			"BODY_FRICTION": "Körperreibung",

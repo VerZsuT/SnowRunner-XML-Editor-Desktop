@@ -21,14 +21,7 @@ const truck = {
 			Group({name: '[WHEELS_GROUP_NAME]', defaultSelector: '[WHEELS]'}, [
 				Input({attribute: 'DefaultRim', text: '[DEFAULT_RIM]', type: 'text', onlyDeveloper: 'true'}),
 				Input({attribute: 'DefaultTire', text: '[DEFAULT_TIRE]', type: 'text', onlyDeveloper: 'true'}),
-				Input({attribute: 'DefaultWheelType', text: '[TIRES_FILE]', type: 'file', fileType: 'wheels'}),
-				Group({name: '[COMPATIBLE_WHEELS]'}, [
-					Template({type: 'Multiply', itemSelector: '[COMPATIBLE_WHEELS]'}, [
-						Group({nameType: 'Computed', nameAttribute: 'Type', nameSelector: '[COMPATIBLE_WHEELS_ITEM]', defaultSelector: '[COMPATIBLE_WHEELS_ITEM]'}, [
-							Input({attribute: 'Scale', text: '[COMPATIBLE_WHEELS_SCALE]', numberType: 'float'})
-						])
-					])
-				])
+				Input({attribute: 'DefaultWheelType', text: '[TIRES_FILE]', type: 'file', fileType: 'wheels'})
 			]),
 			Group({name: '[SUSPENSION_GROUP_NAME]', defaultSelector: '[SUSPENSION]'}, [
 				Input({attribute: 'Default', text: '[DEFAULT_SUSPENSION]', type: 'text', onlyDeveloper: 'true'}),

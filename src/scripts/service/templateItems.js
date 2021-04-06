@@ -1,4 +1,4 @@
-import { removePars, getTextFromTemplate, getText } from './funcs.js'
+import { removePars, getTextFromTemplate, getText, getIngameText } from './funcs.js'
 
 /**
  * params: 
@@ -116,7 +116,9 @@ export function Group(params, children) {
         name: params.name,
         nameType: params.nameType || 'Static',
         nameSelector: params.nameSelector,
+        resNameSelector: params.resNameSelector,
         nameAttribute: params.nameAttribute,
+        resNameAttribute: params.resNameAttribute,
         defaultSelector: params.defaultSelector,
         single: params.single || false,
         withCounter: params.withCounter || false,
@@ -142,15 +144,20 @@ export function Group(params, children) {
             let groupName;
             if (this.nameType !== 'Static') {
                 const nameSelector = removePars(this.nameSelector)
-                const $nameElement = fileDOM.querySelector(selectors[nameSelector] || nameSelector)
+                const resNameSelector = removePars(this.resNameSelector)
 
-                if ($nameElement === null) {
+                const $nameElement = fileDOM.querySelector(selectors[nameSelector] || nameSelector)
+                const $resNameElement = fileDOM.querySelector(selectors[resNameSelector] || resNameSelector)
+
+                if ($nameElement === null && $resNameElement === null) {
                     return params
                 }
 
                 if (this.nameType === 'Computed') {
-                    const nameAttribute = this.nameAttribute
-                    groupName = $nameElement.getAttribute(nameAttribute)
+                    const nameAttribute = this.nameAttribute           
+                    const resNameAttribute = this.resNameAttribute
+                    
+                    groupName = getIngameText($nameElement.getAttribute(nameAttribute)) ||  $resNameElement.getAttribute(resNameAttribute)
                 } else if (this.nameType === 'TagName') {
                     groupName = $nameElement.nodeName
                 }

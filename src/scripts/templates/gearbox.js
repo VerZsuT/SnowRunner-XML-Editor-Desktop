@@ -2,7 +2,8 @@ import { Template, Group, Input, Select, Opt, Selectors, Selector } from '../ser
 const gearbox = {
 	main: [
 		Template({type: 'Multiply', itemSelector: '[GEARBOX]'}, [
-			Group({nameType: 'Computed', nameSelector: '[GEARBOX_ITEM]', nameAttribute: 'Name', defaultSelector: '[GEARBOX_ITEM]'}, [
+			Group({nameType: 'Computed', nameSelector: '[GEARBOX_ITEM_TEXT]', resNameSelector: '[GEARBOX_ITEM]', nameAttribute: 'UiName', resNameAttribute: 'Name', defaultSelector: '[GEARBOX_ITEM]'}, [
+				Input({attribute: 'Name', text: '[ID]', type: 'text', onlyDeveloper: 'true'}),
 				Input({attribute: 'AWDConsumptionModifier', text: '[AWD_CONSUMPTION_MODIFIER]', numberType: 'float', max: '32'}),
 				Input({attribute: 'CriticalDamageThreshold', text: '[CRITICAL_DAMAGE_THRESHOLD]', numberType: 'float', max: '0.999'}),
 				Input({attribute: 'DamageCapacity', text: '[DAMAGE_CAPACITY]', max: '64000'}),
@@ -54,6 +55,7 @@ const gearbox = {
 		Selectors([
 			Selector({id: 'GEARBOX', value: 'GearboxVariants.Gearbox'}),
 			Selector({id: 'GEARBOX_ITEM', value: '{GEARBOX}#every'}),
+			Selector({id: 'GEARBOX_ITEM_TEXT', value: '{GEARBOX_ITEM}.GameData.UiDesc'}),
 			Selector({id: 'GEAR', value: '{GEARBOX}#every.Gear'}),
 			Selector({id: 'REVERSE_GEAR', value: '{GEARBOX_ITEM}.ReverseGear'}),
 			Selector({id: 'HIGH_GEAR', value: '{GEARBOX_ITEM}.HighGear'}),
@@ -65,6 +67,7 @@ const gearbox = {
 	selector: 'GearboxVariants',
 	translation: {
 		EN: {
+			"ID": "ID",
 			"AWD_CONSUMPTION_MODIFIER": "AWD consumption modifier",
 			"CRITICAL_DAMAGE_THRESHOLD": "Critical damage threshold",
 			"DAMAGE_CAPACITY": "Damage capacity",
@@ -90,6 +93,7 @@ const gearbox = {
 			"BY_RANK_LEVEL": "Unlock level",
 		},
 		RU: {
+			"ID": "ID",
 			"AWD_CONSUMPTION_MODIFIER": "Модификатор потребления топлива при полном приводе",
 			"CRITICAL_DAMAGE_THRESHOLD": "Порог критического повреждения",
 			"DAMAGE_CAPACITY": "Прочность",
@@ -115,6 +119,7 @@ const gearbox = {
 			"BY_RANK_LEVEL": "Уровень разблокировки",
 		},
 		DE: {
+			"ID": "ID",
 			"AWD_CONSUMPTION_MODIFIER": "AWD-Verbrauchsmodifikator",
 			"CRITICAL_DAMAGE_THRESHOLD": "Kritische Schadensschwelle",
 			"DAMAGE_CAPACITY": "Schadenskapazität",

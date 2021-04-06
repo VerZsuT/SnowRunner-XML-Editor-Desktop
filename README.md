@@ -14,8 +14,8 @@
 2. Выберите папку с игрой (там куда она установлена).
 3. Нажмите на появившуюся ссылку чтобы увидеть initial.pak
 4. Откройте его с помощью WinRar (не рекомендуется открывать другими архиваторами).
-5. Распакуйте [media] в удобную вам папку.
-6. Выберите распакованную папку [media] в программе.
+5. Распакуйте \[media\] в удобную вам папку.
+6. Выберите распакованную папку \[media\] в программе.
 7. Сохраните изменения.
 
 После чего вы увидите главное меню программы:
@@ -60,8 +60,8 @@ At the first launch, you will need to configure the program:
 2. Select the folder with the game (where it is installed).
 3. Click on the link that appears to see the initial.pak.
 4. Open it with WinRAR (it is not recommended to open it with other archivers).
-5. Unzip [media] to a convenient folder.
-6. Select the unpacked [media] folder in the program.
+5. Unzip \[media\] to a convenient folder.
+6. Select the unpacked \[media\] folder in the program.
 7. Save your changes.
 
 Then you will see the main menu of the program:

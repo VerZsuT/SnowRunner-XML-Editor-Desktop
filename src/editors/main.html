@@ -10,21 +10,26 @@
         <script defer src="../scripts/service/translate.js" type="module"></script>
     </head>
     <body>
-        <header>
-            <h1 class="red-text">Выберите группу</h1>
-        </header>
+        <div id="loading">
+            <h1>...</h1>
+        </div>
         <div id="main">
-            <div class="category" id="trucks">
-                <img src="../category_images/trucks_category.png">
-                <span class="category-name" to-translate>[TRUCKS_CATEGORY_TITLE]</span>
-            </div>
-            <div class="category" id="trailers">
-                <img src="../category_images/trailers_category.png">
-                <span class="category-name" to-translate>[TRAILERS_CATEGORY_TITLE]</span>
-            </div>
-            <div class="category" id="cargo">
-                <img src="../category_images/cargo_category.png">
-                <span class="category-name" to-translate>[CARGO_CATEGORY_TITLE]</span>
+            <header>
+                <h1 class="red-text" to-translate>[SELECT_GROUP]</h1>
+            </header>
+            <div id="main">
+                <div class="category" id="trucks">
+                    <img src="../category_images/trucks_category.png">
+                    <span class="category-name" to-translate>[TRUCKS_CATEGORY_TITLE]</span>
+                </div>
+                <div class="category" id="trailers">
+                    <img src="../category_images/trailers_category.png">
+                    <span class="category-name" to-translate>[TRAILERS_CATEGORY_TITLE]</span>
+                </div>
+                <div class="category" id="cargo">
+                    <img src="../category_images/cargo_category.png">
+                    <span class="category-name" to-translate>[CARGO_CATEGORY_TITLE]</span>
+                </div>
             </div>
         </div>
     </body>

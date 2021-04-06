@@ -2,7 +2,8 @@ import { Template, Group, Input, Select, Opt, Selectors, Selector } from '../ser
 const engine = {
 	main: [
 		Template({type: 'Multiply', itemSelector: '[ENGINE]'}, [
-			Group({nameType: 'Computed', nameSelector: '[ENGINE_ITEM]', nameAttribute: 'Name', defaultSelector: '[ENGINE_ITEM]'}, [
+			Group({nameType: 'Computed', nameSelector: '[ENGINE_ITEM_TEXT]', resNameSelector: '[ENGINE_ITEM]', nameAttribute: 'UiName', resNameAttribute: 'Name', defaultSelector: '[ENGINE_ITEM]'}, [
+				Input({attribute: 'Name', text: '[ID]', type: 'text', onlyDeveloper: 'true'}),
 				Input({attribute: 'CriticalDamageThreshold', text: '[CRITICAL_DAMAGE_THRESHOLD]', numberType: 'float', max: '0.999'}),
 				Input({attribute: 'DamageCapacity', text: '[DAMAGE_CAPACITY]', max: '64000'}),
 				Input({attribute: 'DamagedConsumptionModifier', text: '[DAMAGE_CONSUMPTION_MODIFIER]', numberType: 'float', min: '0.1', max: '32'}),
@@ -24,12 +25,14 @@ const engine = {
 		Selectors([
 			Selector({id: 'ENGINE', value: 'EngineVariants.Engine'}),
 			Selector({id: 'ENGINE_ITEM', value: '{ENGINE}#every'}),
+			Selector({id: 'ENGINE_ITEM_TEXT', value: '{ENGINE_ITEM}.GameData.UiDesc'}),
 			Selector({id: 'GAME_DATA', value: '{ENGINE}#every.GameData'})
 		])
 	],
 	selector: 'EngineVariants',
 	translation: {
 		EN: {
+			"ID": "ID",
 			"CRITICAL_DAMAGE_THRESHOLD": "Critical damage threshold",
 			"DAMAGE_CAPACITY": "Damage capacity",
 			"DAMAGE_CONSUMPTION_MODIFIER": "Damage consumption modifier",
@@ -46,6 +49,7 @@ const engine = {
 			"BY_RANK_LEVEL": "Unlock level",
 		},
 		RU: {
+			"ID": "ID",
 			"CRITICAL_DAMAGE_THRESHOLD": "Порог критического повреждения",
 			"DAMAGE_CAPACITY": "Прочность",
 			"DAMAGE_CONSUMPTION_MODIFIER": "Множитель потребления топлива при повреждении",
@@ -62,6 +66,7 @@ const engine = {
 			"BY_RANK_LEVEL": "Уровень разблокировки",
 		},
 		DE: {
+			"ID": "ID",
 			"CRITICAL_DAMAGE_THRESHOLD": "Kritische Schadensschwelle",
 			"DAMAGE_CAPACITY": "Schadenskapazität",
 			"DAMAGE_CONSUMPTION_MODIFIER": "Schadensverbrauchsmodifikator",

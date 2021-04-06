@@ -1,30 +1,36 @@
-import renderer from '../service/renderer.js'
-import { create, get, prettify } from '../service/funcs.js'
+import { funcs } from '../service/renderer.js'
+import { create, get, getIngameText, prettify } from '../service/funcs.js'
 
 const $list = get('#list')
 const $dlcList = get('#dlc-list')
+const parser = new DOMParser()
 
-const listType = localStorage.getItem('listType')
+const listType = local.listType
 
 addItems()
 
 function addItems() {
-    renderer.call('getList', [listType, true], array => {
-        for (const dlc of array) {
-            for (const item of dlc.items) {
-                $dlcList.append(createListItem(item.name, item.path, dlc.name))
-            }
+    const dlcArray = funcs.getList(listType, true)
+    for (const dlc of dlcArray) {
+        for (const item of dlc.items) {
+            $dlcList.append(createListItem(item.name, item.path, dlc.name))
         }
+    }
 
-        renderer.call('getList', listType, array => {
-            for (const item of array) {
-                $list.append(createListItem(item.name, item.path))
-            }
-        })
-    })
+    const mainArray = funcs.getList(listType)
+    for (const item of mainArray) {
+        $list.append(createListItem(item.name, item.path))
+    }
 }
 
 function createListItem(name, path, dlcName=null) {
+    const data = `<root>${funcs.getFileData(path)}</root>`
+    const DOM = parser.parseFromString(data, 'text/xml')
+    let innerName
+    if (DOM.querySelectorAll('GameData > UiDesc').length === 1) {
+        innerName = getIngameText(DOM.querySelector('GameData > UiDesc').getAttribute('UiName'))
+    }
+
     const $item = create('div', {
         class: 'item',
         file_path: path,
@@ -33,7 +39,7 @@ function createListItem(name, path, dlcName=null) {
 
     $item.append(create('span', {
         class: 'item-text',
-        innerText: prettify(name)
+        innerText: innerName || prettify(name)
     }))
     if (listType === 'cargo') {
         $item.append(create('img', {
@@ -52,9 +58,9 @@ function createListItem(name, path, dlcName=null) {
     }
 
     $item.addEventListener('click', () => {
-        localStorage.setItem('filePath', $item.getAttribute('file_path'))
-        localStorage.setItem('currentDLC', $item.getAttribute('dlc_name'))
-        renderer.call('openWindow', 'xmlEditor')
+        local.filePath = $item.getAttribute('file_path')
+        local.currentDLC = $item.getAttribute('dlc_name')
+        funcs.openXMLEditor()
     })
 
     return $item

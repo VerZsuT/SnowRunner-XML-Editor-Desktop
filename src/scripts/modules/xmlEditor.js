@@ -1,14 +1,14 @@
-import { get, getText, create, prettify } from '../service/funcs.js'
-import renderer from '../service/renderer.js'
+import { get, getText, create, prettify, getIngameText } from '../service/funcs.js'
+import { props, funcs } from '../service/renderer.js'
 import templates from '../service/templates.js'
 
 const $paramsTable = get('#parameters')
 const $saveParamsButton = get('#save-params')
 const $title = get('#title')
 
-let config = null
+const devMode = config.devMode
 let filePath = null
-let currentDLC = localStorage.getItem('currentDLC')
+let currentDLC = null
 let fileDOM = null
 
 $saveParamsButton.onclick = generateAndSaveFile
@@ -16,30 +16,37 @@ $saveParamsButton.onclick = generateAndSaveFile
 checkData()
 
 function checkData() {
-    renderer.get('config', data => {
-        config = data
-        renderer.get('filePath', data => {
-            filePath = data || localStorage.getItem('filePath')
-            if (filePath.split('/').length !== 1) {
-                let a = filePath.split('/')
-                $title.innerText = prettify(a[a.length-1].replace('.xml', '')).toUpperCase()
-            }
-            else {
-                let a = filePath.split('\\')
-                $title.innerText = prettify(a[a.length-1].replace('.xml', '')).toUpperCase()
-            }
-            
-            renderer.call('getFileData', [filePath, localStorage.getItem('fileDLCPath')], data => {
-                loadFile(data)
-            })
-        })
-    })
+    const indexFilePath = props.filePath
+    const indexCurrentDLC = props.currentDLC
+
+    filePath = indexFilePath || local.filePath
+    currentDLC = indexCurrentDLC || local.currentDLC
+    if (filePath.split('/').length !== 1) {
+        let a = filePath.split('/')
+        $title.innerText = prettify(a[a.length-1].replace('.xml', '')).toUpperCase()
+    }
+    else {
+        let a = filePath.split('\\')
+        $title.innerText = prettify(a[a.length-1].replace('.xml', '')).toUpperCase()
+    }
+    
+    const fileData = funcs.getFileData(filePath, local.fileDLCPath)
+    if (!fileData) return
+    loadFile(fileData)
 }
 
 function loadFile(file) {
     const parser = new DOMParser()
 
     fileDOM = parser.parseFromString(`<root>${file}</root>`, 'text/xml')
+
+    let ingameText
+    if (fileDOM.querySelectorAll('GameData UiDesc').length === 1) {
+        const text = fileDOM.querySelector('GameData UiDesc').getAttribute('UiName')
+        ingameText = getIngameText(text) || text
+    }
+    if (ingameText) $title.innerText = ingameText
+
     const comments = []
     for (const child of fileDOM.querySelector('root').childNodes) {
         if (child.nodeType === 8) {
@@ -180,15 +187,15 @@ function createItems(params, $parentGroupCont=null, tabs=1) {
                         fileName = fileName.replaceAll(' ', '')
                         const $button = create('button', {
                             class: 'openFile',
-                            innerText: 'Посмотреть'
+                            innerText: getText('[EDIT_FILE_BUTTON]')
                         })
                         $button.addEventListener('click', () => {
                             if (currentDLC) {
-                                localStorage.setItem('fileDLCPath', `${config.pathToDLC}\\${currentDLC}\\classes\\${param.fileType}\\${fileName}.xml`)
+                                local.fileDLCPath = `${config.pathToDLC}\\${currentDLC}\\classes\\${param.fileType}\\${fileName}.xml`
                             }
-                            localStorage.setItem('filePath', `${config.pathToClasses}\\${param.fileType}\\${fileName}.xml`)
+                            local.filePath = `${config.pathToClasses}\\${param.fileType}\\${fileName}.xml`
                             
-                            renderer.call('openWindow', 'xmlEditor')
+                            funcs.openXMLEditor()
                         })
                         $input.append($button)
                     }
@@ -227,6 +234,7 @@ function createItems(params, $parentGroupCont=null, tabs=1) {
                         type: param.type,
                         value: param.value
                     })
+
                     if (param.type === 'number') {
                         if (param.min !== '-∞') {
                             $input.min = param.min || 0
@@ -263,7 +271,7 @@ function createItems(params, $parentGroupCont=null, tabs=1) {
                 $input.className = 'param-input'
                 if (param.onlyDeveloper) {
                     $input.title = getText('[ONLY_DEVELOPER_EDIT_TEXT]')
-                    //if (!developerMode) {
+                    if (!devMode) {
                         if (param.type === 'coordinates') {
                             for (const $cInput of $input.querySelectorAll('input')) {
                                 $cInput.setAttribute('disabled', true)
@@ -272,17 +280,17 @@ function createItems(params, $parentGroupCont=null, tabs=1) {
                         else {
                             $input.setAttribute('disabled', true)    
                         }
-                    //}
-                    // else {
-                    //     if (param.type === 'coordinates') {
-                    //         for (const $cInput of $input.querySelectorAll('input')) {
-                    //             $cInput.classList.add('dev-enabled')
-                    //         }
-                    //     }
-                    //     else {
-                    //         $input.classList.add('dev-enabled')
-                    //     }
-                    // }                    
+                    }
+                    else {
+                        if (param.type === 'coordinates') {
+                            for (const $cInput of $input.querySelectorAll('input')) {
+                                $cInput.classList.add('dev-enabled')
+                            }
+                        }
+                        else {
+                            $input.classList.add('dev-enabled')
+                        }
+                    }                    
                 }
                 let f = () => {
                     $param.className = $param.className.replace('info', 'param')
@@ -362,5 +370,6 @@ function generateAndSaveFile() {
     }
 
     const xmlString = copyrightText + serializer.serializeToString(fileDOM).replace('<root>', '').replace('</root>', '')
-    renderer.call('setFileData', [filePath, xmlString], window.close)
+    funcs.setFileData(filePath, xmlString)
+    window.close()
 }

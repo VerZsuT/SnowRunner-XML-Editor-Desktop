@@ -1,20 +1,21 @@
-import renderer from '../service/renderer.js'
+import { get } from '../service/funcs.js'
+import { funcs } from '../service/renderer.js'
 
-const trucks = document.getElementById('trucks')
-const trailers = document.getElementById('trailers')
-const cargo = document.getElementById('cargo')
+const trucks = get('#trucks')
+const trailers = get('#trailers')
+const cargo = get('#cargo')
 
 trucks.addEventListener('click', () => {
-    localStorage.setItem('listType', 'trucks')
-    renderer.call('openWindow', 'list')
+    local.listType =  'trucks'
+    funcs.openList()
 })
 
 trailers.addEventListener('click', () => {
-    localStorage.setItem('listType', 'trailers')
-    renderer.call('openWindow', 'list')
+    local.listType = 'trailers'
+    funcs.openList()
 })
 
 cargo.addEventListener('click', () => {
-    localStorage.setItem('listType', 'cargo')
-    renderer.call('openWindow', 'list')
+    local.listType = 'cargo'
+    funcs.openList()
 })
