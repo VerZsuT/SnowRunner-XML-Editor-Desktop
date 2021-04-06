@@ -161,7 +161,7 @@ function openDialog() {
 function getGameFolder(errors=true) {
     const result = openDialog()
     if (!result) {
-        if (erorrs) {
+        if (errors) {
             throw new Error('[EMPTY_FOLDER_ERROR]')
         }
         else {
