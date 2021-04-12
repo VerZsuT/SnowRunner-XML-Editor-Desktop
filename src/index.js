@@ -473,8 +473,12 @@ function removePars(str) {
 }
 
 function getConfig() {
-    let data = readFileSync(locations.config)
-    return JSON.parse(data.toString())
+    const data = readFileSync(locations.config)
+    const obj = JSON.parse(data.toString())
+
+    obj.pathToDLC = locations.dlc
+    obj.pathToClasses = locations.classes
+    return obj
 }
 
 function getItems(path) {

@@ -2,6 +2,8 @@
     "version": "0.5.1",
     "language": "EN",
     "pathToInitial": null,
+    "pathToDLC": null,
+    "pathToClasses": null,
     "devMode": false,
     "dlc": []
 }
