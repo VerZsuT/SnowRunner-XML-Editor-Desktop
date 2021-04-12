@@ -2,7 +2,7 @@
 
 ## Как пользоваться
 
-<https://youtu.be/BezaStgqvEY>
+<https://youtu.be/2-4OfWTj8_w>
 
 Для начала вам необходимо скачать программу в разделе releases и распаковать её. Запустите "SnowRunner XML Editor.exe"
 
