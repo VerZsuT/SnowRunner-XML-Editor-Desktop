@@ -1,5 +1,6 @@
+const { exec, execSync } = require('child_process')
 const { app, shell, dialog, BrowserWindow, Menu, Notification } = require('electron')
-const { readFileSync, readdirSync, lstatSync, existsSync, writeFileSync, unlinkSync, copyFileSync } = require('fs')
+const { readFileSync, readdirSync, lstatSync, existsSync, writeFileSync, unlinkSync, copyFileSync, mkdirSync, rmSync, } = require('fs')
 const { join } = require('path')
 const main = require('./scripts/service/main.js')
 
@@ -10,7 +11,12 @@ const locations = {
     backupFolder: join(__dirname, 'backups'),
     backupInitial: join(__dirname, 'backups', 'initial.pak'),
     HTMLFolder: join(__dirname, 'editors'),
-    translations: join(__dirname, 'scripts', 'translations')
+    translations: join(__dirname, 'scripts', 'translations'),
+    winrar: join(__dirname, 'scripts', 'winrar'),
+    temp: join(__dirname, 'scripts', 'temp'),
+    strings: join(__dirname, 'scripts', 'temp', '[strings]'),
+    dlc: join(__dirname, 'scripts', 'temp', '[media]', '_dlc'),
+    classes: join(__dirname, 'scripts', 'temp', '[media]', 'classes')
 }
 
 let pathToReturn = null
@@ -48,14 +54,6 @@ function initMain() {
         get: () => getGameFolder()
     }
     
-    main.mediaFolder = {
-        get: () => getMediaFolder()
-    }
-
-    main.stringsFolder = {
-        get: () => getStringsFolder()
-    }
-    
     main.filePath = {
         get() {
             return pathToReturn
@@ -66,6 +64,16 @@ function initMain() {
         get() {
             return currentDLC
         }
+    }
+
+    main.saveToOriginal = function() {
+        exec(`WinRAR f ${config.pathToInitial} ..\\temp\\ -r -ep1`, {
+            cwd: locations.winrar
+        }, error => {
+            if (error) {
+                showNotification(getText('[ERROR]'), getText('[SAVE_ORIGINAL_ERROR]'))
+            }
+        })
     }
 
     main.getList = function(listType, fromDLC=false) {
@@ -92,13 +100,13 @@ function initMain() {
         }
         else {
             if (listType === 'trucks') {
-                return fromDir(join(config.pathToClasses, 'trucks'))
+                return fromDir(join(locations.classes, 'trucks'))
             }
             else if (listType === 'trailers') {
-                return fromDir(join(config.pathToClasses, 'trucks', 'trailers'))
+                return fromDir(join(locations.classes, 'trucks', 'trailers'))
             }
             else if (listType === 'cargo') {
-                return fromDir(join(config.pathToClasses, 'trucks', 'cargo'))
+                return fromDir(join(locations.classes, 'trucks', 'cargo'))
             }
             else {
                 throw new Error('[UNDEFINED_LIST_TYPE]')
@@ -187,64 +195,6 @@ function getGameFolder(errors=true) {
     }
 }
 
-function getStringsFolder(errors=true) {
-    const result = openDialog()
-    if (!result) {
-        if (errors) {
-            throw new Error('[EMPTY_FOLDER_ERROR]')
-        }
-        else {
-            showNotification(getText('[ERROR]'), getText('[EMPTY_FOLDER_ERROR]'))
-            return
-        }
-    }
-    const folder = result[0]
-
-    const strings = fromDir(folder, false, '.str')
-    if (strings.length === 0) {
-        if (errors) {
-            throw new Error('[INVALID_FOLDER_ERROR]')
-        }
-        else {
-            showNotification(getText('[ERROR]'), getText('[INVALID_FOLDER_ERROR]'))
-            return
-        }
-    }
-    
-    return {
-        folder: folder
-    }
-}
-
-function getMediaFolder(errors=true) {
-    const result = openDialog()
-    if (!result) {
-        if (errors) {
-            throw new Error('[EMPTY_FOLDER_ERROR]')
-        }
-        else {
-            showNotification(getText('[ERROR]'), getText('[EMPTY_FOLDER_ERROR]'))
-            return
-        }
-    }
-    const folder = result[0]
-
-    const trucksPath = join(folder, 'classes')
-    if (!existsSync(trucksPath)) {
-        if (errors) {
-            throw new Error('[INVALID_FOLDER_ERROR]')
-        }
-        else {
-            showNotification(getText('[ERROR]'), getText('[INVALID_FOLDER_ERROR]'))
-            return
-        }
-    }
-    
-    return {
-        folder: folder
-    }
-}
-
 function init() {
     if (!config.pathToInitial) {
         menu = getDisabledMenu()
@@ -266,11 +216,11 @@ function checkPaths() {
         showNotification(getText('[ERROR]'), getText('[INITIAL_NOT_FOUND]'))
         success = false
     }
-    if (!existsSync(config.pathToClasses)) {
+    else if (!existsSync(locations.classes)) {
         showNotification(getText('[ERROR]'), getText('[CLASSES_NOT_FOUND]'))
         success = false
     }
-    if (!existsSync(config.pathToDLC)) {
+    else if (!existsSync(locations.dlc)) {
         showNotification(getText('[ERROR]'), getText('[DLC_FOLDER_NOT_FOUND]'))
         success = false
     }
@@ -278,7 +228,7 @@ function checkPaths() {
 }
 
 function initDLC() {
-    config.dlc = fromDir(config.pathToDLC, true)
+    config.dlc = fromDir(locations.dlc, true)
 }
 
 function getTranslations() {
@@ -287,7 +237,7 @@ function getTranslations() {
     const DE = JSON.parse(readFileSync(join(locations.translations, 'DE.json')).toString())
 
     let ingame = {}
-    if (config.pathToStrings) {
+    if (existsSync(locations.strings)) {
         let fileName
         switch (config.language) {
             case 'RU':
@@ -299,7 +249,7 @@ function getTranslations() {
             case 'DE':
                 fileName = 'strings_german.str'
         }
-        stringsFilePath = join(config.pathToStrings, fileName)
+        stringsFilePath = join(locations.strings, fileName)
         ingame = parseStrings(readFileSync(stringsFilePath, {encoding: 'utf16le'}).toString())
     }
 
@@ -413,6 +363,14 @@ function openXMLEditor(path=null, dlc=null) {
 }
 
 function saveBackup() {
+    rmSync(locations.temp, {
+        recursive: true
+    })
+    mkdirSync(locations.temp)
+    execSync(`WinRAR x ${config.pathToInitial} @unpack-list.lst ..\\temp\\`, {
+        cwd: locations.winrar
+    })
+
     if (existsSync(locations.backupInitial)) {
         try {
             unlinkSync(locations.backupInitial)
@@ -420,6 +378,7 @@ function saveBackup() {
             throw new Error('[DELETE_OLD_INITIAL_BACKUP_ERROR]')
         }
     }
+
     copyBackup()
     showNotification(getText('[SUCCESS]'), getText('[SUCCESS_BACKUP_SAVE]'))
 }
@@ -453,8 +412,10 @@ function createWindow(fileName, args={}) {
         }
     })
     if (menu) wind.setMenu(menu)
-    wind.once('ready-to-show', wind.show)
-    wind.loadFile(join(locations.HTMLFolder, fileName))
+    wind.loadFile(join(locations.HTMLFolder, fileName)).then(() => {
+        wind.show()
+        wind.focus()
+    })
     pathToReturn = args.path
     currentDLC = args.dlc
     return wind
@@ -480,10 +441,7 @@ function restoreInitial() {
 }
 
 function resetConfig() {
-    config.pathToDLC = null
     config.pathToInitial = null
-    config.pathToClasses = null
-    config.pathToStrings = null
     config.dlc = []
     config.devMode = false
     if (existsSync(locations.backupInitial)) {
@@ -777,7 +735,7 @@ function getMainMenu() {
                                 {
                                     label: '<--',
                                     click() {
-                                        shell.openPath(config.pathToClasses)
+                                        shell.openPath(locations.classes)
                                     }
                                 },
                                 { type: 'separator' },
@@ -787,35 +745,21 @@ function getMainMenu() {
                                         {
                                             label: '<--',
                                             click() {
-                                                shell.openPath(join(config.pathToClasses, 'trucks'))
+                                                shell.openPath(join(locations.classes, 'trucks'))
                                             }
                                         },
                                         { type: 'separator' },
-                                        // {
-                                        //     label: getText('[ADDONS_CATEGORY_TITLE]'),
-                                        //     enabled: false,
-                                        //     submenu: [
-                                        //         {
-                                        //             label: '<--',
-                                        //             click() {
-                                        //                 shell.openPath(join(config.pathToClasses, 'trucks', 'addons'))
-                                        //             }
-                                        //         },
-                                        //         { type: 'separator' },
-                                        //         ...getItems(join(config.pathToClasses, 'trucks', 'addons'))
-                                        //     ]
-                                        // },
                                         {
                                             label: getText('[CARGO_CATEGORY_TITLE]'),
                                             submenu: [
                                                 {
                                                     label: '<--',
                                                     click() {
-                                                        shell.openPath(join(config.pathToClasses, 'trucks', 'cargo'))
+                                                        shell.openPath(join(locations.classes, 'trucks', 'cargo'))
                                                     }
                                                 },
                                                 { type: 'separator' },
-                                                ...getItems(join(config.pathToClasses, 'trucks', 'cargo'))
+                                                ...getItems(join(locations.classes, 'trucks', 'cargo'))
                                             ]
                                         },
                                         {
@@ -824,16 +768,16 @@ function getMainMenu() {
                                                 {
                                                     label: '<--',
                                                     click() {
-                                                        shell.openPath(join(config.pathToClasses, 'trucks', 'trailers'))
+                                                        shell.openPath(join(locations.classes, 'trucks', 'trailers'))
                                                     }
                                                 },
                                                 { type: 'separator' },
-                                                ...getItems(join(config.pathToClasses, 'trucks', 'trailers'))
+                                                ...getItems(join(locations.classes, 'trucks', 'trailers'))
                                             ]
                                             
                                         },
                                         { type: 'separator' },
-                                        ...getItems(join(config.pathToClasses, 'trucks'))
+                                        ...getItems(join(locations.classes, 'trucks'))
                                     ]
                                 },
                                 {
@@ -842,11 +786,11 @@ function getMainMenu() {
                                         {
                                             label: '<--',
                                             click() {
-                                                shell.openPath(join(config.pathToClasses, 'wheels'))
+                                                shell.openPath(join(locations.classes, 'wheels'))
                                             }
                                         },
                                         { type: 'separator' },
-                                        ...getItems(join(config.pathToClasses, 'wheels'))
+                                        ...getItems(join(locations.classes, 'wheels'))
                                     ]
                                 },
                                 {
@@ -855,11 +799,11 @@ function getMainMenu() {
                                         {
                                             label: '<--',
                                             click() {
-                                                shell.openPath(join(config.pathToClasses, 'winches'))
+                                                shell.openPath(join(locations.classes, 'winches'))
                                             }
                                         },
                                         { type: 'separator' },
-                                        ...getItems(join(config.pathToClasses, 'winches'))
+                                        ...getItems(join(locations.classes, 'winches'))
                                     ]
                                 },
                                 {
@@ -868,11 +812,11 @@ function getMainMenu() {
                                         {
                                             label: '<--',
                                             click() {
-                                                shell.openPath(join(config.pathToClasses, 'gearboxes'))
+                                                shell.openPath(join(locations.classes, 'gearboxes'))
                                             }
                                         },
                                         { type: 'separator' },
-                                        ...getItems(join(config.pathToClasses, 'gearboxes'))
+                                        ...getItems(join(locations.classes, 'gearboxes'))
                                     ]
                                 },
                                 {
@@ -881,11 +825,11 @@ function getMainMenu() {
                                         {
                                             label: '<--',
                                             click() {
-                                                shell.openPath(join(config.pathToClasses, 'engines'))
+                                                shell.openPath(join(locations.classes, 'engines'))
                                             }
                                         },
                                         { type: 'separator' },
-                                        ...getItems(join(config.pathToClasses, 'engines'))
+                                        ...getItems(join(locations.classes, 'engines'))
                                     ]
                                 },
                                 {
@@ -894,11 +838,11 @@ function getMainMenu() {
                                         {
                                             label: '<--',
                                             click() {
-                                                shell.openPath(join(config.pathToClasses, 'suspensions'))
+                                                shell.openPath(join(locations.classes, 'suspensions'))
                                             }
                                         },
                                         { type: 'separator' },
-                                        ...getItems(join(config.pathToClasses, 'suspensions'))
+                                        ...getItems(join(locations.classes, 'suspensions'))
                                     ]
                                 }
                             ]
@@ -909,6 +853,7 @@ function getMainMenu() {
                         }
                     ]
                 },
+                // SETTINGS
                 {
                     label: getText('[SETTINGS_MENU_ITEM_LABEL]'),
                     submenu: [
@@ -951,34 +896,11 @@ function getMainMenu() {
                             label: getText('[PATHS_MENU_ITEM_LABEL]'),
                             submenu: [
                                 {
-                                    label: getText('[MEDIA_FOLDER_LABEL]'),
-                                    click() {
-                                        const data = getMediaFolder(false)
-                                        if (data) {
-                                            config.pathToClasses = `${data.folder}\\classes`
-                                            config.pathToDLC = `${data.folder}\\_dlc`
-                                            saveConfig()
-                                            reload()
-                                        }
-                                    }
-                                },
-                                {
                                     label: getText('[GAME_FOLDER_LABEL]'),
                                     click() {
                                         const data = getGameFolder(false)
                                         if (data) {
                                             config.pathToInitial = data.initial
-                                            saveConfig()
-                                            reload()
-                                        }
-                                    }
-                                },
-                                {
-                                    label: getText('STRINGS_FOLDER_LABEL'),
-                                    click() {
-                                        const data = getStringsFolder(false)
-                                        if (data) {
-                                            config.pathToStrings = data.folder
                                             saveConfig()
                                             reload()
                                         }

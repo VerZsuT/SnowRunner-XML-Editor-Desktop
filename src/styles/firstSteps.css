@@ -2,17 +2,6 @@ body {
     text-align: center;
 }
 
-#path-to-initial {
-    display: none;
-    margin-bottom: 20px;
-    text-decoration: none;
-    color: black;
-}
-
-#path-to-initial:hover {
-    text-decoration: underline;
-}
-
 input:disabled {
     background: white;
 }

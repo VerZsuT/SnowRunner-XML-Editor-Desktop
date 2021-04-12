@@ -92,3 +92,4 @@ out/
 src/backups/
 
 .vscode/
+src/scripts/temp/

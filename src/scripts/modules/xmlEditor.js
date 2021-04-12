@@ -371,5 +371,6 @@ function generateAndSaveFile() {
 
     const xmlString = copyrightText + serializer.serializeToString(fileDOM).replace('<root>', '').replace('</root>', '')
     funcs.setFileData(filePath, xmlString)
+    funcs.saveToOriginal()
     window.close()
 }

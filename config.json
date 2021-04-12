@@ -1,10 +1,7 @@
 {
-    "version": "0.5.0",
+    "version": "0.5.1",
     "language": "EN",
     "pathToInitial": null,
-    "pathToClasses": null,
-    "pathToDLC": null,
-    "pathToStrings": null,
     "devMode": false,
     "dlc": []
 }
