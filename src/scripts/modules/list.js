@@ -28,7 +28,8 @@ function createListItem(name, path, dlcName=null) {
     const DOM = parser.parseFromString(data, 'text/xml')
     let innerName
     if (DOM.querySelectorAll('GameData > UiDesc').length === 1) {
-        innerName = getIngameText(DOM.querySelector('GameData > UiDesc').getAttribute('UiName'))
+        const uiName = DOM.querySelector('GameData > UiDesc').getAttribute('UiName') 
+        innerName = getIngameText(uiName) || uiName
     }
 
     const $item = create('div', {

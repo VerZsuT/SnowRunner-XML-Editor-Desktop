@@ -1,3 +1,7 @@
+body {
+    background-color: white;
+}
+
 .category {
     display: flex;
     height: 300px;
@@ -14,7 +18,8 @@
     color: yellow;
 }
 
-#main {
+#categories {
+    margin-top: 2px;
     display: flex;
     justify-content: space-evenly;
 }
@@ -22,6 +27,7 @@
 img {
     width: 100%;
     height: 100%;
+    border-radius: 5px;
 }
 
 .category-name {
@@ -33,5 +39,7 @@ img {
     padding: 10px 0;
     text-align: center;
     text-transform: uppercase;
+    border-top-right-radius: 5px;
+    border-top-left-radius: 5px;
 }
 

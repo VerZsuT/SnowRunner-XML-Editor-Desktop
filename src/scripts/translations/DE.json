@@ -1,4 +1,6 @@
 {
+	"ALLOW_NEW_VERSION": "Eine neue Version des Programms ist verfügbar. Klicken Sie hier, um zur Download-Seite zu gelangen.",
+	"NOTIFICATION": "Norifizierung",
 	"PATHS_MENU_ITEM_LABEL": "Pfade",
 	"LANGUAGE_MENU_ITEM_LABEL": "Sprache",
 	"EDIT_FILE_BUTTON": "Bearbeiten",
@@ -28,7 +30,6 @@
 	"SUCCESS_BACKUP_SAVE": "Die Initiale.pak backup wurde erfolgreich gespeichert.",
 	"SUCCESS_INITIAL_RESTORE": "initial.pak wurde erfolgreich restauriert.",
 	"DELETE_CURRENT_INITIAL_BACKUP_ERROR": "Die aktuelle Erstsicherung konnte nicht gelöscht werden.",
-	"FIRST_STEPS_TITLE": "Willkommen bei SnowRunner XML Editor!",
 	"FIRST_STEPS_DESCRIPTION": "Ersteinrichtung des Programms.",
 	"GAME_FOLDER_LABEL": "Spiel-Ordner",
 	"OPEN_BUTTON": "Öffnen",
@@ -52,5 +53,5 @@
 	"TRAILERS_CATEGORY_TITLE": "Nutzfahrzeuge",
 	"CARGO_CATEGORY_TITLE": "Güter",
 	"BY_DEFAULT": "Standard",
-	"SAVE_BUTTON_TEXT": "Datei"
+	"SAVE_BUTTON": "Datei"
 }

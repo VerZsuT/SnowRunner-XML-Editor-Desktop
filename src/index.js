@@ -1,3 +1,4 @@
+const https = require('https')
 const { exec, execSync } = require('child_process')
 const { app, shell, dialog, BrowserWindow, Menu, Notification } = require('electron')
 const { readFileSync, readdirSync, lstatSync, existsSync, writeFileSync, unlinkSync, copyFileSync, mkdirSync, rmSync, } = require('fs')
@@ -5,6 +6,8 @@ const { join } = require('path')
 const main = require('./scripts/service/main.js')
 
 const locations = {
+    publicInfo: 'https://verzsut.github.io/SnowRunner-XML-Editor-Desktop/public.json',
+    downloadPage: 'https://verzsut.github.io/SnowRunner-XML-Editor-Desktop/download.html',
     config: join(__dirname, '..', 'config.json'),
     icon: join(__dirname, 'icons', 'favicon.png'),
     preload: join(__dirname, 'preload.js'),
@@ -33,6 +36,22 @@ const translations = getTranslations()
 
 initApp()
 initMain()
+
+function init() {
+    checkUpdate()
+    if (!config.pathToInitial) {
+        menu = getDisabledMenu()
+        openFirstSteps()
+    }
+    else if (checkPaths()) {
+        initDLC()
+        menu = getMainMenu()
+        openMain()
+    }
+    else {
+        resetConfig()
+    }
+}
 
 function initMain() {
     main.translations = {
@@ -149,6 +168,7 @@ function initMain() {
 }
 
 function initApp() {
+    app.setAppUserModelId('SnowRunner XML Editor')
     app.whenReady().then(init)
     app.on('before-quit', () => {
         saveConfig()
@@ -195,19 +215,23 @@ function getGameFolder(errors=true) {
     }
 }
 
-function init() {
-    if (!config.pathToInitial) {
-        menu = getDisabledMenu()
-        openFirstSteps()
-    }
-    else if (checkPaths()) {
-        initDLC()
-        menu = getMainMenu()
-        openMain()
-    }
-    else {
-        resetConfig()
-    }
+function checkUpdate() {
+    https.get(locations.publicInfo, res => {
+        res.setEncoding('utf8')
+        let rawData = ''
+
+        res.on('data', (chunk) => {
+          rawData += chunk
+        })
+
+        res.on('end', () => {
+            const data = JSON.parse(rawData)
+            data.latestVersion = '0.5.2'
+            if (data.latestVersion !== config.version) {
+                showNotification(getText('[NOTIFICATION]'), getText('ALLOW_NEW_VERSION'), true)
+            }
+        })
+    })
 }
 
 function checkPaths() {
@@ -265,11 +289,19 @@ function parseStrings(data) {
     return strings
 }
 
-function showNotification(title, message) {
-    new Notification({
-        title: title,
-        body: message
-    }).show()
+function showNotification(title, message, isNewVersion=false) {
+    if (Notification.isSupported()) {
+        const notification = new Notification({
+            title: title,
+            icon: locations.icon,
+            body: message
+        })
+
+        notification.show()
+        if (isNewVersion) {
+            notification.once('click', () => shell.openExternal(locations.downloadPage))
+        }
+    }
 }
 
 function openList() {
@@ -301,8 +333,8 @@ function openMain() {
         return
     }
     mainWindow = createWindow('main.html', {
-        width: 1000, 
-        height: 470, 
+        width: 920, 
+        height: 350, 
         resizable: false
     })
     mainWindow.once('close', () => {
@@ -311,7 +343,7 @@ function openMain() {
 }
 
 function openFirstSteps() {
-    const wind = createWindow('firstSteps.html')
+    const wind = createWindow('firstSteps.html', {width: 450, height: 350})
     wind.once('close', () => {
         app.quit()
     })
@@ -401,6 +433,7 @@ function saveConfig() {
 
 function createWindow(fileName, args={}) {
     const wind = new BrowserWindow({
+        backgroundColor: '#FFF',
         width: args.width || 800,
         height: args.height || 600,
         resizable: args.resizable !== undefined ? args.resizable : true,

@@ -28,19 +28,22 @@ button {
 }
 
 header {
-    margin-bottom: 0;
+    margin-bottom: 20px;
 }
 
-header h1 {
-    color: #f1f118;
+header h2 {
+    color: white;
     margin: 10px;
-}
-
-h2 {
-    margin-top: 10px;
-    margin-bottom: 30px;
 }
 
 label {
     font-weight: bold;
+}
+
+#language-select {
+    width: 60px;
+}
+
+#game-folder-input {
+    width: 150px;
 }

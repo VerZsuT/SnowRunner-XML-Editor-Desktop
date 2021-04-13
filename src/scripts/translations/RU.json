@@ -1,4 +1,6 @@
 {
+	"ALLOW_NEW_VERSION": "Доступна новая версия программы. Нажмите чтобы перейти на страницу скачивания.",
+	"NOTIFICATION": "Уведомление",
 	"PATHS_MENU_ITEM_LABEL": "Пути",
 	"LANGUAGE_MENU_ITEM_LABEL": "Язык",
 	"EDIT_FILE_BUTTON": "Редактировать",
@@ -28,8 +30,7 @@
 	"SUCCESS_BACKUP_SAVE": "Бэкап initial.pak успешно сохранён.",
 	"SUCCESS_INITIAL_RESTORE": "initial.pak был успешно восстановлен.",
 	"DELETE_CURRENT_INITIAL_BACKUP_ERROR": "Не удалось удалить текущий бэкап initial.pak",
-	"FIRST_STEPS_TITLE": "Добро пожаловать в SnowRunner XML Editor!",
-	"FIRST_STEPS_DESCRIPTION": "Первоначальная настройка программы.",
+	"FIRST_STEPS_DESCRIPTION": "Первоначальная настройка.",
 	"GAME_FOLDER_LABEL": "Папка с игрой",
 	"OPEN_BUTTON": "Открыть",
 	"OPEN_INITIAL_BUTTON": "Открыть папку с initial.pak",
