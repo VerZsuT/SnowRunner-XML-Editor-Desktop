@@ -31,14 +31,14 @@
 
 ## Что делать если что-то пошло не так?
 
-На такой случай программа сделал бэкап вашего оригинального initial.pak. Можете посмотреть его в меню по пути (Backup > Open folder).
-Замените оригинал этим бэкапом, либо нажмите в меню (Backup > Restore). Программа сама заменит его в папке игры.
+На такой случай программа сделала бэкап вашего оригинального initial.pak. Можете посмотреть его в меню по пути (Бэкап > Открыть).
+Замените оригинал этим бэкапом, либо нажмите в меню (Бэкап > Восстановить). Программа сама заменит его в папке игры.
 
-Рекомендую после успешных изменений (когда игра не сбоит) принудительно сохранять бэкап в программе (Backup > Save).
+Рекомендую после успешных изменений (когда игра не сбоит) принудительно сохранять бэкап в программе (Бэкап > Сохранить).
 
 ## Как изменить настройки программы?
 
-Пока что единственный способ изменить настройки это сбросить их (File > Settings > Reset). После чего вы снова увидите экран первоначальной настройки.
+Изменить настройки можете в разделе (Файл > Настройки).
 Внимание! При сбросе настроек бэкап initial.pak удаляется!
 
 # SnowRunner XML Editor Desktop (EN)
@@ -77,5 +77,5 @@ I recommend that after successful changes (when the game does not crash), you fo
 
 ## How do I change the program settings?
 
-So far, the only way to change the settings is to reset them (File > Settings > Reset). After that, you will see the initial setup screen again.
+You can change the settings in the section (File > Settings).
 Attention! When you reset the settings, the initial.pak backup is deleted!
