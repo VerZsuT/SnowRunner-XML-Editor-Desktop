@@ -1,6 +1,7 @@
 const https = require('https')
+const dns = require('dns')
 const { exec, execSync } = require('child_process')
-const { app, shell, dialog, BrowserWindow, Menu, Notification } = require('electron')
+const { app, shell, dialog, BrowserWindow, Notification } = require('electron')
 const { readFileSync, readdirSync, lstatSync, existsSync, writeFileSync, unlinkSync, copyFileSync, mkdirSync, rmSync, } = require('fs')
 const { join } = require('path')
 const main = require('./scripts/service/main.js')
@@ -25,11 +26,12 @@ const locations = {
 let pathToReturn = null
 let currentDLC = null
 let stringsFilePath = null
-let menu = null
 
 let mainWindow = null
 let listWindow = null
 let xmlEditor = null
+
+const devTools = false
 
 const config = getConfig()
 const translations = getTranslations()
@@ -40,12 +42,10 @@ initMain()
 function init() {
     checkUpdate()
     if (!config.pathToInitial) {
-        menu = getDisabledMenu()
         openFirstSteps()
     }
     else if (checkPaths()) {
         initDLC()
-        menu = getMainMenu()
         openMain()
     }
     else {
@@ -60,6 +60,18 @@ function initMain() {
         }
     }
     
+    main.shortMenu = {
+        get() {
+            return getShortMenu()
+        }
+    }
+
+    main.menu = {
+        get() {
+            return getMainMenu()
+        }
+    }
+
     main.config = {
         get() {
             return config
@@ -83,6 +95,12 @@ function initMain() {
         get() {
             return currentDLC
         }
+    }
+
+    main.setLang = function(lang) {
+        config.language = lang
+        saveConfig()
+        reload()
     }
 
     main.saveToOriginal = function() {
@@ -151,6 +169,11 @@ function initMain() {
             }
         }
     }
+
+    main.setDevMode = function(value) {
+        config.devMode = value
+        reload()
+    }
     
     main.setFileData = function(path, data) {
         try {
@@ -161,10 +184,15 @@ function initMain() {
     }
     
     main.reload = reload
+    main.quit = app.quit
+    main.openLink = url => {shell.openExternal(url)}
     main.showFile = shell.showItemInFolder
+    main.showFolder = path => {shell.openPath(path)}
     main.openXMLEditor = openXMLEditor
     main.openList = openList
     main.saveBackup = saveBackup
+    main.resetConfig = resetConfig
+    main.restoreInitial = restoreInitial
 }
 
 function initApp() {
@@ -216,21 +244,24 @@ function getGameFolder(errors=true) {
 }
 
 function checkUpdate() {
-    https.get(locations.publicInfo, res => {
-        res.setEncoding('utf8')
-        let rawData = ''
-
-        res.on('data', (chunk) => {
-          rawData += chunk
-        })
-
-        res.on('end', () => {
-            const data = JSON.parse(rawData)
-            data.latestVersion = '0.5.2'
-            if (data.latestVersion !== config.version) {
-                showNotification(getText('[NOTIFICATION]'), getText('ALLOW_NEW_VERSION'), true)
-            }
-        })
+    dns.resolve('www.google.com', error => {
+        if (!error) {
+            https.get(locations.publicInfo, res => {
+                res.setEncoding('utf8')
+                let rawData = ''
+        
+                res.on('data', (chunk) => {
+                  rawData += chunk
+                })
+        
+                res.on('end', () => {
+                    const data = JSON.parse(rawData)
+                    if (data.latestVersion !== config.version) {
+                        showNotification(getText('[NOTIFICATION]'), getText('ALLOW_NEW_VERSION'), true)
+                    }
+                })
+            })
+        }
     })
 }
 
@@ -343,7 +374,7 @@ function openMain() {
 }
 
 function openFirstSteps() {
-    const wind = createWindow('firstSteps.html', {width: 450, height: 350})
+    const wind = createWindow('firstSteps.html', {width: 550, height: 450})
     wind.once('close', () => {
         app.quit()
     })
@@ -395,13 +426,19 @@ function openXMLEditor(path=null, dlc=null) {
 }
 
 function saveBackup() {
-    rmSync(locations.temp, {
-        recursive: true
-    })
+    if (existsSync(locations.temp)) {
+        rmSync(locations.temp, {
+            recursive: true
+        })
+    }
     mkdirSync(locations.temp)
     execSync(`WinRAR x ${config.pathToInitial} @unpack-list.lst ..\\temp\\`, {
         cwd: locations.winrar
     })
+
+    if (!existsSync(locations.backupFolder)) {
+        mkdirSync(locations.backupFolder)
+    }
 
     if (existsSync(locations.backupInitial)) {
         try {
@@ -444,10 +481,13 @@ function createWindow(fileName, args={}) {
             contextIsolation: false
         }
     })
-    if (menu) wind.setMenu(menu)
+    wind.setMenu(null)
     wind.loadFile(join(locations.HTMLFolder, fileName)).then(() => {
         wind.show()
         wind.focus()
+        if (devTools) {
+            wind.webContents.toggleDevTools()
+        }
     })
     pathToReturn = args.path
     currentDLC = args.dlc
@@ -477,19 +517,24 @@ function resetConfig() {
     config.pathToInitial = null
     config.dlc = []
     config.devMode = false
+
     if (existsSync(locations.backupInitial)) {
         try {
             unlinkSync(locations.backupInitial)
-            saveConfig()
-            reload()
         } catch (error) {
             showNotification(getText('[ERROR]'), getText('[DELETE_OLD_INITIAL_BACKUP_ERROR]'))
         }
     }
-    else {
-        saveConfig()
-        reload()
+
+    if (existsSync(locations.temp)) {
+        rmSync(locations.temp, {
+            recursive: true
+        })
+        mkdirSync(locations.temp)
     }
+
+    saveConfig()
+    reload()    
 }
 
 function getText(key, returnKey=true) {
@@ -521,9 +566,8 @@ function getItems(path) {
     for (const item of items) {
         array.push({
             label: item.name,
-            click: () => {
-                openXMLEditor(item.path)
-            }
+            role: 'open-editor',
+            path: item.path
         })
     }
 
@@ -574,9 +618,9 @@ function getDLCItems() {
             for (const item of array) {
                 out.push({
                     label: item.name,
-                    click: () => {
-                        openXMLEditor(item.path, dlc)
-                    }
+                    role: 'open-editor',
+                    path: item.path,
+                    dlc: dlc
                 })
             }
         }
@@ -587,7 +631,6 @@ function getDLCItems() {
     if (dlcItems) {
         for (const dlc of dlcItems) {
             const trucks = fromDir(join(dlc.path, 'classes', 'trucks'))
-            //const addons = fromDir(join(dlc.path, 'classes', 'trucks', 'addons'))
             const cargo = fromDir(join(dlc.path, 'classes', 'trucks', 'cargo'))
             const trailers = fromDir(join(dlc.path, 'classes', 'trucks', 'trailers'))
             const suspensions = fromDir(join(dlc.path, 'classes', 'suspensions'))
@@ -601,13 +644,6 @@ function getDLCItems() {
                 const submenu = []
                 const xmlItems = getItemsFromDLC(trucks, dlc.name)
 
-                // if (addons) {
-                //     submenu.push({
-                //         label: getText('[ADDONS_CATEGORY_TITLE]'),
-                //         enabled: false,
-                //         submenu: getItemsFromDLC(addons, dlc.name)
-                //     })
-                // }
                 if (cargo) {
                     submenu.push({
                         label: getText('[CARGO_CATEGORY_TITLE]'),
@@ -621,7 +657,7 @@ function getDLCItems() {
                     })
                 }
                 if (submenu.length !== 0) {
-                    submenu.push({ type: 'separator' })
+                    submenu.push({ role: 'separator' })
                 }
                 if (submenu.length !== 0 && xmlItems.length !== 0) {
                     dlcSubmenu.push({
@@ -675,54 +711,14 @@ function getDLCItems() {
     return array
 }
 
-function getDisabledMenu() {
-    return Menu.buildFromTemplate([
+function getShortMenu() {
+    return [
         {
             label: getText('[FILE_MENU_LABEL]'),
             submenu: [
                 {
-                    label: getText('[OPEN_BUTTON]'),
-                    enabled: false
-                },
-                {
-                    label: getText('[SETTINGS_MENU_ITEM_LABEL]'),
-                    submenu: [
-                        {
-                            label: getText('[RESET_MENU_ITEM_LABEL]'),
-                            enabled: false
-                        },
-                        {
-                            label: getText('[DEV_MODE_MENU_ITEM_LABEL]'),
-                            enabled: false
-                        },
-                        {
-                            label: 'DevTools',
-                            role: 'toggleDevTools'
-                        }
-                    ]
-                },
-                {
                     label: getText('[EXIT_MENU_ITEM_LABEL]'),
-                    click() {
-                        app.quit()
-                    }
-                }
-            ]
-        },
-        {
-            label: getText('[BACKUP_MENU_LABEL]'),
-            submenu: [
-                {
-                    label: getText('[OPEN_BUTTON]'),
-                    enabled: false
-                },
-                {
-                    label: getText('[SAVE_BUTTON]'),
-                    enabled: false
-                },
-                {
-                    label: getText('[RESTORE_MENU_ITEM_LABEL]'),
-                    enabled: false
+                    role: 'quit-app'
                 }
             ]
         },
@@ -731,246 +727,42 @@ function getDisabledMenu() {
             submenu: [
                 {
                     label: getText('[HOW_TO_USE_TITLE]'),
-                    click() {
-                        shell.openExternal('https://snowrunner.mod.io/guides/snowrunner-xml-editor')
-                    }
+                    role: 'open-link',
+                    url: 'https://snowrunner.mod.io/guides/snowrunner-xml-editor'
                 },
                 {
                     label: 'GitHub',
-                    click() {
-                        shell.openExternal('https://github.com/VerZsuT/SnowRunner-XML-Editor-Desktop')
-                    }
+                    role: 'open-link',
+                    url: 'https://github.com/VerZsuT/SnowRunner-XML-Editor-Desktop'
                 },
                 {
                     label: 'YouTube(RU)',
-                    click() {
-                        shell.openExternal('https://youtube.com/playlist?list=PLDwd4yUwzS2VtWCpC9X6MXm47Kv_s_mq2')
-                    }
+                    role: 'open-link',
+                    url: 'https://youtube.com/playlist?list=PLDwd4yUwzS2VtWCpC9X6MXm47Kv_s_mq2'
                 }
             ]
         }
-    ])
+    ]
 }
 
 function getMainMenu() {
-    return Menu.buildFromTemplate([
+    return [
         {
             label: getText('[FILE_MENU_LABEL]'),
             submenu: [
                 {
-                    label: getText('[OPEN_BUTTON]'),
-                    submenu: [
-                        {
-                            label: 'initial.pak',
-                            click() {
-                                shell.showItemInFolder(config.pathToInitial)
-                            }
-                        },
-                        {
-                            label: getText('[MAIN_LIST_TITLE]'),
-                            submenu: [
-                                {
-                                    label: '<--',
-                                    click() {
-                                        shell.openPath(locations.classes)
-                                    }
-                                },
-                                { type: 'separator' },
-                                {
-                                    label: getText('[TRUCKS_CATEGORY_TITLE]'),
-                                    submenu: [
-                                        {
-                                            label: '<--',
-                                            click() {
-                                                shell.openPath(join(locations.classes, 'trucks'))
-                                            }
-                                        },
-                                        { type: 'separator' },
-                                        {
-                                            label: getText('[CARGO_CATEGORY_TITLE]'),
-                                            submenu: [
-                                                {
-                                                    label: '<--',
-                                                    click() {
-                                                        shell.openPath(join(locations.classes, 'trucks', 'cargo'))
-                                                    }
-                                                },
-                                                { type: 'separator' },
-                                                ...getItems(join(locations.classes, 'trucks', 'cargo'))
-                                            ]
-                                        },
-                                        {
-                                            label: getText('[TRAILERS_CATEGORY_TITLE]'),
-                                            submenu: [
-                                                {
-                                                    label: '<--',
-                                                    click() {
-                                                        shell.openPath(join(locations.classes, 'trucks', 'trailers'))
-                                                    }
-                                                },
-                                                { type: 'separator' },
-                                                ...getItems(join(locations.classes, 'trucks', 'trailers'))
-                                            ]
-                                            
-                                        },
-                                        { type: 'separator' },
-                                        ...getItems(join(locations.classes, 'trucks'))
-                                    ]
-                                },
-                                {
-                                    label: getText('[WHEELS_CATEGORY_TITLE]'),
-                                    submenu: [
-                                        {
-                                            label: '<--',
-                                            click() {
-                                                shell.openPath(join(locations.classes, 'wheels'))
-                                            }
-                                        },
-                                        { type: 'separator' },
-                                        ...getItems(join(locations.classes, 'wheels'))
-                                    ]
-                                },
-                                {
-                                    label: getText('[WINCHES_CATEGORY_TITLE]'),
-                                    submenu: [
-                                        {
-                                            label: '<--',
-                                            click() {
-                                                shell.openPath(join(locations.classes, 'winches'))
-                                            }
-                                        },
-                                        { type: 'separator' },
-                                        ...getItems(join(locations.classes, 'winches'))
-                                    ]
-                                },
-                                {
-                                    label: getText('[GEARBOXES_CATEGORY_TITLE]'),
-                                    submenu: [
-                                        {
-                                            label: '<--',
-                                            click() {
-                                                shell.openPath(join(locations.classes, 'gearboxes'))
-                                            }
-                                        },
-                                        { type: 'separator' },
-                                        ...getItems(join(locations.classes, 'gearboxes'))
-                                    ]
-                                },
-                                {
-                                    label: getText('[ENGINES_CATEGORY_TITLE]'),
-                                    submenu: [
-                                        {
-                                            label: '<--',
-                                            click() {
-                                                shell.openPath(join(locations.classes, 'engines'))
-                                            }
-                                        },
-                                        { type: 'separator' },
-                                        ...getItems(join(locations.classes, 'engines'))
-                                    ]
-                                },
-                                {
-                                    label: getText('[SUSPENSIONS_CATEGORY_TITLE]'),
-                                    submenu: [
-                                        {
-                                            label: '<--',
-                                            click() {
-                                                shell.openPath(join(locations.classes, 'suspensions'))
-                                            }
-                                        },
-                                        { type: 'separator' },
-                                        ...getItems(join(locations.classes, 'suspensions'))
-                                    ]
-                                }
-                            ]
-                        },
-                        {
-                            label: getText('[DLC_MENU_ITEM_LABEL]'),
-                            submenu: getDLCItems()
-                        }
-                    ]
+                    label: getText('[RESET_MENU_ITEM_LABEL]'),
+                    role: 'reset-config'
                 },
-                // SETTINGS
                 {
-                    label: getText('[SETTINGS_MENU_ITEM_LABEL]'),
-                    submenu: [
-                        {
-                            label: getText('[LANGUAGE_MENU_ITEM_LABEL]'),
-                            submenu: [
-                                {
-                                    label: 'RU',
-                                    checked: config.language === 'RU',
-                                    type: 'radio',
-                                    click() {
-                                        config.language = 'RU'
-                                        saveConfig()
-                                        reload()
-                                    }
-                                },
-                                {
-                                    label: 'EN',
-                                    checked: config.language === 'EN',
-                                    type: 'radio',
-                                    click() {
-                                        config.language = 'EN'
-                                        saveConfig()
-                                        reload()
-                                    }
-                                },
-                                {
-                                    label: 'DE',
-                                    checked: config.language === 'DE',
-                                    type: 'radio',
-                                    click() {
-                                        config.language = 'DE'
-                                        saveConfig()
-                                        reload()
-                                    }
-                                }
-                            ]
-                        },
-                        {
-                            label: getText('[PATHS_MENU_ITEM_LABEL]'),
-                            submenu: [
-                                {
-                                    label: getText('[GAME_FOLDER_LABEL]'),
-                                    click() {
-                                        const data = getGameFolder(false)
-                                        if (data) {
-                                            config.pathToInitial = data.initial
-                                            saveConfig()
-                                            reload()
-                                        }
-                                    }
-                                }
-                            ]
-                        },
-                        {
-                            label: getText('[RESET_MENU_ITEM_LABEL]'),
-                            click() {
-                                resetConfig()
-                            }
-                        },
-                        {
-                            label: getText('[DEV_MODE_MENU_ITEM_LABEL]'),
-                            type: 'checkbox',
-                            checked: config.devMode,
-                            click(event) {
-                                config.devMode = event.checked
-                                reload()
-                            }
-                        },
-                        {
-                            label: 'DevTools',
-                            role: 'toggleDevTools'
-                        }
-                    ]
+                    label: getText('[DEV_MODE_MENU_ITEM_LABEL]'),
+                    role: 'devmode',
+                    checked: config.devMode
                 },
+                { role: 'separator' },
                 {
                     label: getText('[EXIT_MENU_ITEM_LABEL]'),
-                    click() {
-                        app.quit()
-                    }
+                    role: 'quit-app'
                 }
             ]
         },
@@ -979,21 +771,16 @@ function getMainMenu() {
             submenu: [
                 {
                     label: getText('[OPEN_BUTTON]'),
-                    click() {
-                        shell.openPath(locations.backupFolder)
-                    }
+                    role: 'show-folder',
+                    path: locations.backupFolder
                 },
                 {
                     label: getText('[SAVE_BUTTON]'),
-                    click() {
-                        saveBackup()
-                    }
+                    role: 'save-backup'
                 },
                 {
                     label: getText('[RESTORE_MENU_ITEM_LABEL]'),
-                    click() {
-                        restoreInitial()
-                    }
+                    role: 'restore-initial'
                 }
             ]
         },
@@ -1002,23 +789,20 @@ function getMainMenu() {
             submenu: [
                 {
                     label: getText('[HOW_TO_USE_TITLE]'),
-                    click() {
-                        shell.openExternal('https://snowrunner.mod.io/guides/snowrunner-xml-editor')
-                    }
+                    role: 'open-link',
+                    url: 'https://snowrunner.mod.io/guides/snowrunner-xml-editor'
                 },
                 {
                     label: 'GitHub',
-                    click() {
-                        shell.openExternal('https://github.com/VerZsuT/SnowRunner-XML-Editor-Desktop')
-                    }
+                    role: 'open-link',
+                    url: 'https://github.com/VerZsuT/SnowRunner-XML-Editor-Desktop'
                 },
                 {
                     label: 'YouTube(RU)',
-                    click() {
-                        shell.openExternal('https://youtube.com/playlist?list=PLDwd4yUwzS2VtWCpC9X6MXm47Kv_s_mq2')
-                    }
+                    role: 'open-link',
+                    url: 'https://youtube.com/playlist?list=PLDwd4yUwzS2VtWCpC9X6MXm47Kv_s_mq2'
                 }
             ]
         }
-    ])
+    ]
 }

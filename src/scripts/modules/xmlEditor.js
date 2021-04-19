@@ -79,7 +79,7 @@ function initParams() {
     }
 
     const params = parseTemplate(template.main, name)
-    createItems(params)
+    createItems(params, get('#parameters'))
 }
 
 function parseTemplate(obj, name) {
@@ -95,16 +95,40 @@ function parseCoords(string) {
 
 function createItems(params, $parentGroupCont=null, tabs=1) {
     for (const param of params) {
-        const $group = create('div', {
-            class: 'group',
+        const id = Math.round(Math.random() * 1000000)
+        const id2 = Math.round(Math.random() * 1000000)
+        const id3 = Math.round(Math.random() * 1000000)
+        const $root = create('div', {
+            class: 'accordion-item'
+        })
+        const $groupHeader = create('div', {
+            class: 'accordion-header',
+            id: `_${id2}`,
             style: {
                 paddingLeft: tabs * 10 + 'px'
             }
         })
-        const $groupCont = create('div', {
-            class: 'group-cont'
+        const $groupHeaderCont = create('div', {
+            class: 'group accordion-button collapsed',
+            'data-bs-toggle': 'collapse',
+            'data-bs-target': `#_${id}`,
+            'aria-expanded': 'false',
+            style: {
+                paddingLeft: tabs * 5 + 'px'
+            }
         })
-        const $param = create('div')
+        const $groupContainer = create('div', {
+            class: `group-cont accordion-collapse collapse`,
+            'aria-labelledby': `_${id2}`,
+            id: `_${id}`
+        })
+        const $groupContent = create('div', {
+            id: `_${id3}`,
+            class: 'accordion-body'
+        })
+        const $param = create('div', {
+            class: 'list-group-item'
+        })
         const $text = create('div', {
             class: 'param-text',
             style: {
@@ -115,56 +139,36 @@ function createItems(params, $parentGroupCont=null, tabs=1) {
             class: 'param-value'
         })
 
-        $param.append($text, $value)
-        $group.addEventListener('click', () => {
-            if ($groupCont.style.display === 'none' || getComputedStyle($groupCont).display === 'none') {
-                $group.innerText = $group.innerText.replace('▼', '▲')
-                $groupCont.style.display = 'block'
-                $groupCont.style.height = '0px'
+        if ($parentGroupCont) {
+            $groupContainer.setAttribute('data-bs-parent', `#${$parentGroupCont.id}`)
+            $groupHeaderCont.onclick = () => {
                 setTimeout(() => {
-                    let height = 0
-                    for (const $child of $groupCont.children) {
-                        let style = getComputedStyle($child)
-                        if (style.display !== 'none') {
-                            height += +style.height.replace('px', '')
-                        }
-                    }
-                    $groupCont.style.height = `${height}px`
-                    setTimeout(() => {
-                        $groupCont.style.removeProperty('height')
-                    }, 500)
-                }, 50)
-            } else {
-                let height = 0
-                for (const $child of $groupCont.children) {
-                    let style = getComputedStyle($child)
-                    if (style.display !== 'none') {
-                        height += +style.height.replace('px', '')
-                    }
-                }
-                $groupCont.style.height = `${height}px`
-                setTimeout(() => {
-                    $groupCont.style.height = '0px'
-                    setTimeout(() => {
-                        $groupCont.style.display = 'none'
-                    }, 500)
-                    $group.innerText = $group.innerText.replace('▲', '▼')
-                }, 100)
+                    $parentGroupCont.classList.add('show')
+                }, 1000)
             }
-        })
+        }
+        
+
+        $param.append($text, $value)
 
         if (param.paramType === 'group') {
             if (param.groupItems.length === 0) {
                 continue
             }
-            $group.innerText = `▼  ${param.groupName}`
+            $groupHeader.innerText = `▼  ${param.groupName}`
             if ($parentGroupCont !== null) {
-                $parentGroupCont.append($group, $groupCont)
+                $groupContainer.append($groupContent)
+                $groupHeaderCont.append($groupHeader)
+                $root.append($groupHeaderCont, $groupContainer)
+                $parentGroupCont.append($root)
             }
             else {
-                $paramsTable.append($group, $groupCont)
+                $groupContainer.append($groupContent)
+                $groupHeaderCont.append($groupHeader)
+                $root.append($groupHeaderCont, $groupContainer)
+                $paramsTable.append($root)
             }
-            createItems(param.groupItems, $groupCont, tabs + 1)
+            createItems(param.groupItems, $groupContent, tabs + 1)
         }
         else {
             $text.innerText = param.text
@@ -180,13 +184,14 @@ function createItems(params, $parentGroupCont=null, tabs=1) {
                 let $input;
                 if (param.inputType === 'select') {
                     $input = createSelect(param.selectParams, param.value)
+                    $input.classList.add('form-select')
                 }
                 else if (param.type === 'file') {
                     $input = create('div')
                     for (let fileName of param.value.split(',')) {
                         fileName = fileName.replaceAll(' ', '')
                         const $button = create('button', {
-                            class: 'openFile',
+                            class: 'openFile btn btn-secondary btn-sm',
                             innerText: getText('[EDIT_FILE_BUTTON]')
                         })
                         $button.addEventListener('click', () => {
@@ -268,7 +273,10 @@ function createItems(params, $parentGroupCont=null, tabs=1) {
                         $input.placeholder = getText('[BY_DEFAULT]')
                     }
                 }
-                $input.className = 'param-input'
+                $input.classList.add('param-input')
+                if (!$input.querySelector('button')) {
+                    $input.classList.add('form-control')
+                }
                 if (param.onlyDeveloper) {
                     $input.title = getText('[ONLY_DEVELOPER_EDIT_TEXT]')
                     if (!devMode) {

@@ -4,23 +4,27 @@ function alertError(error) {
     alert(getText(`${error}`.replace('Error: ', '')))
 }
 
-export const props = new Proxy({}, {
-    get(_target, name) {
+export const props = new Proxy({errorHandler: alertError}, {
+    get(target, name) {
         const result = ipcRenderer.sendSync(`property_${name}_get`)
 
         if (result.error) {
-            alertError(result.error)
+            target.errorHandler(result.error)
             return null
         }
         else {
             return result.value
         }
     },
-    set(_target, name, value) {
+    set(target, name, value) {
+        if (name === 'errorHandler') {
+            target.errorHandler = value
+            return true
+        }
         const result = ipcRenderer.sendSync(`property_${name}_set`, value)
 
         if (result.error) {
-            alertError(result.error)
+            target.errorHandler(result.error)
             return false
         }
         else {
@@ -29,13 +33,13 @@ export const props = new Proxy({}, {
     }
 })
 
-export const funcs = new Proxy({}, {
-    get(_target, name) {
+export const funcs = new Proxy({errorHandler: alertError}, {
+    get(target, name) {
         return new Proxy((funcName, args) => {
             const result = ipcRenderer.sendSync(`function_${funcName}_call`, ...args)
         
             if (result.error) {
-                alertError(result.error)
+                target.errorHandler(result.error)
                 return null
             }
             else {

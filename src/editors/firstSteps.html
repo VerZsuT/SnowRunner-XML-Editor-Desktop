@@ -4,33 +4,42 @@
         <title>SnowRunner XML Editor {--VERSION--}</title>
         <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
         <meta http-equiv="Content-Security-Policy" content="script-src 'self'">
+        <link rel="stylesheet" href="../styles/bootstrap.min.css">
         <link rel="stylesheet" href="../styles/style.css">
         <link rel="stylesheet" href="../styles/firstSteps.css">
+        <script defer src="../scripts/bootstrap/bootstrap.bundle.min.js"></script>
         <script defer src="../scripts/modules/firstSteps.js" type="module"></script>
         <script defer src="../scripts/service/translate.js" type="module"></script>
+        <script defer src="../scripts/service/menu.js" type="module"></script>
     </head>
     <body>
-        <div id="loading">
-            <h1>...</h1>
-        </div>
+        <div id="menu" short='true'></div>
         <div id="main">
             <header>
-                <h2 to-translate>[FIRST_STEPS_DESCRIPTION]</h2>
+                <h2 class="h2" to-translate>[FIRST_STEPS_DESCRIPTION]</h2>
             </header>
     
             <div class="steps">
-                <label to-translate>[LANGUAGE_MENU_ITEM_LABEL]</label>
-                <select id="language-select">
+                <label to-translate class="form-label">[LANGUAGE_MENU_ITEM_LABEL]</label>
+                <select id="language-select" class="form-select">
                     <option>EN</option>
                     <option>RU</option>
                     <option>DE</option>
-                </select><br><br>
+                </select><br>
     
-                <label to-translate>[GAME_FOLDER_LABEL]</label><br>
-                <input type="text" id="game-folder-input" disabled>
-                <button class="open-button" id="game-folder-select" to-translate>[OPEN_BUTTON]</button><br>
+                <label to-translate class="form-label">[GAME_FOLDER_LABEL]</label><br>
+                <input type="text" id="game-folder-input" class="form-control" disabled>
+                <button class="btn btn-secondary btn-sm" id="game-folder-select" to-translate>[OPEN_BUTTON]</button><br>
 
-                <button id="save-to-config" to-translate>[SAVE_BUTTON]</button>
+                <button class="btn btn-primary" id="save-to-config" to-translate>[SAVE_BUTTON]</button>
+            </div>
+        </div>
+
+        <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 5">
+            <div id="live-toast" class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-body">
+                Вы не выбрали папку!
+                </div>
             </div>
         </div>
     </body>

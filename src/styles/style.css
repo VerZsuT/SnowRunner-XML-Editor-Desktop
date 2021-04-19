@@ -1,11 +1,34 @@
 body {
     margin: 0;
+    margin-top: 24px;
     padding: 0;
     background-color: #dceaf7;
 }
 
 #main {
     display: none;
+}
+
+#menu {
+    display: flex;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1;
+    background: var(--bs-light);
+}
+
+.dropdown-item {
+    text-decoration: none;
+    font-size: 0.7em;
+}
+
+.menu-item button {
+    box-shadow: none !important;
+}
+
+[aria-expanded='true'] {
+    background-color: #c0dcf4;
 }
 
 #title {
@@ -33,31 +56,11 @@ input,
 select {
     padding: 5px;
     font-size: 1em;
-    width: 200px;
+    width: 200px !important;
 }
 
 table {
     background: white;
-}
-
-body,
-button,
-pre {
-    font-family: 'Arial';
-}
-
-button {
-    outline: none;
-}
-
-button:disabled {
-    background: gray;
-    box-shadow: none;
-    cursor: initial;
-}
-
-button:disabled:hover {
-    background: gray;
 }
 
 .title {
@@ -82,8 +85,24 @@ button:disabled:hover {
 #parameters {
     width: 80%;
     margin: 0 auto;
-    border-spacing: 0px;
-    border-collapse: collapse;
+}
+
+.accordion-item {
+    border: 1px solid #597595;
+}
+
+.accordion-item .accordion-item {
+    border: none;
+    border-bottom: 1px solid #597595;
+    margin-bottom: 0;
+}
+
+.accordion-item .accordion-item .accordion-button {
+    border-radius: 0;
+}
+
+.accordion-body {
+    padding: 0;
 }
 
 #parameters td div {
@@ -104,7 +123,8 @@ button:disabled:hover {
     align-items: center;
     background-color: #d2daef;
     font-weight: bold;
-    border: 2px solid #597595;
+    border-color: #597595;
+    border-width: 2px;
     padding-left: 15px;
     width: 100%;
     height: 50px;
@@ -144,36 +164,6 @@ header {
     margin-bottom: 30px;
 }
 
-button {
-    padding: 5px;
-    -webkit-appearance: none;
-    width: 200px;
-    text-decoration: none;
-    text-align: center;
-    line-height: 20px;
-    display: block;
-    margin: 20px auto;
-    font: normal 17px arial;
-    border: none;
-    border-radius: 3px;
-    cursor: pointer;
-}
-
-button {
-    font-weight: 700;
-    color: white;
-    text-decoration: none;
-    padding: .8em 1em calc(.8em + 3px);
-    background: rgb(64 87 199);
-    box-shadow: 0 -3px rgb(72 53 167) inset;
-    transition: 0.2s;
-} 
-button:hover { background: rgb(64 124 199); }
-button:active {
-    background: rgb(64 87 199);
-    box-shadow: 0 3px rgb(64 87 199) inset;
-}
-
 .red-text {
     color: #e3e31b;
 }
@@ -207,10 +197,8 @@ button:active {
 }
 
 .group-cont {
-    display: none;
     transition: all 0.5s ease 0s;
     overflow: hidden;
-    border: 2px solid #597595;
     border-top: none;
     border-bottom: none;
     background: white;
@@ -222,8 +210,12 @@ button:active {
 .param {
     width: 100%;
     height: 50px;
-    border-bottom: 2px solid #597595;
+    border-bottom: 1px solid #597595;
     box-sizing: border-box;
+}
+
+.accordion-body > div:last-child {
+    border-bottom: none;
 }
 
 .param-text,
@@ -238,17 +230,17 @@ button:active {
 }
 
 .param-text {
-    border-right: 2px solid #597595;
-}
-
-.group {
-    margin-top: 5px;
+    border-right: 1px solid #597595;
 }
 
 .group-cont .group {
     margin-top: 0;
     border-left: none !important;
     border-right: none !important;
+    border-top: none !important;
+}
+
+:nth-child(1n+2).group {
     border-top: none !important;
 }
 
@@ -286,4 +278,10 @@ footer span {
     margin: 0;
     float: left;
     margin-right: 10px;
+}
+
+#save-params {
+    display: block;
+    margin: 0 auto;
+    margin-top: 10px;
 }
