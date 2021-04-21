@@ -104,7 +104,7 @@ function initMain() {
     }
 
     main.saveToOriginal = function() {
-        exec(`WinRAR f ${config.pathToInitial} ..\\temp\\ -r -ep1`, {
+        exec(`WinRAR f "${config.pathToInitial}" ..\\temp\\ -r -ep1`, {
             cwd: locations.winrar
         }, error => {
             if (error) {
@@ -432,7 +432,7 @@ function saveBackup() {
         })
     }
     mkdirSync(locations.temp)
-    execSync(`WinRAR x ${config.pathToInitial} @unpack-list.lst ..\\temp\\`, {
+    execSync(`WinRAR x "${config.pathToInitial}" @unpack-list.lst ..\\temp\\`, {
         cwd: locations.winrar
     })
 

@@ -6,7 +6,7 @@
 
 Для начала вам необходимо скачать программу в разделе releases и распаковать её. Запустите "SnowRunner XML Editor.exe"
 
-![Первая настройка](https://image.modcdn.io/members/4a97/2992192/profile/2021-04-1.png)
+![Первая настройка](https://image.modcdn.io/members/4a97/2992192/profile/2021-04-2.png)
 
 При первом запуске потребуется настроить программу:
 
@@ -16,12 +16,12 @@
 
 После чего вы увидите главное меню программы:
 
-![Главное меню](https://image.modcdn.io/members/4a97/2992192/profile/2021-03-3.1.png)
+![Главное меню](https://image.modcdn.io/members/4a97/2992192/profile/2021-04-2.1.png)
 
 Здесь вы можете выбрать категорию.
 После чего выберите нужный вам автомобиль/прицеп/груз из списка.
 
-![Список автомобилей](https://image.modcdn.io/members/4a97/2992192/profile/2021-03-3.2.png)
+![Список автомобилей](https://image.modcdn.io/members/4a97/2992192/profile/2021-04-2.2.png)
 
 Выбрав нужный вам автомобиль/прицеп/груз вы увидите таблицу для изменения параметров. Измените их как вам требуется.
 
@@ -47,7 +47,7 @@
 
 To get started, you need to download the program from the releases page and unpack it. Run "SnowRunner XML Editor.exe"
 
-![Initial setup](https://image.modcdn.io/members/4a97/2992192/profile/2021-04-1.1.png)
+![Initial setup](https://image.modcdn.io/members/4a97/2992192/profile/2021-04-2.3.png)
 
 At the first launch, you will need to configure the program:
 
@@ -57,12 +57,12 @@ At the first launch, you will need to configure the program:
 
 Then you will see the main menu of the program:
 
-![Main menu](https://image.modcdn.io/members/4a97/2992192/profile/2021-03-3.4.png)
+![Main menu](https://image.modcdn.io/members/4a97/2992192/profile/2021-04-2.4.png)
 
 Here you can select a category.
 Then select the car/trailer/cargo you need from the list.
 
-![Cars list](https://image.modcdn.io/members/4a97/2992192/profile/2021-03-3.5.png)
+![Cars list](https://image.modcdn.io/members/4a97/2992192/profile/2021-04-2.5.png)
 
 After selecting the car/trailer/cargo you need, you will see a table for changing the parameters. Change them as you require.
 
