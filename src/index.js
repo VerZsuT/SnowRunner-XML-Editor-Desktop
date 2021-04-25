@@ -31,7 +31,7 @@ let mainWindow = null
 let listWindow = null
 let xmlEditor = null
 
-const devTools = true
+const devTools = false
 
 const config = getConfig()
 const translations = getTranslations()
