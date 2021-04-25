@@ -5,9 +5,9 @@ const suspension = {
 			Group({nameType: 'Computed', nameSelector: '[SUSPENSION_SET_ITEM_TEXT]', resNameSelector: '[SUSPENSION_SET_ITEM]', nameAttribute: 'UiName', resNameAttribute: 'Name', defaultSelector: '[SUSPENSION_SET_ITEM]'}, [
 				Input({attribute: 'Name', text: '[ID]', type: 'text', onlyDeveloper: 'true'}),
 				Input({attribute: 'CriticalDamageThreshold', text: '[CRITICAL_DAMAGE_THRESHOLD]', numberType: 'float', max: '0.999'}),
-				Input({attribute: 'DamageCapacity', text: '[DAMAGE_CAPACITY]', max: '64000'}),
+				Input({attribute: 'DamageCapacity', text: '[DAMAGE_CAPACITY]', max: '64000', bold: true}),
 				Group({name: '[UNLOCK_GROUP_NAME]', defaultSelector: '[GAME_DATA]'}, [
-					Input({attribute: 'Price', text: '[PRICE]'}),
+					Input({attribute: 'Price', text: '[PRICE]', bold: true}),
 					Select({attribute: 'UnlockByExploration', text: '[BY_EXPLORATION]', onlyDeveloper: 'true'}, [
 						Opt({text: '[FIND_ON_MAP]', value: 'true'}),
 						Opt({text: '[BY_RANK]', value: 'false'})

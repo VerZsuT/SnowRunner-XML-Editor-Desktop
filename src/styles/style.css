@@ -23,6 +23,15 @@ body {
     font-size: 0.7em;
 }
 
+.accordion-button::after {
+    margin-left: 0;
+    margin-right: auto;
+}
+
+.accordion-button:not(.collapsed) {
+    color: black;
+}
+
 .menu-item button {
     box-shadow: none !important;
 }
@@ -280,8 +289,28 @@ footer span {
     margin-right: 10px;
 }
 
-#save-params {
+#save-params, #back {
+    transition: all 1s ease 0s;
+    position: absolute;
+    top: 20px;
+    width: 34px;
+    left: 60px;
+    height: 34px;
+    background: url(../icons/save-icon.png) 50% no-repeat;
+    border: none;
+    filter: invert(1);
     display: block;
     margin: 0 auto;
     margin-top: 10px;
+}
+
+#back {
+    left: 10px;
+    background: url(../icons/back-arrow.png) 50% no-repeat;
+    filter: invert(1) contrast(0.5);
+}
+
+#save-params:hover,
+#back:hover {
+    filter: contrast(1.5) invert(1);
 }

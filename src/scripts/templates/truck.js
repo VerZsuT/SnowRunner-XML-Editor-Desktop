@@ -3,12 +3,12 @@ const truck = {
 	main: [
 		Template({}, [
 			Group({name: '[TEXT_GROUP_NAME]', defaultSelector: '[UIDESC]'}, [
-				Input({attribute: 'UiName', text: '[UINAME]', type: 'text'}),
+				Input({attribute: 'UiName', text: '[UINAME]', type: 'text', bold: true}),
 				Input({attribute: 'UiDesc', text: '[UIDESC]', type: 'text'})
 			]),
 			Group({name: '[CONTROL_GROUP_NAME]', defaultSelector: '[TRUCK_DATA]'}, [
 				Input({attribute: 'BackSteerSpeed', text: '[BACK_STEER_SPEED]', numberType: 'float', max: '1.0'}),
-				Input({attribute: 'SteerSpeed', text: '[STEER_SPEED]', numberType: 'float'})
+				Input({attribute: 'SteerSpeed', text: '[STEER_SPEED]', numberType: 'float', bold: true})
 			]),
 			Group({name: '[WINCH_GROUP_NAME]', defaultSelector: '[WINCH]'}, [
 				Input({attribute: 'Default', text: '[DEFAULT_WINCH]', type: 'text', onlyDeveloper: 'true'}),
@@ -16,17 +16,17 @@ const truck = {
 					Opt({text: '[ALLOW]', value: 'true'}),
 					Opt({text: '[NOT_ALLOW]', value: 'false'})
 				]),
-				Input({attribute: 'Type', text: '[WINCHES_FILE]', type: 'file', fileType: 'winches'})
+				Input({attribute: 'Type', text: '[WINCHES_FILE]', type: 'file', fileType: 'winches', bold: true})
 			]),
 			Group({name: '[WHEELS_GROUP_NAME]', defaultSelector: '[WHEELS]'}, [
 				Input({attribute: 'DefaultRim', text: '[DEFAULT_RIM]', type: 'text', onlyDeveloper: 'true'}),
 				Input({attribute: 'DefaultTire', text: '[DEFAULT_TIRE]', type: 'text', onlyDeveloper: 'true'}),
-				Input({attribute: 'DefaultWheelType', text: '[TIRES_FILE]', type: 'file', fileType: 'wheels'})
+				Input({attribute: 'DefaultWheelType', text: '[TIRES_FILE]', type: 'file', fileType: 'wheels', bold: true})
 			]),
 			Group({name: '[SUSPENSION_GROUP_NAME]', defaultSelector: '[SUSPENSION]'}, [
 				Input({attribute: 'Default', text: '[DEFAULT_SUSPENSION]', type: 'text', onlyDeveloper: 'true'}),
-				Input({attribute: 'Type', text: '[SUSPENSIONS_FILE]', type: 'file', fileType: 'suspensions'}),
-				Select({attribute: 'DiffLockType', text: '[DIFF_LOCK]', selector: '[TRUCK_DATA]'}, [
+				Input({attribute: 'Type', text: '[SUSPENSIONS_FILE]', type: 'file', fileType: 'suspensions', bold: true}),
+				Select({attribute: 'DiffLockType', text: '[DIFF_LOCK]', selector: '[TRUCK_DATA]', bold: true}, [
 					Opt({text: '[NONE]', value: 'None'}),
 					Opt({text: '[INSTALLED]', value: 'Installed'}),
 					Opt({text: '[UNINSTALLED]', value: 'Uninstalled'}),
@@ -35,24 +35,24 @@ const truck = {
 			]),
 			Group({name: '[GEARBOX_GROUP_NAME]', defaultSelector: '[GEARBOX]'}, [
 				Input({attribute: 'Default', text: '[DEFAULT_GEARBOX]', type: 'text', onlyDeveloper: 'true'}),
-				Input({attribute: 'Type', text: '[GEARBOXES_FILE]', type: 'file', fileType: 'gearboxes'})
+				Input({attribute: 'Type', text: '[GEARBOXES_FILE]', type: 'file', fileType: 'gearboxes', bold: true})
 			]),
 			Group({name: '[ENGINE_GROUP_NAME]', defaultSelector: '[ENGINE]'}, [
 				Input({attribute: 'Default', text: '[DEFAULT_ENGINE]', type: 'text', onlyDeveloper: 'true'}),
-				Input({attribute: 'Type', text: '[ENGINES_FILE]', type: 'file', fileType: 'engines'}),
+				Input({attribute: 'Type', text: '[ENGINES_FILE]', type: 'file', fileType: 'engines', bold: true}),
 				Input({attribute: 'EngineStartDelay', text: '[ENGINE_START_DELAY]', selector: '[TRUCK_DATA]', numberType: 'float', max: '8.0'}),
 				Input({attribute: 'ExhaustStartTime', text: '[EXHAUST_START_TIME]', selector: '[TRUCK_DATA]', numberType: 'float'})
 			]),
 			Group({name: '[FUEL_GROUP_NAME]', defaultSelector: '[FUEL_TANK]'}, [
 				Input({attribute: 'DamageCapacity', text: '[DAMAGE_CAPACITY]', max: '64000'}),
-				Input({attribute: 'FuelCapacity', text: '[FUEL_CAPACITY]', selector: '[TRUCK_DATA]'})
+				Input({attribute: 'FuelCapacity', text: '[FUEL_CAPACITY]', selector: '[TRUCK_DATA]', bold: true})
 			]),
 			Group({name: '[UNLOCK_GROUP_NAME]', defaultSelector: '[GAME_DATA]'}, [
-				Select({attribute: 'Country', text: '[COUNTRY]'}, [
+				Select({attribute: 'Country', text: '[COUNTRY]', bold: true}, [
 					Opt({text: '[RUSSIA]', value: 'RU'}),
 					Opt({text: '[USA]', value: 'US'})
 				]),
-				Input({attribute: 'Price', text: '[PRICE]'}),
+				Input({attribute: 'Price', text: '[PRICE]', bold: true}),
 				Select({attribute: 'UnlockByExploration', text: '[BY_EXPLORATION]'}, [
 					Opt({text: '[FIND_ON_MAP]', value: 'true'}),
 					Opt({text: '[BY_RANK]', value: 'false'})

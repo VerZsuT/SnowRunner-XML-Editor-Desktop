@@ -31,7 +31,7 @@ let mainWindow = null
 let listWindow = null
 let xmlEditor = null
 
-const devTools = false
+const devTools = true
 
 const config = getConfig()
 const translations = getTranslations()
@@ -346,7 +346,7 @@ function openList() {
     }
     listWindow = createWindow('list.html', {
         width: 800,
-        resizable: false
+        height: 470
     })
     listWindow.once('close', () => {
         listWindow = null
@@ -364,8 +364,8 @@ function openMain() {
         return
     }
     mainWindow = createWindow('main.html', {
-        width: 920, 
-        height: 350, 
+        width: 970, 
+        height: 370, 
         resizable: false
     })
     mainWindow.once('close', () => {
@@ -425,7 +425,7 @@ function openXMLEditor(path=null, dlc=null) {
     }
 }
 
-function saveBackup() {
+function unpackFiles() {
     if (existsSync(locations.temp)) {
         rmSync(locations.temp, {
             recursive: true
@@ -435,6 +435,10 @@ function saveBackup() {
     execSync(`WinRAR x "${config.pathToInitial}" @unpack-list.lst ..\\temp\\`, {
         cwd: locations.winrar
     })
+}
+
+function saveBackup() {
+    unpackFiles()
 
     if (!existsSync(locations.backupFolder)) {
         mkdirSync(locations.backupFolder)
@@ -507,6 +511,7 @@ function restoreInitial() {
     }
     try {
         copyFileSync(locations.backupInitial, config.pathToInitial)
+        unpackFiles()
         showNotification(getText('[SUCCESS]'), getText('[SUCCESS_INITIAL_RESTORE]'))
     } catch {
         showNotification(getText('[ERROR]'), getText('[DELETE_CURRENT_INITIAL_BACKUP_ERROR]'))
@@ -515,6 +520,8 @@ function restoreInitial() {
 
 function resetConfig() {
     config.pathToInitial = null
+    config.pathToDLC = null
+    config.pathToClasses = null
     config.dlc = []
     config.devMode = false
 

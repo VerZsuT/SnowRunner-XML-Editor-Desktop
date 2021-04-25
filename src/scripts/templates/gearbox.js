@@ -6,9 +6,9 @@ const gearbox = {
 				Input({attribute: 'Name', text: '[ID]', type: 'text', onlyDeveloper: 'true'}),
 				Input({attribute: 'AWDConsumptionModifier', text: '[AWD_CONSUMPTION_MODIFIER]', numberType: 'float', max: '32'}),
 				Input({attribute: 'CriticalDamageThreshold', text: '[CRITICAL_DAMAGE_THRESHOLD]', numberType: 'float', max: '0.999'}),
-				Input({attribute: 'DamageCapacity', text: '[DAMAGE_CAPACITY]', max: '64000'}),
+				Input({attribute: 'DamageCapacity', text: '[DAMAGE_CAPACITY]', max: '64000', bold: true}),
 				Input({attribute: 'DamagedConsumptionModifier', text: '[DAMAGE_CONSUMPTION_MODIFIER]', numberType: 'float', max: '32'}),
-				Input({attribute: 'FuelConsumption', text: '[FUEL_CONSUMPTION]', numberType: 'float', max: '10'}),
+				Input({attribute: 'FuelConsumption', text: '[FUEL_CONSUMPTION]', numberType: 'float', max: '10', bold: true}),
 				Input({attribute: 'IdleFuelModifier', text: '[IDLE_FUEL_CONSUMPTION]', numberType: 'float', max: '10'}),
 				Group({name: '[GEARBOX_PARAMS]', defaultSelector: '[GEARBOX_PARAMS]'}, [
 					Select({attribute: 'IsHighGearExists', text: '[HIGH_GEAR]'}, [
@@ -29,21 +29,21 @@ const gearbox = {
 					])
 				]),
 				Group({name: '[REVERCE_GEAR]', defaultSelector: '[REVERSE_GEAR]'}, [
-					Input({attribute: 'AngVel', text: '[ANGEL_VELOCITY]', numberType: 'float', max: '32'}),
+					Input({attribute: 'AngVel', text: '[ANGEL_VELOCITY]', numberType: 'float', max: '32', bold: true}),
 					Input({attribute: 'FuelModifier', text: '[FUEL_MODIFIER]', numberType: 'float', max: '10'})
 				]),
 				Group({name: '[HIGH_GEAR]', defaultSelector: '[HIGH_GEAR]'}, [
-					Input({attribute: 'AngVel', text: '[ANGEL_VELOCITY]', numberType: 'float', max: '32'}),
+					Input({attribute: 'AngVel', text: '[ANGEL_VELOCITY]', numberType: 'float', max: '32', bold: true}),
 					Input({attribute: 'FuelModifier', text: '[FUEL_MODIFIER]', numberType: 'float', max: '10'})
 				]),
 				Template({type: 'Multiply', itemSelector: '[GEAR]'}, [
 					Group({name: '[GEAR]', defaultSelector: '[GEAR_ITEM]', withCounter: 'true'}, [
-						Input({attribute: 'AngVel', text: '[ANGEL_VELOCITY]', numberType: 'float', max: '32'}),
+						Input({attribute: 'AngVel', text: '[ANGEL_VELOCITY]', numberType: 'float', max: '32', bold: true}),
 						Input({attribute: 'FuelModifier', text: '[FUEL_MODIFIER]', numberType: 'float', max: '10'})
 					])
 				]),
 				Group({name: '[UNLOCK_GROUP_NAME]', defaultSelector: '[GAME_DATA]'}, [
-					Input({attribute: 'Price', text: '[PRICE]'}),
+					Input({attribute: 'Price', text: '[PRICE]', bold: true}),
 					Select({attribute: 'UnlockByExploration', text: '[BY_EXPLORATION]', onlyDeveloper: 'true'}, [
 						Opt({text: '[FIND_ON_MAP]', value: 'true'}),
 						Opt({text: '[BY_RANK]', value: 'false'})

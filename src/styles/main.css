@@ -4,8 +4,8 @@ body {
 
 .category {
     display: flex;
-    height: 300px;
-    width: 300px;
+    height: 320px;
+    width: 320px;
     position: relative;
     cursor: pointer;
 }

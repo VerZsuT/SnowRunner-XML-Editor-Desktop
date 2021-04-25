@@ -225,6 +225,7 @@ export function Input(params) {
         max: params.max,
         numberType: params.numberType || 'int',
         fileType: params.fileType,
+        bold: params.bold || false,
         get attributes() {
             const array = []
             for (const name in params) {
@@ -260,57 +261,10 @@ export function Input(params) {
                 min: this.min,
                 max: this.max,
                 numberType: this.numberType,
-                fileType: this.fileType
+                fileType: this.fileType,
+                bold: this.bold
             }
 
-            return [param]
-        }
-    })
-}
-
-/**
- * params:
- * - **attribute** [string]
- * - **text** [string]
- * - **single** [bool]
- * - **onlyDeveloper** [bool]
- * @returns {object} Info
- */
-export function Info(params) {
-    return ({
-        attribute: params.attribute,
-        text: params.text,
-        selector: params.selector,
-        single: params.single || false,
-        onlyDeveloper: params.onlyDeveloper || false,
-        get attributes() {
-            const array = []
-            for (const name in params) {
-                array.push({name: name, value: params[name]})
-            }
-            return array
-        },
-        nodeName: 'Info',
-        getParams(props) {
-            let selectors = props.selectors
-            let defaultSelector = props.defaultSelector
-            let fileDOM = props.fileDOM
-            let templateName = props.templateName
-
-            let param = null
-            const selectorType = removePars(this.selector)
-            const selector = selectors[selectorType] || selectorType || selectors[defaultSelector]
-            if (!fileDOM.querySelector(selector)) {
-                console.warn(`Missing parameter\n\tName: '${this.attribute}',\n\tText: '${this.text}',\n\tSelector: '${selector}'.`)
-                return []
-            }
-            const value = fileDOM.querySelector(selector).getAttribute(this.attribute)
-            param = {
-                text: getTextFromTemplate(this.text, templateName),
-                value: value,
-                paramType: 'info'
-            }
-            
             return [param]
         }
     })
@@ -333,6 +287,7 @@ export function Select(params, children) {
         single: params.single,
         onlyDeveloper: params.onlyDeveloper,
         children: children,
+        bold: params.bold,
         get attributes() {
             const array = []
             for (const name in params) {
@@ -384,7 +339,8 @@ export function Select(params, children) {
                 selector: selector,
                 paramType: 'input',
                 inputType: 'select',
-                onlyDeveloper: this.onlyDeveloper
+                onlyDeveloper: this.onlyDeveloper,
+                bold: this.bold
             }
             
             return [param]

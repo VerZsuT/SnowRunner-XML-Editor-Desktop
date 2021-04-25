@@ -4,6 +4,7 @@ import templates from '../service/templates.js'
 
 const $paramsTable = get('#parameters')
 const $saveParamsButton = get('#save-params')
+const $backButton = get('#back')
 const $title = get('#title')
 
 const devMode = config.devMode
@@ -12,6 +13,7 @@ let currentDLC = null
 let fileDOM = null
 
 $saveParamsButton.onclick = generateAndSaveFile
+$backButton.onclick = window.close
 
 checkData()
 
@@ -132,7 +134,8 @@ function createItems(params, $parentGroupCont=null, tabs=1) {
         const $text = create('div', {
             class: 'param-text',
             style: {
-                paddingLeft: tabs * 10 + 'px'
+                paddingLeft: tabs * 10 + 'px',
+                fontWeight: param.bold? 'bold' : 'normal' 
             }
         })
         const $value = create('div', {
@@ -155,7 +158,7 @@ function createItems(params, $parentGroupCont=null, tabs=1) {
             if (param.groupItems.length === 0) {
                 continue
             }
-            $groupHeader.innerText = `▼  ${param.groupName}`
+            $groupHeader.innerText = param.groupName
             if ($parentGroupCont !== null) {
                 $groupContainer.append($groupContent)
                 $groupHeaderCont.append($groupHeader)
@@ -172,11 +175,7 @@ function createItems(params, $parentGroupCont=null, tabs=1) {
         }
         else {
             $text.innerText = param.text
-
-            if (param.paramType === 'info') {
-                $value.innerText = param.value
-                $param.className = 'info'
-            } else if (param.paramType === 'input') {
+            if (param.paramType === 'input') {
                 $param.className = 'info'
                 $param.setAttribute('name', param.name)
                 $param.setAttribute('selector', param.selector)
