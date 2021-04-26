@@ -2,14 +2,16 @@ const https = require('https')
 const dns = require('dns')
 const { exec, execSync } = require('child_process')
 const { app, shell, dialog, BrowserWindow, Notification } = require('electron')
-const { readFileSync, readdirSync, lstatSync, existsSync, writeFileSync, unlinkSync, copyFileSync, mkdirSync, rmSync, } = require('fs')
+const { readFileSync, readdirSync, lstatSync, existsSync, writeFileSync, unlinkSync, copyFileSync, mkdirSync, rmSync, createWriteStream, renameSync, } = require('fs')
 const { join } = require('path')
 const main = require('./scripts/service/main.js')
 
 const locations = {
     publicInfo: 'https://verzsut.github.io/SnowRunner-XML-Editor-Desktop/public.json',
     downloadPage: 'https://verzsut.github.io/SnowRunner-XML-Editor-Desktop/download.html',
-    config: join(__dirname, '..', 'config.json'),
+    update: 'https://verzsut.github.io/SnowRunner-XML-Editor-Desktop/update.zip',
+    updateDir: join(__dirname, '..', '..', 'update'),
+    config: join(__dirname, 'config.json'),
     icon: join(__dirname, 'icons', 'favicon.png'),
     preload: join(__dirname, 'preload.js'),
     backupFolder: join(__dirname, 'backups'),
@@ -30,6 +32,9 @@ let stringsFilePath = null
 let mainWindow = null
 let listWindow = null
 let xmlEditor = null
+let currentWindow = null
+
+let relaunchWithoutSaving = false
 
 const devTools = false
 
@@ -199,7 +204,9 @@ function initApp() {
     app.setAppUserModelId('SnowRunner XML Editor')
     app.whenReady().then(init)
     app.on('before-quit', () => {
-        saveConfig()
+        if (!relaunchWithoutSaving) {
+            saveConfig()
+        }
     })
     app.on('activate', () => {
         if (BrowserWindow.getAllWindows().length === 0) {
@@ -243,6 +250,28 @@ function getGameFolder(errors=true) {
     }
 }
 
+function download(url, dest, cb) {
+    const file = createWriteStream(dest)
+    https.get(url, res => {
+        res.pipe(file)
+
+        res.on('end', () => {
+            file.once('close', () => {
+                cb()
+            })
+            file.close()
+        })
+
+        res.on('error', error => {
+            file.once('close', () => {
+                unlinkSync(dest)
+                cb(error)
+            })
+            file.close()
+        })
+    })
+}
+
 function checkUpdate() {
     dns.resolve('www.google.com', error => {
         if (!error) {
@@ -257,7 +286,33 @@ function checkUpdate() {
                 res.on('end', () => {
                     const data = JSON.parse(rawData)
                     if (data.latestVersion !== config.version) {
-                        showNotification(getText('[NOTIFICATION]'), getText('ALLOW_NEW_VERSION'), true)
+                        if (data.canAutoUpdate) {
+                            const url = locations.update
+                            const path = join(locations.temp, 'update.zip')
+
+                            showNotification(getText('[NOTIFICATION]'), getText('ALLOW_NEW_VERSION_AUTO'), () => {
+                                openDownload()
+                                download(url, path, () => {
+                                    const rootDirName = join(__dirname, '..')
+                                    mkdirSync(locations.updateDir)
+                                    execSync(`WinRAR x "${path}" "${locations.updateDir}"`, {
+                                        cwd: locations.winrar
+                                    })
+                                    rmSync(rootDirName, {
+                                        recursive: true
+                                    })
+                                    renameSync(join(locations.updateDir, 'app'), rootDirName)
+                                    relaunchWithoutSaving = true
+                                    app.relaunch()
+                                    app.quit()
+                                })
+                            })
+                        }
+                        else {
+                            showNotification(getText('[NOTIFICATION]'), getText('ALLOW_NEW_VERSION'), () => {
+                                shell.openExternal(locations.downloadPage)
+                            })
+                        }
                     }
                 })
             })
@@ -320,7 +375,7 @@ function parseStrings(data) {
     return strings
 }
 
-function showNotification(title, message, isNewVersion=false) {
+function showNotification(title, message, callback=null) {
     if (Notification.isSupported()) {
         const notification = new Notification({
             title: title,
@@ -329,8 +384,8 @@ function showNotification(title, message, isNewVersion=false) {
         })
 
         notification.show()
-        if (isNewVersion) {
-            notification.once('click', () => shell.openExternal(locations.downloadPage))
+        if (callback) {
+            notification.once('click', callback)
         }
     }
 }
@@ -425,6 +480,16 @@ function openXMLEditor(path=null, dlc=null) {
     }
 }
 
+function openDownload() {
+    createWindow('download.html', {
+        width: 180,
+        height: 50,
+        modal: true,
+        parent: currentWindow,
+        frame: false
+    })
+}
+
 function unpackFiles() {
     if (existsSync(locations.temp)) {
         rmSync(locations.temp, {
@@ -480,11 +545,15 @@ function createWindow(fileName, args={}) {
         resizable: args.resizable !== undefined ? args.resizable : true,
         icon: locations.icon,
         show: false,
+        parent: args.parent || null,
+        modal: args.modal || false,
+        frame: !(args.frame === false),
         webPreferences: {
             preload: locations.preload,
             contextIsolation: false
         }
     })
+    currentWindow = wind
     wind.setMenu(null)
     wind.loadFile(join(locations.HTMLFolder, fileName)).then(() => {
         wind.show()
