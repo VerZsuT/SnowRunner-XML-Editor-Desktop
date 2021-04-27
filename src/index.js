@@ -2,14 +2,16 @@ const https = require('https')
 const dns = require('dns')
 const { exec, execSync } = require('child_process')
 const { app, shell, dialog, BrowserWindow, Notification } = require('electron')
-const { readFileSync, readdirSync, lstatSync, existsSync, writeFileSync, unlinkSync, copyFileSync, mkdirSync, rmSync, createWriteStream, renameSync, } = require('fs')
-const { join } = require('path')
+const { readFileSync, readdirSync, lstatSync, existsSync, writeFileSync, unlinkSync, copyFileSync, mkdirSync, rmSync, createWriteStream, renameSync, writeFile, } = require('fs')
+const { join, dirname } = require('path')
 const main = require('./scripts/service/main.js')
+const { createHash } = require('crypto')
 
 const locations = {
     publicInfo: 'https://verzsut.github.io/SnowRunner-XML-Editor-Desktop/public.json',
     downloadPage: 'https://verzsut.github.io/SnowRunner-XML-Editor-Desktop/download.html',
-    update: 'https://verzsut.github.io/SnowRunner-XML-Editor-Desktop/update.zip',
+    update: 'https://verzsut.github.io/SnowRunner-XML-Editor-Desktop/update',
+    updateMap: 'https://verzsut.github.io/SnowRunner-XML-Editor-Desktop/updateMap.json',
     updateDir: join(__dirname, '..', '..', 'update'),
     config: join(__dirname, 'config.json'),
     icon: join(__dirname, 'icons', 'favicon.png'),
@@ -250,26 +252,87 @@ function getGameFolder(errors=true) {
     }
 }
 
-function download(url, dest, cb) {
-    const file = createWriteStream(dest)
-    https.get(url, res => {
-        res.pipe(file)
+function createDirForPath(path) {
+    const dirName = dirname(path)
+    const dirDirName = dirname(dirName)
+
+    if (!existsSync(dirDirName)) {
+        createDirForPath(dirName)
+    }
+    
+    if (!existsSync(dirName)) {
+        mkdirSync(dirName)
+    }
+}
+
+function download(params, cb) {
+    https.get(params.url, res => {
+        let rawData = ''
+    
+        res.on('data', chunk => {
+            rawData += chunk
+        })
 
         res.on('end', () => {
-            file.once('close', () => {
-                cb()
-            })
-            file.close()
+            if (params.fromJSON) {
+                cb(null, JSON.parse(rawData))
+            } else {
+                cb(null, rawData)
+            }
         })
 
         res.on('error', error => {
-            file.once('close', () => {
-                unlinkSync(dest)
-                cb(error)
-            })
-            file.close()
+            cb(error)
         })
     })
+}
+
+function checkPathToDelete(path, map) {
+    const toRemove = []
+    const items = readdirSync(path)
+    for (const item of items) {
+        const path2 = join(path, item)
+
+        if (lstatSync(path2).isDirectory()) {
+            const array = checkPathToDelete(path2, map)
+            if (array) {
+                toRemove.push(...array)
+            }
+        }
+        else {
+            const relativePath = path2.replace(join(__dirname, '..', '/'), '')
+            if (!map[relativePath]) {
+                toRemove.push(path2)
+            }
+        }
+    }
+
+    return toRemove
+}
+
+function checkMap(map) {
+    const toRemove = checkPathToDelete(join(__dirname, '..'), map) || []
+    const toCreateOrChange = []
+
+    for (const relativePath in map) {
+        const absolutePath = join(__dirname, '..', relativePath)
+
+        if (!existsSync(absolutePath)) {
+            toCreateOrChange.push(relativePath)
+        }
+        else {
+            if (lstatSync(absolutePath).isDirectory()) {
+                toRemove.push(relativePath)
+            }
+            const shaHash = createHash('sha1')
+            shaHash.update(readFileSync(absolutePath).toString())
+            if (shaHash.digest('hex') !== map[relativePath]) {
+                toCreateOrChange.push(relativePath)
+            }
+        }
+    }
+
+    return [toRemove, toCreateOrChange]
 }
 
 function checkUpdate() {
@@ -280,31 +343,57 @@ function checkUpdate() {
                 let rawData = ''
         
                 res.on('data', (chunk) => {
-                  rawData += chunk
+                    rawData += chunk
                 })
         
                 res.on('end', () => {
                     const data = JSON.parse(rawData)
                     if (data.latestVersion !== config.version) {
                         if (data.canAutoUpdate) {
-                            const url = locations.update
-                            const path = join(locations.temp, 'update.zip')
-
                             showNotification(getText('[NOTIFICATION]'), getText('ALLOW_NEW_VERSION_AUTO'), () => {
                                 openDownload()
-                                download(url, path, () => {
-                                    const rootDirName = join(__dirname, '..')
-                                    mkdirSync(locations.updateDir)
-                                    execSync(`WinRAR x "${path}" "${locations.updateDir}"`, {
-                                        cwd: locations.winrar
-                                    })
-                                    rmSync(rootDirName, {
-                                        recursive: true
-                                    })
-                                    renameSync(join(locations.updateDir, 'app'), rootDirName)
-                                    relaunchWithoutSaving = true
-                                    app.relaunch()
-                                    app.quit()
+                                download({
+                                    url: locations.updateMap,
+                                    fromJSON: true
+                                }, (_error, updateMap) => {
+                                    const [toRemove, toCreateOrChange] = checkMap(updateMap)
+
+                                    for (const relativePath of toRemove) {
+                                        const path = join(__dirname, '..', relativePath)
+                                        if (lstatSync(path).isFile()) {
+                                            unlinkSync(path)
+                                        }
+                                        else {
+                                            rmSync(path, {
+                                                recursive: true
+                                            })
+                                        }
+                                    }
+
+                                    let checker = toCreateOrChange
+                                    if (toCreateOrChange.length === 0) {
+                                        relaunchWithoutSaving = true
+                                        app.relaunch()
+                                        app.quit()
+                                    }
+                                    for (const relativePath of toCreateOrChange) {
+                                        const path = join(__dirname, '..', relativePath)
+                                        const url = `${locations.update}/${relativePath.replaceAll('\\', '/')}`
+                                        download({
+                                            url: url,
+                                        }, (_error, data) => {
+                                            if (!existsSync(dirname(path))) {
+                                                createDirForPath(path)
+                                            }
+                                            writeFileSync(path, data)
+                                            checker = checker.filter(item => item !== relativePath)
+                                            if (checker.length === 0) {
+                                                relaunchWithoutSaving = true
+                                                app.relaunch()
+                                                app.quit()
+                                            }
+                                        })
+                                    }
                                 })
                             })
                         }

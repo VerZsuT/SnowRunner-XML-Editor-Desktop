@@ -266,49 +266,25 @@ function createDirForPath(path) {
 }
 
 function download(params, cb) {
-    if (!params.inMemory) {
-        const file = createWriteStream(params.dest)
-        https.get(params.url, res => {
-            res.pipe(file)
+    https.get(params.url, res => {
+        let rawData = ''
     
-            res.on('end', () => {
-                file.once('close', () => {
-                    cb()
-                })
-                file.close()
-            })
-    
-            res.on('error', error => {
-                file.once('close', () => {
-                    unlinkSync(params.dest)
-                    cb(error)
-                })
-                file.close()
-            })
+        res.on('data', chunk => {
+            rawData += chunk
         })
-    } else {
-        https.get(params.url, res => {
-            res.setEncoding('utf-8')
-            let rawData = ''
-        
-            res.on('data', (chunk) => {
-                rawData += chunk
-            })
 
-            res.on('end', () => {
-                if (params.fromJSON) {
-                    cb(null, JSON.parse(rawData))
-                } else {
-                    cb(null, rawData)
-                }
-            })
-
-            res.on('error', error => {
-                cb(error)
-            })
+        res.on('end', () => {
+            if (params.fromJSON) {
+                cb(null, JSON.parse(rawData))
+            } else {
+                cb(null, rawData)
+            }
         })
-    }
-    
+
+        res.on('error', error => {
+            cb(error)
+        })
+    })
 }
 
 function checkPathToDelete(path, map) {
@@ -317,7 +293,7 @@ function checkPathToDelete(path, map) {
     for (const item of items) {
         const path2 = join(path, item)
 
-        if (!lstatSync(path2).isFile()) {
+        if (lstatSync(path2).isDirectory()) {
             const array = checkPathToDelete(path2, map)
             if (array) {
                 toRemove.push(...array)
@@ -335,23 +311,23 @@ function checkPathToDelete(path, map) {
 }
 
 function checkMap(map) {
-    const toRemove = checkPathToDelete(join(__dirname, '..')) || []
+    const toRemove = checkPathToDelete(join(__dirname, '..'), map) || []
     const toCreateOrChange = []
 
     for (const relativePath in map) {
         const absolutePath = join(__dirname, '..', relativePath)
 
         if (!existsSync(absolutePath)) {
-            toCreateOrChange.push(absolutePath)
+            toCreateOrChange.push(relativePath)
         }
         else {
-            if (!lstatSync(absolutePath).isFile()) {
-                toRemove.push(absolutePath)
+            if (lstatSync(absolutePath).isDirectory()) {
+                toRemove.push(relativePath)
             }
             const shaHash = createHash('sha1')
             shaHash.update(readFileSync(absolutePath).toString())
             if (shaHash.digest('hex') !== map[relativePath]) {
-                toCreateOrChange.push(absolutePath)
+                toCreateOrChange.push(relativePath)
             }
         }
     }
@@ -375,31 +351,47 @@ function checkUpdate() {
                     if (data.latestVersion !== config.version) {
                         if (data.canAutoUpdate) {
                             showNotification(getText('[NOTIFICATION]'), getText('ALLOW_NEW_VERSION_AUTO'), () => {
+                                openDownload()
                                 download({
                                     url: locations.updateMap,
-                                    inMemory: true,
                                     fromJSON: true
                                 }, (_error, updateMap) => {
                                     const [toRemove, toCreateOrChange] = checkMap(updateMap)
-                                    openDownload()
 
                                     for (const relativePath of toRemove) {
-                                        const path = join(__dirname, relativePath)
-                                        unlinkSync(path)
+                                        const path = join(__dirname, '..', relativePath)
+                                        if (lstatSync(path).isFile()) {
+                                            unlinkSync(path)
+                                        }
+                                        else {
+                                            rmSync(path, {
+                                                recursive: true
+                                            })
+                                        }
+                                    }
+
+                                    let checker = toCreateOrChange
+                                    if (toCreateOrChange.length === 0) {
+                                        relaunchWithoutSaving = true
+                                        app.relaunch()
+                                        app.quit()
                                     }
                                     for (const relativePath of toCreateOrChange) {
-                                        const path = join(__dirname, relativePath)
+                                        const path = join(__dirname, '..', relativePath)
+                                        const url = `${locations.update}/${relativePath.replaceAll('\\', '/')}`
                                         download({
-                                            url: `${locations.update}/${relativePath.replaceAll('\\', '/')}`,
-                                            inMemory: true
+                                            url: url,
                                         }, (_error, data) => {
                                             if (!existsSync(dirname(path))) {
                                                 createDirForPath(path)
                                             }
                                             writeFileSync(path, data)
-                                            relaunchWithoutSaving = true
-                                            app.relaunch()
-                                            app.quit()
+                                            checker = checker.filter(item => item !== relativePath)
+                                            if (checker.length === 0) {
+                                                relaunchWithoutSaving = true
+                                                app.relaunch()
+                                                app.quit()
+                                            }
                                         })
                                     }
                                 })
