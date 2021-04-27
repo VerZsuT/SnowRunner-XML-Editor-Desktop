@@ -10,6 +10,7 @@ const $languageSelect = get('#language-select')
 const $toast = get('#live-toast')
 
 let pathToInitial = null
+let gameFolder = null
 
 $languageSelect.value = config.language
 props.errorHandler = message => toast(getText(`${message}`.replace('Error: ', '')))
@@ -34,7 +35,7 @@ $saveToConfig.addEventListener('click', () => {
     }
 
     config.pathToInitial = pathToInitial
-
+    config.gameFolder = gameFolder
     funcs.saveBackup(true)
 })
 
@@ -45,5 +46,6 @@ function getGameFolder() {
     if (!data) return
 
     pathToInitial = data.initial
+    gameFolder = data.folder
     $gameFolderInput.value = data.folder
 }

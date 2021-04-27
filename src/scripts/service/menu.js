@@ -59,10 +59,6 @@ function buildMenu(template, root=false) {
             case 'reset-config':
                 $button.addEventListener('click', () => funcs.resetConfig())
                 break
-            case 'devmode':
-                if (template.checked) $button.classList.add('active')
-                $button.addEventListener('click', () => funcs.setDevMode(!template.checked))
-                break
             case 'restore-initial':
                 $button.addEventListener('click', () => funcs.restoreInitial())
                 break
@@ -76,6 +72,9 @@ function buildMenu(template, root=false) {
                 else {
                     $button.addEventListener('click', () => funcs.openXMLEditor(template.path))
                 }
+                break
+            case 'open-settings':
+                $button.addEventListener('click', () => funcs.openSettings())
                 break
         }
     }

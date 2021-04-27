@@ -30,13 +30,12 @@ const locations = {
 let pathToReturn = null
 let currentDLC = null
 let stringsFilePath = null
+let relaunchWithoutSaving = false
 
 let mainWindow = null
 let listWindow = null
 let xmlEditor = null
 let currentWindow = null
-
-let relaunchWithoutSaving = false
 
 const devTools = false
 
@@ -47,12 +46,19 @@ initApp()
 initMain()
 
 function init() {
-    checkUpdate()
+    if (!config.ignoreUpdates) {
+        checkUpdate()
+    }
     if (!config.pathToInitial) {
         openFirstSteps()
     }
     else if (checkPaths()) {
-        initDLC()
+        config.pathToDLC = locations.dlc
+        config.pathToClasses = locations.classes
+
+        if (!config.disableDLC) {
+            initDLC()
+        }
         openMain()
     }
     else {
@@ -111,7 +117,7 @@ function initMain() {
     }
 
     main.saveToOriginal = function() {
-        exec(`WinRAR f -ibck "${config.pathToInitial}" ..\\temp\\ -r -ep1`, {
+        exec(`WinRAR f${config.showWinRARWindow? '' : ' -ibck'} "${config.pathToInitial}" ..\\temp\\ -r -ep1`, {
             cwd: locations.winrar
         }, error => {
             if (error) {
@@ -192,14 +198,19 @@ function initMain() {
     
     main.reload = reload
     main.quit = app.quit
+
     main.openLink = url => {shell.openExternal(url)}
     main.showFile = shell.showItemInFolder
     main.showFolder = path => {shell.openPath(path)}
+
     main.openXMLEditor = openXMLEditor
     main.openList = openList
+    main.openSettings = openSettings
+
     main.saveBackup = saveBackup
     main.resetConfig = resetConfig
     main.restoreInitial = restoreInitial
+    main.saveConfig = saveConfig
 }
 
 function initApp() {
@@ -577,18 +588,32 @@ function openDownload() {
     })
 }
 
+function openSettings() {
+    createWindow('settings.html', {
+        width: 400,
+        height: 550,
+        modal: true,
+        parent: currentWindow
+    })
+}
+
 function unpackFiles(callback) {
-    const loading = openDownload()
+    let loading = null
+    if (!config.showWinRARWindow) {
+        loading = openDownload()
+    }
     if (existsSync(locations.temp)) {
         rmSync(locations.temp, {
             recursive: true
         })
     }
     mkdirSync(locations.temp)
-    exec(`WinRAR x -ibck "${config.pathToInitial}" @unpack-list.lst ..\\temp\\`, {
+    exec(`WinRAR x${config.showWinRARWindow? '' : ' -ibck'} "${config.pathToInitial}" @unpack-list.lst ..\\temp\\`, {
         cwd: locations.winrar
     }).once('close', () => {
-        loading.close()
+        if (!config.showWinRARWindow) {
+            loading.close()
+        }
         callback()
     })
 }
@@ -686,8 +711,16 @@ function resetConfig(withoutReloading=false) {
     config.pathToInitial = null
     config.pathToDLC = null
     config.pathToClasses = null
+    config.gameFolder = null
     config.dlc = []
+    config.ignoreUpdates = false
+    config.showWinRARWindow = false
+    config.disableLimits = false
+    config.disableDLC = false
+    config.disableEditorLabel = false
+    config.hideResetButton = false
     config.devMode = false
+    config.language = 'EN'
 
     if (existsSync(locations.backupInitial)) {
         try {
@@ -704,9 +737,11 @@ function resetConfig(withoutReloading=false) {
         mkdirSync(locations.temp)
     }
 
-    saveConfig()
     if (!withoutReloading) {
         reload()
+    }
+    else {
+        saveConfig()
     }
 }
 
@@ -726,9 +761,6 @@ function removePars(str) {
 function getConfig() {
     const data = readFileSync(locations.config)
     const obj = JSON.parse(data.toString())
-
-    obj.pathToDLC = locations.dlc
-    obj.pathToClasses = locations.classes
     return obj
 }
 
@@ -781,109 +813,6 @@ function reload() {
     app.quit()
 }
 
-function getDLCItems() {
-    const array = []
-    const dlcItems = config.dlc
-
-    function getItemsFromDLC(array, dlc) {
-        const out = []
-        if (array) {
-            for (const item of array) {
-                out.push({
-                    label: item.name,
-                    role: 'open-editor',
-                    path: item.path,
-                    dlc: dlc
-                })
-            }
-        }
-        
-        return out
-    }
-
-    if (dlcItems) {
-        for (const dlc of dlcItems) {
-            const trucks = fromDir(join(dlc.path, 'classes', 'trucks'))
-            const cargo = fromDir(join(dlc.path, 'classes', 'trucks', 'cargo'))
-            const trailers = fromDir(join(dlc.path, 'classes', 'trucks', 'trailers'))
-            const suspensions = fromDir(join(dlc.path, 'classes', 'suspensions'))
-            const engines = fromDir(join(dlc.path, 'classes', 'engines'))
-            const gearboxes = fromDir(join(dlc.path, 'classes', 'gearboxes'))
-            const winches = fromDir(join(dlc.path, 'classes', 'wheels'))
-            const wheels = fromDir(join(dlc.path, 'classes', 'wheels'))
-
-            const dlcSubmenu = []
-            if (trucks) {
-                const submenu = []
-                const xmlItems = getItemsFromDLC(trucks, dlc.name)
-
-                if (cargo) {
-                    submenu.push({
-                        label: getText('[CARGO_CATEGORY_TITLE]'),
-                        submenu: getItemsFromDLC(cargo, dlc.name)
-                    })
-                }
-                if (trailers) {
-                    submenu.push({
-                        label: getText('[TRAILERS_CATEGORY_TITLE]'),
-                        submenu: getItemsFromDLC(trailers, dlc.name)
-                    })
-                }
-                if (submenu.length !== 0) {
-                    submenu.push({ role: 'separator' })
-                }
-                if (submenu.length !== 0 && xmlItems.length !== 0) {
-                    dlcSubmenu.push({
-                        label: getText('[TRUCKS_CATEGORY_TITLE]'),
-                        submenu: [
-                            ...submenu,
-                            ...xmlItems
-                        ]
-                    })
-                }
-            }
-            if (wheels) {
-                dlcSubmenu.push({
-                    label: getText('[WHEELS_CATEGORY_TITLE]'),
-                    submenu: getItemsFromDLC(wheels, dlc.name)
-                })
-            }
-            if (winches) {
-                dlcSubmenu.push({
-                    label: getText('[WINCHES_CATEGORY_TITLE]'),
-                    submenu: getItemsFromDLC(winches, dlc.name)
-                })
-            }
-            if (gearboxes) {
-                dlcSubmenu.push({
-                    label: getText('[GEARBOXES_CATEGORY_TITLE]'),
-                    submenu: getItemsFromDLC(gearboxes, dlc.name)
-                })
-            }
-            if (engines) {
-                dlcSubmenu.push({
-                    label: getText('[ENGINES_CATEGORY_TITLE]'),
-                    submenu: getItemsFromDLC(engines, dlc.name)
-                })
-            }
-            if (suspensions) {
-                dlcSubmenu.push({
-                    label: getText('[SUSPENSIONS_CATEGORY_TITLE]'),
-                    submenu: getItemsFromDLC(suspensions, dlc.name)
-                })
-            }
-
-            if (dlcSubmenu.length !== 0) {
-                array.push({
-                    label: dlc.name,
-                    submenu: dlcSubmenu
-                })
-            }
-        }
-    }
-    return array
-}
-
 function getShortMenu() {
     return [
         {
@@ -924,15 +853,19 @@ function getMainMenu() {
             label: getText('[FILE_MENU_LABEL]'),
             submenu: [
                 {
-                    label: getText('[RESET_MENU_ITEM_LABEL]'),
-                    role: 'reset-config'
-                },
-                {
-                    label: getText('[DEV_MODE_MENU_ITEM_LABEL]'),
-                    role: 'devmode',
-                    checked: config.devMode
+                    label: getText('[SETTINGS_MENU_ITEM_LABEL]'),
+                    role: 'open-settings'
                 },
                 { role: 'separator' },
+                ...(() => {
+                    if (!config.hideResetButton) {
+                        return [{
+                            label: getText('[RESET_MENU_ITEM_LABEL]'),
+                            role: 'reset-config'
+                        }]
+                    }
+                    return []
+                })(),
                 {
                     label: getText('[EXIT_MENU_ITEM_LABEL]'),
                     role: 'quit-app'

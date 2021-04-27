@@ -240,22 +240,26 @@ function createItems(params, $parentGroupCont=null, tabs=1) {
                     })
 
                     if (param.type === 'number') {
-                        if (param.min !== '-∞') {
-                            $input.min = param.min || 0
-                        }
-                        if (param.max) {
-                            $input.max = param.max
+                        if (!config.disableLimits) {
+                            if (param.min !== '-∞') {
+                                $input.min = param.min || 0
+                            }
+                            if (param.max) {
+                                $input.max = param.max
+                            }
                         }
                         $input.addEventListener('change', () => {
-                            let value = $input.value
                             const min = $input.min
                             const max = $input.max
-                            
-                            if (min !== '' && value < +min) {
-                                $input.value = value = min
-                            }
-                            else if (max !== '' && value > +max) {
-                                $input.value = value = max
+                            let value = $input.value
+
+                            if (!config.disableLimits) {
+                                if (min !== '' && value < +min) {
+                                    $input.value = value = min
+                                }
+                                else if (max !== '' && value > +max) {
+                                    $input.value = value = max
+                                }
                             }
 
                             if (param.numberType === 'int') {
@@ -376,7 +380,7 @@ function generateAndSaveFile() {
         item.removeAttribute('SXMLE_ID')
     }
 
-    const xmlString = copyrightText + serializer.serializeToString(fileDOM).replace('<root>', '').replace('</root>', '')
+    const xmlString = `${config.disableEditorLabel? '' : copyrightText}${serializer.serializeToString(fileDOM).replace('<root>', '').replace('</root>', '')}`
     funcs.setFileData(filePath, xmlString)
     funcs.saveToOriginal()
     window.close()

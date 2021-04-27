@@ -10,13 +10,15 @@ const listType = local.listType
 addItems()
 
 function addItems() {
-    const dlcArray = funcs.getList(listType, true)
-    for (const dlc of dlcArray) {
-        for (const item of dlc.items) {
-            $dlcList.append(createListItem(item.name, item.path, dlc.name))
+    if (!config.disableDLC) {
+        const dlcArray = funcs.getList(listType, true)
+        for (const dlc of dlcArray) {
+            for (const item of dlc.items) {
+                $dlcList.append(createListItem(item.name, item.path, dlc.name))
+            }
         }
     }
-
+    
     const mainArray = funcs.getList(listType)
     for (const item of mainArray) {
         $list.append(createListItem(item.name, item.path))
