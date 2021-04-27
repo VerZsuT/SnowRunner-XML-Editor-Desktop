@@ -1,0 +1,38 @@
+body {
+    text-align: center;
+}
+
+input:disabled {
+    background: white;
+}
+
+header {
+    margin-bottom: 20px;
+}
+
+header h2 {
+    color: white;
+}
+
+label {
+    font-weight: bold;
+}
+
+#language-select {
+    width: 70px;
+    margin: 0 auto;
+}
+
+#game-folder-input {
+    width: 150px;
+    display: inline-block;
+}
+
+#save-to-config {
+    margin-top: 20px;
+}
+
+#live-toast {
+    transition: opacity 0.5s ease 0s;
+    opacity: 0;
+}

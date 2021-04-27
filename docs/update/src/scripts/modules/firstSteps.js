@@ -1,0 +1,50 @@
+import { props, funcs } from '../service/renderer.js'
+import { get, getText } from '../service/funcs.js'
+
+const $gameFolderSelect = get('#game-folder-select')
+const $gameFolderInput = get('#game-folder-input')
+
+const $saveToConfig = get('#save-to-config')
+const $languageSelect = get('#language-select')
+
+const $toast = get('#live-toast')
+
+let pathToInitial = null
+
+$languageSelect.value = config.language
+props.errorHandler = message => toast(getText(`${message}`.replace('Error: ', '')))
+
+function toast(message) {
+    $toast.querySelector('.toast-body').innerText = message
+    $toast.style.opacity = '1'
+    setTimeout(() => {
+        $toast.style.opacity = '0'
+    }, 2000)
+}
+
+$languageSelect.addEventListener('change', () => {
+    config.language = $languageSelect.value
+    funcs.reload()
+})
+
+$saveToConfig.addEventListener('click', () => {
+    if (!pathToInitial) {
+        toast(getText('[NO_GAME_FOLDER]'))
+        return
+    }
+
+    config.pathToInitial = pathToInitial
+
+    funcs.saveBackup()
+    funcs.reload()
+})
+
+$gameFolderSelect.addEventListener('click', getGameFolder)
+
+function getGameFolder() {
+    const data = props.gameFolder
+    if (!data) return
+
+    pathToInitial = data.initial
+    $gameFolderInput.value = data.folder
+}

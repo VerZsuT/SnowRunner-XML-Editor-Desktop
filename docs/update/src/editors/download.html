@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <progress id="progress" value="0" max="100"></progress>
+
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 30px;
+        }
+    </style>
+
+    <script>
+        const $progress = document.querySelector('#progress')
+
+        setInterval(() => {
+            const value = +$progress.value
+            if (value >= 100) {
+                $progress.value = 0
+            }
+            else {
+                $progress.value += 2
+            }
+        }, 100)
+    </script>
+</body>
+</html>

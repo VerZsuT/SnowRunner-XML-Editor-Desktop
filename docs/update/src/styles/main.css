@@ -1,0 +1,45 @@
+body {
+    background-color: white;
+}
+
+.category {
+    display: flex;
+    height: 320px;
+    width: 320px;
+    position: relative;
+    cursor: pointer;
+}
+
+.category:hover {
+    filter: brightness(0.8);
+}
+
+.category:hover .category-name {
+    color: yellow;
+}
+
+#categories {
+    margin-top: 2px;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+img {
+    width: 100%;
+    height: 100%;
+    border-radius: 5px;
+}
+
+.category-name {
+    width: 100%;
+    color: white;
+    background-color: black;
+    position: absolute;
+    top: 0;
+    padding: 10px 0;
+    text-align: center;
+    text-transform: uppercase;
+    border-top-right-radius: 5px;
+    border-top-left-radius: 5px;
+}
+
