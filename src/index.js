@@ -111,7 +111,7 @@ function initMain() {
     }
 
     main.saveToOriginal = function() {
-        exec(`WinRAR f "${config.pathToInitial}" ..\\temp\\ -r -ep1`, {
+        exec(`WinRAR f -ibck "${config.pathToInitial}" ..\\temp\\ -r -ep1`, {
             cwd: locations.winrar
         }, error => {
             if (error) {
@@ -352,14 +352,14 @@ function checkUpdate() {
                         if (data.canAutoUpdate) {
                             showNotification(getText('[NOTIFICATION]'), getText('ALLOW_NEW_VERSION_AUTO'), () => {
                                 openDownload()
+                                resetConfig(true)
                                 download({
                                     url: locations.updateMap,
                                     fromJSON: true
                                 }, (_error, updateMap) => {
                                     const [toRemove, toCreateOrChange] = checkMap(updateMap)
 
-                                    for (const relativePath of toRemove) {
-                                        const path = join(__dirname, '..', relativePath)
+                                    for (const path of toRemove) {
                                         if (lstatSync(path).isFile()) {
                                             unlinkSync(path)
                                         }
@@ -373,8 +373,7 @@ function checkUpdate() {
                                     let checker = toCreateOrChange
                                     if (toCreateOrChange.length === 0) {
                                         relaunchWithoutSaving = true
-                                        app.relaunch()
-                                        app.quit()
+                                        reload()
                                     }
                                     for (const relativePath of toCreateOrChange) {
                                         const path = join(__dirname, '..', relativePath)
@@ -389,8 +388,7 @@ function checkUpdate() {
                                             checker = checker.filter(item => item !== relativePath)
                                             if (checker.length === 0) {
                                                 relaunchWithoutSaving = true
-                                                app.relaunch()
-                                                app.quit()
+                                                reload()
                                             }
                                         })
                                     }
@@ -570,7 +568,7 @@ function openXMLEditor(path=null, dlc=null) {
 }
 
 function openDownload() {
-    createWindow('download.html', {
+    return createWindow('download.html', {
         width: 180,
         height: 50,
         modal: true,
@@ -579,35 +577,42 @@ function openDownload() {
     })
 }
 
-function unpackFiles() {
+function unpackFiles(callback) {
+    const loading = openDownload()
     if (existsSync(locations.temp)) {
         rmSync(locations.temp, {
             recursive: true
         })
     }
     mkdirSync(locations.temp)
-    execSync(`WinRAR x "${config.pathToInitial}" @unpack-list.lst ..\\temp\\`, {
+    exec(`WinRAR x -ibck "${config.pathToInitial}" @unpack-list.lst ..\\temp\\`, {
         cwd: locations.winrar
+    }).once('close', () => {
+        loading.close()
+        callback()
     })
 }
 
-function saveBackup() {
-    unpackFiles()
-
-    if (!existsSync(locations.backupFolder)) {
-        mkdirSync(locations.backupFolder)
-    }
-
-    if (existsSync(locations.backupInitial)) {
-        try {
-            unlinkSync(locations.backupInitial)
-        } catch {
-            throw new Error('[DELETE_OLD_INITIAL_BACKUP_ERROR]')
+function saveBackup(reloadAfter=false) {
+    unpackFiles(() => {
+        if (!existsSync(locations.backupFolder)) {
+            mkdirSync(locations.backupFolder)
         }
-    }
-
-    copyBackup()
-    showNotification(getText('[SUCCESS]'), getText('[SUCCESS_BACKUP_SAVE]'))
+    
+        if (existsSync(locations.backupInitial)) {
+            try {
+                unlinkSync(locations.backupInitial)
+            } catch {
+                throw new Error('[DELETE_OLD_INITIAL_BACKUP_ERROR]')
+            }
+        }
+    
+        copyBackup()
+        showNotification(getText('[SUCCESS]'), getText('[SUCCESS_BACKUP_SAVE]'))
+        if (reloadAfter) {
+            reload()
+        }
+    })
 }
 
 function copyBackup() {
@@ -669,14 +674,15 @@ function restoreInitial() {
     }
     try {
         copyFileSync(locations.backupInitial, config.pathToInitial)
-        unpackFiles()
-        showNotification(getText('[SUCCESS]'), getText('[SUCCESS_INITIAL_RESTORE]'))
+        unpackFiles(() => {
+            showNotification(getText('[SUCCESS]'), getText('[SUCCESS_INITIAL_RESTORE]'))
+        })
     } catch {
         showNotification(getText('[ERROR]'), getText('[DELETE_CURRENT_INITIAL_BACKUP_ERROR]'))
     }
 }
 
-function resetConfig() {
+function resetConfig(withoutReloading=false) {
     config.pathToInitial = null
     config.pathToDLC = null
     config.pathToClasses = null
@@ -699,7 +705,9 @@ function resetConfig() {
     }
 
     saveConfig()
-    reload()    
+    if (!withoutReloading) {
+        reload()
+    }
 }
 
 function getText(key, returnKey=true) {

@@ -35,8 +35,7 @@ $saveToConfig.addEventListener('click', () => {
 
     config.pathToInitial = pathToInitial
 
-    funcs.saveBackup()
-    funcs.reload()
+    funcs.saveBackup(true)
 })
 
 $gameFolderSelect.addEventListener('click', getGameFolder)
