@@ -3,7 +3,7 @@ const dns = require('dns')
 const { exec } = require('child_process')
 const { app, shell, dialog, BrowserWindow, Notification } = require('electron')
 const { readFileSync, readdirSync, lstatSync, existsSync, writeFileSync, unlinkSync, copyFileSync, mkdirSync, rmSync, createWriteStream } = require('fs')
-const { join, dirname } = require('path')
+const { join, dirname, basename } = require('path')
 const main = require('./scripts/service/main.js')
 const { createHash } = require('crypto')
 
@@ -277,6 +277,27 @@ function createDirForPath(path) {
 }
 
 function download(params, cb) {
+    if (params.array) {
+        if (params.isRoot) {
+            params.downloadPage.webContents.postMessage('count', params.array.length)
+        }
+        const {url, path} = params.array[0]
+        params.downloadPage.webContents.postMessage('fileName', basename(path))
+        download({
+            url: url,
+            path: path,
+            downloadPage: params.downloadPage
+        }, () => {
+            cb()
+            if (params.array.length > 1) {
+                download({
+                    array: params.array.slice(1),
+                    downloadPage: params.downloadPage
+                }, cb)
+            }
+        })
+        return
+    }
     https.get(params.url, res => {
         if (params.inMemory) {
             let chunks = ''
@@ -287,23 +308,31 @@ function download(params, cb) {
     
             res.on('end', () => {
                 if (params.fromJSON) {
-                    cb(null, JSON.parse(chunks))
+                    cb(JSON.parse(chunks))
                 } else {
-                    cb(null, chunks)
+                    cb(chunks)
                 }
             })
         }
         else {
-            res.pipe(params.file)
+            const file = createWriteStream(params.path)
+            if (params.downloadPage) {
+                const len = parseInt(res.headers['content-length'], 10)
+                let cur = 0
+
+                res.on("data", chunk => {
+                    cur += chunk.length
+                    params.downloadPage.webContents.postMessage('percent', (100.0 * (cur / len)).toFixed(2))
+                })
+            }
+
+            res.pipe(file)
             res.on('end', () => {
-                params.file.on('close', cb)
-                params.file.close()
+                params.downloadPage.webContents.postMessage('success', true)
+                file.on('close', cb)
+                file.close()
             })
         }
-
-        res.on('error', error => {
-            cb(error)
-        })
     })
 }
 
@@ -362,7 +391,6 @@ function checkUpdate() {
         if (!error) {
             https.get(locations.publicInfo, res => {
                 res.setEncoding('utf-8')
-
                 let rawData = ''
         
                 res.on('data', (chunk) => {
@@ -373,16 +401,18 @@ function checkUpdate() {
                     const data = JSON.parse(rawData)
                     if (data.latestVersion !== config.version) {
                         if (data.canAutoUpdate) {
-                            showNotification(getText('[NOTIFICATION]'), getText('ALLOW_NEW_VERSION_AUTO'), () => {
-                                openDownload()
+                            showNotification(getText('[NOTIFICATION]'), `${getText('ALLOW_NEW_VERSION_AUTO')} [${data.latestVersion}]`, () => {
+                                const page = openDownload()
+                                page.once('show', () => {
+                                    page.webContents.postMessage('download', true)
+                                })
                                 resetConfig(true)
-
                                 download({
                                     url: locations.updateMap,
                                     fromJSON: true,
                                     inMemory: true,
-                                }, (_error, updateMap) => {
-                                    const [toRemove, toCreateOrChange] = checkMap(updateMap)
+                                }, (updateMap) => {
+                                    let [toRemove, toCreateOrChange] = checkMap(updateMap)
 
                                     for (const path of toRemove) {
                                         if (lstatSync(path).isFile()) {
@@ -395,31 +425,31 @@ function checkUpdate() {
                                         }
                                     }
 
-                                    let checker = toCreateOrChange
                                     if (toCreateOrChange.length === 0) {
                                         relaunchWithoutSaving = true
                                         reload()
                                     }
+                                    const toDownload = []
                                     for (const relativePath of toCreateOrChange) {
                                         const path = join(__dirname, '..', relativePath)
-                                        const file = createWriteStream(path)
                                         const url = `${locations.update}/${relativePath.replaceAll('\\', '/')}`
 
                                         if (!existsSync(dirname(path))) {
                                             createDirForPath(path)
                                         }
-
-                                        download({
-                                            url: url,
-                                            file: file,
-                                        }, () => {
-                                            checker = checker.filter(item => item !== relativePath)
-                                            if (checker.length === 0) {
-                                                relaunchWithoutSaving = true
-                                                reload()
-                                            }
-                                        })
+                                        toDownload.push({url: url, path: path})
                                     }
+                                    download({
+                                        array: toDownload,
+                                        downloadPage: page,
+                                        isRoot: true,
+                                    }, () => {
+                                        toCreateOrChange = toCreateOrChange.slice(1)
+                                        if (toCreateOrChange.length === 0) {
+                                            relaunchWithoutSaving = true
+                                            reload()
+                                        }
+                                    })
                                 })
                             })
                         }
@@ -618,6 +648,9 @@ function unpackFiles(callback) {
     let loading = null
     if (!config.showWinRARWindow) {
         loading = openDownload()
+        loading.once('show', () => {
+            loading.webContents.postMessage('fileName', getText('[UNPACKING]'))
+        })
     }
     if (existsSync(locations.temp)) {
         rmSync(locations.temp, {
