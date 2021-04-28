@@ -4,7 +4,7 @@
 
 <https://youtu.be/2-4OfWTj8_w>
 
-Для начала вам необходимо скачать программу в разделе releases и распаковать её. Запустите "SnowRunner XML Editor.exe"
+Для начала вам необходимо скачать программу в разделе [releases](https://github.com/VerZsuT/SnowRunner-XML-Editor-Desktop/releases), либо на странице [загрузки](https://verzsut.github.io/SnowRunner-XML-Editor-Desktop/download.html) и распаковать её. Запустите "SnowRunner XML Editor.exe"
 
 ![Первая настройка](https://image.modcdn.io/members/4a97/2992192/profile/2021-04-2.png)
 
@@ -24,6 +24,8 @@
 ![Список автомобилей](https://image.modcdn.io/members/4a97/2992192/profile/2021-04-2.2.png)
 
 Выбрав нужный вам автомобиль/прицеп/груз вы увидите таблицу для изменения параметров. Измените их как вам требуется.
+
+![Таблица для изменения](https://image.modcdn.io/members/4a97/2992192/profile/2021-04-2.7.png)
 
 После чего для сохранения изменений нажмите на кнопку под таблицей.
 
@@ -45,7 +47,7 @@
 
 ## How to use it
 
-To get started, you need to download the program from the releases page and unpack it. Run "SnowRunner XML Editor.exe"
+To get started, you need to download the program from the [releases](https://github.com/VerZsuT/SnowRunner-XML-Editor-Desktop/releases) page and unpack it. Run "SnowRunner XML Editor.exe"
 
 ![Initial setup](https://image.modcdn.io/members/4a97/2992192/profile/2021-04-2.3.png)
 
@@ -65,6 +67,8 @@ Then select the car/trailer/cargo you need from the list.
 ![Cars list](https://image.modcdn.io/members/4a97/2992192/profile/2021-04-2.5.png)
 
 After selecting the car/trailer/cargo you need, you will see a table for changing the parameters. Change them as you require.
+
+![Table](https://image.modcdn.io/members/4a97/2992192/profile/2021-04-2.6.png)
 
 Then, to save the changes, press the "Save" button.
 That's it, you can check in the game!
