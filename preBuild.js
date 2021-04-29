@@ -6,7 +6,7 @@ const paths = {
     config: join(__dirname, 'src', 'config.json'),
     package: join(__dirname, 'package.json'),
     packageLock: join(__dirname, 'package-lock.json'),
-    public: join(__dirname, 'docs', 'public.json')
+    public: join(__dirname, '..', 'sxmle_updater', 'public.json')
 }
 
 fs.rmdirSync(paths.out, {recursive: true})
@@ -24,7 +24,10 @@ console.log('[PRE_BUILD][STAGE_1]: Reading package-lock.json...')
 const packageLock = JSON.parse(fs.readFileSync(paths.packageLock).toString())
 console.log('[PRE_BUILD][STAGE_1]: Success.')
 console.log('[PRE_BUILD][STAGE_1]: Reading public.json...')
-const public = JSON.parse(fs.readFileSync(paths.public).toString())
+let public = {latestVersion: '', canAutoUpdate: true}
+if (fs.existsSync(paths.public)) {
+    public = JSON.parse(fs.readFileSync(paths.public).toString())
+}
 console.log('[PRE_BUILD][STAGE_1]: Success.')
 
 console.log('[PRE_BUILD][LOG]................')

@@ -8,11 +8,10 @@ const main = require('./scripts/service/main.js')
 const { createHash } = require('crypto')
 
 const locations = {
-    publicInfo: 'https://verzsut.github.io/SnowRunner-XML-Editor-Desktop/public.json',
+    publicInfo: 'https://verzsut.github.io/sxmle_updater/public.json',
     downloadPage: 'https://verzsut.github.io/SnowRunner-XML-Editor-Desktop/download.html',
-    update: 'https://verzsut.github.io/SnowRunner-XML-Editor-Desktop/update',
-    updateMap: 'https://verzsut.github.io/SnowRunner-XML-Editor-Desktop/updateMap.json',
-    updateDir: join(__dirname, '..', '..', 'update'),
+    updateFiles: 'https://verzsut.github.io/sxmle_updater/files',
+    updateMap: 'https://verzsut.github.io/sxmle_updater/updateMap.json',
     config: join(__dirname, 'config.json'),
     icon: join(__dirname, 'icons', 'favicon.png'),
     preload: join(__dirname, 'preload.js'),
@@ -432,7 +431,7 @@ function checkUpdate() {
                                     const toDownload = []
                                     for (const relativePath of toCreateOrChange) {
                                         const path = join(__dirname, '..', relativePath)
-                                        const url = `${locations.update}/${relativePath.replaceAll('\\', '/')}`
+                                        const url = `${locations.updateFiles}/${relativePath.replaceAll('\\', '/')}`
 
                                         if (!existsSync(dirname(path))) {
                                             createDirForPath(path)
@@ -726,7 +725,7 @@ function createWindow(fileName, args={}) {
     wind.setMenu(null)
     wind.loadFile(join(locations.HTMLFolder, fileName)).then(() => {
         wind.show()
-        wind.focus()
+        wind.focusOnWebView()
         if (devTools) {
             wind.webContents.toggleDevTools()
         }
