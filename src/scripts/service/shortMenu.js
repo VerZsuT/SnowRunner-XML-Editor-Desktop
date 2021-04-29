@@ -4,7 +4,7 @@ import { props, funcs } from './renderer.js'
 const $menu = create('div', {
     id: 'menu'
 })
-const menu = props.menu
+const menu = props.shortMenu
 
 for (const $item of menu) {
     $menu.append(buildMenu($item, true))

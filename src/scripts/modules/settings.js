@@ -1,3 +1,6 @@
+import '../bootstrap/bootstrap.bundle.min.js'
+import '../service/translate.js'
+
 import { props, funcs } from '../service/renderer.js'
 import { get, getText } from '../service/funcs.js'
 

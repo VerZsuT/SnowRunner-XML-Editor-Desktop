@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>SnowRunner XML Editor {--VERSION--}</title>
+        <meta http-equiv="Content-Security-Policy" content="script-src 'self'">
+        <link rel="stylesheet" href="../styles/settings.css">
+        <script defer src="../scripts/modules/settings.js" type="module"></script>
+    </head>
+    <body>
+        <div id="main">
+            <label to-translate class="form-label" for="language-select">[LANGUAGE_MENU_ITEM_LABEL]</label>
+            <select id="language-select" class="form-select">
+                <option>EN</option>
+                <option>RU</option>
+                <option>DE</option>
+            </select><br>
+        
+            <label to-translate class="form-label" for='"game-folder-select'>[GAME_FOLDER_LABEL]</label><br>
+            <input type="text" id="game-folder-input" class="form-control" disabled>
+            <button class="btn btn-secondary btn-sm" id="game-folder-select" to-translate>[OPEN_BUTTON]</button><br>
+        
+            <input type="checkbox" id="dev-mode" class="form-check-input">
+            <label to-translate for="dev-mode" class="form-check-label">[DEV_MODE_LABEL]</label><br>
+        
+            <input type="checkbox" id="ignore-updates" class="form-check-input">
+            <label to-translate for="ignore-updates" class="form-check-label">[IGNORE_UPDATES_LABEL]</label><br>
+        
+            <input type="checkbox" id="show-winrar-window" class="form-check-input">
+            <label to-translate for="show-winrar-window" class="form-check-label">[SHOW_WINRAR_WINDOW_LABEL]</label><br>
+        
+            <input type="checkbox" id="disable-limits" class="form-check-input">
+            <label to-translate for="disable-limits" class="form-check-label">[DISABLE_LIMITS_LABEL]</label><br>
+        
+            <input type="checkbox" id="disable-dlc" class="form-check-input">
+            <label to-translate for="disable-dlc" class="form-check-label">[DISABLE_DLC_LABEL]</label><br>
+        
+            <input type="checkbox" id="disable-editor-label" class="form-check-input">
+            <label to-translate for="disable-editor-label" class="form-check-label">[DISABLE_EDITOR_LABEL_LABEL]</label><br>
+        
+            <input type="checkbox" id="hide-reset-button" class="form-check-input">
+            <label to-translate for="hide-reset-button" class="form-check-label">[HIDE_RESET_BUTTON_LABEL]</label><br>
+        
+            <button class="btn btn-primary" id="save-to-config" to-translate>[SAVE_BUTTON]</button>
+        
+            <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 5">
+                <div id="live-toast" class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="toast-body"></div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

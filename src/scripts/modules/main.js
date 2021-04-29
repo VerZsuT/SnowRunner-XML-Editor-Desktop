@@ -1,3 +1,7 @@
+import '../bootstrap/bootstrap.bundle.min.js'
+import '../service/menu.js'
+import '../service/translate.js'
+
 import { get } from '../service/funcs.js'
 import { funcs } from '../service/renderer.js'
 

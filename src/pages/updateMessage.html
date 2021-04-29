@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Update</title>
+        <link rel="stylesheet" href="../styles/style.css">
+        <script defer src="../scripts/modules/updateMessage.js" type="module"></script>
+    </head>
+    <body>
+        <div id="main">
+            <h2 id="header" to-translate>[ALLOW_NEW_VERSION_AUTO]</h2>
+            <div id="buttons">
+            <button id="update" class="btn btn-primary" to-translate>[UPDATE]</button>
+            <button id="ignore" class="btn btn-danger" to-translate>[IGNORE]</button>
+            <button id="close" class="btn btn-secondary" to-translate>[CLOSE]</button>
+            </div>
+        </div>
+
+        <style>
+            body {
+                background: #fff; 
+            }
+
+            #main {
+                position: relative;
+                width: 300px;
+                height: 150px;
+                margin: 0 auto;
+                padding: 10px;
+                box-sizing: border-box;
+            }
+
+            #header {
+                margin-top: 0;
+                text-align: center;
+            }
+
+            #buttons {
+                display: flex;
+                width: 100%;
+                position: absolute;
+                bottom: 5px;
+                justify-content: center;
+            }
+
+            button {
+                margin-right: 20px;
+            }
+        </style>
+    </body>
+</html>

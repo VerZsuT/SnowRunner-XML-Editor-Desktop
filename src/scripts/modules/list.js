@@ -1,3 +1,7 @@
+import '../bootstrap/bootstrap.bundle.min.js'
+import '../service/menu.js'
+import '../service/translate.js'
+
 import { funcs } from '../service/renderer.js'
 import { create, get, getIngameText, prettify } from '../service/funcs.js'
 

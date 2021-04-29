@@ -33,6 +33,7 @@ if (existsSync(paths.sxmle_updater)) {
     console.log('[POST_BUILD][STAGE_3]: Adding files for auto update...')
     rmdirSync(join(paths.sxmle_updater, 'files'), {recursive: true})
     renameSync(join(paths.renamed, 'resources', 'app'), join(paths.sxmle_updater, 'files'))
+    rmdirSync(join(paths.renamed), {recursive: true})
     console.log('[POST_BUILD][STAGE_3]: Success.')
 }
 

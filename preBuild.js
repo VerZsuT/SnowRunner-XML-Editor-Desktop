@@ -3,7 +3,7 @@ const { join } = require('path')
 
 const paths = {
     out: join(__dirname, 'out'),
-    config: join(__dirname, 'src', 'config.json'),
+    config: join(__dirname, 'src', 'app', 'config.json'),
     package: join(__dirname, 'package.json'),
     packageLock: join(__dirname, 'package-lock.json'),
     public: join(__dirname, '..', 'sxmle_updater', 'public.json')

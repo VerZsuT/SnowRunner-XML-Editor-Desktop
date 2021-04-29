@@ -1,3 +1,7 @@
+import '../bootstrap/bootstrap.bundle.min.js'
+import '../service/shortMenu.js'
+import '../service/translate.js'
+
 import { props, funcs } from '../service/renderer.js'
 import { get, getText } from '../service/funcs.js'
 
@@ -14,14 +18,6 @@ let gameFolder = null
 
 $languageSelect.value = config.language
 props.errorHandler = message => toast(getText(`${message}`.replace('Error: ', '')))
-
-function toast(message) {
-    $toast.querySelector('.toast-body').innerText = message
-    $toast.style.opacity = '1'
-    setTimeout(() => {
-        $toast.style.opacity = '0'
-    }, 2000)
-}
 
 $languageSelect.addEventListener('change', () => {
     config.language = $languageSelect.value
@@ -40,6 +36,14 @@ $saveToConfig.addEventListener('click', () => {
 })
 
 $gameFolderSelect.addEventListener('click', getGameFolder)
+
+function toast(message) {
+    $toast.querySelector('.toast-body').innerText = message
+    $toast.style.opacity = '1'
+    setTimeout(() => {
+        $toast.style.opacity = '0'
+    }, 2000)
+}
 
 function getGameFolder() {
     const data = props.gameFolder

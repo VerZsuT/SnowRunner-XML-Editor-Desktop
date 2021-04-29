@@ -19,7 +19,6 @@ export function prettify(text) {
  * Создаёт элемент и устанавливает переданые атрибуты.
  * Также поддерживаются следующие параметры: 
  * - innerText: string - текст элемента.
- * - innerHTML: string - содержимое элемента.
  * - style: object - стили элемента.
  * - checked: bool - выбран ли элемен checkbox.
  * - listeners: object - события.
@@ -35,9 +34,6 @@ export function create(tag, attrs={}) {
         switch (attrName) {
             case 'innerText':
                 element.innerText = attrValue
-                continue
-            case 'innerHTML':
-                element.innerHTML = attrValue
                 continue
             case 'style':
                 for (const propName in attrValue) {
@@ -105,7 +101,14 @@ export function getAll(selector) {
 export function getText(key, returnKey=true) {
     const translation = getTranslation(language)
     if (translation) {
-        return translation[removePars(key)] || (returnKey ? key : undefined)
+        let result = translation[removePars(key)]
+        if (!result) {
+            result = getTranslation('EN')[removePars(key)]
+        }
+        if (!result && returnKey) {
+            result = key
+        }
+        return result
     }
 }
 

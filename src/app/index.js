@@ -4,7 +4,7 @@ const { exec } = require('child_process')
 const { app, shell, dialog, BrowserWindow, Notification } = require('electron')
 const { readFileSync, readdirSync, lstatSync, existsSync, writeFileSync, unlinkSync, copyFileSync, mkdirSync, rmSync, createWriteStream } = require('fs')
 const { join, dirname, basename } = require('path')
-const main = require('./scripts/service/main.js')
+const main = require('../scripts/service/main.js')
 const { createHash } = require('crypto')
 
 const locations = {
@@ -12,18 +12,19 @@ const locations = {
     downloadPage: 'https://verzsut.github.io/SnowRunner-XML-Editor-Desktop/download.html',
     updateFiles: 'https://verzsut.github.io/sxmle_updater/files',
     updateMap: 'https://verzsut.github.io/sxmle_updater/updateMap.json',
+    root: join(__dirname, '..', '..'),
     config: join(__dirname, 'config.json'),
-    icon: join(__dirname, 'icons', 'favicon.png'),
+    icon: join(__dirname, '..', 'icons', 'favicon.png'),
     preload: join(__dirname, 'preload.js'),
-    backupFolder: join(__dirname, 'backups'),
-    backupInitial: join(__dirname, 'backups', 'initial.pak'),
-    HTMLFolder: join(__dirname, 'editors'),
-    translations: join(__dirname, 'scripts', 'translations'),
-    winrar: join(__dirname, 'scripts', 'winrar'),
-    temp: join(__dirname, 'scripts', 'temp'),
-    strings: join(__dirname, 'scripts', 'temp', '[strings]'),
-    dlc: join(__dirname, 'scripts', 'temp', '[media]', '_dlc'),
-    classes: join(__dirname, 'scripts', 'temp', '[media]', 'classes')
+    backupFolder: join(__dirname, '..', 'backups'),
+    backupInitial: join(__dirname, '..', 'backups', 'initial.pak'),
+    HTMLFolder: join(__dirname, '..', 'pages'),
+    translations: join(__dirname, '..', 'scripts', 'translations'),
+    winrar: join(__dirname, '..', 'scripts', 'winrar'),
+    temp: join(__dirname, '..', 'scripts', 'temp'),
+    strings: join(__dirname, '..', 'scripts', 'temp', '[strings]'),
+    dlc: join(__dirname, '..', 'scripts', 'temp', '[media]', '_dlc'),
+    classes: join(__dirname, '..', 'scripts', 'temp', '[media]', 'classes')
 }
 
 let pathToReturn = null
@@ -45,11 +46,11 @@ initApp()
 initMain()
 
 function init() {
-    if (!config.ignoreUpdates) {
-        checkUpdate()
-    }
     if (!config.pathToInitial) {
         openFirstSteps()
+        if (!config.ignoreUpdates) {
+            checkUpdate()
+        }
     }
     else if (checkPaths()) {
         config.pathToDLC = locations.dlc
@@ -59,6 +60,9 @@ function init() {
             initDLC()
         }
         openMain()
+        if (!config.ignoreUpdates) {
+            checkUpdate()
+        }
     }
     else {
         resetConfig()
@@ -210,6 +214,7 @@ function initMain() {
     main.resetConfig = resetConfig
     main.restoreInitial = restoreInitial
     main.saveConfig = saveConfig
+    main.update = update
 }
 
 function initApp() {
@@ -348,7 +353,7 @@ function checkPathToDelete(path, map) {
             }
         }
         else {
-            const relativePath = path2.replace(join(__dirname, '..', '/'), '')
+            const relativePath = path2.replace(join(locations.root, '/'), '')
             if (!map[relativePath]) {
                 toRemove.push(path2)
             }
@@ -359,11 +364,11 @@ function checkPathToDelete(path, map) {
 }
 
 function checkMap(map) {
-    const toRemove = checkPathToDelete(join(__dirname, '..'), map) || []
+    const toRemove = checkPathToDelete(locations.root, map) || []
     const toCreateOrChange = []
 
     for (const relativePath in map) {
-        const absolutePath = join(__dirname, '..', relativePath)
+        const absolutePath = join(locations.root, relativePath)
 
         if (!existsSync(absolutePath)) {
             toCreateOrChange.push(relativePath)
@@ -385,8 +390,60 @@ function checkMap(map) {
     return [toRemove, toCreateOrChange]
 }
 
+function update() {
+    const page = openDownload()
+    page.once('show', () => {
+        page.webContents.postMessage('download', true)
+    })
+    resetConfig(true)
+    download({
+        url: locations.updateMap,
+        fromJSON: true,
+        inMemory: true,
+    }, (updateMap) => {
+        let [toRemove, toCreateOrChange] = checkMap(updateMap)
+
+        for (const path of toRemove) {
+            if (lstatSync(path).isFile()) {
+                unlinkSync(path)
+            }
+            else {
+                rmSync(path, {
+                    recursive: true
+                })
+            }
+        }
+
+        if (toCreateOrChange.length === 0) {
+            relaunchWithoutSaving = true
+            reload()
+        }
+        const toDownload = []
+        for (const relativePath of toCreateOrChange) {
+            const path = join(locations.root, relativePath)
+            const url = `${locations.updateFiles}/${relativePath.replaceAll('\\', '/')}`
+
+            if (!existsSync(dirname(path))) {
+                createDirForPath(path)
+            }
+            toDownload.push({url: url, path: path})
+        }
+        download({
+            array: toDownload,
+            downloadPage: page,
+            isRoot: true,
+        }, () => {
+            toCreateOrChange = toCreateOrChange.slice(1)
+            if (toCreateOrChange.length === 0) {
+                relaunchWithoutSaving = true
+                reload()
+            }
+        })
+    })
+}
+
 function checkUpdate() {
-    dns.resolve('www.google.com', error => {
+    dns.resolve('yandex.ru', error => {
         if (!error) {
             https.get(locations.publicInfo, res => {
                 res.setEncoding('utf-8')
@@ -400,57 +457,7 @@ function checkUpdate() {
                     const data = JSON.parse(rawData)
                     if (data.latestVersion !== config.version) {
                         if (data.canAutoUpdate) {
-                            showNotification(getText('[NOTIFICATION]'), `${getText('ALLOW_NEW_VERSION_AUTO')} [${data.latestVersion}]`, () => {
-                                const page = openDownload()
-                                page.once('show', () => {
-                                    page.webContents.postMessage('download', true)
-                                })
-                                resetConfig(true)
-                                download({
-                                    url: locations.updateMap,
-                                    fromJSON: true,
-                                    inMemory: true,
-                                }, (updateMap) => {
-                                    let [toRemove, toCreateOrChange] = checkMap(updateMap)
-
-                                    for (const path of toRemove) {
-                                        if (lstatSync(path).isFile()) {
-                                            unlinkSync(path)
-                                        }
-                                        else {
-                                            rmSync(path, {
-                                                recursive: true
-                                            })
-                                        }
-                                    }
-
-                                    if (toCreateOrChange.length === 0) {
-                                        relaunchWithoutSaving = true
-                                        reload()
-                                    }
-                                    const toDownload = []
-                                    for (const relativePath of toCreateOrChange) {
-                                        const path = join(__dirname, '..', relativePath)
-                                        const url = `${locations.updateFiles}/${relativePath.replaceAll('\\', '/')}`
-
-                                        if (!existsSync(dirname(path))) {
-                                            createDirForPath(path)
-                                        }
-                                        toDownload.push({url: url, path: path})
-                                    }
-                                    download({
-                                        array: toDownload,
-                                        downloadPage: page,
-                                        isRoot: true,
-                                    }, () => {
-                                        toCreateOrChange = toCreateOrChange.slice(1)
-                                        if (toCreateOrChange.length === 0) {
-                                            relaunchWithoutSaving = true
-                                            reload()
-                                        }
-                                    })
-                                })
-                            })
+                            openUpdateMessage(data.latestVersion)
                         }
                         else {
                             showNotification(getText('[NOTIFICATION]'), getText('ALLOW_NEW_VERSION'), () => {
@@ -574,6 +581,7 @@ function openMain() {
 
 function openFirstSteps() {
     const wind = createWindow('firstSteps.html', {width: 550, height: 450})
+    firstStepsWindow = wind
     wind.once('close', () => {
         app.quit()
     })
@@ -643,6 +651,20 @@ function openSettings() {
     })
 }
 
+function openUpdateMessage(version) {
+    const wind = createWindow('updateMessage.html', {
+        width: 400,
+        height: 200,
+        frame: false,
+        modal: true,
+        parent: currentWindow,
+        resizable: false
+    })
+    wind.once('show', () => {
+        wind.webContents.postMessage('content', version)
+    })
+}
+
 function unpackFiles(callback) {
     let loading = null
     if (!config.showWinRARWindow) {
@@ -707,15 +729,15 @@ function saveConfig() {
 
 function createWindow(fileName, args={}) {
     const wind = new BrowserWindow({
-        backgroundColor: '#FFF',
         width: args.width || 800,
         height: args.height || 600,
         resizable: args.resizable !== undefined ? args.resizable : true,
         icon: locations.icon,
-        show: false,
+        show: args.show || false,
         parent: args.parent || null,
         modal: args.modal || false,
         frame: !(args.frame === false),
+        paintWhenInitiallyHidden: false,
         webPreferences: {
             preload: locations.preload,
             contextIsolation: false
@@ -725,7 +747,7 @@ function createWindow(fileName, args={}) {
     wind.setMenu(null)
     wind.loadFile(join(locations.HTMLFolder, fileName)).then(() => {
         wind.show()
-        wind.focusOnWebView()
+        wind.focus()
         if (devTools) {
             wind.webContents.toggleDevTools()
         }
