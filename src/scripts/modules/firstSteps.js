@@ -16,11 +16,11 @@ const $toast = get('#live-toast')
 let pathToInitial = null
 let gameFolder = null
 
-$languageSelect.value = config.language
+$languageSelect.value = config.lang
 props.errorHandler = message => toast(getText(`${message}`.replace('Error: ', '')))
 
 $languageSelect.addEventListener('change', () => {
-    config.language = $languageSelect.value
+    config.lang = $languageSelect.value
     funcs.reload()
 })
 
@@ -30,8 +30,8 @@ $saveToConfig.addEventListener('click', () => {
         return
     }
 
-    config.pathToInitial = pathToInitial
-    config.gameFolder = gameFolder
+    config.paths.initial = pathToInitial
+    config.paths.game = gameFolder
     funcs.saveBackup(true)
 })
 

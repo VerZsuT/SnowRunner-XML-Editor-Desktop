@@ -24,6 +24,6 @@ $update.onclick = () => {
 }
 
 $ignore.onclick = () => {
-    config.ignoreUpdates = true
+    config.settings.ignoreUpdates = true
     window.close()
 }

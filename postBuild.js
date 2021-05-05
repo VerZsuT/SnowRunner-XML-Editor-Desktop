@@ -7,6 +7,7 @@ const paths = {
     out: join(__dirname, 'out'),
     original: join(__dirname, 'out', 'SnowRunner XML Editor-win32-ia32'),
     renamed: join(__dirname, 'out', 'SnowRunnerXMLEditor'),
+    config: join(__dirname, 'out', 'SnowRunnerXMLEditor', 'resources', 'app', 'src', 'app', 'config.json'),
     winrar: join(__dirname, 'src', 'scripts', 'winrar'),
     sxmle_updater: join(__dirname, '..', 'sxmle_updater')
 }
@@ -17,6 +18,10 @@ console.log('[POST_BUILD][STAGE_1]: Renaming build...')
 renameSync(paths.original, paths.renamed)
 console.log('[POST_BUILD][STAGE_1]: Success.')
 console.log('[POST_BUILD][LOG]................')
+
+const config = JSON.parse(readFileSync(paths.config))
+config.buildType = 'prod'
+writeFileSync(paths.config, JSON.stringify(config))
 
 console.log('[POST_BUILD][STAGE_2]: Archiving build...')
 execSync(`WinRAR a -ibck -ep1 -m5 "${join(paths.out, 'SnowRunnerXMLEditor.rar')}" "${paths.renamed}"`, {

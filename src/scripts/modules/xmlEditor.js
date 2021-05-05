@@ -11,7 +11,7 @@ const $saveParamsButton = get('#save-params')
 const $backButton = get('#back')
 const $title = get('#title')
 
-const devMode = config.devMode
+const devMode = config.settings.devMode
 let filePath = null
 let currentDLC = null
 let fileDOM = null
@@ -199,9 +199,9 @@ function createItems(params, $parentGroupCont=null, tabs=1) {
                         })
                         $button.addEventListener('click', () => {
                             if (currentDLC) {
-                                local.fileDLCPath = `${config.pathToDLC}\\${currentDLC}\\classes\\${param.fileType}\\${fileName}.xml`
+                                local.fileDLCPath = `${config.paths.dlc}\\${currentDLC}\\classes\\${param.fileType}\\${fileName}.xml`
                             }
-                            local.filePath = `${config.pathToClasses}\\${param.fileType}\\${fileName}.xml`
+                            local.filePath = `${config.paths.classes}\\${param.fileType}\\${fileName}.xml`
                             
                             funcs.openXMLEditor()
                         })
@@ -244,7 +244,7 @@ function createItems(params, $parentGroupCont=null, tabs=1) {
                     })
 
                     if (param.type === 'number') {
-                        if (!config.disableLimits) {
+                        if (!config.settings.disableLimits) {
                             if (param.min !== '-∞') {
                                 $input.min = param.min || 0
                             }
@@ -257,7 +257,7 @@ function createItems(params, $parentGroupCont=null, tabs=1) {
                             const max = $input.max
                             let value = $input.value
 
-                            if (!config.disableLimits) {
+                            if (!config.settings.disableLimits) {
                                 if (min !== '' && value < +min) {
                                     $input.value = value = min
                                 }
@@ -384,7 +384,7 @@ function generateAndSaveFile() {
         item.removeAttribute('SXMLE_ID')
     }
 
-    const xmlString = `${config.disableEditorLabel? '' : copyrightText}${serializer.serializeToString(fileDOM).replace('<root>', '').replace('</root>', '')}`
+    const xmlString = `${config.settings.disableEditorLabel? '' : copyrightText}${serializer.serializeToString(fileDOM).replace('<root>', '').replace('</root>', '')}`
     funcs.setFileData(filePath, xmlString)
     funcs.saveToOriginal()
     window.close()

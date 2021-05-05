@@ -7,7 +7,7 @@ const { join, dirname, basename } = require('path')
 const main = require('../scripts/service/main.js')
 const { createHash } = require('crypto')
 
-const locations = {
+const paths = {
     publicInfo: 'https://verzsut.github.io/sxmle_updater/public.json',
     downloadPage: 'https://verzsut.github.io/SnowRunner-XML-Editor-Desktop/download.html',
     updateFiles: 'https://verzsut.github.io/sxmle_updater/files',
@@ -46,21 +46,21 @@ initApp()
 initMain()
 
 function init() {
-    if (!config.pathToInitial) {
+    if (!config.paths.initial) {
         openFirstSteps()
-        if (!config.ignoreUpdates) {
+        if (!config.settings.ignoreUpdates) {
             checkUpdate()
         }
     }
     else if (checkPaths()) {
-        config.pathToDLC = locations.dlc
-        config.pathToClasses = locations.classes
+        config.paths.dlc = paths.dlc
+        config.paths.classes = paths.classes
 
-        if (!config.disableDLC) {
+        if (!config.settings.disableDLC) {
             initDLC()
         }
         openMain()
-        if (!config.ignoreUpdates) {
+        if (!config.settings.ignoreUpdates) {
             checkUpdate()
         }
     }
@@ -114,14 +114,14 @@ function initMain() {
     }
 
     main.setLang = function(lang) {
-        config.language = lang
+        config.lang = lang
         saveConfig()
         reload()
     }
 
     main.saveToOriginal = function() {
-        exec(`WinRAR f${config.showWinRARWindow? '' : ' -ibck'} "${config.pathToInitial}" ..\\temp\\ -r -ep1`, {
-            cwd: locations.winrar
+        exec(`WinRAR f${config.settings.showWinRARWindow? '' : ' -ibck'} "${config.paths.initial}" ..\\temp\\ -r -ep1`, {
+            cwd: paths.winrar
         }, error => {
             if (error) {
                 showNotification(getText('[ERROR]'), getText('[SAVE_ORIGINAL_ERROR]'))
@@ -129,20 +129,24 @@ function initMain() {
         })
     }
 
+    main.openDevTools = function() {
+        currentWindow.webContents.toggleDevTools()
+    }
+
     main.getList = function(listType, fromDLC=false) {
         if (fromDLC) {
             const array = []
-            for (const dlc of config.dlc) {
-                const path = `${dlc.path}\\classes`
+            for (const dlcItem of config.dlcList) {
+                const path = `${dlcItem.path}\\classes`
     
                 if (listType === 'trucks') {
-                    array.push({name: dlc.name, items: fromDir(join(path, 'trucks')) || []})
+                    array.push({name: dlcItem.name, items: fromDir(join(path, 'trucks')) || []})
                 }
                 else if (listType === 'trailers') {
-                    array.push({name: dlc.name, items: fromDir(join(path, 'trucks', 'trailers')) || []})
+                    array.push({name: dlcItem.name, items: fromDir(join(path, 'trucks', 'trailers')) || []})
                 }
                 else if (listType === 'cargo') {
-                    array.push({name: dlc.name, items: fromDir(join(path, 'trucks', 'cargo')) || []})
+                    array.push({name: dlcItem.name, items: fromDir(join(path, 'trucks', 'cargo')) || []})
                 }
                 else {
                     throw new Error('[UNDEFINED_LIST_TYPE]')
@@ -153,13 +157,13 @@ function initMain() {
         }
         else {
             if (listType === 'trucks') {
-                return fromDir(join(locations.classes, 'trucks'))
+                return fromDir(join(paths.classes, 'trucks'))
             }
             else if (listType === 'trailers') {
-                return fromDir(join(locations.classes, 'trucks', 'trailers'))
+                return fromDir(join(paths.classes, 'trucks', 'trailers'))
             }
             else if (listType === 'cargo') {
-                return fromDir(join(locations.classes, 'trucks', 'cargo'))
+                return fromDir(join(paths.classes, 'trucks', 'cargo'))
             }
             else {
                 throw new Error('[UNDEFINED_LIST_TYPE]')
@@ -187,7 +191,7 @@ function initMain() {
     }
 
     main.setDevMode = function(value) {
-        config.devMode = value
+        config.settings.devMode = value
         reload()
     }
     
@@ -353,7 +357,7 @@ function checkPathToDelete(path, map) {
             }
         }
         else {
-            const relativePath = path2.replace(join(locations.root, '/'), '')
+            const relativePath = path2.replace(join(paths.root, '/'), '')
             if (!map[relativePath]) {
                 toRemove.push(path2)
             }
@@ -364,11 +368,11 @@ function checkPathToDelete(path, map) {
 }
 
 function checkMap(map) {
-    const toRemove = checkPathToDelete(locations.root, map) || []
+    const toRemove = checkPathToDelete(paths.root, map) || []
     const toCreateOrChange = []
 
     for (const relativePath in map) {
-        const absolutePath = join(locations.root, relativePath)
+        const absolutePath = join(paths.root, relativePath)
 
         if (!existsSync(absolutePath)) {
             toCreateOrChange.push(relativePath)
@@ -397,7 +401,7 @@ function update() {
     })
     resetConfig(true)
     download({
-        url: locations.updateMap,
+        url: paths.updateMap,
         fromJSON: true,
         inMemory: true,
     }, (updateMap) => {
@@ -420,8 +424,8 @@ function update() {
         }
         const toDownload = []
         for (const relativePath of toCreateOrChange) {
-            const path = join(locations.root, relativePath)
-            const url = `${locations.updateFiles}/${relativePath.replaceAll('\\', '/')}`
+            const path = join(paths.root, relativePath)
+            const url = `${paths.updateFiles}/${relativePath.replaceAll('\\', '/')}`
 
             if (!existsSync(dirname(path))) {
                 createDirForPath(path)
@@ -445,7 +449,7 @@ function update() {
 function checkUpdate() {
     dns.resolve('yandex.ru', error => {
         if (!error) {
-            https.get(locations.publicInfo, res => {
+            https.get(paths.publicInfo, res => {
                 res.setEncoding('utf-8')
                 let rawData = ''
         
@@ -461,7 +465,7 @@ function checkUpdate() {
                         }
                         else {
                             showNotification(getText('[NOTIFICATION]'), getText('ALLOW_NEW_VERSION'), () => {
-                                shell.openExternal(locations.downloadPage)
+                                shell.openExternal(paths.downloadPage)
                             })
                         }
                     }
@@ -473,15 +477,15 @@ function checkUpdate() {
 
 function checkPaths() {
     let success = true
-    if (!existsSync(config.pathToInitial)) {
+    if (!existsSync(config.paths.initial)) {
         showNotification(getText('[ERROR]'), getText('[INITIAL_NOT_FOUND]'))
         success = false
     }
-    else if (!existsSync(locations.classes)) {
+    else if (!existsSync(paths.classes)) {
         showNotification(getText('[ERROR]'), getText('[CLASSES_NOT_FOUND]'))
         success = false
     }
-    else if (!existsSync(locations.dlc)) {
+    else if (!existsSync(paths.dlc)) {
         showNotification(getText('[ERROR]'), getText('[DLC_FOLDER_NOT_FOUND]'))
         success = false
     }
@@ -489,18 +493,18 @@ function checkPaths() {
 }
 
 function initDLC() {
-    config.dlc = fromDir(locations.dlc, true)
+    config.dlcList = fromDir(paths.dlc, true)
 }
 
 function getTranslations() {
-    const RU = JSON.parse(readFileSync(join(locations.translations, 'RU.json')).toString())
-    const EN = JSON.parse(readFileSync(join(locations.translations, 'EN.json')).toString())
-    const DE = JSON.parse(readFileSync(join(locations.translations, 'DE.json')).toString())
+    const RU = JSON.parse(readFileSync(join(paths.translations, 'RU.json')).toString())
+    const EN = JSON.parse(readFileSync(join(paths.translations, 'EN.json')).toString())
+    const DE = JSON.parse(readFileSync(join(paths.translations, 'DE.json')).toString())
 
     let ingame = {}
-    if (existsSync(locations.strings)) {
+    if (existsSync(paths.strings)) {
         let fileName
-        switch (config.language) {
+        switch (config.lang) {
             case 'RU':
                 fileName = 'strings_russian.str'
                 break
@@ -510,7 +514,7 @@ function getTranslations() {
             case 'DE':
                 fileName = 'strings_german.str'
         }
-        stringsFilePath = join(locations.strings, fileName)
+        stringsFilePath = join(paths.strings, fileName)
         ingame = parseStrings(readFileSync(stringsFilePath, {encoding: 'utf16le'}).toString())
     }
 
@@ -530,7 +534,7 @@ function showNotification(title, message, callback=null) {
     if (Notification.isSupported()) {
         const notification = new Notification({
             title: title,
-            icon: locations.icon,
+            icon: paths.icon,
             body: message
         })
 
@@ -551,12 +555,13 @@ function openList() {
         mainWindow.hide()
     }
     listWindow = createWindow('list.html', {
-        width: 800,
-        height: 470
+        width: 1100,
+        height: 640
     })
     listWindow.once('close', () => {
         listWindow = null
         if (mainWindow) {
+            currentWindow = mainWindow
             mainWindow.show()
             mainWindow.focus()
         }
@@ -570,8 +575,8 @@ function openMain() {
         return
     }
     mainWindow = createWindow('main.html', {
-        width: 970, 
-        height: 370, 
+        width: 980, 
+        height: 380, 
         resizable: false
     })
     mainWindow.once('close', () => {
@@ -610,6 +615,7 @@ function openXMLEditor(path=null, dlc=null) {
     if (xmlEditor) {
         wind.once('close', () => {
             if (xmlEditor) {
+                currentWindow = xmlEditor
                 xmlEditor.show()
                 xmlEditor.focus()
             }
@@ -619,39 +625,49 @@ function openXMLEditor(path=null, dlc=null) {
         wind.once('close', () => {
             xmlEditor = null
             if (listWindow) {
+                currentWindow = listWindow
                 listWindow.show()
                 listWindow.focus()
-            }
-            else {
-                if (mainWindow) {
-                    mainWindow.show()
-                    mainWindow.focus()
-                }
             }
         })
     }
 }
 
 function openDownload() {
-    return createWindow('download.html', {
+    const beforeWindow = currentWindow
+    const wind = createWindow('download.html', {
         width: 180,
         height: 50,
         modal: true,
         parent: currentWindow,
         frame: false
     })
+
+    wind.once('close', () => {
+        currentWindow = beforeWindow
+        beforeWindow.focus()
+    })
+
+    return wind
 }
 
 function openSettings() {
-    createWindow('settings.html', {
+    const beforeWindow = currentWindow
+    const wind = createWindow('settings.html', {
         width: 400,
         height: 550,
         modal: true,
         parent: currentWindow
     })
+
+    wind.once('close', () => {
+        currentWindow = beforeWindow
+        beforeWindow.focus()
+    })
 }
 
 function openUpdateMessage(version) {
+    const beforeWindow = currentWindow
     const wind = createWindow('updateMessage.html', {
         width: 400,
         height: 200,
@@ -660,29 +676,34 @@ function openUpdateMessage(version) {
         parent: currentWindow,
         resizable: false
     })
+
     wind.once('show', () => {
         wind.webContents.postMessage('content', version)
+    })
+    wind.once('close', () => {
+        currentWindow = beforeWindow
+        beforeWindow.focus()
     })
 }
 
 function unpackFiles(callback) {
     let loading = null
-    if (!config.showWinRARWindow) {
+    if (!config.settings.showWinRARWindow) {
         loading = openDownload()
         loading.once('show', () => {
             loading.webContents.postMessage('fileName', getText('[UNPACKING]'))
         })
     }
-    if (existsSync(locations.temp)) {
-        rmSync(locations.temp, {
+    if (existsSync(paths.temp)) {
+        rmSync(paths.temp, {
             recursive: true
         })
     }
-    mkdirSync(locations.temp)
-    exec(`WinRAR x${config.showWinRARWindow? '' : ' -ibck'} "${config.pathToInitial}" @unpack-list.lst ..\\temp\\`, {
-        cwd: locations.winrar
+    mkdirSync(paths.temp)
+    exec(`WinRAR x${config.settings.showWinRARWindow? '' : ' -ibck'} "${config.paths.initial}" @unpack-list.lst ..\\temp\\`, {
+        cwd: paths.winrar
     }).once('close', () => {
-        if (!config.showWinRARWindow) {
+        if (!config.settings.showWinRARWindow) {
             loading.close()
         }
         callback()
@@ -691,13 +712,13 @@ function unpackFiles(callback) {
 
 function saveBackup(reloadAfter=false) {
     unpackFiles(() => {
-        if (!existsSync(locations.backupFolder)) {
-            mkdirSync(locations.backupFolder)
+        if (!existsSync(paths.backupFolder)) {
+            mkdirSync(paths.backupFolder)
         }
     
-        if (existsSync(locations.backupInitial)) {
+        if (existsSync(paths.backupInitial)) {
             try {
-                unlinkSync(locations.backupInitial)
+                unlinkSync(paths.backupInitial)
             } catch {
                 throw new Error('[DELETE_OLD_INITIAL_BACKUP_ERROR]')
             }
@@ -713,7 +734,7 @@ function saveBackup(reloadAfter=false) {
 
 function copyBackup() {
     try {
-        copyFileSync(config.pathToInitial, locations.backupInitial)
+        copyFileSync(config.paths.initial, paths.backupInitial)
     } catch {
         throw new Error('[SAVE_INITIAL_BACKUP_ERROR]')
     }
@@ -721,7 +742,7 @@ function copyBackup() {
 
 function saveConfig() {
     try {
-        writeFileSync(locations.config, JSON.stringify(config))
+        writeFileSync(paths.config, JSON.stringify(config))
     } catch {
         throw new Error('[SAVE_CONFIG_ERROR]')
     }
@@ -732,20 +753,20 @@ function createWindow(fileName, args={}) {
         width: args.width || 800,
         height: args.height || 600,
         resizable: args.resizable !== undefined ? args.resizable : true,
-        icon: locations.icon,
+        icon: paths.icon,
         show: args.show || false,
         parent: args.parent || null,
         modal: args.modal || false,
         frame: !(args.frame === false),
         paintWhenInitiallyHidden: false,
         webPreferences: {
-            preload: locations.preload,
+            preload: paths.preload,
             contextIsolation: false
         }
     })
     currentWindow = wind
     wind.setMenu(null)
-    wind.loadFile(join(locations.HTMLFolder, fileName)).then(() => {
+    wind.loadFile(join(paths.HTMLFolder, fileName)).then(() => {
         wind.show()
         wind.focus()
         if (devTools) {
@@ -758,18 +779,18 @@ function createWindow(fileName, args={}) {
 }
 
 function restoreInitial() {
-    if (!existsSync(locations.backupInitial)) {
+    if (!existsSync(paths.backupInitial)) {
         return
     }
-    if (existsSync(config.pathToInitial)) {
+    if (existsSync(config.paths.initial)) {
         try {
-            unlinkSync(config.pathToInitial)
+            unlinkSync(config.paths.initial)
         } catch {
             showNotification(getText('[ERROR]'), getText('[DELETE_CURRENT_INITIAL_BACKUP_ERROR]'))
         }
     }
     try {
-        copyFileSync(locations.backupInitial, config.pathToInitial)
+        copyFileSync(paths.backupInitial, config.paths.initial)
         unpackFiles(() => {
             showNotification(getText('[SUCCESS]'), getText('[SUCCESS_INITIAL_RESTORE]'))
         })
@@ -779,33 +800,37 @@ function restoreInitial() {
 }
 
 function resetConfig(withoutReloading=false) {
-    config.pathToInitial = null
-    config.pathToDLC = null
-    config.pathToClasses = null
-    config.gameFolder = null
-    config.dlc = []
-    config.ignoreUpdates = false
-    config.showWinRARWindow = false
-    config.disableLimits = false
-    config.disableDLC = false
-    config.disableEditorLabel = false
-    config.hideResetButton = false
-    config.devMode = false
-    config.language = 'EN'
+    config.paths = {
+        initial: null,
+        dlc: null,
+        classes: null,
+        game: null
+    }
+    config.dlcList = []
+    config.settings = {
+        ignoreUpdates: false,
+        showWinRARWindow: false,
+        disableLimits: false,
+        disableDLC: false,
+        disableEditorLabel: false,
+        hideResetButton: false,
+        devMode: false
+    }
+    config.lang = 'EN'
 
-    if (existsSync(locations.backupInitial)) {
+    if (existsSync(paths.backupInitial)) {
         try {
-            unlinkSync(locations.backupInitial)
+            unlinkSync(paths.backupInitial)
         } catch (error) {
             showNotification(getText('[ERROR]'), getText('[DELETE_OLD_INITIAL_BACKUP_ERROR]'))
         }
     }
 
-    if (existsSync(locations.temp)) {
-        rmSync(locations.temp, {
+    if (existsSync(paths.temp)) {
+        rmSync(paths.temp, {
             recursive: true
         })
-        mkdirSync(locations.temp)
+        mkdirSync(paths.temp)
     }
 
     if (!withoutReloading) {
@@ -817,7 +842,7 @@ function resetConfig(withoutReloading=false) {
 }
 
 function getText(key, returnKey=true) {
-    const translation = translations[config.language]
+    const translation = translations[config.lang]
     if (translation) {
         return translation[removePars(key)] || (returnKey ? key : undefined)
     }
@@ -830,24 +855,9 @@ function removePars(str) {
 }
 
 function getConfig() {
-    const data = readFileSync(locations.config)
+    const data = readFileSync(paths.config)
     const obj = JSON.parse(data.toString())
     return obj
-}
-
-function getItems(path) {
-    const array = []
-    const items = fromDir(path)
-
-    for (const item of items) {
-        array.push({
-            label: item.name,
-            role: 'open-editor',
-            path: item.path
-        })
-    }
-
-    return array
 }
 
 function fromDir(startPath, onlyDirs=false, extension='.xml') {
@@ -889,6 +899,15 @@ function getShortMenu() {
         {
             label: getText('[FILE_MENU_LABEL]'),
             submenu: [
+                ...(() => {
+                    if (config.buildType === 'dev') {
+                        return [{
+                            label: 'DevTools',
+                            role: 'dev-tools'
+                        },]
+                    }
+                    return []
+                })(),
                 {
                     label: getText('[EXIT_MENU_ITEM_LABEL]'),
                     role: 'quit-app'
@@ -929,11 +948,20 @@ function getMainMenu() {
                 },
                 { role: 'separator' },
                 ...(() => {
-                    if (!config.hideResetButton) {
+                    if (!config.settings.hideResetButton) {
                         return [{
                             label: getText('[RESET_MENU_ITEM_LABEL]'),
                             role: 'reset-config'
                         }]
+                    }
+                    return []
+                })(),
+                ...(() => {
+                    if (config.buildType === 'dev') {
+                        return [{
+                            label: 'DevTools',
+                            role: 'dev-tools'
+                        },]
                     }
                     return []
                 })(),
@@ -949,8 +977,9 @@ function getMainMenu() {
                 {
                     label: getText('[OPEN_BUTTON]'),
                     role: 'show-folder',
-                    path: locations.backupFolder
+                    path: paths.backupFolder
                 },
+                { role: 'separator' },
                 {
                     label: getText('[SAVE_BUTTON]'),
                     role: 'save-backup'

@@ -1,6 +1,6 @@
 import templates from './templates.js'
 
-const language = config.language
+const language = config.lang
 
 /**
  * Делает первую букву слова заглавной, а также заменяет _ на пробелы.

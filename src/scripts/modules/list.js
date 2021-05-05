@@ -14,7 +14,7 @@ const listType = local.listType
 addItems()
 
 function addItems() {
-    if (!config.disableDLC) {
+    if (!config.settings.disableDLC) {
         const dlcArray = funcs.getList(listType, true)
         for (const dlc of dlcArray) {
             for (const item of dlc.items) {

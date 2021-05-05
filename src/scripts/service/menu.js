@@ -45,28 +45,31 @@ function buildMenu(template, root=false) {
         switch (template.role) {
             case 'quit-app':
                 $button.addEventListener('click', () => funcs.quit())
-                break
+            break
             case 'open-link':
                 $button.addEventListener('click', () => funcs.openLink(template.url))
-                break
+            break
             case 'show-file':
                 $button.addEventListener('click', () => funcs.showFile(template.path))
-                break
+            break
             case 'show-folder':
                 $button.addEventListener('click', () => funcs.showFolder(template.path))
-                break
+            break
             case 'language':
                 $button.addEventListener('click', () => funcs.setLang(template.label))
-                break
+            break
             case 'reset-config':
                 $button.addEventListener('click', () => funcs.resetConfig())
-                break
+            break
             case 'restore-initial':
                 $button.addEventListener('click', () => funcs.restoreInitial())
-                break
+            break
             case 'save-backup':
                 $button.addEventListener('click', () => funcs.saveBackup())
-                break
+            break
+            case 'dev-tools': 
+                $button.addEventListener('click', () => funcs.openDevTools())
+            break
             case 'open-editor':
                 if (template.dlc) {
                     $button.addEventListener('click', () => funcs.openXMLEditor(template.path, template.dlc))
@@ -74,10 +77,10 @@ function buildMenu(template, root=false) {
                 else {
                     $button.addEventListener('click', () => funcs.openXMLEditor(template.path))
                 }
-                break
+            break
             case 'open-settings':
                 $button.addEventListener('click', () => funcs.openSettings())
-                break
+            break
         }
     }
 

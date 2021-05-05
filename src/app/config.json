@@ -1,16 +1,21 @@
 {
-    "version": "0.5.7",
-    "language": "EN",
-    "pathToInitial": null,
-    "pathToDLC": null,
-    "pathToClasses": null,
-    "gameFolder": null,
-    "ignoreUpdates": false,
-    "disableDLC": false,
-    "hideResetButton": false,
-    "showWinRARWindow": false,
-    "disableLimits": false,
-    "disableEditorLabel": false,
-    "devMode": false,
-    "dlc": []
+    "version": "0.5.8",
+    "lang": "EN",
+    "buildType": "dev",
+    "paths": {
+        "initial": null,
+        "dlc": null,
+        "classes": null,
+        "game": null
+    },
+    "settings": {
+        "ignoreUpdates": false,
+        "showWinRARWindow": false,
+        "disableLimits": false,
+        "disableDLC": false,
+        "disableEditorLabel": false,
+        "hideResetButton": true,
+        "devMode": false
+    },
+    "dlcList": []
 }

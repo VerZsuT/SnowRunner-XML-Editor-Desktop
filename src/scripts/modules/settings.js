@@ -23,15 +23,15 @@ const $toast = get('#live-toast')
 let pathToInitial = null
 let gameFolder = null
 
-$languageSelect.value = config.language
-$gameFolderInput.value = config.gameFolder
-$devMode.checked = config.devMode
-$ignoreUpdates.checked = config.ignoreUpdates
-$showWinRARWindow.checked = config.showWinRARWindow
-$disableLimits.checked = config.disableLimits
-$disableDLC.checked = config.disableDLC
-$disableEditorLabel.checked = config.disableEditorLabel
-$hideResetButton.checked = config.hideResetButton
+$languageSelect.value = config.lang
+$gameFolderInput.value = config.paths.game
+$devMode.checked = config.settings.devMode
+$ignoreUpdates.checked = config.settings.ignoreUpdates
+$showWinRARWindow.checked = config.settings.showWinRARWindow
+$disableLimits.checked = config.settings.disableLimits
+$disableDLC.checked = config.settings.disableDLC
+$disableEditorLabel.checked = config.settings.disableEditorLabel
+$hideResetButton.checked = config.settings.hideResetButton
 
 props.errorHandler = message => toast(getText(`${message}`.replace('Error: ', '')))
 
@@ -47,17 +47,19 @@ $saveToConfig.addEventListener('click', () => {
     let saveBackup = false
     if (pathToInitial) {
         saveBackup = true
-        config.pathToInitial = pathToInitial
-        config.gameFolder = gameFolder
+        config.paths.initial = pathToInitial
+        config.paths.game = gameFolder
     }
-    config.language = $languageSelect.value
-    config.devMode = $devMode.checked
-    config.ignoreUpdates = $ignoreUpdates.checked
-    config.showWinRARWindow = $showWinRARWindow.checked
-    config.disableLimits = $disableLimits.checked
-    config.disableDLC = $disableDLC.checked
-    config.disableEditorLabel = $disableEditorLabel.checked
-    config.hideResetButton = $hideResetButton.checked
+    config.lang = $languageSelect.value
+    config.settings = {
+        devMode: $devMode.checked,
+        ignoreUpdates: $ignoreUpdates.checked,
+        showWinRARWindow: $showWinRARWindow.checked,
+        disableLimits: $disableLimits.checked,
+        disableDLC: $disableDLC.checked,
+        disableEditorLabel: $disableEditorLabel.checked,
+        hideResetButton: $hideResetButton.checked
+    }
 
     if (saveBackup) {
         funcs.saveBackup(true)
