@@ -12,6 +12,7 @@ const $ignoreUpdates = get('#ignore-updates')
 const $showWinRARWindow = get('#show-winrar-window')
 const $disableLimits = get('#disable-limits')
 const $disableDLC = get('#disable-dlc')
+const $disableMods = get('#disable-mods')
 const $disableEditorLabel = get('#disable-editor-label')
 const $hideResetButton = get('#hide-reset-button')
 
@@ -30,6 +31,7 @@ $ignoreUpdates.checked = config.settings.ignoreUpdates
 $showWinRARWindow.checked = config.settings.showWinRARWindow
 $disableLimits.checked = config.settings.disableLimits
 $disableDLC.checked = config.settings.disableDLC
+$disableMods.checked = config.settings.disableMods
 $disableEditorLabel.checked = config.settings.disableEditorLabel
 $hideResetButton.checked = config.settings.hideResetButton
 
@@ -57,6 +59,7 @@ $saveToConfig.addEventListener('click', () => {
         showWinRARWindow: $showWinRARWindow.checked,
         disableLimits: $disableLimits.checked,
         disableDLC: $disableDLC.checked,
+        disableMods: $disableMods.checked,
         disableEditorLabel: $disableEditorLabel.checked,
         hideResetButton: $hideResetButton.checked
     }

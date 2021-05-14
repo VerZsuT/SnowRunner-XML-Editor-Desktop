@@ -92,5 +92,6 @@ out/
 src/backups/
 
 .vscode/
-src/scripts/temp/
+src/scripts/mainTemp/
+src/scripts/modsTemp/
 update/

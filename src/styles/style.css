@@ -265,7 +265,7 @@ header {
 
 div.param-input input {
     margin-right: 10px;
-    width: 70px;
+    width: 70px !important;
 }
 
 footer span {

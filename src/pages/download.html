@@ -6,26 +6,33 @@
     <body>
         <div id="file-name"></div>
         <progress id="progress" value="0" max="100"></progress>
-        <small id="count"></small>
+        <p id="count">0</p>
 
         <style>
             body {
                 display: flex;
                 justify-content: center;
                 align-items: center;
-                height: 30px;
+                height: 50px;
             }
             #count {
+                float: right;
+                margin-top: 35px;
                 display: none;
+            }
+            #progress {
+                width: 80%;
+                margin-top: 20px;
+                float: left;
             }
             #file-name {
                 display: none;
                 width: 100%;
                 text-align: center;
                 font-weight: bold;
-                font-size: 10px;
+                font-size: 20px;
                 position: absolute;
-                top: 2px;
+                top: 10px;
             }
         </style>
 

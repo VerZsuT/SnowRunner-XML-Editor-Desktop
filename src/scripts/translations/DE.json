@@ -2,6 +2,9 @@
 	"CLOSE": "Schließen",
 	"UPDATE": "Aktualisieren",
 	"IGNORE": "Ignorieren",
+	"MODS_LIST_TITLE": "Mods",
+	"LOADING_MODS": "Mods loading",
+	"DISABLE_MODS_LABEL": "Disable mods support",
 
 	"ADDONS_CATEGORY_TITLE": "Addons",
 	"ALLOW_NEW_VERSION": "Eine neue Version des Programms ist verfügbar. Klicken Sie hier, um zur Download-Seite zu gelangen.",

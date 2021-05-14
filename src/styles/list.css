@@ -41,7 +41,8 @@
 }
 
 #list, 
-#dlc-list {
+#dlc-list,
+#mods-list {
     display: flex;
     justify-content: space-evenly;
     flex-wrap: wrap;
@@ -49,7 +50,8 @@
     height: 100%;
 }
 
-#dlc-list {
+#dlc-list,
+#mods-list {
     margin-bottom: 20px;
 }
 

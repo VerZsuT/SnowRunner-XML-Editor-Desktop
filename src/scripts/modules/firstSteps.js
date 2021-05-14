@@ -15,6 +15,7 @@ const $toast = get('#live-toast')
 
 let pathToInitial = null
 let gameFolder = null
+let modsFolder = null
 
 $languageSelect.value = config.lang
 props.errorHandler = message => toast(getText(`${message}`.replace('Error: ', '')))
@@ -32,6 +33,7 @@ $saveToConfig.addEventListener('click', () => {
 
     config.paths.initial = pathToInitial
     config.paths.game = gameFolder
+    funcs.saveInitialSum()
     funcs.saveBackup(true)
 })
 

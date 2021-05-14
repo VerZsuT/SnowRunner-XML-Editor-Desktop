@@ -18,7 +18,7 @@ const engine = {
 						Opt({text: '[FIND_ON_MAP]', value: 'true'}),
 						Opt({text: '[BY_RANK]', value: 'false'})
 					]),
-					Input({attribute: 'UnlockByRank', text: '[BY_RANK_LEVEL]'})
+					Input({attribute: 'UnlockByRank', text: '[BY_RANK_LEVEL]', min: 1})
 				])
 			])
 		]),
@@ -55,7 +55,7 @@ const engine = {
 			"DAMAGE_CONSUMPTION_MODIFIER": "Множитель потребления топлива при повреждении",
 			"RESPONSIVENESS": "Отзывчивость",
 			"FUEL_CONSUMPTION": "Потребление топлива",
-			"TORQUE": "Мощность",
+			"TORQUE": "Крутящий момент",
 			"DAMAGED_MIN_TORQUE_MODIFIER": "Минимальный множитель мощности при повреждении",
 			"DAMAGED_MAX_TORQUE_MODIFIER": "Максимальный множитель мощности при повреждении",
 			"UNLOCK_GROUP_NAME": "Разблокировка",

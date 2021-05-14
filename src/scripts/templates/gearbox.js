@@ -48,7 +48,7 @@ const gearbox = {
 						Opt({text: '[FIND_ON_MAP]', value: 'true'}),
 						Opt({text: '[BY_RANK]', value: 'false'})
 					]),
-					Input({attribute: 'UnlockByRank', text: '[BY_RANK_LEVEL]'})
+					Input({attribute: 'UnlockByRank', text: '[BY_RANK_LEVEL]', min: 1})
 				])
 			])
 		]),
@@ -82,7 +82,7 @@ const gearbox = {
 			"LOWER_PLUS_GEAR": "Lower+",
 			"LOWER_MINUS_GEAR": "Lower-",
 			"REVERCE_GEAR": "Reverce gear",
-			"ANGEL_VELOCITY": "Angular velocity",
+			"ANGEL_VELOCITY": "Max wheel angular velocity",
 			"FUEL_MODIFIER": "Fuel modifier",
 			"GEAR": "Gear",
 			"UNLOCK_GROUP_NAME": "Unlock",
@@ -108,7 +108,7 @@ const gearbox = {
 			"LOWER_PLUS_GEAR": "Пониженная+",
 			"LOWER_MINUS_GEAR": "Пониженная-",
 			"REVERCE_GEAR": "Задняя передача",
-			"ANGEL_VELOCITY": "Тяга",
+			"ANGEL_VELOCITY": "Макс. угловая скорость колеса",
 			"FUEL_MODIFIER": "Модификатор потребления топлива",
 			"GEAR": "Передача",
 			"UNLOCK_GROUP_NAME": "Разблокировка",

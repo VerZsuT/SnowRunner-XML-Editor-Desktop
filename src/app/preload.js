@@ -32,9 +32,20 @@ window.config = new Proxy({}, {
     }
 })
 
-window.local = new Proxy({}, {
+window.local = new Proxy({
+    pop(name) {
+        const val = localStorage.getItem(name)
+        localStorage.removeItem(name)
+        return val
+    }
+}, {
     get(_target, name) {
-        return localStorage.getItem(name)
+        if (name !== 'pop') {
+            return localStorage.getItem(name)
+        }
+        else {
+            return _target.pop
+        }
     },
     set(_target, name, value) {
         localStorage.setItem(name, value)

@@ -57,7 +57,7 @@ const truck = {
 					Opt({text: '[FIND_ON_MAP]', value: 'true'}),
 					Opt({text: '[BY_RANK]', value: 'false'})
 				]),
-				Input({attribute: 'UnlockByRank', text: '[BY_RANK_LEVEL]'})
+				Input({attribute: 'UnlockByRank', text: '[BY_RANK_LEVEL]', min: 1})
 			])
 		]),
 		Selectors([

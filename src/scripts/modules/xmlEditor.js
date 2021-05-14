@@ -3,7 +3,7 @@ import '../service/menu.js'
 import '../service/translate.js'
 
 import { get, getText, create, prettify, getIngameText } from '../service/funcs.js'
-import { props, funcs } from '../service/renderer.js'
+import { funcs } from '../service/renderer.js'
 import templates from '../service/templates.js'
 
 const $paramsTable = get('#parameters')
@@ -14,6 +14,7 @@ const $title = get('#title')
 const devMode = config.settings.devMode
 let filePath = null
 let currentDLC = null
+let currentMod = null
 let fileDOM = null
 
 $saveParamsButton.onclick = generateAndSaveFile
@@ -22,11 +23,12 @@ $backButton.onclick = window.close
 checkData()
 
 function checkData() {
-    const indexFilePath = props.filePath
-    const indexCurrentDLC = props.currentDLC
+    filePath = local.pop('filePath')
+    currentDLC = local.pop('currentDLC')
+    currentMod = local.pop('currentMod')
 
-    filePath = indexFilePath || local.filePath
-    currentDLC = indexCurrentDLC || local.currentDLC
+    const reserveFilePath = local.pop('fileDLCPath') || local.pop('fileModPath')
+
     if (filePath.split('/').length !== 1) {
         let a = filePath.split('/')
         $title.innerText = prettify(a[a.length-1].replace('.xml', '')).toUpperCase()
@@ -36,7 +38,7 @@ function checkData() {
         $title.innerText = prettify(a[a.length-1].replace('.xml', '')).toUpperCase()
     }
     
-    const fileData = funcs.getFileData(filePath, local.fileDLCPath)
+    const fileData = funcs.getFileData(filePath, reserveFilePath)
     if (!fileData) return
     loadFile(fileData)
 }
@@ -198,8 +200,13 @@ function createItems(params, $parentGroupCont=null, tabs=1) {
                             innerText: getText('[EDIT_FILE_BUTTON]')
                         })
                         $button.addEventListener('click', () => {
-                            if (currentDLC) {
+                            if (currentDLC !== 'null') {
                                 local.fileDLCPath = `${config.paths.dlc}\\${currentDLC}\\classes\\${param.fileType}\\${fileName}.xml`
+                                local.currentDLC = currentDLC
+                            }
+                            else if (currentMod !== 'null') {
+                                local.fileModPath = `${config.paths.mods}\\${currentMod}\\classes\\${param.fileType}\\${fileName}.xml`
+                                local.currentMod = currentMod
                             }
                             local.filePath = `${config.paths.classes}\\${param.fileType}\\${fileName}.xml`
                             
@@ -282,7 +289,9 @@ function createItems(params, $parentGroupCont=null, tabs=1) {
                 }
                 $input.classList.add('param-input')
                 if (!$input.querySelector('button')) {
-                    $input.classList.add('form-control')
+                    if (param.type !== 'coordinates') {
+                        $input.classList.add('form-control')
+                    }
                 }
                 if (param.onlyDeveloper) {
                     $input.title = getText('[ONLY_DEVELOPER_EDIT_TEXT]')
@@ -386,6 +395,6 @@ function generateAndSaveFile() {
 
     const xmlString = `${config.settings.disableEditorLabel? '' : copyrightText}${serializer.serializeToString(fileDOM).replace('<root>', '').replace('</root>', '')}`
     funcs.setFileData(filePath, xmlString)
-    funcs.saveToOriginal()
+    funcs.saveToOriginal(currentMod)
     window.close()
 }

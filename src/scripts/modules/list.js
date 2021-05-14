@@ -7,6 +7,7 @@ import { create, get, getIngameText, prettify } from '../service/funcs.js'
 
 const $list = get('#list')
 const $dlcList = get('#dlc-list')
+const $modsList = get('#mods-list')
 const parser = new DOMParser()
 
 const listType = local.listType
@@ -14,8 +15,17 @@ const listType = local.listType
 addItems()
 
 function addItems() {
+    if (!config.settings.disableMods) {
+        const modsArray = funcs.getList(listType, 'mods')
+        for (const mod of modsArray) {
+            for (const item of mod.items) {
+                $modsList.append(createListItem(item.name, item.path, null, mod.id))
+            }
+        }
+    }
+
     if (!config.settings.disableDLC) {
-        const dlcArray = funcs.getList(listType, true)
+        const dlcArray = funcs.getList(listType, 'dlc')
         for (const dlc of dlcArray) {
             for (const item of dlc.items) {
                 $dlcList.append(createListItem(item.name, item.path, dlc.name))
@@ -29,19 +39,20 @@ function addItems() {
     }
 }
 
-function createListItem(name, path, dlcName=null) {
+function createListItem(name, path, dlcName=null, modId=null) {
     const data = `<root>${funcs.getFileData(path)}</root>`
     const DOM = parser.parseFromString(data, 'text/xml')
     let innerName
-    if (DOM.querySelectorAll('GameData > UiDesc').length === 1) {
+    if (DOM.querySelector('GameData > UiDesc')) {
         const uiName = DOM.querySelector('GameData > UiDesc').getAttribute('UiName') 
-        innerName = getIngameText(uiName) || uiName
+        innerName = getIngameText(uiName, modId) || uiName
     }
 
     const $item = create('div', {
         class: 'item',
         file_path: path,
-        dlc_name: dlcName
+        dlc_name: dlcName,
+        mod_id: modId
     })
 
     $item.append(create('span', {
@@ -54,8 +65,13 @@ function createListItem(name, path, dlcName=null) {
         }))    
     }
     else if (listType === 'trucks') {
+        let path = `../truck_images/${name}.jpg`
+        if (modId && DOM.querySelector('GameData > UiDesc')) {
+            const imgName = DOM.querySelector('GameData > UiDesc').getAttribute('UiIcon328x458')
+            path = `../scripts/modsTemp/${modId}/ui/textures/${imgName}.png`
+        }
         $item.append(create('img', {
-            src: `../truck_images/${name}.jpg`
+            src: path
         }))
     }
     else if (listType === 'trailers') {
@@ -67,6 +83,7 @@ function createListItem(name, path, dlcName=null) {
     $item.addEventListener('click', () => {
         local.filePath = $item.getAttribute('file_path')
         local.currentDLC = $item.getAttribute('dlc_name')
+        local.currentMod = $item.getAttribute('mod_id')
         funcs.openXMLEditor()
     })
 

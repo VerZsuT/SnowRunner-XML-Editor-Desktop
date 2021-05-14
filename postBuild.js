@@ -1,6 +1,6 @@
 const { execSync } = require('child_process')
 const { createHash } = require('crypto')
-const { renameSync, readdirSync, statSync, readFileSync, writeFileSync, rmdirSync, existsSync, mkdirSync } = require('fs')
+const { renameSync, readdirSync, statSync, readFileSync, writeFileSync, rmdirSync, existsSync } = require('fs')
 const { join } = require('path')
 
 const paths = {
@@ -20,7 +20,9 @@ console.log('[POST_BUILD][STAGE_1]: Success.')
 console.log('[POST_BUILD][LOG]................')
 
 const config = JSON.parse(readFileSync(paths.config))
+config.lang = 'EN'
 config.buildType = 'prod'
+config.settings.hideResetButton = true
 writeFileSync(paths.config, JSON.stringify(config))
 
 console.log('[POST_BUILD][STAGE_2]: Archiving build...')
@@ -55,8 +57,8 @@ function generateMap(rootPath) {
             map = Object.assign(map, generateMap(path))
         } else {
             const shaHash = createHash('sha1')
-            shaHash.update(readFileSync(path).toString())
-            map[path.replace(join(paths.renamed, 'resources', 'app', '/'), '')] = shaHash.digest('hex').toString()
+            shaHash.update(readFileSync(path))
+            map[path.replace(join(paths.renamed, 'resources', 'app', '/'), '')] = shaHash.digest('hex')
         }
     }
     return map

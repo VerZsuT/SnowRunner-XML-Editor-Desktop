@@ -14,6 +14,7 @@ const paths = {
     updateMap: 'https://verzsut.github.io/sxmle_updater/updateMap.json',
     root: join(__dirname, '..', '..'),
     config: join(__dirname, 'config.json'),
+    mods: join(process.env.USERPROFILE, 'Documents', 'My Games', 'SnowRunner', 'base', 'Mods', '.modio', 'mods'),
     icon: join(__dirname, '..', 'icons', 'favicon.png'),
     preload: join(__dirname, 'preload.js'),
     backupFolder: join(__dirname, '..', 'backups'),
@@ -21,14 +22,13 @@ const paths = {
     HTMLFolder: join(__dirname, '..', 'pages'),
     translations: join(__dirname, '..', 'scripts', 'translations'),
     winrar: join(__dirname, '..', 'scripts', 'winrar'),
-    temp: join(__dirname, '..', 'scripts', 'temp'),
-    strings: join(__dirname, '..', 'scripts', 'temp', '[strings]'),
-    dlc: join(__dirname, '..', 'scripts', 'temp', '[media]', '_dlc'),
-    classes: join(__dirname, '..', 'scripts', 'temp', '[media]', 'classes')
+    mainTemp: join(__dirname, '..', 'scripts', 'mainTemp'),
+    modsTemp: join(__dirname, '..', 'scripts', 'modsTemp'),
+    strings: join(__dirname, '..', 'scripts', 'mainTemp', '[strings]'),
+    dlc: join(__dirname, '..', 'scripts', 'mainTemp', '[media]', '_dlc'),
+    classes: join(__dirname, '..', 'scripts', 'mainTemp', '[media]', 'classes')
 }
 
-let pathToReturn = null
-let currentDLC = null
 let stringsFilePath = null
 let relaunchWithoutSaving = false
 
@@ -52,20 +52,36 @@ function init() {
             checkUpdate()
         }
     }
-    else if (checkPaths()) {
-        config.paths.dlc = paths.dlc
-        config.paths.classes = paths.classes
-
-        if (!config.settings.disableDLC) {
-            initDLC()
-        }
-        openMain()
-        if (!config.settings.ignoreUpdates) {
-            checkUpdate()
-        }
-    }
     else {
-        resetConfig()
+        checkInitialSum(() => {
+            translations.ingame = getIngameTranslation()
+            if (checkPaths()) {
+                config.paths.dlc = paths.dlc
+                config.paths.classes = paths.classes
+                config.paths.mods = paths.modsTemp
+                if (!config.settings.disableDLC) {
+                    initDLC()
+                }
+                if (!config.settings.disableMods) {
+                    initMods(() => {
+                        translations.mods = getModsTranslation()
+                        openMain()
+                        if (!config.settings.ignoreUpdates) {
+                            checkUpdate()
+                        }
+                    })
+                }
+                else {
+                    openMain()
+                    if (!config.settings.ignoreUpdates) {
+                        checkUpdate()
+                    }
+                }
+            }
+            else {
+                resetConfig()
+            }
+        })
     }
 }
 
@@ -101,40 +117,45 @@ function initMain() {
         get: () => getGameFolder()
     }
     
-    main.filePath = {
-        get() {
-            return pathToReturn
-        }
-    }
-    
-    main.currentDLC = {
-        get() {
-            return currentDLC
-        }
-    }
-
     main.setLang = function(lang) {
         config.lang = lang
         saveConfig()
         reload()
     }
 
-    main.saveToOriginal = function() {
-        exec(`WinRAR f${config.settings.showWinRARWindow? '' : ' -ibck'} "${config.paths.initial}" ..\\temp\\ -r -ep1`, {
-            cwd: paths.winrar
-        }, error => {
-            if (error) {
-                showNotification(getText('[ERROR]'), getText('[SAVE_ORIGINAL_ERROR]'))
-            }
-        })
+    main.saveToOriginal = function(modId) {
+        if (modId && modId !== 'null') {
+            exec(`WinRAR f${config.settings.showWinRARWindow? '' : ' -ibck'} "${config.modsList[modId].path}" "${join(paths.modsTemp, modId)}\\" -r -ep1`, {
+                cwd: paths.winrar
+            }, error => {
+                if (error) {
+                    showNotification(getText('[ERROR]'), getText('[SAVE_MOD_ERROR]'))
+                }
+                else {
+                    saveModSum(modId, config.modsList[modId].path)
+                }
+            })
+        }
+        else {
+            exec(`WinRAR f${config.settings.showWinRARWindow? '' : ' -ibck'} "${config.paths.initial}" "${paths.mainTemp}\\" -r -ep1`, {
+                cwd: paths.winrar
+            }, error => {
+                if (error) {
+                    showNotification(getText('[ERROR]'), getText('[SAVE_ORIGINAL_ERROR]'))
+                }
+                else {
+                    saveInitialSum()
+                }
+            })
+        }
     }
 
     main.openDevTools = function() {
         currentWindow.webContents.toggleDevTools()
     }
 
-    main.getList = function(listType, fromDLC=false) {
-        if (fromDLC) {
+    main.getList = function(listType, from=null) {
+        if (from === 'dlc') {
             const array = []
             for (const dlcItem of config.dlcList) {
                 const path = `${dlcItem.path}\\classes`
@@ -152,6 +173,25 @@ function initMain() {
                     throw new Error('[UNDEFINED_LIST_TYPE]')
                 }
     
+            }
+            return array
+        }
+        else if (from === 'mods') {
+            const array = []
+            for (const modId in config.modsList) {
+                const item = config.modsList[modId]
+                if (listType === 'trucks') {
+                    array.push({id: modId, name: item.name, items: fromDir(join(paths.modsTemp, modId, 'classes', 'trucks')) || []})
+                }
+                else if (listType === 'trailers') {
+                    array.push({id: modId, name: item.name, items: fromDir(join(paths.modsTemp, modId, 'classes', 'trucks', 'trailers')) || []})
+                }
+                else if (listType === 'cargo') {
+                    array.push({id: modId, name: item.name, items: fromDir(join(paths.modsTemp, modId, 'classes', 'trucks', 'cargo')) || []})
+                }
+                else {
+                    throw new Error('[UNDEFINED_LIST_TYPE]')
+                }
             }
             return array
         }
@@ -218,6 +258,7 @@ function initMain() {
     main.resetConfig = resetConfig
     main.restoreInitial = restoreInitial
     main.saveConfig = saveConfig
+    main.saveInitialSum = saveInitialSum
     main.update = update
 }
 
@@ -240,6 +281,21 @@ function openDialog() {
     return dialog.showOpenDialogSync({
         properties: ['openDirectory']
     })
+}
+
+function saveModSum(modId, path) {
+    config.sums.mods[modId] = getHash(path)
+}
+
+function saveInitialSum() {
+    config.sums.initial = getHash(config.paths.initial) 
+}
+
+function getHash(path) {
+    const shaHash = createHash('sha1')
+
+    shaHash.update(readFileSync(path))
+    return shaHash.digest('hex')
 }
 
 function getGameFolder(errors=true) {
@@ -344,6 +400,16 @@ function download(params, cb) {
     })
 }
 
+function checkInitialSum(callback) {
+    if (getHash(config.paths.initial) !== config.sums.initial) {
+        saveInitialSum()
+        unpackFiles(callback, true)
+    }
+    else {
+        callback()
+    }
+}
+
 function checkPathToDelete(path, map) {
     const toRemove = []
     const items = readdirSync(path)
@@ -383,9 +449,7 @@ function checkMap(map) {
                 toCreateOrChange.push(relativePath)
                 continue
             }
-            const shaHash = createHash('sha1')
-            shaHash.update(readFileSync(absolutePath).toString())
-            if (shaHash.digest('hex') !== map[relativePath]) {
+            if (getHash(absolutePath) !== map[relativePath]) {
                 toCreateOrChange.push(relativePath)
             }
         }
@@ -496,11 +560,102 @@ function initDLC() {
     config.dlcList = fromDir(paths.dlc, true)
 }
 
-function getTranslations() {
-    const RU = JSON.parse(readFileSync(join(paths.translations, 'RU.json')).toString())
-    const EN = JSON.parse(readFileSync(join(paths.translations, 'EN.json')).toString())
-    const DE = JSON.parse(readFileSync(join(paths.translations, 'DE.json')).toString())
+function initMods(callback) {
+    const modDirs = readdirSync(paths.mods)
+    let counter = 0
+    let loading = null
 
+    if (!config.settings.showWinRARWindow) {
+        loading = openDownload(true)
+        loading.once('show', () => {
+            loading.webContents.postMessage('fileName', getText('[LOADING_MODS]'))
+            setTimeout(main, 100)
+        })
+    }
+    else {
+        main()
+    }
+
+    function main() {
+        for (const modDir of modDirs) {
+            const items = readdirSync(join(paths.mods, modDir))
+    
+            if (items.length < 2) {
+                continue
+            }
+    
+            if (items[0] === 'modio.json') {
+                const absolutePath = join(paths.mods, modDir, items[1])
+                const name = items[1]
+                const hash = getHash(absolutePath)
+                if (hash === config.sums.mods[modDir]) {
+                    continue
+                }
+                else {
+                    counter++
+                    config.sums.mods[modDir] = hash
+                    unpackMod(absolutePath, () => pushToList(name, absolutePath))
+                }
+            }
+            else {
+                const absolutePath = join(paths.mods, modDir, items[0])
+                const name = items[0]
+                const hash = getHash(absolutePath)
+                if (hash === config.sums.mods[modDir]) {
+                    continue
+                }
+                else {
+                    counter++
+                    config.sums.mods[modDir] = hash
+                    unpackMod(absolutePath, () => pushToList(name, absolutePath))
+                }
+            }
+    
+            function pushToList(name, path) {
+                config.modsList[modDir] = {name, path}
+                counter--
+                if (counter === 0) {
+                    callback()
+                    if (loading) {
+                        loading.close()
+                    }
+                }
+            }
+        }
+        if (counter === 0) {
+            callback()
+            if (loading) {
+                loading.close()
+            }
+        }
+    }
+}
+
+function getModsTranslation() {
+    let mods = {}
+    for (const modId in config.modsList) {
+        if (existsSync(join(paths.modsTemp, modId, 'texts'))) {
+            let fileName
+            switch (config.lang) {
+                case 'RU':
+                    fileName = 'strings_russian.str'
+                    break
+                case 'EN':
+                    fileName = 'strings_english.str'
+                    break
+                case 'DE':
+                    fileName = 'strings_german.str'
+            }
+            stringsFilePath = join(paths.modsTemp, modId, 'texts', fileName)
+            if (existsSync(stringsFilePath)) {
+                mods[modId] = parseStrings(readFileSync(stringsFilePath, {encoding: 'utf16le'}).toString())
+            }
+        }
+    }
+    return mods
+}
+
+function getIngameTranslation() {
     let ingame = {}
     if (existsSync(paths.strings)) {
         let fileName
@@ -515,10 +670,22 @@ function getTranslations() {
                 fileName = 'strings_german.str'
         }
         stringsFilePath = join(paths.strings, fileName)
-        ingame = parseStrings(readFileSync(stringsFilePath, {encoding: 'utf16le'}).toString())
+        if (existsSync(stringsFilePath)) {
+            ingame = parseStrings(readFileSync(stringsFilePath, {encoding: 'utf16le'}).toString())
+        }
     }
+    return ingame
+}
 
-    return {RU, EN, DE, ingame}
+function getTranslations() {
+    const RU = JSON.parse(readFileSync(join(paths.translations, 'RU.json')).toString())
+    const EN = JSON.parse(readFileSync(join(paths.translations, 'EN.json')).toString())
+    const DE = JSON.parse(readFileSync(join(paths.translations, 'DE.json')).toString())
+
+    let mods = {}
+    let ingame = {}
+
+    return {RU, EN, DE, ingame, mods}
 }
 
 function parseStrings(data) {
@@ -560,7 +727,7 @@ function openList() {
     })
     listWindow.once('close', () => {
         listWindow = null
-        if (mainWindow) {
+        if (mainWindow && !mainWindow.isDestroyed()) {
             currentWindow = mainWindow
             mainWindow.show()
             mainWindow.focus()
@@ -592,7 +759,7 @@ function openFirstSteps() {
     })
 }
 
-function openXMLEditor(path=null, dlc=null) {
+function openXMLEditor() {
     if (xmlEditor) {
         xmlEditor.hide()
     }
@@ -608,13 +775,11 @@ function openXMLEditor(path=null, dlc=null) {
     
     const wind = createWindow('xmlEditor.html', {
         width: 1000,
-        height: 800,
-        path: path,
-        dlc: dlc
+        height: 800
     })
     if (xmlEditor) {
         wind.once('close', () => {
-            if (xmlEditor) {
+            if (xmlEditor && !xmlEditor.isDestroyed()) {
                 currentWindow = xmlEditor
                 xmlEditor.show()
                 xmlEditor.focus()
@@ -624,7 +789,7 @@ function openXMLEditor(path=null, dlc=null) {
         xmlEditor = wind
         wind.once('close', () => {
             xmlEditor = null
-            if (listWindow) {
+            if (listWindow && !listWindow.isDestroyed()) {
                 currentWindow = listWindow
                 listWindow.show()
                 listWindow.focus()
@@ -633,21 +798,23 @@ function openXMLEditor(path=null, dlc=null) {
     }
 }
 
-function openDownload() {
+function openDownload(popup=false) {
     const beforeWindow = currentWindow
     const wind = createWindow('download.html', {
-        width: 180,
-        height: 50,
-        modal: true,
-        parent: currentWindow,
+        width: 220,
+        height: 70,
+        modal: popup? false : true,
+        parent: popup? null : currentWindow,
         frame: false
     })
 
-    wind.once('close', () => {
-        currentWindow = beforeWindow
-        beforeWindow.focus()
-    })
-
+    if (!popup) {
+        wind.once('close', () => {
+            currentWindow = beforeWindow
+            beforeWindow.focus()
+        })
+    }
+    
     return wind
 }
 
@@ -686,26 +853,46 @@ function openUpdateMessage(version) {
     })
 }
 
-function unpackFiles(callback) {
+function unpackFiles(callback, popup=false) {
     let loading = null
     if (!config.settings.showWinRARWindow) {
-        loading = openDownload()
+        loading = openDownload(popup)
         loading.once('show', () => {
             loading.webContents.postMessage('fileName', getText('[UNPACKING]'))
         })
     }
-    if (existsSync(paths.temp)) {
-        rmSync(paths.temp, {
+    if (existsSync(paths.mainTemp)) {
+        rmSync(paths.mainTemp, {
             recursive: true
         })
     }
-    mkdirSync(paths.temp)
-    exec(`WinRAR x${config.settings.showWinRARWindow? '' : ' -ibck'} "${config.paths.initial}" @unpack-list.lst ..\\temp\\`, {
+    mkdirSync(paths.mainTemp)
+    exec(`WinRAR x${config.settings.showWinRARWindow? '' : ' -ibck'} "${config.paths.initial}" @unpack-list.lst "${paths.mainTemp}\\"`, {
         cwd: paths.winrar
     }).once('close', () => {
-        if (!config.settings.showWinRARWindow) {
+        callback()
+        if (!config.settings.showWinRARWindow && !loading.isDestroyed()) {
             loading.close()
         }
+    })
+}
+
+function unpackMod(absolutePath, callback) {
+    const modDir = join(paths.modsTemp, basename(dirname(absolutePath)))
+
+    if (!existsSync(paths.modsTemp)) {
+        mkdirSync(paths.modsTemp)
+    }
+
+    if (existsSync(modDir)) {
+        rmSync(modDir, {
+            recursive: true
+        })
+    }
+    mkdirSync(modDir)
+    exec(`WinRAR x${config.settings.showWinRARWindow? '' : ' -ibck'} "${absolutePath}" @unpack-mod-list.lst "${modDir}\\"`, {
+        cwd: paths.winrar
+    }).once('close', () => {
         callback()
     })
 }
@@ -768,13 +955,13 @@ function createWindow(fileName, args={}) {
     wind.setMenu(null)
     wind.loadFile(join(paths.HTMLFolder, fileName)).then(() => {
         wind.show()
-        wind.focus()
-        if (devTools) {
-            wind.webContents.toggleDevTools()
+        if (!wind.isDestroyed()) {
+            wind.focus()
+            if (devTools) {
+                wind.webContents.toggleDevTools()
+            }
         }
     })
-    pathToReturn = args.path
-    currentDLC = args.dlc
     return wind
 }
 
@@ -792,6 +979,7 @@ function restoreInitial() {
     try {
         copyFileSync(paths.backupInitial, config.paths.initial)
         unpackFiles(() => {
+            saveInitialSum()
             showNotification(getText('[SUCCESS]'), getText('[SUCCESS_INITIAL_RESTORE]'))
         })
     } catch {
@@ -804,17 +992,24 @@ function resetConfig(withoutReloading=false) {
         initial: null,
         dlc: null,
         classes: null,
-        game: null
+        game: null,
+        mods: null
     }
     config.dlcList = []
+    config.modsList = {}
     config.settings = {
         ignoreUpdates: false,
         showWinRARWindow: false,
         disableLimits: false,
         disableDLC: false,
+        disableMods: false,
         disableEditorLabel: false,
         hideResetButton: false,
         devMode: false
+    }
+    config.sums = {
+        initial: null,
+        mods: {}
     }
     config.lang = 'EN'
 
@@ -826,11 +1021,18 @@ function resetConfig(withoutReloading=false) {
         }
     }
 
-    if (existsSync(paths.temp)) {
-        rmSync(paths.temp, {
+    if (existsSync(paths.mainTemp)) {
+        rmSync(paths.mainTemp, {
             recursive: true
         })
-        mkdirSync(paths.temp)
+        mkdirSync(paths.mainTemp)
+    }
+
+    if (existsSync(paths.modsTemp)) {
+        rmSync(paths.modsTemp, {
+            recursive: true
+        })
+        mkdirSync(paths.modsTemp)
     }
 
     if (!withoutReloading) {

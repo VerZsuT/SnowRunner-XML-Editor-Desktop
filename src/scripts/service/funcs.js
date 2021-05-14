@@ -130,8 +130,14 @@ export function getTextFromTemplate(key, name) {
     }   
 }
 
-export function getIngameText(key) {
-    let value = translations.ingame[key]
+export function getIngameText(key, modId=null) {
+    let value
+    if (modId && translations.mods[modId]) {
+        value = translations.mods[modId][key]
+    } else {
+        value = translations.ingame[key]
+    }
+
     if (value) {
         return value
     }
