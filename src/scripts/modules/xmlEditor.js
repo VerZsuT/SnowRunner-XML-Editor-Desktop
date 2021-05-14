@@ -51,7 +51,7 @@ function loadFile(file) {
     let ingameText
     if (fileDOM.querySelectorAll('GameData UiDesc').length === 1) {
         const text = fileDOM.querySelector('GameData UiDesc').getAttribute('UiName')
-        ingameText = getIngameText(text) || text
+        ingameText = getIngameText(text, currentMod) || text
     }
     if (ingameText) $title.innerText = ingameText
 
