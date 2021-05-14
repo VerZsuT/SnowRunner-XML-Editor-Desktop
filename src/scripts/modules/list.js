@@ -42,6 +42,9 @@ function addItems() {
 function createListItem(name, path, dlcName=null, modId=null) {
     const data = `<root>${funcs.getFileData(path)}</root>`
     const DOM = parser.parseFromString(data, 'text/xml')
+    if (DOM.querySelector('parsererror')) {
+        return ''
+    }
     let innerName
     if (DOM.querySelector('GameData > UiDesc')) {
         const uiName = DOM.querySelector('GameData > UiDesc').getAttribute('UiName') 

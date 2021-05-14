@@ -583,34 +583,25 @@ function initMods(callback) {
             if (items.length < 2) {
                 continue
             }
-    
-            if (items[0] === 'modio.json') {
-                const absolutePath = join(paths.mods, modDir, items[1])
-                const name = items[1]
+
+            for (const item of items) {
+                if (item === 'modio.json' || item === 'pc.pak' || item.match(/(.*?_pc.pak)/)) {
+                    continue
+                }
+
+                const absolutePath = join(paths.mods, modDir, item)
                 const hash = getHash(absolutePath)
+
                 if (hash === config.sums.mods[modDir]) {
                     continue
                 }
                 else {
                     counter++
                     config.sums.mods[modDir] = hash
-                    unpackMod(absolutePath, () => pushToList(name, absolutePath))
+                    unpackMod(absolutePath, () => pushToList(item, absolutePath))
                 }
             }
-            else {
-                const absolutePath = join(paths.mods, modDir, items[0])
-                const name = items[0]
-                const hash = getHash(absolutePath)
-                if (hash === config.sums.mods[modDir]) {
-                    continue
-                }
-                else {
-                    counter++
-                    config.sums.mods[modDir] = hash
-                    unpackMod(absolutePath, () => pushToList(name, absolutePath))
-                }
-            }
-    
+            
             function pushToList(name, path) {
                 config.modsList[modDir] = {name, path}
                 counter--
@@ -691,8 +682,16 @@ function getTranslations() {
 function parseStrings(data) {
     const strings = {}
     for (const line of data.match(/[^\r\n]+/g)) {
-        const [key, value] = line.split('\t'.repeat(4))
-        strings[key] = JSON.parse(value)
+        const result = line.match(/(.*?)[\s\t]*(\".*?\")/)
+        if (result.length === 3) {
+            const key = result[1]
+            try {
+                const value = JSON.parse(result[2].replaceAll('\\', ''))
+                strings[key] = value
+            } catch {
+                console.log(result)
+            }
+        }
     }
     return strings
 }
