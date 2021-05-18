@@ -589,7 +589,8 @@ function initMods(callback) {
             }
 
             for (const item of items) {
-                if (lstatSync(join(paths.mods, modDir, item)).isDirectory() ||
+                if (config.sums.mods[modDir] && config.sums.mods[modDir].name !== item ||
+                    lstatSync(join(paths.mods, modDir, item)).isDirectory() ||
                     extname(item) !== '.pak' ||
                     item === 'pc.pak' || 
                     item.match(/(.*?_pc.pak)/)) {
@@ -600,12 +601,25 @@ function initMods(callback) {
                 const hash = getHash(absolutePath)
 
                 if (hash === config.sums.mods[modDir]) {
-                    continue
+                    break
                 }
                 else {
                     counter++
-                    config.sums.mods[modDir] = hash
-                    unpackMod(absolutePath, () => pushToList(item, absolutePath))
+                    unpackMod(absolutePath, () => {
+                        config.sums.mods[modDir] = hash
+                        if (existsSync(join(paths.modsTemp, modDir))) {
+                            pushToList(item, absolutePath)
+                        }
+                        else {
+                            counter--
+                            if (counter === 0) {
+                                callback()
+                                if (loading) {
+                                    loading.close()
+                                }
+                            }
+                        }
+                    })
                 }
             }
             
@@ -646,7 +660,8 @@ function getModsTranslation() {
             }
             stringsFilePath = join(paths.modsTemp, modId, 'texts', fileName)
             if (existsSync(stringsFilePath)) {
-                mods[modId] = parseStrings(readFileSync(stringsFilePath, {encoding: 'utf16le'}).toString())
+                const result = parseStrings(readFileSync(stringsFilePath, {encoding: 'utf16le'}).toString())
+                mods[modId] = result
             }
         }
     }
@@ -688,18 +703,23 @@ function getTranslations() {
 
 function parseStrings(data) {
     const strings = {}
-    for (const line of data.match(/[^\r\n]+/g)) {
-        const result = line.match(/(.*?)[\s\t]*(\".*?\")/)
-        if (result.length === 3) {
-            const key = result[1]
-            try {
-                const value = JSON.parse(result[2].replaceAll('\\', ''))
-                strings[key] = value
-            } catch {
-                console.log(result)
+    const lines = data.match(/[^\r\n]+/g)
+    if (lines) {
+        for (const line of lines) {
+            const result = line.match(/(.*?)[\s\t]*(\".*?\")/)
+            
+            if (result && result.length === 3) {
+                const key = result[1].replaceAll('"', '').replaceAll("'", '').replaceAll('﻿', '')
+                try {
+                    const value = JSON.parse(result[2].replaceAll('\\', ''))
+                    strings[key] = value
+                } catch {
+                    console.log(result)
+                }
             }
         }
     }
+    
     return strings
 }
 

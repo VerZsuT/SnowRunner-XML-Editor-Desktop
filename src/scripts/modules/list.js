@@ -19,7 +19,7 @@ function addItems() {
         const modsArray = funcs.getList(listType, 'mods')
         for (const mod of modsArray) {
             for (const item of mod.items) {
-                $modsList.append(createListItem(item.name, item.path, null, mod.id))
+                $modsList.append(createListItem(item.name, item.path, listType, null, mod.id))
             }
         }
     }
@@ -28,21 +28,21 @@ function addItems() {
         const dlcArray = funcs.getList(listType, 'dlc')
         for (const dlc of dlcArray) {
             for (const item of dlc.items) {
-                $dlcList.append(createListItem(item.name, item.path, dlc.name))
+                $dlcList.append(createListItem(item.name, item.path, listType, dlc.name))
             }
         }
     }
     
     const mainArray = funcs.getList(listType)
     for (const item of mainArray) {
-        $list.append(createListItem(item.name, item.path))
+        $list.append(createListItem(item.name, item.path, listType))
     }
 }
 
-function createListItem(name, path, dlcName=null, modId=null) {
+function createListItem(name, path, type, dlcName=null, modId=null) {
     const data = `<root>${funcs.getFileData(path)}</root>`
     const DOM = parser.parseFromString(data, 'text/xml')
-    if (DOM.querySelector('parsererror')) {
+    if (DOM.querySelector('parsererror') || (type === 'trucks' && DOM.querySelector('Truck') && DOM.querySelector('Truck').getAttribute('Type') === 'Trailer')) {
         return ''
     }
     let innerName
