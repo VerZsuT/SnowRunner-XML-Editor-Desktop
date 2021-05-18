@@ -3,7 +3,7 @@ const dns = require('dns')
 const { exec } = require('child_process')
 const { app, shell, dialog, BrowserWindow, Notification } = require('electron')
 const { readFileSync, readdirSync, lstatSync, existsSync, writeFileSync, unlinkSync, copyFileSync, mkdirSync, rmSync, createWriteStream } = require('fs')
-const { join, dirname, basename } = require('path')
+const { join, dirname, basename, extname } = require('path')
 const main = require('../scripts/service/main.js')
 const { createHash } = require('crypto')
 
@@ -288,7 +288,7 @@ function saveModSum(modId, path) {
 }
 
 function saveInitialSum() {
-    config.sums.initial = getHash(config.paths.initial) 
+    config.sums.initial = getHash(config.paths.initial)
 }
 
 function getHash(path) {
@@ -578,6 +578,10 @@ function initMods(callback) {
 
     function main() {
         for (const modDir of modDirs) {
+            if (modDir === 'SnowRunnerXMLEditor') {
+                continue
+            }
+
             const items = readdirSync(join(paths.mods, modDir))
     
             if (items.length < 2) {
@@ -585,7 +589,10 @@ function initMods(callback) {
             }
 
             for (const item of items) {
-                if (item === 'modio.json' || item === 'pc.pak' || item.match(/(.*?_pc.pak)/)) {
+                if (lstatSync(join(paths.mods, modDir, item)).isDirectory() ||
+                    extname(item) !== '.pak' ||
+                    item === 'pc.pak' || 
+                    item.match(/(.*?_pc.pak)/)) {
                     continue
                 }
 
