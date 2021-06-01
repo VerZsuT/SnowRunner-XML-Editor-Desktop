@@ -1,6 +1,6 @@
 const { execSync } = require('child_process')
 const { createHash } = require('crypto')
-const { renameSync, readdirSync, statSync, readFileSync, writeFileSync, rmdirSync, existsSync } = require('fs')
+const { renameSync, readdirSync, statSync, readFileSync, writeFileSync, rmdirSync, existsSync, rmSync } = require('fs')
 const { join } = require('path')
 
 const paths = {
@@ -9,7 +9,8 @@ const paths = {
     renamed: join(__dirname, 'out', 'SnowRunnerXMLEditor'),
     config: join(__dirname, 'out', 'SnowRunnerXMLEditor', 'resources', 'app', 'src', 'app', 'config.json'),
     winrar: join(__dirname, 'src', 'scripts', 'winrar'),
-    sxmle_updater: join(__dirname, '..', 'sxmle_updater')
+    sxmle_updater: join(__dirname, '..', 'sxmle_updater'),
+    vue: join(__dirname, 'out', 'SnowRunnerXMLEditor', 'resources', 'app', 'src', 'scripts', 'vue')
 }
 
 console.log('[POST_BUILD][LOG]: Processing post build...')
@@ -24,6 +25,8 @@ config.lang = 'EN'
 config.buildType = 'prod'
 config.settings.hideResetButton = true
 writeFileSync(paths.config, JSON.stringify(config))
+rmSync(join(paths.vue, 'vue.esm-browser.js'))
+renameSync(join(paths.vue, 'vue.esm-browser.prod.js'), join(paths.vue, 'vue.esm-browser.js'))
 
 console.log('[POST_BUILD][STAGE_2]: Archiving build...')
 execSync(`WinRAR a -ibck -ep1 -m5 "${join(paths.out, 'SnowRunnerXMLEditor.rar')}" "${paths.renamed}"`, {
@@ -38,9 +41,9 @@ if (existsSync(paths.sxmle_updater)) {
     console.log('[POST_BUILD][STAGE_3]: Success.')
 
     console.log('[POST_BUILD][STAGE_3]: Adding files for auto update...')
-    rmdirSync(join(paths.sxmle_updater, 'files'), {recursive: true})
+    rmSync(join(paths.sxmle_updater, 'files'), {recursive: true})
     renameSync(join(paths.renamed, 'resources', 'app'), join(paths.sxmle_updater, 'files'))
-    rmdirSync(join(paths.renamed), {recursive: true})
+    rmSync(join(paths.renamed), {recursive: true})
     console.log('[POST_BUILD][STAGE_3]: Success.')
 }
 

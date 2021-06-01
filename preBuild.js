@@ -1,4 +1,4 @@
-const fs = require('fs')
+const { rmSync, mkdirSync, readFileSync, existsSync, writeFileSync } = require('fs')
 const { join } = require('path')
 
 const paths = {
@@ -9,24 +9,24 @@ const paths = {
     public: join(__dirname, '..', 'sxmle_updater', 'public.json')
 }
 
-fs.rmdirSync(paths.out, {recursive: true})
-fs.mkdirSync(paths.out)
+rmSync(paths.out, {recursive: true})
+mkdirSync(paths.out)
 
 console.log('[PRE_BUILD][LOG]: Processing pre build...')
 
 console.log('[PRE_BUILD][STAGE_1]: Reading config.json...')
-const config = JSON.parse(fs.readFileSync(paths.config).toString())
+const config = JSON.parse(readFileSync(paths.config).toString())
 console.log('[PRE_BUILD][STAGE_1]: Success.')
 console.log('[PRE_BUILD][STAGE_1]: Reading package.json...')
-const package = JSON.parse(fs.readFileSync(paths.package).toString())
+const package = JSON.parse(readFileSync(paths.package).toString())
 console.log('[PRE_BUILD][STAGE_1]: Success.')
 console.log('[PRE_BUILD][STAGE_1]: Reading package-lock.json...')
-const packageLock = JSON.parse(fs.readFileSync(paths.packageLock).toString())
+const packageLock = JSON.parse(readFileSync(paths.packageLock).toString())
 console.log('[PRE_BUILD][STAGE_1]: Success.')
 console.log('[PRE_BUILD][STAGE_1]: Reading public.json...')
 let public = {latestVersion: '', canAutoUpdate: true}
-if (fs.existsSync(paths.public)) {
-    public = JSON.parse(fs.readFileSync(paths.public).toString())
+if (existsSync(paths.public)) {
+    public = JSON.parse(readFileSync(paths.public).toString())
 }
 console.log('[PRE_BUILD][STAGE_1]: Success.')
 
@@ -41,13 +41,13 @@ console.log('[PRE_BUILD][STAGE_2]: Success.')
 console.log('[PRE_BUILD][LOG]................')
 
 console.log('[PRE_BUILD][STAGE_3]: Changing package.json...')
-fs.writeFileSync(paths.package, JSON.stringify(package))
+writeFileSync(paths.package, JSON.stringify(package))
 console.log('[PRE_BUILD][STAGE_3]: Success.')
 console.log('[PRE_BUILD][STAGE_3]: Changing package-lock.json...')
-fs.writeFileSync(paths.packageLock, JSON.stringify(packageLock))
+writeFileSync(paths.packageLock, JSON.stringify(packageLock))
 console.log('[PRE_BUILD][STAGE_3]: Success.')
 console.log('[PRE_BUILD][STAGE_3]: Changing public.json...')
-fs.writeFileSync(paths.public, JSON.stringify(public))
+writeFileSync(paths.public, JSON.stringify(public))
 console.log('[PRE_BUILD][STAGE_3]: Success.')
 
 console.log('[PRE_BUILD][LOG]: Success.')

@@ -1,11 +1,11 @@
 const https = require('https')
 const dns = require('dns')
 const { exec } = require('child_process')
-const { app, shell, dialog, BrowserWindow, Notification } = require('electron')
+const { app, shell, BrowserWindow, Notification } = require('electron')
 const { readFileSync, readdirSync, lstatSync, existsSync, writeFileSync, unlinkSync, copyFileSync, mkdirSync, rmSync, createWriteStream } = require('fs')
 const { join, dirname, basename, extname } = require('path')
 const main = require('../scripts/service/main.js')
-const { createHash } = require('crypto')
+const { fromDir, getHash, openDialog, openInitialDialog, parseStrings, removePars } = require('./service.js')
 
 const paths = {
     publicInfo: 'https://verzsut.github.io/sxmle_updater/public.json',
@@ -16,7 +16,7 @@ const paths = {
     config: join(__dirname, 'config.json'),
     mods: join(process.env.USERPROFILE, 'Documents', 'My Games', 'SnowRunner', 'base', 'Mods', '.modio', 'mods'),
     icon: join(__dirname, '..', 'icons', 'favicon.png'),
-    preload: join(__dirname, 'preload.js'),
+    preload: join(__dirname, 'mainPreload.js'),
     backupFolder: join(__dirname, '..', 'backups'),
     backupInitial: join(__dirname, '..', 'backups', 'initial.pak'),
     HTMLFolder: join(__dirname, '..', 'pages'),
@@ -28,6 +28,7 @@ const paths = {
     dlc: join(__dirname, '..', 'scripts', 'mainTemp', '[media]', '_dlc'),
     classes: join(__dirname, '..', 'scripts', 'mainTemp', '[media]', 'classes')
 }
+
 
 let stringsFilePath = null
 let relaunchWithoutSaving = false
@@ -104,6 +105,12 @@ function initMain() {
         }
     }
 
+    main.paths = {
+        get() {
+            return paths
+        }
+    }
+
     main.config = {
         get() {
             return config
@@ -113,18 +120,8 @@ function initMain() {
         }
     }
     
-    main.gameFolder = {
-        get: () => getGameFolder()
-    }
-    
-    main.setLang = function(lang) {
-        config.lang = lang
-        saveConfig()
-        reload()
-    }
-
     main.saveToOriginal = function(modId) {
-        if (modId && modId !== 'null') {
+        if (modId && modId !== 'null' && modId !== 'undefined') {
             exec(`WinRAR f${config.settings.showWinRARWindow? '' : ' -ibck'} "${config.modsList[modId].path}" "${join(paths.modsTemp, modId)}\\" -r -ep1`, {
                 cwd: paths.winrar
             }, error => {
@@ -152,63 +149,6 @@ function initMain() {
 
     main.openDevTools = function() {
         currentWindow.webContents.toggleDevTools()
-    }
-
-    main.getList = function(listType, from=null) {
-        if (from === 'dlc') {
-            const array = []
-            for (const dlcItem of config.dlcList) {
-                const path = `${dlcItem.path}\\classes`
-    
-                if (listType === 'trucks') {
-                    array.push({name: dlcItem.name, items: fromDir(join(path, 'trucks')) || []})
-                }
-                else if (listType === 'trailers') {
-                    array.push({name: dlcItem.name, items: fromDir(join(path, 'trucks', 'trailers')) || []})
-                }
-                else if (listType === 'cargo') {
-                    array.push({name: dlcItem.name, items: fromDir(join(path, 'trucks', 'cargo')) || []})
-                }
-                else {
-                    throw new Error('[UNDEFINED_LIST_TYPE]')
-                }
-    
-            }
-            return array
-        }
-        else if (from === 'mods') {
-            const array = []
-            for (const modId in config.modsList) {
-                const item = config.modsList[modId]
-                if (listType === 'trucks') {
-                    array.push({id: modId, name: item.name, items: fromDir(join(paths.modsTemp, modId, 'classes', 'trucks')) || []})
-                }
-                else if (listType === 'trailers') {
-                    array.push({id: modId, name: item.name, items: fromDir(join(paths.modsTemp, modId, 'classes', 'trucks', 'trailers')) || []})
-                }
-                else if (listType === 'cargo') {
-                    array.push({id: modId, name: item.name, items: fromDir(join(paths.modsTemp, modId, 'classes', 'trucks', 'cargo')) || []})
-                }
-                else {
-                    throw new Error('[UNDEFINED_LIST_TYPE]')
-                }
-            }
-            return array
-        }
-        else {
-            if (listType === 'trucks') {
-                return fromDir(join(paths.classes, 'trucks'))
-            }
-            else if (listType === 'trailers') {
-                return fromDir(join(paths.classes, 'trucks', 'trailers'))
-            }
-            else if (listType === 'cargo') {
-                return fromDir(join(paths.classes, 'trucks', 'cargo'))
-            }
-            else {
-                throw new Error('[UNDEFINED_LIST_TYPE]')
-            }
-        }
     }
     
     main.getFileData = function(filePath, reserveFilePath=null) {
@@ -247,12 +187,13 @@ function initMain() {
     main.quit = app.quit
 
     main.openLink = url => {shell.openExternal(url)}
-    main.showFile = shell.showItemInFolder
     main.showFolder = path => {shell.openPath(path)}
 
     main.openXMLEditor = openXMLEditor
     main.openList = openList
     main.openSettings = openSettings
+    main.openDialog = openDialog
+    main.openInitialDialog = openInitialDialog
 
     main.saveBackup = saveBackup
     main.resetConfig = resetConfig
@@ -277,12 +218,6 @@ function initApp() {
     })
 }
 
-function openDialog() {
-    return dialog.showOpenDialogSync({
-        properties: ['openDirectory']
-    })
-}
-
 function saveModSum(modId, path) {
     config.sums.mods[modId] = getHash(path)
 }
@@ -291,54 +226,6 @@ function saveInitialSum() {
     config.sums.initial = getHash(config.paths.initial)
 }
 
-function getHash(path) {
-    const shaHash = createHash('sha1')
-
-    shaHash.update(readFileSync(path))
-    return shaHash.digest('hex')
-}
-
-function getGameFolder(errors=true) {
-    const result = openDialog()
-    if (!result) {
-        if (errors) {
-            throw new Error('[EMPTY_FOLDER_ERROR]')
-        }
-        else {
-            showNotification(getText('[ERROR]'), getText('[EMPTY_FOLDER_ERROR]'))
-            return
-        }
-    }
-    const folder = result[0]
-    const initialPath = join(folder, 'en_us', 'preload', 'paks', 'client', 'initial.pak')
-    if (!existsSync(initialPath)) {
-        if (errors) {
-            throw new Error('[INVALID_FOLDER_ERROR]')
-        }
-        else {
-            showNotification(getText('[ERROR]'), getText('[INVALID_FOLDER_ERROR]'))
-            return
-        }
-    }
-    
-    return {
-        folder: folder,
-        initial: initialPath
-    }
-}
-
-function createDirForPath(path) {
-    const dirName = dirname(path)
-    const dirDirName = dirname(dirName)
-
-    if (!existsSync(dirDirName)) {
-        createDirForPath(dirName)
-    }
-    
-    if (!existsSync(dirName)) {
-        mkdirSync(dirName)
-    }
-}
 
 function download(params, cb) {
     if (params.array) {
@@ -561,6 +448,9 @@ function initDLC() {
 }
 
 function initMods(callback) {
+    if (!existsSync(paths.mods)) {
+        return
+    }
     const modDirs = readdirSync(paths.mods)
     let counter = 0
     let loading = null
@@ -701,27 +591,6 @@ function getTranslations() {
     return {RU, EN, DE, ingame, mods}
 }
 
-function parseStrings(data) {
-    const strings = {}
-    const lines = data.match(/[^\r\n]+/g)
-    if (lines) {
-        for (const line of lines) {
-            const result = line.match(/(.*?)[\s\t]*(\".*?\")/)
-            
-            if (result && result.length === 3) {
-                const key = result[1].replaceAll('"', '').replaceAll("'", '').replaceAll('﻿', '')
-                try {
-                    const value = JSON.parse(result[2].replaceAll('\\', ''))
-                    strings[key] = value
-                } catch {
-                    console.log(result)
-                }
-            }
-        }
-    }
-    
-    return strings
-}
 
 function showNotification(title, message, callback=null) {
     if (Notification.isSupported()) {
@@ -778,7 +647,7 @@ function openMain() {
 }
 
 function openFirstSteps() {
-    const wind = createWindow('firstSteps.html', {width: 550, height: 450})
+    const wind = createWindow('firstSteps.html', {width: 550, height: 550})
     firstStepsWindow = wind
     wind.once('close', () => {
         app.quit()
@@ -962,6 +831,10 @@ function saveConfig() {
 }
 
 function createWindow(fileName, args={}) {
+    let preload = join(__dirname, '..', 'scripts', 'modules', basename(fileName, '.html'), 'preload.js')
+    if (!existsSync(preload)) {
+        preload = paths.preload
+    }
     const wind = new BrowserWindow({
         width: args.width || 800,
         height: args.height || 600,
@@ -973,7 +846,7 @@ function createWindow(fileName, args={}) {
         frame: !(args.frame === false),
         paintWhenInitiallyHidden: false,
         webPreferences: {
-            preload: paths.preload,
+            preload: preload,
             contextIsolation: false
         }
     })
@@ -1076,45 +949,10 @@ function getText(key, returnKey=true) {
     }
 }
 
-function removePars(str) {
-    if (str || str === '') {
-        return str.replaceAll('[', '').replaceAll(']', '')
-    }
-}
-
 function getConfig() {
     const data = readFileSync(paths.config)
     const obj = JSON.parse(data.toString())
     return obj
-}
-
-function fromDir(startPath, onlyDirs=false, extension='.xml') {
-    if (!existsSync(startPath)) return
-
-    const array = []
-    const files = readdirSync(startPath)
-    for(let i = 0; i < files.length; i++) {
-        const filePath = join(startPath, files[i])
-        const stat = lstatSync(filePath)
-        if (onlyDirs) {
-            if (!stat.isDirectory()) {
-                continue
-            }
-            else {
-                array.push({
-                    name: files[i],
-                    path: filePath
-                })
-            }
-        }
-        else if (files[i].indexOf(extension) >= 0) {
-            array.push({
-                name: files[i].replace(extension, ''),
-                path: filePath
-            })
-        }
-    }
-    return array
 }
 
 function reload() {
@@ -1129,10 +967,16 @@ function getShortMenu() {
             submenu: [
                 ...(() => {
                     if (config.buildType === 'dev') {
-                        return [{
-                            label: 'DevTools',
-                            role: 'dev-tools'
-                        },]
+                        return [
+                            {
+                                label: 'DevTools',
+                                role: 'dev-tools'
+                            },
+                            {
+                                label: 'Reload',
+                                role: 'reload'
+                            }
+                        ]
                     }
                     return []
                 })(),
@@ -1186,10 +1030,16 @@ function getMainMenu() {
                 })(),
                 ...(() => {
                     if (config.buildType === 'dev') {
-                        return [{
-                            label: 'DevTools',
-                            role: 'dev-tools'
-                        },]
+                        return [
+                            {
+                                label: 'DevTools',
+                                role: 'dev-tools'
+                            },
+                            {
+                                label: 'Reload',
+                                role: 'reload'
+                            }
+                        ]
                     }
                     return []
                 })(),

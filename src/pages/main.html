@@ -2,25 +2,16 @@
 <html>
     <head>
         <title>SnowRunner XML Editor {--VERSION--}</title>
-        <meta http-equiv="Content-Security-Policy" content="script-src 'self'">
         <link rel="stylesheet" href="../styles/main.css">
-        <script defer src="../scripts/modules/main.js" type="module"></script>
+        <script defer src="../scripts/modules/main/main.js" type="module"></script>
     </head>
     <body>
         <div id="main">
             <div id="categories">
-                <div class="category" id="trucks">
-                    <img src="../category_images/trucks_category.png">
-                    <span class="category-name" to-translate>[TRUCKS_CATEGORY_TITLE]</span>
-                </div>
-                <div class="category" id="trailers">
-                    <img src="../category_images/trailers_category.png">
-                    <span class="category-name" to-translate>[TRAILERS_CATEGORY_TITLE]</span>
-                </div>
-                <div class="category" id="cargo">
-                    <img src="../category_images/cargo_category.png">
-                    <span class="category-name" to-translate>[CARGO_CATEGORY_TITLE]</span>
-                </div>
+                <category
+                    v-for='category in categories'
+                    :name='category'
+                ></category>
             </div>
         </div>
     </body>

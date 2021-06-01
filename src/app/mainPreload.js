@@ -1,11 +1,13 @@
 const { ipcRenderer } = require('electron')
-const _config = ipcRenderer.sendSync(`property_config_get`).value
+const _config = ipcRenderer.sendSync('property_config_get').value
+
+window.paths = ipcRenderer.sendSync('property_paths_get').value
 
 window.config = new Proxy({}, {
     get: (_target, name) => {
         const value = _config[name]
-        if (typeof value === 'object') {
-            return new Proxy({}, {
+        if (!Array.isArray(value) && typeof value === 'object') {
+            return new Proxy(value, {
                 get: (_target, name) => {
                     return value[name]
                 },

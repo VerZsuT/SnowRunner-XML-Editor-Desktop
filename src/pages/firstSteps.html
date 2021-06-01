@@ -2,35 +2,43 @@
 <html>
     <head>
         <title>SnowRunner XML Editor {--VERSION--}</title>
-        <meta http-equiv="Content-Security-Policy" content="script-src 'self'">
-        <link rel="stylesheet" href="../styles/firstSteps.css">
-        <script defer src="../scripts/modules/firstSteps.js" type="module"></script>
+        <link rel='stylesheet' href='../styles/firstSteps.css'>
+        <script defer src='../scripts/modules/firstSteps/main.js' type='module'></script>
     </head>
     <body>
-        <div id="main">
+        <div id='main'>
             <header>
-                <h2 class="h2" to-translate>[FIRST_STEPS_DESCRIPTION]</h2>
+                <h2 class='h2'>{{ t.FIRST_STEPS_DESCRIPTION }}</h2>
             </header>
-    
-            <div class="steps">
-                <label to-translate class="form-label">[LANGUAGE_MENU_ITEM_LABEL]</label>
-                <select id="language-select" class="form-select">
-                    <option>EN</option>
-                    <option>RU</option>
-                    <option>DE</option>
-                </select><br>
-    
-                <label to-translate class="form-label">[GAME_FOLDER_LABEL]</label><br>
-                <input type="text" id="game-folder-input" class="form-control" disabled>
-                <button class="btn btn-secondary btn-sm" id="game-folder-select" to-translate>[OPEN_BUTTON]</button><br>
 
-                <button class="btn btn-primary" id="save-to-config" to-translate>[SAVE_BUTTON]</button>
+            <div class='steps'>
+                <language :t='t'></language>
+                
+                <game-folder
+                    :t='t'
+                    v-model:path-to-initial='pathToInitial'
+                ></game-folder>
+
+                <label class="form-label" for="enableMods">{{ `${t.ENABLE_MODS_LABEL} (${t.EXPERIMENTAL})` }}</label>
+                <input type='checkbox' class="form-check-input" :disabled='disableModsCheckbox' id='enableMods' v-model='enableMods'><br>
+
+                <mods
+                    :t='t'
+                    :mods-support='modsSupport'
+                ></mods>
+
+                <save
+                    :t='t'
+                    :path-to-initial='pathToInitial'
+                    :mods-support='modsSupport'
+                    :disable-mods='!enableMods'
+                ></save>
             </div>
         </div>
 
-        <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 5">
-            <div id="live-toast" class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
-                <div class="toast-body"></div>
+        <div class='position-fixed bottom-0 end-0 p-3' style='z-index: 5'>
+            <div id='live-toast' class='toast show' role='alert' aria-live='assertive' aria-atomic='true'>
+                <div class='toast-body'></div>
             </div>
         </div>
     </body>

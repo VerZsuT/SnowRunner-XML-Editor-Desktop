@@ -40,9 +40,7 @@
     color: yellow;
 }
 
-#list, 
-#dlc-list,
-#mods-list {
+.list {
     display: flex;
     justify-content: space-evenly;
     flex-wrap: wrap;
@@ -50,8 +48,7 @@
     height: 100%;
 }
 
-#dlc-list,
-#mods-list {
+.list:nth-child(n+1) {
     margin-bottom: 20px;
 }
 

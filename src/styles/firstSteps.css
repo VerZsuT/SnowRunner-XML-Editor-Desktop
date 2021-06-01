@@ -4,8 +4,13 @@ body {
     text-align: center;
 }
 
-input:disabled {
-    background: white;
+input[type='text']:disabled {
+    background: white !important;
+}
+
+input[type='checkbox'] {
+    width: 15px !important;
+    margin-left: 5px;
 }
 
 header {
@@ -18,20 +23,6 @@ header h2 {
 
 label {
     font-weight: bold;
-}
-
-#language-select {
-    width: 70px;
-    margin: 0 auto;
-}
-
-#game-folder-input {
-    width: 150px;
-    display: inline-block;
-}
-
-#save-to-config {
-    margin-top: 20px;
 }
 
 #live-toast {

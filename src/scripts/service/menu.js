@@ -55,9 +55,6 @@ function buildMenu(template, root=false) {
             case 'show-folder':
                 $button.addEventListener('click', () => funcs.showFolder(template.path))
             break
-            case 'language':
-                $button.addEventListener('click', () => funcs.setLang(template.label))
-            break
             case 'reset-config':
                 $button.addEventListener('click', () => funcs.resetConfig())
             break
@@ -67,8 +64,21 @@ function buildMenu(template, root=false) {
             case 'save-backup':
                 $button.addEventListener('click', () => funcs.saveBackup())
             break
-            case 'dev-tools': 
+            case 'dev-tools':
                 $button.addEventListener('click', () => funcs.openDevTools())
+                document.addEventListener('keypress', (event) => {
+                    if (event.ctrlKey && event.shiftKey && event.code === 'KeyI') {
+                        $button.click()
+                    }
+                })
+            break
+            case 'reload':
+                $button.addEventListener('click', () => window.location.reload())
+                document.addEventListener('keypress', (event) => {
+                    if (event.ctrlKey && event.shiftKey && event.code === 'KeyR') {
+                        $button.click()
+                    }
+                })
             break
             case 'open-editor':
                 if (template.dlc) {
