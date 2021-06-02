@@ -28,8 +28,8 @@ const PInput = {
     `,
     data() {
         return {
-            defaultValue: this.fileDOM.querySelector(this.item.selector).getAttribute(this.item.name),
-            value: this.fileDOM.querySelector(this.item.selector).getAttribute(this.item.name),
+            defaultValue: this.item.value,
+            value: this.item.value,
             t: new Proxy({}, {
                 get(_, propName) {
                     return getText(propName)
@@ -39,6 +39,12 @@ const PInput = {
     },
     watch: {
         value(newVal, _) {
+            if (!this.fileDOM.querySelector(this.item.selector)) {
+                const array = this.item.selector.split('>').map(value => value.trim())
+                const name = array.pop()
+                const rootSelector = array.join(' > ')
+                this.fileDOM.querySelector(rootSelector).append(this.fileDOM.createElement(name))
+            }
             this.fileDOM.querySelector(this.item.selector).setAttribute(this.item.name, newVal || defaultValue)
         }
     },

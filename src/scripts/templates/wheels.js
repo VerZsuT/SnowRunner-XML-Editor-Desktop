@@ -4,12 +4,13 @@ const wheels = {
 		Template({type: 'Multiply', itemSelector: '[TRUCK_TIRE]'}, [
 			Group({nameType: 'Computed', nameSelector: '[TRUCK_TIRE_ITEM_TEXT]', resNameSelector: '[TRUCK_TIRE_ITEM]', nameAttribute: 'UiName', resNameAttribute: 'Name', defaultSelector: '[WHEEL_FRICTION]'}, [
 				Input({attribute: 'Name', text: '[ID]', type: 'text', onlyDeveloper: 'true', selector: 'TRUCK_TIRE_ITEM'}),
-				Input({attribute: 'BodyFriction', text: '[BODY_FRICTION]', numberType: 'float', max: '10', bold: true}),
-				Input({attribute: 'BodyFrictionAsphalt', text: '[BODY_FRICTION_ASPHALT]', numberType: 'float', max: '10', bold: true}),
-				Input({attribute: 'SubstanceFriction', text: '[SUBSTANCE_FRICTION]', numberType: 'float', max: '10', bold: true}),
-				Select({attribute: 'IsIgnoreIce', text: '[IS_IGNORE_ICE]', bold: true}, [
+				Input({attribute: 'BodyFriction', text: '[BODY_FRICTION]', numberType: 'float', max: '10', bold: true, canAddTag: true}),
+				Input({attribute: 'BodyFrictionAsphalt', text: '[BODY_FRICTION_ASPHALT]', numberType: 'float', max: '10', bold: true, canAddTag: true}),
+				Input({attribute: 'SubstanceFriction', text: '[SUBSTANCE_FRICTION]', numberType: 'float', max: '10', bold: true, canAddTag: true}),
+				Select({attribute: 'IsIgnoreIce', text: '[IS_IGNORE_ICE]', bold: true, canAddTag: true}, [
+					Opt({text: '[BY_DEFAULT]', value: '__DefaultSelectValue__'}),
 					Opt({text: '[YES]', value: 'true'}),
-					Opt({text: '[NO]', value: '__DefaultSelectValue__'})
+					Opt({text: '[NO]', value: 'false'})
 				]),
 				Group({name: '[UNLOCK_GROUP_NAME]', defaultSelector: '[GAME_DATA]'}, [
 					Input({attribute: 'Price', text: '[PRICE]', bold: true}),

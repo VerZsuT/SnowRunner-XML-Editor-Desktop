@@ -20,22 +20,24 @@ const PSelect = {
     `,
     data() {
         return {
-            defaultValue: this.fileDOM.querySelector(this.item.selector).getAttribute(this.item.name),
-            value: this.fileDOM.querySelector(this.item.selector).getAttribute(this.item.name)
+            defaultValue: this.item.value,
+            value: this.item.value
         }
     },
     watch: {
         value(newValue, _) {
+            if (!this.fileDOM.querySelector(this.item.selector)) {
+                const array = this.item.selector.split('>').map(value => value.trim())
+                const name = array.pop()
+                const rootSelector = array.join(' > ')
+                this.fileDOM.querySelector(rootSelector).append(this.fileDOM.createElement(name))
+            }
+
             if (newValue === '__DefaultSelectValue__') {
                 this.fileDOM.querySelector(this.item.selector).setAttribute(this.item.name, this.defaultValue)
             } else {
                 this.fileDOM.querySelector(this.item.selector).setAttribute(this.item.name, newValue)
             }
-        }
-    },
-    mounted() {
-        if (!this.value) {
-            this.value = '__DefaultSelectValue__'
         }
     },
     computed: {

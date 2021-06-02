@@ -5,15 +5,16 @@ const PFile = {
     props: {
         item: Object
     },
-    inject: ['currentMod', 'currentDLC'],
+    inject: ['currentMod', 'currentDLC', 'fileDOM'],
     template: `
         <div>
             <button
-                v-for='fileName in items'
+                v-for='i in items'
                 class='openFile btn btn-secondary btn-sm'
-                @click='openEditor(fileName)'
+                @click='openEditor(i.value)'
             >
-                {{ t.EDIT_FILE_BUTTON }}
+                {{ i.index + 1 }}
+                <img src='../icons/pencil.svg' style='filter: invert(1);'>
             </button>
         </div>
     `,
@@ -43,7 +44,16 @@ const PFile = {
     },
     computed: {
         items() {
-            return this.item.value.split(',')
+            const array = this.item.value.split(',').map((value) => value.trim())
+            if (this.item.fileType === 'wheels') {
+                for (const compatible of this.fileDOM.querySelectorAll('Truck > TruckData > CompatibleWheels')) {
+                    const type = compatible.getAttribute('Type')
+                    if (array.indexOf(type) === -1) {
+                        array.push(type)
+                    }
+                }
+            }
+            return array.map((value, index) => ({value, index}))
         }
     }
 }

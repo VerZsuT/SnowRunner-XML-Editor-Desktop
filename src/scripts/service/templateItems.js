@@ -225,6 +225,7 @@ export function Input(params) {
         max: params.max,
         numberType: params.numberType || 'int',
         fileType: params.fileType,
+        canAddTag: params.canAddTag,
         bold: params.bold || false,
         get attributes() {
             const array = []
@@ -243,12 +244,16 @@ export function Input(params) {
             let param = null
             const selectorType = removePars(this.selector)
             const selector = selectors[selectorType] || selectorType || selectors[defaultSelector]
+            let value = ""
             if (!fileDOM.querySelector(selector)) {
-                console.warn(`Missing parameter\n\tName: '${this.attribute}',\n\tText: '${this.text}',\n\tSelector: '${selector}'.`)
-                return []
+                if (!this.canAddTag) {
+                    console.warn(`Missing parameter\n\tName: '${this.attribute}',\n\tText: '${this.text}',\n\tSelector: '${selector}'.`)
+                    return []
+                }
+            } else {
+                value = fileDOM.querySelector(selector).getAttribute(this.attribute)
             }
-            const value = fileDOM.querySelector(selector).getAttribute(this.attribute)
-
+            
             param = {
                 name: this.attribute,
                 text: getTextFromTemplate(this.text, templateName),
@@ -288,6 +293,7 @@ export function Select(params, children) {
         onlyDeveloper: params.onlyDeveloper,
         children: children,
         bold: params.bold,
+        canAddTag: params.canAddTag,
         get attributes() {
             const array = []
             for (const name in params) {
@@ -305,11 +311,15 @@ export function Select(params, children) {
             let param = null
             const selectorType = removePars(this.selector)
             const selector = selectors[selectorType] || selectorType || selectors[defaultSelector]
+            let value = "__DefaultSelectValue__"
             if (!fileDOM.querySelector(selector)) {
-                console.warn(`Missing parameter\n\tName: '${this.attribute}',\n\tText: '${this.text}',\n\tSelector: '${selector}'.`)
-                return []
+                if (!this.canAddTag) {
+                    console.warn(`Missing parameter\n\tName: '${this.attribute}',\n\tText: '${this.text}',\n\tSelector: '${selector}'.`)
+                    return []
+                }
+            } else {
+                value = fileDOM.querySelector(selector).getAttribute(this.attribute)
             }
-            const value = fileDOM.querySelector(selector).getAttribute(this.attribute)
             
             let options = []
             let haveDefaultValue = false
