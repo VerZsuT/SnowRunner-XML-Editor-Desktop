@@ -2,7 +2,9 @@ import { getText } from "../../../service/funcs.js"
 import { funcs } from "../../../service/renderer.js"
 
 const Category = {
-    props: ['name'],
+    props: {
+        name: String
+    },
     template: `
         <div class='category' @click='openList'>
             <img :src='imgSrc'>

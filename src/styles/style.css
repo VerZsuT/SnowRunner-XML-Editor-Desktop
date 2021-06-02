@@ -229,6 +229,10 @@ header {
     border-bottom: none;
 }
 
+.inline-block {
+    display: inline-block;
+}
+
 .param-text,
 .param-value {
     float: left;

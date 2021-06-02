@@ -5,6 +5,7 @@
 	"MODS_LIST_TITLE": "Модификации",
 	"MODS_WARNING": "Поддержка модификаций отключена",
 	"NO_PROFILE": "Не найдена папка пользователя",
+	"LOADING_TRANSLATION": "Загрузка переводов",
 	"EXPERIMENTAL": "Экспериментально",
 	"MODS_FOLDER_NOT_EXISTED": "Не найдена папка с модами",
 	"INITIAL_LABEL": "Путь к initial.pak",

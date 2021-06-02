@@ -38,12 +38,17 @@ window.local = new Proxy({
     pop(name) {
         const val = localStorage.getItem(name)
         localStorage.removeItem(name)
+        if (val === 'null') return null
+        if (val === 'undefined') return undefined
         return val
     }
 }, {
     get(_target, name) {
         if (name !== 'pop') {
-            return localStorage.getItem(name)
+            const val = localStorage.getItem(name)
+            if (val === 'null') return null
+            if (val === 'undefined') return undefined
+            return val
         }
         else {
             return _target.pop

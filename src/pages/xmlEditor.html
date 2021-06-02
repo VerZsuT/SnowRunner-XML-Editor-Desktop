@@ -2,18 +2,17 @@
 <html>
     <head>
         <title>SnowRunner XML Editor {--VERSION--}</title>
-        <meta http-equiv="Content-Security-Policy" content="script-src 'self'">
         <link rel="stylesheet" href="../styles/style.css">
-        <script defer src="../scripts/modules/xmlEditor.js" type="module"></script>
+        <script defer src="../scripts/modules/xmlEditor/main.js" type="module"></script>
     </head>
     <body>
         <div id="main">
             <section id="work-zone">
                 <div id="editor">
-                    <h2 id="title" class="title"></h2>
-                    <div id="parameters" class="accordion"></div>
-                    <button class="btn btn-primary" id="save-params"></button>
-                    <button class="btn btn-primary" id="back"></button>
+                    <h2 id="title" class="title">{{ title }}</h2>
+                    <params/></params>
+                    <button class="btn btn-primary" id="save-params" @click='save'></button>
+                    <button class="btn btn-primary" id="back" @click='back'></button>
                 </div>
             </section>
         </div>

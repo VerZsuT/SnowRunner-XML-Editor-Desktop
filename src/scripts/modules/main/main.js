@@ -1,7 +1,7 @@
 import '../../bootstrap/bootstrap.bundle.min.js'
 import '../../service/menu.js'
 import { createApp } from '../../vue/vue.esm-browser.js'
-import Category from './components/category.js'
+import Category from './components/Category.js'
 
 const App = {
     data() {

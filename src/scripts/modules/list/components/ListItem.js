@@ -2,7 +2,10 @@ import { getIngameText, prettify } from "../../../service/funcs.js"
 import { funcs } from "../../../service/renderer.js"
 
 const ListItem = {
-    props: ['itemType', 'item'],
+    props: {
+        itemType: String, 
+        item: Object
+    },
     template: `
         <div 
             class='item'
@@ -42,17 +45,22 @@ const ListItem = {
                     if (this.item.modId && this.DOM.querySelector('GameData > UiDesc')) {
                         const imgName = this.DOM.querySelector('GameData > UiDesc').getAttribute('UiIcon328x458')
                         path = `../scripts/modsTemp/${this.item.modId}/ui/textures/${imgName}.png`
+                        let path2 = `../../modsTemp/${this.item.modId}/ui/textures/${imgName}.png`
+                        if (!preload.exists(path2)) {
+                            path = '../icons/truck_item.png'
+                        }
                     }
                     return path
             }
         },
         name() {
             if (this.DOM.querySelector('GameData > UiDesc')) {
-                const uiName = this.DOM.querySelector('GameData > UiDesc').getAttribute('UiName') 
-                return getIngameText(uiName, this.item.modId) || uiName
-            } else {
-                prettify(this.item.name)
+                const uiName = this.DOM.querySelector('GameData > UiDesc').getAttribute('UiName')
+                if (uiName) {
+                    return getIngameText(uiName, this.item.modId) || uiName
+                } 
             }
+            return prettify(this.item.name)
         },
         error() {
             return (

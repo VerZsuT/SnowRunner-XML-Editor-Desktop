@@ -1,7 +1,9 @@
 import { funcs } from '../../../service/renderer.js'
 
 const Language = {
-    props: ['t'],
+    props: {
+        t: Object
+    },
     template: `
         <label class='form-label'>
             {{ t.LANGUAGE_MENU_ITEM_LABEL }}

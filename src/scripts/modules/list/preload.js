@@ -1,8 +1,12 @@
 require('../../../app/mainPreload.js')
 const { fromDir } = require('../../../app/service.js')
 const { join } = require('path')
+const { existsSync } = require('fs')
 
 window.preload = {
+    exists(path) {
+        return existsSync(join(__dirname, path))
+    },
     getList: (listType, from=null) => {
         if (from === 'dlc') {
             const array = []
@@ -10,13 +14,13 @@ window.preload = {
                 const path = `${dlcItem.path}\\classes`
     
                 if (listType === 'trucks') {
-                    array.push({name: dlcItem.name, items: fromDir(join(path, 'trucks')) || []})
+                    array.push({dlcName: dlcItem.name, items: fromDir(join(path, 'trucks')) || []})
                 }
                 else if (listType === 'trailers') {
-                    array.push({name: dlcItem.name, items: fromDir(join(path, 'trucks', 'trailers')) || []})
+                    array.push({dlcName: dlcItem.name, items: fromDir(join(path, 'trucks', 'trailers')) || []})
                 }
                 else if (listType === 'cargo') {
-                    array.push({name: dlcItem.name, items: fromDir(join(path, 'trucks', 'cargo')) || []})
+                    array.push({dlcName: dlcItem.name, items: fromDir(join(path, 'trucks', 'cargo')) || []})
                 }
                 else {
                     throw new Error('[UNDEFINED_LIST_TYPE]')

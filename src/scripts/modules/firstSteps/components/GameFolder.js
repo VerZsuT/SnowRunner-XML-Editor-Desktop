@@ -2,7 +2,10 @@ import { getText } from '../../../service/funcs.js'
 import toast from '../toast.js'
 
 const GameFolder = {
-    props: ['t', 'pathToInitial'],
+    props: {
+        t: Object, 
+        pathToInitial: String
+    },
     emits: ['update:pathToInitial'],
     template: `
         <label class='form-label'>

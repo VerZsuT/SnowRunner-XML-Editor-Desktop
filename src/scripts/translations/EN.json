@@ -7,6 +7,7 @@
 	"MODS_WARNING": "Modification support disabled",
 	"NO_PROFILE": "User folder not found",
 	"EXPERIMENTAL": "Experimental",
+	"LOADING_TRANSLATION": "Translation loading",
 	"INITIAL_LABEL": "Path to initial.pak",
 	"INVALID_INITIAL_ERROR": "Invalid initial.pak selected",
 	"MODS_FOLDER_NOT_EXISTED": "Mod folder not found",

@@ -3,7 +3,12 @@ import { getText } from '../../../service/funcs.js'
 import toast from '../toast.js'
 
 const Save = {
-    props: ['t', 'pathToInitial', 'modsSupport', 'disableMods'],
+    props: {
+        t: Object,
+        pathToInitial: String,
+        modsSupport: Object,
+        disableMods: Boolean
+    },
     template: `
         <button class='btn btn-primary' :style='style' @click='save'>
             {{ t.SAVE_BUTTON }}

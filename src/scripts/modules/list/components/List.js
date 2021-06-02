@@ -1,7 +1,9 @@
 import { getText } from "../../../service/funcs.js"
 
 const List = {
-    props: ['srcType'],
+    props: {
+        srcType: String
+    },
     template: `
         <div>
             <span class="list-title h2">
@@ -38,7 +40,7 @@ const List = {
                 const newArray = []
                 for (const dlcOrMod of array) {
                     for (const item of dlcOrMod.items) {
-                        item.dlcName = dlcOrMod.name
+                        item.dlcName = dlcOrMod.dlcName
                         item.modId = dlcOrMod.id
                         newArray.push(item)
                     }

@@ -1,5 +1,8 @@
 const Mods = {
-    props: ['t', 'modsSupport'],
+    props: {
+        t: Object,
+        modsSupport: Object
+    },
     template: `
         <div v-if='visible' :style='styles.message'>
             <p>

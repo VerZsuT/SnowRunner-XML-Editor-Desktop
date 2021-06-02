@@ -55,29 +55,31 @@ function init() {
     }
     else {
         checkInitialSum(() => {
-            translations.ingame = getIngameTranslation()
             if (checkPaths()) {
-                config.paths.dlc = paths.dlc
-                config.paths.classes = paths.classes
-                config.paths.mods = paths.modsTemp
-                if (!config.settings.disableDLC) {
-                    initDLC()
-                }
-                if (!config.settings.disableMods) {
-                    initMods(() => {
-                        translations.mods = getModsTranslation()
+                getIngameTranslation(() => {
+                    config.paths.dlc = paths.dlc
+                    config.paths.classes = paths.classes
+                    config.paths.mods = paths.modsTemp
+                    if (!config.settings.disableDLC) {
+                        initDLC()
+                    }
+                    if (!config.settings.disableMods) {
+                        initMods(() => {
+                            getModsTranslation(() => {
+                                openMain()
+                                if (!config.settings.ignoreUpdates) {
+                                    checkUpdate()
+                                }
+                            })
+                        })
+                    }
+                    else {
                         openMain()
                         if (!config.settings.ignoreUpdates) {
                             checkUpdate()
                         }
-                    })
-                }
-                else {
-                    openMain()
-                    if (!config.settings.ignoreUpdates) {
-                        checkUpdate()
                     }
-                }
+                })
             }
             else {
                 resetConfig()
@@ -121,7 +123,7 @@ function initMain() {
     }
     
     main.saveToOriginal = function(modId) {
-        if (modId && modId !== 'null' && modId !== 'undefined') {
+        if (modId) {
             exec(`WinRAR f${config.settings.showWinRARWindow? '' : ' -ibck'} "${config.modsList[modId].path}" "${join(paths.modsTemp, modId)}\\" -r -ep1`, {
                 cwd: paths.winrar
             }, error => {
@@ -152,21 +154,14 @@ function initMain() {
     }
     
     main.getFileData = function(filePath, reserveFilePath=null) {
-        try {
+        if (existsSync(filePath)) {
             const data = readFileSync(filePath)
             return data.toString()
-        } catch {
-            if (reserveFilePath) {
-                try {
-                    const data = readFileSync(reserveFilePath)
-                    return data.toString()
-                } catch {
-                    throw new Error('[READ_FILE_ERROR]')
-                }
-            }
-            else {
-                throw new Error('[READ_FILE_ERROR]')
-            }
+        } else if (existsSync(reserveFilePath)) {
+            const data = readFileSync(reserveFilePath)
+            return data.toString()
+        } else {
+            throw new Error('[READ_FILE_ERROR]')
         }
     }
 
@@ -533,10 +528,43 @@ function initMods(callback) {
     }
 }
 
-function getModsTranslation() {
-    let mods = {}
-    for (const modId in config.modsList) {
-        if (existsSync(join(paths.modsTemp, modId, 'texts'))) {
+function getModsTranslation(callback) {
+    loading = openDownload(true)
+    loading.once('show', () => {
+        loading.webContents.postMessage('fileName', getText('[LOADING_TRANSLATION]'))
+        let mods = {}
+        for (const modId in config.modsList) {
+            if (existsSync(join(paths.modsTemp, modId, 'texts'))) {
+                let fileName
+                switch (config.lang) {
+                    case 'RU':
+                        fileName = 'strings_russian.str'
+                        break
+                    case 'EN':
+                        fileName = 'strings_english.str'
+                        break
+                    case 'DE':
+                        fileName = 'strings_german.str'
+                }
+                stringsFilePath = join(paths.modsTemp, modId, 'texts', fileName)
+                if (existsSync(stringsFilePath)) {
+                    const result = parseStrings(readFileSync(stringsFilePath, {encoding: 'utf16le'}).toString())
+                    mods[modId] = result
+                }
+            }
+        }
+        translations.mods = mods
+        callback()
+        loading.close()
+    })
+}
+
+function getIngameTranslation(callback) {
+    loading = openDownload(true)
+    loading.once('show', () => {
+        loading.webContents.postMessage('fileName', getText('[LOADING_TRANSLATION]'))
+        let ingame = {}
+        if (existsSync(paths.strings)) {
             let fileName
             switch (config.lang) {
                 case 'RU':
@@ -548,36 +576,15 @@ function getModsTranslation() {
                 case 'DE':
                     fileName = 'strings_german.str'
             }
-            stringsFilePath = join(paths.modsTemp, modId, 'texts', fileName)
+            stringsFilePath = join(paths.strings, fileName)
             if (existsSync(stringsFilePath)) {
-                const result = parseStrings(readFileSync(stringsFilePath, {encoding: 'utf16le'}).toString())
-                mods[modId] = result
+                ingame = parseStrings(readFileSync(stringsFilePath, {encoding: 'utf16le'}).toString())
             }
         }
-    }
-    return mods
-}
-
-function getIngameTranslation() {
-    let ingame = {}
-    if (existsSync(paths.strings)) {
-        let fileName
-        switch (config.lang) {
-            case 'RU':
-                fileName = 'strings_russian.str'
-                break
-            case 'EN':
-                fileName = 'strings_english.str'
-                break
-            case 'DE':
-                fileName = 'strings_german.str'
-        }
-        stringsFilePath = join(paths.strings, fileName)
-        if (existsSync(stringsFilePath)) {
-            ingame = parseStrings(readFileSync(stringsFilePath, {encoding: 'utf16le'}).toString())
-        }
-    }
-    return ingame
+        translations.ingame = ingame
+        callback()
+        loading.close()
+    })
 }
 
 function getTranslations() {
