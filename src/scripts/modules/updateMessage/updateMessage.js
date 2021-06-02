@@ -17,7 +17,7 @@ const App = {
     },
     mounted() {
         ipcRenderer.on('content', (_event, data) => {
-            version = data
+            this.version = data
             $header.innerText += ` v${data}`
         })
     },
@@ -26,7 +26,7 @@ const App = {
             window.close()
         },
         update() {
-            funcs.update(version)
+            funcs.update(this.version)
         },
         ignore() {
             config.settings.ignoreUpdates = true

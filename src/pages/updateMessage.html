@@ -7,7 +7,7 @@
     </head>
     <body>
         <div id="main">
-            <h2 id="header">{{ t.ALLOW_NEW_VERSION_AUTO }}</h2>
+            <h2 id="header">{{ `${t.ALLOW_NEW_VERSION_AUTO} (${version})` }}</h2>
             <div id="buttons">
             <button id="update" class="btn btn-primary" @click='update'>{{ t.UPDATE }}</button>
             <button id="ignore" class="btn btn-danger" @click='ignore'>{{ t.IGNORE }}</button>
