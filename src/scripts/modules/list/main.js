@@ -4,12 +4,24 @@ import { createApp } from '../../vue/vue.esm-browser.js'
 
 import List from './components/List.js'
 import ListItem from './components/ListItem.js'
+import Search from './components/Search.js'
 
 const App = {
     data() {
         return {
             dlcDisabled: config.settings.disableDLC,
-            modsDisabled: config.settings.disableMods
+            modsDisabled: config.settings.disableMods,
+            filter: {
+                value: null,
+                set(value) {
+                    this.value = value
+                }
+            }
+        }
+    },
+    provide() {
+        return {
+            filter: this.filter
         }
     }
 }
@@ -17,6 +29,7 @@ const App = {
 createApp(App)
 .component('List', List)
 .component('ListItem', ListItem)
+.component('Search', Search)
 .mount('#main')
 document.title = document.title.replace('{--VERSION--}', `v${config.version}`)
 document.querySelector('#main').style.display = 'block'

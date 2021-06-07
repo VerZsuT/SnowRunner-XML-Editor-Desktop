@@ -2,7 +2,7 @@ const PSelect = {
     props: {
         item: Object
     },
-    inject: ['fileDOM'],
+    inject: ['fileDOM', 'getValue'],
     template: `
         <select
             class='form-select'
@@ -20,8 +20,7 @@ const PSelect = {
     `,
     data() {
         return {
-            defaultValue: this.item.value,
-            value: this.item.value
+            value: this.getValue()
         }
     },
     watch: {
@@ -33,11 +32,7 @@ const PSelect = {
                 this.fileDOM.querySelector(rootSelector).append(this.fileDOM.createElement(name))
             }
 
-            if (newValue === '__DefaultSelectValue__') {
-                this.fileDOM.querySelector(this.item.selector).setAttribute(this.item.name, this.defaultValue)
-            } else {
-                this.fileDOM.querySelector(this.item.selector).setAttribute(this.item.name, newValue)
-            }
+            this.fileDOM.querySelector(this.item.selector).setAttribute(this.item.name, newValue)
         }
     },
     computed: {

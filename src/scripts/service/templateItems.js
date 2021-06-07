@@ -227,6 +227,8 @@ export function Input(params) {
         fileType: params.fileType,
         canAddTag: params.canAddTag,
         bold: params.bold || false,
+        desc: params.desc,
+        default: params.default,
         get attributes() {
             const array = []
             for (const name in params) {
@@ -253,7 +255,7 @@ export function Input(params) {
             } else {
                 value = fileDOM.querySelector(selector).getAttribute(this.attribute)
             }
-            
+
             param = {
                 name: this.attribute,
                 text: getTextFromTemplate(this.text, templateName),
@@ -267,7 +269,9 @@ export function Input(params) {
                 max: this.max,
                 numberType: this.numberType,
                 fileType: this.fileType,
-                bold: this.bold
+                bold: this.bold,
+                desc: this.desc,
+                default: this.default
             }
 
             return [param]
@@ -294,6 +298,8 @@ export function Select(params, children) {
         children: children,
         bold: params.bold,
         canAddTag: params.canAddTag,
+        desc: params.desc,
+        default: params.default,
         get attributes() {
             const array = []
             for (const name in params) {
@@ -311,7 +317,7 @@ export function Select(params, children) {
             let param = null
             const selectorType = removePars(this.selector)
             const selector = selectors[selectorType] || selectorType || selectors[defaultSelector]
-            let value = "__DefaultSelectValue__"
+            let value = null
             if (!fileDOM.querySelector(selector)) {
                 if (!this.canAddTag) {
                     console.warn(`Missing parameter\n\tName: '${this.attribute}',\n\tText: '${this.text}',\n\tSelector: '${selector}'.`)
@@ -322,18 +328,6 @@ export function Select(params, children) {
             }
             
             let options = []
-            let haveDefaultValue = false
-            for (const option of this.children) {
-                if (option.value === "__DefaultSelectValue__") {
-                    haveDefaultValue = true
-                }
-            }
-            if (!haveDefaultValue) {
-                options.push({
-                    text: getText('[BY_DEFAULT]'),
-                    value: '__DefaultSelectValue__'
-                })
-            }
             for (const option of this.children) {
                 const text_1 = option.text
                 options.push({
@@ -350,7 +344,9 @@ export function Select(params, children) {
                 paramType: 'input',
                 inputType: 'select',
                 onlyDeveloper: this.onlyDeveloper,
-                bold: this.bold
+                bold: this.bold,
+                desc: this.desc,
+                default: this.default
             }
             
             return [param]

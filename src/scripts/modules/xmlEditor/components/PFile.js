@@ -29,15 +29,30 @@ const PFile = {
     },
     methods: {
         openEditor(fileName) {
+            const paths = [`${config.paths.classes}\\${this.item.fileType}\\${fileName}.xml`]
+            let mainPath = null
+
             if (this.currentDLC) {
-                local.fileDLCPath = `${config.paths.dlc}\\${this.currentDLC}\\classes\\${this.item.fileType}\\${fileName}.xml`
+                const dlcPath = `${config.paths.dlc}\\${this.currentDLC}\\classes\\${this.item.fileType}\\${fileName}.xml`
+                paths.push(dlcPath)
                 local.currentDLC = this.currentDLC
             }
             else if (this.currentMod) {
-                local.fileModPath = `${config.paths.mods}\\${this.currentMod}\\classes\\${this.item.fileType}\\${fileName}.xml`
+                const modPath = `${config.paths.mods}\\${this.currentMod}\\classes\\${this.item.fileType}\\${fileName}.xml`
+                paths.push(modPath)
                 local.currentMod = this.currentMod
             }
-            local.filePath = `${config.paths.classes}\\${this.item.fileType}\\${fileName}.xml`
+
+            for (const path of paths) {
+                if (preload.existsSync(path)) {
+                    mainPath = path
+                }
+            }
+
+            if (!mainPath) {
+                mainPath = preload.findFromDLC(fileName, this.item.fileType)
+            }
+            local.filePath = mainPath
             
             funcs.openXMLEditor()
         }

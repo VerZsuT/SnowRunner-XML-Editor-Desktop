@@ -1,6 +1,6 @@
 const https = require('https')
 const dns = require('dns')
-const { exec } = require('child_process')
+const { exec, execSync } = require('child_process')
 const { app, shell, BrowserWindow, Notification } = require('electron')
 const { readFileSync, readdirSync, lstatSync, existsSync, writeFileSync, unlinkSync, copyFileSync, mkdirSync, rmSync, createWriteStream } = require('fs')
 const { join, dirname, basename, extname } = require('path')
@@ -124,28 +124,24 @@ function initMain() {
     
     main.saveToOriginal = function(modId) {
         if (modId) {
-            exec(`WinRAR f${config.settings.showWinRARWindow? '' : ' -ibck'} "${config.modsList[modId].path}" "${join(paths.modsTemp, modId)}\\" -r -ep1`, {
-                cwd: paths.winrar
-            }, error => {
-                if (error) {
-                    showNotification(getText('[ERROR]'), getText('[SAVE_MOD_ERROR]'))
-                }
-                else {
-                    saveModSum(modId, config.modsList[modId].path)
-                }
-            })
+            try {
+                execSync(`WinRAR f${config.settings.showWinRARWindow? '' : ' -ibck'} "${config.modsList[modId].path}" "${join(paths.modsTemp, modId)}\\" -r -ep1`, {
+                    cwd: paths.winrar
+                })
+                saveModSum(modId, config.modsList[modId].path)
+            } catch(err) {
+                showNotification(getText('[ERROR]'), getText('[SAVE_MOD_ERROR]'))
+            }
         }
         else {
-            exec(`WinRAR f${config.settings.showWinRARWindow? '' : ' -ibck'} "${config.paths.initial}" "${paths.mainTemp}\\" -r -ep1`, {
-                cwd: paths.winrar
-            }, error => {
-                if (error) {
-                    showNotification(getText('[ERROR]'), getText('[SAVE_ORIGINAL_ERROR]'))
-                }
-                else {
-                    saveInitialSum()
-                }
-            })
+            try {
+                execSync(`WinRAR f${config.settings.showWinRARWindow? '' : ' -ibck'} "${config.paths.initial}" "${paths.mainTemp}\\" -r -ep1`, {
+                    cwd: paths.winrar
+                })
+                saveInitialSum()
+            } catch(err) {
+                showNotification(getText('[ERROR]'), getText('[SAVE_ORIGINAL_ERROR]'))
+            }
         }
     }
 
@@ -205,6 +201,9 @@ function initApp() {
         if (!relaunchWithoutSaving) {
             saveConfig()
         }
+    })
+    process.once('uncaughtExceptionMonitor', () => {
+        app.quit()
     })
     app.on('activate', () => {
         if (BrowserWindow.getAllWindows().length === 0) {

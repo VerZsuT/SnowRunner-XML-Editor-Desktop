@@ -4,17 +4,13 @@ const PInput = {
     props: {
         item: Object
     },
-    inject: ['fileDOM'],
+    inject: ['fileDOM', 'getValue'],
     template: `
         <input 
             v-if='item.type === "number"'
             class='form-control'
             type='number'
             v-model.number.lazy='value'
-            :min='min' 
-            :max='max'
-            :step='step'
-            :placeholder='t.BY_DEFAULT'
             :disabled='disabled'
         />
         <input 
@@ -22,14 +18,15 @@ const PInput = {
             class='form-control'
             type='text'
             v-model.lazy='value'
-            :placeholder='t.BY_DEFAULT'
             :disabled='disabled'
+            :title='defaultValue'
         />
     `,
     data() {
+        const value = this.getValue()
         return {
-            defaultValue: this.item.value,
-            value: this.item.value,
+            defaultValue: value,
+            value: value,
             t: new Proxy({}, {
                 get(_, propName) {
                     return getText(propName)
@@ -39,13 +36,30 @@ const PInput = {
     },
     watch: {
         value(newVal, _) {
+            if (newVal === '') {
+                newVal = this.defaultValue
+            }
+            newVal = this.limit(newVal)
+
             if (!this.fileDOM.querySelector(this.item.selector)) {
                 const array = this.item.selector.split('>').map(value => value.trim())
                 const name = array.pop()
                 const rootSelector = array.join(' > ')
                 this.fileDOM.querySelector(rootSelector).append(this.fileDOM.createElement(name))
             }
-            this.fileDOM.querySelector(this.item.selector).setAttribute(this.item.name, newVal || defaultValue)
+            this.fileDOM.querySelector(this.item.selector).setAttribute(this.item.name, newVal)
+            this.value = newVal
+        }
+    },
+    methods: {
+        limit(value) {
+            if (this.min !== undefined && value < this.min) {
+                return this.min
+            }
+            if (this.max !== undefined && value > this.max) {
+                return this.max
+            }
+            return value
         }
     },
     computed: {
@@ -61,9 +75,6 @@ const PInput = {
             if (this.item.max && !config.settings.disableLimits) {
                 return this.item.max
             }
-        },
-        step() {
-            return (this.item.numberType === 'int')? 1 : 0.1
         },
         disabled() {
             if (!this.item.onlyDeveloper) {

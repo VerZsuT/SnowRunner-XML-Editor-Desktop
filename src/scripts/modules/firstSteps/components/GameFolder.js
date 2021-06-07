@@ -62,3 +62,4 @@ const GameFolder = {
 preload.errorHandler = (message) => toast(getText(message))
 
 export default GameFolder
+

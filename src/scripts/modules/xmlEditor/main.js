@@ -11,6 +11,7 @@ import PInput from './components/PInput.js'
 import PSelect from './components/PSelect.js'
 import PCoords from './components/PCoords.js'
 import Group from './components/Group.js'
+import Search from './components/Search.js'
 
 const App = {
     data() {
@@ -18,13 +19,22 @@ const App = {
             filePath: local.filePath,
             fileDOM: getDOM(),
             currentMod: local.pop('currentMod'),
+            filter: {
+                value: null,
+                set(value) {
+                    this.value = value
+                }
+            }
         }
     },
     provide() {
         return {
             currentDLC: local.pop('currentDLC'),
             currentMod: this.currentMod,        
-            fileDOM: this.fileDOM
+            fileDOM: this.fileDOM,
+            filter: this.filter,
+            templates: this.fileDOM.querySelector('_templates'),
+            globalTemplates: getGlobalTemplates()
         }
     },
     computed: {
@@ -64,10 +74,16 @@ const App = {
     }
 }
 
+function getGlobalTemplates() {
+    const filePath = preload.join(preload.paths.mainTemp, '[media]', '_templates', 'trucks.xml')
+    const fileData = funcs.getFileData(filePath)
+
+    return new DOMParser().parseFromString(fileData, 'text/xml')
+}
+
 function getDOM() {
     const filePath = local.pop('filePath')
-    const resFilePath = local.pop('fileDLCPath') || local.pop('fileModPath')
-    const fileData = funcs.getFileData(filePath, resFilePath)
+    const fileData = funcs.getFileData(filePath)
     if (!fileData) return
 
     const parser = new DOMParser()
@@ -81,7 +97,6 @@ function getDOM() {
     if (dom.querySelector('root').childNodes[0].nodeValue === '\n') {
         dom.querySelector('root').childNodes[0].remove()
     }
-
     return dom
 }
 
@@ -93,6 +108,7 @@ createApp(App)
 .component('PInput', PInput)
 .component('PSelect', PSelect)
 .component('PGroup', Group)
+.component('Search', Search)
 .mount('#main')
 
 document.title = document.title.replace('{--VERSION--}', `v${config.version}`)

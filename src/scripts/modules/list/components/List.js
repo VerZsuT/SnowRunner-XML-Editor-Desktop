@@ -1,4 +1,5 @@
 import { getText } from "../../../service/funcs.js"
+import { funcs } from "../../../service/renderer.js"
 
 const List = {
     props: {
@@ -16,6 +17,7 @@ const List = {
                     v-for='item in items'
                     :item-type='listType'
                     :item='item'
+                    :key='item.path'
                 ></list-item>
             </div>
         </div>
@@ -33,11 +35,27 @@ const List = {
     },
     computed: {
         items() {
-            const array = preload.getList(this.listType, this.srcType)
+            let array = preload.getList(this.listType, this.srcType)
             if (this.srcType === 'main') {
-                return array
+                array = array.map((value) => {
+                    if (this.listType !== 'trucks') {
+                        return value
+                    }
+                    const fileData = funcs.getFileData(value.path)
+                    const dom = new DOMParser().parseFromString(`<root>${fileData}</root>`, 'text/xml')
+                    if (dom.querySelector('Truck').getAttribute('Type') !== 'Trailer') {
+                        return value
+                    }
+                })
+                const out = []
+                for (const item of array) {
+                    if (item) {
+                        out.push(item)
+                    }
+                }
+                return out
             } else {
-                const newArray = []
+                let newArray = []
                 for (const dlcOrMod of array) {
                     for (const item of dlcOrMod.items) {
                         item.dlcName = dlcOrMod.dlcName
@@ -45,7 +63,23 @@ const List = {
                         newArray.push(item)
                     }
                 }
-                return newArray
+                newArray = newArray.map((value) => {
+                    if (this.listType !== 'trucks') {
+                        return value
+                    }
+                    const fileData = funcs.getFileData(value.path)
+                    const dom = new DOMParser().parseFromString(`<root>${fileData}</root>`, 'text/xml')
+                    if (dom.querySelector('Truck').getAttribute('Type') !== 'Trailer') {
+                        return value
+                    }
+                })
+                const out = []
+                for (const item of newArray) {
+                    if (item) {
+                        out.push(item)
+                    }
+                }
+                return out
             }
             
         }

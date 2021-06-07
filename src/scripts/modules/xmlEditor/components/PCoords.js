@@ -2,7 +2,7 @@ const PCoords = {
     props: {
         item: Object
     },
-    inject: ['fileDOM'],
+    inject: ['fileDOM', 'getValue'],
     template: `
         <div>
             <span>X: </span><input class='x-input form-control inline-block' type='number' v-model='x' :disabled='disabled'>
@@ -11,11 +11,7 @@ const PCoords = {
         </div>
     `,
     data() {
-        return {
-            x: this.parseCoords()[0],
-            y: this.parseCoords()[1],
-            z: this.parseCoords()[2]
-        }
+        return this.parseCoords(this.getValue())
     },
     computed: {
         disabled() {
@@ -32,8 +28,9 @@ const PCoords = {
         z(newVal, _) {saveCoords(null, null, newVal)}
     },
     methods: {
-        parseCoords() {
-            return this.item.value.replace('(', '').replace(')', '').replaceAll(' ', '').split(';')
+        parseCoords(value) {
+            const [x, y, z] = value.replace('(', '').replace(')', '').replaceAll(' ', '').split(';')
+            return {x, y, z}
         },
         saveCoords(x=null, y=null, z=null) {
             this.fileDOM.querySelector(this.item.selector).setAttribute(this.item.name, `(${x||this.x}; ${y||this.y}; ${z||this.z})`)

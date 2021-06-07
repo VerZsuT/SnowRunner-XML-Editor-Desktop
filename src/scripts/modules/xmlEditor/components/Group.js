@@ -4,10 +4,11 @@ const Group = {
         tabs: Number,
         parent: String
     },
+    inject: ['filter'],
     template: `
         <div class='accordion-item'>
             <div 
-                class='group accordion-button collapsed'
+                :class='["group", "accordion-button", {collapsed: !Boolean(filter.value)}]'
                 data-bs-toggle='collapse'
                 :data-bs-target='\`#_\${groupContainerId}\`'
                 aria-expanded='false'
@@ -18,7 +19,7 @@ const Group = {
                 </div>
             </div>
             <div
-                class='group-cont accordion-collapse collapse'
+                :class='["group-cont", "accordion-collapse", "collapse", {show: Boolean(filter.value)}]'
                 :aria-labelledby='\`_\${headerId}\`'
                 :data-bs-parent='\`#\${parent}\`'
                 :id='\`_\${groupContainerId}\`'
@@ -28,12 +29,14 @@ const Group = {
                         v-for='param in items.params'
                         :item='param'
                         :tabs='tabs + 1'
+                        :key='param.name'
                     ></p-param>
                     <p-group
                         v-for='groupItem in items.groups'
                         :item='groupItem'
                         :parent='\`_\${groupContentId}\`'
                         :tabs='tabs + 1'
+                        :key='groupItem.groupName'
                     ></p-group>
                 </div>
             </div>
