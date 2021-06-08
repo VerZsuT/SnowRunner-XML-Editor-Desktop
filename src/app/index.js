@@ -29,7 +29,6 @@ const paths = {
     classes: join(__dirname, '..', 'scripts', 'mainTemp', '[media]', 'classes')
 }
 
-
 let stringsFilePath = null
 let relaunchWithoutSaving = false
 
@@ -548,11 +547,11 @@ function getModsTranslation(callback) {
                 stringsFilePath = join(paths.modsTemp, modId, 'texts', fileName)
                 if (existsSync(stringsFilePath)) {
                     const result = parseStrings(readFileSync(stringsFilePath, {encoding: 'utf16le'}).toString())
-                    mods[modId] = result
+                    mods[modId] = Object(result)
                 }
             }
         }
-        translations.mods = mods
+        translations.mods = Object(mods)
         callback()
         loading.close()
     })
@@ -580,23 +579,21 @@ function getIngameTranslation(callback) {
                 ingame = parseStrings(readFileSync(stringsFilePath, {encoding: 'utf16le'}).toString())
             }
         }
-        translations.ingame = ingame
+        translations.ingame = Object(ingame)
         callback()
         loading.close()
     })
 }
 
 function getTranslations() {
-    const RU = JSON.parse(readFileSync(join(paths.translations, 'RU.json')).toString())
-    const EN = JSON.parse(readFileSync(join(paths.translations, 'EN.json')).toString())
-    const DE = JSON.parse(readFileSync(join(paths.translations, 'DE.json')).toString())
-
-    let mods = {}
-    let ingame = {}
-
-    return {RU, EN, DE, ingame, mods}
+    return {
+        RU: JSON.parse(readFileSync(join(paths.translations, 'RU.json')).toString()), 
+        EN: JSON.parse(readFileSync(join(paths.translations, 'EN.json')).toString()), 
+        DE: JSON.parse(readFileSync(join(paths.translations, 'DE.json')).toString()),
+        mods: {},
+        imgame: {}
+    }
 }
-
 
 function showNotification(title, message, callback=null) {
     if (Notification.isSupported()) {

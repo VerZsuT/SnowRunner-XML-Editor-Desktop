@@ -23,9 +23,9 @@ const PCoords = {
         }
     },
     watch: {
-        x(newVal, _) {saveCoords(newVal)},
-        y(newVal, _) {saveCoords(null, newVal)},
-        z(newVal, _) {saveCoords(null, null, newVal)}
+        x(newVal, _) {this.saveCoords(newVal)},
+        y(newVal, _) {this.saveCoords(null, newVal)},
+        z(newVal, _) {this.saveCoords(null, null, newVal)}
     },
     methods: {
         parseCoords(value) {

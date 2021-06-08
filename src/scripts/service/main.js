@@ -9,7 +9,6 @@ module.exports = new Proxy({}, {
                     event.returnValue = {value: result}
                 }
                 catch (error) {
-                    throw error
                     event.returnValue = {error: error}
                 }
             })
