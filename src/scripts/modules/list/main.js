@@ -9,8 +9,8 @@ import Search from './components/Search.js'
 const App = {
     data() {
         return {
-            dlcDisabled: config.settings.disableDLC,
-            modsDisabled: config.settings.disableMods,
+            dlc: config.settings.DLC,
+            mods: config.settings.mods,
             filter: {
                 value: null,
                 set(value) {

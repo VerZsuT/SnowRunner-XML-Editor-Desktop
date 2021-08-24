@@ -25,26 +25,20 @@
             <input type="checkbox" id="dev-mode" class="form-check-input" v-model='devMode'>
             <label for="dev-mode" class="form-check-label">{{ t.DEV_MODE_LABEL }}</label><br>
         
-            <input type="checkbox" id="ignore-updates" class="form-check-input" v-model='ignoreUpdates'>
-            <label for="ignore-updates" class="form-check-label">{{ t.IGNORE_UPDATES_LABEL }}</label><br>
+            <input type="checkbox" id="ignore-updates" class="form-check-input" v-model='updates'>
+            <label for="ignore-updates" class="form-check-label">{{ t.UPDATES_LABEL }}</label><br>
         
-            <input type="checkbox" id="show-winrar-window" class="form-check-input" v-model='showWinRARWindow'>
-            <label for="show-winrar-window" class="form-check-label">{{ t.SHOW_WINRAR_WINDOW_LABEL }}</label><br>
+            <input type="checkbox" id="disable-limits" class="form-check-input" v-model='limits'>
+            <label for="disable-limits" class="form-check-label">{{ t.LIMITS_LABEL }}</label><br>
         
-            <input type="checkbox" id="disable-limits" class="form-check-input" v-model='disableLimits'>
-            <label for="disable-limits" class="form-check-label">{{ t.DISABLE_LIMITS_LABEL }}</label><br>
-        
-            <input type="checkbox" id="disable-dlc" class="form-check-input" v-model='disableDLC'>
-            <label for="disable-dlc" class="form-check-label">{{ t.DISABLE_DLC_LABEL }}</label><br>
+            <input type="checkbox" id="disable-dlc" class="form-check-input" v-model='DLC'>
+            <label for="disable-dlc" class="form-check-label">{{ t.DLC_LABEL }}</label><br>
 
-            <input type="checkbox" id="disable-mods" class="form-check-input" v-model='disableMods'>
-            <label for="disable-mods" class="form-check-label">{{ t.DISABLE_MODS_LABEL }}</label><br>
+            <input type="checkbox" id="disable-mods" class="form-check-input" v-model='mods'>
+            <label for="disable-mods" class="form-check-label">{{ t.MODS_LABEL }}</label><br>
         
-            <input type="checkbox" id="disable-editor-label" class="form-check-input" v-model='disableEditorLabel'>
-            <label for="disable-editor-label" class="form-check-label">{{ t.DISABLE_EDITOR_LABEL_LABEL }}</label><br>
-        
-            <input type="checkbox" id="hide-reset-button" class="form-check-input" v-model='hideResetButton'>
-            <label for="hide-reset-button" class="form-check-label">{{ t.HIDE_RESET_BUTTON_LABEL }}</label><br>
+            <input type="checkbox" id="hide-reset-button" class="form-check-input" v-model='resetButton'>
+            <label for="hide-reset-button" class="form-check-label">{{ t.RESET_BUTTON_LABEL }}</label><br>
         
             <button class="btn btn-primary" id="save-to-config" @click='save'>{{ t.SAVE_BUTTON }}</button>
         

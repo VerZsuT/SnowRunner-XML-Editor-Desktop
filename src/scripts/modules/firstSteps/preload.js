@@ -8,9 +8,6 @@ class Preload {
     #openInitialDialog = () => ipcRenderer.sendSync('function_openInitialDialog_call').value
 
     errorHandler = (text) => alert(getText(text))
-    isModsSupport = () => {
-        return {profile: process.env.USERPROFILE, existed: existsSync(paths.mods)}
-    }
 
     get gameFolder() {
         const result = this.#openDialog()

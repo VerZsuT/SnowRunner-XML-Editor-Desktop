@@ -63,7 +63,7 @@ const App = {
                 item.removeAttribute('SXMLE_ID')
             }
 
-            const xmlString = `${config.settings.disableEditorLabel? '' : copyrightText}${serializer.serializeToString(this.fileDOM).replace('<root>', '').replace('</root>', '')}`
+            const xmlString = `${copyrightText}${serializer.serializeToString(this.fileDOM).replace('<root>', '').replace('</root>', '')}`
             funcs.setFileData(this.filePath, xmlString)
             funcs.saveToOriginal(this.currentMod)
             window.close()

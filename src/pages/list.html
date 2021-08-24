@@ -9,12 +9,12 @@
         <div id="main">
             <search></search>
             <list
-                v-if='!modsDisabled'
+                v-if='mods'
                 src-type='mods'
             ></list>
 
             <list 
-                v-if='!dlcDisabled'
+                v-if='dlc'
                 src-type='dlc'
             ></list>
 

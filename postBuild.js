@@ -23,7 +23,7 @@ console.log('[POST_BUILD][LOG]................')
 const config = JSON.parse(readFileSync(paths.config))
 config.lang = 'EN'
 config.buildType = 'prod'
-config.settings.hideResetButton = true
+config.settings.resetButton = false
 writeFileSync(paths.config, JSON.stringify(config))
 rmSync(join(paths.vue, 'vue.esm-browser.js'))
 renameSync(join(paths.vue, 'vue.esm-browser.prod.js'), join(paths.vue, 'vue.esm-browser.js'))

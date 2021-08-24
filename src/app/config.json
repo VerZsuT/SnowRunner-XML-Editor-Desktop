@@ -1,28 +1,27 @@
 {
-    "version": "0.6.2a",
+    "version": "0.6.3",
     "lang": "EN",
     "buildType": "dev",
     "paths": {
         "initial": null,
         "dlc": null,
         "classes": null,
-        "game": null,
         "mods": null
     },
     "settings": {
-        "ignoreUpdates": false,
-        "showWinRARWindow": false,
-        "disableLimits": false,
-        "disableDLC": false,
-        "disableMods": false,
-        "disableEditorLabel": false,
-        "hideResetButton": false,
+        "updates": true,
+        "limits": true,
+        "DLC": true,
+        "mods": true,
+        "resetButton": false,
         "devMode": false
     },
     "sums": {
         "initial": null,
         "mods": {}
     },
-    "modsList": {},
+    "modsList": {
+        "length": 0
+    },
     "dlcList": []
 }

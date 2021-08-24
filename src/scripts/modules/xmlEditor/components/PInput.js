@@ -67,12 +67,12 @@ const PInput = {
             return this.item.type === 'number'
         },
         min() {
-            if (this.item.min !== '-∞' && !config.settings.disableLimits) {
+            if (this.item.min !== '-∞' && config.settings.limits) {
                 return this.item.min || 0
             }
         },
         max() {
-            if (this.item.max && !config.settings.disableLimits) {
+            if (this.item.max && config.settings.limits) {
                 return this.item.max
             }
         },

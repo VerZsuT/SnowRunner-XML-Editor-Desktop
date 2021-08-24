@@ -12,10 +12,13 @@ const GameFolder = {
             {{ manual? t.INITIAL_LABEL : t.GAME_FOLDER_LABEL }}
         </label><br>
         <input type='text' class='form-control' :style='styles.input' :title='gameFolder' :value='gameFolder' disabled>
-        <button class='btn btn-secondary btn-sm' @click='getFolder'>
+        <button class='btn btn-primary btn-sm' @click='getFolder'>
             {{ t.OPEN_BUTTON }}
         </button><br>
-        <label class='form-label'>
+        <label 
+            class='form-label'
+            :title='t.AUTO_INITIAL_TITLE'
+        >
             {{ t.MANUAL_INITIAL }}
         </label>
         <input type='checkbox' class='form-check-input' :style='styles.checkbox' v-model='manual'><br>

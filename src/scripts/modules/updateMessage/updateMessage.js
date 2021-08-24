@@ -29,7 +29,7 @@ const App = {
             funcs.update(this.version)
         },
         ignore() {
-            config.settings.ignoreUpdates = true
+            config.settings.updates = false
             window.close()
         }
     }

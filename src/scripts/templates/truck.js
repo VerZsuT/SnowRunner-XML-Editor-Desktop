@@ -12,9 +12,9 @@ const desc = {
 		DE: 'Beschreibung von Auto im Spiel (oder Schlüssel Übersetzung)'
 	},
 	BackSteerSpeed: {
-		RU: 'Скорость, с которой руль возрващается в исходное положение',
-		EN: 'The speed at which the steering wheel returns to its original position',
-		DE: 'Die Geschwindigkeit, mit der das Lenkrad in die Ausgangsposition zurückkehrt'
+		RU: 'Скорость, с которой колёса возвращаются на исходную позицию после поворота',
+		EN: 'The speed at which the wheels return to their original position after turning',
+		DE: 'Die Geschwindigkeit, mit der die Räder nach dem Abbiegen in die Ausgangsposition zurückkehren'
 	},
 	SteerSpeed: {
 		RU: 'Скорость, с которой поворачивается руль.',
@@ -82,14 +82,14 @@ const desc = {
 		DE: 'Standard-Motor-ID'
 	},
 	ExhaustStartTime: {
-		RU: 'Время с момента нажатия кнопки запуска двигателя до начала выхлопа',
-		EN: 'Time from pressing the engine start button to starting the exhaust',
-		DE: 'Zeit ab dem Drücken der Motorstarttaste bis zum Start der Abgasanlage'
+		RU: 'Время начала визуализации выхлопа.',
+		EN: 'The start time of the exhaust visualization.',
+		DE: 'Startzeit Visualisierung Auspuff.'
 	},
 	EngineStartDelay: {
-		RU: 'Время с момента нажатия кнопки и до запуска двигателя',
-		EN: 'Time from pressing the button to starting the engine',
-		DE: 'Zeit vom Drücken der Taste bis zum Starten des Motors'
+		RU: 'Задержка после нажатия "включить двигатель"',
+		EN: 'Delay after pressing "turn on the engine"',
+		DE: 'Verzögerung nach dem Drücken von "Motor einschalten"'
 	},
 	DamageCapacity: {
 		RU: 'Запас прочности бензобака',
@@ -568,7 +568,7 @@ const truck = {
 			UIDESC: 'Описание',
 			UINAME: 'Название',
 			CONTROL_GROUP_NAME: 'Управление',
-			BACK_STEER_SPEED: 'Скорость возврата руля',
+			BACK_STEER_SPEED: 'Скорость возврата колёс',
 			STEER_SPEED: 'Скорость руля',
 			WINCH_GROUP_NAME: 'Лебёдка',
 			DEFAULT_WINCH: 'Лебёдка по умолчанию',

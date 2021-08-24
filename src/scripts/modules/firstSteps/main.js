@@ -6,14 +6,12 @@ import { getText } from '../../service/funcs.js'
 import GameFolder from './components/GameFolder.js'
 import Language from './components/Language.js'
 import Save from './components/Save.js'
-import Mods from './components/Mods.js'
 
 const App = {
     components: {
         GameFolder,
         Language,
-        Save,
-        Mods
+        Save
     },
     data() {
         return {
@@ -23,14 +21,7 @@ const App = {
                 }
             }),
             gameFolder: null,
-            pathToInitial: null,
-            modsSupport: preload.isModsSupport(),
-            enableMods: false
-        }
-    },
-    computed: {
-        disableModsCheckbox() {
-            return !(this.modsSupport.profile && this.modsSupport.existed)
+            pathToInitial: null
         }
     }
 }

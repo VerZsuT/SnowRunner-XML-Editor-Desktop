@@ -14,7 +14,6 @@ const paths = {
     updateMap: 'https://verzsut.github.io/sxmle_updater/updateMap.json',
     root: join(__dirname, '..', '..'),
     config: join(__dirname, 'config.json'),
-    mods: join(process.env.USERPROFILE, 'Documents', 'My Games', 'SnowRunner', 'base', 'Mods', '.modio', 'mods'),
     icon: join(__dirname, '..', 'icons', 'favicon.png'),
     preload: join(__dirname, 'mainPreload.js'),
     backupFolder: join(__dirname, '..', 'backups'),
@@ -48,7 +47,7 @@ initMain()
 function init() {
     if (!config.paths.initial) {
         openFirstSteps()
-        if (!config.settings.ignoreUpdates) {
+        if (config.settings.updates) {
             checkUpdate()
         }
     }
@@ -59,14 +58,14 @@ function init() {
                     config.paths.dlc = paths.dlc
                     config.paths.classes = paths.classes
                     config.paths.mods = paths.modsTemp
-                    if (!config.settings.disableDLC) {
+                    if (config.settings.DLC) {
                         initDLC()
                     }
-                    if (!config.settings.disableMods) {
+                    if (config.settings.mods) {
                         initMods(() => {
                             getModsTranslation(() => {
                                 openMain()
-                                if (!config.settings.ignoreUpdates) {
+                                if (config.settings.updates) {
                                     checkUpdate()
                                 }
                             })
@@ -74,7 +73,7 @@ function init() {
                     }
                     else {
                         openMain()
-                        if (!config.settings.ignoreUpdates) {
+                        if (config.settings.updates) {
                             checkUpdate()
                         }
                     }
@@ -124,7 +123,7 @@ function initMain() {
     main.saveToOriginal = function(modId) {
         if (modId) {
             try {
-                execSync(`WinRAR f${config.settings.showWinRARWindow? '' : ' -ibck'} "${config.modsList[modId].path}" "${join(paths.modsTemp, modId)}\\" -r -ep1`, {
+                execSync(`WinRAR f -ibck -inul "${config.modsList[modId].path}" "${join(paths.modsTemp, modId)}\\" -r -ep1`, {
                     cwd: paths.winrar
                 })
                 saveModSum(modId, config.modsList[modId].path)
@@ -134,7 +133,7 @@ function initMain() {
         }
         else {
             try {
-                execSync(`WinRAR f${config.settings.showWinRARWindow? '' : ' -ibck'} "${config.paths.initial}" "${paths.mainTemp}\\" -r -ep1`, {
+                execSync(`WinRAR f -ibck -inul "${config.paths.initial}" "${paths.mainTemp}\\" -r -ep1`, {
                     cwd: paths.winrar
                 })
                 saveInitialSum()
@@ -441,80 +440,53 @@ function initDLC() {
 }
 
 function initMods(callback) {
-    if (!existsSync(paths.mods)) {
+    if (config.modsList.length === 0) {
+        callback()
         return
     }
-    const modDirs = readdirSync(paths.mods)
-    let counter = 0
-    let loading = null
 
-    if (!config.settings.showWinRARWindow) {
-        loading = openDownload(true)
-        loading.once('show', () => {
-            loading.webContents.postMessage('fileName', getText('[LOADING_MODS]'))
-            setTimeout(main, 100)
-        })
-    }
-    else {
-        main()
-    }
+    let counter = config.modsList.length
+
+    const loading = openDownload(true)
+    loading.once('show', () => {
+        loading.webContents.postMessage('fileName', getText('[LOADING_MODS]'))
+        setTimeout(main, 100)
+    })
 
     function main() {
-        for (const modDir of modDirs) {
-            if (modDir === 'SnowRunnerXMLEditor') {
+        for (const modDirName in config.modsList) {
+            const mod = config.modsList[modDirName]
+            if (typeof mod === 'number') {
                 continue
             }
-
-            const items = readdirSync(join(paths.mods, modDir))
-    
-            if (items.length < 2) {
-                continue
+            if (!existsSync(mod.path)) {
+                delete config.modsList[modDirName]
+                delete config.sums.mods[modDirName]
+                config.modsList.length--
             }
 
-            for (const item of items) {
-                if (config.sums.mods[modDir] && config.sums.mods[modDir].name !== item ||
-                    lstatSync(join(paths.mods, modDir, item)).isDirectory() ||
-                    extname(item) !== '.pak' ||
-                    item === 'pc.pak' || 
-                    item.match(/(.*?_pc.pak)/)) {
-                    continue
-                }
-
-                const absolutePath = join(paths.mods, modDir, item)
-                const hash = getHash(absolutePath)
-
-                if (hash === config.sums.mods[modDir]) {
-                    break
-                }
-                else {
-                    counter++
-                    unpackMod(absolutePath, () => {
-                        config.sums.mods[modDir] = hash
-                        if (existsSync(join(paths.modsTemp, modDir))) {
-                            pushToList(item, absolutePath)
-                        }
-                        else {
-                            counter--
-                            if (counter === 0) {
-                                callback()
-                                if (loading) {
-                                    loading.close()
-                                }
-                            }
-                        }
-                    })
-                }
-            }
-            
-            function pushToList(name, path) {
-                config.modsList[modDir] = {name, path}
+            const hash = getHash(mod.path)
+            if (hash === config.sums.mods[modDirName]) {
                 counter--
-                if (counter === 0) {
-                    callback()
-                    if (loading) {
-                        loading.close()
+                continue
+            }
+            else {
+                unpackMod(mod.path, () => {
+                    if (!existsSync(join(paths.modsTemp, modDirName, 'classes'))) {
+                        delete config.modsList[modDirName]
+                        delete config.sums.mods[modDirName]
+                        config.modsList.length--
+                    } else {
+                        config.sums.mods[modDirName] = hash
                     }
-                }
+                    counter--
+                    if (counter === 0) {
+                        callback()
+                        if (loading) {
+                            loading.close()
+                        }
+                    }
+                })
             }
         }
         if (counter === 0) {
@@ -527,7 +499,7 @@ function initMods(callback) {
 }
 
 function getModsTranslation(callback) {
-    loading = openDownload(true)
+    const loading = openDownload(true)
     loading.once('show', () => {
         loading.webContents.postMessage('fileName', getText('[LOADING_TRANSLATION]'))
         let mods = {}
@@ -650,7 +622,7 @@ function openMain() {
 }
 
 function openFirstSteps() {
-    const wind = createWindow('firstSteps.html', {width: 550, height: 550})
+    const wind = createWindow('firstSteps.html', {width: 550, height: 500})
     firstStepsWindow = wind
     wind.once('close', () => {
         app.quit()
@@ -752,24 +724,22 @@ function openUpdateMessage(version) {
 }
 
 function unpackFiles(callback, popup=false) {
-    let loading = null
-    if (!config.settings.showWinRARWindow) {
-        loading = openDownload(popup)
-        loading.once('show', () => {
-            loading.webContents.postMessage('fileName', getText('[UNPACKING]'))
-        })
-    }
+    const loading = openDownload(popup)
+    loading.once('show', () => {
+        loading.webContents.postMessage('fileName', getText('[UNPACKING]'))
+    })
+
     if (existsSync(paths.mainTemp)) {
         rmSync(paths.mainTemp, {
             recursive: true
         })
     }
     mkdirSync(paths.mainTemp)
-    exec(`WinRAR x${config.settings.showWinRARWindow? '' : ' -ibck'} "${config.paths.initial}" @unpack-list.lst "${paths.mainTemp}\\"`, {
+    exec(`WinRAR x -ibck -inul "${config.paths.initial}" @unpack-list.lst "${paths.mainTemp}\\"`, {
         cwd: paths.winrar
     }).once('close', () => {
         callback()
-        if (!config.settings.showWinRARWindow && !loading.isDestroyed()) {
+        if (!loading.isDestroyed()) {
             loading.close()
         }
     })
@@ -788,7 +758,7 @@ function unpackMod(absolutePath, callback) {
         })
     }
     mkdirSync(modDir)
-    exec(`WinRAR x${config.settings.showWinRARWindow? '' : ' -ibck'} "${absolutePath}" @unpack-mod-list.lst "${modDir}\\"`, {
+    exec(`WinRAR x -ibck -inul "${absolutePath}" @unpack-mod-list.lst "${modDir}\\"`, {
         cwd: paths.winrar
     }).once('close', () => {
         callback()
@@ -894,19 +864,18 @@ function resetConfig(withoutReloading=false) {
         initial: null,
         dlc: null,
         classes: null,
-        game: null,
         mods: null
     }
     config.dlcList = []
-    config.modsList = {}
+    config.modsList = {
+        length: 0
+    }
     config.settings = {
-        ignoreUpdates: false,
-        showWinRARWindow: false,
-        disableLimits: false,
-        disableDLC: false,
-        disableMods: false,
-        disableEditorLabel: false,
-        hideResetButton: false,
+        updates: true,
+        limits: true,
+        DLC: true,
+        mods: true,
+        resetButton: false,
         devMode: false
     }
     config.sums = {
@@ -1023,7 +992,7 @@ function getMainMenu() {
                 },
                 { role: 'separator' },
                 ...(() => {
-                    if (!config.settings.hideResetButton) {
+                    if (config.settings.resetButton) {
                         return [{
                             label: getText('[RESET_MENU_ITEM_LABEL]'),
                             role: 'reset-config'

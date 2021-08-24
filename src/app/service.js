@@ -86,10 +86,7 @@ function openDialog() {
 
 
 function getHash(path) {
-    const shaHash = createHash('sha1')
-
-    shaHash.update(readFileSync(path))
-    return shaHash.digest('hex')
+    return createHash('sha1').update(readFileSync(path)).digest('hex')
 }
 
 function createDirForPath(path) {

@@ -20,13 +20,11 @@ const App = {
             gameFolder: config.paths.initial,
             lang: config.lang,
             devMode: config.settings.devMode,
-            ignoreUpdates: config.settings.ignoreUpdates,
-            showWinRARWindow: config.settings.showWinRARWindow,
-            disableLimits: config.settings.disableLimits,
-            disableDLC: config.settings.disableDLC,
-            disableMods: config.settings.disableMods,
-            disableEditorLabel: config.settings.disableEditorLabel,
-            hideResetButton: config.settings.hideResetButton
+            updates: config.settings.updates,
+            limits: config.settings.limits,
+            DLC: config.settings.DLC,
+            mods: config.settings.mods,
+            resetButton: config.settings.resetButton
         }
     },
     watch: {
@@ -42,13 +40,11 @@ const App = {
             config.lang = this.lang
             config.settings = {
                 devMode: this.devMode,
-                ignoreUpdates: this.ignoreUpdates,
-                showWinRARWindow: this.showWinRARWindow,
-                disableLimits: this.disableLimits,
-                disableDLC: this.disableDLC,
-                disableMods: this.disableMods,
-                disableEditorLabel: this.disableEditorLabel,
-                hideResetButton: this.hideResetButton
+                updates: this.updates,
+                limits: this.limits,
+                DLC: this.DLC,
+                mods: this.mods,
+                resetButton: this.resetButton
             }
         
             if (this.saveBackup) {

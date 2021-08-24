@@ -5,9 +5,7 @@ import toast from '../toast.js'
 const Save = {
     props: {
         t: Object,
-        pathToInitial: String,
-        modsSupport: Object,
-        disableMods: Boolean
+        pathToInitial: String
     },
     template: `
         <button class='btn btn-primary' :style='style' @click='save'>
@@ -29,9 +27,6 @@ const Save = {
                 return
             }
         
-            if (!this.modsSupport.profile || !this.modsSupport.existed || this.disableMods) {
-                config.settings.disableMods = true
-            }
             config.paths.initial = this.pathToInitial
             funcs.saveInitialSum()
             funcs.saveBackup(true)

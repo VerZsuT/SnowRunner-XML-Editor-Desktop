@@ -1,11 +1,17 @@
 require('../../../app/mainPreload.js')
 const { fromDir } = require('../../../app/service.js')
-const { join } = require('path')
+const { join, dirname, basename } = require('path')
 const { existsSync } = require('fs')
+
+const openInitialDialog = () => ipcRenderer.sendSync('function_openInitialDialog_call').value
 
 window.preload = {
     exists(path) {
         return existsSync(join(__dirname, path))
+    },
+    getModPak() {
+        const path = openInitialDialog()[0]
+        return {id: basename(dirname(path)), path: path, name: basename(path)}
     },
     getList: (listType, from=null) => {
         if (from === 'dlc') {
@@ -32,6 +38,9 @@ window.preload = {
         else if (from === 'mods') {
             const array = []
             for (const modId in config.modsList) {
+                if (modId === 'length') {
+                    continue
+                }
                 const item = config.modsList[modId]
                 if (listType === 'trucks') {
                     array.push({id: modId, name: item.name, items: fromDir(join(paths.modsTemp, modId, 'classes', 'trucks')) || []})

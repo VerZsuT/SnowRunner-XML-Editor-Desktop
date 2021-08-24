@@ -19,19 +19,9 @@
                     v-model:path-to-initial='pathToInitial'
                 ></game-folder>
 
-                <label class="form-label" for="enableMods">{{ `${t.ENABLE_MODS_LABEL} (${t.EXPERIMENTAL})` }}</label>
-                <input type='checkbox' class="form-check-input" :disabled='disableModsCheckbox' id='enableMods' v-model='enableMods'><br>
-
-                <mods
-                    :t='t'
-                    :mods-support='modsSupport'
-                ></mods>
-
                 <save
                     :t='t'
                     :path-to-initial='pathToInitial'
-                    :mods-support='modsSupport'
-                    :disable-mods='!enableMods'
                 ></save>
             </div>
         </div>

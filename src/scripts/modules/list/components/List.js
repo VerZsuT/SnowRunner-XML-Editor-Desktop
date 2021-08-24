@@ -8,7 +8,16 @@ const List = {
     template: `
         <div>
             <span class="list-title h2">
-                <span v-if='srcType === "mods"'>{{ t.MODS_LIST_TITLE }}</span>
+                <span v-if='srcType === "mods"'>
+                    {{ t.MODS_LIST_TITLE }}
+                    <button
+                        class='btn btn-primary'
+                        @click='addMod'
+                        style='padding: 0 10px;'
+                    >
+                        {{ t.MODS_ADD_BUTTON }}
+                    </button>
+                </span>
                 <span v-if='srcType === "dlc"'>{{ t.DLC_LIST_TITLE }}</span>
                 <span v-if='srcType === "main"'>{{ t.MAIN_LIST_TITLE }}</span>
             </span>
@@ -31,6 +40,16 @@ const List = {
             }),
             listType: local.listType,
             isArray: this.srcType !== 'main'
+        }
+    },
+    methods: {
+        addMod() {
+            const result = preload.getModPak()
+            if (!config.modsList[result.id]) {
+                config.modsList.length++
+            }
+            config.modsList[result.id] = {name: result.name, path: result.path}
+            funcs.reload()
         }
     },
     computed: {
