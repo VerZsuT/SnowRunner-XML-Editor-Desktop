@@ -11,6 +11,13 @@ body {
     display: none;
 }
 
+h1#error {
+    text-align: center;
+    color: red;
+    font-weight: bold;
+    display: none;
+}
+
 #menu {
     display: flex;
     position: fixed;

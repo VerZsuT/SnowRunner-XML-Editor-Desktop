@@ -83,12 +83,13 @@ const List = {
                     }
                 }
                 newArray = newArray.map((value) => {
-                    if (this.listType !== 'trucks') {
-                        return value
-                    }
                     const fileData = funcs.getFileData(value.path)
                     const dom = new DOMParser().parseFromString(`<root>${fileData}</root>`, 'text/xml')
-                    if (dom.querySelector('Truck').getAttribute('Type') !== 'Trailer') {
+                    if (this.listType === 'trailers' && dom.querySelector('Truck') && dom.querySelector('Truck').getAttribute('Type') === 'Trailer') {
+                        return value
+                    } else if (this.listType === 'trucks' && dom.querySelector('Truck') && dom.querySelector('Truck').getAttribute('Type') !== 'Trailer') {
+                        return value
+                    } else if (this.listType === 'cargo') {
                         return value
                     }
                 })

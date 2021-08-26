@@ -41,10 +41,10 @@ function parseStrings(data) {
     return strings
 }
 
-function fromDir(startPath, onlyDirs=false, extension='.xml') {
-    if (!existsSync(startPath)) return
+function fromDir(startPath, onlyDirs=false, extension='.xml', inner=false) {
+    if (!existsSync(startPath)) return []
 
-    const array = []
+    let array = []
     const files = readdirSync(startPath)
     for(let i = 0; i < files.length; i++) {
         const filePath = join(startPath, files[i])
@@ -59,6 +59,9 @@ function fromDir(startPath, onlyDirs=false, extension='.xml') {
                     path: filePath
                 })
             }
+        }
+        if (stat.isDirectory() && inner) {
+            array = [...array, ...fromDir(filePath, false, extension, true)]
         }
         else if (files[i].indexOf(extension) >= 0) {
             array.push({

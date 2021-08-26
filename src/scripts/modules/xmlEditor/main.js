@@ -2,7 +2,7 @@ import '../../bootstrap/bootstrap.bundle.min.js'
 import '../../service/menu.js'
 import { createApp } from '../../vue/vue.esm-browser.js'
 
-import { prettify, getIngameText } from '../../service/funcs.js'
+import { prettify, getIngameText, getText } from '../../service/funcs.js'
 import { funcs } from '../../service/renderer.js'
 import Params from './components/Params.js'
 import Param from './components/Param.js'
@@ -56,17 +56,20 @@ const App = {
     },
     methods: {
         save() {
-            const serializer = new XMLSerializer()
-            const copyrightText = `<!--\n\tEdited by: SnowRunner XML Editor Desktop\n\tVersion: v${config.version}\n\tAuthor: VerZsuT\n\tSite: https://verzsut.github.io/SnowRunner-XML-Editor-Desktop/\n-->\n`
+            document.querySelector('#title').innerText = getText('SAVING_MESSAGE')
+            setTimeout(() => {
+                const serializer = new XMLSerializer()
+                const copyrightText = `<!--\n\tEdited by: SnowRunner XML Editor Desktop\n\tVersion: v${config.version}\n\tAuthor: VerZsuT\n\tSite: https://verzsut.github.io/SnowRunner-XML-Editor-Desktop/\n-->\n`
 
-            for (const item of this.fileDOM.querySelectorAll('[SXMLE_ID]')) {
-                item.removeAttribute('SXMLE_ID')
-            }
+                for (const item of this.fileDOM.querySelectorAll('[SXMLE_ID]')) {
+                    item.removeAttribute('SXMLE_ID')
+                }
 
-            const xmlString = `${copyrightText}${serializer.serializeToString(this.fileDOM).replace('<root>', '').replace('</root>', '')}`
-            funcs.setFileData(this.filePath, xmlString)
-            funcs.saveToOriginal(this.currentMod)
-            window.close()
+                const xmlString = `${copyrightText}${serializer.serializeToString(this.fileDOM).replace('<root>', '').replace('</root>', '')}`
+                funcs.setFileData(this.filePath, xmlString)
+                funcs.saveToOriginal(this.currentMod)
+                window.close()
+            }, 100)
         },
         back() {
             window.close()
@@ -88,6 +91,12 @@ function getDOM() {
 
     const parser = new DOMParser()
     const dom = parser.parseFromString(`<root>${fileData}</root>`, 'text/xml')
+    if (dom.querySelector('parsererror')) {
+        const error = document.querySelector('#error')
+        error.innerText = getText(error.innerText)
+        error.style.display = 'block'
+        throw new Error('Ошибка распознания файла')
+    }
 
     for (const child of dom.querySelector('root').childNodes) {
         if (child.nodeType === 8) {

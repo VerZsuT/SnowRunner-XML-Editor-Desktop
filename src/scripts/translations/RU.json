@@ -1,6 +1,8 @@
 {
 	"AUTO_INITIAL_TITLE": "Автоматичекий выбор initial.pak работает только в версии от Epic Games.",
 	"CLOSE": "Закрыть",
+	"PARSE_FILE_ERROR": "Файл не может быть распознан",
+	"SAVING_MESSAGE": "Сохранение...",
 	"UPDATE": "Обновить",
 	"IGNORE": "Игнорировать",
 	"MODS_LIST_TITLE": "Модификации",

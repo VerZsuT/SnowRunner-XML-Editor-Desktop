@@ -43,13 +43,13 @@ window.preload = {
                 }
                 const item = config.modsList[modId]
                 if (listType === 'trucks') {
-                    array.push({id: modId, name: item.name, items: fromDir(join(paths.modsTemp, modId, 'classes', 'trucks')) || []})
+                    array.push({id: modId, name: item.name, items: fromDir(join(paths.modsTemp, modId, 'classes', 'trucks'), false, '.xml', true)})
                 }
                 else if (listType === 'trailers') {
-                    array.push({id: modId, name: item.name, items: fromDir(join(paths.modsTemp, modId, 'classes', 'trucks', 'trailers')) || []})
+                    array.push({id: modId, name: item.name, items: fromDir(join(paths.modsTemp, modId, 'classes', 'trucks'), false, '.xml', true)})
                 }
                 else if (listType === 'cargo') {
-                    array.push({id: modId, name: item.name, items: fromDir(join(paths.modsTemp, modId, 'classes', 'trucks', 'cargo')) || []})
+                    array.push({id: modId, name: item.name, items: fromDir(join(paths.modsTemp, modId, 'classes', 'trucks', 'cargo'))})
                 }
                 else {
                     throw new Error('[UNDEFINED_LIST_TYPE]')

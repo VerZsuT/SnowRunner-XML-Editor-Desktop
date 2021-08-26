@@ -3,6 +3,8 @@
 	"CLOSE": "Schließen",
 	"UPDATE": "Aktualisieren",
 	"IGNORE": "Ignorieren",
+	"SAVING_MESSAGE": "Speichern...",
+	"PARSE_FILE_ERROR": "Datei kann nicht erkannt werden",
 	"MODS_LIST_TITLE": "Modifikationen",
 	"SEARCH": "Suche",
 	"LOADING_MODS": "Mods werden geladen",
