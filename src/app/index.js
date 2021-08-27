@@ -428,9 +428,10 @@ function checkPaths() {
         showNotification(getText('[ERROR]'), getText('[CLASSES_NOT_FOUND]'))
         success = false
     }
-    else if (!existsSync(paths.dlc)) {
+    else if (config.settings.DLC && !existsSync(paths.dlc)) {
         showNotification(getText('[ERROR]'), getText('[DLC_FOLDER_NOT_FOUND]'))
-        success = false
+        config.settings.DLC = false
+        success = true
     }
     return success
 }
