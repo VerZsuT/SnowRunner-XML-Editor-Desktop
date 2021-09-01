@@ -78,7 +78,7 @@ div.search {
     margin-left: -150px;
 }
 
-div.search > label[for='search'] {
+div.search>label[for='search'] {
     font-size: 0.7em;
     position: relative;
     bottom: 1.5px;
@@ -96,5 +96,5 @@ div.search > label[for='search'] {
     outline-color: transparent !important;
     outline-width: 0 !important;
     outline-style: none !important;
-    box-shadow: 0 0 0 0 rgba(0,123,255,0) !important;
+    box-shadow: 0 0 0 0 rgba(0, 123, 255, 0) !important;
 }

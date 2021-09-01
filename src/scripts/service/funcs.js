@@ -26,7 +26,7 @@ export function prettify(text) {
  * @param {object} attrs - атрибуты нового элемента.
  * @returns созданный объект.
  */
-export function create(tag, attrs={}) {
+export function create(tag, attrs = {}) {
     const element = document.createElement(tag)
 
     for (const attrName in attrs) {
@@ -55,18 +55,17 @@ export function create(tag, attrs={}) {
                     if (Array.isArray(listenerObj)) {
                         for (const listener of listenerObj) {
                             if (typeof listenerObj === 'function') {
-                                element.addEventListener(eventName, listener)        
+                                element.addEventListener(eventName, listener)
                             }
                         }
-                    }
-                    else if (typeof listenerObj === 'function') {
+                    } else if (typeof listenerObj === 'function') {
                         element.addEventListener(eventName, listenerObj)
                     }
                 }
                 continue
             default:
                 element.setAttribute(attrName, attrValue)
-                continue        
+                continue
         }
     }
 
@@ -98,7 +97,7 @@ export function getAll(selector) {
  * @param {string} key - ключ.
  * @param {true} returnKey - возвращать ли ключ в случае отсутвия его в объекте перевода.
  */
-export function getText(key, returnKey=true) {
+export function getText(key, returnKey = true) {
     const translation = getTranslation(language)
     if (translation) {
         let result = translation[removePars(key)]
@@ -121,16 +120,15 @@ export function getText(key, returnKey=true) {
  * @param {string} name - имя шаблона, откуда будет взял локальный перевод.
  */
 export function getTextFromTemplate(key, name) {
-    const translation = getTemplate(name).translation 
+    const translation = getTemplate(name).translation
     if (translation[language]) {
         return translation[language][removePars(key)] || getText(key)
-    }
-    else {
+    } else {
         return getText(key)
-    }   
+    }
 }
 
-export function getIngameText(key, modId=null) {
+export function getIngameText(key, modId = null) {
     let value
     if (modId && translations.mods[modId]) {
         value = translations.mods[modId][key]
@@ -165,7 +163,7 @@ export function getTemplate(name) {
  * @param {string} text - текст option элемента.
  * @param {string} value - значение option элемента.
  */
-export function addOption(element, text, value=null) {
+export function addOption(element, text, value = null) {
     element.options.add(new Option(text, value || text))
 }
 

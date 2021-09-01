@@ -1,5 +1,9 @@
-import { getText } from "../../../service/funcs.js"
-import { funcs } from "../../../service/renderer.js"
+import {
+    getText
+} from "../../../service/funcs.js"
+import {
+    funcs
+} from "../../../service/renderer.js"
 
 const List = {
     props: {
@@ -48,8 +52,13 @@ const List = {
             if (!config.modsList[result.id]) {
                 config.modsList.length++
             }
-            config.modsList[result.id] = {name: result.name, path: result.path}
-            funcs.reload()
+            config.modsList[result.id] = {
+                name: result.name,
+                path: result.path
+            }
+            if (confirm(getText('[RELAUNCH_PROMPT]'))) {
+                funcs.reload()
+            }
         }
     },
     computed: {
@@ -101,7 +110,7 @@ const List = {
                 }
                 return out
             }
-            
+
         }
     }
 }

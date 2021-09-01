@@ -1,18 +1,21 @@
-import { getText } from './funcs.js'
+import {
+    getText
+} from './funcs.js'
 
 function alertError(error) {
     alert(getText(`${error}`.replace('Error: ', '')))
 }
 
-export const props = new Proxy({errorHandler: alertError}, {
+export const props = new Proxy({
+    errorHandler: alertError
+}, {
     get(target, name) {
         const result = ipcRenderer.sendSync(`property_${name}_get`)
 
         if (result.error) {
             target.errorHandler(result.error)
             return null
-        }
-        else {
+        } else {
             return result.value
         }
     },
@@ -26,23 +29,23 @@ export const props = new Proxy({errorHandler: alertError}, {
         if (result.error) {
             target.errorHandler(result.error)
             return false
-        }
-        else {
+        } else {
             return true
         }
     }
 })
 
-export const funcs = new Proxy({errorHandler: alertError}, {
+export const funcs = new Proxy({
+    errorHandler: alertError
+}, {
     get(target, name) {
         return new Proxy((funcName, args) => {
             const result = ipcRenderer.sendSync(`function_${funcName}_call`, ...args)
-        
+
             if (result.error) {
                 target.errorHandler(result.error)
                 return null
-            }
-            else {
+            } else {
                 return result.value
             }
         }, {

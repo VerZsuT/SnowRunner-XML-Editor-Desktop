@@ -1,7 +1,11 @@
-import { createApp } from '../../vue/vue.esm-browser.js'
+import {
+    createApp
+} from '../../vue/vue.esm-browser.js'
 import '../../service/shortMenu.js'
 import '../../bootstrap/bootstrap.bundle.min.js'
-import { getText } from '../../service/funcs.js'
+import {
+    getText
+} from '../../service/funcs.js'
 
 import GameFolder from './components/GameFolder.js'
 import Language from './components/Language.js'

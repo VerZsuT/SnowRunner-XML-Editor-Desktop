@@ -1,11 +1,46 @@
 const https = require('https')
 const dns = require('dns')
-const { exec, execSync } = require('child_process')
-const { app, shell, BrowserWindow, Notification } = require('electron')
-const { readFileSync, readdirSync, lstatSync, existsSync, writeFileSync, unlinkSync, copyFileSync, mkdirSync, rmSync, createWriteStream } = require('fs')
-const { join, dirname, basename, extname } = require('path')
 const main = require('../scripts/service/main.js')
-const { fromDir, getHash, openDialog, openInitialDialog, parseStrings, removePars } = require('./service.js')
+
+const {
+    exec,
+    execSync
+} = require('child_process')
+
+const {
+    app,
+    shell,
+    BrowserWindow,
+    Notification
+} = require('electron')
+
+const {
+    readFileSync,
+    readdirSync,
+    lstatSync,
+    existsSync,
+    writeFileSync,
+    unlinkSync,
+    copyFileSync,
+    mkdirSync,
+    rmSync,
+    createWriteStream
+} = require('fs')
+
+const {
+    join,
+    dirname,
+    basename
+} = require('path')
+
+const {
+    fromDir,
+    getHash,
+    openDialog,
+    openInitialDialog,
+    parseStrings,
+    removePars
+} = require('./service.js')
 
 const paths = {
     publicInfo: 'https://verzsut.github.io/sxmle_updater/public.json',
@@ -28,16 +63,18 @@ const paths = {
     classes: join(__dirname, '..', 'scripts', 'mainTemp', '[media]', 'classes')
 }
 
-let stringsFilePath = null
+let stringsFilePath
 let relaunchWithoutSaving = false
 
-let mainWindow = null
-let listWindow = null
-let xmlEditor = null
-let currentWindow = null
+let mainWindow
+let listWindow
+let xmlEditor
+let currentWindow
+let loading
 
 const devTools = false
 
+const invalidMods = []
 const config = getConfig()
 const translations = getTranslations()
 
@@ -45,54 +82,63 @@ initApp()
 initMain()
 
 function init() {
-    if (!config.paths.initial) {
-        openFirstSteps()
-        if (config.settings.updates) {
-            checkUpdate()
-        }
-    }
-    else {
-        checkInitialSum(() => {
-            if (checkPaths()) {
-                getIngameTranslation(() => {
-                    config.paths.dlc = paths.dlc
-                    config.paths.classes = paths.classes
-                    config.paths.mods = paths.modsTemp
-                    if (config.settings.DLC) {
-                        initDLC()
-                    }
-                    if (config.settings.mods) {
-                        initMods(() => {
-                            getModsTranslation(() => {
-                                openMain()
+    loading = openDownload(true)
+    loading.once('show', () => {
+        loading.webContents.postMessage('fileName', getText('[LOADING]'))
+        if (!config.paths.initial) {
+            openFirstSteps()
+            if (config.settings.updates) {
+                checkUpdate()
+            }
+        } else {
+            checkInitialSum().then(() => {
+                if (checkPaths()) {
+                    return getIngameTranslation().then(() => {
+                        config.paths.dlc = paths.dlc
+                        config.paths.classes = paths.classes
+                        config.paths.mods = paths.modsTemp
+                        if (config.settings.DLC) {
+                            initDLC()
+                        }
+                        if (config.settings.mods) {
+                            initMods().then(() => {
+                                getModsTranslation().then(() => {
+                                    openMain().then(() => {
+                                        if (config.settings.updates) {
+                                            checkUpdate()
+                                        }
+                                    })
+                                })
+                            })
+                        } else {
+                            openMain().then(() => {
                                 if (config.settings.updates) {
                                     checkUpdate()
                                 }
                             })
-                        })
-                    }
-                    else {
-                        openMain()
-                        if (config.settings.updates) {
-                            checkUpdate()
                         }
-                    }
-                })
-            }
-            else {
-                resetConfig()
-            }
-        })
-    }
+                    })
+                } else {
+                    resetConfig()
+                }
+            })
+        }
+    })
 }
 
 function initMain() {
+    main.invalidMods = {
+        get() {
+            return invalidMods
+        }
+    }
+
     main.translations = {
         get() {
             return translations
         }
     }
-    
+
     main.shortMenu = {
         get() {
             return getShortMenu()
@@ -119,35 +165,34 @@ function initMain() {
             config[value.key] = value.value
         }
     }
-    
-    main.saveToOriginal = function(modId) {
+
+    main.saveToOriginal = function (modId) {
         if (modId) {
             try {
                 execSync(`WinRAR f -ibck -inul "${config.modsList[modId].path}" "${join(paths.modsTemp, modId)}\\" -r -ep1`, {
                     cwd: paths.winrar
                 })
                 saveModSum(modId, config.modsList[modId].path)
-            } catch(err) {
+            } catch (err) {
                 showNotification(getText('[ERROR]'), getText('[SAVE_MOD_ERROR]'))
             }
-        }
-        else {
+        } else {
             try {
                 execSync(`WinRAR f -ibck -inul "${config.paths.initial}" "${paths.mainTemp}\\" -r -ep1`, {
                     cwd: paths.winrar
                 })
                 saveInitialSum()
-            } catch(err) {
+            } catch (err) {
                 showNotification(getText('[ERROR]'), getText('[SAVE_ORIGINAL_ERROR]'))
             }
         }
     }
 
-    main.openDevTools = function() {
+    main.openDevTools = function () {
         currentWindow.webContents.toggleDevTools()
     }
-    
-    main.getFileData = function(filePath, reserveFilePath=null) {
+
+    main.getFileData = function (filePath, reserveFilePath = null) {
         if (existsSync(filePath)) {
             const data = readFileSync(filePath)
             return data.toString()
@@ -159,24 +204,28 @@ function initMain() {
         }
     }
 
-    main.setDevMode = function(value) {
+    main.setDevMode = function (value) {
         config.settings.devMode = value
         reload()
     }
-    
-    main.setFileData = function(path, data) {
+
+    main.setFileData = function (path, data) {
         try {
             writeFileSync(path, data)
         } catch {
             throw new Error('[WRITE_FILE_ERROR]')
         }
     }
-    
+
     main.reload = reload
     main.quit = app.quit
 
-    main.openLink = url => {shell.openExternal(url)}
-    main.showFolder = path => {shell.openPath(path)}
+    main.openLink = url => {
+        shell.openExternal(url)
+    }
+    main.showFolder = path => {
+        shell.openPath(path)
+    }
 
     main.openXMLEditor = openXMLEditor
     main.openList = openList
@@ -219,74 +268,79 @@ function saveInitialSum() {
 }
 
 
-function download(params, cb) {
-    if (params.array) {
-        if (params.isRoot) {
-            params.downloadPage.webContents.postMessage('count', params.array.length)
-        }
-        const {url, path} = params.array[0]
-        params.downloadPage.webContents.postMessage('fileName', basename(path))
-        download({
-            url: url,
-            path: path,
-            downloadPage: params.downloadPage
-        }, () => {
-            cb()
-            if (params.array.length > 1) {
-                download({
-                    array: params.array.slice(1),
-                    downloadPage: params.downloadPage
-                }, cb)
+function download(params) {
+    return new Promise(resolve => {
+        if (params.array) {
+            if (params.isRoot) {
+                params.downloadPage.webContents.postMessage('count', params.array.length)
             }
-        })
-        return
-    }
-    https.get(params.url, res => {
-        if (params.inMemory) {
-            let chunks = ''
-
-            res.on('data', chunk => {
-                chunks += chunk
-            })
-    
-            res.on('end', () => {
-                if (params.fromJSON) {
-                    cb(JSON.parse(chunks))
-                } else {
-                    cb(chunks)
+            const {
+                url,
+                path
+            } = params.array[0]
+            params.downloadPage.webContents.postMessage('fileName', basename(path))
+            download({
+                url: url,
+                path: path,
+                downloadPage: params.downloadPage
+            }).then(() => {
+                resolve()
+                if (params.array.length > 1) {
+                    download({
+                        array: params.array.slice(1),
+                        downloadPage: params.downloadPage
+                    }).then(resolve)
                 }
             })
+            return
         }
-        else {
-            const file = createWriteStream(params.path)
-            if (params.downloadPage) {
-                const len = parseInt(res.headers['content-length'], 10)
-                let cur = 0
+        https.get(params.url, res => {
+            if (params.inMemory) {
+                let chunks = ''
 
-                res.on("data", chunk => {
-                    cur += chunk.length
-                    params.downloadPage.webContents.postMessage('percent', (100.0 * (cur / len)).toFixed(2))
+                res.on('data', chunk => {
+                    chunks += chunk
+                })
+
+                res.on('end', () => {
+                    if (params.fromJSON) {
+                        resolve(JSON.parse(chunks))
+                    } else {
+                        resolve(chunks)
+                    }
+                })
+            } else {
+                const file = createWriteStream(params.path)
+                if (params.downloadPage) {
+                    const len = parseInt(res.headers['content-length'], 10)
+                    let cur = 0
+
+                    res.on("data", chunk => {
+                        cur += chunk.length
+                        params.downloadPage.webContents.postMessage('percent', (100.0 * (cur / len)).toFixed(2))
+                    })
+                }
+
+                res.pipe(file)
+                res.on('end', () => {
+                    params.downloadPage.webContents.postMessage('success', true)
+                    file.on('close', cb)
+                    file.close()
                 })
             }
-
-            res.pipe(file)
-            res.on('end', () => {
-                params.downloadPage.webContents.postMessage('success', true)
-                file.on('close', cb)
-                file.close()
-            })
-        }
+        })
     })
 }
 
-function checkInitialSum(callback) {
-    if (getHash(config.paths.initial) !== config.sums.initial) {
-        saveInitialSum()
-        unpackFiles(callback, true)
-    }
-    else {
-        callback()
-    }
+function checkInitialSum() {
+    return new Promise(resolve => {
+        if (getHash(config.paths.initial) !== config.sums.initial) {
+            saveInitialSum()
+            unpackFiles(true).then(resolve)
+        } else {
+            resolve()
+        }
+    })
 }
 
 function checkPathToDelete(path, map) {
@@ -300,8 +354,7 @@ function checkPathToDelete(path, map) {
             if (array) {
                 toRemove.push(...array)
             }
-        }
-        else {
+        } else {
             const relativePath = path2.replace(join(paths.root, '/'), '')
             if (!map[relativePath]) {
                 toRemove.push(path2)
@@ -321,8 +374,7 @@ function checkMap(map) {
 
         if (!existsSync(absolutePath)) {
             toCreateOrChange.push(relativePath)
-        }
-        else {
+        } else {
             if (lstatSync(absolutePath).isDirectory()) {
                 toRemove.push(absolutePath)
                 toCreateOrChange.push(relativePath)
@@ -347,14 +399,13 @@ function update() {
         url: paths.updateMap,
         fromJSON: true,
         inMemory: true,
-    }, (updateMap) => {
+    }).then((updateMap) => {
         let [toRemove, toCreateOrChange] = checkMap(updateMap)
 
         for (const path of toRemove) {
             if (lstatSync(path).isFile()) {
                 unlinkSync(path)
-            }
-            else {
+            } else {
                 rmSync(path, {
                     recursive: true
                 })
@@ -373,7 +424,10 @@ function update() {
             if (!existsSync(dirname(path))) {
                 createDirForPath(path)
             }
-            toDownload.push({url: url, path: path})
+            toDownload.push({
+                url: url,
+                path: path
+            })
         }
         download({
             array: toDownload,
@@ -395,19 +449,18 @@ function checkUpdate() {
             https.get(paths.publicInfo, res => {
                 res.setEncoding('utf-8')
                 let rawData = ''
-        
+
                 res.on('data', (chunk) => {
                     rawData += chunk
                 })
-        
+
                 res.on('end', () => {
                     const data = JSON.parse(rawData)
                     if (data.latestVersion !== config.version) {
                         if (data.canAutoUpdate) {
                             openUpdateMessage(data.latestVersion)
-                        }
-                        else {
-                            showNotification(getText('[NOTIFICATION]'), getText('ALLOW_NEW_VERSION'), () => {
+                        } else {
+                            showNotification(getText('[NOTIFICATION]'), getText('ALLOW_NEW_VERSION')).then(() => {
                                 shell.openExternal(paths.downloadPage)
                             })
                         }
@@ -423,12 +476,10 @@ function checkPaths() {
     if (!existsSync(config.paths.initial)) {
         showNotification(getText('[ERROR]'), getText('[INITIAL_NOT_FOUND]'))
         success = false
-    }
-    else if (!existsSync(paths.classes)) {
+    } else if (!existsSync(paths.classes)) {
         showNotification(getText('[ERROR]'), getText('[CLASSES_NOT_FOUND]'))
         success = false
-    }
-    else if (config.settings.DLC && !existsSync(paths.dlc)) {
+    } else if (config.settings.DLC && !existsSync(paths.dlc)) {
         showNotification(getText('[ERROR]'), getText('[DLC_FOLDER_NOT_FOUND]'))
         config.settings.DLC = false
         success = true
@@ -440,27 +491,21 @@ function initDLC() {
     config.dlcList = fromDir(paths.dlc, true)
 }
 
-function initMods(callback) {
-    if (config.modsList.length === 0) {
-        callback()
-        return
-    }
+function initMods() {
+    return new Promise(resolve => {
+        if (config.modsList.length === 0) {
+            resolve()
+            return
+        }
 
-    let counter = config.modsList.length
-
-    const loading = openDownload(true)
-    loading.once('show', () => {
-        loading.webContents.postMessage('fileName', getText('[LOADING_MODS]'))
-        setTimeout(main, 100)
-    })
-
-    function main() {
+        let counter = config.modsList.length
         for (const modDirName in config.modsList) {
             const mod = config.modsList[modDirName]
             if (typeof mod === 'number') {
                 continue
             }
             if (!existsSync(mod.path)) {
+                invalidMods.push(config.modsList[modDirName].name)
                 delete config.modsList[modDirName]
                 delete config.sums.mods[modDirName]
                 config.modsList.length--
@@ -470,10 +515,10 @@ function initMods(callback) {
             if (hash === config.sums.mods[modDirName]) {
                 counter--
                 continue
-            }
-            else {
-                unpackMod(mod.path, () => {
+            } else {
+                unpackMod(mod.path).then(() => {
                     if (!existsSync(join(paths.modsTemp, modDirName, 'classes'))) {
+                        invalidMods.push(config.modsList[modDirName].name)
                         delete config.modsList[modDirName]
                         delete config.sums.mods[modDirName]
                         config.modsList.length--
@@ -482,27 +527,19 @@ function initMods(callback) {
                     }
                     counter--
                     if (counter === 0) {
-                        callback()
-                        if (loading) {
-                            loading.close()
-                        }
+                        resolve()
                     }
                 })
             }
         }
         if (counter === 0) {
-            callback()
-            if (loading) {
-                loading.close()
-            }
+            resolve()
         }
-    }
+    })
 }
 
-function getModsTranslation(callback) {
-    const loading = openDownload(true)
-    loading.once('show', () => {
-        loading.webContents.postMessage('fileName', getText('[LOADING_TRANSLATION]'))
+function getModsTranslation() {
+    return new Promise(resolve => {
         let mods = {}
         for (const modId in config.modsList) {
             if (existsSync(join(paths.modsTemp, modId, 'texts'))) {
@@ -519,21 +556,20 @@ function getModsTranslation(callback) {
                 }
                 stringsFilePath = join(paths.modsTemp, modId, 'texts', fileName)
                 if (existsSync(stringsFilePath)) {
-                    const result = parseStrings(readFileSync(stringsFilePath, {encoding: 'utf16le'}).toString())
+                    const result = parseStrings(readFileSync(stringsFilePath, {
+                        encoding: 'utf16le'
+                    }).toString())
                     mods[modId] = Object(result)
                 }
             }
         }
         translations.mods = Object(mods)
-        callback()
-        loading.close()
+        resolve()
     })
 }
 
-function getIngameTranslation(callback) {
-    loading = openDownload(true)
-    loading.once('show', () => {
-        loading.webContents.postMessage('fileName', getText('[LOADING_TRANSLATION]'))
+function getIngameTranslation() {
+    return new Promise(resolve => {
         let ingame = {}
         if (existsSync(paths.strings)) {
             let fileName
@@ -549,38 +585,39 @@ function getIngameTranslation(callback) {
             }
             stringsFilePath = join(paths.strings, fileName)
             if (existsSync(stringsFilePath)) {
-                ingame = parseStrings(readFileSync(stringsFilePath, {encoding: 'utf16le'}).toString())
+                ingame = parseStrings(readFileSync(stringsFilePath, {
+                    encoding: 'utf16le'
+                }).toString())
             }
         }
         translations.ingame = Object(ingame)
-        callback()
-        loading.close()
+        resolve()
     })
 }
 
 function getTranslations() {
     return {
-        RU: JSON.parse(readFileSync(join(paths.translations, 'RU.json')).toString()), 
-        EN: JSON.parse(readFileSync(join(paths.translations, 'EN.json')).toString()), 
+        RU: JSON.parse(readFileSync(join(paths.translations, 'RU.json')).toString()),
+        EN: JSON.parse(readFileSync(join(paths.translations, 'EN.json')).toString()),
         DE: JSON.parse(readFileSync(join(paths.translations, 'DE.json')).toString()),
         mods: {},
-        imgame: {}
+        ingame: {}
     }
 }
 
-function showNotification(title, message, callback=null) {
-    if (Notification.isSupported()) {
-        const notification = new Notification({
-            title: title,
-            icon: paths.icon,
-            body: message
-        })
+function showNotification(title, message) {
+    return new Promise(resolve => {
+        if (Notification.isSupported()) {
+            const notification = new Notification({
+                title: title,
+                icon: paths.icon,
+                body: message
+            })
 
-        notification.show()
-        if (callback) {
-            notification.once('click', callback)
+            notification.show()
+            notification.once('click', resolve)
         }
-    }
+    })
 }
 
 function openList() {
@@ -607,24 +644,42 @@ function openList() {
 }
 
 function openMain() {
-    if (mainWindow) {
-        mainWindow.show()
-        mainWindow.focus()
-        return
-    }
-    mainWindow = createWindow('main.html', {
-        width: 980, 
-        height: 380, 
-        resizable: false
-    })
-    mainWindow.once('close', () => {
-        app.quit()
+    return new Promise(resolve => {
+        if (mainWindow) {
+            mainWindow.show()
+            mainWindow.focus()
+            resolve()
+            return
+        }
+        mainWindow = createWindow('main.html', {
+            width: 980,
+            height: 380,
+            resizable: false
+        })
+
+        mainWindow.once('show', () => {
+            resolve()
+            if (!loading.isDestroyed()) {
+                loading.close()
+            }
+        })
+        mainWindow.once('close', () => {
+            app.quit()
+        })
     })
 }
 
 function openFirstSteps() {
-    const wind = createWindow('firstSteps.html', {width: 550, height: 500})
+    const wind = createWindow('firstSteps.html', {
+        width: 550,
+        height: 500
+    })
     firstStepsWindow = wind
+    wind.once('show', () => {
+        if (!loading.isDestroyed()) {
+            loading.close()
+        }
+    })
     wind.once('close', () => {
         app.quit()
     })
@@ -637,13 +692,12 @@ function openXMLEditor() {
 
     if (listWindow) {
         listWindow.hide()
-    }
-    else {
+    } else {
         if (mainWindow) {
             mainWindow.hide()
         }
     }
-    
+
     const wind = createWindow('xmlEditor.html', {
         width: 1000,
         height: 800
@@ -669,13 +723,13 @@ function openXMLEditor() {
     }
 }
 
-function openDownload(popup=false) {
+function openDownload(popup = false) {
     const beforeWindow = currentWindow
     const wind = createWindow('download.html', {
         width: 220,
         height: 70,
-        modal: popup? false : true,
-        parent: popup? null : currentWindow,
+        modal: popup ? false : true,
+        parent: popup ? null : currentWindow,
         frame: false
     })
 
@@ -685,7 +739,7 @@ function openDownload(popup=false) {
             beforeWindow.focus()
         })
     }
-    
+
     return wind
 }
 
@@ -724,54 +778,58 @@ function openUpdateMessage(version) {
     })
 }
 
-function unpackFiles(callback, popup=false) {
-    const loading = openDownload(popup)
-    loading.once('show', () => {
-        loading.webContents.postMessage('fileName', getText('[UNPACKING]'))
-    })
-
-    if (existsSync(paths.mainTemp)) {
-        rmSync(paths.mainTemp, {
-            recursive: true
+function unpackFiles(popup = false) {
+    return new Promise(resolve => {
+        const loading = openDownload(popup)
+        loading.once('show', () => {
+            loading.webContents.postMessage('fileName', getText('[UNPACKING]'))
         })
-    }
-    mkdirSync(paths.mainTemp)
-    exec(`WinRAR x -ibck -inul "${config.paths.initial}" @unpack-list.lst "${paths.mainTemp}\\"`, {
-        cwd: paths.winrar
-    }).once('close', () => {
-        callback()
-        if (!loading.isDestroyed()) {
-            loading.close()
+
+        if (existsSync(paths.mainTemp)) {
+            rmSync(paths.mainTemp, {
+                recursive: true
+            })
         }
-    })
-}
-
-function unpackMod(absolutePath, callback) {
-    const modDir = join(paths.modsTemp, basename(dirname(absolutePath)))
-
-    if (!existsSync(paths.modsTemp)) {
-        mkdirSync(paths.modsTemp)
-    }
-
-    if (existsSync(modDir)) {
-        rmSync(modDir, {
-            recursive: true
+        mkdirSync(paths.mainTemp)
+        exec(`WinRAR x -ibck -inul "${config.paths.initial}" @unpack-list.lst "${paths.mainTemp}\\"`, {
+            cwd: paths.winrar
+        }).once('close', () => {
+            resolve()
+            if (!loading.isDestroyed()) {
+                loading.close()
+            }
         })
-    }
-    mkdirSync(modDir)
-    exec(`WinRAR x -ibck -inul "${absolutePath}" @unpack-mod-list.lst "${modDir}\\"`, {
-        cwd: paths.winrar
-    }).once('close', () => {
-        callback()
     })
 }
 
-function saveBackup(reloadAfter=false) {
-    unpackFiles(() => {
+function unpackMod(absolutePath) {
+    return new Promise(resolve => {
+        const modDir = join(paths.modsTemp, basename(dirname(absolutePath)))
+
+        if (!existsSync(paths.modsTemp)) {
+            mkdirSync(paths.modsTemp)
+        }
+
+        if (existsSync(modDir)) {
+            rmSync(modDir, {
+                recursive: true
+            })
+        }
+        mkdirSync(modDir)
+        exec(`WinRAR x -ibck -inul "${absolutePath}" @unpack-mod-list.lst "${modDir}\\"`, {
+            cwd: paths.winrar
+        }).once('close', () => {
+            resolve()
+        })
+    })
+}
+
+function saveBackup(reloadAfter = false) {
+    unpackFiles().then(() => {
         if (!existsSync(paths.backupFolder)) {
             mkdirSync(paths.backupFolder)
         }
-    
+
         if (existsSync(paths.backupInitial)) {
             try {
                 unlinkSync(paths.backupInitial)
@@ -779,7 +837,7 @@ function saveBackup(reloadAfter=false) {
                 throw new Error('[DELETE_OLD_INITIAL_BACKUP_ERROR]')
             }
         }
-    
+
         copyBackup()
         showNotification(getText('[SUCCESS]'), getText('[SUCCESS_BACKUP_SAVE]'))
         if (reloadAfter) {
@@ -804,7 +862,7 @@ function saveConfig() {
     }
 }
 
-function createWindow(fileName, args={}) {
+function createWindow(fileName, args = {}) {
     let preload = join(__dirname, '..', 'scripts', 'modules', basename(fileName, '.html'), 'preload.js')
     if (!existsSync(preload)) {
         preload = paths.preload
@@ -851,7 +909,7 @@ function restoreInitial() {
     }
     try {
         copyFileSync(paths.backupInitial, config.paths.initial)
-        unpackFiles(() => {
+        unpackFiles().then(() => {
             saveInitialSum()
             showNotification(getText('[SUCCESS]'), getText('[SUCCESS_INITIAL_RESTORE]'))
         })
@@ -860,7 +918,7 @@ function restoreInitial() {
     }
 }
 
-function resetConfig(withoutReloading=false) {
+function resetConfig(withoutReloading = false) {
     config.paths = {
         initial: null,
         dlc: null,
@@ -909,13 +967,12 @@ function resetConfig(withoutReloading=false) {
 
     if (!withoutReloading) {
         reload()
-    }
-    else {
+    } else {
         saveConfig()
     }
 }
 
-function getText(key, returnKey=true) {
+function getText(key, returnKey = true) {
     const translation = translations[config.lang]
     if (translation) {
         return translation[removePars(key)] || (returnKey ? key : undefined)
@@ -934,14 +991,12 @@ function reload() {
 }
 
 function getShortMenu() {
-    return [
-        {
+    return [{
             label: getText('[FILE_MENU_LABEL]'),
             submenu: [
                 ...(() => {
                     if (config.buildType === 'dev') {
-                        return [
-                            {
+                        return [{
                                 label: 'DevTools',
                                 role: 'dev-tools'
                             },
@@ -961,8 +1016,7 @@ function getShortMenu() {
         },
         {
             label: getText('[HELP_MENU_LABEL]'),
-            submenu: [
-                {
+            submenu: [{
                     label: getText('[HOW_TO_USE_TITLE]'),
                     role: 'open-link',
                     url: 'https://snowrunner.mod.io/guides/snowrunner-xml-editor'
@@ -983,17 +1037,17 @@ function getShortMenu() {
 }
 
 function getMainMenu() {
-    return [
-        {
+    return [{
             label: getText('[FILE_MENU_LABEL]'),
-            submenu: [
-                {
+            submenu: [{
                     label: getText('[SETTINGS_MENU_ITEM_LABEL]'),
                     role: 'open-settings'
                 },
-                { role: 'separator' },
+                {
+                    role: 'separator'
+                },
                 ...(() => {
-                    if (config.settings.resetButton) {
+                    if (config.buildType === 'dev' || config.settings.resetButton) {
                         return [{
                             label: getText('[RESET_MENU_ITEM_LABEL]'),
                             role: 'reset-config'
@@ -1003,8 +1057,7 @@ function getMainMenu() {
                 })(),
                 ...(() => {
                     if (config.buildType === 'dev') {
-                        return [
-                            {
+                        return [{
                                 label: 'DevTools',
                                 role: 'dev-tools'
                             },
@@ -1024,13 +1077,14 @@ function getMainMenu() {
         },
         {
             label: getText('[BACKUP_MENU_LABEL]'),
-            submenu: [
-                {
+            submenu: [{
                     label: getText('[OPEN_BUTTON]'),
                     role: 'show-folder',
                     path: paths.backupFolder
                 },
-                { role: 'separator' },
+                {
+                    role: 'separator'
+                },
                 {
                     label: getText('[SAVE_BUTTON]'),
                     role: 'save-backup'
@@ -1043,8 +1097,7 @@ function getMainMenu() {
         },
         {
             label: getText('[HELP_MENU_LABEL]'),
-            submenu: [
-                {
+            submenu: [{
                     label: getText('[HOW_TO_USE_TITLE]'),
                     role: 'open-link',
                     url: 'https://snowrunner.mod.io/guides/snowrunner-xml-editor'

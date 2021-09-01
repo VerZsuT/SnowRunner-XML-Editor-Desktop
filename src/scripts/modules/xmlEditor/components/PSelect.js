@@ -41,7 +41,7 @@ const PSelect = {
                 return false
             } else {
                 return !config.settings.devMode
-            } 
+            }
         }
     }
 }

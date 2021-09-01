@@ -1,4 +1,9 @@
-import { removePars, getTextFromTemplate, getText, getIngameText } from './funcs.js'
+import {
+    removePars,
+    getTextFromTemplate,
+    getText,
+    getIngameText
+} from './funcs.js'
 
 /**
  * params: 
@@ -18,7 +23,10 @@ export function Template(params, children) {
         get attributes() {
             const array = []
             for (const name in params) {
-                array.push({name: name, value: params[name]})
+                array.push({
+                    name: name,
+                    value: params[name]
+                })
             }
             return array
         },
@@ -52,16 +60,15 @@ export function Template(params, children) {
                         newSelectors[selector] = selectors[selector].replaceAll(`-${this.replaceName}${tNumber}-`, id)
                         if (currentNum === 1) {
                             newSelectors[selector] = newSelectors[selector].replaceAll(`-F_${this.replaceName}${tNumber}-`, id)
-                        }
-                        else if (currentNum === items.length) {
+                        } else if (currentNum === items.length) {
                             newSelectors[selector] = newSelectors[selector].replaceAll(`-L_${this.replaceName}${tNumber}-`, id)
                         }
                         newSelectors[selector] = newSelectors[selector].replaceAll(`-N${currentNum}_${this.replaceName}${tNumber}-`, id)
                     }
                     params = params.concat(this.getParams({
-                        selectors: newSelectors, 
+                        selectors: newSelectors,
                         defaultSelector: defaultSelector,
-                        onlySingle: false, 
+                        onlySingle: false,
                         multiply: false,
                         tCycleNumber: currentNum,
                         fileDOM: fileDOM,
@@ -71,9 +78,9 @@ export function Template(params, children) {
                     currentNum++
                 }
                 params = params.concat(this.getParams({
-                    selectors: newSelectors, 
-                    defaultSelector: defaultSelector, 
-                    onlySingle: true, 
+                    selectors: newSelectors,
+                    defaultSelector: defaultSelector,
+                    onlySingle: true,
                     multiply: false,
                     fileDOM: fileDOM,
                     tNumber: tNumber,
@@ -126,7 +133,10 @@ export function Group(params, children) {
         get attributes() {
             const array = []
             for (const name in params) {
-                array.push({name: name, value: params[name]})
+                array.push({
+                    name: name,
+                    value: params[name]
+                })
             }
             return array
         },
@@ -154,10 +164,10 @@ export function Group(params, children) {
                 }
 
                 if (this.nameType === 'Computed') {
-                    const nameAttribute = this.nameAttribute           
+                    const nameAttribute = this.nameAttribute
                     const resNameAttribute = this.resNameAttribute
-                    
-                    groupName = getIngameText($nameElement.getAttribute(nameAttribute)) ||  $resNameElement.getAttribute(resNameAttribute)
+
+                    groupName = getIngameText($nameElement.getAttribute(nameAttribute)) || $resNameElement.getAttribute(resNameAttribute)
                 } else if (this.nameType === 'TagName') {
                     groupName = $nameElement.nodeName
                 }
@@ -176,8 +186,8 @@ export function Group(params, children) {
                     continue
                 }
                 params = params.concat(child.getParams({
-                    selectors: selectors, 
-                    defaultSelector: groupDefaultSelector || defaultSelector, 
+                    selectors: selectors,
+                    defaultSelector: groupDefaultSelector || defaultSelector,
                     onlySingle: onlySingle,
                     tNumber: props.tNumber,
                     fileDOM: fileDOM,
@@ -232,7 +242,10 @@ export function Input(params) {
         get attributes() {
             const array = []
             for (const name in params) {
-                array.push({name: name, value: params[name]})
+                array.push({
+                    name: name,
+                    value: params[name]
+                })
             }
             return array
         },
@@ -303,7 +316,10 @@ export function Select(params, children) {
         get attributes() {
             const array = []
             for (const name in params) {
-                array.push({name: name, value: params[name]})
+                array.push({
+                    name: name,
+                    value: params[name]
+                })
             }
             return array
         },
@@ -326,7 +342,7 @@ export function Select(params, children) {
             } else {
                 value = fileDOM.querySelector(selector).getAttribute(this.attribute)
             }
-            
+
             let options = []
             for (const option of this.children) {
                 const text_1 = option.text
@@ -348,7 +364,7 @@ export function Select(params, children) {
                 desc: this.desc,
                 default: this.default
             }
-            
+
             return [param]
         }
     })
@@ -367,7 +383,10 @@ export function Opt(params) {
         get attributes() {
             const array = []
             for (const name in params) {
-                array.push({name: name, value: params[name]})
+                array.push({
+                    name: name,
+                    value: params[name]
+                })
             }
             return array
         },
@@ -387,11 +406,11 @@ export function Selectors(children) {
             const obj = {}
             for (const child of children) {
                 obj[child.id] = child.value.replaceAll('#every(', '[SXMLE_ID="-CYCLE')
-                                           .replaceAll('#first(', '[SXMLE_ID="-F_CYCLE')
-                                           .replaceAll('#last(', '[SXMLE_ID="-L_CYCLE')
-                                           .replaceAll('#every', '[SXMLE_ID="-CYCLE1-"]')
-                                           .replaceAll('#first', '[SXMLE_ID="-F_CYCLE1-"]')
-                                           .replaceAll('#last', '[SXMLE_ID="-L_CYCLE1-"]')
+                    .replaceAll('#first(', '[SXMLE_ID="-F_CYCLE')
+                    .replaceAll('#last(', '[SXMLE_ID="-L_CYCLE')
+                    .replaceAll('#every', '[SXMLE_ID="-CYCLE1-"]')
+                    .replaceAll('#first', '[SXMLE_ID="-F_CYCLE1-"]')
+                    .replaceAll('#last', '[SXMLE_ID="-L_CYCLE1-"]')
                 for (let i = 1; i <= 20; i++) {
                     obj[child.id] = obj[child.id].replaceAll(`#${i}-th(`, `[SXMLE_ID="-N${i}_CYCLE`)
                 }
@@ -422,7 +441,10 @@ export function Selector(params) {
         get attributes() {
             const array = []
             for (const name in params) {
-                array.push({name: name, value: params[name]})
+                array.push({
+                    name: name,
+                    value: params[name]
+                })
             }
             return array
         }

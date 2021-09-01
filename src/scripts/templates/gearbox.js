@@ -1,4 +1,12 @@
-import { Template, Group, Input, Select, Opt, Selectors, Selector } from '../service/templateItems.js'
+import {
+	Template,
+	Group,
+	Input,
+	Select,
+	Opt,
+	Selectors,
+	Selector
+} from '../service/templateItems.js'
 
 const desc = {
 	Price: {
@@ -86,204 +94,204 @@ const desc = {
 const gearbox = {
 	main: [
 		Template({
-			type: 'Multiply', 
+			type: 'Multiply',
 			itemSelector: '[GEARBOX]'
 		}, [
 			Group({
-				nameType: 'Computed', 
-				nameSelector: '[GEARBOX_ITEM_TEXT]', 
-				resNameSelector: '[GEARBOX_ITEM]', 
-				nameAttribute: 'UiName', 
-				resNameAttribute: 'Name', 
+				nameType: 'Computed',
+				nameSelector: '[GEARBOX_ITEM_TEXT]',
+				resNameSelector: '[GEARBOX_ITEM]',
+				nameAttribute: 'UiName',
+				resNameAttribute: 'Name',
 				defaultSelector: '[GEARBOX_ITEM]'
 			}, [
 				Input({
-					attribute: 'Name', 
-					text: '[ID]', 
-					type: 'text', 
+					attribute: 'Name',
+					text: '[ID]',
+					type: 'text',
 					onlyDeveloper: 'true',
 					desc: desc.Name
 				}),
 				Input({
-					attribute: 'AWDConsumptionModifier', 
-					text: '[AWD_CONSUMPTION_MODIFIER]', 
-					numberType: 'float', 
+					attribute: 'AWDConsumptionModifier',
+					text: '[AWD_CONSUMPTION_MODIFIER]',
+					numberType: 'float',
 					max: '32',
 					default: 1,
 					desc: desc.AWDConsumptionModifier
 				}),
 				Input({
-					attribute: 'CriticalDamageThreshold', 
-					text: '[CRITICAL_DAMAGE_THRESHOLD]', 
-					numberType: 'float', 
+					attribute: 'CriticalDamageThreshold',
+					text: '[CRITICAL_DAMAGE_THRESHOLD]',
+					numberType: 'float',
 					max: '0.999',
 					default: 0.7,
 					desc: desc.CriticalDamageThreshold
 				}),
 				Input({
-					attribute: 'DamageCapacity', 
-					text: '[DAMAGE_CAPACITY]', 
-					max: '64000', 
+					attribute: 'DamageCapacity',
+					text: '[DAMAGE_CAPACITY]',
+					max: '64000',
 					bold: true,
 					default: 0,
 					desc: desc.DamageCapacity
 				}),
 				Input({
-					attribute: 'DamagedConsumptionModifier', 
-					text: '[DAMAGE_CONSUMPTION_MODIFIER]', 
-					numberType: 'float', 
+					attribute: 'DamagedConsumptionModifier',
+					text: '[DAMAGE_CONSUMPTION_MODIFIER]',
+					numberType: 'float',
 					max: '32',
 					default: 1,
 					desc: desc.DamagedConsumptionModifier
 				}),
 				Input({
-					attribute: 'FuelConsumption', 
-					text: '[FUEL_CONSUMPTION]', 
-					numberType: 'float', 
-					max: '10', 
+					attribute: 'FuelConsumption',
+					text: '[FUEL_CONSUMPTION]',
+					numberType: 'float',
+					max: '10',
 					bold: true,
 					default: 0.1,
 					desc: desc.FuelConsumption
 				}),
 				Input({
-					attribute: 'IdleFuelModifier', 
-					text: '[IDLE_FUEL_CONSUMPTION]', 
-					numberType: 'float', 
+					attribute: 'IdleFuelModifier',
+					text: '[IDLE_FUEL_CONSUMPTION]',
+					numberType: 'float',
 					max: '10',
 					default: 0.3,
 					desc: desc.IdleFuelModifier
 				}),
 				Group({
-					name: '[GEARBOX_PARAMS]', 
+					name: '[GEARBOX_PARAMS]',
 					defaultSelector: '[GEARBOX_PARAMS]'
 				}, [
 					Select({
-						attribute: 'IsHighGearExists', 
+						attribute: 'IsHighGearExists',
 						text: '[HIGH_GEAR]',
 						default: 'true',
 						desc: desc.IsHighGearExists
 					}, [
 						Opt({
-							text: '[ALLOW]', 
+							text: '[ALLOW]',
 							value: 'true'
 						}),
 						Opt({
-							text: '[NOT_ALLOW]', 
+							text: '[NOT_ALLOW]',
 							value: 'false'
 						})
 					]),
 					Select({
-						attribute: 'IsLowerGearExists', 
+						attribute: 'IsLowerGearExists',
 						text: '[LOWER_GEAR]',
 						default: 'true',
 						desc: desc.IsLowerGearExists
 					}, [
 						Opt({
-							text: '[ALLOW]', 
+							text: '[ALLOW]',
 							value: 'true'
 						}),
 						Opt({
-							text: '[NOT_ALLOW]', 
+							text: '[NOT_ALLOW]',
 							value: 'false'
 						})
 					]),
 					Select({
-						attribute: 'IsLowerPlusGearExists', 
+						attribute: 'IsLowerPlusGearExists',
 						text: '[LOWER_PLUS_GEAR]',
 						default: 'true',
 						desc: desc.IsLowerPlusGearExists
 					}, [
 						Opt({
-							text: '[ALLOW]', 
+							text: '[ALLOW]',
 							value: 'true'
 						}),
 						Opt({
-							text: '[NOT_ALLOW]', 
+							text: '[NOT_ALLOW]',
 							value: 'false'
 						})
 					]),
 					Select({
-						attribute: 'IsLowerMinusGearExists', 
+						attribute: 'IsLowerMinusGearExists',
 						text: '[LOWER_MINUS_GEAR]',
 						default: 'true',
 						desc: desc.IsLowerMinusGearExists
 					}, [
 						Opt({
-							text: '[ALLOW]', 
+							text: '[ALLOW]',
 							value: 'true'
 						}),
 						Opt({
-							text: '[NOT_ALLOW]', 
+							text: '[NOT_ALLOW]',
 							value: 'false'
 						})
 					])
 				]),
 				Group({
-					name: '[REVERCE_GEAR]', 
+					name: '[REVERCE_GEAR]',
 					defaultSelector: '[REVERSE_GEAR]'
 				}, [
 					Input({
-						attribute: 'AngVel', 
-						text: '[ANGEL_VELOCITY]', 
-						numberType: 'float', 
-						max: '32', 
+						attribute: 'AngVel',
+						text: '[ANGEL_VELOCITY]',
+						numberType: 'float',
+						max: '32',
 						bold: true,
 						default: 0,
 						desc: desc.AngVel
 					}),
 					Input({
-						attribute: 'FuelModifier', 
-						text: '[FUEL_MODIFIER]', 
-						numberType: 'float', 
+						attribute: 'FuelModifier',
+						text: '[FUEL_MODIFIER]',
+						numberType: 'float',
 						max: '10',
 						default: 1,
 						desc: desc.FuelModifier
 					})
 				]),
 				Group({
-					name: '[HIGH_GEAR]', 
+					name: '[HIGH_GEAR]',
 					defaultSelector: '[HIGH_GEAR]'
 				}, [
 					Input({
-						attribute: 'AngVel', 
-						text: '[ANGEL_VELOCITY]', 
-						numberType: 'float', 
-						max: '32', 
+						attribute: 'AngVel',
+						text: '[ANGEL_VELOCITY]',
+						numberType: 'float',
+						max: '32',
 						bold: true,
 						default: 0,
 						desc: desc.AngVel
 					}),
 					Input({
-						attribute: 'FuelModifier', 
-						text: '[FUEL_MODIFIER]', 
-						numberType: 'float', 
+						attribute: 'FuelModifier',
+						text: '[FUEL_MODIFIER]',
+						numberType: 'float',
 						max: '10',
 						default: 1,
 						desc: desc.FuelModifier
 					})
 				]),
 				Template({
-					type: 'Multiply', 
+					type: 'Multiply',
 					itemSelector: '[GEAR]'
 				}, [
 					Group({
-						name: '[GEAR]', 
-						defaultSelector: '[GEAR_ITEM]', 
+						name: '[GEAR]',
+						defaultSelector: '[GEAR_ITEM]',
 						withCounter: 'true'
 					}, [
 						Input({
-							attribute: 'AngVel', 
-							text: '[ANGEL_VELOCITY]', 
-							numberType: 'float', 
-							max: '32', 
+							attribute: 'AngVel',
+							text: '[ANGEL_VELOCITY]',
+							numberType: 'float',
+							max: '32',
 							bold: true,
 							default: 0,
 							desc: desc.AngVel
 						}),
 						Input({
-							attribute: 'FuelModifier', 
-							text: '[FUEL_MODIFIER]', 
-							numberType: 'float', 
+							attribute: 'FuelModifier',
+							text: '[FUEL_MODIFIER]',
+							numberType: 'float',
 							max: '10',
 							default: 1,
 							desc: desc.FuelModifier
@@ -291,33 +299,33 @@ const gearbox = {
 					])
 				]),
 				Group({
-					name: '[UNLOCK_GROUP_NAME]', 
+					name: '[UNLOCK_GROUP_NAME]',
 					defaultSelector: '[GAME_DATA]'
 				}, [
 					Input({
-						attribute: 'Price', 
-						text: '[PRICE]', 
+						attribute: 'Price',
+						text: '[PRICE]',
 						bold: true,
 						desc: desc.Price
 					}),
 					Select({
-						attribute: 'UnlockByExploration', 
-						text: '[BY_EXPLORATION]', 
+						attribute: 'UnlockByExploration',
+						text: '[BY_EXPLORATION]',
 						onlyDeveloper: 'true',
 						desc: desc.UnlockByExploration
 					}, [
 						Opt({
-							text: '[FIND_ON_MAP]', 
+							text: '[FIND_ON_MAP]',
 							value: 'true'
 						}),
 						Opt({
-							text: '[BY_RANK]', 
+							text: '[BY_RANK]',
 							value: 'false'
 						})
 					]),
 					Input({
-						attribute: 'UnlockByRank', 
-						text: '[BY_RANK_LEVEL]', 
+						attribute: 'UnlockByRank',
+						text: '[BY_RANK_LEVEL]',
 						min: 1,
 						desc: desc.UnlockByRank
 					})
@@ -325,15 +333,42 @@ const gearbox = {
 			])
 		]),
 		Selectors([
-			Selector({id: 'GEARBOX', value: 'GearboxVariants.Gearbox'}),
-			Selector({id: 'GEARBOX_ITEM', value: '{GEARBOX}#every'}),
-			Selector({id: 'GEARBOX_ITEM_TEXT', value: '{GEARBOX_ITEM}.GameData.UiDesc'}),
-			Selector({id: 'GEAR', value: '{GEARBOX}#every.Gear'}),
-			Selector({id: 'REVERSE_GEAR', value: '{GEARBOX_ITEM}.ReverseGear'}),
-			Selector({id: 'HIGH_GEAR', value: '{GEARBOX_ITEM}.HighGear'}),
-			Selector({id: 'GEAR_ITEM', value: '{GEAR}#every(2)'}),
-			Selector({id: 'GAME_DATA', value: '{GEARBOX_ITEM}.GameData'}),
-			Selector({id: 'GEARBOX_PARAMS', value: '{GAME_DATA}.GearboxParams'})
+			Selector({
+				id: 'GEARBOX',
+				value: 'GearboxVariants.Gearbox'
+			}),
+			Selector({
+				id: 'GEARBOX_ITEM',
+				value: '{GEARBOX}#every'
+			}),
+			Selector({
+				id: 'GEARBOX_ITEM_TEXT',
+				value: '{GEARBOX_ITEM}.GameData.UiDesc'
+			}),
+			Selector({
+				id: 'GEAR',
+				value: '{GEARBOX}#every.Gear'
+			}),
+			Selector({
+				id: 'REVERSE_GEAR',
+				value: '{GEARBOX_ITEM}.ReverseGear'
+			}),
+			Selector({
+				id: 'HIGH_GEAR',
+				value: '{GEARBOX_ITEM}.HighGear'
+			}),
+			Selector({
+				id: 'GEAR_ITEM',
+				value: '{GEAR}#every(2)'
+			}),
+			Selector({
+				id: 'GAME_DATA',
+				value: '{GEARBOX_ITEM}.GameData'
+			}),
+			Selector({
+				id: 'GEARBOX_PARAMS',
+				value: '{GAME_DATA}.GearboxParams'
+			})
 		])
 	],
 	selector: 'GearboxVariants',

@@ -74,7 +74,10 @@ const Group = {
                     params.push(groupItem)
                 }
             }
-            return {groups, params}
+            return {
+                groups,
+                params
+            }
         }
     }
 }

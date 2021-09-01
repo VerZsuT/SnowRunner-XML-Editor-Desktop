@@ -1,5 +1,9 @@
-import { getText } from "../../../service/funcs.js"
-import { funcs } from "../../../service/renderer.js"
+import {
+    getText
+} from "../../../service/funcs.js"
+import {
+    funcs
+} from "../../../service/renderer.js"
 
 const PFile = {
     props: {
@@ -36,8 +40,7 @@ const PFile = {
                 const dlcPath = `${config.paths.dlc}\\${this.currentDLC}\\classes\\${this.item.fileType}\\${fileName}.xml`
                 paths.push(dlcPath)
                 local.currentDLC = this.currentDLC
-            }
-            else if (this.currentMod) {
+            } else if (this.currentMod) {
                 const modPath = `${config.paths.mods}\\${this.currentMod}\\classes\\${this.item.fileType}\\${fileName}.xml`
                 paths.push(modPath)
                 local.currentMod = this.currentMod
@@ -53,7 +56,7 @@ const PFile = {
                 mainPath = preload.findFromDLC(fileName, this.item.fileType)
             }
             local.filePath = mainPath
-            
+
             funcs.openXMLEditor()
         }
     },
@@ -68,7 +71,10 @@ const PFile = {
                     }
                 }
             }
-            return array.map((value, index) => ({value, index}))
+            return array.map((value, index) => ({
+                value,
+                index
+            }))
         }
     }
 }

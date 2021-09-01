@@ -1,9 +1,11 @@
-import { getText } from '../../../service/funcs.js'
+import {
+    getText
+} from '../../../service/funcs.js'
 import toast from '../toast.js'
 
 const GameFolder = {
     props: {
-        t: Object, 
+        t: Object,
         pathToInitial: String
     },
     emits: ['update:pathToInitial'],
@@ -55,7 +57,7 @@ const GameFolder = {
             }
 
             if (!data) return
-            
+
             this.gameFolder = data.folder
             this.$emit('update:pathToInitial', data.initial)
         }
@@ -65,4 +67,3 @@ const GameFolder = {
 preload.errorHandler = (message) => toast(getText(message))
 
 export default GameFolder
-

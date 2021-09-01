@@ -1,4 +1,6 @@
-import { getText } from "../../../service/funcs.js"
+import {
+    getText
+} from "../../../service/funcs.js"
 
 const PInput = {
     props: {
@@ -81,7 +83,7 @@ const PInput = {
                 return false
             } else {
                 return !config.settings.devMode
-            } 
+            }
         }
     }
 }

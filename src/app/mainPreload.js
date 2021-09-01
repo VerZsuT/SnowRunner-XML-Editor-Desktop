@@ -1,4 +1,6 @@
-const { ipcRenderer } = require('electron')
+const {
+    ipcRenderer
+} = require('electron')
 const _config = ipcRenderer.sendSync('property_config_get').value
 
 window.paths = ipcRenderer.sendSync('property_paths_get').value
@@ -17,18 +19,19 @@ window.config = new Proxy({}, {
                     return true
                 }
             })
-        }
-        else {
+        } else {
             return value
         }
     },
     set(target, name, value) {
         target[name] = value
-        const result = ipcRenderer.sendSync(`property_config_set`, {key: name, value: value})
+        const result = ipcRenderer.sendSync(`property_config_set`, {
+            key: name,
+            value: value
+        })
         if (result.error) {
             return false
-        }
-        else {
+        } else {
             return true
         }
     }
@@ -49,8 +52,7 @@ window.local = new Proxy({
             if (val === 'null') return null
             if (val === 'undefined') return undefined
             return val
-        }
-        else {
+        } else {
             return _target.pop
         }
     },

@@ -1,50 +1,53 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Update</title>
-        <link rel="stylesheet" href="../styles/style.css">
-        <script defer src="../scripts/modules/updateMessage/updateMessage.js" type="module"></script>
-    </head>
-    <body>
-        <div id="main">
-            <h2 id="header">{{ `${t.ALLOW_NEW_VERSION_AUTO} (${version})` }}</h2>
-            <div id="buttons">
+
+<head>
+    <title>Update</title>
+    <link rel="stylesheet" href="../styles/style.css">
+    <script defer src="../scripts/modules/updateMessage/updateMessage.js" type="module"></script>
+</head>
+
+<body>
+    <div id="main">
+        <h2 id="header">{{ `${t.ALLOW_NEW_VERSION_AUTO} (${version})` }}</h2>
+        <div id="buttons">
             <button id="update" class="btn btn-primary" @click='update'>{{ t.UPDATE }}</button>
             <button id="ignore" class="btn btn-danger" @click='ignore'>{{ t.IGNORE }}</button>
             <button id="close" class="btn btn-secondary" @click='close'>{{ t.CLOSE }}</button>
-            </div>
         </div>
+    </div>
 
-        <style>
-            body {
-                background: #fff; 
-            }
+    <style>
+        body {
+            background: #fff;
+        }
 
-            #main {
-                position: relative;
-                width: 300px;
-                height: 150px;
-                margin: 0 auto;
-                padding: 10px;
-                box-sizing: border-box;
-            }
+        #main {
+            position: relative;
+            width: 300px;
+            height: 150px;
+            margin: 0 auto;
+            padding: 10px;
+            box-sizing: border-box;
+        }
 
-            #header {
-                margin-top: 0;
-                text-align: center;
-            }
+        #header {
+            margin-top: 0;
+            text-align: center;
+        }
 
-            #buttons {
-                display: flex;
-                width: 100%;
-                position: absolute;
-                bottom: 5px;
-                justify-content: center;
-            }
+        #buttons {
+            display: flex;
+            width: 100%;
+            position: absolute;
+            bottom: 5px;
+            justify-content: center;
+        }
 
-            button {
-                margin-right: 20px;
-            }
-        </style>
-    </body>
+        button {
+            margin-right: 20px;
+        }
+    </style>
+</body>
+
 </html>

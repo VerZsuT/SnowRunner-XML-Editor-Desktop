@@ -1,4 +1,12 @@
-import { Template, Group, Input, Select, Opt, Selectors, Selector } from '../service/templateItems.js'
+import {
+	Template,
+	Group,
+	Input,
+	Select,
+	Opt,
+	Selectors,
+	Selector
+} from '../service/templateItems.js'
 
 const desc = {
 	Price: {
@@ -52,24 +60,24 @@ const trailer = {
 	main: [
 		Template({}, [
 			Group({
-				name: '[INNER]', 
+				name: '[INNER]',
 				defaultSelector: '[TRUCK_DATA]'
 			}, [
 				Input({
-					attribute: 'FuelCapacity', 
-					text: '[FUEL_CAPACITY]', 
+					attribute: 'FuelCapacity',
+					text: '[FUEL_CAPACITY]',
 					max: '64000',
 					default: 0,
 					desc: desc.FuelCapacity
 				}),
 				Input({
-					attribute: 'RepairsCapacity', 
+					attribute: 'RepairsCapacity',
 					text: '[REPAIRC_CAPACITY]',
 					default: 0,
 					desc: desc.RepairsCapacity
 				}),
 				Input({
-					attribute: 'WheelRepairsCapacity', 
+					attribute: 'WheelRepairsCapacity',
 					text: '[WHEELS_CAPACITY]',
 					default: 0,
 					desc: desc.WheelRepairsCapacity
@@ -85,35 +93,50 @@ const trailer = {
 				name: '[MASS]'
 			}, [
 				Input({
-					attribute: 'Mass', 
-					text: '[TRAILER_MASS]', 
+					attribute: 'Mass',
+					text: '[TRAILER_MASS]',
 					selector: '[MODEL_BODY]',
 					desc: desc.TrailerMass
 				}),
 				Input({
-					attribute: 'Mass', 
-					text: '[FUEL_MASS]', 
+					attribute: 'Mass',
+					text: '[FUEL_MASS]',
 					selector: '[FUEL_MASS]',
 					desc: desc.FuelMass
 				})
 			]),
 			Group({
-				name: '[OTHER]', 
+				name: '[OTHER]',
 				defaultSelector: '[GAME_DATA]'
 			}, [
 				Input({
-					attribute: 'Price', 
+					attribute: 'Price',
 					text: '[PRICE]',
 					desc: desc.Price
 				})
 			])
 		]),
 		Selectors([
-			Selector({id: 'TRUCK_DATA', value: 'Truck.TruckData'}),
-			Selector({id: 'MODEL_BODY', value: 'Truck.PhysicsModel.Body'}),
-			Selector({id: 'FUEL_MASS', value: 'Truck.FuelMass.Body'}),
-			Selector({id: 'GAME_DATA', value: 'Truck.GameData'}),
-			Selector({id: 'ADDON_SLOTS', value: '{GAME_DATA}.AddonSlots'})
+			Selector({
+				id: 'TRUCK_DATA',
+				value: 'Truck.TruckData'
+			}),
+			Selector({
+				id: 'MODEL_BODY',
+				value: 'Truck.PhysicsModel.Body'
+			}),
+			Selector({
+				id: 'FUEL_MASS',
+				value: 'Truck.FuelMass.Body'
+			}),
+			Selector({
+				id: 'GAME_DATA',
+				value: 'Truck.GameData'
+			}),
+			Selector({
+				id: 'ADDON_SLOTS',
+				value: '{GAME_DATA}.AddonSlots'
+			})
 		])
 	],
 	selector: 'Truck[Type="Trailer"]',

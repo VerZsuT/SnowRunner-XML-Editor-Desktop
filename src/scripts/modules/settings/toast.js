@@ -1,4 +1,6 @@
-import { get } from '../../service/funcs.js'
+import {
+    get
+} from '../../service/funcs.js'
 
 const $toast = get('#live-toast')
 

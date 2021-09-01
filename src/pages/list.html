@@ -1,26 +1,21 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>SnowRunner XML Editor {--VERSION--}</title>
-        <link rel="stylesheet" href="../styles/list.css">
-        <script defer src="../scripts/modules/list/main.js" type="module"></script>
-    </head>
-    <body>
-        <div id="main">
-            <search></search>
-            <list
-                v-if='mods'
-                src-type='mods'
-            ></list>
 
-            <list 
-                v-if='dlc'
-                src-type='dlc'
-            ></list>
+<head>
+    <title>SnowRunner XML Editor {--VERSION--}</title>
+    <link rel="stylesheet" href="../styles/list.css">
+    <script defer src="../scripts/modules/list/main.js" type="module"></script>
+</head>
 
-            <list
-                src-type='main'
-            ></list>
-        </div>
-    </body>
+<body>
+    <div id="main">
+        <search></search>
+        <list v-if='mods' src-type='mods'></list>
+
+        <list v-if='dlc' src-type='dlc'></list>
+
+        <list src-type='main'></list>
+    </div>
+</body>
+
 </html>

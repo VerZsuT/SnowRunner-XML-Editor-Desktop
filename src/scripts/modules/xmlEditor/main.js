@@ -1,9 +1,17 @@
 import '../../bootstrap/bootstrap.bundle.min.js'
 import '../../service/menu.js'
-import { createApp } from '../../vue/vue.esm-browser.js'
+import {
+    createApp
+} from '../../vue/vue.esm-browser.js'
 
-import { prettify, getIngameText, getText } from '../../service/funcs.js'
-import { funcs } from '../../service/renderer.js'
+import {
+    prettify,
+    getIngameText,
+    getText
+} from '../../service/funcs.js'
+import {
+    funcs
+} from '../../service/renderer.js'
 import Params from './components/Params.js'
 import Param from './components/Param.js'
 import PFile from './components/PFile.js'
@@ -30,7 +38,7 @@ const App = {
     provide() {
         return {
             currentDLC: local.pop('currentDLC'),
-            currentMod: this.currentMod,        
+            currentMod: this.currentMod,
             fileDOM: this.fileDOM,
             filter: this.filter,
             templates: this.fileDOM.querySelector('_templates'),
@@ -46,11 +54,10 @@ const App = {
 
             if (this.filePath.split('/').length !== 1) {
                 let a = this.filePath.split('/')
-                return prettify(a[a.length-1].replace('.xml', '')).toUpperCase()
-            }
-            else {
+                return prettify(a[a.length - 1].replace('.xml', '')).toUpperCase()
+            } else {
                 let a = this.filePath.split('\\')
-                return prettify(a[a.length-1].replace('.xml', '')).toUpperCase()
+                return prettify(a[a.length - 1].replace('.xml', '')).toUpperCase()
             }
         }
     },
@@ -110,15 +117,15 @@ function getDOM() {
 }
 
 createApp(App)
-.component('Params', Params)
-.component('PParam', Param)
-.component('PCoords', PCoords)
-.component('PFile', PFile)
-.component('PInput', PInput)
-.component('PSelect', PSelect)
-.component('PGroup', Group)
-.component('Search', Search)
-.mount('#main')
+    .component('Params', Params)
+    .component('PParam', Param)
+    .component('PCoords', PCoords)
+    .component('PFile', PFile)
+    .component('PInput', PInput)
+    .component('PSelect', PSelect)
+    .component('PGroup', Group)
+    .component('Search', Search)
+    .mount('#main')
 
 document.title = document.title.replace('{--VERSION--}', `v${config.version}`)
 document.querySelector('#main').style.display = 'block'

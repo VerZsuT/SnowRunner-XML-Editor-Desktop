@@ -19,20 +19,30 @@ const PCoords = {
                 return false
             } else {
                 return !config.settings.devMode
-            } 
+            }
         }
     },
     watch: {
-        x(newVal, _) {this.saveCoords(newVal)},
-        y(newVal, _) {this.saveCoords(null, newVal)},
-        z(newVal, _) {this.saveCoords(null, null, newVal)}
+        x(newVal, _) {
+            this.saveCoords(newVal)
+        },
+        y(newVal, _) {
+            this.saveCoords(null, newVal)
+        },
+        z(newVal, _) {
+            this.saveCoords(null, null, newVal)
+        }
     },
     methods: {
         parseCoords(value) {
             const [x, y, z] = value.replace('(', '').replace(')', '').replaceAll(' ', '').split(';')
-            return {x, y, z}
+            return {
+                x,
+                y,
+                z
+            }
         },
-        saveCoords(x=null, y=null, z=null) {
+        saveCoords(x = null, y = null, z = null) {
             this.fileDOM.querySelector(this.item.selector).setAttribute(this.item.name, `(${x||this.x}; ${y||this.y}; ${z||this.z})`)
         }
     }

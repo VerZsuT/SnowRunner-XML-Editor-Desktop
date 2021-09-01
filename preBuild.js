@@ -1,5 +1,13 @@
-const { rmSync, mkdirSync, readFileSync, existsSync, writeFileSync } = require('fs')
-const { join } = require('path')
+const {
+    rmSync,
+    mkdirSync,
+    readFileSync,
+    existsSync,
+    writeFileSync
+} = require('fs')
+const {
+    join
+} = require('path')
 
 const paths = {
     out: join(__dirname, 'out'),
@@ -9,7 +17,9 @@ const paths = {
     public: join(__dirname, '..', 'sxmle_updater', 'public.json')
 }
 
-rmSync(paths.out, {recursive: true})
+rmSync(paths.out, {
+    recursive: true
+})
 mkdirSync(paths.out)
 
 console.log('[PRE_BUILD][LOG]: Processing pre build...')
@@ -24,7 +34,10 @@ console.log('[PRE_BUILD][STAGE_1]: Reading package-lock.json...')
 const packageLock = JSON.parse(readFileSync(paths.packageLock).toString())
 console.log('[PRE_BUILD][STAGE_1]: Success.')
 console.log('[PRE_BUILD][STAGE_1]: Reading public.json...')
-let public = {latestVersion: '', canAutoUpdate: true}
+let public = {
+    latestVersion: '',
+    canAutoUpdate: true
+}
 if (existsSync(paths.public)) {
     public = JSON.parse(readFileSync(paths.public).toString())
 }

@@ -1,5 +1,9 @@
-import { funcs } from '../../../service/renderer.js'
-import { getText } from '../../../service/funcs.js'
+import {
+    funcs
+} from '../../../service/renderer.js'
+import {
+    getText
+} from '../../../service/funcs.js'
 import toast from '../toast.js'
 
 const Save = {
@@ -26,7 +30,7 @@ const Save = {
                 toast(getText('[NO_GAME_FOLDER]'))
                 return
             }
-        
+
             config.paths.initial = this.pathToInitial
             funcs.saveInitialSum()
             funcs.saveBackup(true)

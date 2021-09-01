@@ -1,52 +1,49 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>SnowRunner XML Editor {--VERSION--}</title>
-        <link rel="stylesheet" href="../styles/settings.css">
-        <script defer src="../scripts/modules/settings/main.js" type="module"></script>
-    </head>
-    <body>
-        <div id="main">
-            <label class="form-label" for="language-select">{{ t.LANGUAGE_MENU_ITEM_LABEL }}</label>
-            <select id="language-select" class="form-select" v-model='lang'>
-                <option
-                    v-for='lang in allLangs'
-                    :lang='lang'
-                >
-                    {{ lang }}
-                </option>
-            </select><br>
-        
-            <game-folder
-                :t='t'
-                v-model:path-to-initial='pathToInitial'
-            ></game-folder>
-        
-            <input type="checkbox" id="dev-mode" class="form-check-input" v-model='devMode'>
-            <label for="dev-mode" class="form-check-label">{{ t.DEV_MODE_LABEL }}</label><br>
-        
-            <input type="checkbox" id="ignore-updates" class="form-check-input" v-model='updates'>
-            <label for="ignore-updates" class="form-check-label">{{ t.UPDATES_LABEL }}</label><br>
-        
-            <input type="checkbox" id="disable-limits" class="form-check-input" v-model='limits'>
-            <label for="disable-limits" class="form-check-label">{{ t.LIMITS_LABEL }}</label><br>
-        
-            <input type="checkbox" id="disable-dlc" class="form-check-input" v-model='DLC'>
-            <label for="disable-dlc" class="form-check-label">{{ t.DLC_LABEL }}</label><br>
 
-            <input type="checkbox" id="disable-mods" class="form-check-input" v-model='mods'>
-            <label for="disable-mods" class="form-check-label">{{ t.MODS_LABEL }}</label><br>
-        
-            <input type="checkbox" id="hide-reset-button" class="form-check-input" v-model='resetButton'>
-            <label for="hide-reset-button" class="form-check-label">{{ t.RESET_BUTTON_LABEL }}</label><br>
-        
-            <button class="btn btn-primary" id="save-to-config" @click='save'>{{ t.SAVE_BUTTON }}</button>
-        
-            <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 5">
-                <div id="live-toast" class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
-                    <div class="toast-body"></div>
-                </div>
+<head>
+    <title>SnowRunner XML Editor {--VERSION--}</title>
+    <link rel="stylesheet" href="../styles/settings.css">
+    <script defer src="../scripts/modules/settings/main.js" type="module"></script>
+</head>
+
+<body>
+    <div id="main">
+        <label class="form-label" for="language-select">{{ t.LANGUAGE_MENU_ITEM_LABEL }}</label>
+        <select id="language-select" class="form-select" v-model='lang'>
+            <option v-for='lang in allLangs' :lang='lang'>
+                {{ lang }}
+            </option>
+        </select><br>
+
+        <game-folder :t='t' v-model:path-to-initial='pathToInitial'></game-folder>
+
+        <input type="checkbox" id="dev-mode" class="form-check-input" v-model='devMode'>
+        <label for="dev-mode" class="form-check-label">{{ t.DEV_MODE_LABEL }}</label><br>
+
+        <input type="checkbox" id="ignore-updates" class="form-check-input" v-model='updates'>
+        <label for="ignore-updates" class="form-check-label">{{ t.UPDATES_LABEL }}</label><br>
+
+        <input type="checkbox" id="disable-limits" class="form-check-input" v-model='limits'>
+        <label for="disable-limits" class="form-check-label">{{ t.LIMITS_LABEL }}</label><br>
+
+        <input type="checkbox" id="disable-dlc" class="form-check-input" v-model='DLC'>
+        <label for="disable-dlc" class="form-check-label">{{ t.DLC_LABEL }}</label><br>
+
+        <input type="checkbox" id="disable-mods" class="form-check-input" v-model='mods'>
+        <label for="disable-mods" class="form-check-label">{{ t.MODS_LABEL }}</label><br>
+
+        <input type="checkbox" id="hide-reset-button" class="form-check-input" v-model='resetButton'>
+        <label for="hide-reset-button" class="form-check-label">{{ t.RESET_BUTTON_LABEL }}</label><br>
+
+        <button class="btn btn-primary" id="save-to-config" @click='save'>{{ t.SAVE_BUTTON }}</button>
+
+        <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 5">
+            <div id="live-toast" class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-body"></div>
             </div>
         </div>
-    </body>
+    </div>
+</body>
+
 </html>

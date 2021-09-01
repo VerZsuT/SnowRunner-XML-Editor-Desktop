@@ -1,83 +1,88 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Processing</title>
-    </head>
-    <body>
-        <div id="file-name"></div>
-        <progress id="progress" value="0" max="100"></progress>
-        <p id="count">0</p>
 
-        <style>
-            body {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                height: 50px;
-            }
-            #count {
-                float: right;
-                margin-top: 35px;
-                display: none;
-            }
-            #progress {
-                width: 80%;
-                margin-top: 20px;
-                float: left;
-            }
-            #file-name {
-                display: none;
-                width: 100%;
-                text-align: center;
-                font-weight: bold;
-                font-size: 20px;
-                position: absolute;
-                top: 10px;
-            }
-        </style>
+<head>
+    <title>Processing</title>
+</head>
 
-        <script>
-            const $progress = document.querySelector('#progress')
-            const $count = document.querySelector('#count')
-            const $fileName = document.querySelector('#file-name')
+<body>
+    <div id="file-name"></div>
+    <progress id="progress" value="0" max="100"></progress>
+    <p id="count">0</p>
 
-            let count = null
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 50px;
+        }
 
-            ipcRenderer.once('count', (_e, msg) => {
-                count = msg
+        #count {
+            float: right;
+            margin-top: 35px;
+            display: none;
+        }
 
-                $count.innerText = `0/${count}`
-                $count.style.display = 'inline'
-            })
+        #progress {
+            width: 80%;
+            margin-top: 20px;
+            float: left;
+        }
+
+        #file-name {
+            display: none;
+            width: 100%;
+            text-align: center;
+            font-weight: bold;
+            font-size: 20px;
+            position: absolute;
+            top: 10px;
+        }
+    </style>
+
+    <script>
+        const $progress = document.querySelector('#progress')
+        const $count = document.querySelector('#count')
+        const $fileName = document.querySelector('#file-name')
+
+        let count = null
+
+        ipcRenderer.once('count', (_e, msg) => {
+            count = msg
+
+            $count.innerText = `0/${count}`
+            $count.style.display = 'inline'
+        })
 
 
-            ipcRenderer.once('download', () => {
-                clearInterval(interval)
-            })
+        ipcRenderer.once('download', () => {
+            clearInterval(interval)
+        })
 
-            ipcRenderer.on('success', () => {
-                $count.innerText = `${+$count.innerText.split('/')[0] + 1}/${count}`
+        ipcRenderer.on('success', () => {
+            $count.innerText = `${+$count.innerText.split('/')[0] + 1}/${count}`
+            $progress.value = 0
+        })
+
+        ipcRenderer.on('fileName', (_e, msg) => {
+            $fileName.innerText = msg
+            $fileName.style.display = 'block'
+        })
+
+        ipcRenderer.on('percent', (_event, message) => {
+            $progress.value = message
+        })
+
+        let interval = setInterval(() => {
+            const value = +$progress.value
+            if (value >= 100) {
                 $progress.value = 0
-            })
+            } else {
+                $progress.value += 1
+            }
+        }, 100)
+    </script>
+</body>
 
-            ipcRenderer.on('fileName', (_e, msg) => {
-                $fileName.innerText = msg
-                $fileName.style.display = 'block'
-            })
-
-            ipcRenderer.on('percent', (_event, message) => {
-                $progress.value = message
-            })
-
-            let interval = setInterval(() => {
-                const value = +$progress.value
-                if (value >= 100) {
-                    $progress.value = 0
-                }
-                else {
-                    $progress.value += 1
-                }
-            }, 100)
-        </script>
-    </body>
 </html>

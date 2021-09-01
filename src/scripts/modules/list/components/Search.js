@@ -1,4 +1,6 @@
-import { getText } from "../../../service/funcs.js"
+import {
+    getText
+} from "../../../service/funcs.js"
 
 const Search = {
     template: `

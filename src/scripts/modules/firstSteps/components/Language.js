@@ -1,4 +1,6 @@
-import { funcs } from '../../../service/renderer.js'
+import {
+    funcs
+} from '../../../service/renderer.js'
 
 const Language = {
     props: {
@@ -37,4 +39,3 @@ const Language = {
 }
 
 export default Language
-

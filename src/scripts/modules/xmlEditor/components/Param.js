@@ -48,7 +48,7 @@ const Param = {
         return {
             style: {
                 paddingLeft: `${this.tabs * 10}px`,
-                fontWeight: this.item.bold? 'bold' : 'normal'
+                fontWeight: this.item.bold ? 'bold' : 'normal'
             },
             lang: config.lang
         }
@@ -60,7 +60,7 @@ const Param = {
             if (!filter) {
                 return text
             }
-            
+
             const firstIndex = text.toLowerCase().indexOf(filter.toLowerCase())
             const lastIndex = firstIndex + filter.length
             return {

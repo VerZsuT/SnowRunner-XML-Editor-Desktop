@@ -1,9 +1,14 @@
-import { getIngameText, prettify } from "../../../service/funcs.js"
-import { funcs } from "../../../service/renderer.js"
+import {
+    getIngameText,
+    prettify
+} from "../../../service/funcs.js"
+import {
+    funcs
+} from "../../../service/renderer.js"
 
 const ListItem = {
     props: {
-        itemType: String, 
+        itemType: String,
         item: Object
     },
     template: `
@@ -99,13 +104,13 @@ const ListItem = {
         },
         error() {
             return (
-                this.DOM.querySelector('parsererror') || 
+                this.DOM.querySelector('parsererror') ||
                 (
-                    this.item.type === 'trucks' && 
-                    this.DOM.querySelector('Truck') && 
+                    this.item.type === 'trucks' &&
+                    this.DOM.querySelector('Truck') &&
                     this.DOM.querySelector('Truck').getAttribute('Type') === 'Trailer'
                 )
-            )   
+            )
         }
     }
 }

@@ -1,7 +1,23 @@
-const { dialog } = require('electron')
-const { existsSync, lstatSync, readdirSync, mkdirSync, readFileSync } = require('fs')
-const { join, dirname } = require('path')
-const { createHash } = require('crypto')
+const {
+    dialog
+} = require('electron')
+
+const {
+    existsSync,
+    lstatSync,
+    readdirSync,
+    mkdirSync,
+    readFileSync
+} = require('fs')
+
+const {
+    join,
+    dirname
+} = require('path')
+
+const {
+    createHash
+} = require('crypto')
 
 module.exports = {
     fromDir,
@@ -25,7 +41,7 @@ function parseStrings(data) {
     if (lines) {
         for (const line of lines) {
             const result = line.match(/(.*?)[\s\t]*(\".*?\")/)
-            
+
             if (result && result.length === 3) {
                 const key = result[1].replaceAll('"', '').replaceAll("'", '').replaceAll('﻿', '')
                 try {
@@ -37,23 +53,22 @@ function parseStrings(data) {
             }
         }
     }
-    
+
     return strings
 }
 
-function fromDir(startPath, onlyDirs=false, extension='.xml', inner=false) {
+function fromDir(startPath, onlyDirs = false, extension = '.xml', inner = false) {
     if (!existsSync(startPath)) return []
 
     let array = []
     const files = readdirSync(startPath)
-    for(let i = 0; i < files.length; i++) {
+    for (let i = 0; i < files.length; i++) {
         const filePath = join(startPath, files[i])
         const stat = lstatSync(filePath)
         if (onlyDirs) {
             if (!stat.isDirectory()) {
                 continue
-            }
-            else {
+            } else {
                 array.push({
                     name: files[i],
                     path: filePath
@@ -62,8 +77,7 @@ function fromDir(startPath, onlyDirs=false, extension='.xml', inner=false) {
         }
         if (stat.isDirectory() && inner) {
             array = [...array, ...fromDir(filePath, false, extension, true)]
-        }
-        else if (files[i].indexOf(extension) >= 0) {
+        } else if (files[i].indexOf(extension) >= 0) {
             array.push({
                 name: files[i].replace(extension, ''),
                 path: filePath
@@ -77,7 +91,10 @@ function fromDir(startPath, onlyDirs=false, extension='.xml', inner=false) {
 function openInitialDialog() {
     return dialog.showOpenDialogSync({
         properties: ['openFile'],
-        filters: [{name: 'Pak file', extensions: ['pak']}]
+        filters: [{
+            name: 'Pak file',
+            extensions: ['pak']
+        }]
     })
 }
 
@@ -99,7 +116,7 @@ function createDirForPath(path) {
     if (!existsSync(dirDirName)) {
         createDirForPath(dirName)
     }
-    
+
     if (!existsSync(dirName)) {
         mkdirSync(dirName)
     }

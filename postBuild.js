@@ -1,7 +1,21 @@
-const { execSync } = require('child_process')
-const { createHash } = require('crypto')
-const { renameSync, readdirSync, statSync, readFileSync, writeFileSync, rmdirSync, existsSync, rmSync } = require('fs')
-const { join } = require('path')
+const {
+    execSync
+} = require('child_process')
+const {
+    createHash
+} = require('crypto')
+const {
+    renameSync,
+    readdirSync,
+    statSync,
+    readFileSync,
+    writeFileSync,
+    existsSync,
+    rmSync
+} = require('fs')
+const {
+    join
+} = require('path')
 
 const paths = {
     out: join(__dirname, 'out'),
@@ -41,9 +55,13 @@ if (existsSync(paths.sxmle_updater)) {
     console.log('[POST_BUILD][STAGE_3]: Success.')
 
     console.log('[POST_BUILD][STAGE_3]: Adding files for auto update...')
-    rmSync(join(paths.sxmle_updater, 'files'), {recursive: true})
+    rmSync(join(paths.sxmle_updater, 'files'), {
+        recursive: true
+    })
     renameSync(join(paths.renamed, 'resources', 'app'), join(paths.sxmle_updater, 'files'))
-    rmSync(join(paths.renamed), {recursive: true})
+    rmSync(join(paths.renamed), {
+        recursive: true
+    })
     console.log('[POST_BUILD][STAGE_3]: Success.')
 }
 

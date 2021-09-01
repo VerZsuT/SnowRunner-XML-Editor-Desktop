@@ -1,5 +1,9 @@
-import { getText } from "../../../service/funcs.js"
-import { funcs } from "../../../service/renderer.js"
+import {
+    getText
+} from "../../../service/funcs.js"
+import {
+    funcs
+} from "../../../service/renderer.js"
 
 const Category = {
     props: {
@@ -34,4 +38,3 @@ const Category = {
 }
 
 export default Category
-

@@ -1,7 +1,14 @@
 require('../../../app/mainPreload.js')
-const { ipcRenderer } = require('electron')
-const { existsSync } = require('fs')
-const { join, basename } = require('path')
+const {
+    ipcRenderer
+} = require('electron')
+const {
+    existsSync
+} = require('fs')
+const {
+    join,
+    basename
+} = require('path')
 
 class Preload {
     #openDialog = () => ipcRenderer.sendSync('function_openDialog_call').value
@@ -9,7 +16,10 @@ class Preload {
 
     errorHandler = (text) => alert(getText(text))
     isModsSupport = () => {
-        return {profile: process.env.USERPROFILE, existed: existsSync(paths.mods)}
+        return {
+            profile: process.env.USERPROFILE,
+            existed: existsSync(paths.mods)
+        }
     }
 
     get gameFolder() {
@@ -33,12 +43,12 @@ class Preload {
                 break
             }
         }
-    
+
         if (!existed) {
             this.errorHandler('[INVALID_FOLDER_ERROR]')
             return
         }
-        
+
         return {
             folder: folder,
             initial: existed

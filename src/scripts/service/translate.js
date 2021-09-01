@@ -1,4 +1,9 @@
-import { getAll, removePars, getText, get } from './funcs.js'
+import {
+    getAll,
+    removePars,
+    getText,
+    get
+} from './funcs.js'
 
 const $title = get('title')
 const $main = get('#main')

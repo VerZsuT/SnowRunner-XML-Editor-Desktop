@@ -1,4 +1,12 @@
-import { Template, Group, Input, Select, Opt, Selectors, Selector } from '../service/templateItems.js'
+import {
+	Template,
+	Group,
+	Input,
+	Select,
+	Opt,
+	Selectors,
+	Selector
+} from '../service/templateItems.js'
 
 const desc = {
 	Price: {
@@ -36,68 +44,68 @@ const desc = {
 const suspension = {
 	main: [
 		Template({
-			type: 'Multiply', 
+			type: 'Multiply',
 			itemSelector: '[SUSPENSION_SET]'
 		}, [
 			Group({
-				nameType: 'Computed', 
-				nameSelector: '[SUSPENSION_SET_ITEM_TEXT]', 
-				resNameSelector: '[SUSPENSION_SET_ITEM]', 
-				nameAttribute: 'UiName', 
-				resNameAttribute: 'Name', 
+				nameType: 'Computed',
+				nameSelector: '[SUSPENSION_SET_ITEM_TEXT]',
+				resNameSelector: '[SUSPENSION_SET_ITEM]',
+				nameAttribute: 'UiName',
+				resNameAttribute: 'Name',
 				defaultSelector: '[SUSPENSION_SET_ITEM]'
 			}, [
 				Input({
-					attribute: 'Name', 
-					text: '[ID]', 
-					type: 'text', 
+					attribute: 'Name',
+					text: '[ID]',
+					type: 'text',
 					onlyDeveloper: 'true',
 					desc: desc.Name
 				}),
 				Input({
-					attribute: 'CriticalDamageThreshold', 
-					text: '[CRITICAL_DAMAGE_THRESHOLD]', 
-					numberType: 'float', 
+					attribute: 'CriticalDamageThreshold',
+					text: '[CRITICAL_DAMAGE_THRESHOLD]',
+					numberType: 'float',
 					max: '0.999',
 					default: '0.7',
 					desc: desc.CriticalDamageThreshold
 				}),
 				Input({
-					attribute: 'DamageCapacity', 
-					text: '[DAMAGE_CAPACITY]', 
-					max: '64000', 
+					attribute: 'DamageCapacity',
+					text: '[DAMAGE_CAPACITY]',
+					max: '64000',
 					default: 0,
 					bold: true,
 					desc: desc.DamageCapacity
 				}),
 				Group({
-					name: '[UNLOCK_GROUP_NAME]', 
+					name: '[UNLOCK_GROUP_NAME]',
 					defaultSelector: '[GAME_DATA]'
 				}, [
 					Input({
-						attribute: 'Price', 
-						text: '[PRICE]', 
+						attribute: 'Price',
+						text: '[PRICE]',
 						bold: true,
 						desc: desc.Price
 					}),
 					Select({
-						attribute: 'UnlockByExploration', 
-						text: '[BY_EXPLORATION]', 
+						attribute: 'UnlockByExploration',
+						text: '[BY_EXPLORATION]',
 						onlyDeveloper: 'true',
 						desc: desc.UnlockByExporation
 					}, [
 						Opt({
-							text: '[FIND_ON_MAP]', 
+							text: '[FIND_ON_MAP]',
 							value: 'true'
 						}),
 						Opt({
-							text: '[BY_RANK]', 
+							text: '[BY_RANK]',
 							value: 'false'
 						})
 					]),
 					Input({
-						attribute: 'UnlockByRank', 
-						text: '[BY_RANK_LEVEL]', 
+						attribute: 'UnlockByRank',
+						text: '[BY_RANK_LEVEL]',
 						min: 1,
 						desc: desc.UnlockByRank
 					})
@@ -105,10 +113,22 @@ const suspension = {
 			])
 		]),
 		Selectors([
-			Selector({id: 'SUSPENSION_SET', value: 'SuspensionSetVariants.SuspensionSet'}),
-			Selector({id: 'SUSPENSION_SET_ITEM', value: '{SUSPENSION_SET}#every'}),
-			Selector({id: 'SUSPENSION_SET_ITEM_TEXT', value: '{SUSPENSION_SET_ITEM}.GameData.UiDesc'}),
-			Selector({id: 'GAME_DATA', value: '{SUSPENSION_SET_ITEM}.GameData'})
+			Selector({
+				id: 'SUSPENSION_SET',
+				value: 'SuspensionSetVariants.SuspensionSet'
+			}),
+			Selector({
+				id: 'SUSPENSION_SET_ITEM',
+				value: '{SUSPENSION_SET}#every'
+			}),
+			Selector({
+				id: 'SUSPENSION_SET_ITEM_TEXT',
+				value: '{SUSPENSION_SET_ITEM}.GameData.UiDesc'
+			}),
+			Selector({
+				id: 'GAME_DATA',
+				value: '{SUSPENSION_SET_ITEM}.GameData'
+			})
 		])
 	],
 	selector: 'SuspensionSetVariants',

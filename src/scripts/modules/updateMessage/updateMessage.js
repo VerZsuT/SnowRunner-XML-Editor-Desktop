@@ -1,12 +1,19 @@
-import { get, getText } from '../../service/funcs.js'
-import { funcs } from '../../service/renderer.js'
-import { createApp } from '../../vue/vue.esm-browser.js'
+import {
+    get,
+    getText
+} from '../../service/funcs.js'
+import {
+    funcs
+} from '../../service/renderer.js'
+import {
+    createApp
+} from '../../vue/vue.esm-browser.js'
 
 const $header = get('#header')
 
 const App = {
     data() {
-        return  {
+        return {
             t: new Proxy({}, {
                 get(_, propName) {
                     return getText(propName)
@@ -38,4 +45,3 @@ const App = {
 createApp(App).mount('#main')
 document.title = document.title.replace('{--VERSION--}', `v${config.version}`)
 document.querySelector('#main').style.display = 'block'
-

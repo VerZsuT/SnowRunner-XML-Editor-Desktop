@@ -1,7 +1,14 @@
 require('../../../app/mainPreload.js')
-const { ipcRenderer } = require('electron')
-const { existsSync, readdirSync } = require('fs')
-const { join } = require('path')
+const {
+    ipcRenderer
+} = require('electron')
+const {
+    existsSync,
+    readdirSync
+} = require('fs')
+const {
+    join
+} = require('path')
 
 window.preload = {
     existsSync: existsSync,

@@ -1,35 +1,32 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>SnowRunner XML Editor {--VERSION--}</title>
-        <link rel='stylesheet' href='../styles/firstSteps.css'>
-        <script defer src='../scripts/modules/firstSteps/main.js' type='module'></script>
-    </head>
-    <body>
-        <div id='main'>
-            <header>
-                <h2 class='h2'>{{ t.FIRST_STEPS_DESCRIPTION }}</h2>
-            </header>
 
-            <div class='steps'>
-                <language :t='t'></language>
-                
-                <game-folder
-                    :t='t'
-                    v-model:path-to-initial='pathToInitial'
-                ></game-folder>
+<head>
+    <title>SnowRunner XML Editor {--VERSION--}</title>
+    <link rel='stylesheet' href='../styles/firstSteps.css'>
+    <script defer src='../scripts/modules/firstSteps/main.js' type='module'></script>
+</head>
 
-                <save
-                    :t='t'
-                    :path-to-initial='pathToInitial'
-                ></save>
-            </div>
+<body>
+    <div id='main'>
+        <header>
+            <h2 class='h2'>{{ t.FIRST_STEPS_DESCRIPTION }}</h2>
+        </header>
+
+        <div class='steps'>
+            <language :t='t'></language>
+
+            <game-folder :t='t' v-model:path-to-initial='pathToInitial'></game-folder>
+
+            <save :t='t' :path-to-initial='pathToInitial'></save>
         </div>
+    </div>
 
-        <div class='position-fixed bottom-0 end-0 p-3' style='z-index: 5'>
-            <div id='live-toast' class='toast show' role='alert' aria-live='assertive' aria-atomic='true'>
-                <div class='toast-body'></div>
-            </div>
+    <div class='position-fixed bottom-0 end-0 p-3' style='z-index: 5'>
+        <div id='live-toast' class='toast show' role='alert' aria-live='assertive' aria-atomic='true'>
+            <div class='toast-body'></div>
         </div>
-    </body>
+    </div>
+</body>
+
 </html>

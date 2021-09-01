@@ -1,4 +1,12 @@
-import { Template, Group, Input, Select, Opt, Selectors, Selector } from '../service/templateItems.js'
+import {
+	Template,
+	Group,
+	Input,
+	Select,
+	Opt,
+	Selectors,
+	Selector
+} from '../service/templateItems.js'
 
 const desc = {
 	UiName: {
@@ -174,77 +182,77 @@ const truck = {
 				defaultSelector: '[TRUCK_DATA]'
 			}, [
 				Input({
-					attribute: 'BackSteerSpeed', 
-					text: '[BACK_STEER_SPEED]', 
-					numberType: 'float', 
-					max: '1.0', 
+					attribute: 'BackSteerSpeed',
+					text: '[BACK_STEER_SPEED]',
+					numberType: 'float',
+					max: '1.0',
 					desc: desc.BackSteerSpeed
 				}),
 				Input({
-					attribute: 'SteerSpeed', 
-					text: '[STEER_SPEED]', 
-					numberType: 'float', 
+					attribute: 'SteerSpeed',
+					text: '[STEER_SPEED]',
+					numberType: 'float',
 					bold: true,
 					desc: desc.SteerSpeed
 				})
 			]),
 			Group({
-				name: '[WINCH_GROUP_NAME]', 
+				name: '[WINCH_GROUP_NAME]',
 				defaultSelector: '[WINCH]'
 			}, [
 				Input({
-					attribute: 'Default', 
-					text: '[DEFAULT_WINCH]', 
-					type: 'text', 
+					attribute: 'Default',
+					text: '[DEFAULT_WINCH]',
+					type: 'text',
 					onlyDeveloper: 'true',
 					desc: desc.DefaultWinch
 				}),
 				Select({
-					attribute: 'IsUpgradable', 
+					attribute: 'IsUpgradable',
 					text: '[IS_UPGRADABLE]',
 					desc: desc.IsUpgradable
 				}, [
 					Opt({
-						text: '[ALLOW]', 
+						text: '[ALLOW]',
 						value: 'true'
 					}),
 					Opt({
-						text: '[NOT_ALLOW]', 
+						text: '[NOT_ALLOW]',
 						value: 'false'
 					})
 				]),
 				Input({
-					attribute: 'Type', 
-					text: '[WINCHES_FILE]', 
-					type: 'file', 
-					fileType: 'winches', 
+					attribute: 'Type',
+					text: '[WINCHES_FILE]',
+					type: 'file',
+					fileType: 'winches',
 					bold: true,
 					desc: desc.WinchesFile
 				})
 			]),
 			Group({
-				name: '[WHEELS_GROUP_NAME]', 
+				name: '[WHEELS_GROUP_NAME]',
 				defaultSelector: '[WHEELS]'
 			}, [
 				Input({
-					attribute: 'DefaultRim', 
-					text: '[DEFAULT_RIM]', 
-					type: 'text', 
+					attribute: 'DefaultRim',
+					text: '[DEFAULT_RIM]',
+					type: 'text',
 					onlyDeveloper: 'true',
 					desc: desc.DefaultRim
 				}),
 				Input({
-					attribute: 'DefaultTire', 
-					text: '[DEFAULT_TIRE]', 
-					type: 'text', 
+					attribute: 'DefaultTire',
+					text: '[DEFAULT_TIRE]',
+					type: 'text',
 					onlyDeveloper: 'true',
 					desc: desc.DefaultTire
 				}),
 				Input({
-					attribute: 'DefaultWheelType', 
-					text: '[TIRES_FILE]', 
-					type: 'file', 
-					fileType: 'wheels', 
+					attribute: 'DefaultWheelType',
+					text: '[TIRES_FILE]',
+					type: 'file',
+					fileType: 'wheels',
 					bold: true,
 					desc: desc.DefaultWheelType
 				}),
@@ -266,8 +274,14 @@ const truck = {
 								default: 'front',
 								desc: desc.Location
 							}, [
-								Opt({text: '[FRONT]', value: 'front'}),
-								Opt({text: '[REAR]', value: 'rear'})
+								Opt({
+									text: '[FRONT]',
+									value: 'front'
+								}),
+								Opt({
+									text: '[REAR]',
+									value: 'rear'
+								})
 							]),
 							Select({
 								attribute: 'Torque',
@@ -275,10 +289,22 @@ const truck = {
 								default: 'none',
 								desc: desc.Torque
 							}, [
-								Opt({text: '[TORQUE_DEFAULT]', value: 'default'}),
-								Opt({text: '[TORQUE_FULL]', value: 'full'}),
-								Opt({text: '[TORQUE_NONE]', value: 'none'}),
-								Opt({text: '[TORQUE_CONNECTABLE]', value: 'connectable'})
+								Opt({
+									text: '[TORQUE_DEFAULT]',
+									value: 'default'
+								}),
+								Opt({
+									text: '[TORQUE_FULL]',
+									value: 'full'
+								}),
+								Opt({
+									text: '[TORQUE_NONE]',
+									value: 'none'
+								}),
+								Opt({
+									text: '[TORQUE_CONNECTABLE]',
+									value: 'connectable'
+								})
 							]),
 							Input({
 								attribute: 'SteeringAngle',
@@ -294,7 +320,7 @@ const truck = {
 				])
 			]),
 			Group({
-				name: '[SUSPENSION_GROUP_NAME]', 
+				name: '[SUSPENSION_GROUP_NAME]',
 				defaultSelector: '[SUSPENSION]'
 			}, [
 				Input({
@@ -305,29 +331,29 @@ const truck = {
 					desc: desc.CenterOfMass
 				}),
 				Input({
-					attribute: 'Default', 
-					text: '[DEFAULT_SUSPENSION]', 
-					type: 'text', 
+					attribute: 'Default',
+					text: '[DEFAULT_SUSPENSION]',
+					type: 'text',
 					onlyDeveloper: 'true',
 					desc: desc.DefaultSuspension
 				}),
 				Input({
-					attribute: 'Type', 
-					text: '[SUSPENSIONS_FILE]', 
-					type: 'file', 
-					fileType: 'suspensions', 
+					attribute: 'Type',
+					text: '[SUSPENSIONS_FILE]',
+					type: 'file',
+					fileType: 'suspensions',
 					bold: true,
 					desc: desc.SuspensionsFile
 				}),
 				Select({
-					attribute: 'DiffLockType', 
-					text: '[DIFF_LOCK]', 
-					selector: '[TRUCK_DATA]', 
+					attribute: 'DiffLockType',
+					text: '[DIFF_LOCK]',
+					selector: '[TRUCK_DATA]',
 					bold: true,
 					desc: desc.DiffLock
 				}, [
 					Opt({
-						text: '[NONE]', 
+						text: '[NONE]',
 						value: 'None'
 					}),
 					Opt({
@@ -335,105 +361,105 @@ const truck = {
 						value: 'Installed'
 					}),
 					Opt({
-						text: '[UNINSTALLED]', 
+						text: '[UNINSTALLED]',
 						value: 'Uninstalled'
 					}),
 					Opt({
-						text: '[ALWAYS]', 
+						text: '[ALWAYS]',
 						value: 'Always'
 					})
 				])
 			]),
 			Group({
-				name: '[GEARBOX_GROUP_NAME]', 
+				name: '[GEARBOX_GROUP_NAME]',
 				defaultSelector: '[GEARBOX]'
 			}, [
 				Input({
-					attribute: 'Default', 
-					text: '[DEFAULT_GEARBOX]', 
-					type: 'text', 
+					attribute: 'Default',
+					text: '[DEFAULT_GEARBOX]',
+					type: 'text',
 					onlyDeveloper: 'true',
 					desc: desc.DefaultGearbox
 				}),
 				Input({
-					attribute: 'Type', 
-					text: '[GEARBOXES_FILE]', 
-					type: 'file', 
-					fileType: 'gearboxes', 
+					attribute: 'Type',
+					text: '[GEARBOXES_FILE]',
+					type: 'file',
+					fileType: 'gearboxes',
 					bold: true,
 					desc: desc.GearboxesFile
 				})
 			]),
 			Group({
-				name: '[ENGINE_GROUP_NAME]', 
+				name: '[ENGINE_GROUP_NAME]',
 				defaultSelector: '[ENGINE]'
 			}, [
 				Input({
-					attribute: 'Default', 
-					text: '[DEFAULT_ENGINE]', 
-					type: 'text', 
+					attribute: 'Default',
+					text: '[DEFAULT_ENGINE]',
+					type: 'text',
 					onlyDeveloper: 'true',
 					desc: desc.DefaultEngine
 				}),
 				Input({
-					attribute: 'Type', 
-					text: '[ENGINES_FILE]', 
-					type: 'file', 
-					fileType: 'engines', 
+					attribute: 'Type',
+					text: '[ENGINES_FILE]',
+					type: 'file',
+					fileType: 'engines',
 					bold: true,
 					desc: desc.EnginesFile
 				}),
 				Input({
-					attribute: 'EngineStartDelay', 
-					text: '[ENGINE_START_DELAY]', 
-					selector: '[TRUCK_DATA]', 
-					numberType: 'float', 
+					attribute: 'EngineStartDelay',
+					text: '[ENGINE_START_DELAY]',
+					selector: '[TRUCK_DATA]',
+					numberType: 'float',
 					max: '8.0',
 					desc: desc.EngineStartDelay
 				}),
 				Input({
-					attribute: 'ExhaustStartTime', 
-					text: '[EXHAUST_START_TIME]', 
-					selector: '[TRUCK_DATA]', 
+					attribute: 'ExhaustStartTime',
+					text: '[EXHAUST_START_TIME]',
+					selector: '[TRUCK_DATA]',
 					numberType: 'float',
 					desc: desc.ExhaustStartTime
 				})
 			]),
 			Group({
-				name: '[FUEL_GROUP_NAME]', 
+				name: '[FUEL_GROUP_NAME]',
 				defaultSelector: '[FUEL_TANK]'
 			}, [
 				Input({
-					attribute: 'DamageCapacity', 
-					text: '[DAMAGE_CAPACITY]', 
+					attribute: 'DamageCapacity',
+					text: '[DAMAGE_CAPACITY]',
 					max: '64000',
 					default: 0,
 					desc: desc.DamageCapacity
 				}),
 				Input({
-					attribute: 'FuelCapacity', 
-					text: '[FUEL_CAPACITY]', 
-					selector: '[TRUCK_DATA]', 
+					attribute: 'FuelCapacity',
+					text: '[FUEL_CAPACITY]',
+					selector: '[TRUCK_DATA]',
 					bold: true,
 					desc: desc.FuelCapacity
 				})
 			]),
 			Group({
-				name: '[UNLOCK_GROUP_NAME]', 
+				name: '[UNLOCK_GROUP_NAME]',
 				defaultSelector: '[GAME_DATA]'
 			}, [
 				Select({
-					attribute: 'Country', 
-					text: '[COUNTRY]', 
+					attribute: 'Country',
+					text: '[COUNTRY]',
 					bold: true,
 					desc: desc.Country
 				}, [
 					Opt({
-						text: '[RUSSIA]', 
+						text: '[RUSSIA]',
 						value: 'RU'
 					}),
 					Opt({
-						text: '[USA]', 
+						text: '[USA]',
 						value: 'US'
 					}),
 					Opt({
@@ -442,54 +468,96 @@ const truck = {
 					})
 				]),
 				Input({
-					attribute: 'Price', 
-					text: '[PRICE]', 
+					attribute: 'Price',
+					text: '[PRICE]',
 					bold: true,
 					desc: desc.Price
 				}),
 				Select({
-					attribute: 'UnlockByExploration', 
+					attribute: 'UnlockByExploration',
 					text: '[BY_EXPLORATION]',
 					desc: desc.ByExporation
 				}, [
 					Opt({
-						text: '[FIND_ON_MAP]', 
+						text: '[FIND_ON_MAP]',
 						value: 'true'
 					}),
 					Opt({
-						text: '[BY_RANK]', 
+						text: '[BY_RANK]',
 						value: 'false'
 					})
 				]),
 				Input({
-					attribute: 'UnlockByRank', 
-					text: '[BY_RANK_LEVEL]', 
+					attribute: 'UnlockByRank',
+					text: '[BY_RANK_LEVEL]',
 					min: 1,
 					desc: desc.ByRankLevel
 				})
 			])
 		]),
 		Selectors([
-			Selector({id: 'TRUCK_DATA', value: 'Truck.TruckData'}),
-			Selector({id: 'GAME_DATA', value: 'Truck.GameData'}),
-			Selector({id: 'UIDESC', value: '{GAME_DATA}.UiDesc'}),
-			Selector({id: 'WHEELS', value: '{TRUCK_DATA}.Wheels'}),
-			Selector({id: 'COMPATIBLE_WHEELS', value: '{TRUCK_DATA}.CompatibleWheels'}),
-			Selector({id: 'COMPATIBLE_WHEELS_ITEM', value: '{COMPATIBLE_WHEELS}#every'}),
-			Selector({id: 'WINCH', value: '{TRUCK_DATA}.WinchUpgradeSocket'}),
-			Selector({id: 'SUSPENSION', value: '{TRUCK_DATA}.SuspensionSocket'}),
-			Selector({id: 'GEARBOX', value: '{TRUCK_DATA}.GearboxSocket'}),
-			Selector({id: 'ENGINE', value: '{TRUCK_DATA}.EngineSocket'}),
-			Selector({id: 'FUEL_TANK', value: '{TRUCK_DATA}.FuelTank'}),
-			Selector({id: 'PHYSICS_BODY', value: 'Truck.PhysicsModel.Body'}),
-			Selector({id: 'WHEEL', value: '{WHEELS}.Wheel'}),
-			Selector({id: 'WHEEL_ITEM', value: '{WHEEL}#every'})
+			Selector({
+				id: 'TRUCK_DATA',
+				value: 'Truck.TruckData'
+			}),
+			Selector({
+				id: 'GAME_DATA',
+				value: 'Truck.GameData'
+			}),
+			Selector({
+				id: 'UIDESC',
+				value: '{GAME_DATA}.UiDesc'
+			}),
+			Selector({
+				id: 'WHEELS',
+				value: '{TRUCK_DATA}.Wheels'
+			}),
+			Selector({
+				id: 'COMPATIBLE_WHEELS',
+				value: '{TRUCK_DATA}.CompatibleWheels'
+			}),
+			Selector({
+				id: 'COMPATIBLE_WHEELS_ITEM',
+				value: '{COMPATIBLE_WHEELS}#every'
+			}),
+			Selector({
+				id: 'WINCH',
+				value: '{TRUCK_DATA}.WinchUpgradeSocket'
+			}),
+			Selector({
+				id: 'SUSPENSION',
+				value: '{TRUCK_DATA}.SuspensionSocket'
+			}),
+			Selector({
+				id: 'GEARBOX',
+				value: '{TRUCK_DATA}.GearboxSocket'
+			}),
+			Selector({
+				id: 'ENGINE',
+				value: '{TRUCK_DATA}.EngineSocket'
+			}),
+			Selector({
+				id: 'FUEL_TANK',
+				value: '{TRUCK_DATA}.FuelTank'
+			}),
+			Selector({
+				id: 'PHYSICS_BODY',
+				value: 'Truck.PhysicsModel.Body'
+			}),
+			Selector({
+				id: 'WHEEL',
+				value: '{WHEELS}.Wheel'
+			}),
+			Selector({
+				id: 'WHEEL_ITEM',
+				value: '{WHEEL}#every'
+			})
 		])
 	],
 	selector: 'Truck',
 	translation: {
 		EN: {
-			PHYSICS_WHEELS:'Wheels (physical)',
+			PHYSICS_WHEELS: 'Wheels (physical)',
 			WHEEL: 'Wheel',
 			WHEEL_TYPE: 'Type',
 			FRONT: 'Front',
@@ -618,7 +686,7 @@ const truck = {
 			REAR: 'Hinten',
 			TORQUE: 'Torsionsart',
 			TORQUE_DEFAULT: 'Immer Moderator',
-			TORQUE_FULL:'Allradantrieb',
+			TORQUE_FULL: 'Allradantrieb',
 			TORQUE_NONE: 'Slave',
 			TORQUE_CONNECTABLE: 'Definiert durch Addon',
 			STEERING_ANGLE: 'Drehwinkel',

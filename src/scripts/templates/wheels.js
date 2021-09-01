@@ -1,4 +1,12 @@
-import { Template, Group, Input, Select, Opt, Selectors, Selector } from '../service/templateItems.js'
+import {
+	Template,
+	Group,
+	Input,
+	Select,
+	Opt,
+	Selectors,
+	Selector
+} from '../service/templateItems.js'
 
 const desc = {
 	Price: {
@@ -46,99 +54,100 @@ const desc = {
 const wheels = {
 	main: [
 		Template({
-			type: 'Multiply', 
+			type: 'Multiply',
 			itemSelector: '[TRUCK_TIRE]'
 		}, [
 			Group({
-				nameType: 'Computed', 
-				nameSelector: '[TRUCK_TIRE_ITEM_TEXT]', 
-				resNameSelector: '[TRUCK_TIRE_ITEM]', 
-				nameAttribute: 'UiName', 
-				resNameAttribute: 'Name', 
+				nameType: 'Computed',
+				nameSelector: '[TRUCK_TIRE_ITEM_TEXT]',
+				resNameSelector: '[TRUCK_TIRE_ITEM]',
+				nameAttribute: 'UiName',
+				resNameAttribute: 'Name',
 				defaultSelector: '[WHEEL_FRICTION]'
 			}, [
 				Input({
-					attribute: 'Name', 
-					text: '[ID]', 
-					type: 'text', 
-					onlyDeveloper: 'true', 
+					attribute: 'Name',
+					text: '[ID]',
+					type: 'text',
+					onlyDeveloper: 'true',
 					selector: 'TRUCK_TIRE_ITEM',
 					desc: desc.Name
 				}),
 				Input({
-					attribute: 'BodyFriction', 
-					text: '[BODY_FRICTION]', 
-					numberType: 'float', 
-					max: '10', 
-					bold: true, 
+					attribute: 'BodyFriction',
+					text: '[BODY_FRICTION]',
+					numberType: 'float',
+					max: '10',
+					bold: true,
 					canAddTag: true,
 					default: 1,
 					desc: desc.BodyFriction
 				}),
 				Input({
-					attribute: 'BodyFrictionAsphalt', 
-					text: '[BODY_FRICTION_ASPHALT]', 
-					numberType: 'float', 
-					max: '10', 
-					bold: true, 
+					attribute: 'BodyFrictionAsphalt',
+					text: '[BODY_FRICTION_ASPHALT]',
+					numberType: 'float',
+					max: '10',
+					bold: true,
 					canAddTag: true,
 					default: 1,
 					desc: desc.BodyFrictionAsphalt
 				}),
 				Input({
-					attribute: 'SubstanceFriction', 
-					text: '[SUBSTANCE_FRICTION]', 
-					numberType: 'float', 
-					max: '10', 
-					bold: true, 
+					attribute: 'SubstanceFriction',
+					text: '[SUBSTANCE_FRICTION]',
+					numberType: 'float',
+					max: '10',
+					bold: true,
 					canAddTag: true,
 					default: 1,
 					desc: desc.SubstanceFriction
 				}),
 				Select({
-					attribute: 'IsIgnoreIce', 
-					text: '[IS_IGNORE_ICE]', 
-					bold: true, canAddTag: true,
+					attribute: 'IsIgnoreIce',
+					text: '[IS_IGNORE_ICE]',
+					bold: true,
+					canAddTag: true,
 					default: 'false',
 					desc: desc.IsIgnoreIce
 				}, [
 					Opt({
-						text: '[YES]', 
+						text: '[YES]',
 						value: 'true'
 					}),
 					Opt({
-						text: '[NO]', 
+						text: '[NO]',
 						value: 'false'
 					})
 				]),
 				Group({
-					name: '[UNLOCK_GROUP_NAME]', 
+					name: '[UNLOCK_GROUP_NAME]',
 					defaultSelector: '[GAME_DATA]'
 				}, [
 					Input({
-						attribute: 'Price', 
-						text: '[PRICE]', 
+						attribute: 'Price',
+						text: '[PRICE]',
 						bold: true,
 						desc: desc.Price
 					}),
 					Select({
-						attribute: 'UnlockByExploration', 
-						text: '[BY_EXPLORATION]', 
+						attribute: 'UnlockByExploration',
+						text: '[BY_EXPLORATION]',
 						onlyDeveloper: 'true',
 						desc: desc.UnlockByExporation
 					}, [
 						Opt({
-							text: '[FIND_ON_MAP]', 
+							text: '[FIND_ON_MAP]',
 							value: 'true'
 						}),
 						Opt({
-							text: '[BY_RANK]', 
+							text: '[BY_RANK]',
 							value: 'false'
 						})
 					]),
 					Input({
-						attribute: 'UnlockByRank', 
-						text: '[BY_RANK_LEVEL]', 
+						attribute: 'UnlockByRank',
+						text: '[BY_RANK_LEVEL]',
 						min: 1,
 						desc: desc.UnlockByRank
 					})
@@ -146,12 +155,30 @@ const wheels = {
 			])
 		]),
 		Selectors([
-			Selector({id: 'TRUCK_WHEELS', value: 'TruckWheels'}),
-			Selector({id: 'TRUCK_TIRE', value: 'TruckWheels.TruckTires.TruckTire'}),
-			Selector({id: 'TRUCK_TIRE_ITEM', value: '{TRUCK_TIRE}#every'}),
-			Selector({id: 'TRUCK_TIRE_ITEM_TEXT', value: '{TRUCK_TIRE_ITEM}.GameData.UiDesc'}),
-			Selector({id: 'WHEEL_FRICTION', value: '{TRUCK_TIRE_ITEM}.WheelFriction'}),
-			Selector({id: 'GAME_DATA', value: '{TRUCK_TIRE_ITEM}.GameData'})
+			Selector({
+				id: 'TRUCK_WHEELS',
+				value: 'TruckWheels'
+			}),
+			Selector({
+				id: 'TRUCK_TIRE',
+				value: 'TruckWheels.TruckTires.TruckTire'
+			}),
+			Selector({
+				id: 'TRUCK_TIRE_ITEM',
+				value: '{TRUCK_TIRE}#every'
+			}),
+			Selector({
+				id: 'TRUCK_TIRE_ITEM_TEXT',
+				value: '{TRUCK_TIRE_ITEM}.GameData.UiDesc'
+			}),
+			Selector({
+				id: 'WHEEL_FRICTION',
+				value: '{TRUCK_TIRE_ITEM}.WheelFriction'
+			}),
+			Selector({
+				id: 'GAME_DATA',
+				value: '{TRUCK_TIRE_ITEM}.GameData'
+			})
 		])
 	],
 	selector: 'TruckWheels',

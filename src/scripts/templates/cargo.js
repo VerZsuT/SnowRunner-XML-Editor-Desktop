@@ -1,4 +1,10 @@
-import { Template, Group, Input, Selectors, Selector } from '../service/templateItems.js'
+import {
+	Template,
+	Group,
+	Input,
+	Selectors,
+	Selector
+} from '../service/templateItems.js'
 
 const desc = {
 	Mass: {
@@ -27,11 +33,11 @@ const cargo = {
 	main: [
 		Template({}, [
 			Group({
-				name: '[PART]', 
+				name: '[PART]',
 				defaultSelector: '[CARGO_PART_ITEM]'
 			}, [
 				Template({
-					type: 'Multiply', 
+					type: 'Multiply',
 					itemSelector: '[CARGO_PART]'
 				}, [
 					Input({
@@ -42,26 +48,26 @@ const cargo = {
 				])
 			]),
 			Group({
-				name: '[MAIN]', 
+				name: '[MAIN]',
 				defaultSelector: '[SLOT]'
 			}, [
 				Input({
-					attribute: 'CargoLength', 
-					text: '[LENGTH]', 
+					attribute: 'CargoLength',
+					text: '[LENGTH]',
 					onlyDeveloper: 'true',
 					desc: desc.CargoLenght
 				}),
 				Input({
-					attribute: 'CargoType', 
-					onlyDeveloper: 'true', 
-					type: 'text', 
+					attribute: 'CargoType',
+					onlyDeveloper: 'true',
+					type: 'text',
 					text: '[TYPE]',
 					desc: desc.CargoType
 				}),
 				Input({
-					type: 'coordinates', 
-					onlyDeveloper: 'true', 
-					attribute: 'Offset', 
+					type: 'coordinates',
+					onlyDeveloper: 'true',
+					attribute: 'Offset',
 					text: '[OFFSET]',
 					desc: desc.Offset
 				})
@@ -69,15 +75,15 @@ const cargo = {
 		]),
 		Selectors([
 			Selector({
-				id: 'CARGO_PART', 
+				id: 'CARGO_PART',
 				value: 'Body'
 			}),
 			Selector({
-				id: 'CARGO_PART_ITEM', 
+				id: 'CARGO_PART_ITEM',
 				value: 'Body#every'
 			}),
 			Selector({
-				id: 'SLOT', 
+				id: 'SLOT',
 				value: 'TruckAddon.GameData.InstallSlot'
 			})
 		])
