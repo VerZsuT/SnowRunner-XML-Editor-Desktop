@@ -1,12 +1,8 @@
-import {
-    funcs
-} from '../../../service/renderer.js'
-import {
-    getText
-} from '../../../service/funcs.js'
-import toast from '../toast.js'
+import mainProcess from '../../../service/mainProcess.js';
+import {getText} from '../../../service/funcs.js';
+import toast from '../toast.js';
 
-const Save = {
+export default {
     props: {
         t: Object,
         pathToInitial: String
@@ -22,20 +18,18 @@ const Save = {
                 'margin-top': '20px',
                 'margin-bottom': '60px'
             }
-        }
+        };
     },
     methods: {
         save() {
             if (!this.pathToInitial) {
-                toast(getText('[NO_GAME_FOLDER]'))
-                return
+                toast(getText('[NO_GAME_FOLDER]'));
+                return;
             }
 
-            config.paths.initial = this.pathToInitial
-            funcs.saveInitialSum()
-            funcs.saveBackup(true)
+            config.paths.initial = this.pathToInitial;
+            mainProcess.saveInitialSum();
+            mainProcess.saveBackup(true);
         }
     }
-}
-
-export default Save
+};

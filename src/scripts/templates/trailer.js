@@ -2,61 +2,11 @@ import {
 	Template,
 	Group,
 	Input,
-	Select,
-	Opt,
 	Selectors,
 	Selector
-} from '../service/templateItems.js'
+} from '../service/templateItems.js';
 
-const desc = {
-	Price: {
-		RU: 'Цена самого автомобиля (без учёта составляющих)',
-		EN: 'Der Preis des Autos selbst (ohne die Komponenten)',
-		DE: 'The price of the car itself (excluding components)'
-	},
-	UnlockByExporation: {
-		RU: 'Способ разблокировки автомобиля',
-		EN: 'How to unlock the car',
-		DE: 'Methode zum Entsperren des Autos'
-	},
-	UnlockByRank: {
-		RU: 'Уровень разблокировки автомобиля',
-		EN: 'Car Unlock Level',
-		DE: 'Auto entsperren Ebene'
-	},
-	FuelCapacity: {
-		RU: 'Кол-во топлива у прицепа',
-		EN: 'Fuel quantity of the trailer',
-		DE: 'Kraftstoffmenge am Anhänger'
-	},
-	RepairsCapacity: {
-		RU: 'Кол-во запчастей у прицепа',
-		EN: 'Number of spare parts for the trailer',
-		DE: 'Anzahl der Ersatzteile am Anhänger'
-	},
-	WheelRepairsCapacity: {
-		RU: 'Кол-во запасных колёс у прицепа',
-		EN: 'Number of spare wheels in the trailer',
-		DE: 'Anzahl der Ersatzräder am Anhänger'
-	},
-	TrailerMass: {
-		RU: 'Масса прицепа',
-		EN: 'Trailer mass',
-		DE: 'Gewicht des Anhängers'
-	},
-	FuelMass: {
-		RU: 'Масса топлива',
-		EN: 'Fuel mass',
-		DE: 'Gewicht des Kraftstoffs'
-	},
-	Quantity: {
-		RU: 'Максимальное кол-во перевозимого груза',
-		EN: 'Maximum quantity of cargo to be transported',
-		DE: 'Maximale Menge der Fracht'
-	}
-}
-
-const trailer = {
+export default {
 	main: [
 		Template({}, [
 			Group({
@@ -66,27 +16,27 @@ const trailer = {
 				Input({
 					attribute: 'FuelCapacity',
 					text: '[FUEL_CAPACITY]',
+					desc: '[FUEL_CAPACITY]',
 					max: '64000',
-					default: 0,
-					desc: desc.FuelCapacity
+					default: 0
 				}),
 				Input({
 					attribute: 'RepairsCapacity',
-					text: '[REPAIRC_CAPACITY]',
-					default: 0,
-					desc: desc.RepairsCapacity
+					text: '[REPAIRS_CAPACITY]',
+					desc: '[REPAIRS_CAPACITY]',
+					default: 0
 				}),
 				Input({
 					attribute: 'WheelRepairsCapacity',
 					text: '[WHEELS_CAPACITY]',
-					default: 0,
-					desc: desc.WheelRepairsCapacity
+					desc: '[WHEEL_REPAIRS_CAPACITY]',
+					default: 0
 				}),
 				Input({
 					attribute: 'Quantity',
 					text: '[QUANTITY]',
-					selector: '[ADDON_SLOTS]',
-					desc: desc.Quantity
+					desc: '[QUANTITY]',
+					selector: '[ADDON_SLOTS]'
 				})
 			]),
 			Group({
@@ -95,14 +45,14 @@ const trailer = {
 				Input({
 					attribute: 'Mass',
 					text: '[TRAILER_MASS]',
-					selector: '[MODEL_BODY]',
-					desc: desc.TrailerMass
+					desc: '[TRAILER_MASS]',
+					selector: '[MODEL_BODY]'
 				}),
 				Input({
 					attribute: 'Mass',
 					text: '[FUEL_MASS]',
-					selector: '[FUEL_MASS]',
-					desc: desc.FuelMass
+					desc: '[FUEL_MASS]',
+					selector: '[FUEL_MASS]'
 				})
 			]),
 			Group({
@@ -112,7 +62,7 @@ const trailer = {
 				Input({
 					attribute: 'Price',
 					text: '[PRICE]',
-					desc: desc.Price
+					desc: '[PRICE]'
 				})
 			])
 		]),
@@ -140,7 +90,54 @@ const trailer = {
 		])
 	],
 	selector: 'Truck[Type="Trailer"]',
-	translation: {
+	descriptions: {
+		PRICE: {
+			RU: 'Цена самого автомобиля (без учёта составляющих)',
+			EN: 'Der Preis des Autos selbst (ohne die Komponenten)',
+			DE: 'The price of the car itself (excluding components)'
+		},
+		UNLOCK_BY_EXPLORATION: {
+			RU: 'Способ разблокировки автомобиля',
+			EN: 'How to unlock the car',
+			DE: 'Methode zum Entsperren des Autos'
+		},
+		UNLOCK_BY_RANK: {
+			RU: 'Уровень разблокировки автомобиля',
+			EN: 'Car Unlock Level',
+			DE: 'Auto entsperren Ebene'
+		},
+		FUEL_CAPACITY: {
+			RU: 'Кол-во топлива у прицепа',
+			EN: 'Fuel quantity of the trailer',
+			DE: 'Kraftstoffmenge am Anhänger'
+		},
+		REPAIRS_CAPACITY: {
+			RU: 'Кол-во запчастей у прицепа',
+			EN: 'Number of spare parts for the trailer',
+			DE: 'Anzahl der Ersatzteile am Anhänger'
+		},
+		WHEEL_REPAIRS_CAPACITY: {
+			RU: 'Кол-во запасных колёс у прицепа',
+			EN: 'Number of spare wheels in the trailer',
+			DE: 'Anzahl der Ersatzräder am Anhänger'
+		},
+		TRAILER_MASS: {
+			RU: 'Масса прицепа',
+			EN: 'Trailer mass',
+			DE: 'Gewicht des Anhängers'
+		},
+		FUEL_MASS: {
+			RU: 'Масса топлива',
+			EN: 'Fuel mass',
+			DE: 'Gewicht des Kraftstoffs'
+		},
+		QUANTITY: {
+			RU: 'Максимальное кол-во перевозимого груза',
+			EN: 'Maximum quantity of cargo to be transported',
+			DE: 'Maximale Menge der Fracht'
+		}
+	},
+	translations: {
 		EN: {
 			QUANTITY: 'Cargo quantity',
 			INNER: 'Useful content',
@@ -150,7 +147,7 @@ const trailer = {
 			TRUE_ATTRIBUTE_VALUE: 'true',
 			PRICE: 'Price',
 			FUEL_CAPACITY: 'Fuel capacity',
-			REPAIRC_CAPACITY: 'Repairs capacity',
+			REPAIRS_CAPACITY: 'Repairs capacity',
 			WHEELS_CAPACITY: 'Wheel repairs capacity',
 			TRAILER_MASS: 'Trailer mass',
 			FUEL_MASS: 'Fuel mass'
@@ -164,7 +161,7 @@ const trailer = {
 			TRUE_ATTRIBUTE_VALUE: 'да',
 			PRICE: 'Цена',
 			FUEL_CAPACITY: 'Объём топлива',
-			REPAIRC_CAPACITY: 'Кол-во запчастей',
+			REPAIRS_CAPACITY: 'Кол-во запчастей',
 			WHEELS_CAPACITY: 'Кол-во колёс для ремонта',
 			TRAILER_MASS: 'Масса прицепа',
 			FUEL_MASS: 'Масса топлива'
@@ -178,12 +175,10 @@ const trailer = {
 			TRUE_ATTRIBUTE_VALUE: 'ja',
 			PRICE: 'Preis',
 			FUEL_CAPACITY: 'Kraftstoffmenge',
-			REPAIRC_CAPACITY: 'Anzahl der Ersatzteile',
+			REPAIRS_CAPACITY: 'Anzahl der Ersatzteile',
 			WHEELS_CAPACITY: 'Anzahl der Räder zu reparieren',
 			TRAILER_MASS: 'Gewicht des Anhängers',
 			FUEL_MASS: 'Gewicht des Kraftstoffs'
 		}
 	}
-}
-
-export default trailer
+};

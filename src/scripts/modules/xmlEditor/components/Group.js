@@ -1,4 +1,4 @@
-const Group = {
+export default {
     props: {
         item: Object,
         tabs: Number,
@@ -52,34 +52,32 @@ const Group = {
                     paddingLeft: `${this.tabs * 5}px`
                 }
             }
-        }
+        };
     },
     computed: {
         headerId() {
-            return Math.round(Math.random() * 1000000)
+            return Math.round(Math.random() * 1000000);
         },
         groupContainerId() {
-            return Math.round(Math.random() * 1000000)
+            return Math.round(Math.random() * 1000000);
         },
         groupContentId() {
-            return Math.round(Math.random() * 1000000)
+            return Math.round(Math.random() * 1000000);
         },
         items() {
-            const groups = []
-            const params = []
+            const groups = [];
+            const params = [];
             for (const groupItem of this.item.groupItems) {
                 if (groupItem.paramType === 'group') {
-                    groups.push(groupItem)
+                    groups.push(groupItem);
                 } else {
-                    params.push(groupItem)
+                    params.push(groupItem);
                 }
             }
             return {
                 groups,
                 params
-            }
+            };
         }
     }
 }
-
-export default Group

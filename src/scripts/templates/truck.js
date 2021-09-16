@@ -6,157 +6,9 @@ import {
 	Opt,
 	Selectors,
 	Selector
-} from '../service/templateItems.js'
+} from '../service/templateItems.js';
 
-const desc = {
-	UiName: {
-		RU: 'Название авто в игре (либо ключ перевода)',
-		EN: 'The name of the car in the game (or the transfer key)',
-		DE: 'Name des Autos im Spiel (oder Übersetzungsschlüssel)'
-	},
-	UiDesc: {
-		RU: 'Описание авто в игре (либо ключ перевода)',
-		EN: 'Description of the car in the game (or the transfer key)',
-		DE: 'Beschreibung von Auto im Spiel (oder Schlüssel Übersetzung)'
-	},
-	BackSteerSpeed: {
-		RU: 'Скорость, с которой колёса возвращаются на исходную позицию после поворота',
-		EN: 'The speed at which the wheels return to their original position after turning',
-		DE: 'Die Geschwindigkeit, mit der die Räder nach dem Abbiegen in die Ausgangsposition zurückkehren'
-	},
-	SteerSpeed: {
-		RU: 'Скорость, с которой поворачивается руль.',
-		EN: 'The speed at which the steering wheel turns.',
-		DE: 'Die Geschwindigkeit, mit der sich das Lenkrad dreht.'
-	},
-	DefaultWinch: {
-		RU: 'ID лебёдки по умолчанию',
-		EN: 'Default winch ID',
-		DE: 'Standard-Winde-ID'
-	},
-	IsUpgradable: {
-		RU: 'Улучшается ли лебёдка',
-		EN: 'Is the winch improving',
-		DE: 'Verbessert sich die Winde'
-	},
-	WinchesFile: {
-		RU: 'Кнопки для редактирования лебёдок',
-		EN: 'Buttons for editing winches',
-		DE: 'Schaltflächen zum Bearbeiten von Winden'
-	},
-	DefaultRim: {
-		RU: 'ID обода по умолчанию',
-		EN: 'Default rim ID',
-		DE: 'Standard-Felge-ID'
-	},
-	DefaultTire: {
-		RU: 'ID покрышки по умолчанию',
-		EN: 'Default tire ID',
-		DE: 'Standard-Reifen-ID'
-	},
-	DefaultWheelType: {
-		RU: 'Название xml-файла с колёсами',
-		EN: 'Name of the xml file with wheels',
-		DE: 'Name der XML - Datei mit den Standardrädern'
-	},
-	DefaultSuspension: {
-		RU: 'ID подвески по умолчанию',
-		EN: 'Default suspension ID',
-		DE: 'Standard-Suspension-ID'
-	},
-	SuspensionsFile: {
-		RU: 'Название файла с подвесками',
-		EN: 'Name of the file with suspensions',
-		DE: 'Dateiname mit Aufhängungen'
-	},
-	DiffLock: {
-		RU: 'Настройки блокировки дифференциала',
-		EN: 'Differential Lock Settings',
-		DE: 'Differentialsperre Einstellungen'
-	},
-	DefaultGearbox: {
-		RU: 'ID КПП по умолчанию',
-		EN: 'Default gearbox ID',
-		DE: 'Standard-Getriebe-ID'
-	},
-	GearboxesFile: {
-		RU: 'Название файла с коробками передач',
-		EN: 'Name of the transmission file',
-		DE: 'Dateiname mit Getriebe'
-	},
-	DefaultEngine: {
-		RU: 'ID двигателя по умолчанию',
-		EN: 'Default engine ID',
-		DE: 'Standard-Motor-ID'
-	},
-	ExhaustStartTime: {
-		RU: 'Время начала визуализации выхлопа.',
-		EN: 'The start time of the exhaust visualization.',
-		DE: 'Startzeit Visualisierung Auspuff.'
-	},
-	EngineStartDelay: {
-		RU: 'Задержка после нажатия "включить двигатель"',
-		EN: 'Delay after pressing "turn on the engine"',
-		DE: 'Verzögerung nach dem Drücken von "Motor einschalten"'
-	},
-	DamageCapacity: {
-		RU: 'Запас прочности бензобака',
-		EN: 'Fuel tank safety margin',
-		DE: 'Sicherheitsmarge des Benzinbehälters'
-	},
-	FuelCapacity: {
-		RU: 'Максимальное количество топлива в баке',
-		EN: 'Maximum amount of fuel in the tank',
-		DE: 'Maximale Kraftstoffmenge im Tank'
-	},
-	Country: {
-		RU: 'Страна разблокировки',
-		EN: 'Unlock country',
-		DE: 'Land entsperren'
-	},
-	Price: {
-		RU: 'Цена самого автомобиля (без учёта составляющих)',
-		EN: 'Der Preis des Autos selbst (ohne die Komponenten)',
-		DE: 'The price of the car itself (excluding components)'
-	},
-	ByExporation: {
-		RU: 'Способ разблокировки автомобиля',
-		EN: 'How to unlock the car',
-		DE: 'Methode zum Entsperren des Autos'
-	},
-	ByRankLevel: {
-		RU: 'Уровень разблокировки автомобиля',
-		EN: 'Car Unlock Level',
-		DE: 'Auto entsperren Ebene'
-	},
-	EnginesFile: {
-		RU: 'Название файла с двигателями',
-		EN: 'Name of the file with engines',
-		DE: 'Dateiname mit Motoren'
-	},
-	CenterOfMass: {
-		RU: 'Смещение центра масс тела относительно центра масс, рассчитанного движком игры',
-		EN: 'The displacement of the center of mass of the body relative to the center of mass calculated by the game engine',
-		DE: 'Verschiebung der Körpermassenmitte relativ zum von der Spiel-Engine berechneten Massenzentrum'
-	},
-	Location: {
-		RU: 'Используется только для составных колес, для определения того, переднее это колесо или заднее.',
-		EN: 'Used only for compound wheels, to determine whether it is a front wheel or a rear wheel.',
-		DE: 'Wird nur für zusammengesetzte Räder verwendet, um zu bestimmen, ob das Vorderrad oder das Hinterrad ist.'
-	},
-	Torque: {
-		RU: 'То, когда колесо будет ведущим',
-		EN: 'When the wheel will be leading',
-		DE: 'Wann das Rad fahren wird'
-	},
-	SteeringAngle: {
-		RU: 'Максимальный угол поворота колеса при рулении',
-		EN: 'Maximum steering angle of the wheel',
-		DE: 'Maximaler Lenkwinkel des Rades beim Lenken'
-	}
-}
-
-const truck = {
+export default {
 	main: [
 		Template({}, [
 			Group({
@@ -166,15 +18,15 @@ const truck = {
 				Input({
 					attribute: 'UiName',
 					text: '[UINAME]',
+					desc: '[UI_NAME]',
 					type: 'text',
-					bold: true,
-					desc: desc.UiName
+					bold: true
 				}),
 				Input({
 					attribute: 'UiDesc',
 					text: '[UIDESC]',
-					type: 'text',
-					desc: desc.UiDesc
+					desc: '[UI_DESC]',
+					type: 'text'
 				})
 			]),
 			Group({
@@ -184,16 +36,17 @@ const truck = {
 				Input({
 					attribute: 'BackSteerSpeed',
 					text: '[BACK_STEER_SPEED]',
+					desc: '[BACK_STEER_SPEED]',
 					numberType: 'float',
-					max: '1.0',
-					desc: desc.BackSteerSpeed
+					step: 0.01,
+					max: 1
 				}),
 				Input({
 					attribute: 'SteerSpeed',
 					text: '[STEER_SPEED]',
+					desc: '[STEER_SPEED]',
 					numberType: 'float',
-					bold: true,
-					desc: desc.SteerSpeed
+					bold: true
 				})
 			]),
 			Group({
@@ -203,14 +56,14 @@ const truck = {
 				Input({
 					attribute: 'Default',
 					text: '[DEFAULT_WINCH]',
+					desc: '[DEFAULT_WINCH]',
 					type: 'text',
-					onlyDeveloper: 'true',
-					desc: desc.DefaultWinch
+					onlyDeveloper: 'true'
 				}),
 				Select({
 					attribute: 'IsUpgradable',
 					text: '[IS_UPGRADABLE]',
-					desc: desc.IsUpgradable
+					desc: '[IS_UPGRADABLE]'
 				}, [
 					Opt({
 						text: '[ALLOW]',
@@ -224,10 +77,10 @@ const truck = {
 				Input({
 					attribute: 'Type',
 					text: '[WINCHES_FILE]',
+					desc: '[WINCHES_FILE]',
 					type: 'file',
 					fileType: 'winches',
-					bold: true,
-					desc: desc.WinchesFile
+					bold: true
 				})
 			]),
 			Group({
@@ -237,24 +90,24 @@ const truck = {
 				Input({
 					attribute: 'DefaultRim',
 					text: '[DEFAULT_RIM]',
+					desc: '[DEFAULT_RIM]',
 					type: 'text',
-					onlyDeveloper: 'true',
-					desc: desc.DefaultRim
+					onlyDeveloper: true
 				}),
 				Input({
 					attribute: 'DefaultTire',
 					text: '[DEFAULT_TIRE]',
+					desc: '[DEFAULT_TIRE]',
 					type: 'text',
-					onlyDeveloper: 'true',
-					desc: desc.DefaultTire
+					onlyDeveloper: true
 				}),
 				Input({
 					attribute: 'DefaultWheelType',
 					text: '[TIRES_FILE]',
+					desc: '[DEFAULT_WHEEL_TYPE]',
 					type: 'file',
 					fileType: 'wheels',
-					bold: true,
-					desc: desc.DefaultWheelType
+					bold: true
 				}),
 				Group({
 					name: '[PHYSICS_WHEELS]'
@@ -271,8 +124,8 @@ const truck = {
 							Select({
 								attribute: 'Location',
 								text: '[WHEEL_TYPE]',
-								default: 'front',
-								desc: desc.Location
+								desc: '[LOCATION]',
+								default: 'front'
 							}, [
 								Opt({
 									text: '[FRONT]',
@@ -286,8 +139,8 @@ const truck = {
 							Select({
 								attribute: 'Torque',
 								text: '[TORQUE]',
-								default: 'none',
-								desc: desc.Torque
+								desc: '[TORQUE]',
+								default: 'none'
 							}, [
 								Opt({
 									text: '[TORQUE_DEFAULT]',
@@ -309,11 +162,12 @@ const truck = {
 							Input({
 								attribute: 'SteeringAngle',
 								text: '[STEERING_ANGLE]',
+								desc: '[STEERING_ANGLE]',
 								type: 'number',
-								min: '-90',
-								max: '90',
-								default: 0,
-								desc: desc.SteeringAngle
+								step: 1,
+								min: -50,
+								max: 50,
+								default: 0
 							})
 						])
 					])
@@ -326,31 +180,31 @@ const truck = {
 				Input({
 					attribute: 'CenterOfMassOffset',
 					text: '[CENTER_OF_MASS]',
+					desc: '[CENTER_OF_MASS]',
 					type: 'coordinates',
-					selector: '[PHYSICS_BODY]',
-					desc: desc.CenterOfMass
+					selector: '[PHYSICS_BODY]'
 				}),
 				Input({
 					attribute: 'Default',
 					text: '[DEFAULT_SUSPENSION]',
+					desc: '[DEFAULT_SUSPENSION]',
 					type: 'text',
-					onlyDeveloper: 'true',
-					desc: desc.DefaultSuspension
+					onlyDeveloper: true
 				}),
 				Input({
 					attribute: 'Type',
 					text: '[SUSPENSIONS_FILE]',
+					desc: '[SUSPENSIONS_FILE]',
 					type: 'file',
 					fileType: 'suspensions',
-					bold: true,
-					desc: desc.SuspensionsFile
+					bold: true
 				}),
 				Select({
 					attribute: 'DiffLockType',
 					text: '[DIFF_LOCK]',
+					desc: '[DIFF_LOCK]',
 					selector: '[TRUCK_DATA]',
-					bold: true,
-					desc: desc.DiffLock
+					bold: true
 				}, [
 					Opt({
 						text: '[NONE]',
@@ -377,17 +231,17 @@ const truck = {
 				Input({
 					attribute: 'Default',
 					text: '[DEFAULT_GEARBOX]',
+					desc: '[DEFAULT_GEARBOX]',
 					type: 'text',
-					onlyDeveloper: 'true',
-					desc: desc.DefaultGearbox
+					onlyDeveloper: true
 				}),
 				Input({
 					attribute: 'Type',
 					text: '[GEARBOXES_FILE]',
+					desc: '[GEARBOXES_FILE]',
 					type: 'file',
 					fileType: 'gearboxes',
-					bold: true,
-					desc: desc.GearboxesFile
+					bold: true
 				})
 			]),
 			Group({
@@ -397,32 +251,33 @@ const truck = {
 				Input({
 					attribute: 'Default',
 					text: '[DEFAULT_ENGINE]',
+					desc: '[DEFAULT_ENGINE]',
 					type: 'text',
-					onlyDeveloper: 'true',
-					desc: desc.DefaultEngine
+					onlyDeveloper: true
 				}),
 				Input({
 					attribute: 'Type',
 					text: '[ENGINES_FILE]',
+					desc: '[ENGINES_FILE]',
 					type: 'file',
 					fileType: 'engines',
-					bold: true,
-					desc: desc.EnginesFile
+					bold: true
 				}),
 				Input({
 					attribute: 'EngineStartDelay',
 					text: '[ENGINE_START_DELAY]',
+					desc: '[ENGINE_START_DELAY]',
 					selector: '[TRUCK_DATA]',
 					numberType: 'float',
-					max: '8.0',
-					desc: desc.EngineStartDelay
+					step: 0.1,
+					max: 8.0
 				}),
 				Input({
 					attribute: 'ExhaustStartTime',
 					text: '[EXHAUST_START_TIME]',
+					desc: '[EXHAUST_START_TIME]',
 					selector: '[TRUCK_DATA]',
-					numberType: 'float',
-					desc: desc.ExhaustStartTime
+					numberType: 'float'
 				})
 			]),
 			Group({
@@ -432,16 +287,16 @@ const truck = {
 				Input({
 					attribute: 'DamageCapacity',
 					text: '[DAMAGE_CAPACITY]',
-					max: '64000',
-					default: 0,
-					desc: desc.DamageCapacity
+					desc: '[DAMAGE_CAPACITY]',
+					max: 64000,
+					default: 0
 				}),
 				Input({
 					attribute: 'FuelCapacity',
+					desc: '[FUEL_CAPACITY]',
 					text: '[FUEL_CAPACITY]',
 					selector: '[TRUCK_DATA]',
-					bold: true,
-					desc: desc.FuelCapacity
+					bold: true
 				})
 			]),
 			Group({
@@ -451,8 +306,8 @@ const truck = {
 				Select({
 					attribute: 'Country',
 					text: '[COUNTRY]',
-					bold: true,
-					desc: desc.Country
+					desc: '[COUNTRY]',
+					bold: true
 				}, [
 					Opt({
 						text: '[RUSSIA]',
@@ -470,13 +325,13 @@ const truck = {
 				Input({
 					attribute: 'Price',
 					text: '[PRICE]',
-					bold: true,
-					desc: desc.Price
+					desc: '[PRICE]',
+					bold: true
 				}),
 				Select({
 					attribute: 'UnlockByExploration',
 					text: '[BY_EXPLORATION]',
-					desc: desc.ByExporation
+					desc: '[BY_EXPLORATION]'
 				}, [
 					Opt({
 						text: '[FIND_ON_MAP]',
@@ -490,8 +345,8 @@ const truck = {
 				Input({
 					attribute: 'UnlockByRank',
 					text: '[BY_RANK_LEVEL]',
-					min: 1,
-					desc: desc.ByRankLevel
+					desc: '[BY_RANK_LEVEL]',
+					min: 1
 				})
 			])
 		]),
@@ -555,7 +410,154 @@ const truck = {
 		])
 	],
 	selector: 'Truck',
-	translation: {
+	descriptions: {
+		UI_NAME: {
+			RU: 'Название авто в игре (либо ключ перевода)',
+			EN: 'The name of the car in the game (or the transfer key)',
+			DE: 'Name des Autos im Spiel (oder Übersetzungsschlüssel)'
+		},
+		UI_DESC: {
+			RU: 'Описание авто в игре (либо ключ перевода)',
+			EN: 'Description of the car in the game (or the transfer key)',
+			DE: 'Beschreibung von Auto im Spiel (oder Schlüssel Übersetzung)'
+		},
+		BACK_STEER_SPEED: {
+			RU: 'Скорость, с которой колёса возвращаются на исходную позицию после поворота',
+			EN: 'The speed at which the wheels return to their original position after turning',
+			DE: 'Die Geschwindigkeit, mit der die Räder nach dem Abbiegen in die Ausgangsposition zurückkehren'
+		},
+		STEER_SPEED: {
+			RU: 'Скорость, с которой поворачивается руль.',
+			EN: 'The speed at which the steering wheel turns.',
+			DE: 'Die Geschwindigkeit, mit der sich das Lenkrad dreht.'
+		},
+		DEFAULT_WINCH: {
+			RU: 'ID лебёдки по умолчанию',
+			EN: 'Default winch ID',
+			DE: 'Standard-Winde-ID'
+		},
+		IS_UPGRADABLE: {
+			RU: 'Улучшается ли лебёдка',
+			EN: 'Is the winch improving',
+			DE: 'Verbessert sich die Winde'
+		},
+		WINCHES_FILE: {
+			RU: 'Кнопки для редактирования лебёдок',
+			EN: 'Buttons for editing winches',
+			DE: 'Schaltflächen zum Bearbeiten von Winden'
+		},
+		DEFAULT_RIM: {
+			RU: 'ID обода по умолчанию',
+			EN: 'Default rim ID',
+			DE: 'Standard-Felge-ID'
+		},
+		DEFAULT_TIRE: {
+			RU: 'ID покрышки по умолчанию',
+			EN: 'Default tire ID',
+			DE: 'Standard-Reifen-ID'
+		},
+		DEFAULT_WHEEL_TYPE: {
+			RU: 'Название xml-файла с колёсами',
+			EN: 'Name of the xml file with wheels',
+			DE: 'Name der XML - Datei mit den Standardrädern'
+		},
+		DEFAULT_SUSPENSION: {
+			RU: 'ID подвески по умолчанию',
+			EN: 'Default suspension ID',
+			DE: 'Standard-Suspension-ID'
+		},
+		SUSPENSIONS_FILE: {
+			RU: 'Название файла с подвесками',
+			EN: 'Name of the file with suspensions',
+			DE: 'Dateiname mit Aufhängungen'
+		},
+		DIFF_LOCK: {
+			RU: 'Настройки блокировки дифференциала',
+			EN: 'Differential Lock Settings',
+			DE: 'Differentialsperre Einstellungen'
+		},
+		DEFAULT_GEARBOX: {
+			RU: 'ID КПП по умолчанию',
+			EN: 'Default gearbox ID',
+			DE: 'Standard-Getriebe-ID'
+		},
+		GEARBOXES_FILE: {
+			RU: 'Название файла с коробками передач',
+			EN: 'Name of the transmission file',
+			DE: 'Dateiname mit Getriebe'
+		},
+		DEFAULT_ENGINE: {
+			RU: 'ID двигателя по умолчанию',
+			EN: 'Default engine ID',
+			DE: 'Standard-Motor-ID'
+		},
+		EXHAUST_START_TIME: {
+			RU: 'Время начала визуализации выхлопа.',
+			EN: 'The start time of the exhaust visualization.',
+			DE: 'Startzeit Visualisierung Auspuff.'
+		},
+		ENGINE_START_DELAY: {
+			RU: 'Задержка после нажатия "включить двигатель"',
+			EN: 'Delay after pressing "turn on the engine"',
+			DE: 'Verzögerung nach dem Drücken von "Motor einschalten"'
+		},
+		DAMAGE_CAPACITY: {
+			RU: 'Запас прочности бензобака',
+			EN: 'Fuel tank safety margin',
+			DE: 'Sicherheitsmarge des Benzinbehälters'
+		},
+		FUEL_CAPACITY: {
+			RU: 'Максимальное количество топлива в баке',
+			EN: 'Maximum amount of fuel in the tank',
+			DE: 'Maximale Kraftstoffmenge im Tank'
+		},
+		COUNTRY: {
+			RU: 'Страна разблокировки',
+			EN: 'Unlock country',
+			DE: 'Land entsperren'
+		},
+		PRICE: {
+			RU: 'Цена самого автомобиля (без учёта составляющих)',
+			EN: 'Der Preis des Autos selbst (ohne die Komponenten)',
+			DE: 'The price of the car itself (excluding components)'
+		},
+		BY_EXPLORATION: {
+			RU: 'Способ разблокировки автомобиля',
+			EN: 'How to unlock the car',
+			DE: 'Methode zum Entsperren des Autos'
+		},
+		BY_RANK_LEVEL: {
+			RU: 'Уровень разблокировки автомобиля',
+			EN: 'Car Unlock Level',
+			DE: 'Auto entsperren Ebene'
+		},
+		ENGINES_FILE: {
+			RU: 'Название файла с двигателями',
+			EN: 'Name of the file with engines',
+			DE: 'Dateiname mit Motoren'
+		},
+		CENTER_OF_MASS: {
+			RU: 'Смещение центра масс тела относительно центра масс, рассчитанного движком игры',
+			EN: 'The displacement of the center of mass of the body relative to the center of mass calculated by the game engine',
+			DE: 'Verschiebung der Körpermassenmitte relativ zum von der Spiel-Engine berechneten Massenzentrum'
+		},
+		LOCATION: {
+			RU: 'Используется только для составных колес, для определения того, переднее это колесо или заднее.',
+			EN: 'Used only for compound wheels, to determine whether it is a front wheel or a rear wheel.',
+			DE: 'Wird nur für zusammengesetzte Räder verwendet, um zu bestimmen, ob das Vorderrad oder das Hinterrad ist.'
+		},
+		TORQUE: {
+			RU: 'То, когда колесо будет ведущим',
+			EN: 'When the wheel will be leading',
+			DE: 'Wann das Rad fahren wird'
+		},
+		STEERING_ANGLE: {
+			RU: 'Максимальный угол поворота колеса при рулении',
+			EN: 'Maximum steering angle of the wheel',
+			DE: 'Maximaler Lenkwinkel des Rades beim Lenken'
+		}
+	},
+	translations: {
 		EN: {
 			PHYSICS_WHEELS: 'Wheels (physical)',
 			WHEEL: 'Wheel',
@@ -740,6 +742,4 @@ const truck = {
 			COMPATIBLE_WHEELS_SCALE: 'Die Größe'
 		}
 	}
-}
-
-export default truck
+};

@@ -1,8 +1,6 @@
-import {
-    funcs
-} from '../../../service/renderer.js'
+import mainProcess from '../../../service/mainProcess.js';
 
-const Language = {
+export default {
     props: {
         t: Object
     },
@@ -23,19 +21,17 @@ const Language = {
                 width: '70px',
                 margin: '0 auto'
             }
-        }
+        };
     },
     computed: {
         lang: {
             get() {
-                return config.lang
+                return config.lang;
             },
             set(value) {
-                config.lang = value
-                funcs.reload()
+                config.lang = value;
+                mainProcess.reload();
             }
         }
     }
-}
-
-export default Language
+};

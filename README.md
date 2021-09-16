@@ -6,26 +6,26 @@
 
 Для начала вам необходимо скачать программу в разделе [releases](https://github.com/VerZsuT/SnowRunner-XML-Editor-Desktop/releases), либо на странице [загрузки](https://verzsut.github.io/SnowRunner-XML-Editor-Desktop/download.html) и распаковать её. Запустите "SnowRunner XML Editor.exe"
 
-![Первая настройка](https://image.modcdn.io/members/4a97/2992192/profile/2021-04-2.png)
+![Первая настройка](https://image.modcdn.io/members/4a97/2992192/profile/2021-09-1.png)
 
 При первом запуске потребуется настроить программу:
 
 1. Выберите подходящий вам язык.
-2. Выберите папку с игрой (там куда она установлена).
+2. Выберите папку с игрой (там куда она установлена). Либо отметьте "ручной выбор initial.pak" и выберите initial вручную.
 3. Сохраните изменения.
 
 После чего вы увидите главное меню программы:
 
-![Главное меню](https://image.modcdn.io/members/4a97/2992192/profile/2021-04-2.1.png)
+![Главное меню](https://image.modcdn.io/members/4a97/2992192/profile/2021-06-0.1.png)
 
 Здесь вы можете выбрать категорию.
 После чего выберите нужный вам автомобиль/прицеп/груз из списка.
 
-![Список автомобилей](https://image.modcdn.io/members/4a97/2992192/profile/2021-04-2.2.png)
+![Список автомобилей](https://image.modcdn.io/members/4a97/2992192/profile/2021-09-1.1.png)
 
 Выбрав нужный вам автомобиль/прицеп/груз вы увидите таблицу для изменения параметров. Измените их как вам требуется.
 
-![Таблица для изменения](https://image.modcdn.io/members/4a97/2992192/profile/2021-04-2.7.png)
+![Таблица для изменения](https://image.modcdn.io/members/4a97/2992192/profile/2021-09-1.2.png)
 
 После чего для сохранения изменений нажмите на кнопку под таблицей.
 
@@ -49,26 +49,26 @@
 
 To get started, you need to download the program from the [releases](https://github.com/VerZsuT/SnowRunner-XML-Editor-Desktop/releases) page and unpack it. Run "SnowRunner XML Editor.exe"
 
-![Initial setup](https://image.modcdn.io/members/4a97/2992192/profile/2021-04-2.3.png)
+![Initial setup](https://image.modcdn.io/members/4a97/2992192/profile/2021-09-1.3.png)
 
 At the first launch, you will need to configure the program:
 
 1. Choose the language that suits you.
-2. Select the folder with the game (where it is installed).
+2. Select the folder with the game (where it is installed). Or check "manual selection of initial.pak" and select initial manually.
 3. Save your changes.
 
 Then you will see the main menu of the program:
 
-![Main menu](https://image.modcdn.io/members/4a97/2992192/profile/2021-04-2.4.png)
+![Main menu](https://image.modcdn.io/members/4a97/2992192/profile/2021-06-0.5.png)
 
 Here you can select a category.
 Then select the car/trailer/cargo you need from the list.
 
-![Cars list](https://image.modcdn.io/members/4a97/2992192/profile/2021-04-2.5.png)
+![Cars list](https://image.modcdn.io/members/4a97/2992192/profile/2021-09-1.4.png)
 
 After selecting the car/trailer/cargo you need, you will see a table for changing the parameters. Change them as you require.
 
-![Table](https://image.modcdn.io/members/4a97/2992192/profile/2021-04-2.6.png)
+![Table](https://image.modcdn.io/members/4a97/2992192/profile/2021-09-1.5.png)
 
 Then, to save the changes, press the "Save" button.
 That's it, you can check in the game!

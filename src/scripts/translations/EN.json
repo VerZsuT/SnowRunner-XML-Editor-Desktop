@@ -2,6 +2,7 @@
 	"AUTO_INITIAL_TITLE": "The automatic selection of initial.pak only works in the version from Epic Games.",
 	"CLOSE": "Close",
 	"UPDATE": "Update",
+	"EMPTY": "Empty",
 	"SAVING_MESSAGE": "Saving...",
 	"PARSE_FILE_ERROR": "The file cannot be recognized",
 	"IGNORE": "Ignore",

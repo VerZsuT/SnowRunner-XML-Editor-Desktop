@@ -1,11 +1,7 @@
-import {
-    getText
-} from "../../../service/funcs.js"
-import {
-    funcs
-} from "../../../service/renderer.js"
+import {getText} from '../../../service/funcs.js';
+import mainProcess from '../../../service/mainProcess.js';
 
-const PFile = {
+export default {
     props: {
         item: Object
     },
@@ -26,57 +22,52 @@ const PFile = {
         return {
             t: new Proxy({}, {
                 get(_, propName) {
-                    return getText(propName)
+                    return getText(propName);
                 }
             })
-        }
+        };
     },
     methods: {
         openEditor(fileName) {
-            const paths = [`${config.paths.classes}\\${this.item.fileType}\\${fileName}.xml`]
-            let mainPath = null
+            const paths = [`${config.paths.classes}\\${this.item.fileType}\\${fileName}.xml`];
+            let mainPath = null;
 
             if (this.currentDLC) {
-                const dlcPath = `${config.paths.dlc}\\${this.currentDLC}\\classes\\${this.item.fileType}\\${fileName}.xml`
-                paths.push(dlcPath)
-                local.currentDLC = this.currentDLC
+                const dlcPath = `${config.paths.dlc}\\${this.currentDLC}\\classes\\${this.item.fileType}\\${fileName}.xml`;
+                paths.push(dlcPath);
+                local.currentDLC = this.currentDLC;
             } else if (this.currentMod) {
-                const modPath = `${config.paths.mods}\\${this.currentMod}\\classes\\${this.item.fileType}\\${fileName}.xml`
-                paths.push(modPath)
-                local.currentMod = this.currentMod
+                const modPath = `${config.paths.mods}\\${this.currentMod}\\classes\\${this.item.fileType}\\${fileName}.xml`;
+                paths.push(modPath);
+                local.currentMod = this.currentMod;
             }
 
             for (const path of paths) {
                 if (preload.existsSync(path)) {
-                    mainPath = path
+                    mainPath = path;
                 }
             }
 
             if (!mainPath) {
-                mainPath = preload.findFromDLC(fileName, this.item.fileType)
+                mainPath = preload.findFromDLC(fileName, this.item.fileType);
             }
-            local.filePath = mainPath
+            local.filePath = mainPath;
 
-            funcs.openXMLEditor()
+            mainProcess.openXMLEditor();
         }
     },
     computed: {
         items() {
-            const array = this.item.value.split(',').map((value) => value.trim())
+            const array = this.item.value.split(',').map((value) => value.trim());
             if (this.item.fileType === 'wheels') {
                 for (const compatible of this.fileDOM.querySelectorAll('Truck > TruckData > CompatibleWheels')) {
-                    const type = compatible.getAttribute('Type')
+                    const type = compatible.getAttribute('Type');
                     if (array.indexOf(type) === -1) {
-                        array.push(type)
+                        array.push(type);
                     }
                 }
             }
-            return array.map((value, index) => ({
-                value,
-                index
-            }))
+            return array.map((value, index) => ({value, index}));
         }
     }
-}
-
-export default PFile
+};

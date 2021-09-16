@@ -1,4 +1,4 @@
-const PSelect = {
+export default {
     props: {
         item: Object
     },
@@ -21,29 +21,27 @@ const PSelect = {
     data() {
         return {
             value: this.getValue()
-        }
+        };
     },
     watch: {
         value(newValue, _) {
             if (!this.fileDOM.querySelector(this.item.selector)) {
-                const array = this.item.selector.split('>').map(value => value.trim())
-                const name = array.pop()
-                const rootSelector = array.join(' > ')
-                this.fileDOM.querySelector(rootSelector).append(this.fileDOM.createElement(name))
+                const array = this.item.selector.split('>').map(value => value.trim());
+                const name = array.pop();
+                const rootSelector = array.join(' > ');
+                this.fileDOM.querySelector(rootSelector).append(this.fileDOM.createElement(name));
             }
 
-            this.fileDOM.querySelector(this.item.selector).setAttribute(this.item.name, newValue)
+            this.fileDOM.querySelector(this.item.selector).setAttribute(this.item.name, newValue);
         }
     },
     computed: {
         disabled() {
             if (!this.item.onlyDeveloper) {
-                return false
+                return false;
             } else {
-                return !config.settings.devMode
+                return !config.settings.devMode;
             }
         }
     }
 }
-
-export default PSelect

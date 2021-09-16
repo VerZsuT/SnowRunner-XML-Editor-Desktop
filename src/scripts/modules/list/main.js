@@ -1,12 +1,10 @@
-import '../../bootstrap/bootstrap.bundle.min.js'
-import '../../service/menu.js'
-import {
-    createApp
-} from '../../vue/vue.esm-browser.js'
+import '../../bootstrap/bootstrap.bundle.min.js';
+import '../../service/menu.js';
+import {createApp} from '../../vue/vue.esm-browser.js';
 
-import List from './components/List.js'
-import ListItem from './components/ListItem.js'
-import Search from './components/Search.js'
+import List from './components/List.js';
+import ListItem from './components/ListItem.js';
+import Search from './components/Search.js';
 
 const App = {
     data() {
@@ -16,15 +14,15 @@ const App = {
             filter: {
                 value: null,
                 set(value) {
-                    this.value = value
+                    this.value = value;
                 }
             }
-        }
+        };
     },
     provide() {
         return {
             filter: this.filter
-        }
+        };
     }
 }
 
@@ -32,6 +30,6 @@ createApp(App)
     .component('List', List)
     .component('ListItem', ListItem)
     .component('Search', Search)
-    .mount('#main')
-document.title = document.title.replace('{--VERSION--}', `v${config.version}`)
-document.querySelector('#main').style.display = 'block'
+    .mount('#main');
+document.title = document.title.replace('{--VERSION--}', `v${config.version}`);
+document.querySelector('#main').style.display = 'block';

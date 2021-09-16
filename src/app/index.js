@@ -1,19 +1,9 @@
-const https = require('https')
-const dns = require('dns')
-const main = require('../scripts/service/main.js')
-
-const {
-    exec,
-    execSync
-} = require('child_process')
-
-const {
-    app,
-    shell,
-    BrowserWindow,
-    Notification
-} = require('electron')
-
+const https = require('https');
+const dns = require('dns');
+const Public = require('../scripts/service/Public.js');
+const {exec, execSync} = require('child_process');
+const {app, shell, BrowserWindow, Notification} = require('electron');
+const {join, dirname, basename} = require('path');
 const {
     readFileSync,
     readdirSync,
@@ -25,22 +15,16 @@ const {
     mkdirSync,
     rmSync,
     createWriteStream
-} = require('fs')
-
-const {
-    join,
-    dirname,
-    basename
-} = require('path')
-
+} = require('fs');
 const {
     fromDir,
     getHash,
     openDialog,
+    openXMLDialog,
     openInitialDialog,
     parseStrings,
     removePars
-} = require('./service.js')
+} = require('./service.js');
 
 const paths = {
     publicInfo: 'https://verzsut.github.io/sxmle_updater/public.json',
@@ -61,538 +45,499 @@ const paths = {
     strings: join(__dirname, '..', 'scripts', 'mainTemp', '[strings]'),
     dlc: join(__dirname, '..', 'scripts', 'mainTemp', '[media]', '_dlc'),
     classes: join(__dirname, '..', 'scripts', 'mainTemp', '[media]', 'classes')
-}
+};
 
-let stringsFilePath
-let relaunchWithoutSaving = false
+const settings = {
+    appId: 'SnowRunner XML Editor',
+    relaunchWithoutSaving: false,
+    showDevTools: false
+};
+const windows = {
+    mainWindow: null,
+    listWindow: null,
+    xmlEditor: null,
+    currentWindow: null,
+    loading: null
+};
 
-let mainWindow
-let listWindow
-let xmlEditor
-let currentWindow
-let loading
+const invalidMods = [];
+const config = getConfig();
+const translations = getTranslations();
 
-const devTools = false
-
-const invalidMods = []
-const config = getConfig()
-const translations = getTranslations()
-
-initApp()
-initMain()
+initApp();
+initMain();
 
 function init() {
-    loading = openDownload(true)
-    loading.once('show', () => {
-        loading.webContents.postMessage('fileName', getText('[LOADING]'))
+    windows.loading = openDownload(true);
+    windows.loading.once('show', () => {
+        windows.loading.setText(getText('[LOADING]'));
         if (!config.paths.initial) {
-            openFirstSteps()
-            if (config.settings.updates) {
-                checkUpdate()
-            }
+            openFirstSteps();
+            checkUpdate();
         } else {
             checkInitialSum().then(() => {
                 if (checkPaths()) {
-                    return getIngameTranslation().then(() => {
-                        config.paths.dlc = paths.dlc
-                        config.paths.classes = paths.classes
-                        config.paths.mods = paths.modsTemp
-                        if (config.settings.DLC) {
-                            initDLC()
-                        }
-                        if (config.settings.mods) {
-                            initMods().then(() => {
-                                getModsTranslation().then(() => {
-                                    openMain().then(() => {
-                                        if (config.settings.updates) {
-                                            checkUpdate()
-                                        }
-                                    })
-                                })
-                            })
-                        } else {
+                    getIngameTranslation().then(() => {
+                        config.paths.dlc = paths.dlc;
+                        config.paths.classes = paths.classes;
+                        config.paths.mods = paths.modsTemp;
+                        
+                        initDLC();
+                        initMods().then(() => {
+                            getModsTranslation().then(() => {
+                                openMain().then(() => {
+                                    checkUpdate();
+                                });
+                            });
+                        }, () => {
                             openMain().then(() => {
-                                if (config.settings.updates) {
-                                    checkUpdate()
-                                }
-                            })
-                        }
-                    })
+                                checkUpdate();
+                            });
+                        });
+                    });
                 } else {
-                    resetConfig()
+                    resetConfig();
                 }
-            })
+            });
         }
-    })
+    });
 }
 
 function initMain() {
-    main.invalidMods = {
-        get() {
-            return invalidMods
-        }
-    }
+    Public.setProperties({
+        invalidMods: () => invalidMods,
+        translations: () => translations,
+        shortMenu: () => getShortMenu(),
+        menu: () => getMainMenu(),
+        paths: () => paths,
+        config: [
+            () => config,
+            value => {config[value.key] = value.value}
+        ]
+    });
 
-    main.translations = {
-        get() {
-            return translations
-        }
-    }
-
-    main.shortMenu = {
-        get() {
-            return getShortMenu()
-        }
-    }
-
-    main.menu = {
-        get() {
-            return getMainMenu()
-        }
-    }
-
-    main.paths = {
-        get() {
-            return paths
-        }
-    }
-
-    main.config = {
-        get() {
-            return config
+    Public.setFunctions({
+        saveToOriginal: modId => {
+            if (modId) {
+                try {
+                    execSync(`WinRAR f -ibck -inul "${config.modsList[modId].path}" "${join(paths.modsTemp, modId)}\\" -r -ep1`, {
+                        cwd: paths.winrar
+                    });
+                    saveModSum(modId, config.modsList[modId].path);
+                } catch (err) {
+                    showNotification(getText('[ERROR]'), getText('[SAVE_MOD_ERROR]'));
+                }
+            } else {
+                try {
+                    execSync(`WinRAR f -ibck -inul "${config.paths.initial}" "${paths.mainTemp}\\" -r -ep1`, {
+                        cwd: paths.winrar
+                    });
+                    saveInitialSum();
+                } catch (err) {
+                    showNotification(getText('[ERROR]'), getText('[SAVE_ORIGINAL_ERROR]'));
+                }
+            }
         },
-        set(value) {
-            config[value.key] = value.value
-        }
-    }
-
-    main.saveToOriginal = function (modId) {
-        if (modId) {
-            try {
-                execSync(`WinRAR f -ibck -inul "${config.modsList[modId].path}" "${join(paths.modsTemp, modId)}\\" -r -ep1`, {
-                    cwd: paths.winrar
-                })
-                saveModSum(modId, config.modsList[modId].path)
-            } catch (err) {
-                showNotification(getText('[ERROR]'), getText('[SAVE_MOD_ERROR]'))
+        openDevTools: () => {windows.currentWindow.webContents.toggleDevTools()},
+        getFileData: (filePath, reserveFilePath=null) => {
+            if (existsSync(filePath)) {
+                const data = readFileSync(filePath);
+                return data.toString();
+            } else if (existsSync(reserveFilePath)) {
+                const data = readFileSync(reserveFilePath);
+                return data.toString();
+            } else {
+                throw new Error('[READ_FILE_ERROR]');
             }
-        } else {
+        },
+        setDevMode: value => {
+            config.settings.devMode = value;
+            reload();
+        },
+        setFileData: (path, data) => {
             try {
-                execSync(`WinRAR f -ibck -inul "${config.paths.initial}" "${paths.mainTemp}\\" -r -ep1`, {
-                    cwd: paths.winrar
-                })
-                saveInitialSum()
-            } catch (err) {
-                showNotification(getText('[ERROR]'), getText('[SAVE_ORIGINAL_ERROR]'))
+                writeFileSync(path, data);
+            } catch {
+                throw new Error('[WRITE_FILE_ERROR]');
             }
-        }
-    }
+        },
+        reload: () => {reload()},
+        quit: () => {app.quit()},
+        openLink: p => {shell.openExternal(p)},
+        showFolder: p => {shell.openPath(p)},
 
-    main.openDevTools = function () {
-        currentWindow.webContents.toggleDevTools()
-    }
+        openXMLEditor: () => {openXMLEditor()},
+        openList: () => {openList()},
+        openSettings: () => {openSettings()},
+        openDialog: () => openDialog(),
+        openXMLDialog: () => openXMLDialog(),
+        openInitialDialog: () => openInitialDialog(),
+        openConsole: () => {openConsole()},
 
-    main.getFileData = function (filePath, reserveFilePath = null) {
-        if (existsSync(filePath)) {
-            const data = readFileSync(filePath)
-            return data.toString()
-        } else if (existsSync(reserveFilePath)) {
-            const data = readFileSync(reserveFilePath)
-            return data.toString()
-        } else {
-            throw new Error('[READ_FILE_ERROR]')
-        }
-    }
-
-    main.setDevMode = function (value) {
-        config.settings.devMode = value
-        reload()
-    }
-
-    main.setFileData = function (path, data) {
-        try {
-            writeFileSync(path, data)
-        } catch {
-            throw new Error('[WRITE_FILE_ERROR]')
-        }
-    }
-
-    main.reload = reload
-    main.quit = app.quit
-
-    main.openLink = url => {
-        shell.openExternal(url)
-    }
-    main.showFolder = path => {
-        shell.openPath(path)
-    }
-
-    main.openXMLEditor = openXMLEditor
-    main.openList = openList
-    main.openSettings = openSettings
-    main.openDialog = openDialog
-    main.openInitialDialog = openInitialDialog
-
-    main.saveBackup = saveBackup
-    main.resetConfig = resetConfig
-    main.restoreInitial = restoreInitial
-    main.saveConfig = saveConfig
-    main.saveInitialSum = saveInitialSum
-    main.update = update
+        saveBackup: p => {saveBackup(p)},
+        resetConfig: p => {resetConfig(p)},
+        restoreInitial: () => {restoreInitial()},
+        saveConfig: () => {saveConfig()},
+        saveInitialSum: () => {saveInitialSum()},
+        checkUpdate: p => {checkUpdate(p)},
+        update: () => {update()},
+        unpackFiles: p => {unpackFiles(p)},
+        enableDevTools: () => {settings.showDevTools = true},
+        disableDevTools: () => {settings.showDevTools = false}
+    });
 }
 
 function initApp() {
-    app.setAppUserModelId('SnowRunner XML Editor')
-    app.whenReady().then(init)
+    app.setAppUserModelId(settings.appId);
+    app.whenReady().then(init);
     app.on('before-quit', () => {
-        if (!relaunchWithoutSaving) {
-            saveConfig()
-        }
-    })
-    process.once('uncaughtExceptionMonitor', () => {
-        app.quit()
+        if (!settings.relaunchWithoutSaving) saveConfig();
     })
     app.on('activate', () => {
-        if (BrowserWindow.getAllWindows().length === 0) {
-            init()
-        }
+        if (BrowserWindow.getAllWindows().length === 0) init();
     })
+
+    process.once('uncaughtExceptionMonitor', app.quit);
 }
 
 function saveModSum(modId, path) {
-    config.sums.mods[modId] = getHash(path)
+    config.sums.mods[modId] = getHash(path);
 }
 
 function saveInitialSum() {
-    config.sums.initial = getHash(config.paths.initial)
+    config.sums.initial = getHash(config.paths.initial);
 }
-
 
 function download(params) {
     return new Promise(resolve => {
         if (params.array) {
+            const {url, path} = params.array[0];
+
             if (params.isRoot) {
-                params.downloadPage.webContents.postMessage('count', params.array.length)
+                params.downloadPage.setCount(params.array.length);
             }
-            const {
-                url,
-                path
-            } = params.array[0]
-            params.downloadPage.webContents.postMessage('fileName', basename(path))
+            params.downloadPage.setText(basename(path));
             download({
                 url: url,
                 path: path,
                 downloadPage: params.downloadPage
             }).then(() => {
-                resolve()
+                resolve();
                 if (params.array.length > 1) {
                     download({
                         array: params.array.slice(1),
                         downloadPage: params.downloadPage
-                    }).then(resolve)
+                    }).then(resolve);
                 }
-            })
-            return
+            });
+            return;
         }
         https.get(params.url, res => {
             if (params.inMemory) {
-                let chunks = ''
+                let chunks = '';
 
                 res.on('data', chunk => {
-                    chunks += chunk
-                })
-
+                    chunks += chunk;
+                });
                 res.on('end', () => {
                     if (params.fromJSON) {
-                        resolve(JSON.parse(chunks))
+                        resolve(JSON.parse(chunks));
                     } else {
-                        resolve(chunks)
+                        resolve(chunks);
                     }
-                })
+                });
             } else {
-                const file = createWriteStream(params.path)
+                const file = createWriteStream(params.path);
                 if (params.downloadPage) {
-                    const len = parseInt(res.headers['content-length'], 10)
-                    let cur = 0
+                    const len = parseInt(res.headers['content-length'], 10);
+                    let cur = 0;
 
-                    res.on("data", chunk => {
-                        cur += chunk.length
-                        params.downloadPage.webContents.postMessage('percent', (100.0 * (cur / len)).toFixed(2))
-                    })
+                    res.on('data', chunk => {
+                        cur += chunk.length;
+                        params.downloadPage.setPercent((100.0 * (cur / len)).toFixed(2));
+                    });
                 }
 
-                res.pipe(file)
+                res.pipe(file);
                 res.on('end', () => {
-                    params.downloadPage.webContents.postMessage('success', true)
-                    file.on('close', cb)
-                    file.close()
-                })
+                    params.downloadPage.success();
+                    file.on('close', cb);
+                    file.close();
+                });
             }
-        })
-    })
+        });
+    });
 }
 
 function checkInitialSum() {
     return new Promise(resolve => {
         if (getHash(config.paths.initial) !== config.sums.initial) {
-            saveInitialSum()
-            unpackFiles(true).then(resolve)
+            saveInitialSum();
+            unpackFiles(true).then(resolve);
         } else {
-            resolve()
+            resolve();
         }
-    })
+    });
 }
 
 function checkPathToDelete(path, map) {
-    const toRemove = []
-    const items = readdirSync(path)
+    const toRemove = [];
+    const items = readdirSync(path);
     for (const item of items) {
-        const path2 = join(path, item)
+        const path2 = join(path, item);
 
         if (lstatSync(path2).isDirectory()) {
-            const array = checkPathToDelete(path2, map)
+            const array = checkPathToDelete(path2, map);
             if (array) {
-                toRemove.push(...array)
+                toRemove.push(...array);
             }
         } else {
-            const relativePath = path2.replace(join(paths.root, '/'), '')
+            const relativePath = path2.replace(join(paths.root, '/'), '');
             if (!map[relativePath]) {
-                toRemove.push(path2)
+                toRemove.push(path2);
             }
         }
     }
 
-    return toRemove
+    return toRemove;
 }
 
 function checkMap(map) {
-    const toRemove = checkPathToDelete(paths.root, map) || []
-    const toCreateOrChange = []
+    const toRemove = checkPathToDelete(paths.root, map) || [];
+    const toCreateOrChange = [];
 
     for (const relativePath in map) {
-        const absolutePath = join(paths.root, relativePath)
+        const absolutePath = join(paths.root, relativePath);
 
         if (!existsSync(absolutePath)) {
-            toCreateOrChange.push(relativePath)
+            toCreateOrChange.push(relativePath);
         } else {
             if (lstatSync(absolutePath).isDirectory()) {
-                toRemove.push(absolutePath)
-                toCreateOrChange.push(relativePath)
-                continue
+                toRemove.push(absolutePath);
+                toCreateOrChange.push(relativePath);
+                continue;
             }
             if (getHash(absolutePath) !== map[relativePath]) {
-                toCreateOrChange.push(relativePath)
+                toCreateOrChange.push(relativePath);
             }
         }
     }
 
-    return [toRemove, toCreateOrChange]
+    return [toRemove, toCreateOrChange];
 }
 
 function update() {
-    const page = openDownload()
+    const page = openDownload();
     page.once('show', () => {
-        page.webContents.postMessage('download', true)
+        page.download();
     })
-    resetConfig(true)
+    resetConfig(true);
     download({
         url: paths.updateMap,
         fromJSON: true,
         inMemory: true,
     }).then((updateMap) => {
-        let [toRemove, toCreateOrChange] = checkMap(updateMap)
+        let [toRemove, toCreateOrChange] = checkMap(updateMap);
 
         for (const path of toRemove) {
             if (lstatSync(path).isFile()) {
-                unlinkSync(path)
+                unlinkSync(path);
             } else {
                 rmSync(path, {
                     recursive: true
-                })
+                });
             }
         }
 
         if (toCreateOrChange.length === 0) {
-            relaunchWithoutSaving = true
-            reload()
+            settings.relaunchWithoutSaving = true;
+            reload();
         }
-        const toDownload = []
+        const toDownload = [];
         for (const relativePath of toCreateOrChange) {
-            const path = join(paths.root, relativePath)
-            const url = `${paths.updateFiles}/${relativePath.replaceAll('\\', '/')}`
+            const path = join(paths.root, relativePath);
+            const url = `${paths.updateFiles}/${relativePath.replaceAll('\\', '/')}`;
 
             if (!existsSync(dirname(path))) {
-                createDirForPath(path)
+                createDirForPath(path);
             }
             toDownload.push({
                 url: url,
                 path: path
-            })
+            });
         }
         download({
             array: toDownload,
             downloadPage: page,
             isRoot: true,
         }, () => {
-            toCreateOrChange = toCreateOrChange.slice(1)
+            toCreateOrChange = toCreateOrChange.slice(1);
             if (toCreateOrChange.length === 0) {
-                relaunchWithoutSaving = true
-                reload()
+                settings.relaunchWithoutSaving = true;
+                reload();
             }
-        })
-    })
+        });
+    });
 }
 
-function checkUpdate() {
+function checkUpdate(whateverCheck=false) {
+    if (!config.settings.updates && !whateverCheck) return;
+
     dns.resolve('yandex.ru', error => {
         if (!error) {
             https.get(paths.publicInfo, res => {
-                res.setEncoding('utf-8')
-                let rawData = ''
+                res.setEncoding('utf-8');
+                let rawData = '';
 
                 res.on('data', (chunk) => {
-                    rawData += chunk
-                })
-
+                    rawData += chunk;
+                });
                 res.on('end', () => {
-                    const data = JSON.parse(rawData)
+                    const data = JSON.parse(rawData);
                     if (data.latestVersion !== config.version) {
                         if (data.canAutoUpdate) {
-                            openUpdateMessage(data.latestVersion)
+                            openUpdateMessage(data.latestVersion);
                         } else {
                             showNotification(getText('[NOTIFICATION]'), getText('ALLOW_NEW_VERSION')).then(() => {
-                                shell.openExternal(paths.downloadPage)
-                            })
+                                shell.openExternal(paths.downloadPage);
+                            });
                         }
                     }
-                })
-            })
+                });
+            });
         }
-    })
+    });
 }
 
 function checkPaths() {
-    let success = true
+    let success = true;
     if (!existsSync(config.paths.initial)) {
-        showNotification(getText('[ERROR]'), getText('[INITIAL_NOT_FOUND]'))
-        success = false
+        showNotification(getText('[ERROR]'), getText('[INITIAL_NOT_FOUND]'));
+        success = false;
     } else if (!existsSync(paths.classes)) {
-        showNotification(getText('[ERROR]'), getText('[CLASSES_NOT_FOUND]'))
-        success = false
+        showNotification(getText('[ERROR]'), getText('[CLASSES_NOT_FOUND]'));
+        success = false;
     } else if (config.settings.DLC && !existsSync(paths.dlc)) {
-        showNotification(getText('[ERROR]'), getText('[DLC_FOLDER_NOT_FOUND]'))
-        config.settings.DLC = false
-        success = true
+        showNotification(getText('[ERROR]'), getText('[DLC_FOLDER_NOT_FOUND]'));
+        config.settings.DLC = false;
     }
-    return success
+    return success;
 }
 
 function initDLC() {
-    config.dlcList = fromDir(paths.dlc, true)
+    if (!config.settings.DLC) return;
+
+    config.dlcList = fromDir(paths.dlc, true);
 }
 
 function initMods() {
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
+        if (!config.settings.mods) {
+            reject();
+            return;
+        }
         if (config.modsList.length === 0) {
-            resolve()
-            return
+            resolve();
+            return;
         }
 
-        let counter = config.modsList.length
-        for (const modDirName in config.modsList) {
-            const mod = config.modsList[modDirName]
+        let counter = config.modsList.length;
+        for (const modName in config.modsList) {
+            const mod = config.modsList[modName];
             if (typeof mod === 'number') {
-                continue
+                continue;
             }
             if (!existsSync(mod.path)) {
-                invalidMods.push(config.modsList[modDirName].name)
-                delete config.modsList[modDirName]
-                delete config.sums.mods[modDirName]
-                config.modsList.length--
+                invalidMods.push(config.modsList[modName].name);
+                delete config.modsList[modName];
+                delete config.sums.mods[modName];
+                config.modsList.length--;
             }
 
-            const hash = getHash(mod.path)
-            if (hash === config.sums.mods[modDirName]) {
-                counter--
-                continue
+            const hash = getHash(mod.path);
+            if (hash === config.sums.mods[modName]) {
+                counter--;
+                continue;
             } else {
                 unpackMod(mod.path).then(() => {
-                    if (!existsSync(join(paths.modsTemp, modDirName, 'classes'))) {
-                        invalidMods.push(config.modsList[modDirName].name)
-                        delete config.modsList[modDirName]
-                        delete config.sums.mods[modDirName]
-                        config.modsList.length--
+                    if (!existsSync(join(paths.modsTemp, modName, 'classes'))) {
+                        invalidMods.push(config.modsList[modName].name);
+                        delete config.modsList[modName];
+                        delete config.sums.mods[modName];
+                        config.modsList.length--;
                     } else {
-                        config.sums.mods[modDirName] = hash
+                        config.sums.mods[modName] = hash;
                     }
-                    counter--
+                    counter--;
                     if (counter === 0) {
-                        resolve()
+                        resolve();
                     }
-                })
+                });
             }
         }
         if (counter === 0) {
-            resolve()
+            resolve();
         }
     })
 }
 
 function getModsTranslation() {
     return new Promise(resolve => {
-        let mods = {}
+        let mods = {};
         for (const modId in config.modsList) {
             if (existsSync(join(paths.modsTemp, modId, 'texts'))) {
-                let fileName
+                let fileName;
                 switch (config.lang) {
                     case 'RU':
-                        fileName = 'strings_russian.str'
-                        break
+                        fileName = 'strings_russian.str';
+                        break;
                     case 'EN':
-                        fileName = 'strings_english.str'
-                        break
+                        fileName = 'strings_english.str';
+                        break;
                     case 'DE':
-                        fileName = 'strings_german.str'
+                        fileName = 'strings_german.str';
+                        break;
                 }
-                stringsFilePath = join(paths.modsTemp, modId, 'texts', fileName)
+                let stringsFilePath = join(paths.modsTemp, modId, 'texts', fileName);
                 if (existsSync(stringsFilePath)) {
                     const result = parseStrings(readFileSync(stringsFilePath, {
                         encoding: 'utf16le'
-                    }).toString())
-                    mods[modId] = Object(result)
+                    }).toString());
+                    mods[modId] = Object(result);
                 }
             }
         }
-        translations.mods = Object(mods)
-        resolve()
-    })
+        translations.mods = Object(mods);
+        resolve();
+    });
 }
 
 function getIngameTranslation() {
     return new Promise(resolve => {
-        let ingame = {}
+        let ingame = {};
         if (existsSync(paths.strings)) {
-            let fileName
+            let fileName;
             switch (config.lang) {
                 case 'RU':
-                    fileName = 'strings_russian.str'
-                    break
+                    fileName = 'strings_russian.str';
+                    break;
                 case 'EN':
-                    fileName = 'strings_english.str'
-                    break
+                    fileName = 'strings_english.str';
+                    break;
                 case 'DE':
-                    fileName = 'strings_german.str'
+                    fileName = 'strings_german.str';
+                    break;
             }
-            stringsFilePath = join(paths.strings, fileName)
+            let stringsFilePath = join(paths.strings, fileName);
             if (existsSync(stringsFilePath)) {
                 ingame = parseStrings(readFileSync(stringsFilePath, {
                     encoding: 'utf16le'
-                }).toString())
+                }).toString());
             }
         }
-        translations.ingame = Object(ingame)
-        resolve()
-    })
+        translations.ingame = Object(ingame);
+        resolve();
+    });
 }
 
 function getTranslations() {
@@ -602,7 +547,7 @@ function getTranslations() {
         DE: JSON.parse(readFileSync(join(paths.translations, 'DE.json')).toString()),
         mods: {},
         ingame: {}
-    }
+    };
 }
 
 function showNotification(title, message) {
@@ -612,258 +557,278 @@ function showNotification(title, message) {
                 title: title,
                 icon: paths.icon,
                 body: message
-            })
+            });
 
-            notification.show()
-            notification.once('click', resolve)
+            notification.show();
+            notification.once('click', resolve);
         }
-    })
+    });
 }
 
 function openList() {
-    if (listWindow) {
-        listWindow.show()
-        listWindow.focus()
-        return
+    if (windows.listWindow) {
+        windows.listWindow.show();
+        windows.listWindow.focus();
+        return;
     }
-    if (mainWindow) {
-        mainWindow.hide()
+    if (windows.mainWindow) {
+        windows.mainWindow.hide();
     }
-    listWindow = createWindow('list.html', {
+    windows.listWindow = createWindow('list.html', {
         width: 1100,
         height: 640
-    })
-    listWindow.once('close', () => {
-        listWindow = null
-        if (mainWindow && !mainWindow.isDestroyed()) {
-            currentWindow = mainWindow
-            mainWindow.show()
-            mainWindow.focus()
+    });
+    windows.listWindow.once('close', () => {
+        windows.listWindow = null;
+        if (windows.mainWindow && !windows.mainWindow.isDestroyed()) {
+            windows.currentWindow = windows.mainWindow;
+            windows.mainWindow.show();
+            windows.mainWindow.focus();
         }
-    })
+    });
 }
 
 function openMain() {
     return new Promise(resolve => {
-        if (mainWindow) {
-            mainWindow.show()
-            mainWindow.focus()
-            resolve()
-            return
+        if (windows.mainWindow) {
+            windows.mainWindow.show();
+            windows.mainWindow.focus();
+            resolve();
+            return;
         }
-        mainWindow = createWindow('main.html', {
+        windows.mainWindow = createWindow('main.html', {
             width: 980,
             height: 380,
             resizable: false
-        })
+        });
 
-        mainWindow.once('show', () => {
-            resolve()
-            if (!loading.isDestroyed()) {
-                loading.close()
+        windows.mainWindow.once('show', () => {
+            resolve();
+            if (!windows.loading.isDestroyed()) {
+                windows.loading.close();
             }
-        })
-        mainWindow.once('close', () => {
-            app.quit()
-        })
-    })
+        });
+        windows.mainWindow.once('close', () => {
+            app.quit();
+        });
+    });
 }
 
 function openFirstSteps() {
     const wind = createWindow('firstSteps.html', {
         width: 550,
         height: 500
-    })
-    firstStepsWindow = wind
+    });
     wind.once('show', () => {
-        if (!loading.isDestroyed()) {
-            loading.close()
+        if (!windows.loading.isDestroyed()) {
+            windows.loading.close();
         }
-    })
+    });
     wind.once('close', () => {
-        app.quit()
-    })
+        app.quit();
+    });
 }
 
 function openXMLEditor() {
-    if (xmlEditor) {
-        xmlEditor.hide()
+    if (windows.xmlEditor) {
+        windows.xmlEditor.hide();
     }
 
-    if (listWindow) {
-        listWindow.hide()
+    if (windows.listWindow) {
+        windows.listWindow.hide();
     } else {
-        if (mainWindow) {
-            mainWindow.hide()
+        if (windows.mainWindow) {
+            windows.mainWindow.hide();
         }
     }
 
     const wind = createWindow('xmlEditor.html', {
         width: 1000,
         height: 800
-    })
-    if (xmlEditor) {
+    });
+    if (windows.xmlEditor) {
         wind.once('close', () => {
-            if (xmlEditor && !xmlEditor.isDestroyed()) {
-                currentWindow = xmlEditor
-                xmlEditor.show()
-                xmlEditor.focus()
+            if (windows.xmlEditor && !windows.xmlEditor.isDestroyed()) {
+                windows.currentWindow = windows.xmlEditor;
+                windows.xmlEditor.show();
+                windows.xmlEditor.focus();
             }
-        })
+        });
     } else {
-        xmlEditor = wind
+        windows.xmlEditor = wind
         wind.once('close', () => {
-            xmlEditor = null
-            if (listWindow && !listWindow.isDestroyed()) {
-                currentWindow = listWindow
-                listWindow.show()
-                listWindow.focus()
+            windows.xmlEditor = null;
+            if (windows.listWindow && !windows.listWindow.isDestroyed()) {
+                windows.currentWindow = windows.listWindow;
+                windows.listWindow.show();
+                windows.listWindow.focus();
             }
-        })
+        });
     }
 }
 
+function openConsole() {
+    const beforeWindow = windows.currentWindow;
+    const wind = createWindow('console.html', {
+        width: 500,
+        height: 500
+    });
+
+    wind.once('close', () => {
+        windows.currentWindow = beforeWindow;
+        beforeWindow.focus();
+    });
+
+    return wind;
+}
+
 function openDownload(popup = false) {
-    const beforeWindow = currentWindow
+    const beforeWindow = windows.currentWindow;
     const wind = createWindow('download.html', {
         width: 220,
         height: 70,
         modal: popup ? false : true,
-        parent: popup ? null : currentWindow,
+        parent: popup ? null : windows.currentWindow,
         frame: false
-    })
+    });
 
     if (!popup) {
         wind.once('close', () => {
-            currentWindow = beforeWindow
-            beforeWindow.focus()
-        })
+            windows.currentWindow = beforeWindow;
+            beforeWindow.focus();
+        });
     }
 
-    return wind
+    wind.setText = text => wind.webContents.postMessage('fileName', text);
+    wind.setCount = count => wind.webContents.postMessage('count', count);
+    wind.setPersent = percent => wind.webContents.postMessage('percent', percent);
+    wind.success = () => wind.webContents.postMessage('success', true);
+    wind.download = () => wind.webContents.postMessage('download', true);
+
+    return wind;
 }
 
 function openSettings() {
-    const beforeWindow = currentWindow
+    const beforeWindow = windows.currentWindow;
     const wind = createWindow('settings.html', {
         width: 400,
         height: 550,
         modal: true,
-        parent: currentWindow
-    })
+        parent: windows.currentWindow
+    });
 
     wind.once('close', () => {
-        currentWindow = beforeWindow
-        beforeWindow.focus()
-    })
+        windows.currentWindow = beforeWindow;
+        beforeWindow.focus();
+    });
 }
 
 function openUpdateMessage(version) {
-    const beforeWindow = currentWindow
+    const beforeWindow = windows.currentWindow;
     const wind = createWindow('updateMessage.html', {
         width: 400,
         height: 200,
         frame: false,
         modal: true,
-        parent: currentWindow,
+        parent: windows.currentWindow,
         resizable: false
-    })
+    });
 
     wind.once('show', () => {
-        wind.webContents.postMessage('content', version)
-    })
+        wind.webContents.postMessage('content', version);
+    });
     wind.once('close', () => {
-        currentWindow = beforeWindow
-        beforeWindow.focus()
-    })
+        windows.currentWindow = beforeWindow;
+        beforeWindow.focus();
+    });
 }
 
 function unpackFiles(popup = false) {
     return new Promise(resolve => {
-        const loading = openDownload(popup)
+        const loading = openDownload(popup);
         loading.once('show', () => {
-            loading.webContents.postMessage('fileName', getText('[UNPACKING]'))
+            loading.setText(getText('[UNPACKING]'));
         })
 
         if (existsSync(paths.mainTemp)) {
             rmSync(paths.mainTemp, {
                 recursive: true
-            })
+            });
         }
-        mkdirSync(paths.mainTemp)
+        mkdirSync(paths.mainTemp);
         exec(`WinRAR x -ibck -inul "${config.paths.initial}" @unpack-list.lst "${paths.mainTemp}\\"`, {
             cwd: paths.winrar
         }).once('close', () => {
-            resolve()
+            resolve();
             if (!loading.isDestroyed()) {
-                loading.close()
+                loading.close();
             }
-        })
-    })
+        });
+    });
 }
 
 function unpackMod(absolutePath) {
     return new Promise(resolve => {
-        const modDir = join(paths.modsTemp, basename(dirname(absolutePath)))
+        const modDir = join(paths.modsTemp, basename(dirname(absolutePath)));
 
         if (!existsSync(paths.modsTemp)) {
-            mkdirSync(paths.modsTemp)
+            mkdirSync(paths.modsTemp);
         }
 
         if (existsSync(modDir)) {
             rmSync(modDir, {
                 recursive: true
-            })
+            });
         }
-        mkdirSync(modDir)
+        mkdirSync(modDir);
         exec(`WinRAR x -ibck -inul "${absolutePath}" @unpack-mod-list.lst "${modDir}\\"`, {
             cwd: paths.winrar
         }).once('close', () => {
-            resolve()
-        })
-    })
+            resolve();
+        });
+    });
 }
 
 function saveBackup(reloadAfter = false) {
     unpackFiles().then(() => {
         if (!existsSync(paths.backupFolder)) {
-            mkdirSync(paths.backupFolder)
+            mkdirSync(paths.backupFolder);
         }
 
         if (existsSync(paths.backupInitial)) {
             try {
-                unlinkSync(paths.backupInitial)
+                unlinkSync(paths.backupInitial);
             } catch {
-                throw new Error('[DELETE_OLD_INITIAL_BACKUP_ERROR]')
+                throw new Error('[DELETE_OLD_INITIAL_BACKUP_ERROR]');
             }
         }
 
-        copyBackup()
-        showNotification(getText('[SUCCESS]'), getText('[SUCCESS_BACKUP_SAVE]'))
+        copyBackup();
+        showNotification(getText('[SUCCESS]'), getText('[SUCCESS_BACKUP_SAVE]'));
         if (reloadAfter) {
-            reload()
+            reload();
         }
-    })
+    });
 }
 
 function copyBackup() {
     try {
-        copyFileSync(config.paths.initial, paths.backupInitial)
+        copyFileSync(config.paths.initial, paths.backupInitial);
     } catch {
-        throw new Error('[SAVE_INITIAL_BACKUP_ERROR]')
+        throw new Error('[SAVE_INITIAL_BACKUP_ERROR]');
     }
 }
 
 function saveConfig() {
     try {
-        writeFileSync(paths.config, JSON.stringify(config))
+        writeFileSync(paths.config, JSON.stringify(config));
     } catch {
-        throw new Error('[SAVE_CONFIG_ERROR]')
+        throw new Error('[SAVE_CONFIG_ERROR]');
     }
 }
 
 function createWindow(fileName, args = {}) {
-    let preload = join(__dirname, '..', 'scripts', 'modules', basename(fileName, '.html'), 'preload.js')
+    let preload = join(__dirname, '..', 'scripts', 'modules', basename(fileName, '.html'), 'preload.js');
     if (!existsSync(preload)) {
         preload = paths.preload
     }
@@ -881,40 +846,40 @@ function createWindow(fileName, args = {}) {
             preload: preload,
             contextIsolation: false
         }
-    })
-    currentWindow = wind
-    wind.setMenu(null)
+    });
+    windows.currentWindow = wind;
+    wind.setMenu(null);
     wind.loadFile(join(paths.HTMLFolder, fileName)).then(() => {
-        wind.show()
+        wind.show();
         if (!wind.isDestroyed()) {
-            wind.focus()
-            if (devTools) {
-                wind.webContents.toggleDevTools()
+            wind.focus();
+            if (settings.showDevTools) {
+                wind.webContents.toggleDevTools();
             }
         }
     })
-    return wind
+    return wind;
 }
 
 function restoreInitial() {
     if (!existsSync(paths.backupInitial)) {
-        return
+        return;
     }
     if (existsSync(config.paths.initial)) {
         try {
-            unlinkSync(config.paths.initial)
+            unlinkSync(config.paths.initial);
         } catch {
-            showNotification(getText('[ERROR]'), getText('[DELETE_CURRENT_INITIAL_BACKUP_ERROR]'))
+            showNotification(getText('[ERROR]'), getText('[DELETE_CURRENT_INITIAL_BACKUP_ERROR]'));
         }
     }
     try {
-        copyFileSync(paths.backupInitial, config.paths.initial)
+        copyFileSync(paths.backupInitial, config.paths.initial);
         unpackFiles().then(() => {
-            saveInitialSum()
-            showNotification(getText('[SUCCESS]'), getText('[SUCCESS_INITIAL_RESTORE]'))
-        })
+            saveInitialSum();
+            showNotification(getText('[SUCCESS]'), getText('[SUCCESS_INITIAL_RESTORE]'));
+        });
     } catch {
-        showNotification(getText('[ERROR]'), getText('[DELETE_CURRENT_INITIAL_BACKUP_ERROR]'))
+        showNotification(getText('[ERROR]'), getText('[DELETE_CURRENT_INITIAL_BACKUP_ERROR]'));
     }
 }
 
@@ -924,11 +889,11 @@ function resetConfig(withoutReloading = false) {
         dlc: null,
         classes: null,
         mods: null
-    }
-    config.dlcList = []
+    };
+    config.dlcList = [];
     config.modsList = {
         length: 0
-    }
+    };
     config.settings = {
         updates: true,
         limits: true,
@@ -936,58 +901,58 @@ function resetConfig(withoutReloading = false) {
         mods: true,
         resetButton: false,
         devMode: false
-    }
+    };
     config.sums = {
         initial: null,
         mods: {}
-    }
-    config.lang = 'EN'
+    };
+    config.lang = 'EN';
 
     if (existsSync(paths.backupInitial)) {
         try {
-            unlinkSync(paths.backupInitial)
+            unlinkSync(paths.backupInitial);
         } catch (error) {
-            showNotification(getText('[ERROR]'), getText('[DELETE_OLD_INITIAL_BACKUP_ERROR]'))
+            showNotification(getText('[ERROR]'), getText('[DELETE_OLD_INITIAL_BACKUP_ERROR]'));
         }
     }
 
     if (existsSync(paths.mainTemp)) {
         rmSync(paths.mainTemp, {
             recursive: true
-        })
-        mkdirSync(paths.mainTemp)
+        });
+        mkdirSync(paths.mainTemp);
     }
 
     if (existsSync(paths.modsTemp)) {
         rmSync(paths.modsTemp, {
             recursive: true
-        })
-        mkdirSync(paths.modsTemp)
+        });
+        mkdirSync(paths.modsTemp);
     }
 
     if (!withoutReloading) {
-        reload()
+        reload();
     } else {
-        saveConfig()
+        saveConfig();
     }
 }
 
 function getText(key, returnKey = true) {
-    const translation = translations[config.lang]
+    const translation = translations[config.lang];
     if (translation) {
-        return translation[removePars(key)] || (returnKey ? key : undefined)
+        return translation[removePars(key)] || (returnKey ? key : undefined);
     }
 }
 
 function getConfig() {
-    const data = readFileSync(paths.config)
-    const obj = JSON.parse(data.toString())
-    return obj
+    const data = readFileSync(paths.config);
+    const obj = JSON.parse(data.toString());
+    return obj;
 }
 
 function reload() {
-    app.relaunch()
-    app.quit()
+    app.relaunch();
+    app.quit();
 }
 
 function getShortMenu() {
@@ -1033,7 +998,7 @@ function getShortMenu() {
                 }
             ]
         }
-    ]
+    ];
 }
 
 function getMainMenu() {
@@ -1114,5 +1079,5 @@ function getMainMenu() {
                 }
             ]
         }
-    ]
+    ];
 }

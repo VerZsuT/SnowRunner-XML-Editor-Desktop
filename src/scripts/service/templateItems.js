@@ -1,9 +1,4 @@
-import {
-    removePars,
-    getTextFromTemplate,
-    getText,
-    getIngameText
-} from './funcs.js'
+import {removePars, getTextFromTemplate, getIngameText, getDescription} from './funcs.js';
 
 /**
  * params: 
@@ -21,49 +16,49 @@ export function Template(params, children) {
         single: params.single || false,
         children: children,
         get attributes() {
-            const array = []
+            const array = [];
             for (const name in params) {
                 array.push({
                     name: name,
                     value: params[name]
-                })
+                });
             }
-            return array
+            return array;
         },
         nodeName: 'Template',
         getParams(props) {
-            let selectors = props.selectors
-            let defaultSelector = props.defaultSelector || null
-            let onlySingle = props.onlySingle || false
-            let tCycleNumber = props.tCycleNumber || 1
-            let tNumber = props.tNumber || 1
-            let multiply = props.multiply
-            let fileDOM = props.fileDOM
-            let templateName = props.templateName
+            let selectors = props.selectors;
+            let defaultSelector = props.defaultSelector || null;
+            let onlySingle = props.onlySingle || false;
+            let tCycleNumber = props.tCycleNumber || 1;
+            let tNumber = props.tNumber || 1;
+            let multiply = props.multiply;
+            let fileDOM = props.fileDOM;
+            let templateName = props.templateName;
 
             if (multiply === undefined) {
-                multiply = (this.type === 'Multiply')
+                multiply = (this.type === 'Multiply');
             }
 
-            let params = []
-            let newSelectors = {}
+            let params = [];
+            let newSelectors = {};
             if (multiply) {
-                const items = fileDOM.querySelectorAll(selectors[removePars(this.itemSelector)])
-                let currentNum = 1
+                const items = fileDOM.querySelectorAll(selectors[removePars(this.itemSelector)]);
+                let currentNum = 1;
                 for (const item of items) {
                     if (currentNum < this.startWith) {
-                        continue
+                        continue;
                     }
-                    const id = Math.round(Math.random() * Math.pow(10, 10))
+                    const id = Math.round(Math.random() * Math.pow(10, 10));
                     item.setAttribute('SXMLE_ID', id)
                     for (const selector in selectors) {
-                        newSelectors[selector] = selectors[selector].replaceAll(`-${this.replaceName}${tNumber}-`, id)
+                        newSelectors[selector] = selectors[selector].replaceAll(`-${this.replaceName}${tNumber}-`, id);
                         if (currentNum === 1) {
-                            newSelectors[selector] = newSelectors[selector].replaceAll(`-F_${this.replaceName}${tNumber}-`, id)
+                            newSelectors[selector] = newSelectors[selector].replaceAll(`-F_${this.replaceName}${tNumber}-`, id);
                         } else if (currentNum === items.length) {
-                            newSelectors[selector] = newSelectors[selector].replaceAll(`-L_${this.replaceName}${tNumber}-`, id)
+                            newSelectors[selector] = newSelectors[selector].replaceAll(`-L_${this.replaceName}${tNumber}-`, id);
                         }
-                        newSelectors[selector] = newSelectors[selector].replaceAll(`-N${currentNum}_${this.replaceName}${tNumber}-`, id)
+                        newSelectors[selector] = newSelectors[selector].replaceAll(`-N${currentNum}_${this.replaceName}${tNumber}-`, id);
                     }
                     params = params.concat(this.getParams({
                         selectors: newSelectors,
@@ -74,8 +69,8 @@ export function Template(params, children) {
                         fileDOM: fileDOM,
                         tNumber: multiply ? tNumber + 1 : tNumber,
                         templateName: templateName
-                    }))
-                    currentNum++
+                    }));
+                    currentNum++;
                 }
                 params = params.concat(this.getParams({
                     selectors: newSelectors,
@@ -85,12 +80,12 @@ export function Template(params, children) {
                     fileDOM: fileDOM,
                     tNumber: tNumber,
                     templateName: templateName
-                }))
-                return params
+                }));
+                return params;
             }
             for (const child of this.children) {
                 if ((onlySingle && !child.single) || (!onlySingle && child.single)) {
-                    return []
+                    return [];
                 }
                 params = params.concat(child.getParams({
                     selectors: selectors,
@@ -100,11 +95,11 @@ export function Template(params, children) {
                     tNumber: multiply ? tNumber + 1 : tNumber,
                     fileDOM: fileDOM,
                     templateName: templateName
-                }))
+                }));
             }
-            return params
+            return params;
         }
-    })
+    });
 }
 
 /**
@@ -131,59 +126,59 @@ export function Group(params, children) {
         withCounter: params.withCounter || false,
         children: children,
         get attributes() {
-            const array = []
+            const array = [];
             for (const name in params) {
                 array.push({
                     name: name,
                     value: params[name]
-                })
+                });
             }
-            return array
+            return array;
         },
         nodeName: 'Group',
         getParams(props) {
-            let selectors = props.selectors
-            let defaultSelector = props.defaultSelector || null
-            let onlySingle = props.onlySingle || false
-            let cycleNumber = props.cycleNumber
-            let fileDOM = props.fileDOM
-            let templateName = props.templateName
+            let selectors = props.selectors;
+            let defaultSelector = props.defaultSelector || null;
+            let onlySingle = props.onlySingle || false;
+            let cycleNumber = props.cycleNumber;
+            let fileDOM = props.fileDOM;
+            let templateName = props.templateName;
 
-            let param = null
-            let params = []
+            let param = null;
+            let params = [];
             let groupName;
             if (this.nameType !== 'Static') {
-                const nameSelector = removePars(this.nameSelector)
-                const resNameSelector = removePars(this.resNameSelector)
+                const nameSelector = removePars(this.nameSelector);
+                const resNameSelector = removePars(this.resNameSelector);
 
-                const $nameElement = fileDOM.querySelector(selectors[nameSelector] || nameSelector)
-                const $resNameElement = fileDOM.querySelector(selectors[resNameSelector] || resNameSelector)
+                const $nameElement = fileDOM.querySelector(selectors[nameSelector] || nameSelector);
+                const $resNameElement = fileDOM.querySelector(selectors[resNameSelector] || resNameSelector);
 
                 if ($nameElement === null && $resNameElement === null) {
-                    return params
+                    return params;
                 }
 
                 if (this.nameType === 'Computed') {
-                    const nameAttribute = this.nameAttribute
-                    const resNameAttribute = this.resNameAttribute
+                    const nameAttribute = this.nameAttribute;
+                    const resNameAttribute = this.resNameAttribute;
 
-                    groupName = getIngameText($nameElement.getAttribute(nameAttribute)) || $resNameElement.getAttribute(resNameAttribute)
+                    groupName = getIngameText($nameElement.getAttribute(nameAttribute)) || $resNameElement.getAttribute(resNameAttribute);
                 } else if (this.nameType === 'TagName') {
-                    groupName = $nameElement.nodeName
+                    groupName = $nameElement.nodeName;
                 }
             } else {
-                groupName = this.name
+                groupName = this.name;
             }
 
             if (this.single) {
                 for (const child of this.children) {
-                    child.single = true
+                    child.single = true;
                 }
             }
-            const groupDefaultSelector = removePars(this.defaultSelector)
+            const groupDefaultSelector = removePars(this.defaultSelector);
             for (const child of this.children) {
                 if ((onlySingle && !child.single) || (!onlySingle && child.single)) {
-                    continue
+                    continue;
                 }
                 params = params.concat(child.getParams({
                     selectors: selectors,
@@ -192,21 +187,21 @@ export function Group(params, children) {
                     tNumber: props.tNumber,
                     fileDOM: fileDOM,
                     templateName: templateName
-                }))
+                }));
             }
-            groupName = getTextFromTemplate(groupName, templateName)
+            groupName = getTextFromTemplate(groupName, templateName);
             if (this.withCounter) {
-                groupName += ` ${cycleNumber}`
+                groupName += ` ${cycleNumber}`;
             }
 
             param = {
                 paramType: 'group',
                 groupName: groupName,
                 groupItems: params
-            }
-            return [param]
+            };
+            return [param];
         }
-    })
+    });
 }
 
 /**
@@ -231,8 +226,9 @@ export function Input(params) {
         single: params.single || false,
         onlyDeveloper: params.onlyDeveloper || false,
         type: params.type || 'number',
-        min: params.min || params.numberType === 'float' ? 0.01 : 0,
+        min: params.min || (params.numberType === 'float' ? 0.01 : 0),
         max: params.max,
+        step: params.step,
         numberType: params.numberType || 'int',
         fileType: params.fileType,
         canAddTag: params.canAddTag,
@@ -240,33 +236,33 @@ export function Input(params) {
         desc: params.desc,
         default: params.default,
         get attributes() {
-            const array = []
+            const array = [];
             for (const name in params) {
                 array.push({
                     name: name,
                     value: params[name]
-                })
+                });
             }
-            return array
+            return array;
         },
         nodeName: 'Input',
         getParams(props) {
-            let selectors = props.selectors
-            let defaultSelector = props.defaultSelector
-            let fileDOM = props.fileDOM
-            let templateName = props.templateName
+            let selectors = props.selectors;
+            let defaultSelector = props.defaultSelector;
+            let fileDOM = props.fileDOM;
+            let templateName = props.templateName;
 
-            let param = null
-            const selectorType = removePars(this.selector)
-            const selector = selectors[selectorType] || selectorType || selectors[defaultSelector]
-            let value = ""
+            let param = null;
+            const selectorType = removePars(this.selector);
+            const selector = selectors[selectorType] || selectorType || selectors[defaultSelector];
+            let value = '';
             if (!fileDOM.querySelector(selector)) {
                 if (!this.canAddTag) {
-                    console.warn(`Missing parameter\n\tName: '${this.attribute}',\n\tText: '${this.text}',\n\tSelector: '${selector}'.`)
-                    return []
+                    console.warn(`Missing parameter\n\tName: '${this.attribute}',\n\tText: '${this.text}',\n\tSelector: '${selector}'.`);
+                    return [];
                 }
             } else {
-                value = fileDOM.querySelector(selector).getAttribute(this.attribute)
+                value = fileDOM.querySelector(selector).getAttribute(this.attribute);
             }
 
             param = {
@@ -280,16 +276,17 @@ export function Input(params) {
                 type: this.type,
                 min: this.min,
                 max: this.max,
+                step: this.step,
                 numberType: this.numberType,
                 fileType: this.fileType,
                 bold: this.bold,
-                desc: this.desc,
+                desc: getDescription(this.desc, templateName),
                 default: this.default
-            }
+            };
 
-            return [param]
+            return [param];
         }
-    })
+    });
 }
 
 /**
@@ -314,42 +311,42 @@ export function Select(params, children) {
         desc: params.desc,
         default: params.default,
         get attributes() {
-            const array = []
+            const array = [];
             for (const name in params) {
                 array.push({
                     name: name,
                     value: params[name]
-                })
+                });
             }
-            return array
+            return array;
         },
         nodeName: 'Select',
         getParams(props) {
-            let selectors = props.selectors
-            let defaultSelector = props.defaultSelector
-            let fileDOM = props.fileDOM
-            let templateName = props.templateName
+            let selectors = props.selectors;
+            let defaultSelector = props.defaultSelector;
+            let fileDOM = props.fileDOM;
+            let templateName = props.templateName;
 
-            let param = null
-            const selectorType = removePars(this.selector)
-            const selector = selectors[selectorType] || selectorType || selectors[defaultSelector]
-            let value = null
+            let param = null;
+            const selectorType = removePars(this.selector);
+            const selector = selectors[selectorType] || selectorType || selectors[defaultSelector];
+            let value = null;
             if (!fileDOM.querySelector(selector)) {
                 if (!this.canAddTag) {
-                    console.warn(`Missing parameter\n\tName: '${this.attribute}',\n\tText: '${this.text}',\n\tSelector: '${selector}'.`)
-                    return []
+                    console.warn(`Missing parameter\n\tName: '${this.attribute}',\n\tText: '${this.text}',\n\tSelector: '${selector}'.`);
+                    return [];
                 }
             } else {
-                value = fileDOM.querySelector(selector).getAttribute(this.attribute)
+                value = fileDOM.querySelector(selector).getAttribute(this.attribute);
             }
 
-            let options = []
+            let options = [];
             for (const option of this.children) {
-                const text_1 = option.text
+                const text_1 = option.text;
                 options.push({
                     text: getTextFromTemplate(text_1, templateName),
                     value: option.value
-                })
+                });
             }
             param = {
                 name: this.attribute,
@@ -361,13 +358,13 @@ export function Select(params, children) {
                 inputType: 'select',
                 onlyDeveloper: this.onlyDeveloper,
                 bold: this.bold,
-                desc: this.desc,
+                desc: getDescription(this.desc, templateName),
                 default: this.default
-            }
+            };
 
-            return [param]
+            return [param];
         }
-    })
+    });
 }
 
 /**
@@ -381,17 +378,17 @@ export function Opt(params) {
         text: params.text,
         value: params.value,
         get attributes() {
-            const array = []
+            const array = [];
             for (const name in params) {
                 array.push({
                     name: name,
                     value: params[name]
-                })
+                });
             }
-            return array
+            return array;
         },
         nodeName: 'Option'
-    })
+    });
 }
 
 /**
@@ -410,21 +407,21 @@ export function Selectors(children) {
                     .replaceAll('#last(', '[SXMLE_ID="-L_CYCLE')
                     .replaceAll('#every', '[SXMLE_ID="-CYCLE1-"]')
                     .replaceAll('#first', '[SXMLE_ID="-F_CYCLE1-"]')
-                    .replaceAll('#last', '[SXMLE_ID="-L_CYCLE1-"]')
+                    .replaceAll('#last', '[SXMLE_ID="-L_CYCLE1-"]');
                 for (let i = 1; i <= 20; i++) {
-                    obj[child.id] = obj[child.id].replaceAll(`#${i}-th(`, `[SXMLE_ID="-N${i}_CYCLE`)
+                    obj[child.id] = obj[child.id].replaceAll(`#${i}-th(`, `[SXMLE_ID="-N${i}_CYCLE`);
                 }
-                obj[child.id] = obj[child.id].replaceAll(')', '-"]').replaceAll('.', ' > ')
+                obj[child.id] = obj[child.id].replaceAll(')', '-"]').replaceAll('.', ' > ');
             }
 
             for (const id in obj) {
                 for (const id2 in obj) {
-                    obj[id2] = obj[id2].replace(`{${id}}`, obj[id])
+                    obj[id2] = obj[id2].replace(`{${id}}`, obj[id]);
                 }
             }
-            return obj
+            return obj;
         }
-    })
+    });
 }
 
 /**
@@ -439,14 +436,14 @@ export function Selector(params) {
         value: params.value,
         nodeName: 'Selector',
         get attributes() {
-            const array = []
+            const array = [];
             for (const name in params) {
                 array.push({
                     name: name,
                     value: params[name]
-                })
+                });
             }
-            return array
+            return array;
         }
-    })
+    });
 }

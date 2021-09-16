@@ -1,6 +1,6 @@
-import templates from './templates.js'
+import templates from './templates.js';
 
-const language = config.lang
+const language = config.lang;
 
 /**
  * Делает первую букву слова заглавной, а также заменяет _ на пробелы.
@@ -8,10 +8,10 @@ const language = config.lang
  * @returns форматированный текст.
  */
 export function prettify(text) {
-    text = text.replaceAll('_', ' ')
-    const firstChar = text[0].toUpperCase()
+    text = text.replaceAll('_', ' ');
+    const firstChar = text[0].toUpperCase();
 
-    return `${firstChar}${text.slice(1)}`
+    return `${firstChar}${text.slice(1)}`;
 }
 
 /**
@@ -27,49 +27,49 @@ export function prettify(text) {
  * @returns созданный объект.
  */
 export function create(tag, attrs = {}) {
-    const element = document.createElement(tag)
+    const element = document.createElement(tag);
 
     for (const attrName in attrs) {
-        const attrValue = attrs[attrName]
+        const attrValue = attrs[attrName];
         switch (attrName) {
             case 'innerText':
-                element.innerText = attrValue
-                continue
+                element.innerText = attrValue;
+                continue;
             case 'style':
                 for (const propName in attrValue) {
-                    const propValue = attrValue[propName]
-                    element.style[propName] = propValue
+                    const propValue = attrValue[propName];
+                    element.style[propName] = propValue;
                 }
-                continue
+                continue;
             case 'checked':
-                element.checked = attrValue
-                continue
+                element.checked = attrValue;
+                continue;
             case 'disabled':
                 if (attrValue) {
-                    element.disabled = 'disabled'
+                    element.disabled = 'disabled';
                 }
-                continue
+                continue;
             case 'listeners':
                 for (const eventName in attrValue) {
-                    const listenerObj = attrValue[eventName]
+                    const listenerObj = attrValue[eventName];
                     if (Array.isArray(listenerObj)) {
                         for (const listener of listenerObj) {
                             if (typeof listenerObj === 'function') {
-                                element.addEventListener(eventName, listener)
+                                element.addEventListener(eventName, listener);
                             }
                         }
                     } else if (typeof listenerObj === 'function') {
-                        element.addEventListener(eventName, listenerObj)
+                        element.addEventListener(eventName, listenerObj);
                     }
                 }
-                continue
+                continue;
             default:
-                element.setAttribute(attrName, attrValue)
-                continue
+                element.setAttribute(attrName, attrValue);
+                continue;
         }
     }
 
-    return element
+    return element;
 }
 
 /**
@@ -78,7 +78,7 @@ export function create(tag, attrs = {}) {
  * @returns найденный элемент.
  */
 export function get(selector) {
-    return document.querySelector(selector)
+    return document.querySelector(selector);
 }
 
 /**
@@ -87,7 +87,7 @@ export function get(selector) {
  * @returns все найденные элементы.
  */
 export function getAll(selector) {
-    return document.querySelectorAll(selector)
+    return document.querySelectorAll(selector);
 }
 
 /**
@@ -98,16 +98,16 @@ export function getAll(selector) {
  * @param {true} returnKey - возвращать ли ключ в случае отсутвия его в объекте перевода.
  */
 export function getText(key, returnKey = true) {
-    const translation = getTranslation(language)
+    const translation = getTranslation(language);
     if (translation) {
-        let result = translation[removePars(key)]
+        let result = translation[removePars(key)];
         if (!result) {
-            result = getTranslation('EN')[removePars(key)]
+            result = getTranslation('EN')[removePars(key)];
         }
         if (!result && returnKey) {
-            result = key
+            result = key;
         }
-        return result
+        return result;
     }
 }
 
@@ -119,25 +119,43 @@ export function getText(key, returnKey = true) {
  * @param {string} key - ключ. Автоматически убираются квадратные скобки.
  * @param {string} name - имя шаблона, откуда будет взял локальный перевод.
  */
-export function getTextFromTemplate(key, name) {
-    const translation = getTemplate(name).translation
+export function getTextFromTemplate(key, tname) {
+    const translation = getTemplate(tname).translations;
     if (translation[language]) {
-        return translation[language][removePars(key)] || getText(key)
+        return translation[language][removePars(key)] || getText(key);
     } else {
-        return getText(key)
+        return getText(key);
     }
 }
 
-export function getIngameText(key, modId = null) {
-    let value
+
+/**
+ * Возвращает описание по ключу в шаблоне с указанными именем.
+ * @param {string} key - ключ описания.
+ * @param {string} tname - имя шаблона.
+ */
+export function getDescription(key, tname) {
+    const desc = getTemplate(tname).descriptions;
+    if (desc[removePars(key)]) {
+        return desc[removePars(key)][language];
+    }
+}
+
+/**
+ * Возвращает внутриигровой перевод по ключу.
+ * @param {string} key - ключ перевода.
+ * @param {string} modId - id модификации.
+ */
+export function getIngameText(key, modId=null) {
+    let value;
     if (modId && translations.mods[modId]) {
-        value = translations.mods[modId][key]
+        value = translations.mods[modId][key];
     } else {
-        value = translations.ingame[key]
+        value = translations.ingame[key];
     }
 
     if (value) {
-        return value
+        return value;
     }
 }
 
@@ -146,7 +164,7 @@ export function getIngameText(key, modId = null) {
  * @param {string} name - имя перевода.
  */
 export function getTranslation(name) {
-    return translations[name]
+    return translations[name];
 }
 
 /**
@@ -154,7 +172,7 @@ export function getTranslation(name) {
  * @param {string} name - имя шаблона.
  */
 export function getTemplate(name) {
-    return templates[name]
+    return templates[name];
 }
 
 /**
@@ -164,7 +182,7 @@ export function getTemplate(name) {
  * @param {string} value - значение option элемента.
  */
 export function addOption(element, text, value = null) {
-    element.options.add(new Option(text, value || text))
+    element.options.add(new Option(text, value || text));
 }
 
 /**
@@ -174,6 +192,6 @@ export function addOption(element, text, value = null) {
  */
 export function removePars(str) {
     if (str || str === '') {
-        return str.replaceAll('[', '').replaceAll(']', '')
+        return str.replace('[', '').replace(']', '');
     }
 }

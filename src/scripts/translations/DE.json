@@ -3,6 +3,7 @@
 	"CLOSE": "Schließen",
 	"UPDATE": "Aktualisieren",
 	"IGNORE": "Ignorieren",
+	"EMPTY": "Leer",
 	"SAVING_MESSAGE": "Speichern...",
 	"PARSE_FILE_ERROR": "Datei kann nicht erkannt werden",
 	"MODS_LIST_TITLE": "Modifikationen",

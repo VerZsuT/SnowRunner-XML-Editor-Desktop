@@ -6,47 +6,9 @@ import {
 	Opt,
 	Selectors,
 	Selector
-} from '../service/templateItems.js'
+} from '../service/templateItems.js';
 
-const desc = {
-	Price: {
-		RU: 'Цена самого автомобиля (без учёта составляющих)',
-		EN: 'Der Preis des Autos selbst (ohne die Komponenten)',
-		DE: 'The price of the car itself (excluding components)'
-	},
-	UnlockByExporation: {
-		RU: 'Способ разблокировки автомобиля',
-		EN: 'How to unlock the car',
-		DE: 'Methode zum Entsperren des Autos'
-	},
-	UnlockByRank: {
-		RU: 'Уровень разблокировки автомобиля',
-		EN: 'Car Unlock Level',
-		DE: 'Auto entsperren Ebene'
-	},
-	Name: {
-		RU: 'ID данной лебёдки',
-		EN: 'ID of this winch',
-		DE: 'ID dieser Winde'
-	},
-	Length: {
-		RU: 'Максимальная длина лебёдки',
-		EN: 'Maximum winch length',
-		DE: 'Maximale Länge der Winde'
-	},
-	StrengthMult: {
-		RU: 'Сила лебёдки',
-		EN: 'Winch power',
-		DE: 'Kraft der Winde'
-	},
-	IsEngineIgnitionRequired: {
-		RU: 'От чего работает (аккумулятор - автономная).',
-		EN: 'What it works on (battery-autonomous).',
-		DE: 'Was funktioniert (Batterie-autonom).'
-	}
-}
-
-const whinch = {
+export default {
 	main: [
 		Template({
 			type: 'Multiply',
@@ -63,34 +25,36 @@ const whinch = {
 				Input({
 					attribute: 'Name',
 					text: '[ID]',
+					desc: '[NAME]',
 					type: 'text',
-					onlyDeveloper: 'true',
-					desc: desc.Name
+					onlyDeveloper: true
 				}),
 				Input({
 					attribute: 'Length',
 					text: '[LENGTH]',
-					min: '0.0',
-					max: '100.0',
+					desc: '[LENGTH]',
+					min: 0,
+					step: 1,
+					max: 100,
 					bold: true,
-					default: 14,
-					desc: desc.Length
+					default: 14
 				}),
 				Input({
 					attribute: 'StrengthMult',
 					text: '[STRENGTH]',
-					min: '0.0',
-					max: '10.0',
+					desc: '[STRENGTH_MULT]',
+					min: 0,
+					step: 1,
+					max: 10,
 					bold: true,
-					default: 1,
-					desc: desc.StrengthMult
+					default: 1
 				}),
 				Select({
 					attribute: 'IsEngineIgnitionRequired',
 					text: '[IS_ENGINE_IGNITION_REQUIRED]',
+					desc: '[IS_ENGINE_IGNITION_REQUIRED]',
 					bold: true,
-					default: 'true',
-					desc: desc.IsEngineIgnitionRequired
+					default: 'true'
 				}, [
 					Opt({
 						text: '[ENGINE]',
@@ -108,14 +72,14 @@ const whinch = {
 					Input({
 						attribute: 'Price',
 						text: '[PRICE]',
-						bold: true,
-						desc: desc.Price
+						desc: '[PRICE]',
+						bold: true
 					}),
 					Select({
 						attribute: 'UnlockByExploration',
 						text: '[BY_EXPLORATION]',
-						onlyDeveloper: 'true',
-						desc: desc.UnlockByExploration
+						desc: '[UNLOCK_BY_EXPLORATION]',
+						onlyDeveloper: true
 					}, [
 						Opt({
 							text: '[FIND_ON_MAP]',
@@ -129,8 +93,8 @@ const whinch = {
 					Input({
 						attribute: 'UnlockByRank',
 						text: '[BY_RANK_LEVEL]',
-						min: 1,
-						desc: desc.UnlockByRank
+						desc: '[UNLOCK_BY_RANK]',
+						min: 1
 					})
 				])
 			])
@@ -155,7 +119,44 @@ const whinch = {
 		])
 	],
 	selector: 'WinchVariants',
-	translation: {
+	descriptions: {
+		PRICE: {
+			RU: 'Цена самого автомобиля (без учёта составляющих)',
+			EN: 'Der Preis des Autos selbst (ohne die Komponenten)',
+			DE: 'The price of the car itself (excluding components)'
+		},
+		UNLOCK_BY_EXPLORATION: {
+			RU: 'Способ разблокировки автомобиля',
+			EN: 'How to unlock the car',
+			DE: 'Methode zum Entsperren des Autos'
+		},
+		UNLOCK_BY_RANK: {
+			RU: 'Уровень разблокировки автомобиля',
+			EN: 'Car Unlock Level',
+			DE: 'Auto entsperren Ebene'
+		},
+		NAME: {
+			RU: 'ID данной лебёдки',
+			EN: 'ID of this winch',
+			DE: 'ID dieser Winde'
+		},
+		LENGTH: {
+			RU: 'Максимальная длина лебёдки',
+			EN: 'Maximum winch length',
+			DE: 'Maximale Länge der Winde'
+		},
+		STRENGTH_MULT: {
+			RU: 'Сила лебёдки',
+			EN: 'Winch power',
+			DE: 'Kraft der Winde'
+		},
+		IS_ENGINE_IGNITION_REQUIRED: {
+			RU: 'От чего работает (аккумулятор - автономная).',
+			EN: 'What it works on (battery-autonomous).',
+			DE: 'Was funktioniert (Batterie-autonom).'
+		}
+	},
+	translations: {
 		EN: {
 			ID: 'ID',
 			LENGTH: 'Length',
@@ -199,6 +200,4 @@ const whinch = {
 			BY_RANK_LEVEL: 'Level freischalten',
 		}
 	}
-}
-
-export default whinch
+};

@@ -1,8 +1,6 @@
-import {
-    getText
-} from "../../../service/funcs.js"
+import {getText} from '../../../service/funcs.js';
 
-const Search = {
+export default {
     template: `
         <div class='search'>
             <label for='search' class='form-label'>{{ t.SEARCH }}:</label>
@@ -15,16 +13,14 @@ const Search = {
             value: this.filter.value,
             t: new Proxy({}, {
                 get(_, propName) {
-                    return getText(propName)
+                    return getText(propName);
                 }
             })
-        }
+        };
     },
     watch: {
         value() {
-            this.filter.set(this.value)
+            this.filter.set(this.value);
         }
     }
 }
-
-export default Search

@@ -6,151 +6,142 @@ import {
 	Opt,
 	Selectors,
 	Selector
-} from '../service/templateItems.js'
+} from '../service/templateItems.js';
 
-const desc = {
-	Price: {
-		RU: 'Цена самого автомобиля (без учёта составляющих)',
-		EN: 'Der Preis des Autos selbst (ohne die Komponenten)',
-		DE: 'The price of the car itself (excluding components)'
-	},
-	UnlockByExporation: {
-		RU: 'Способ разблокировки автомобиля',
-		EN: 'How to unlock the car',
-		DE: 'Methode zum Entsperren des Autos'
-	},
-	UnlockByRank: {
-		RU: 'Уровень разблокировки автомобиля',
-		EN: 'Car Unlock Level',
-		DE: 'Auto entsperren Ebene'
-	},
-	Name: {
-		RU: 'ID данных колёс',
-		EN: 'Wheel data ID',
-		DE: 'Rad-ID'
-	},
-	BodyFriction: {
-		RU: 'Коэффициент сцепления на твёрдом грунте',
-		EN: 'Coefficient of adhesion on solid ground',
-		DE: 'Koeffizient der Haftung auf hartem Boden'
-	},
-	BodyFrictionAsphalt: {
-		RU: 'Коэффициент сцепления на асфальте (статических камнях)',
-		EN: 'Coefficient of adhesion on asphalt (static stones)',
-		DE: 'Koeffizient der Haftung auf Asphalt (statische Steine)'
-	},
-	SubstanceFriction: {
-		RU: 'Коэффициент сцепления в грязи',
-		EN: 'Coefficient of grip in mud',
-		DE: 'Koeffizient der Kupplung im Schlamm'
-	},
-	IsIgnoreIce: {
-		RU: 'Будет ли колесо ехать по льду как цепное',
-		EN: 'Will the wheel ride on the ice like a chain wheel',
-		DE: 'Wird das Rad wie eine Kette auf dem Eis fahren'
-	}
-}
-
-const wheels = {
+export default {
 	main: [
-		Template({
-			type: 'Multiply',
-			itemSelector: '[TRUCK_TIRE]'
-		}, [
+		Template({}, [
 			Group({
-				nameType: 'Computed',
-				nameSelector: '[TRUCK_TIRE_ITEM_TEXT]',
-				resNameSelector: '[TRUCK_TIRE_ITEM]',
-				nameAttribute: 'UiName',
-				resNameAttribute: 'Name',
-				defaultSelector: '[WHEEL_FRICTION]'
+				name: '[GENERAL]',
+				defaultSelector: '[TRUCK_WHEELS]'
 			}, [
 				Input({
-					attribute: 'Name',
-					text: '[ID]',
-					type: 'text',
-					onlyDeveloper: 'true',
-					selector: 'TRUCK_TIRE_ITEM',
-					desc: desc.Name
+					attribute: 'DamageCapacity',
+					type: 'number',
+					text: '[DAMAGE_CAPACITY]',
+					desc: '[DAMAGE_CAPACITY]',
+					min: 0,
+					max: 64000
 				}),
 				Input({
-					attribute: 'BodyFriction',
-					text: '[BODY_FRICTION]',
+					attribute: 'Radius',
+					type: 'number',
 					numberType: 'float',
-					max: '10',
-					bold: true,
-					canAddTag: true,
-					default: 1,
-					desc: desc.BodyFriction
+					text: '[RADIUS]',
+					desc: '[RADIUS]',
+					min: 0
 				}),
 				Input({
-					attribute: 'BodyFrictionAsphalt',
-					text: '[BODY_FRICTION_ASPHALT]',
+					attribute: 'Width',
+					type: 'number',
 					numberType: 'float',
-					max: '10',
-					bold: true,
-					canAddTag: true,
-					default: 1,
-					desc: desc.BodyFrictionAsphalt
-				}),
-				Input({
-					attribute: 'SubstanceFriction',
-					text: '[SUBSTANCE_FRICTION]',
-					numberType: 'float',
-					max: '10',
-					bold: true,
-					canAddTag: true,
-					default: 1,
-					desc: desc.SubstanceFriction
-				}),
-				Select({
-					attribute: 'IsIgnoreIce',
-					text: '[IS_IGNORE_ICE]',
-					bold: true,
-					canAddTag: true,
-					default: 'false',
-					desc: desc.IsIgnoreIce
-				}, [
-					Opt({
-						text: '[YES]',
-						value: 'true'
-					}),
-					Opt({
-						text: '[NO]',
-						value: 'false'
-					})
-				]),
+					text: '[WIDTH]',
+					desc: '[WIDTH]',
+					min: 0
+				})
+			]),
+			Template({
+				type: 'Multiply',
+				itemSelector: '[TRUCK_TIRE]'
+			}, [
 				Group({
-					name: '[UNLOCK_GROUP_NAME]',
-					defaultSelector: '[GAME_DATA]'
+					nameType: 'Computed',
+					nameSelector: '[TRUCK_TIRE_ITEM_TEXT]',
+					resNameSelector: '[TRUCK_TIRE_ITEM]',
+					nameAttribute: 'UiName',
+					resNameAttribute: 'Name',
+					defaultSelector: '[WHEEL_FRICTION]'
 				}, [
 					Input({
-						attribute: 'Price',
-						text: '[PRICE]',
+						attribute: 'Name',
+						text: '[ID]',
+						desc: '[NAME]',
+						type: 'text',
+						onlyDeveloper: 'true',
+						selector: 'TRUCK_TIRE_ITEM'
+					}),
+					Input({
+						attribute: 'BodyFriction',
+						text: '[BODY_FRICTION]',
+						desc: '[BODY_FRICTION]',
+						numberType: 'float',
+						max: 10,
+						step: 0.1,
 						bold: true,
-						desc: desc.Price
+						canAddTag: true,
+						default: 1
+					}),
+					Input({
+						attribute: 'BodyFrictionAsphalt',
+						text: '[BODY_FRICTION_ASPHALT]',
+						desc: '[BODY_FRICTION_ASPHALT]',
+						numberType: 'float',
+						max: 10,
+						step: 0.1,
+						bold: true,
+						canAddTag: true,
+						default: 1
+					}),
+					Input({
+						attribute: 'SubstanceFriction',
+						text: '[SUBSTANCE_FRICTION]',
+						desc: '[SUBSTANCE_FRICTION]',
+						numberType: 'float',
+						max: 10,
+						step: 0.1,
+						bold: true,
+						canAddTag: true,
+						default: 1
 					}),
 					Select({
-						attribute: 'UnlockByExploration',
-						text: '[BY_EXPLORATION]',
-						onlyDeveloper: 'true',
-						desc: desc.UnlockByExporation
+						attribute: 'IsIgnoreIce',
+						text: '[IS_IGNORE_ICE]',
+						desc: '[IS_IGNORE_ICE]',
+						bold: true,
+						canAddTag: true,
+						default: 'false'
 					}, [
 						Opt({
-							text: '[FIND_ON_MAP]',
+							text: '[YES]',
 							value: 'true'
 						}),
 						Opt({
-							text: '[BY_RANK]',
+							text: '[NO]',
 							value: 'false'
 						})
 					]),
-					Input({
-						attribute: 'UnlockByRank',
-						text: '[BY_RANK_LEVEL]',
-						min: 1,
-						desc: desc.UnlockByRank
-					})
+					Group({
+						name: '[UNLOCK_GROUP_NAME]',
+						defaultSelector: '[GAME_DATA]'
+					}, [
+						Input({
+							attribute: 'Price',
+							text: '[PRICE]',
+							desc: '[PRICE]',
+							bold: true
+						}),
+						Select({
+							attribute: 'UnlockByExploration',
+							text: '[BY_EXPLORATION]',
+							desc: '[UNLOCK_BY_EXPLORATION]',
+							onlyDeveloper: true
+						}, [
+							Opt({
+								text: '[FIND_ON_MAP]',
+								value: 'true'
+							}),
+							Opt({
+								text: '[BY_RANK]',
+								value: 'false'
+							})
+						]),
+						Input({
+							attribute: 'UnlockByRank',
+							text: '[BY_RANK_LEVEL]',
+							desc: '[UNLOCK_BY_RANK]',
+							min: 1
+						})
+					])
 				])
 			])
 		]),
@@ -182,11 +173,70 @@ const wheels = {
 		])
 	],
 	selector: 'TruckWheels',
-	translation: {
+	descriptions: {
+		PRICE: {
+			RU: 'Цена самого автомобиля (без учёта составляющих)',
+			EN: 'Der Preis des Autos selbst (ohne die Komponenten)',
+			DE: 'The price of the car itself (excluding components)'
+		},
+		DAMAGE_CAPACITY: {
+			RU: 'Запас прочности колёс',
+			EN: 'Wheel safety margin',
+			DE: 'Sicherheitsmarge der Räder'
+		},
+		RADIUS: {
+			RU: 'Базовый радиус колёс (без учёта изменения в файле конкретной машины)',
+			EN: 'The base radius of the wheels (without taking into account changes in the file of a specific machine)',
+			DE: 'Basisradius der Räder (ohne Änderungen in der Datei einer bestimmten Maschine)'
+		},
+		WIDTH: {
+			RU: 'Ширина колёс. Также этот параметр определяет ширину следа и область налипания грязи на колесо',
+			EN: 'The width of the wheels. This parameter also determines the width of the track and the area of dirt sticking to the wheel',
+			DE: 'Breite der Räder. Dieser Parameter bestimmt auch die Breite der Spur und den Bereich, in dem sich Schmutz am Rad anhaftet'
+		},
+		UNLOCK_BY_EXPLORATION: {
+			RU: 'Способ разблокировки автомобиля',
+			EN: 'How to unlock the car',
+			DE: 'Methode zum Entsperren des Autos'
+		},
+		UNLOCK_BY_RANK: {
+			RU: 'Уровень разблокировки автомобиля',
+			EN: 'Car Unlock Level',
+			DE: 'Auto entsperren Ebene'
+		},
+		NAME: {
+			RU: 'ID данных колёс',
+			EN: 'Wheel data ID',
+			DE: 'Rad-ID'
+		},
+		BODY_FRICTION: {
+			RU: 'Коэффициент сцепления на твёрдом грунте',
+			EN: 'Coefficient of adhesion on solid ground',
+			DE: 'Koeffizient der Haftung auf hartem Boden'
+		},
+		BODY_FRICTION_ASPHALT: {
+			RU: 'Коэффициент сцепления на асфальте (статических камнях)',
+			EN: 'Coefficient of adhesion on asphalt (static stones)',
+			DE: 'Koeffizient der Haftung auf Asphalt (statische Steine)'
+		},
+		SUBSTANCE_FRICTION: {
+			RU: 'Коэффициент сцепления в грязи',
+			EN: 'Coefficient of grip in mud',
+			DE: 'Koeffizient der Kupplung im Schlamm'
+		},
+		IS_IGNORE_ICE: {
+			RU: 'Будет ли колесо ехать по льду как цепное',
+			EN: 'Will the wheel ride on the ice like a chain wheel',
+			DE: 'Wird das Rad wie eine Kette auf dem Eis fahren'
+		}
+	},
+	translations: {
 		EN: {
 			ID: 'ID',
-			GENERAL_SETTINGS: 'General',
+			GENERAL: 'General',
 			DAMAGE_CAPACITY: 'Damage capacity',
+			WIDTH: 'Width',
+			RADIUS: 'Radius',
 			BODY_FRICTION: 'Body friction',
 			BODY_FRICTION_ASPHALT: 'Body friction asphalt',
 			SUBSTANCE_FRICTION: 'Substance friction',
@@ -202,7 +252,9 @@ const wheels = {
 		},
 		RU: {
 			ID: 'ID',
-			GENERAL_SETTINGS: 'Общие настройки',
+			WIDTH: 'Ширина',
+			RADIUS: 'Радиус',
+			GENERAL: 'Общие настройки',
 			DAMAGE_CAPACITY: 'Прочность',
 			BODY_FRICTION: 'Сцепление на бездорожье',
 			BODY_FRICTION_ASPHALT: 'Сцепление на асфальте',
@@ -219,7 +271,9 @@ const wheels = {
 		},
 		DE: {
 			ID: 'ID',
-			GENERAL_SETTINGS: 'Allgemeines',
+			WIDTH: 'Breite',
+			RADIUS: 'Radius',
+			GENERAL: 'Allgemeines',
 			DAMAGE_CAPACITY: 'Schadenskapazität',
 			BODY_FRICTION: 'Körperreibung',
 			BODY_FRICTION_ASPHALT: 'Körperreibung asphalt',
@@ -235,6 +289,4 @@ const wheels = {
 			BY_RANK_LEVEL: 'Level freischalten'
 		}
 	}
-}
-
-export default wheels
+};

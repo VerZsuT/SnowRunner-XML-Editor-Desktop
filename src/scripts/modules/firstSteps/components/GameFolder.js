@@ -1,9 +1,7 @@
-import {
-    getText
-} from '../../../service/funcs.js'
-import toast from '../toast.js'
+import {getText} from '../../../service/funcs.js';
+import toast from '../toast.js';
 
-const GameFolder = {
+export default {
     props: {
         t: Object,
         pathToInitial: String
@@ -38,32 +36,30 @@ const GameFolder = {
                     'margin-bottom': '10px'
                 }
             }
-        }
+        };
     },
     watch: {
         manual() {
-            this.gameFolder = null
-            this.$emit('update:pathToInitial', null)
+            this.gameFolder = null;
+            this.$emit('update:pathToInitial', null);
         }
     },
     methods: {
         getFolder() {
-            let data = {}
+            let data = {};
             if (this.manual) {
-                data = preload.initial
-                data.folder = data.initial
+                data = preload.initial;
+                data.folder = data.initial;
             } else {
-                data = preload.gameFolder
+                data = preload.gameFolder;
             }
 
-            if (!data) return
+            if (!data) return;
 
-            this.gameFolder = data.folder
-            this.$emit('update:pathToInitial', data.initial)
+            this.gameFolder = data.folder;
+            this.$emit('update:pathToInitial', data.initial);
         }
     }
 }
 
-preload.errorHandler = (message) => toast(getText(message))
-
-export default GameFolder
+preload.errorHandler = (message) => toast(getText(message));

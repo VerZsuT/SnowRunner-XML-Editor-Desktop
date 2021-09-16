@@ -1,4 +1,4 @@
-const PCoords = {
+export default {
     props: {
         item: Object
     },
@@ -11,41 +11,35 @@ const PCoords = {
         </div>
     `,
     data() {
-        return this.parseCoords(this.getValue())
+        return this.parseCoords(this.getValue());
     },
     computed: {
         disabled() {
             if (!this.item.onlyDeveloper) {
-                return false
+                return false;
             } else {
-                return !config.settings.devMode
+                return !config.settings.devMode;
             }
         }
     },
     watch: {
         x(newVal, _) {
-            this.saveCoords(newVal)
+            this.saveCoords(newVal);
         },
         y(newVal, _) {
-            this.saveCoords(null, newVal)
+            this.saveCoords(null, newVal);
         },
         z(newVal, _) {
-            this.saveCoords(null, null, newVal)
+            this.saveCoords(null, null, newVal);
         }
     },
     methods: {
         parseCoords(value) {
-            const [x, y, z] = value.replace('(', '').replace(')', '').replaceAll(' ', '').split(';')
-            return {
-                x,
-                y,
-                z
-            }
+            const [x, y, z] = value.replace('(', '').replace(')', '').replaceAll(' ', '').split(';');
+            return {x ,y ,z};
         },
-        saveCoords(x = null, y = null, z = null) {
-            this.fileDOM.querySelector(this.item.selector).setAttribute(this.item.name, `(${x||this.x}; ${y||this.y}; ${z||this.z})`)
+        saveCoords(x=null, y=null, z=null) {
+            this.fileDOM.querySelector(this.item.selector).setAttribute(this.item.name, `(${x||this.x}; ${y||this.y}; ${z||this.z})`);
         }
     }
 }
-
-export default PCoords

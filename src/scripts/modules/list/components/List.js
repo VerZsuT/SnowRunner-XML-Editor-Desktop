@@ -1,11 +1,7 @@
-import {
-    getText
-} from "../../../service/funcs.js"
-import {
-    funcs
-} from "../../../service/renderer.js"
+import {getText} from '../../../service/funcs.js';
+import mainProcess from '../../../service/mainProcess.js';
 
-const List = {
+export default {
     props: {
         srcType: String
     },
@@ -26,6 +22,7 @@ const List = {
                 <span v-if='srcType === "main"'>{{ t.MAIN_LIST_TITLE }}</span>
             </span>
             <div class='list'>
+                <span v-if='items.length === 0'>{{ t.EMPTY }}</span>
                 <list-item
                     v-for='item in items'
                     :item-type='listType'
@@ -39,80 +36,77 @@ const List = {
         return {
             t: new Proxy({}, {
                 get(_, propName) {
-                    return getText(propName)
+                    return getText(propName);
                 }
             }),
             listType: local.listType,
             isArray: this.srcType !== 'main'
-        }
+        };
     },
     methods: {
         addMod() {
-            const result = preload.getModPak()
+            const result = preload.getModPak();
             if (!config.modsList[result.id]) {
-                config.modsList.length++
+                config.modsList.length++;
             }
             config.modsList[result.id] = {
                 name: result.name,
                 path: result.path
-            }
+            };
             if (confirm(getText('[RELAUNCH_PROMPT]'))) {
-                funcs.reload()
+                mainProcess.reload();
             }
         }
     },
     computed: {
         items() {
-            let array = preload.getList(this.listType, this.srcType)
+            let array = preload.getList(this.listType, this.srcType);
             if (this.srcType === 'main') {
                 array = array.map((value) => {
                     if (this.listType !== 'trucks') {
-                        return value
+                        return value;
                     }
-                    const fileData = funcs.getFileData(value.path)
-                    const dom = new DOMParser().parseFromString(`<root>${fileData}</root>`, 'text/xml')
+                    const fileData = mainProcess.getFileData(value.path);
+                    const dom = new DOMParser().parseFromString(`<root>${fileData}</root>`, 'text/xml');
                     if (dom.querySelector('Truck').getAttribute('Type') !== 'Trailer') {
-                        return value
+                        return value;
                     }
                 })
-                const out = []
+                const out = [];
                 for (const item of array) {
                     if (item) {
-                        out.push(item)
+                        out.push(item);
                     }
                 }
-                return out
+                return out;
             } else {
-                let newArray = []
+                let newArray = [];
                 for (const dlcOrMod of array) {
                     for (const item of dlcOrMod.items) {
-                        item.dlcName = dlcOrMod.dlcName
-                        item.modId = dlcOrMod.id
-                        newArray.push(item)
+                        item.dlcName = dlcOrMod.dlcName;
+                        item.modId = dlcOrMod.id;
+                        newArray.push(item);
                     }
                 }
                 newArray = newArray.map((value) => {
-                    const fileData = funcs.getFileData(value.path)
-                    const dom = new DOMParser().parseFromString(`<root>${fileData}</root>`, 'text/xml')
+                    const fileData = mainProcess.getFileData(value.path);
+                    const dom = new DOMParser().parseFromString(`<root>${fileData}</root>`, 'text/xml');
                     if (this.listType === 'trailers' && dom.querySelector('Truck') && dom.querySelector('Truck').getAttribute('Type') === 'Trailer') {
-                        return value
+                        return value;
                     } else if (this.listType === 'trucks' && dom.querySelector('Truck') && dom.querySelector('Truck').getAttribute('Type') !== 'Trailer') {
-                        return value
+                        return value;
                     } else if (this.listType === 'cargo') {
-                        return value
+                        return value;
                     }
                 })
-                const out = []
+                const out = [];
                 for (const item of newArray) {
                     if (item) {
-                        out.push(item)
+                        out.push(item);
                     }
                 }
-                return out
+                return out;
             }
-
         }
     }
-}
-
-export default List
+};

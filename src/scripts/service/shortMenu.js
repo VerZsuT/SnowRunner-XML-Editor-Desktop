@@ -1,108 +1,101 @@
-import {
-    create
-} from './funcs.js'
-import {
-    props,
-    funcs
-} from './renderer.js'
+import {create} from './funcs.js'
+import mainProcess from './mainProcess.js';
 
-const $menu = create('div', {
-    id: 'menu'
-})
-const menu = props.shortMenu
+const $menu = create('div', {id: 'menu'});
+const menu = mainProcess.shortMenu;
 
 for (const $item of menu) {
-    $menu.append(buildMenu($item, true))
+    $menu.append(buildMenu($item, true));
 }
 
-document.body.prepend($menu)
+document.body.prepend($menu);
 
 function buildMenu(template, root = false) {
     if (template.role === 'separator') {
         return create('hr', {
             class: 'dropdown-divider'
-        })
+        });
     }
-    const id = Math.random()
+    const id = Math.random();
     const $root = create('div', {
         class: `menu-item${!root? ' dropright' : ''}`
-    })
+    });
     const $button = create('button', {
         class: 'btn btn-sm dropdown-item',
         id: id,
         innerText: template.label
-    })
-    let $list
+    });
+    let $list;
 
     if (template.submenu) {
         $list = create('ul', {
             class: 'dropdown-menu',
             'aria-labelledby': id
-        })
-        $button.setAttribute('data-bs-toggle', 'dropdown')
+        });
+        $button.setAttribute('data-bs-toggle', 'dropdown');
         for (const $item of template.submenu) {
-            const $listItem = buildMenu($item)
-            $list.append($listItem)
+            const $listItem = buildMenu($item);
+            $list.append($listItem);
         }
     }
 
     if (template.role) {
         switch (template.role) {
             case 'quit-app':
-                $button.addEventListener('click', () => funcs.quit())
-                break
+                $button.addEventListener('click', () => mainProcess.quit());
+                break;
             case 'open-link':
-                $button.addEventListener('click', () => funcs.openLink(template.url))
-                break
+                $button.addEventListener('click', () => mainProcess.openLink(template.url));
+                break;
             case 'show-file':
-                $button.addEventListener('click', () => funcs.showFile(template.path))
-                break
+                $button.addEventListener('click', () => mainProcess.showFile(template.path));
+                break;
             case 'show-folder':
-                $button.addEventListener('click', () => funcs.showFolder(template.path))
-                break
+                $button.addEventListener('click', () => mainProcess.showFolder(template.path));
+                break;
             case 'reset-config':
-                $button.addEventListener('click', () => funcs.resetConfig())
-                break
+                $button.addEventListener('click', () => mainProcess.resetConfig());
+                break;
             case 'restore-initial':
-                $button.addEventListener('click', () => funcs.restoreInitial())
-                break
+                $button.addEventListener('click', () => mainProcess.restoreInitial());
+                break;
             case 'save-backup':
-                $button.addEventListener('click', () => funcs.saveBackup())
-                break
+                $button.addEventListener('click', () => mainProcess.saveBackup());
+                break;
             case 'dev-tools':
-                $button.addEventListener('click', () => funcs.openDevTools())
+                $button.addEventListener('click', () => mainProcess.openDevTools());
                 document.addEventListener('keypress', (event) => {
                     if (event.ctrlKey && event.shiftKey && event.code === 'KeyI') {
-                        $button.click()
+                        $button.click();
                     }
-                })
-                break
+                });
+                break;
             case 'reload':
-                $button.addEventListener('click', () => window.location.reload())
+                $button.addEventListener('click', () => window.location.reload());
                 document.addEventListener('keypress', (event) => {
                     if (event.ctrlKey && event.shiftKey && event.code === 'KeyR') {
-                        $button.click()
+                        $button.click();
                     }
-                })
-                break
+                });
+                break;
             case 'open-editor':
                 if (template.dlc) {
-                    $button.addEventListener('click', () => funcs.openXMLEditor(template.path, template.dlc))
+                    $button.addEventListener('click', () => mainProcess.openXMLEditor(template.path, template.dlc));
                 } else {
-                    $button.addEventListener('click', () => funcs.openXMLEditor(template.path))
+                    $button.addEventListener('click', () => mainProcess.openXMLEditor(template.path));
                 }
-                break
+                break;
             case 'open-settings':
-                $button.addEventListener('click', () => funcs.openSettings())
-                break
+                $button.addEventListener('click', () => mainProcess.openSettings());
+                break;
         }
     }
 
-    $root.append($button)
+    $root.append($button);
     if ($list) {
-        $root.append($list)
-        return $root
+        $root.append($list);
+        return $root;
     } else {
-        return $button
+        return $button;
     }
 }

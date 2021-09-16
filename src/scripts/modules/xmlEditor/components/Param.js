@@ -1,4 +1,4 @@
-const Param = {
+export default {
     props: {
         tabs: Number,
         item: Object
@@ -33,13 +33,12 @@ const Param = {
                 <p-input
                     v-else
                     :item='item'
-                    class='param-input'
                 ></p-input>
             </div>
             <img 
                 class='desc'
                 v-if='item.desc'
-                :title='item.desc[lang]'
+                :title='item.desc'
                 src='../icons/info.png'
             >
         </div>
@@ -51,100 +50,100 @@ const Param = {
                 fontWeight: this.item.bold ? 'bold' : 'normal'
             },
             lang: config.lang
-        }
+        };
     },
     computed: {
         text() {
-            const text = this.item.text
-            const filter = this.filter.value
+            const text = this.item.text;
+            const filter = this.filter.value;
             if (!filter) {
-                return text
+                return text;
             }
 
-            const firstIndex = text.toLowerCase().indexOf(filter.toLowerCase())
-            const lastIndex = firstIndex + filter.length
+            const firstIndex = text.toLowerCase().indexOf(filter.toLowerCase());
+            const lastIndex = firstIndex + filter.length;
             return {
                 first: text.slice(0, firstIndex),
                 second: text.slice(firstIndex, lastIndex),
                 last: text.slice(lastIndex, text.length)
-            }
+            };
         }
     },
     methods: {
         getValue() {
-            let value = this.item.value
+            let value = this.item.value;
             if (!value && value !== 0 && this.templates) {
-                let el = this.fileDOM.querySelector(this.item.selector)
-                const array = this.item.selector.split('>').map((value) => value.trim())
-                const innerName = array.slice(array.length - 1)[0]
-                const tagName = innerName.split('[')[0]
+                let el = this.fileDOM.querySelector(this.item.selector);
+                const array = this.item.selector.split('>').map((value) => value.trim());
+                const innerName = array.slice(array.length - 1)[0];
+                const tagName = innerName.split('[')[0];
                 if (!el) {
-                    el = this.fileDOM.querySelector(array.slice(0, array.length - 1).join(' > '))
+                    el = this.fileDOM.querySelector(array.slice(0, array.length - 1).join(' > '));
                 }
                 if (el) {
-                    let templateName = el.getAttribute('_template')
+                    let templateName = el.getAttribute('_template');
                     if (!templateName) {
-                        templateName = this.getParentTemplate(el)
+                        templateName = this.getParentTemplate(el);
                     }
                     if (templateName) {
                         if (this.templates) {
-                            const template = this.templates.querySelector(templateName)
+                            const template = this.templates.querySelector(templateName);
                             if (template) {
-                                const templateValue = template.getAttribute(this.item.name)
+                                const templateValue = template.getAttribute(this.item.name);
                                 if (templateValue) {
-                                    value = templateValue
+                                    value = templateValue;
                                 } else {
-                                    const el2 = template.querySelector(tagName)
+                                    const el2 = template.querySelector(tagName);
                                     if (el2) {
-                                        const templateValue2 = el2.getAttribute(this.item.name)
+                                        const templateValue2 = el2.getAttribute(this.item.name);
                                         if (templateValue2) {
-                                            value = templateValue2
+                                            value = templateValue2;
                                         } else {
-                                            const templateName1 = el2.getAttribute('_template')
+                                            const templateName1 = el2.getAttribute('_template');
                                             if (templateName1) {
-                                                value = this.getValueInGlobal(templateName1, tagName)
+                                                value = this.getValueInGlobal(templateName1, tagName);
                                             }
                                         }
                                     }
                                 }
                             } else {
-                                value = this.getValueInGlobal(templateName, tagName)
+                                value = this.getValueInGlobal(templateName, tagName);
                             }
                         }
                     }
                 }
             }
             if (value === null || value === undefined) {
-                value = this.item.default
+                value = this.item.default;
             }
 
-            return value
+            return value;
         },
         getValueInGlobal(templateName, tagName) {
-            const template = this.globalTemplates.querySelector(`${tagName} > ${templateName}`)
+            const template = this.globalTemplates.querySelector(`${tagName} > ${templateName}`);
             if (template) {
-                const templateValue = template.getAttribute(this.item.name)
+                const templateValue = template.getAttribute(this.item.name);
                 if (templateValue) {
-                    return templateValue
+                    return templateValue;
                 } else {
-                    const el2 = template.querySelector(tagName)
+                    const el2 = template.querySelector(tagName);
                     if (el2) {
-                        const templateValue2 = el2.getAttribute(this.item.name)
+                        const templateValue2 = el2.getAttribute(this.item.name);
                         if (templateValue2) {
-                            return templateValue2
+                            return templateValue2;
                         }
                     }
                 }
             }
-            return this.item.value
+            return this.item.value;
         },
         getParentTemplate(el) {
             if (el.parent) {
-                const template = el.parent.getAttribute('_template')
+                const template = el.parent.getAttribute('_template');
                 if (template) {
-                    return template
+                    return template;
                 } else {
-                    return this.getParentTemplate(el.parent)
+                    return this.getParentTemplate(el.parent);
                 }
             }
         }
@@ -152,8 +151,6 @@ const Param = {
     provide() {
         return {
             getValue: this.getValue
-        }
+        };
     }
 }
-
-export default Param

@@ -1,11 +1,7 @@
-import {
-    getText
-} from "../../../service/funcs.js"
-import {
-    funcs
-} from "../../../service/renderer.js"
+import {getText} from '../../../service/funcs.js';
+import mainProcess from '../../../service/mainProcess.js';
 
-const Category = {
+export default {
     props: {
         name: String
     },
@@ -19,22 +15,20 @@ const Category = {
         return {
             t: new Proxy({}, {
                 get(_, propName) {
-                    return getText(propName)
+                    return getText(propName);
                 }
             })
-        }
+        };
     },
     methods: {
         openList() {
-            local.listType = this.name
-            funcs.openList()
+            local.listType = this.name;
+            mainProcess.openList();
         }
     },
     computed: {
         imgSrc() {
-            return `../category_images/${this.name}_category.png`
+            return `../category_images/${this.name}_category.png`;
         }
     }
 }
-
-export default Category

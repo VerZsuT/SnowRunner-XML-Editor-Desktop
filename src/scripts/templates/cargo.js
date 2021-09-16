@@ -1,35 +1,12 @@
 import {
-	Template,
-	Group,
-	Input,
-	Selectors,
+	Template, 
+	Group, 
+	Input, 
+	Selectors, 
 	Selector
-} from '../service/templateItems.js'
+} from '../service/templateItems.js';
 
-const desc = {
-	Mass: {
-		RU: 'Масса части груза',
-		EN: 'Weight of the cargo part',
-		DE: 'Gewicht der Ladung'
-	},
-	CargoLenght: {
-		RU: 'Количество занимаемого грузом места (слотов)',
-		EN: 'The amount of space occupied by the cargo (slots)',
-		DE: 'Anzahl der belegten Plätze (Slots)'
-	},
-	CargoType: {
-		RU: 'ID груза',
-		EN: 'Cargo ID',
-		DE: 'Fracht-ID'
-	},
-	Offset: {
-		RU: 'Смещение каждого нового груза относительно предыдущего',
-		EN: 'Offset of each new load relative to the previous one',
-		DE: 'Versatz jeder neuen Ladung relativ zur vorherigen Ladung'
-	}
-}
-
-const cargo = {
+export default {
 	main: [
 		Template({}, [
 			Group({
@@ -43,7 +20,7 @@ const cargo = {
 					Input({
 						attribute: 'Mass',
 						text: '[MASS]',
-						desc: desc.Mass
+						desc: '[MASS]'
 					})
 				])
 			]),
@@ -54,22 +31,22 @@ const cargo = {
 				Input({
 					attribute: 'CargoLength',
 					text: '[LENGTH]',
-					onlyDeveloper: 'true',
-					desc: desc.CargoLenght
+					desc: '[CARGO_LENGTH]',
+					onlyDeveloper: 'true'
 				}),
 				Input({
 					attribute: 'CargoType',
 					onlyDeveloper: 'true',
 					type: 'text',
 					text: '[TYPE]',
-					desc: desc.CargoType
+					desc: '[CARGO_TYPE]'
 				}),
 				Input({
 					type: 'coordinates',
 					onlyDeveloper: 'true',
 					attribute: 'Offset',
 					text: '[OFFSET]',
-					desc: desc.Offset
+					desc: '[OFFSET]'
 				})
 			])
 		]),
@@ -89,14 +66,36 @@ const cargo = {
 		])
 	],
 	selector: 'TruckAddon > GameData > InstallSlot[CargoType]',
-	translation: {
+	descriptions: {
+		MASS: {
+			RU: 'Масса части груза',
+			EN: 'Weight of the cargo part',
+			DE: 'Gewicht der Ladung'
+		},
+		CARGO_LENGTH: {
+			RU: 'Количество занимаемого грузом места (слотов)',
+			EN: 'The amount of space occupied by the cargo (slots)',
+			DE: 'Anzahl der belegten Plätze (Slots)'
+		},
+		CARGO_TYPE: {
+			RU: 'ID груза',
+			EN: 'Cargo ID',
+			DE: 'Fracht-ID'
+		},
+		OFFSET: {
+			RU: 'Смещение каждого нового груза относительно предыдущего',
+			EN: 'Offset of each new load relative to the previous one',
+			DE: 'Versatz jeder neuen Ladung relativ zur vorherigen Ladung'
+		}
+	},
+	translations: {
 		EN: {
 			MASS: 'Mass',
 			PART: 'Parts',
 			MAIN: 'Main',
 			LENGTH: 'Length',
 			TYPE: 'Type',
-			OFFSET: 'Offset',
+			OFFSET: 'Offset'
 		},
 		RU: {
 			MASS: 'Масса',
@@ -104,7 +103,7 @@ const cargo = {
 			MAIN: 'Основное',
 			LENGTH: 'Длина',
 			TYPE: 'Тип',
-			OFFSET: 'Смещение',
+			OFFSET: 'Смещение'
 		},
 		DE: {
 			MASS: 'Masse',
@@ -112,9 +111,7 @@ const cargo = {
 			MAIN: 'Grundlegende',
 			LENGTH: 'Länge',
 			TYPE: 'Typ',
-			OFFSET: 'Offset',
+			OFFSET: 'Offset'
 		}
 	}
-}
-
-export default cargo
+};

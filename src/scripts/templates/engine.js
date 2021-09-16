@@ -6,72 +6,9 @@ import {
 	Opt,
 	Selectors,
 	Selector
-} from '../service/templateItems.js'
+} from '../service/templateItems.js';
 
-const desc = {
-	Price: {
-		RU: 'Цена самого автомобиля (без учёта составляющих)',
-		EN: 'Der Preis des Autos selbst (ohne die Komponenten)',
-		DE: 'The price of the car itself (excluding components)'
-	},
-	UnlockByExporation: {
-		RU: 'Способ разблокировки автомобиля',
-		EN: 'How to unlock the car',
-		DE: 'Methode zum Entsperren des Autos'
-	},
-	UnlockByRank: {
-		RU: 'Уровень разблокировки автомобиля',
-		EN: 'Car Unlock Level',
-		DE: 'Auto entsperren Ebene'
-	},
-	Name: {
-		RU: 'ID данного двигателя',
-		EN: 'ID of this engine',
-		DE: 'ID dieses Motors'
-	},
-	CriticalDamageThreshold: {
-		RU: 'Порог повреждения (значение * 100 = процент), при котором двигатель будет вести себя как сломанный.',
-		EN: 'The damage threshold (value * 100 = percentage) at which the engine will behave as broken.',
-		DE: 'Die Schadensschwelle (Wert * 100 = Prozent), bei der sich der Motor als defekt verhält.'
-	},
-	DamageCapacity: {
-		RU: 'Запас прочности данного двигателя.',
-		EN: 'The safety margin of this engine.',
-		DE: 'Die Sicherheitsmarge dieses Motors.'
-	},
-	DamagedConsumptionModifier: {
-		RU: 'Множитель потребления топлива в сломанном состоянии',
-		EN: 'Fuel consumption modifier in the damaged state',
-		DE: 'Modifikator des Kraftstoffverbrauchs in beschädigtem Zustand'
-	},
-	EngineResponsiveness: {
-		RU: 'Скорость набора оборотов двигателя',
-		EN: 'Engine speed set',
-		DE: 'Motordrehzahl'
-	},
-	FuelConsumption: {
-		RU: 'Множитель потребления топлива двигателя.',
-		EN: 'The multiplier of the engine fuel consumption.',
-		DE: 'Multiplikator des Kraftstoffverbrauchs des Motors.'
-	},
-	Torque: {
-		RU: 'Мощность данного двигателя',
-		EN: 'Power of this engine',
-		DE: 'Leistung dieses Motors'
-	},
-	DamagedMinTorqueMultiplier: {
-		RU: 'Множитель мощности, когда ущерб движка достиг порога CriticalDamageThresold',
-		EN: 'Power multiplier when engine damage has reached the CriticalDamageThresold threshold',
-		DE: 'Leistungsmultiplikator, wenn der Motorschaden den CriticalDamageThresold-Schwellenwert erreicht hat'
-	},
-	DamagedMaxTorqueMultiplier: {
-		RU: 'Множитель мощности, когда движок близок к полной поломке',
-		EN: 'Power multiplier when the engine is close to complete failure',
-		DE: 'Leistungsmultiplikator, wenn der Motor kurz vor einem Totalausfall steht'
-	}
-}
-
-const engine = {
+export default {
 	main: [
 		Template({
 			type: 'Multiply',
@@ -88,77 +25,85 @@ const engine = {
 				Input({
 					attribute: 'Name',
 					text: '[ID]',
+					desc: '[NAME]',
 					type: 'text',
-					onlyDeveloper: 'true',
-					desc: desc.Name
+					onlyDeveloper: 'true'
 				}),
 				Input({
 					attribute: 'CriticalDamageThreshold',
 					text: '[CRITICAL_DAMAGE_THRESHOLD]',
+					desc: '[CRITICAL_DAMAGE_THRESHOLD]',
 					numberType: 'float',
 					default: 0.7,
-					max: '0.999',
-					desc: desc.CriticalDamageThreshold
+					step: 0.01,
+					max: 0.99
 				}),
 				Input({
 					attribute: 'DamageCapacity',
 					text: '[DAMAGE_CAPACITY]',
-					max: '64000',
+					desc: '[DAMAGE_CAPACITY]',
+					max: 64000,
+					step: 1,
 					default: 0,
-					bold: true,
-					desc: desc.DamageCapacity
+					bold: true
 				}),
 				Input({
 					attribute: 'DamagedConsumptionModifier',
 					text: '[DAMAGE_CONSUMPTION_MODIFIER]',
+					desc: '[DAMAGE_CONSUMPTION_MODIFIER]',
 					numberType: 'float',
-					min: '0.1',
-					max: '32',
-					default: 1,
-					desc: desc.DamagedConsumptionModifier
+					min: 0.1,
+					step: 0.1,
+					max: 32,
+					default: 1
 				}),
 				Input({
 					attribute: 'EngineResponsiveness',
 					text: '[RESPONSIVENESS]',
+					desc: '[ENGINE_RESPONSIVENESS]',
 					numberType: 'float',
-					max: '1',
-					default: 0.04,
-					desc: desc.EngineResponsiveness
+					max: 1,
+					step: 0.01,
+					default: 0.04
 				}),
 				Input({
 					attribute: 'FuelConsumption',
 					text: '[FUEL_CONSUMPTION]',
+					desc: '[FUEL_CONSUMPTION]',
 					numberType: 'float',
-					max: '100.0',
+					max: 100.0,
+					step: 0.1,
 					bold: true,
-					default: 0.5,
-					desc: desc.FuelConsumption
+					default: 0.5
 				}),
 				Input({
 					attribute: 'Torque',
 					text: '[TORQUE]',
-					max: '1000000',
+					desc: '[TORQUE]',
+					max: 1000000,
+					step: 100,
 					bold: true,
-					default: 0,
-					desc: desc.Torque
+					default: 0
 				}),
 				Input({
 					attribute: 'DamagedMinTorqueMultiplier',
 					text: '[DAMAGED_MIN_TORQUE_MODIFIER]',
+					desc: '[DAMAGED_MIN_TORQUE_MODIFIER]',
 					numberType: 'float',
-					min: '0',
-					max: '1',
-					default: 0,
-					desc: desc.DamagedMinTorqueMultiplier
+					min: 0,
+					step: 0.01,
+					max: 1,
+					default: 0
 				}),
 				Input({
 					attribute: 'DamagedMaxTorqueMultiplier',
 					text: '[DAMAGED_MAX_TORQUE_MODIFIER]',
+					desc: '[DAMAGED_MAX_TORQUE_MODIFIER]',
 					numberType: 'float',
-					min: '0',
-					max: '1',
-					default: 0,
-					desc: desc.DamagedMaxTorqueMultiplier
+					min: 0,
+					step: 0.01,
+					max: 1,
+					default: 0
 				}),
 				Group({
 					name: '[UNLOCK_GROUP_NAME]',
@@ -167,14 +112,14 @@ const engine = {
 					Input({
 						attribute: 'Price',
 						text: '[PRICE]',
-						bold: true,
-						desc: desc.Price
+						desc: '[PRICE]',
+						bold: true
 					}),
 					Select({
 						attribute: 'UnlockByExploration',
 						text: '[BY_EXPLORATION]',
-						onlyDeveloper: 'true',
-						desc: desc.UnlockByExploration
+						desc: '[UNLOCK_BY_EXPLORATION]',
+						onlyDeveloper: true
 					}, [
 						Opt({
 							text: '[FIND_ON_MAP]',
@@ -188,8 +133,8 @@ const engine = {
 					Input({
 						attribute: 'UnlockByRank',
 						text: '[BY_RANK_LEVEL]',
-						min: 1,
-						desc: desc.UnlockByRank
+						desc: '[UNLOCK_BY_RANK]',
+						min: 1
 					})
 				])
 			])
@@ -214,7 +159,69 @@ const engine = {
 		])
 	],
 	selector: 'EngineVariants',
-	translation: {
+	descriptions: {
+		PRICE: {
+			RU: 'Цена самого автомобиля (без учёта составляющих)',
+			EN: 'Der Preis des Autos selbst (ohne die Komponenten)',
+			DE: 'The price of the car itself (excluding components)'
+		},
+		UNLOCK_BY_EXPLORATION: {
+			RU: 'Способ разблокировки автомобиля',
+			EN: 'How to unlock the car',
+			DE: 'Methode zum Entsperren des Autos'
+		},
+		UNLOCK_BY_RANK: {
+			RU: 'Уровень разблокировки автомобиля',
+			EN: 'Car Unlock Level',
+			DE: 'Auto entsperren Ebene'
+		},
+		NAME: {
+			RU: 'ID данного двигателя',
+			EN: 'ID of this engine',
+			DE: 'ID dieses Motors'
+		},
+		CRITICAL_DAMAGE_THRESHOLD: {
+			RU: 'Порог повреждения (значение * 100 = процент), при котором двигатель будет вести себя как сломанный.',
+			EN: 'The damage threshold (value * 100 = percentage) at which the engine will behave as broken.',
+			DE: 'Die Schadensschwelle (Wert * 100 = Prozent), bei der sich der Motor als defekt verhält.'
+		},
+		DAMAGE_CAPACITY: {
+			RU: 'Запас прочности данного двигателя.',
+			EN: 'The safety margin of this engine.',
+			DE: 'Die Sicherheitsmarge dieses Motors.'
+		},
+		DAMAGE_CONSUMPTION_MODIFIER: {
+			RU: 'Множитель потребления топлива в сломанном состоянии',
+			EN: 'Fuel consumption modifier in the damaged state',
+			DE: 'Modifikator des Kraftstoffverbrauchs in beschädigtem Zustand'
+		},
+		ENGINE_RESPONSIVENESS: {
+			RU: 'Скорость набора оборотов двигателя',
+			EN: 'Engine speed set',
+			DE: 'Motordrehzahl'
+		},
+		FUEL_CONSUMPTION: {
+			RU: 'Множитель потребления топлива двигателя.',
+			EN: 'The multiplier of the engine fuel consumption.',
+			DE: 'Multiplikator des Kraftstoffverbrauchs des Motors.'
+		},
+		TORQUE: {
+			RU: 'Мощность данного двигателя',
+			EN: 'Power of this engine',
+			DE: 'Leistung dieses Motors'
+		},
+		DAMAGED_MIN_TORQUE_MODIFIER: {
+			RU: 'Множитель мощности, когда ущерб движка достиг порога CriticalDamageThresold',
+			EN: 'Power multiplier when engine damage has reached the CriticalDamageThresold threshold',
+			DE: 'Leistungsmultiplikator, wenn der Motorschaden den CriticalDamageThresold-Schwellenwert erreicht hat'
+		},
+		DAMAGED_MAX_TORQUE_MODIFIER: {
+			RU: 'Множитель мощности, когда движок близок к полной поломке',
+			EN: 'Power multiplier when the engine is close to complete failure',
+			DE: 'Leistungsmultiplikator, wenn der Motor kurz vor einem Totalausfall steht'
+		}
+	},
+	translations: {
 		EN: {
 			ID: 'ID',
 			CRITICAL_DAMAGE_THRESHOLD: 'Critical damage threshold',
@@ -267,6 +274,4 @@ const engine = {
 			BY_RANK_LEVEL: 'Level freischalten'
 		}
 	}
-}
-
-export default engine
+};

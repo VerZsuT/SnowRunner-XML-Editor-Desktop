@@ -1,10 +1,9 @@
-import {
-    getText
-} from "../../../service/funcs.js"
+import {getText} from '../../../service/funcs.js';
 
-const PInput = {
+export default {
     props: {
-        item: Object
+        item: Object,
+        key: Number
     },
     inject: ['fileDOM', 'getValue'],
     template: `
@@ -19,73 +18,80 @@ const PInput = {
             v-else
             class='form-control'
             type='text'
-            v-model.lazy='value'
+            v-model='value'
             :disabled='disabled'
             :title='defaultValue'
         />
+        <input
+            v-if='item.type === "number" && min !== undefined && max !== undefined'
+            type='range'
+            class='form-range input-range'
+            v-model.number='value'
+            :min='min'
+            :max='max'
+            :step='item.step'
+        />
     `,
     data() {
-        const value = this.getValue()
+        const value = this.getValue();
         return {
             defaultValue: value,
             value: value,
             t: new Proxy({}, {
                 get(_, propName) {
-                    return getText(propName)
+                    return getText(propName);
                 }
             })
-        }
+        };
     },
     watch: {
         value(newVal, _) {
             if (newVal === '') {
-                newVal = this.defaultValue
+                newVal = this.defaultValue;
             }
-            newVal = this.limit(newVal)
+            newVal = this.limit(newVal);
 
             if (!this.fileDOM.querySelector(this.item.selector)) {
-                const array = this.item.selector.split('>').map(value => value.trim())
-                const name = array.pop()
-                const rootSelector = array.join(' > ')
-                this.fileDOM.querySelector(rootSelector).append(this.fileDOM.createElement(name))
+                const array = this.item.selector.split('>').map(value => value.trim());
+                const name = array.pop();
+                const rootSelector = array.join(' > ');
+                this.fileDOM.querySelector(rootSelector).append(this.fileDOM.createElement(name));
             }
-            this.fileDOM.querySelector(this.item.selector).setAttribute(this.item.name, newVal)
-            this.value = newVal
+            this.fileDOM.querySelector(this.item.selector).setAttribute(this.item.name, newVal);
+            this.value = newVal;
         }
     },
     methods: {
         limit(value) {
             if (this.min !== undefined && value < this.min) {
-                return this.min
+                return this.min;
             }
             if (this.max !== undefined && value > this.max) {
-                return this.max
+                return this.max;
             }
-            return value
+            return value;
         }
     },
     computed: {
         isNumber() {
-            return this.item.type === 'number'
+            return this.item.type === 'number';
         },
         min() {
             if (this.item.min !== '-∞' && config.settings.limits) {
-                return this.item.min || 0
+                return this.item.min || 0;
             }
         },
         max() {
             if (this.item.max && config.settings.limits) {
-                return this.item.max
+                return this.item.max;
             }
         },
         disabled() {
             if (!this.item.onlyDeveloper) {
-                return false
+                return false;
             } else {
-                return !config.settings.devMode
+                return !config.settings.devMode;
             }
         }
     }
 }
-
-export default PInput

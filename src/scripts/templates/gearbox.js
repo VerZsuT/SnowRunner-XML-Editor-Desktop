@@ -6,92 +6,9 @@ import {
 	Opt,
 	Selectors,
 	Selector
-} from '../service/templateItems.js'
+} from '../service/templateItems.js';
 
-const desc = {
-	Price: {
-		RU: 'Цена самого автомобиля (без учёта составляющих)',
-		EN: 'Der Preis des Autos selbst (ohne die Komponenten)',
-		DE: 'The price of the car itself (excluding components)'
-	},
-	UnlockByExporation: {
-		RU: 'Способ разблокировки автомобиля',
-		EN: 'How to unlock the car',
-		DE: 'Methode zum Entsperren des Autos'
-	},
-	UnlockByRank: {
-		RU: 'Уровень разблокировки автомобиля',
-		EN: 'Car Unlock Level',
-		DE: 'Auto entsperren Ebene'
-	},
-	Name: {
-		RU: 'ID данной коробки передач',
-		EN: 'ID of this gearbox',
-		DE: 'ID dieses Getriebes'
-	},
-	AWDConsumptionModifier: {
-		RU: 'Коэффициент изменения расхода топлива при использовании полного привода',
-		EN: 'Coefficient of change in fuel consumption when using all-wheel drive',
-		DE: 'Der Faktor der Veränderung des Kraftstoffverbrauchs bei der Nutzung des Allradantriebs'
-	},
-	CriticalDamageThreshold: {
-		RU: 'Процент повреждений (значение * 100 = процент), после которого коробка начинает проявлять признаки поломки - вылетающие передачи и увеличение расхода топлива',
-		EN: 'The percentage of damage (value * 100 = percentage), after which the box begins to show signs of failure - flying gears and increased fuel consumption',
-		DE: 'Prozentsatz des Schadens (Wert * 100 = Prozent), nach dem die Box beginnt, Anzeichen von Bruch zu zeigen-fliegende Getriebe und erhöhter Kraftstoffverbrauch'
-	},
-	DamageCapacity: {
-		RU: 'Запас прочности данной коробки передач',
-		EN: 'The safety margin of this gearbox',
-		DE: 'Sicherheitsfaktor dieses Getriebes'
-	},
-	DamagedConsumptionModifier: {
-		RU: 'Максимальный множитель расхода топлива, к этому множителю расход приходит, когда коробка полностью сломана.',
-		EN: 'The maximum fuel consumption multiplier, to this multiplier the fuel consumption comes when the box is completely broken.',
-		DE: 'Der maximale Kraftstoffverbrauch Multiplikator, zu diesem Verbrauch Multiplikator kommt, wenn die Box vollständig gebrochen ist.'
-	},
-	FuelConsumption: {
-		RU: 'Базовое потребление топлива коробкой передач',
-		EN: 'Basic fuel consumption of the gearbox',
-		DE: 'Der standardverbrauch von Kraftstoff Getriebe'
-	},
-	IdleFuelModifier: {
-		RU: 'Множитель потребления топлива, когда автомобиль стоит на месте с заведенным двигателем.',
-		EN: 'The fuel consumption multiplier when the car is stationary with the engine running.',
-		DE: 'Multiplikator des Kraftstoffverbrauchs, wenn das Auto stillsteht mit dem laufenden Motor.'
-	},
-	IsHighGearExists: {
-		RU: 'Есть ли повышенная передача в коробке передач',
-		EN: 'Is there an upshift in the gearbox',
-		DE: 'Gibt es ein erhöhtes Getriebe im Getriebe'
-	},
-	IsLowerGearExists: {
-		RU: 'Есть ли пониженная передача в коробке передач',
-		EN: 'Is there a downshift in the gearbox',
-		DE: 'Gibt es ein reduziertes Getriebe im Getriebe'
-	},
-	IsLowerPlusGearExists: {
-		RU: 'Есть ли пониженная+ передача в коробке передач',
-		EN: 'Is there a downshift+ in the gearbox',
-		DE: 'Gibt es ein reduziertes+ Getriebe im Getriebe'
-	},
-	IsLowerMinusGearExists: {
-		RU: 'Есть ли повышенная+ передача в коробке передач',
-		EN: 'Is there an upshift+ in the gearbox',
-		DE: 'Gibt es ein erhöhte+s Getriebe im Getriebe'
-	},
-	AngVel: {
-		RU: 'Максимальная угловая скорость колеса',
-		EN: 'Maximum angular velocity of the wheel',
-		DE: 'Maximale Winkelgeschwindigkeit des Rades'
-	},
-	FuelModifier: {
-		RU: 'Множитель потребления топлива на данной передаче',
-		EN: 'Fuel consumption multiplier in this gear',
-		DE: 'Multiplikator des Kraftstoffverbrauchs in diesem Getriebe'
-	}
-}
-
-const gearbox = {
+export default {
 	main: [
 		Template({
 			type: 'Multiply',
@@ -108,58 +25,63 @@ const gearbox = {
 				Input({
 					attribute: 'Name',
 					text: '[ID]',
+					desc: '[NAME]',
 					type: 'text',
-					onlyDeveloper: 'true',
-					desc: desc.Name
+					onlyDeveloper: true
 				}),
 				Input({
 					attribute: 'AWDConsumptionModifier',
 					text: '[AWD_CONSUMPTION_MODIFIER]',
+					desc: '[AWD_CONSUMPTION_MODIFIER]',
 					numberType: 'float',
-					max: '32',
-					default: 1,
-					desc: desc.AWDConsumptionModifier
+					max: 32,
+					step: 0.1,
+					default: 1
 				}),
 				Input({
 					attribute: 'CriticalDamageThreshold',
 					text: '[CRITICAL_DAMAGE_THRESHOLD]',
+					desc: '[CRITICAL_DAMAGE_THRESHOLD]',
 					numberType: 'float',
-					max: '0.999',
-					default: 0.7,
-					desc: desc.CriticalDamageThreshold
+					max: 0.99,
+					step: 0.01,
+					default: 0.7
 				}),
 				Input({
 					attribute: 'DamageCapacity',
 					text: '[DAMAGE_CAPACITY]',
-					max: '64000',
+					desc: '[DAMAGE_CAPACITY]',
+					max: 64000,
 					bold: true,
-					default: 0,
-					desc: desc.DamageCapacity
+					default: 0
 				}),
 				Input({
 					attribute: 'DamagedConsumptionModifier',
 					text: '[DAMAGE_CONSUMPTION_MODIFIER]',
+					desc: '[DAMAGED_CONSUMPTION_MODIFIER]',
 					numberType: 'float',
-					max: '32',
-					default: 1,
-					desc: desc.DamagedConsumptionModifier
+					max: 32,
+					step: 0.01,
+					default: 1
 				}),
 				Input({
 					attribute: 'FuelConsumption',
 					text: '[FUEL_CONSUMPTION]',
+					desc: '[FUEL_CONSUMPTION]',
 					numberType: 'float',
-					max: '10',
+					max: 10,
+					step: 0.1,
 					bold: true,
-					default: 0.1,
-					desc: desc.FuelConsumption
+					default: 0.1
 				}),
 				Input({
 					attribute: 'IdleFuelModifier',
 					text: '[IDLE_FUEL_CONSUMPTION]',
+					desc: '[IDLE_FUEL_CONSUMPTION]',
 					numberType: 'float',
-					max: '10',
-					default: 0.3,
-					desc: desc.IdleFuelModifier
+					max: 10,
+					step: 0.1,
+					default: 0.3
 				}),
 				Group({
 					name: '[GEARBOX_PARAMS]',
@@ -168,8 +90,8 @@ const gearbox = {
 					Select({
 						attribute: 'IsHighGearExists',
 						text: '[HIGH_GEAR]',
-						default: 'true',
-						desc: desc.IsHighGearExists
+						desc: '[IS_HIGH_GEAR_EXISTS]',
+						default: 'true'
 					}, [
 						Opt({
 							text: '[ALLOW]',
@@ -183,8 +105,8 @@ const gearbox = {
 					Select({
 						attribute: 'IsLowerGearExists',
 						text: '[LOWER_GEAR]',
-						default: 'true',
-						desc: desc.IsLowerGearExists
+						desc: '[IS_LOWER_GEAR_EXISTS]',
+						default: 'true'
 					}, [
 						Opt({
 							text: '[ALLOW]',
@@ -198,8 +120,8 @@ const gearbox = {
 					Select({
 						attribute: 'IsLowerPlusGearExists',
 						text: '[LOWER_PLUS_GEAR]',
-						default: 'true',
-						desc: desc.IsLowerPlusGearExists
+						desc: '[IS_LOWER_PLUS_GEAR_EXISTS]',
+						default: 'true'
 					}, [
 						Opt({
 							text: '[ALLOW]',
@@ -213,8 +135,8 @@ const gearbox = {
 					Select({
 						attribute: 'IsLowerMinusGearExists',
 						text: '[LOWER_MINUS_GEAR]',
-						default: 'true',
-						desc: desc.IsLowerMinusGearExists
+						desc: '[IS_LOWER_MINUS_GEAR_EXISTS]',
+						default: 'true'
 					}, [
 						Opt({
 							text: '[ALLOW]',
@@ -233,19 +155,21 @@ const gearbox = {
 					Input({
 						attribute: 'AngVel',
 						text: '[ANGEL_VELOCITY]',
+						desc: '[ANGEL_VELOCITY]',
 						numberType: 'float',
-						max: '32',
+						max: 32,
+						step: 1,
 						bold: true,
-						default: 0,
-						desc: desc.AngVel
+						default: 0
 					}),
 					Input({
 						attribute: 'FuelModifier',
 						text: '[FUEL_MODIFIER]',
+						desc: '[FUEL_MODIFIER]',
 						numberType: 'float',
-						max: '10',
-						default: 1,
-						desc: desc.FuelModifier
+						max: 10,
+						step: 0.1,
+						default: 1
 					})
 				]),
 				Group({
@@ -255,19 +179,21 @@ const gearbox = {
 					Input({
 						attribute: 'AngVel',
 						text: '[ANGEL_VELOCITY]',
+						desc: '[ANGEL_VELOCITY]',
 						numberType: 'float',
-						max: '32',
+						max: 32,
+						step: 1,
 						bold: true,
-						default: 0,
-						desc: desc.AngVel
+						default: 0
 					}),
 					Input({
 						attribute: 'FuelModifier',
 						text: '[FUEL_MODIFIER]',
+						desc: '[FUEL_MODIFIER]',
 						numberType: 'float',
-						max: '10',
-						default: 1,
-						desc: desc.FuelModifier
+						max: 10,
+						step: 0.1,
+						default: 1
 					})
 				]),
 				Template({
@@ -282,19 +208,21 @@ const gearbox = {
 						Input({
 							attribute: 'AngVel',
 							text: '[ANGEL_VELOCITY]',
+							desc: '[ANGEL_VELOCITY]',
 							numberType: 'float',
-							max: '32',
+							max: 32,
+							step: 1,
 							bold: true,
-							default: 0,
-							desc: desc.AngVel
+							default: 0
 						}),
 						Input({
 							attribute: 'FuelModifier',
 							text: '[FUEL_MODIFIER]',
+							desc: '[FUEL_MODIFIER]',
 							numberType: 'float',
-							max: '10',
-							default: 1,
-							desc: desc.FuelModifier
+							max: 10,
+							step: 0.1,
+							default: 1
 						})
 					])
 				]),
@@ -305,14 +233,14 @@ const gearbox = {
 					Input({
 						attribute: 'Price',
 						text: '[PRICE]',
-						bold: true,
-						desc: desc.Price
+						desc: '[PRICE]',
+						bold: true
 					}),
 					Select({
 						attribute: 'UnlockByExploration',
 						text: '[BY_EXPLORATION]',
-						onlyDeveloper: 'true',
-						desc: desc.UnlockByExploration
+						desc: '[UNLOCK_BY_EXPLORATION]',
+						onlyDeveloper: true
 					}, [
 						Opt({
 							text: '[FIND_ON_MAP]',
@@ -326,8 +254,8 @@ const gearbox = {
 					Input({
 						attribute: 'UnlockByRank',
 						text: '[BY_RANK_LEVEL]',
-						min: 1,
-						desc: desc.UnlockByRank
+						desc: '[UNLOCK_BY_RANK]',
+						min: 1
 					})
 				])
 			])
@@ -372,7 +300,89 @@ const gearbox = {
 		])
 	],
 	selector: 'GearboxVariants',
-	translation: {
+	descriptions: {
+		PRICE: {
+			RU: 'Цена самого автомобиля (без учёта составляющих)',
+			EN: 'Der Preis des Autos selbst (ohne die Komponenten)',
+			DE: 'The price of the car itself (excluding components)'
+		},
+		UNLOCK_BY_EXPLORATION: {
+			RU: 'Способ разблокировки автомобиля',
+			EN: 'How to unlock the car',
+			DE: 'Methode zum Entsperren des Autos'
+		},
+		UNLOCK_BY_RANK: {
+			RU: 'Уровень разблокировки автомобиля',
+			EN: 'Car Unlock Level',
+			DE: 'Auto entsperren Ebene'
+		},
+		NAME: {
+			RU: 'ID данной коробки передач',
+			EN: 'ID of this gearbox',
+			DE: 'ID dieses Getriebes'
+		},
+		AWD_CONSUMPTION_MODIFIER: {
+			RU: 'Коэффициент изменения расхода топлива при использовании полного привода',
+			EN: 'Coefficient of change in fuel consumption when using all-wheel drive',
+			DE: 'Der Faktor der Veränderung des Kraftstoffverbrauchs bei der Nutzung des Allradantriebs'
+		},
+		CRITICAL_DAMAGE_THRESHOLD: {
+			RU: 'Процент повреждений (значение * 100 = процент), после которого коробка начинает проявлять признаки поломки - вылетающие передачи и увеличение расхода топлива',
+			EN: 'The percentage of damage (value * 100 = percentage), after which the box begins to show signs of failure - flying gears and increased fuel consumption',
+			DE: 'Prozentsatz des Schadens (Wert * 100 = Prozent), nach dem die Box beginnt, Anzeichen von Bruch zu zeigen-fliegende Getriebe und erhöhter Kraftstoffverbrauch'
+		},
+		DAMAGE_CAPACITY: {
+			RU: 'Запас прочности данной коробки передач',
+			EN: 'The safety margin of this gearbox',
+			DE: 'Sicherheitsfaktor dieses Getriebes'
+		},
+		DAMAGED_CONSUMPTION_MODIFIER: {
+			RU: 'Максимальный множитель расхода топлива, к этому множителю расход приходит, когда коробка полностью сломана.',
+			EN: 'The maximum fuel consumption multiplier, to this multiplier the fuel consumption comes when the box is completely broken.',
+			DE: 'Der maximale Kraftstoffverbrauch Multiplikator, zu diesem Verbrauch Multiplikator kommt, wenn die Box vollständig gebrochen ist.'
+		},
+		FUEL_CONSUMPTION: {
+			RU: 'Базовое потребление топлива коробкой передач',
+			EN: 'Basic fuel consumption of the gearbox',
+			DE: 'Der standardverbrauch von Kraftstoff Getriebe'
+		},
+		IDLE_FUEL_CONSUMPTION: {
+			RU: 'Множитель потребления топлива, когда автомобиль стоит на месте с заведенным двигателем.',
+			EN: 'The fuel consumption multiplier when the car is stationary with the engine running.',
+			DE: 'Multiplikator des Kraftstoffverbrauchs, wenn das Auto stillsteht mit dem laufenden Motor.'
+		},
+		IS_HIGH_GEAR_EXISTS: {
+			RU: 'Есть ли повышенная передача в коробке передач',
+			EN: 'Is there an upshift in the gearbox',
+			DE: 'Gibt es ein erhöhtes Getriebe im Getriebe'
+		},
+		IS_LOWER_GEAR_EXISTS: {
+			RU: 'Есть ли пониженная передача в коробке передач',
+			EN: 'Is there a downshift in the gearbox',
+			DE: 'Gibt es ein reduziertes Getriebe im Getriebe'
+		},
+		IS_LOWER_PLUS_GEAR_EXISTS: {
+			RU: 'Есть ли пониженная+ передача в коробке передач',
+			EN: 'Is there a downshift+ in the gearbox',
+			DE: 'Gibt es ein reduziertes+ Getriebe im Getriebe'
+		},
+		IS_LOWER_MINUS_GEAR_EXISTS: {
+			RU: 'Есть ли повышенная+ передача в коробке передач',
+			EN: 'Is there an upshift+ in the gearbox',
+			DE: 'Gibt es ein erhöhte+s Getriebe im Getriebe'
+		},
+		ANGEL_VELOCITY: {
+			RU: 'Максимальная угловая скорость колеса',
+			EN: 'Maximum angular velocity of the wheel',
+			DE: 'Maximale Winkelgeschwindigkeit des Rades'
+		},
+		FUEL_MODIFIER: {
+			RU: 'Множитель потребления топлива на данной передаче',
+			EN: 'Fuel consumption multiplier in this gear',
+			DE: 'Multiplikator des Kraftstoffverbrauchs in diesem Getriebe'
+		}
+	},
+	translations: {
 		EN: {
 			ID: 'ID',
 			AWD_CONSUMPTION_MODIFIER: 'AWD consumption modifier',
@@ -452,6 +462,4 @@ const gearbox = {
 			BY_RANK_LEVEL: 'Level freischalten'
 		}
 	}
-}
-
-export default gearbox
+};
