@@ -28,7 +28,7 @@ export default {
             class='form-range input-range'
             v-model.number='value'
             :min='min'
-            :max='max'
+            :max='max + (this.item.step || 0.1)'
             :step='item.step'
         />
     `,

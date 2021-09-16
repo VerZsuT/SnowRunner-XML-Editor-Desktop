@@ -104,6 +104,7 @@ function getDOM() {
     if (dom.querySelector('root').childNodes[0].nodeValue === '\n') {
         dom.querySelector('root').childNodes[0].remove();
     }
+    window.dom = dom;
     return dom;
 }
 

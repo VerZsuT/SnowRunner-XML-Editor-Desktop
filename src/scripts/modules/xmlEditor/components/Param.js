@@ -86,29 +86,27 @@ export default {
                         templateName = this.getParentTemplate(el);
                     }
                     if (templateName) {
-                        if (this.templates) {
-                            const template = this.templates.querySelector(templateName);
-                            if (template) {
-                                const templateValue = template.getAttribute(this.item.name);
-                                if (templateValue) {
-                                    value = templateValue;
-                                } else {
-                                    const el2 = template.querySelector(tagName);
-                                    if (el2) {
-                                        const templateValue2 = el2.getAttribute(this.item.name);
-                                        if (templateValue2) {
-                                            value = templateValue2;
-                                        } else {
-                                            const templateName1 = el2.getAttribute('_template');
-                                            if (templateName1) {
-                                                value = this.getValueInGlobal(templateName1, tagName);
-                                            }
+                        const template = this.templates.querySelector(templateName);
+                        if (template) {
+                            const templateValue = template.getAttribute(this.item.name);
+                            if (templateValue) {
+                                value = templateValue;
+                            } else {
+                                const el2 = template.querySelector(tagName);
+                                if (el2) {
+                                    const templateValue2 = el2.getAttribute(this.item.name);
+                                    if (templateValue2) {
+                                        value = templateValue2;
+                                    } else {
+                                        const templateName1 = el2.getAttribute('_template');
+                                        if (templateName1) {
+                                            value = this.getValueInGlobal(templateName1, tagName);
                                         }
                                     }
                                 }
-                            } else {
-                                value = this.getValueInGlobal(templateName, tagName);
                             }
+                        } else {
+                            value = this.getValueInGlobal(templateName, tagName);
                         }
                     }
                 }
@@ -138,12 +136,12 @@ export default {
             return this.item.value;
         },
         getParentTemplate(el) {
-            if (el.parent) {
-                const template = el.parent.getAttribute('_template');
+            if (el.parentElement) {
+                const template = el.parentElement.getAttribute('_template');
                 if (template) {
                     return template;
                 } else {
-                    return this.getParentTemplate(el.parent);
+                    return this.getParentTemplate(el.parentElement);
                 }
             }
         }
