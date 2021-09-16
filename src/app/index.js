@@ -769,19 +769,19 @@ function unpackFiles(popup = false) {
 
 function unpackMod(absolutePath) {
     return new Promise(resolve => {
-        const modDir = join(paths.modsTemp, basename(dirname(absolutePath)));
+        const modName = join(paths.modsTemp, basename(absolutePath, '.pak'));
 
         if (!existsSync(paths.modsTemp)) {
             mkdirSync(paths.modsTemp);
         }
 
-        if (existsSync(modDir)) {
-            rmSync(modDir, {
+        if (existsSync(modName)) {
+            rmSync(modName, {
                 recursive: true
             });
         }
-        mkdirSync(modDir);
-        exec(`WinRAR x -ibck -inul "${absolutePath}" @unpack-mod-list.lst "${modDir}\\"`, {
+        mkdirSync(modName);
+        exec(`WinRAR x -ibck -inul "${absolutePath}" @unpack-mod-list.lst "${modName}\\"`, {
             cwd: paths.winrar
         }).once('close', () => {
             resolve();
