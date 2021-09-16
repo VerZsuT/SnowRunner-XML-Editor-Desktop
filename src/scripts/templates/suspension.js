@@ -186,7 +186,7 @@ export default {
 		])
 	],
 	selector: 'SuspensionSetVariants',
-	desctiprions: {
+	descriptions: {
 		PRICE: {
 			RU: 'Цена самого автомобиля (без учёта составляющих)',
 			EN: 'Der Preis des Autos selbst (ohne die Komponenten)',

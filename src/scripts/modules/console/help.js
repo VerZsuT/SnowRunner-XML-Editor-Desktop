@@ -13,7 +13,7 @@ const help = {
     devTools: '- devTools {enable|disable}\nВключает/выключает devTools на всех последующих страницах.',
     sset: '- sset <setting_name> {true|false}\nУстанавливает значение настройки.',
     backup: '- backup {save|restore}\nСохраняет/восстанавливает бэкап initial.pak',
-    archive: '- archive {save|unpack}\bСохраняет изменения или распаковывает initial.pak',
+    archive: '- archive {save|unpack}\nСохраняет изменения или распаковывает initial.pak',
     lang: '- lang {RU|EN|DE}\nУстанавливает язык перевода программы.',
     toString: () => {
         const array = [];
