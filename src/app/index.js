@@ -23,7 +23,8 @@ const {
     openXMLDialog,
     openInitialDialog,
     parseStrings,
-    removePars
+    removePars,
+    createDirForPath
 } = require('./service.js');
 
 const paths = {
@@ -208,64 +209,63 @@ function saveInitialSum() {
     config.sums.initial = getHash(config.paths.initial);
 }
 
-function download(params) {
-    return new Promise(resolve => {
-        if (params.array) {
-            const {url, path} = params.array[0];
-
-            if (params.isRoot) {
-                params.downloadPage.setCount(params.array.length);
-            }
-            params.downloadPage.setText(basename(path));
-            download({
-                url: url,
-                path: path,
-                downloadPage: params.downloadPage
-            }).then(() => {
-                resolve();
-                if (params.array.length > 1) {
-                    download({
-                        array: params.array.slice(1),
-                        downloadPage: params.downloadPage
-                    }).then(resolve);
-                }
-            });
-            return;
+function download(params, cb) {
+    if (params.array) {
+        if (params.isRoot) {
+            params.downloadPage.setCount(params.array.length);
         }
-        https.get(params.url, res => {
-            if (params.inMemory) {
-                let chunks = '';
+        const {url, path} = params.array[0];
+        params.downloadPage.setText(basename(path));
+        download({
+            url: url,
+            path: path,
+            downloadPage: params.downloadPage
+        }, () => {
+            cb();
+            if (params.array.length > 1) {
+                download({
+                    array: params.array.slice(1),
+                    downloadPage: params.downloadPage
+                }, cb);
+            }
+        })
+        return
+    }
+    https.get(params.url, res => {
+        if (params.inMemory) {
+            let chunks = '';
 
-                res.on('data', chunk => {
-                    chunks += chunk;
-                });
-                res.on('end', () => {
-                    if (params.fromJSON) {
-                        resolve(JSON.parse(chunks));
-                    } else {
-                        resolve(chunks);
-                    }
-                });
-            } else {
-                const file = createWriteStream(params.path);
-                if (params.downloadPage) {
-                    const len = parseInt(res.headers['content-length'], 10);
-                    let cur = 0;
-
-                    res.on('data', chunk => {
-                        cur += chunk.length;
-                        params.downloadPage.setPercent((100.0 * (cur / len)).toFixed(2));
-                    });
+            res.on('data', chunk => {
+                chunks += chunk;
+            });
+    
+            res.on('end', () => {
+                if (params.fromJSON) {
+                    cb(JSON.parse(chunks));
+                } else {
+                    cb(chunks);
                 }
+            })
+        }
+        else {
+            const file = createWriteStream(params.path)
+            if (params.downloadPage) {
+                const len = parseInt(res.headers['content-length'], 10);
+                let cur = 0;
 
-                res.pipe(file);
-                res.on('end', () => {
-                    params.downloadPage.success();
-                    file.on('close', cb);
-                    file.close();
+                res.on("data", chunk => {
+                    cur += chunk.length;
+                    params.downloadPage.setPersent((100.0 * (cur / len)).toFixed(2));
                 });
             }
-        });
+
+            res.pipe(file);
+            res.on('end', () => {
+                params.downloadPage.success();
+                file.on('close', cb);
+                file.close();
+            });
+        }
     });
 }
 
@@ -336,7 +336,7 @@ function update() {
         url: paths.updateMap,
         fromJSON: true,
         inMemory: true,
-    }).then((updateMap) => {
+    }, updateMap => {
         let [toRemove, toCreateOrChange] = checkMap(updateMap);
 
         for (const path of toRemove) {
