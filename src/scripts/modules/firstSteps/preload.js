@@ -15,7 +15,7 @@ class Preload {
             this.errorHandler('[EMPTY_FOLDER_ERROR]');
             return;
         }
-        const folder = result[0];
+        const folder = result;
         const paths = [
             join(folder, 'en_us', 'preload', 'paks', 'client', 'initial.pak'),
             join(folder, 'preload', 'paks', 'client', 'initial.pak'),
@@ -44,12 +44,12 @@ class Preload {
 
     get initial() {
         const result = this.#openInitialDialog();
-        if (!result || basename(result[0]) !== 'initial.pak' || !existsSync(result[0])) {
+        if (!result || basename(result) !== 'initial.pak' || !existsSync(result)) {
             this.errorHandler('[INVALID_INITIAL_ERROR]');
             return;
         }
         return {
-            initial: result[0]
+            initial: result
         };
     }
 }

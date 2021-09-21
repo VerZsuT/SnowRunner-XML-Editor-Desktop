@@ -10,7 +10,12 @@ for (const $item of menu) {
 
 document.body.prepend($menu);
 
-function buildMenu(template, root = false) {
+/**
+ * Создаёт меню на основе шаблона.
+ * @param {object} template - шаблон.
+ * @param {boolean} root
+ */
+function buildMenu(template, root=false) {
     if (template.role === 'separator') {
         return create('hr', {
             class: 'dropdown-divider'
@@ -60,7 +65,7 @@ function buildMenu(template, root = false) {
                 $button.addEventListener('click', () => mainProcess.restoreInitial());
                 break;
             case 'save-backup':
-                $button.addEventListener('click', () => mainProcess.saveBackup());
+                $button.addEventListener('click', () => mainProcess.copyBackup());
                 break;
             case 'dev-tools':
                 $button.addEventListener('click', () => mainProcess.openDevTools());

@@ -2,6 +2,7 @@ const {ipcMain} = require('electron');
 
 const info = {}
 
+// Данный метод вызывается из renderer-процесса для инициализации mainProcess.
 ipcMain.on('getInfo', event => {
     event.returnValue = info;
 })

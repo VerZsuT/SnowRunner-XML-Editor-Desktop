@@ -10,7 +10,7 @@ window.preload = {
         return existsSync(join(__dirname, path));
     },
     getModPak() {
-        const path = openInitialDialog()[0];
+        const path = openInitialDialog();
         return {
             id: basename(path, '.pak'),
             path: path,

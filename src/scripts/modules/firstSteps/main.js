@@ -1,8 +1,8 @@
 import {createApp} from '../../vue/vue.esm-browser.js';
-import '../../service/shortMenu.js';
 import '../../bootstrap/bootstrap.bundle.min.js';
-import {getText} from '../../service/funcs.js';
 
+import {getText} from '../../service/funcs.js';
+import '../../service/menu.js';
 import GameFolder from './components/GameFolder.js';
 import Language from './components/Language.js';
 import Save from './components/Save.js';

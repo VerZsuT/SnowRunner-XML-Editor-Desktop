@@ -77,7 +77,7 @@ EditorConsole.onCmd('lang', params => {
 });
 
 EditorConsole.onCmd('read', () => {
-    const path = mainProcess.openXMLDialog()[0];
+    const path = mainProcess.openXMLDialog();
     const parser = new DOMParser();
 
     if (!path) {

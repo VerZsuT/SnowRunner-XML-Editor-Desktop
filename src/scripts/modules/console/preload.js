@@ -19,9 +19,9 @@ window.preload = {
         const path = ipcRenderer.sendSync('function_openInitialDialog_call').value;
         if (!path) return;
         return {
-            id: basename(path[0], '.pak'),
-            path: path[0],
-            name: basename(path[0])
+            id: basename(path, '.pak'),
+            path: path,
+            name: basename(path)
         }
     },
     removeDir: path => {

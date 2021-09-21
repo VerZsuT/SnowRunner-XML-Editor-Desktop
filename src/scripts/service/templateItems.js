@@ -103,15 +103,15 @@ export function Template(params, children) {
 }
 
 /**
- * params: 
  * - **name** [string]
  * - **nameType** ['TagName', 'Computed', 'Static'] = *'Static'*
  * - **nameSelector** [string]
+ * - **resNameSelector** [string]
  * - **nameAttribute** [string]
+ * - **resNameAttribute** [string]
  * - **defaultSelector** [string]
  * - **single** [bool]
  * - **withCounter** [bool]
- * @returns {object} Group
  */
 export function Group(params, children) {
     return ({
@@ -205,7 +205,6 @@ export function Group(params, children) {
 }
 
 /**
- * params:
  * - **attribute** [string]
  * - **text** [string]
  * - **selector** [string]
@@ -214,9 +213,9 @@ export function Group(params, children) {
  * - **type** ['text', 'file', 'coordinates', 'number'] = *'number'*
  * - **numberType** ['int', 'float'] = *'int'*
  * - **fileType** [string]
+ * - **canAddTag** [bool]
  * - **min** [number]
  * - **max** [number]
- * @returns {object} Input
  */
 export function Input(params) {
     return ({
@@ -290,13 +289,12 @@ export function Input(params) {
 }
 
 /**
- * params: 
  * - **attribute** [string]
  * - **text** [string]
  * - **selector** [string]
  * - **single** [bool]
  * - **onlyDeveloper** [bool]
- * @returns {object} Select
+ * - **canAddTag** [bool]
  */
 export function Select(params, children) {
     return ({
@@ -368,10 +366,8 @@ export function Select(params, children) {
 }
 
 /**
- * params:
  * - **text** [string]
  * - **value** [string]
- * @returns {object} Option
  */
 export function Opt(params) {
     return ({
@@ -391,9 +387,6 @@ export function Opt(params) {
     });
 }
 
-/**
- * @returns {object} Selectors
- */
 export function Selectors(children) {
     return ({
         children: children,
@@ -425,10 +418,8 @@ export function Selectors(children) {
 }
 
 /**
- * params: 
  * - **id** [string]
  * - **value** [string]
- * @returns {object} Selector
  */
 export function Selector(params) {
     return ({

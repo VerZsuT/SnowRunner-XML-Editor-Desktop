@@ -157,6 +157,7 @@ function initMain() {
         openConsole: () => {openConsole()},
 
         saveBackup: p => {saveBackup(p)},
+        copyBackup: () => {copyBackup()},
         resetConfig: p => {resetConfig(p)},
         restoreInitial: () => {restoreInitial()},
         saveConfig: () => {saveConfig()},
@@ -764,7 +765,7 @@ function unpackMod(absolutePath) {
             rmSync(modName, {recursive: true});
         }
         mkdirSync(modName);
-        archiver.unpack(absolutePath, modName).then(() => resolve());
+        archiver.unpack(absolutePath, modName, true).then(() => resolve());
     });
 }
 
@@ -784,7 +785,6 @@ function saveBackup(reloadAfter=false) {
             }
 
             copyBackup();
-            showNotification('[SUCCESS]', '[SUCCESS_BACKUP_SAVE]');
             if (reloadAfter) {
                 reload();
             }
@@ -796,6 +796,7 @@ function saveBackup(reloadAfter=false) {
 function copyBackup() {
     try {
         copyFileSync(config.paths.initial, paths.backupInitial);
+        showNotification('[SUCCESS]', '[SUCCESS_BACKUP_SAVE]');
     } catch {
         throw new Error('[SAVE_INITIAL_BACKUP_ERROR]');
     }
@@ -923,7 +924,7 @@ function clearTemp() {
     }
 }
 
-function getText(key, returnKey = true) {
+function getText(key, returnKey=true) {
     const translation = translations[config.lang];
     if (translation) {
         return translation[removePars(key)] || (returnKey ? key : undefined);
@@ -941,122 +942,66 @@ function reload() {
     app.quit();
 }
 
-function getShortMenu() {
-    return [
-        {
-            label: getText('[FILE_MENU_LABEL]'),
-            submenu: [
-                ...(() => {
-                    if (config.buildType === 'dev') {
-                        return [
-                            {
-                                label: 'DevTools',
-                                role: 'dev-tools'
-                            },
-                            {
-                                label: 'Reload',
-                                role: 'reload'
-                            }
-                        ]
-                    }
-                    return []
-                })(),
-
-                {
-                    label: getText('[EXIT_MENU_ITEM_LABEL]'),
-                    role: 'quit-app'
-                }
-            ]
-        },
-        {
-            label: getText('[HELP_MENU_LABEL]'),
-            submenu: [
-                {
-                    label: getText('[HOW_TO_USE_TITLE]'),
-                    role: 'open-link',
-                    url: 'https://snowrunner.mod.io/guides/snowrunner-xml-editor'
-                },
-                {
-                    label: 'GitHub',
-                    role: 'open-link',
-                    url: 'https://github.com/VerZsuT/SnowRunner-XML-Editor-Desktop'
-                },
-                {
-                    label: 'YouTube(RU)',
-                    role: 'open-link',
-                    url: 'https://youtube.com/playlist?list=PLDwd4yUwzS2VtWCpC9X6MXm47Kv_s_mq2'
-                }
-            ]
-        }
-    ];
-}
-
 function getMainMenu() {
+    function retif(expression, valueToReturn) {
+        if (expression) return valueToReturn;
+        else return [];
+    }
+
     return [
         {
             label: getText('[FILE_MENU_LABEL]'),
             submenu: [
-                {
-                    label: getText('[SETTINGS_MENU_ITEM_LABEL]'),
-                    role: 'open-settings'
-                },
-                {
-                    role: 'separator'
-                },
-
-                ...(() => {
-                    if (config.buildType === 'dev' || config.settings.resetButton) {
-                        return [{
-                            label: getText('[RESET_MENU_ITEM_LABEL]'),
-                            role: 'reset-config'
-                        }]
+                ...retif(config.paths.initial, [
+                    {
+                        label: getText('[SETTINGS_MENU_ITEM_LABEL]'),
+                        role: 'open-settings'
+                    },
+                    { role: 'separator' }
+                ]),
+                ...retif((config.buildType === 'dev' || config.settings.resetButton) && config.paths.initial, [
+                    {
+                        label: getText('[RESET_MENU_ITEM_LABEL]'),
+                        role: 'reset-config'
                     }
-                    return []
-                })(),
-
-                ...(() => {
-                    if (config.buildType === 'dev') {
-                        return [
-                            {
-                                label: 'DevTools',
-                                role: 'dev-tools'
-                            },
-                            {
-                                label: 'Reload',
-                                role: 'reload'
-                            }
-                        ]
+                ]),
+                ...retif(config.buildType === 'dev', [
+                    {
+                        label: 'DevTools',
+                        role: 'dev-tools'
+                    },
+                    {
+                        label: 'Reload',
+                        role: 'reload'
                     }
-                    return []
-                })(),
-
+                ]),
                 {
                     label: getText('[EXIT_MENU_ITEM_LABEL]'),
                     role: 'quit-app'
                 }
             ]
         },
-        {
-            label: getText('[BACKUP_MENU_LABEL]'),
-            submenu: [
-                {
-                    label: getText('[OPEN_BUTTON]'),
-                    role: 'show-folder',
-                    path: paths.backupFolder
-                },
-                {
-                    role: 'separator'
-                },
-                {
-                    label: getText('[SAVE_BUTTON]'),
-                    role: 'save-backup'
-                },
-                {
-                    label: getText('[RESTORE_MENU_ITEM_LABEL]'),
-                    role: 'restore-initial'
-                }
-            ]
-        },
+        ...retif(config.paths.initial, [
+            {
+                label: getText('[BACKUP_MENU_LABEL]'),
+                submenu: [
+                    {
+                        label: getText('[OPEN_BUTTON]'),
+                        role: 'show-folder',
+                        path: paths.backupFolder
+                    },
+                    { role: 'separator' },
+                    {
+                        label: getText('[SAVE_BUTTON]'),
+                        role: 'save-backup'
+                    },
+                    {
+                        label: getText('[RESTORE_MENU_ITEM_LABEL]'),
+                        role: 'restore-initial'
+                    }
+                ]
+            }
+        ]),
         {
             label: getText('[HELP_MENU_LABEL]'),
             submenu: [
