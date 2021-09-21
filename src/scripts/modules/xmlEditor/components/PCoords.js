@@ -35,10 +35,17 @@ export default {
     },
     methods: {
         parseCoords(value) {
+            if (!value) {
+                return {x: 0, y: 0, z: 0};
+            }
             const [x, y, z] = value.replace('(', '').replace(')', '').replaceAll(' ', '').split(';');
             return {x ,y ,z};
         },
         saveCoords(x=null, y=null, z=null) {
+            if (x !== null) x = `${x}`;
+            if (y !== null) y = `${y}`;
+            if (z !== null) z = `${z}`;
+            
             this.fileDOM.querySelector(this.item.selector).setAttribute(this.item.name, `(${x||this.x}; ${y||this.y}; ${z||this.z})`);
         }
     }

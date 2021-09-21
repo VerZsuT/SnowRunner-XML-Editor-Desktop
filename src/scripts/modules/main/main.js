@@ -23,8 +23,6 @@ const App = {
 createApp(App)
     .component('Category', Category)
     .mount('#main');
-document.title = document.title.replace('{--VERSION--}', `v${config.version}`);
-document.querySelector('#main').style.display = 'block';
 
 setTimeout(() => {
     if (invalidMods.length) {

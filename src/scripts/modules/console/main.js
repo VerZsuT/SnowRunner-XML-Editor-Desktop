@@ -87,7 +87,7 @@ EditorConsole.onCmd('read', () => {
     const fileDOM = parser.parseFromString(`<root>${preload.readFile(path)}</root>`, 'text/xml');
 
     if (fileDOM.querySelector('parsererror')) {
-        Message.error('Ошибка парсинга файла.');
+        Message.error(`Ошибка парсинга файла.\n${fileDOM.querySelector('parsererror').innerText}`);
         return;
     }
 
@@ -233,3 +233,29 @@ EditorConsole.onCmd('archive', params => {
         Message.log('initial.pak был распакован.');
     }
 });
+
+EditorConsole.onCmd('config', params => {
+    const action = params[0];
+
+    if (action === undefined) {
+        Message.warn('Не введено действие.');
+        return;
+    }
+    if (!['import', 'export'].includes(action)) {
+        Message.warn('Введено неправильное действие. Ожидалось [import|export]');
+        return;
+    }
+
+    if (action === 'import') {
+        if (!preload.exists(preload.join(paths.backupFolder, 'config.json'))) {
+            Message.warn('Нет файла для импортирования.');
+            return;
+        }
+        mainProcess.importConfig();
+        Message.log('Конфиг был успешно импортирован.');
+        mainProcess.reload();
+    } else {
+        mainProcess.exportConfig();
+        Message.log('Конфиг был успешно экспортирован.');
+    }
+})

@@ -179,6 +179,10 @@ const keys = combine([
         'enable', 
         'disable'
     ],
+    'config': [
+        'import',
+        'export'
+    ],
     'sset': setPreset([
         'updates',
         'limits',

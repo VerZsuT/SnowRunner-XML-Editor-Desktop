@@ -60,5 +60,4 @@ preload.errorHandler = message => toast(getText(`${message}`.replace('Error: ', 
 createApp(App)
     .component('GameFolder', GameFolder)
     .mount('#main');
-document.title = document.title.replace('{--VERSION--}', `v${config.version}`);
-document.querySelector('#main').style.display = 'block';
+

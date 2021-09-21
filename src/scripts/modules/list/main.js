@@ -31,5 +31,3 @@ createApp(App)
     .component('ListItem', ListItem)
     .component('Search', Search)
     .mount('#main');
-document.title = document.title.replace('{--VERSION--}', `v${config.version}`);
-document.querySelector('#main').style.display = 'block';

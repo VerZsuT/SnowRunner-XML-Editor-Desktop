@@ -1,6 +1,6 @@
-const {
-    dialog
-} = require('electron');
+const {dialog} = require('electron');
+const {join, dirname} = require('path');
+const {createHash} = require('crypto');
 const {
     existsSync,
     lstatSync,
@@ -8,22 +8,26 @@ const {
     mkdirSync,
     readFileSync
 } = require('fs');
-const {
-    join,
-    dirname
-} = require('path');
-const {
-    createHash
-} = require('crypto');
-module.exports = {
-    fromDir,
-    openInitialDialog,
-    openDialog,
-    openXMLDialog,
-    getHash,
-    createDirForPath,
-    parseStrings,
-    removePars
+
+const paths = {
+    publicInfo: 'https://verzsut.github.io/sxmle_updater/public.json',
+    downloadPage: 'https://verzsut.github.io/SnowRunner-XML-Editor-Desktop/download.html',
+    updateFiles: 'https://verzsut.github.io/sxmle_updater/files',
+    updateMap: 'https://verzsut.github.io/sxmle_updater/updateMap.json',
+    root: join(__dirname, '..', '..'),
+    config: join(__dirname, 'config.json'),
+    icon: join(__dirname, '..', 'icons', 'favicon.png'),
+    preload: join(__dirname, 'mainPreload.js'),
+    backupFolder: join(__dirname, '..', 'backups'),
+    backupInitial: join(__dirname, '..', 'backups', 'initial.pak'),
+    HTMLFolder: join(__dirname, '..', 'pages'),
+    translations: join(__dirname, '..', 'scripts', 'translations'),
+    winrar: join(__dirname, '..', 'scripts', 'winrar'),
+    mainTemp: join(__dirname, '..', 'scripts', 'mainTemp'),
+    modsTemp: join(__dirname, '..', 'scripts', 'modsTemp'),
+    strings: join(__dirname, '..', 'scripts', 'mainTemp', '[strings]'),
+    dlc: join(__dirname, '..', 'scripts', 'mainTemp', '[media]', '_dlc'),
+    classes: join(__dirname, '..', 'scripts', 'mainTemp', '[media]', 'classes')
 };
 
 function removePars(str) {
@@ -128,3 +132,15 @@ function createDirForPath(path) {
         mkdirSync(dirName);
     }
 }
+
+module.exports = {
+    fromDir,
+    openInitialDialog,
+    openDialog,
+    openXMLDialog,
+    getHash,
+    createDirForPath,
+    parseStrings,
+    removePars,
+    paths
+};

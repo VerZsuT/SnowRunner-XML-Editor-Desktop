@@ -15,6 +15,7 @@ const help = {
     backup: '- backup {save|restore}\nСохраняет/восстанавливает бэкап initial.pak',
     archive: '- archive {save|unpack}\nСохраняет изменения или распаковывает initial.pak',
     lang: '- lang {RU|EN|DE}\nУстанавливает язык перевода программы.',
+    config: '- config {import|export}\nИмпорт/экспорт конфиг-файла.',
     toString: () => {
         const array = [];
         for (const cmdName in help) {

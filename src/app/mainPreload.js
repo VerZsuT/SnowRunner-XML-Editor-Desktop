@@ -64,3 +64,22 @@ window.local = new Proxy({
 window.ipcRenderer = ipcRenderer;
 window.paths = ipcRenderer.sendSync('property_paths_get').value;
 window.translations = ipcRenderer.sendSync('property_translations_get').value;
+window.beforeShow = () => {
+    document.title = document.title.replace('{--VERSION--}', `v${config.version}`);
+
+    if (document.querySelector('#main')) {
+        document.querySelector('#main').style.display = 'block';
+    }
+    
+    document.addEventListener('keydown', event => {
+        if (event.ctrlKey && event.code === 'KeyS') {
+            const button = document.querySelector('#save-params');
+            if (button) button.click();
+        } else if (event.code === 'Escape') {
+            window.close();
+        } else if (event.ctrlKey && event.code === 'KeyQ') {
+            ipcRenderer.sendSync('function_quit_call');
+        }
+    })
+}
+

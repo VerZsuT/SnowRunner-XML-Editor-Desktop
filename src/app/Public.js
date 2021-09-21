@@ -11,7 +11,7 @@ class Public {
      * Делает функции публичными, позволяя вызывать их из renderer-процесса.
      * @param {object} object - объект типа {<имя>: <обработчик>}
      */
-    static setFunctions(object) {
+    setFunctions(object) {
         for (const name in object) {
             const value = object[name];
 
@@ -32,7 +32,7 @@ class Public {
      * Делает переменные публичными, позволяя использовать/изменять из из renderer-процесса.
      * @param {object} object - объект типа {<имя>: (<гетер> | [<гетер>, <сетер>])}
      */
-    static setProperties(object) {
+    setProperties(object) {
         for (const name in object) {
             const value = object[name];
             info[name] = 'property';
@@ -75,4 +75,4 @@ class Public {
     }
 }
 
-module.exports = Public;
+module.exports = new Public();

@@ -1,7 +1,5 @@
 const https = require('https');
 const dns = require('dns');
-const Public = require('../scripts/service/Public.js');
-const {exec, execSync} = require('child_process');
 const {app, shell, BrowserWindow, Notification} = require('electron');
 const {join, dirname, basename} = require('path');
 const {
@@ -16,6 +14,9 @@ const {
     rmSync,
     createWriteStream
 } = require('fs');
+
+const archiver = require('./Archiver.js');
+const public = require('./Public.js');
 const {
     fromDir,
     getHash,
@@ -24,34 +25,14 @@ const {
     openInitialDialog,
     parseStrings,
     removePars,
-    createDirForPath
+    createDirForPath,
+    paths
 } = require('./service.js');
-
-const paths = {
-    publicInfo: 'https://verzsut.github.io/sxmle_updater/public.json',
-    downloadPage: 'https://verzsut.github.io/SnowRunner-XML-Editor-Desktop/download.html',
-    updateFiles: 'https://verzsut.github.io/sxmle_updater/files',
-    updateMap: 'https://verzsut.github.io/sxmle_updater/updateMap.json',
-    root: join(__dirname, '..', '..'),
-    config: join(__dirname, 'config.json'),
-    icon: join(__dirname, '..', 'icons', 'favicon.png'),
-    preload: join(__dirname, 'mainPreload.js'),
-    backupFolder: join(__dirname, '..', 'backups'),
-    backupInitial: join(__dirname, '..', 'backups', 'initial.pak'),
-    HTMLFolder: join(__dirname, '..', 'pages'),
-    translations: join(__dirname, '..', 'scripts', 'translations'),
-    winrar: join(__dirname, '..', 'scripts', 'winrar'),
-    mainTemp: join(__dirname, '..', 'scripts', 'mainTemp'),
-    modsTemp: join(__dirname, '..', 'scripts', 'modsTemp'),
-    strings: join(__dirname, '..', 'scripts', 'mainTemp', '[strings]'),
-    dlc: join(__dirname, '..', 'scripts', 'mainTemp', '[media]', '_dlc'),
-    classes: join(__dirname, '..', 'scripts', 'mainTemp', '[media]', 'classes')
-};
 
 const settings = {
     appId: 'SnowRunner XML Editor',
-    relaunchWithoutSaving: false,
-    showDevTools: false
+    saveWhenReload: true,
+    devTools: false
 };
 const windows = {
     mainWindow: null,
@@ -65,14 +46,20 @@ const invalidMods = [];
 const config = getConfig();
 const translations = getTranslations();
 
-initApp();
-initMain();
+app.setAppUserModelId(settings.appId);
+app.whenReady().then(init);
+app.on('before-quit', () => {
+    if (settings.saveWhenReload) saveConfig();
+});
+process.once('uncaughtExceptionMonitor', app.quit);
 
 function init() {
+    initMain();
     windows.loading = openDownload(true);
     windows.loading.once('show', () => {
         windows.loading.setText(getText('[LOADING]'));
         if (!config.paths.initial) {
+            checkExportedConfig();
             openFirstSteps();
             checkUpdate();
         } else {
@@ -86,14 +73,10 @@ function init() {
                         initDLC();
                         initMods().then(() => {
                             getModsTranslation().then(() => {
-                                openMain().then(() => {
-                                    checkUpdate();
-                                });
+                                openMain().then(() => checkUpdate());
                             });
                         }, () => {
-                            openMain().then(() => {
-                                checkUpdate();
-                            });
+                            openMain().then(() => checkUpdate());
                         });
                     });
                 } else {
@@ -105,7 +88,7 @@ function init() {
 }
 
 function initMain() {
-    Public.setProperties({
+    public.setProperties({
         invalidMods: () => invalidMods,
         translations: () => translations,
         shortMenu: () => getShortMenu(),
@@ -117,25 +100,21 @@ function initMain() {
         ]
     });
 
-    Public.setFunctions({
+    public.setFunctions({
         saveToOriginal: modId => {
             if (modId) {
                 try {
-                    execSync(`WinRAR f -ibck -inul "${config.modsList[modId].path}" "${join(paths.modsTemp, modId)}\\" -r -ep1`, {
-                        cwd: paths.winrar
-                    });
+                    archiver.update(join(paths.modsTemp, modId), config.modsList[modId].path);
                     saveModSum(modId, config.modsList[modId].path);
                 } catch (err) {
-                    showNotification(getText('[ERROR]'), getText('[SAVE_MOD_ERROR]'));
+                    showNotification('[ERROR]', '[SAVE_MOD_ERROR]');
                 }
             } else {
                 try {
-                    execSync(`WinRAR f -ibck -inul "${config.paths.initial}" "${paths.mainTemp}\\" -r -ep1`, {
-                        cwd: paths.winrar
-                    });
+                    archiver.update(paths.mainTemp, config.paths.initial);
                     saveInitialSum();
                 } catch (err) {
-                    showNotification(getText('[ERROR]'), getText('[SAVE_ORIGINAL_ERROR]'));
+                    showNotification('[ERROR]', '[SAVE_ORIGINAL_ERROR]');
                 }
             }
         },
@@ -166,6 +145,8 @@ function initMain() {
         quit: () => {app.quit()},
         openLink: p => {shell.openExternal(p)},
         showFolder: p => {shell.openPath(p)},
+        importConfig: () => {checkExportedConfig()},
+        exportConfig: () => {exportConfig()},
 
         openXMLEditor: () => {openXMLEditor()},
         openList: () => {openList()},
@@ -183,22 +164,9 @@ function initMain() {
         checkUpdate: p => {checkUpdate(p)},
         update: () => {update()},
         unpackFiles: p => {unpackFiles(p)},
-        enableDevTools: () => {settings.showDevTools = true},
-        disableDevTools: () => {settings.showDevTools = false}
+        enableDevTools: () => {settings.devTools = true},
+        disableDevTools: () => {settings.devTools = false}
     });
-}
-
-function initApp() {
-    app.setAppUserModelId(settings.appId);
-    app.whenReady().then(init);
-    app.on('before-quit', () => {
-        if (!settings.relaunchWithoutSaving) saveConfig();
-    })
-    app.on('activate', () => {
-        if (BrowserWindow.getAllWindows().length === 0) init();
-    })
-
-    process.once('uncaughtExceptionMonitor', app.quit);
 }
 
 function saveModSum(modId, path) {
@@ -271,9 +239,13 @@ function download(params, cb) {
 
 function checkInitialSum() {
     return new Promise(resolve => {
-        if (getHash(config.paths.initial) !== config.sums.initial) {
+        if (!existsSync(join(paths.mainTemp, '[media]')) || getHash(config.paths.initial) !== config.sums.initial) {
             saveInitialSum();
-            unpackFiles(true).then(resolve);
+            if (!existsSync(paths.backupInitial)) {
+                saveBackup().then(resolve);
+            } else {
+                unpackFiles(true).then(resolve);
+            }
         } else {
             resolve();
         }
@@ -300,6 +272,18 @@ function checkPathToDelete(path, map) {
     }
 
     return toRemove;
+}
+
+function checkExportedConfig() {
+    if (existsSync(join(paths.backupFolder, 'config.json'))) {
+        const exportedConfig = JSON.parse(readFileSync(join(paths.backupFolder, 'config.json')));
+
+        exportedConfig.version = config.version;
+        settings.saveWhenReload = false;
+        writeFileSync(paths.config, JSON.stringify(exportedConfig));
+        rmSync(join(paths.backupFolder, 'config.json'));
+        reload();
+    }
 }
 
 function checkMap(map) {
@@ -331,7 +315,7 @@ function update() {
     page.once('show', () => {
         page.download();
     })
-    resetConfig(true);
+    clearTemp();
     download({
         url: paths.updateMap,
         fromJSON: true,
@@ -350,7 +334,8 @@ function update() {
         }
 
         if (toCreateOrChange.length === 0) {
-            settings.relaunchWithoutSaving = true;
+            settings.saveWhenReload = false;
+            exportConfig();
             reload();
         }
         const toDownload = [];
@@ -373,17 +358,22 @@ function update() {
         }, () => {
             toCreateOrChange = toCreateOrChange.slice(1);
             if (toCreateOrChange.length === 0) {
-                settings.relaunchWithoutSaving = true;
+                settings.saveWhenReload = false;
+                exportConfig();
                 reload();
             }
         });
     });
 }
 
+function exportConfig() {
+    writeFileSync(join(paths.backupFolder, 'config.json'), JSON.stringify(config));
+}
+
 function checkUpdate(whateverCheck=false) {
     if (!config.settings.updates && !whateverCheck) return;
 
-    dns.resolve('yandex.ru', error => {
+    dns.resolve('github.com', error => {
         if (!error) {
             https.get(paths.publicInfo, res => {
                 res.setEncoding('utf-8');
@@ -394,11 +384,11 @@ function checkUpdate(whateverCheck=false) {
                 });
                 res.on('end', () => {
                     const data = JSON.parse(rawData);
-                    if (data.latestVersion !== config.version) {
+                    if (config.version < data.latestVersion) {
                         if (data.canAutoUpdate) {
                             openUpdateMessage(data.latestVersion);
                         } else {
-                            showNotification(getText('[NOTIFICATION]'), getText('ALLOW_NEW_VERSION')).then(() => {
+                            showNotification('[NOTIFICATION]', 'ALLOW_NEW_VERSION').then(() => {
                                 shell.openExternal(paths.downloadPage);
                             });
                         }
@@ -412,13 +402,13 @@ function checkUpdate(whateverCheck=false) {
 function checkPaths() {
     let success = true;
     if (!existsSync(config.paths.initial)) {
-        showNotification(getText('[ERROR]'), getText('[INITIAL_NOT_FOUND]'));
+        showNotification('[ERROR]', '[INITIAL_NOT_FOUND]');
         success = false;
     } else if (!existsSync(paths.classes)) {
-        showNotification(getText('[ERROR]'), getText('[CLASSES_NOT_FOUND]'));
+        showNotification('[ERROR]', '[CLASSES_NOT_FOUND]');
         success = false;
     } else if (config.settings.DLC && !existsSync(paths.dlc)) {
-        showNotification(getText('[ERROR]'), getText('[DLC_FOLDER_NOT_FOUND]'));
+        showNotification('[ERROR]', '[DLC_FOLDER_NOT_FOUND]');
         config.settings.DLC = false;
     }
     return success;
@@ -426,7 +416,6 @@ function checkPaths() {
 
 function initDLC() {
     if (!config.settings.DLC) return;
-
     config.dlcList = fromDir(paths.dlc, true);
 }
 
@@ -455,7 +444,7 @@ function initMods() {
             }
 
             const hash = getHash(mod.path);
-            if (hash === config.sums.mods[modName]) {
+            if (existsSync(join(paths.modsTemp, modName)) && hash === config.sums.mods[modName]) {
                 counter--;
                 continue;
             } else {
@@ -483,22 +472,22 @@ function initMods() {
 
 function getModsTranslation() {
     return new Promise(resolve => {
-        let mods = {};
+        const mods = {};
         for (const modId in config.modsList) {
             if (existsSync(join(paths.modsTemp, modId, 'texts'))) {
                 let fileName;
                 switch (config.lang) {
                     case 'RU':
                         fileName = 'strings_russian.str';
-                        break;
+                    break;
                     case 'EN':
                         fileName = 'strings_english.str';
-                        break;
+                    break;
                     case 'DE':
                         fileName = 'strings_german.str';
-                        break;
+                    break;
                 }
-                let stringsFilePath = join(paths.modsTemp, modId, 'texts', fileName);
+                const stringsFilePath = join(paths.modsTemp, modId, 'texts', fileName);
                 if (existsSync(stringsFilePath)) {
                     const result = parseStrings(readFileSync(stringsFilePath, {
                         encoding: 'utf16le'
@@ -550,13 +539,13 @@ function getTranslations() {
     };
 }
 
-function showNotification(title, message) {
+function showNotification(titleKey, messageKey) {
     return new Promise(resolve => {
         if (Notification.isSupported()) {
             const notification = new Notification({
-                title: title,
+                title: getText(titleKey),
                 icon: paths.icon,
-                body: message
+                body: getText(messageKey)
             });
 
             notification.show();
@@ -751,19 +740,15 @@ function unpackFiles(popup = false) {
         })
 
         if (existsSync(paths.mainTemp)) {
-            rmSync(paths.mainTemp, {
-                recursive: true
-            });
+            rmSync(paths.mainTemp, {recursive: true});
         }
         mkdirSync(paths.mainTemp);
-        exec(`WinRAR x -ibck -inul "${config.paths.initial}" @unpack-list.lst "${paths.mainTemp}\\"`, {
-            cwd: paths.winrar
-        }).once('close', () => {
+        archiver.unpack(config.paths.initial, paths.mainTemp).then(() => {
             resolve();
             if (!loading.isDestroyed()) {
                 loading.close();
             }
-        });
+        })
     });
 }
 
@@ -776,39 +761,36 @@ function unpackMod(absolutePath) {
         }
 
         if (existsSync(modName)) {
-            rmSync(modName, {
-                recursive: true
-            });
+            rmSync(modName, {recursive: true});
         }
         mkdirSync(modName);
-        exec(`WinRAR x -ibck -inul "${absolutePath}" @unpack-mod-list.lst "${modName}\\"`, {
-            cwd: paths.winrar
-        }).once('close', () => {
-            resolve();
-        });
+        archiver.unpack(absolutePath, modName).then(() => resolve());
     });
 }
 
-function saveBackup(reloadAfter = false) {
-    unpackFiles().then(() => {
-        if (!existsSync(paths.backupFolder)) {
-            mkdirSync(paths.backupFolder);
-        }
-
-        if (existsSync(paths.backupInitial)) {
-            try {
-                unlinkSync(paths.backupInitial);
-            } catch {
-                throw new Error('[DELETE_OLD_INITIAL_BACKUP_ERROR]');
+function saveBackup(reloadAfter=false) {
+    return new Promise(resolve => {
+        unpackFiles().then(() => {
+            if (!existsSync(paths.backupFolder)) {
+                mkdirSync(paths.backupFolder);
             }
-        }
 
-        copyBackup();
-        showNotification(getText('[SUCCESS]'), getText('[SUCCESS_BACKUP_SAVE]'));
-        if (reloadAfter) {
-            reload();
-        }
-    });
+            if (existsSync(paths.backupInitial)) {
+                try {
+                    unlinkSync(paths.backupInitial);
+                } catch {
+                    throw new Error('[DELETE_OLD_INITIAL_BACKUP_ERROR]');
+                }
+            }
+
+            copyBackup();
+            showNotification('[SUCCESS]', '[SUCCESS_BACKUP_SAVE]');
+            if (reloadAfter) {
+                reload();
+            }
+            resolve();
+        });
+    })
 }
 
 function copyBackup() {
@@ -850,10 +832,11 @@ function createWindow(fileName, args = {}) {
     windows.currentWindow = wind;
     wind.setMenu(null);
     wind.loadFile(join(paths.HTMLFolder, fileName)).then(() => {
+        wind.webContents.executeJavaScript('beforeShow()');
         wind.show();
         if (!wind.isDestroyed()) {
             wind.focus();
-            if (settings.showDevTools) {
+            if (settings.devTools) {
                 wind.webContents.toggleDevTools();
             }
         }
@@ -869,21 +852,21 @@ function restoreInitial() {
         try {
             unlinkSync(config.paths.initial);
         } catch {
-            showNotification(getText('[ERROR]'), getText('[DELETE_CURRENT_INITIAL_BACKUP_ERROR]'));
+            showNotification('[ERROR]', '[DELETE_CURRENT_INITIAL_BACKUP_ERROR]');
         }
     }
     try {
         copyFileSync(paths.backupInitial, config.paths.initial);
         unpackFiles().then(() => {
             saveInitialSum();
-            showNotification(getText('[SUCCESS]'), getText('[SUCCESS_INITIAL_RESTORE]'));
+            showNotification('[SUCCESS]', '[SUCCESS_INITIAL_RESTORE]');
         });
     } catch {
-        showNotification(getText('[ERROR]'), getText('[DELETE_CURRENT_INITIAL_BACKUP_ERROR]'));
+        showNotification('[ERROR]', '[DELETE_CURRENT_INITIAL_BACKUP_ERROR]');
     }
 }
 
-function resetConfig(withoutReloading = false) {
+function resetConfig(withoutReloading=false) {
     config.paths = {
         initial: null,
         dlc: null,
@@ -907,12 +890,21 @@ function resetConfig(withoutReloading = false) {
         mods: {}
     };
     config.lang = 'EN';
+    clearTemp();
+    
+    if (!withoutReloading) {
+        reload();
+    } else {
+        saveConfig();
+    }
+}
 
+function clearTemp() {
     if (existsSync(paths.backupInitial)) {
         try {
             unlinkSync(paths.backupInitial);
         } catch (error) {
-            showNotification(getText('[ERROR]'), getText('[DELETE_OLD_INITIAL_BACKUP_ERROR]'));
+            showNotification('[ERROR]', '[DELETE_OLD_INITIAL_BACKUP_ERROR]');
         }
     }
 
@@ -928,12 +920,6 @@ function resetConfig(withoutReloading = false) {
             recursive: true
         });
         mkdirSync(paths.modsTemp);
-    }
-
-    if (!withoutReloading) {
-        reload();
-    } else {
-        saveConfig();
     }
 }
 
@@ -956,12 +942,14 @@ function reload() {
 }
 
 function getShortMenu() {
-    return [{
+    return [
+        {
             label: getText('[FILE_MENU_LABEL]'),
             submenu: [
                 ...(() => {
                     if (config.buildType === 'dev') {
-                        return [{
+                        return [
+                            {
                                 label: 'DevTools',
                                 role: 'dev-tools'
                             },
@@ -973,6 +961,7 @@ function getShortMenu() {
                     }
                     return []
                 })(),
+
                 {
                     label: getText('[EXIT_MENU_ITEM_LABEL]'),
                     role: 'quit-app'
@@ -981,7 +970,8 @@ function getShortMenu() {
         },
         {
             label: getText('[HELP_MENU_LABEL]'),
-            submenu: [{
+            submenu: [
+                {
                     label: getText('[HOW_TO_USE_TITLE]'),
                     role: 'open-link',
                     url: 'https://snowrunner.mod.io/guides/snowrunner-xml-editor'
@@ -1002,15 +992,18 @@ function getShortMenu() {
 }
 
 function getMainMenu() {
-    return [{
+    return [
+        {
             label: getText('[FILE_MENU_LABEL]'),
-            submenu: [{
+            submenu: [
+                {
                     label: getText('[SETTINGS_MENU_ITEM_LABEL]'),
                     role: 'open-settings'
                 },
                 {
                     role: 'separator'
                 },
+
                 ...(() => {
                     if (config.buildType === 'dev' || config.settings.resetButton) {
                         return [{
@@ -1020,9 +1013,11 @@ function getMainMenu() {
                     }
                     return []
                 })(),
+
                 ...(() => {
                     if (config.buildType === 'dev') {
-                        return [{
+                        return [
+                            {
                                 label: 'DevTools',
                                 role: 'dev-tools'
                             },
@@ -1034,6 +1029,7 @@ function getMainMenu() {
                     }
                     return []
                 })(),
+
                 {
                     label: getText('[EXIT_MENU_ITEM_LABEL]'),
                     role: 'quit-app'
@@ -1042,7 +1038,8 @@ function getMainMenu() {
         },
         {
             label: getText('[BACKUP_MENU_LABEL]'),
-            submenu: [{
+            submenu: [
+                {
                     label: getText('[OPEN_BUTTON]'),
                     role: 'show-folder',
                     path: paths.backupFolder
@@ -1062,7 +1059,8 @@ function getMainMenu() {
         },
         {
             label: getText('[HELP_MENU_LABEL]'),
-            submenu: [{
+            submenu: [
+                {
                     label: getText('[HOW_TO_USE_TITLE]'),
                     role: 'open-link',
                     url: 'https://snowrunner.mod.io/guides/snowrunner-xml-editor'
