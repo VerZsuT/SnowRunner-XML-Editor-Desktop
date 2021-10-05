@@ -8,14 +8,14 @@ import {
 	Selector
 } from '../service/templateItems.js';
 
-export default {
+const engine = {
 	main: [
 		Template({
-			type: 'Multiply',
+			type: 'multiply',
 			itemSelector: '[ENGINE]'
 		}, [
 			Group({
-				nameType: 'Computed',
+				nameType: 'computed',
 				nameSelector: '[ENGINE_ITEM_TEXT]',
 				resNameSelector: '[ENGINE_ITEM]',
 				nameAttribute: 'UiName',
@@ -27,7 +27,7 @@ export default {
 					text: '[ID]',
 					desc: '[NAME]',
 					type: 'text',
-					onlyDeveloper: 'true'
+					onlyDeveloper: true
 				}),
 				Input({
 					attribute: 'CriticalDamageThreshold',
@@ -43,7 +43,11 @@ export default {
 					text: '[DAMAGE_CAPACITY]',
 					desc: '[DAMAGE_CAPACITY]',
 					max: 64000,
-					step: 1,
+					areas: {
+						yellow: [[1001, 5000]],
+						red: [[5001, Infinity]]
+					},
+					step: 10,
 					default: 0,
 					bold: true
 				}),
@@ -63,6 +67,10 @@ export default {
 					desc: '[ENGINE_RESPONSIVENESS]',
 					numberType: 'float',
 					max: 1,
+					areas: {
+						yellow: [[0.1, 0.5]],
+						red: [[0.5, 1]]
+					},
 					step: 0.01,
 					default: 0.04
 				}),
@@ -73,8 +81,8 @@ export default {
 					numberType: 'float',
 					max: 100.0,
 					step: 0.1,
-					bold: true,
-					default: 0.5
+					default: 0.5,
+					bold: true
 				}),
 				Input({
 					attribute: 'Torque',
@@ -83,7 +91,11 @@ export default {
 					max: 1000000,
 					step: 100,
 					bold: true,
-					default: 0
+					default: 0,
+					areas: {
+						yellow: [[700000, 80000]],
+						red: [[800001, Infinity]]
+					}
 				}),
 				Input({
 					attribute: 'DamagedMinTorqueMultiplier',
@@ -274,4 +286,6 @@ export default {
 			BY_RANK_LEVEL: 'Level freischalten'
 		}
 	}
-};
+}
+
+export default engine;

@@ -50,12 +50,12 @@ console.log('[PRE_BUILD][STAGE_2]: Success.');
 console.log('[PRE_BUILD][LOG]................');
 
 console.log('[PRE_BUILD][STAGE_3]: Changing package.json...');
-writeFileSync(paths.package, JSON.stringify(package));
+writeFileSync(paths.package, JSON.stringify(package, null, '\t'));
 console.log('[PRE_BUILD][STAGE_3]: Success.');
 console.log('[PRE_BUILD][STAGE_3]: Changing package-lock.json...');
 writeFileSync(paths.packageLock, JSON.stringify(packageLock));
 console.log('[PRE_BUILD][STAGE_3]: Success.');
 console.log('[PRE_BUILD][STAGE_3]: Changing public.json...');
-writeFileSync(paths.public, JSON.stringify(public));
+writeFileSync(paths.public, JSON.stringify(public, null, '\t'));
 console.log('[PRE_BUILD][STAGE_3]: Success.');
 console.log('[PRE_BUILD][LOG]: Success.');

@@ -23,7 +23,7 @@ export default class EditorConsole {
                 $input.value = '';
                 AutoComplete.reset();
             } else if (event.ctrlKey && event.shiftKey && event.code === 'KeyI') {
-                mainProcess.openDevTools();
+                mainProcess.call('openDevTools');
             }
         })
     }

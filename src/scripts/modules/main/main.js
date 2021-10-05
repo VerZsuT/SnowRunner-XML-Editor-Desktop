@@ -1,31 +1,20 @@
-import '../../bootstrap/bootstrap.bundle.min.js';
+import {createApp} from 'vue';
 import {getText} from '../../service/funcs.js';
-import '../../service/menu.js';
 import mainProcess from '../../service/mainProcess.js';
-import {createApp} from '../../vue/vue.esm-browser.js';
-import Category from './components/Category.js';
+
+import App from './components/App.vue';
 
 document.addEventListener('keypress', (event) => {
     if (event.code === 'Backquote') {
-        mainProcess.openConsole();
+        mainProcess.call('openConsole');
     }
 });
+const invalidMod = mainProcess.get('invalidMod');
 
-const invalidMods = mainProcess.invalidMods;
-const App = {
-    data() {
-        return {
-            categories: ['trucks', 'trailers', 'cargo']
-        };
-    }
-}
-
-createApp(App)
-    .component('Category', Category)
-    .mount('#main');
+createApp(App).mount('#main');
 
 setTimeout(() => {
-    if (invalidMods.length) {
-        alert(`${getText('[INVALID_MODS_ALERT1]')}:\n- ${invalidMods.join('\n- ')}\n${getText('[INVALID_MODS_ALERT2]')}`);
+    if (invalidMod) {
+        mainProcess.call('alertSync', `${getText('[INVALID_MODS_ALERT_MAIN]')}: ${invalidMod.name}\n${getText(`[INVALID_MODS_ALERT_${invalidMod.error}]`)}`);
     }
 }, 1000);

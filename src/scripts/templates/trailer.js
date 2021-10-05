@@ -6,7 +6,7 @@ import {
 	Selector
 } from '../service/templateItems.js';
 
-export default {
+const trailer = {
 	main: [
 		Template({}, [
 			Group({
@@ -17,20 +17,33 @@ export default {
 					attribute: 'FuelCapacity',
 					text: '[FUEL_CAPACITY]',
 					desc: '[FUEL_CAPACITY]',
-					max: '64000',
-					default: 0
+					max: 64000,
+					step: 10,
+					default: 0,
+					areas: {
+						yellow: [[1000, 5000]],
+						red: [[5001, Infinity]]
+					}
 				}),
 				Input({
 					attribute: 'RepairsCapacity',
 					text: '[REPAIRS_CAPACITY]',
 					desc: '[REPAIRS_CAPACITY]',
-					default: 0
+					default: 0,
+					areas: {
+						yellow: [[1000, 5000]],
+						red: [[5001, Infinity]]
+					}
 				}),
 				Input({
 					attribute: 'WheelRepairsCapacity',
 					text: '[WHEELS_CAPACITY]',
 					desc: '[WHEEL_REPAIRS_CAPACITY]',
-					default: 0
+					default: 0,
+					areas: {
+						yellow: [[100, 500]],
+						red: [[501, Infinity]]
+					}
 				}),
 				Input({
 					attribute: 'Quantity',
@@ -182,3 +195,5 @@ export default {
 		}
 	}
 };
+
+export default trailer;

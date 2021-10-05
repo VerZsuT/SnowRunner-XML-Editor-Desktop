@@ -1,18 +1,18 @@
-const {dialog} = require('electron');
-const {join, dirname} = require('path');
-const {createHash} = require('crypto');
-const {
+import { dialog } from 'electron';
+import { join, dirname, normalize } from 'path';
+import { createHash } from 'crypto';
+import {
     existsSync,
     lstatSync,
     readdirSync,
     mkdirSync,
     readFileSync
-} = require('fs');
+} from 'fs';
 
 /**
  * Пути, используемые в программе.
  */
-const paths = {
+export const paths = {
     /** URL json файла обновления. */
     publicInfo: 'https://verzsut.github.io/sxmle_updater/public.json',
 
@@ -26,54 +26,46 @@ const paths = {
     updateMap: 'https://verzsut.github.io/sxmle_updater/updateMap.json',
 
     /** Путь к папке src. */
-    root: join(__dirname, '..', '..'),
+    root: __dirname,
 
-    /** Путь к config.json. */
-    config: join(__dirname, 'config.json'),
-
-    /** Путь к иконке программы. */
-    icon: join(__dirname, '..', 'icons', 'favicon.png'),
-
-    /** Путь к главному preload файлу 'mainPreload' */
-    preload: join(__dirname, 'mainPreload.js'),
+    /** Путь к config. */
+    config: `${__dirname}SXMLE\\config.json`.replace('SXMLE', ''),
 
     /** Путь к папке с бэкапами. */
-    backupFolder: join(__dirname, '..', 'backups'),
+    backupFolder: `${__dirname}\\backups`,
+
+    icon: `${__dirname}\\favicon.ico`,
 
     /** Путь к бэкапу initial.pak. */
-    backupInitial: join(__dirname, '..', 'backups', 'initial.pak'),
+    backupInitial: `${__dirname}\\backups\\initial.pak`,
 
-    /** Путь к папке с html файлами. */
-    HTMLFolder: join(__dirname, '..', 'pages'),
-
-    /** Путь к папке с json файлами переводов. */
-    translations: join(__dirname, '..', 'scripts', 'translations'),
+    /** Путь к папке с файлами переводов. */
+    translations: normalize(`${__dirname}SXMLE\\translations`.replace('SXMLE', '')),
 
     /** Путь к папке WinRAR */
-    winrar: join(__dirname, '..', 'scripts', 'winrar'),
+    winrar: `${__dirname}\\winrar`,
 
     /** Путь к временной папке для основных файлов. */
-    mainTemp: join(__dirname, '..', 'scripts', 'mainTemp'),
+    mainTemp: `${__dirname}\\mainTemp`,
 
     /** Путь к временной папке для файлов модификаций. */
-    modsTemp: join(__dirname, '..', 'scripts', 'modsTemp'),
+    modsTemp: `${__dirname}\\modsTemp`,
 
     /** Путь к временной папке [strings] */
-    strings: join(__dirname, '..', 'scripts', 'mainTemp', '[strings]'),
+    strings: `${__dirname}\\mainTemp\\[strings]`,
 
     /** Путь к временной папке _dlc */
-    dlc: join(__dirname, '..', 'scripts', 'mainTemp', '[media]', '_dlc'),
+    dlc: `${__dirname}\\mainTemp\\[media]\\_dlc`,
 
     /** Путь к временной папке classes */
-    classes: join(__dirname, '..', 'scripts', 'mainTemp', '[media]', 'classes')
+    classes: `${__dirname}\\mainTemp\\[media]\\classes`
 };
 
 /**
  * Удаляет все квадратные скобки из строки.
- * @param {string} str
- * @returns {string}
+ * @param str
  */
-function removePars(str) {
+export function removePars(str) {
     if (str || str === '') {
         return str.replaceAll('[', '').replaceAll(']', '');
     }
@@ -81,10 +73,10 @@ function removePars(str) {
 
 /**
  * Парсит файл переводов игры.
- * @param {string} data - содержимое файла.
+ * @param data - содержимое файла.
  * @returns {object} - неполный объект переводов игры.
  */
-function parseStrings(data) {
+export function parseStrings(data) {
     const strings = {};
     const lines = data.match(/[^\r\n]+/g);
     if (lines) {
@@ -108,13 +100,13 @@ function parseStrings(data) {
 
 /**
  * Находит в папке все соответствия.
- * @param {string} startPath - путь, с которого начинается поиск.
- * @param {boolean} onlyDirs - искать только папки, игнорируя файлы.
- * @param {string} extension - расширение, по которому ведётся поиск файлов.
- * @param {boolean} inner - искать ли во внутренних папках (по умолчанию они игнорируются).
- * @returns {Array<string>} массив путей
+ * @param startPath - путь, с которого начинается поиск.
+ * @param onlyDirs - искать только папки, игнорируя файлы.
+ * @param extension - расширение, по которому ведётся поиск файлов.
+ * @param inner - искать ли во внутренних папках (по умолчанию они игнорируются).
+ * @returns массив путей
  */
-function fromDir(startPath, onlyDirs=false, extension='.xml', inner=false) {
+export function fromDir(startPath, onlyDirs=false, extension='.xml', inner=false) {
     if (!existsSync(startPath)) return [];
 
     let array = [];
@@ -144,11 +136,33 @@ function fromDir(startPath, onlyDirs=false, extension='.xml', inner=false) {
     return array;
 }
 
+export function openEPFDialog() {
+    const result = dialog.showOpenDialogSync({
+        properties: ['openFile'],
+        filters: [{
+            name: 'Editor params file',
+            extensions: ['epf']
+        }]
+    });
+    if (result instanceof Array) return result[0];
+}
+
+export function openSaveDialog(defaultName) {
+    const result = dialog.showSaveDialogSync({
+        defaultPath: defaultName,
+        filters: [{
+            name: 'Editor params file',
+            extensions: ['epf']
+        }]
+    });
+    return result;
+}
+
 /**
  * Открывает окно выбора initial.pak.
  * @returns {string} путь к initial.pak.
  */
-function openInitialDialog() {
+export function openInitialDialog() {
     const result = dialog.showOpenDialogSync({
         properties: ['openFile'],
         filters: [{
@@ -156,25 +170,25 @@ function openInitialDialog() {
             extensions: ['pak']
         }]
     });
-    return result? result[0] : result;
+    if (result instanceof Array) return result[0];
 }
 
 /**
  * Открывает окно выбора папки.
  * @returns {string} путь к папке.
  */
-function openDialog() {
+export function openDialog() {
     const result = dialog.showOpenDialogSync({
         properties: ['openDirectory']
     });
-    return result? result[0] : result;
+    if (result instanceof Array) return result[0];
 }
 
 /**
  * Открывает окно выбора .xml файла.
  * @returns {string} путь к файлу.
  */
-function openXMLDialog() {
+export function openXMLDialog() {
     const result = dialog.showOpenDialogSync({
         properties: ['openFile'],
         filters: [{
@@ -182,23 +196,23 @@ function openXMLDialog() {
             extensions: ['xml']
         }]
     });
-    return result? result[0] : result;
+    if (result instanceof Array) return result[0];
 }
 
 /**
  * Возвращает хэш файла.
- * @param {string} path - путь к файлу.
+ * @param path - путь к файлу.
  */
-function getHash(path) {
+export function getHash(path) {
     if (!existsSync(path)) return '';
     return createHash('sha1').update(readFileSync(path)).digest('hex');
 }
 
 /**
  * Создаёт папку для данного файла (включая все папки уровнем выше если они отсутствуют)
- * @param {string} path - путь к файлу, папку для которого надо создать.
+ * @param path - путь к файлу, папку для которого надо создать.
  */
-function createDirForPath(path) {
+export function createDirForPath(path) {
     const dirName = dirname(path);
     const dirDirName = dirname(dirName);
 
@@ -210,15 +224,3 @@ function createDirForPath(path) {
         mkdirSync(dirName);
     }
 }
-
-module.exports = {
-    fromDir,
-    openInitialDialog,
-    openDialog,
-    openXMLDialog,
-    getHash,
-    createDirForPath,
-    parseStrings,
-    removePars,
-    paths
-};

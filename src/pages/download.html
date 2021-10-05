@@ -3,87 +3,23 @@
 
 <head>
     <title>Processing</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
 </head>
 
 <body>
     <div id="file-name"></div>
     <progress id="progress" value="0" max="100"></progress>
+    <div id="circularG">
+        <div id="circularG_1" class="circularG"></div>
+        <div id="circularG_2" class="circularG"></div>
+        <div id="circularG_3" class="circularG"></div>
+        <div id="circularG_4" class="circularG"></div>
+        <div id="circularG_5" class="circularG"></div>
+        <div id="circularG_6" class="circularG"></div>
+        <div id="circularG_7" class="circularG"></div>
+        <div id="circularG_8" class="circularG"></div>
+    </div>
     <p id="count">0</p>
-
-    <style>
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 50px;
-            overflow: hidden;
-        }
-
-        #count {
-            float: right;
-            margin-top: 35px;
-            display: none;
-        }
-
-        #progress {
-            width: 80%;
-            margin-top: 20px;
-            float: left;
-        }
-
-        #file-name {
-            display: none;
-            width: 100%;
-            text-align: center;
-            font-weight: bold;
-            font-size: 20px;
-            position: absolute;
-            top: 10px;
-        }
-    </style>
-
-    <script>
-        const $progress = document.querySelector('#progress')
-        const $count = document.querySelector('#count')
-        const $fileName = document.querySelector('#file-name')
-
-        let count = null
-
-        ipcRenderer.once('count', (_e, msg) => {
-            count = msg
-
-            $count.innerText = `0/${count}`
-            $count.style.display = 'inline'
-        })
-
-
-        ipcRenderer.once('download', () => {
-            clearInterval(interval)
-        })
-
-        ipcRenderer.on('success', () => {
-            $count.innerText = `${+$count.innerText.split('/')[0] + 1}/${count}`
-            $progress.value = 0
-        })
-
-        ipcRenderer.on('fileName', (_e, msg) => {
-            $fileName.innerText = msg
-            $fileName.style.display = 'block'
-        })
-
-        ipcRenderer.on('percent', (_event, message) => {
-            $progress.value = message
-        })
-
-        let interval = setInterval(() => {
-            const value = +$progress.value
-            if (value >= 100) {
-                $progress.value = 0
-            } else {
-                $progress.value += 1
-            }
-        }, 100)
-    </script>
 </body>
 
 </html>

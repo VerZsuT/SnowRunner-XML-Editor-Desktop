@@ -8,14 +8,14 @@ import {
 	Selector
 } from '../service/templateItems.js';
 
-export default {
+const winch = {
 	main: [
 		Template({
-			type: 'Multiply',
+			type: 'multiply',
 			itemSelector: '[WINCH]'
 		}, [
 			Group({
-				nameType: 'Computed',
+				nameType: 'computed',
 				nameSelector: '[WINCH_ITEM_TEXT]',
 				resNameSelector: '[WINCH_ITEM]',
 				nameAttribute: 'UiName',
@@ -37,17 +37,25 @@ export default {
 					step: 1,
 					max: 100,
 					bold: true,
-					default: 14
+					default: 14,
+					areas: {
+						yellow: [[30, 50]],
+						red: [[51, 100]]
+					}
 				}),
 				Input({
 					attribute: 'StrengthMult',
 					text: '[STRENGTH]',
 					desc: '[STRENGTH_MULT]',
 					min: 0,
-					step: 1,
+					step: 0.1,
 					max: 10,
 					bold: true,
-					default: 1
+					default: 1,
+					areas: {
+						yellow: [[2, 5]],
+						red: [[5.1, 10]]
+					}
 				}),
 				Select({
 					attribute: 'IsEngineIgnitionRequired',
@@ -201,3 +209,5 @@ export default {
 		}
 	}
 };
+
+export default winch;

@@ -1,8 +1,8 @@
-import {create} from './funcs.js';
+import { create } from './funcs.js';
 import mainProcess from './mainProcess.js';
 
 const $menu = create('div', {id: 'menu'});
-const menu = mainProcess.menu;
+const menu = mainProcess.get('menu');
 
 for (const $item of menu) {
     $menu.append(buildMenu($item, true));
@@ -12,8 +12,7 @@ document.body.prepend($menu);
 
 /**
  * Создаёт меню на основе шаблона.
- * @param {object} template - шаблон.
- * @param {boolean} root
+ * @param template - шаблон.
  */
 function buildMenu(template, root=false) {
     if (template.role === 'separator') {
@@ -21,6 +20,7 @@ function buildMenu(template, root=false) {
             class: 'dropdown-divider'
         });
     }
+
     const id = Math.random();
     const $root = create('div', {
         class: `menu-item${!root? ' dropright' : ''}`
@@ -37,6 +37,7 @@ function buildMenu(template, root=false) {
             class: 'dropdown-menu',
             'aria-labelledby': id
         });
+
         $button.setAttribute('data-bs-toggle', 'dropdown');
         for (const $item of template.submenu) {
             const $listItem = buildMenu($item);
@@ -46,29 +47,26 @@ function buildMenu(template, root=false) {
 
     if (template.role) {
         switch (template.role) {
-            case 'quit-app':
-                $button.addEventListener('click', () => mainProcess.quit());
+            case 'quitApp':
+                $button.addEventListener('click', () => mainProcess.call('quit'));
                 break;
-            case 'open-link':
-                $button.addEventListener('click', () => mainProcess.openLink(template.url));
+            case 'openURL':
+                $button.addEventListener('click', () => mainProcess.call('openLink', template.url));
                 break;
-            case 'show-file':
-                $button.addEventListener('click', () => mainProcess.showFile(template.path));
+            case 'showFolder':
+                $button.addEventListener('click', () => mainProcess.call('showFolder', template.path));
                 break;
-            case 'show-folder':
-                $button.addEventListener('click', () => mainProcess.showFolder(template.path));
+            case 'resetConfig':
+                $button.addEventListener('click', () => mainProcess.call('resetConfig'));
                 break;
-            case 'reset-config':
-                $button.addEventListener('click', () => mainProcess.resetConfig());
+            case 'restoreInitial':
+                $button.addEventListener('click', () => mainProcess.call('restoreInitial'));
                 break;
-            case 'restore-initial':
-                $button.addEventListener('click', () => mainProcess.restoreInitial());
+            case 'saveBackup':
+                $button.addEventListener('click', () => mainProcess.call('copyBackup'));
                 break;
-            case 'save-backup':
-                $button.addEventListener('click', () => mainProcess.copyBackup());
-                break;
-            case 'dev-tools':
-                $button.addEventListener('click', () => mainProcess.openDevTools());
+            case 'devTools':
+                $button.addEventListener('click', () => mainProcess.call('openDevTools'));
                 document.addEventListener('keypress', (event) => {
                     if (event.ctrlKey && event.shiftKey && event.code === 'KeyI') {
                         $button.click();
@@ -83,15 +81,8 @@ function buildMenu(template, root=false) {
                     }
                 });
                 break;
-            case 'open-editor':
-                if (template.dlc) {
-                    $button.addEventListener('click', () => mainProcess.openXMLEditor(template.path, template.dlc));
-                } else {
-                    $button.addEventListener('click', () => mainProcess.openXMLEditor(template.path));
-                }
-                break;
-            case 'open-settings':
-                $button.addEventListener('click', () => mainProcess.openSettings());
+            case 'openSettings':
+                $button.addEventListener('click', () => mainProcess.call('openSettings'));
                 break;
         }
     }

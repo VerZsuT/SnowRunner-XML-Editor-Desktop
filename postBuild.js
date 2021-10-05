@@ -15,10 +15,9 @@ const paths = {
     out: join(__dirname, 'out'),
     original: join(__dirname, 'out', 'SnowRunner XML Editor-win32-ia32'),
     renamed: join(__dirname, 'out', 'SnowRunnerXMLEditor'),
-    config: join(__dirname, 'out', 'SnowRunnerXMLEditor', 'resources', 'app', 'src', 'app', 'config.json'),
+    config: join(__dirname, 'out', 'SnowRunnerXMLEditor', 'resources', 'app', '.webpack', 'main', 'config.json'),
     winrar: join(__dirname, 'src', 'scripts', 'winrar'),
-    sxmle_updater: join(__dirname, '..', 'sxmle_updater'),
-    vue: join(__dirname, 'out', 'SnowRunnerXMLEditor', 'resources', 'app', 'src', 'scripts', 'vue')
+    sxmle_updater: join(__dirname, '..', 'sxmle_updater')
 };
 
 console.log('[POST_BUILD][LOG]: Processing post build...');
@@ -31,10 +30,7 @@ console.log('[POST_BUILD][LOG]................');
 const config = JSON.parse(readFileSync(paths.config));
 config.lang = 'EN';
 config.buildType = 'prod';
-config.settings.resetButton = false;
 writeFileSync(paths.config, JSON.stringify(config));
-rmSync(join(paths.vue, 'vue.esm-browser.js'));
-renameSync(join(paths.vue, 'vue.esm-browser.prod.js'), join(paths.vue, 'vue.esm-browser.js'));
 
 console.log('[POST_BUILD][STAGE_2]: Archiving build...');
 execSync(`WinRAR a -ibck -ep1 -m5 "${join(paths.out, 'SnowRunnerXMLEditor.rar')}" "${paths.renamed}"`, {cwd: paths.winrar});

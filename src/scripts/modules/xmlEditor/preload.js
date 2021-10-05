@@ -1,7 +1,7 @@
-require('../../../app/mainPreload.js');
-const {ipcRenderer} = require('electron');
-const {existsSync, readdirSync} = require('fs');
-const {join} = require('path');
+import '../../../app/mainPreload.js';
+import {existsSync, readdirSync, writeFileSync, readFileSync} from 'fs';
+import {join, basename} from 'path';
+import mainProcess from '../../service/mainProcess.js';
 
 window.preload = {
     existsSync: existsSync,
@@ -14,5 +14,8 @@ window.preload = {
         }
     },
     join: join,
-    paths: ipcRenderer.sendSync('property_paths_get').value
+    paths: mainProcess.get('paths'),
+    saveFile: (path, data) => writeFileSync(path, data),
+    basename: basename,
+    readFile: readFileSync
 };

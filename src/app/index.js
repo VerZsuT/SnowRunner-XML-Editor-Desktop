@@ -1,8 +1,8 @@
-const https = require('https');
-const dns = require('dns');
-const {app, shell, BrowserWindow, Notification} = require('electron');
-const {join, dirname, basename} = require('path');
-const {
+import https from 'https';
+import dns from 'dns';
+import { app, shell, BrowserWindow, Notification, dialog } from 'electron';
+import { join, dirname, basename } from 'path';
+import {
     readFileSync,
     readdirSync,
     lstatSync,
@@ -13,24 +13,26 @@ const {
     mkdirSync,
     rmSync,
     createWriteStream
-} = require('fs');
+} from 'fs';
 
-const archiver = require('./Archiver.js');
-const public = require('./Public.js');
-const {
-    fromDir,
-    getHash,
-    openDialog,
-    openXMLDialog,
-    openInitialDialog,
-    parseStrings,
-    removePars,
-    createDirForPath,
+import archiver from './Archiver.js';
+import mainProcess from './MainProcess.js';
+import {
+    fromDir, 
+    getHash, 
+    openDialog, 
+    openXMLDialog, 
+    openInitialDialog, 
+    openEPFDialog, 
+    openSaveDialog, 
+    parseStrings, 
+    removePars, 
+    createDirForPath, 
     paths
-} = require('./service.js');
+} from './service.js';
 
 const settings = {
-    appId: 'SnowRunner XML Editor',
+    appId: 'SnowRunner XML editor',
     saveWhenReload: true,
     devTools: false
 };
@@ -42,10 +44,11 @@ const windows = {
     loading: null
 };
 
-const invalidMods = [];
+let invalidMod;
 const config = getConfig();
 const translations = getTranslations();
 
+app.disableHardwareAcceleration()
 app.setAppUserModelId(settings.appId);
 app.whenReady().then(init);
 app.on('before-quit', () => {
@@ -58,6 +61,7 @@ function init() {
     windows.loading = openDownload(true);
     windows.loading.once('show', () => {
         windows.loading.setText(getText('[LOADING]'));
+        if (!checkAdmin()) return;
         if (!config.paths.initial) {
             checkExportedConfig();
             openFirstSteps();
@@ -88,8 +92,8 @@ function init() {
 }
 
 function initMain() {
-    public.setProperties({
-        invalidMods: () => invalidMods,
+    mainProcess.setProperties({
+        invalidMod: () => invalidMod,
         translations: () => translations,
         shortMenu: () => getShortMenu(),
         menu: () => getMainMenu(),
@@ -100,21 +104,27 @@ function initMain() {
         ]
     });
 
-    public.setFunctions({
+    mainProcess.setFunctions({
         saveToOriginal: modId => {
             if (modId) {
                 try {
                     archiver.update(join(paths.modsTemp, modId), config.modsList[modId].path);
                     saveModSum(modId, config.modsList[modId].path);
                 } catch (err) {
-                    showNotification('[ERROR]', '[SAVE_MOD_ERROR]');
+                    dialog.showMessageBoxSync({
+                        title: getText('[ERROR]'),
+                        message: getText('[SAVE_MOD_ERROR]')
+                    });
                 }
             } else {
                 try {
                     archiver.update(paths.mainTemp, config.paths.initial);
                     saveInitialSum();
                 } catch (err) {
-                    showNotification('[ERROR]', '[SAVE_ORIGINAL_ERROR]');
+                    dialog.showMessageBoxSync({
+                        title: getText('[ERROR]'),
+                        message: getText('[SAVE_ORIGINAL_ERROR]')
+                    });
                 }
             }
         },
@@ -141,6 +151,17 @@ function initMain() {
                 throw new Error('[WRITE_FILE_ERROR]');
             }
         },
+        alert: message => {dialog.showMessageBox({icon: paths.icon, message: message, title: settings.appId})},
+        alertSync: message => {dialog.showMessageBoxSync({icon: paths.icon, message: message, title: settings.appId})},
+        confirm: message => {
+            const index = dialog.showMessageBoxSync({
+                icon: paths.icon,
+                message: message,
+                title: settings.appId,
+                buttons: ['OK', getText('[CLOSE]')]
+            });
+            return index === 0;
+        },
         reload: () => {reload()},
         quit: () => {app.quit()},
         openLink: p => {shell.openExternal(p)},
@@ -154,6 +175,8 @@ function initMain() {
         openDialog: () => openDialog(),
         openXMLDialog: () => openXMLDialog(),
         openInitialDialog: () => openInitialDialog(),
+        openJSONDialog: () => openEPFDialog(),
+        openSaveDialog: p => openSaveDialog(p),
         openConsole: () => {openConsole()},
 
         saveBackup: p => {saveBackup(p)},
@@ -238,6 +261,26 @@ function download(params, cb) {
     });
 }
 
+function checkAdmin() {
+    try {
+        writeFileSync(paths.config, JSON.stringify(config, null, '\t'));
+        return true;
+    } catch {
+        const ru = translations['RU']['ADMIN_REQUIRED_MESSAGE'];
+        const en = translations['EN']['ADMIN_REQUIRED_MESSAGE'];
+        const de = translations['DE']['ADMIN_REQUIRED_MESSAGE'];
+        windows.loading.setPersent(0);
+        dialog.showMessageBoxSync({
+            message: `RU: ${ru}\n\nEN: ${en}\n\nDE: ${de}`,
+            type: 'warning',
+            buttons: ['Exit'],
+            title: 'Error'
+        })
+        app.quit();
+        return false;
+    }
+}
+
 function checkInitialSum() {
     return new Promise(resolve => {
         if (!existsSync(join(paths.mainTemp, '[media]')) || getHash(config.paths.initial) !== config.sums.initial) {
@@ -276,13 +319,17 @@ function checkPathToDelete(path, map) {
 }
 
 function checkExportedConfig() {
-    if (existsSync(join(paths.backupFolder, 'config.json'))) {
-        const exportedConfig = JSON.parse(readFileSync(join(paths.backupFolder, 'config.json')));
+    if (existsSync(`${paths.backupFolder}\\config.json`)) {
+        const exportedConfig = JSON.parse(readFileSync(`${paths.backupFolder}\\config.json`));
 
         exportedConfig.version = config.version;
         settings.saveWhenReload = false;
+        if (exportedConfig.version < 'v0.6.5') {
+            exportedConfig.ADV = {};
+            exportedConfig.ETR = {};
+        }
         writeFileSync(paths.config, JSON.stringify(exportedConfig));
-        rmSync(join(paths.backupFolder, 'config.json'));
+        rmSync(`${paths.backupFolder}\\config.json`);
         reload();
     }
 }
@@ -368,7 +415,8 @@ function update() {
 }
 
 function exportConfig() {
-    writeFileSync(join(paths.backupFolder, 'config.json'), JSON.stringify(config));
+    if (!existsSync(paths.backupFolder)) return;
+    writeFileSync(`${paths.backupFolder}\\config.json`, JSON.stringify(config));
 }
 
 function checkUpdate(whateverCheck=false) {
@@ -403,13 +451,25 @@ function checkUpdate(whateverCheck=false) {
 function checkPaths() {
     let success = true;
     if (!existsSync(config.paths.initial)) {
-        showNotification('[ERROR]', '[INITIAL_NOT_FOUND]');
+        dialog.showMessageBoxSync({
+            type: 'warning',
+            title: getText('[ERROR]'),
+            message: getText('[INITIAL_NOT_FOUND]')
+        });
         success = false;
     } else if (!existsSync(paths.classes)) {
-        showNotification('[ERROR]', '[CLASSES_NOT_FOUND]');
+        dialog.showMessageBoxSync({
+            type: 'warning',
+            title: getText('[ERROR]'),
+            message: getText('[CLASSES_NOT_FOUND]')
+        });
         success = false;
     } else if (config.settings.DLC && !existsSync(paths.dlc)) {
-        showNotification('[ERROR]', '[DLC_FOLDER_NOT_FOUND]');
+        dialog.showMessageBoxSync({
+            type: 'warning',
+            title: getText('[ERROR]'),
+            message: getText('[DLC_FOLDER_NOT_FOUND]')
+        });
         config.settings.DLC = false;
     }
     return success;
@@ -432,16 +492,29 @@ function initMods() {
         }
 
         let counter = config.modsList.length;
+
+        function deleteFromList(name) {
+            name = name.replace('.pak', '');
+            delete config.modsList[name];
+            delete config.sums.mods[name];
+            config.modsList.length--;
+            counter--;
+        }
+
         for (const modName in config.modsList) {
             const mod = config.modsList[modName];
             if (typeof mod === 'number') {
                 continue;
             }
+
             if (!existsSync(mod.path)) {
-                invalidMods.push(config.modsList[modName].name);
-                delete config.modsList[modName];
-                delete config.sums.mods[modName];
-                config.modsList.length--;
+                invalidMod = {name: config.modsList[modName].name, error: 'NOT_EXISTS'};
+                deleteFromList(config.modsList[modName].name);
+                continue;
+            } else if (!permToFile(mod.path)) {
+                invalidMod = {name: config.modsList[modName].name, error: 'NO_PERMISSION'};
+                deleteFromList(config.modsList[modName].name);
+                continue;
             }
 
             const hash = getHash(mod.path);
@@ -451,24 +524,31 @@ function initMods() {
             } else {
                 unpackMod(mod.path).then(() => {
                     if (!existsSync(join(paths.modsTemp, modName, 'classes'))) {
-                        invalidMods.push(config.modsList[modName].name);
-                        delete config.modsList[modName];
-                        delete config.sums.mods[modName];
-                        config.modsList.length--;
+                        invalidMod = {name: config.modsList[modName].name, error: 'NO_CLASSES'};
+                        deleteFromList(config.modsList[modName].name);
                     } else {
                         config.sums.mods[modName] = hash;
+                        counter--;
                     }
-                    counter--;
                     if (counter === 0) {
                         resolve();
                     }
                 });
             }
         }
-        if (counter === 0) {
+        if (counter <= 0) {
             resolve();
         }
     })
+}
+
+function permToFile(path) {
+    try {
+        writeFileSync(path, readFileSync(path));
+        return true;
+    } catch {
+        return false;
+    }
 }
 
 function getModsTranslation() {
@@ -493,11 +573,11 @@ function getModsTranslation() {
                     const result = parseStrings(readFileSync(stringsFilePath, {
                         encoding: 'utf16le'
                     }).toString());
-                    mods[modId] = Object(result);
+                    mods[modId] = result;
                 }
             }
         }
-        translations.mods = Object(mods);
+        translations.mods = mods;
         resolve();
     });
 }
@@ -525,16 +605,16 @@ function getIngameTranslation() {
                 }).toString());
             }
         }
-        translations.ingame = Object(ingame);
+        translations.ingame = ingame;
         resolve();
     });
 }
 
 function getTranslations() {
     return {
-        RU: JSON.parse(readFileSync(join(paths.translations, 'RU.json')).toString()),
-        EN: JSON.parse(readFileSync(join(paths.translations, 'EN.json')).toString()),
-        DE: JSON.parse(readFileSync(join(paths.translations, 'DE.json')).toString()),
+        RU: require('../scripts/translations/RU.json'),
+        EN: require('../scripts/translations/EN.json'),
+        DE: require('../scripts/translations/DE.json'),
         mods: {},
         ingame: {}
     };
@@ -564,12 +644,14 @@ function openList() {
     if (windows.mainWindow) {
         windows.mainWindow.hide();
     }
-    windows.listWindow = createWindow('list.html', {
+    windows.listWindow = createWindow({
+        path: LIST_WEBPACK_ENTRY,
+        preload: LIST_PRELOAD_WEBPACK_ENTRY,
         width: 1100,
         height: 640
     });
     windows.listWindow.once('close', () => {
-        windows.listWindow = null;
+        delete windows.listWindow;
         if (windows.mainWindow && !windows.mainWindow.isDestroyed()) {
             windows.currentWindow = windows.mainWindow;
             windows.mainWindow.show();
@@ -586,7 +668,9 @@ function openMain() {
             resolve();
             return;
         }
-        windows.mainWindow = createWindow('main.html', {
+        windows.mainWindow = createWindow({
+            path: MAIN_WEBPACK_ENTRY,
+            preload: MAIN_PRELOAD_WEBPACK_ENTRY,
             width: 980,
             height: 380,
             resizable: false
@@ -605,7 +689,9 @@ function openMain() {
 }
 
 function openFirstSteps() {
-    const wind = createWindow('firstSteps.html', {
+    const wind = createWindow({
+        path: FIRST_STEPS_WEBPACK_ENTRY,
+        preload: FIRST_STEPS_PRELOAD_WEBPACK_ENTRY,
         width: 550,
         height: 500
     });
@@ -632,7 +718,9 @@ function openXMLEditor() {
         }
     }
 
-    const wind = createWindow('xmlEditor.html', {
+    const wind = createWindow({
+        path: EDITOR_WEBPACK_ENTRY,
+        preload: EDITOR_PRELOAD_WEBPACK_ENTRY,
         width: 1000,
         height: 800
     });
@@ -659,7 +747,9 @@ function openXMLEditor() {
 
 function openConsole() {
     const beforeWindow = windows.currentWindow;
-    const wind = createWindow('console.html', {
+    const wind = createWindow({
+        path: CONSOLE_WEBPACK_ENTRY,
+        preload: CONSOLE_PRELOAD_WEBPACK_ENTRY,
         width: 500,
         height: 500
     });
@@ -672,11 +762,13 @@ function openConsole() {
     return wind;
 }
 
-function openDownload(popup = false) {
+function openDownload(popup=false) {
     const beforeWindow = windows.currentWindow;
-    const wind = createWindow('download.html', {
-        width: 220,
-        height: 70,
+    const wind = createWindow({
+        path: DOWNLOAD_WEBPACK_ENTRY,
+        preload: DOWNLOAD_PRELOAD_WEBPACK_ENTRY,
+        width: 230,
+        height: 100,
         modal: popup ? false : true,
         parent: popup ? null : windows.currentWindow,
         frame: false
@@ -700,7 +792,9 @@ function openDownload(popup = false) {
 
 function openSettings() {
     const beforeWindow = windows.currentWindow;
-    const wind = createWindow('settings.html', {
+    const wind = createWindow({
+        path: SETTINGS_WEBPACK_ENTRY,
+        preload: SETTINGS_PRELOAD_WEBPACK_ENTRY,
         width: 400,
         height: 550,
         modal: true,
@@ -715,7 +809,9 @@ function openSettings() {
 
 function openUpdateMessage(version) {
     const beforeWindow = windows.currentWindow;
-    const wind = createWindow('updateMessage.html', {
+    const wind = createWindow({
+        path: UPDATE_WEBPACK_ENTRY,
+        preload: MAIN_PRELOAD_WEBPACK_ENTRY,
         width: 400,
         height: 200,
         frame: false,
@@ -756,6 +852,7 @@ function unpackFiles(popup = false) {
 function unpackMod(absolutePath) {
     return new Promise(resolve => {
         const modName = join(paths.modsTemp, basename(absolutePath, '.pak'));
+        if (!permToFile(absolutePath)) resolve();
 
         if (!existsSync(paths.modsTemp)) {
             mkdirSync(paths.modsTemp);
@@ -804,17 +901,13 @@ function copyBackup() {
 
 function saveConfig() {
     try {
-        writeFileSync(paths.config, JSON.stringify(config));
+        writeFileSync(paths.config, JSON.stringify(config, null, '\t'));
     } catch {
         throw new Error('[SAVE_CONFIG_ERROR]');
     }
 }
 
-function createWindow(fileName, args = {}) {
-    let preload = join(__dirname, '..', 'scripts', 'modules', basename(fileName, '.html'), 'preload.js');
-    if (!existsSync(preload)) {
-        preload = paths.preload
-    }
+function createWindow(args = {}) {    
     const wind = new BrowserWindow({
         width: args.width || 800,
         height: args.height || 600,
@@ -826,14 +919,13 @@ function createWindow(fileName, args = {}) {
         frame: !(args.frame === false),
         paintWhenInitiallyHidden: false,
         webPreferences: {
-            preload: preload,
+            preload: args.preload,
             contextIsolation: false
         }
     });
     windows.currentWindow = wind;
     wind.setMenu(null);
-    wind.loadFile(join(paths.HTMLFolder, fileName)).then(() => {
-        wind.webContents.executeJavaScript('beforeShow()');
+    wind.loadURL(args.path).then(() => {
         wind.show();
         if (!wind.isDestroyed()) {
             wind.focus();
@@ -853,7 +945,11 @@ function restoreInitial() {
         try {
             unlinkSync(config.paths.initial);
         } catch {
-            showNotification('[ERROR]', '[DELETE_CURRENT_INITIAL_BACKUP_ERROR]');
+            dialog.showMessageBoxSync({
+                type: 'warning',
+                title: getText('[ERROR]'),
+                message: getText('[DELETE_CURRENT_INITIAL_BACKUP_ERROR]')
+            });
         }
     }
     try {
@@ -863,7 +959,11 @@ function restoreInitial() {
             showNotification('[SUCCESS]', '[SUCCESS_INITIAL_RESTORE]');
         });
     } catch {
-        showNotification('[ERROR]', '[DELETE_CURRENT_INITIAL_BACKUP_ERROR]');
+        dialog.showMessageBoxSync({
+            type: 'warning',
+            title: getText('[ERROR]'),
+            message: getText('[DELETE_CURRENT_INITIAL_BACKUP_ERROR]')
+        });
     }
 }
 
@@ -878,6 +978,8 @@ function resetConfig(withoutReloading=false) {
     config.modsList = {
         length: 0
     };
+    config.ADV = {};
+    config.ETR = {};
     config.settings = {
         updates: true,
         limits: true,
@@ -891,8 +993,8 @@ function resetConfig(withoutReloading=false) {
         mods: {}
     };
     config.lang = 'EN';
+
     clearTemp();
-    
     if (!withoutReloading) {
         reload();
     } else {
@@ -955,20 +1057,20 @@ function getMainMenu() {
                 ...retif(config.paths.initial, [
                     {
                         label: getText('[SETTINGS_MENU_ITEM_LABEL]'),
-                        role: 'open-settings'
+                        role: 'openSettings'
                     },
                     { role: 'separator' }
                 ]),
                 ...retif((config.buildType === 'dev' || config.settings.resetButton) && config.paths.initial, [
                     {
                         label: getText('[RESET_MENU_ITEM_LABEL]'),
-                        role: 'reset-config'
+                        role: 'resetConfig'
                     }
                 ]),
                 ...retif(config.buildType === 'dev', [
                     {
                         label: 'DevTools',
-                        role: 'dev-tools'
+                        role: 'devTools'
                     },
                     {
                         label: 'Reload',
@@ -977,7 +1079,7 @@ function getMainMenu() {
                 ]),
                 {
                     label: getText('[EXIT_MENU_ITEM_LABEL]'),
-                    role: 'quit-app'
+                    role: 'quitApp'
                 }
             ]
         },
@@ -987,17 +1089,17 @@ function getMainMenu() {
                 submenu: [
                     {
                         label: getText('[OPEN_BUTTON]'),
-                        role: 'show-folder',
+                        role: 'showFolder',
                         path: paths.backupFolder
                     },
                     { role: 'separator' },
                     {
                         label: getText('[SAVE_BUTTON]'),
-                        role: 'save-backup'
+                        role: 'saveBackup'
                     },
                     {
                         label: getText('[RESTORE_MENU_ITEM_LABEL]'),
-                        role: 'restore-initial'
+                        role: 'restoreInitial'
                     }
                 ]
             }

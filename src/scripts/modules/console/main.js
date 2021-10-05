@@ -4,6 +4,8 @@ import EditorConsole from './EditorConsole.js';
 import help from './help.js';
 import Message from './Message.js';
 
+import './style.css';
+
 const temp = {
     fileDOM: null,
     filePath: null
@@ -15,30 +17,30 @@ EditorConsole.init();
 Message.info("Командная строка v1.0.\n- Введите 'help' для вывода списка команд.\n- Стрелки на клавиатуре для переключения предложенного варианта.\n- TAB для выбора варианта.\n- Сообщения можно скролить.");
 
 EditorConsole.onCmd('exit', window.close);
-EditorConsole.onCmd('quit', mainProcess.quit);
-EditorConsole.onCmd('reload', mainProcess.reload);
-EditorConsole.onCmd('reset', () => mainProcess.resetConfig(false));
+EditorConsole.onCmd('quit', () => mainProcess.call('quit'));
+EditorConsole.onCmd('reload', () => mainProcess.call('reload'));
+EditorConsole.onCmd('reset', () => mainProcess.call('resetConfig', false));
 
-EditorConsole.onCmd('devTools', params => {
+EditorConsole.onCmd('devTools', (params) => {
     const action = params[0];
     if (action === 'enable') {
-        mainProcess.enableDevTools();
+        mainProcess.call('enableDevTools');
         Message.log('DevTools были включены для всех последующих окон.');
         return;
     }
     if (action === 'disable') {
-        mainProcess.disableDevTools();
+        mainProcess.call('disableDevTools');
         Message.log('DevTools были выключены для всех последующих окон.');
         return;
     }
-    Message.warn(`Неправильный параметр '${value}'. Ожидалось [enable | disable].`);
+    Message.warn(`Неправильный параметр '${action}'. Ожидалось [enable | disable].`);
 });
 
 EditorConsole.onCmd('version', () => {
     Message.log(`Текущая версия программы: ${config.version}.`);
 });
 
-EditorConsole.onCmd('sset', params => {
+EditorConsole.onCmd('sset', (params) => {
     const name = params[0];
     let value = params[1];
 
@@ -50,17 +52,16 @@ EditorConsole.onCmd('sset', params => {
         Message.warn(`Неверное значение, ожидалось [true | false].`);
         return;
     }
-    value = value === 'true' || false;
 
     if (config.settings[name] !== undefined) {
-        config.settings[name] = value;
+        config.settings[name] = value === 'true' || false;
         Message.log(`${name} = ${value}.`);
     } else {
         Message.warn(`Настройка '${name}' не обнаружена в config.json.`);
     }
 });
 
-EditorConsole.onCmd('lang', params => {
+EditorConsole.onCmd('lang', (params) => {
     const lang = params[0];
 
     if (lang === undefined) {
@@ -68,16 +69,16 @@ EditorConsole.onCmd('lang', params => {
         return;
     }
 
-    if (!['RU', 'EN', 'DE'].includes(lang)) {
-        Message.warn(`Неверное идентификатор языка. Ожидалось [RU | EN | DE]`);
-    } else {
+    if (lang === 'RU' || lang === 'EN' || lang === 'DE') {
         config.lang = lang;
-        mainProcess.reload();
+        mainProcess.call('reload');
+    } else {
+        Message.warn(`Неверное идентификатор языка. Ожидалось [RU | EN | DE]`);
     }
 });
 
 EditorConsole.onCmd('read', () => {
-    const path = mainProcess.openXMLDialog();
+    const path = mainProcess.call('openXMLDialog');
     const parser = new DOMParser();
 
     if (!path) {
@@ -87,7 +88,7 @@ EditorConsole.onCmd('read', () => {
     const fileDOM = parser.parseFromString(`<root>${preload.readFile(path)}</root>`, 'text/xml');
 
     if (fileDOM.querySelector('parsererror')) {
-        Message.error(`Ошибка парсинга файла.\n${fileDOM.querySelector('parsererror').innerText}`);
+        Message.error(`Ошибка парсинга файла.\n${(fileDOM.querySelector('parsererror')).innerText}`);
         return;
     }
 
@@ -96,7 +97,7 @@ EditorConsole.onCmd('read', () => {
     temp.filePath = path;
 });
 
-EditorConsole.onCmd('set', params => {
+EditorConsole.onCmd('set', (params) => {
     let selector = preload.replacePars(params[0]);
     const attributeName = params[1];
     const value = preload.replacePars(params[2]);
@@ -135,7 +136,7 @@ EditorConsole.onCmd('set', params => {
     Message.log(`${attributeName}='${value}'`);
 });
 
-EditorConsole.onCmd('backup', params => {
+EditorConsole.onCmd('backup', (params) => {
     const action = params[0];
 
     if (action === undefined) {
@@ -148,9 +149,9 @@ EditorConsole.onCmd('backup', params => {
     }
 
     if (action === 'save') {
-        mainProcess.saveBackup();
+        mainProcess.call('saveBackup');
     } else {
-        mainProcess.restoreInitial();
+        mainProcess.call('restoreInitial');
     }
 
     Message.log('Операция проведена.');
@@ -171,16 +172,16 @@ EditorConsole.onCmd('addMod', () => {
         path: result.path
     }
     
-    mainProcess.reload();
+    mainProcess.call('reload');
 });
 
 EditorConsole.onCmd('checkUpdate', () => {
     Message.log('Проверка обновления...')
     Message.log('В случае удачи выведется соответствующее окно.')
-    mainProcess.checkUpdate(true);
+    mainProcess.call('checkUpdate');
 });
 
-EditorConsole.onCmd('delMod', params => {
+EditorConsole.onCmd('delMod', (params) => {
     const modId = params[0];
 
     if (modId === undefined) {
@@ -199,7 +200,7 @@ EditorConsole.onCmd('delMod', params => {
     Message.log(`Модификация '${modId}' удалена.`);
 });
 
-EditorConsole.onCmd('help', params => {
+EditorConsole.onCmd('help', (params) => {
     const cmd = params[0];
 
     if (cmd) {
@@ -213,7 +214,7 @@ EditorConsole.onCmd('help', params => {
     }
 });
 
-EditorConsole.onCmd('archive', params => {
+EditorConsole.onCmd('archive', (params) => {
     const action = params[0];
 
     if (action === undefined) {
@@ -226,15 +227,15 @@ EditorConsole.onCmd('archive', params => {
     }
 
     if (action === 'save') {
-        mainProcess.saveToOriginal();
+        mainProcess.call('saveToOriginal');
         Message.log('Изменения в файлах initial.pak сохранены.');
     } else {
-        mainProcess.unpackFiles();
+        mainProcess.call('unpackFiles');
         Message.log('initial.pak был распакован.');
     }
 });
 
-EditorConsole.onCmd('config', params => {
+EditorConsole.onCmd('config', (params) => {
     const action = params[0];
 
     if (action === undefined) {
@@ -251,11 +252,11 @@ EditorConsole.onCmd('config', params => {
             Message.warn('Нет файла для импортирования.');
             return;
         }
-        mainProcess.importConfig();
+        mainProcess.call('importConfig');
         Message.log('Конфиг был успешно импортирован.');
-        mainProcess.reload();
+        mainProcess.call('reload');
     } else {
-        mainProcess.exportConfig();
+        mainProcess.call('exportConfig');
         Message.log('Конфиг был успешно экспортирован.');
     }
 })

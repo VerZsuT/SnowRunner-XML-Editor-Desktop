@@ -1,9 +1,12 @@
-const {ipcRenderer} = require('electron');
-const _config = ipcRenderer.sendSync('property_config_get').value;
+import { ipcRenderer } from 'electron';
+
+function getConfig() {
+    return ipcRenderer.sendSync('property_config_get').value;
+}
 
 window.config = new Proxy({}, {
     get: (_target, name) => {
-        const value = _config[name];
+        const value = getConfig()[name];
 
         if (!Array.isArray(value) && typeof value === 'object') {
             return new Proxy(value, {
@@ -34,7 +37,7 @@ window.config = new Proxy({}, {
     }
 });
 
-window.local = new Proxy({
+window.local = {
     pop(name) {
         const val = localStorage.getItem(name);
 
@@ -42,39 +45,30 @@ window.local = new Proxy({
         if (val === 'null') return null;
         if (val === 'undefined') return undefined;
         return val;
-    }
-}, {
-    get(_target, name) {
-        if (name !== 'pop') {
-            const val = localStorage.getItem(name);
-
-            if (val === 'null') return null;
-            if (val === 'undefined') return undefined;
-            return val;
-        } else {
-            return _target.pop;
-        }
     },
-    set(_target, name, value) {
-        localStorage.setItem(name, value);
-        return true;
+    get(name) {
+        const val = localStorage.getItem(String(name));
+
+        if (val === 'null') return null;
+        if (val === 'undefined') return undefined;
+        return val;
+    },
+    set(name, value) {
+        localStorage.setItem(String(name), value);
     }
-});
+}
 
 window.ipcRenderer = ipcRenderer;
 window.paths = ipcRenderer.sendSync('property_paths_get').value;
 window.translations = ipcRenderer.sendSync('property_translations_get').value;
-window.beforeShow = () => {
+
+window.onload = () => {
     document.title = document.title.replace('{--VERSION--}', `v${config.version}`);
 
-    if (document.querySelector('#main')) {
-        document.querySelector('#main').style.display = 'block';
-    }
-    
     document.addEventListener('keydown', event => {
         if (event.ctrlKey && event.code === 'KeyS') {
             const button = document.querySelector('#save-params');
-            if (button) button.click();
+            if (button) (button).click();
         } else if (event.code === 'Escape') {
             window.close();
         } else if (event.ctrlKey && event.code === 'KeyQ') {
@@ -82,4 +76,3 @@ window.beforeShow = () => {
         }
     })
 }
-

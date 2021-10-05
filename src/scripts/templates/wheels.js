@@ -8,7 +8,7 @@ import {
 	Selector
 } from '../service/templateItems.js';
 
-export default {
+const wheels = {
 	main: [
 		Template({}, [
 			Group({
@@ -21,7 +21,11 @@ export default {
 					text: '[DAMAGE_CAPACITY]',
 					desc: '[DAMAGE_CAPACITY]',
 					min: 0,
-					max: 64000
+					max: 64000,
+					areas: {
+						yellow: [[1000, 5000]],
+						red: [[5001, Infinity]]
+					}
 				}),
 				Input({
 					attribute: 'Radius',
@@ -29,7 +33,8 @@ export default {
 					numberType: 'float',
 					text: '[RADIUS]',
 					desc: '[RADIUS]',
-					min: 0
+					min: 0,
+					onlyDeveloper: true
 				}),
 				Input({
 					attribute: 'Width',
@@ -37,15 +42,16 @@ export default {
 					numberType: 'float',
 					text: '[WIDTH]',
 					desc: '[WIDTH]',
-					min: 0
+					min: 0,
+					onlyDeveloper: true
 				})
 			]),
 			Template({
-				type: 'Multiply',
+				type: 'multiply',
 				itemSelector: '[TRUCK_TIRE]'
 			}, [
 				Group({
-					nameType: 'Computed',
+					nameType: 'computed',
 					nameSelector: '[TRUCK_TIRE_ITEM_TEXT]',
 					resNameSelector: '[TRUCK_TIRE_ITEM]',
 					nameAttribute: 'UiName',
@@ -57,7 +63,7 @@ export default {
 						text: '[ID]',
 						desc: '[NAME]',
 						type: 'text',
-						onlyDeveloper: 'true',
+						onlyDeveloper: true,
 						selector: 'TRUCK_TIRE_ITEM'
 					}),
 					Input({
@@ -67,9 +73,13 @@ export default {
 						numberType: 'float',
 						max: 10,
 						step: 0.1,
+						default: 1,
+						areas: {
+							yellow: [[7, 8]],
+							red: [[8.1, 10]]
+						},
 						bold: true,
-						canAddTag: true,
-						default: 1
+						canAddTag: true
 					}),
 					Input({
 						attribute: 'BodyFrictionAsphalt',
@@ -78,9 +88,13 @@ export default {
 						numberType: 'float',
 						max: 10,
 						step: 0.1,
+						default: 1,
+						areas: {
+							yellow: [[7, 8]],
+							red: [[8.1, 10]]
+						},
 						bold: true,
-						canAddTag: true,
-						default: 1
+						canAddTag: true
 					}),
 					Input({
 						attribute: 'SubstanceFriction',
@@ -89,9 +103,13 @@ export default {
 						numberType: 'float',
 						max: 10,
 						step: 0.1,
+						default: 1,
+						areas: {
+							yellow: [[7, 8]],
+							red: [[8.1, 10]]
+						},
 						bold: true,
-						canAddTag: true,
-						default: 1
+						canAddTag: true
 					}),
 					Select({
 						attribute: 'IsIgnoreIce',
@@ -290,3 +308,5 @@ export default {
 		}
 	}
 };
+
+export default wheels;

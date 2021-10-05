@@ -1,57 +1,50 @@
-import {getText} from './funcs.js';
-
-const info = ipcRenderer.sendSync('getInfo');
+//import { ipcRenderer } from 'electron';
+import { getText } from './funcs.js';
 
 /**
  * Предоставляет доступ ко всем публичным методам и функция, установленным в index.js.
  * На момент импорта имеет все публичные поля и функции.
  */
-const mainProcess = new Proxy({errorHandler: alertError}, {
-    get(target, name) {
-        if (info[name] === 'property') {
-            const propResult = ipcRenderer.sendSync(`property_${name}_get`);
+class MainProcess {
+    constructor() {
+        this.info = ipcRenderer.sendSync('getInfo');
+        this.errorHandler = (error) => {
+            ipcRenderer.sendSync('function_alertSync_call', getText(`${error}`.replace('Error: ', '')));
+        }
+    }
+
+    get(propName) {
+        if (this.info.properties.includes(propName)) {
+            const propResult = ipcRenderer.sendSync(`property_${String(propName)}_get`);
             if (propResult.error) {
-                target.errorHandler(propResult.error);
+                this.errorHandler(propResult.error);
                 return null;
             } else {
                 return propResult.value;
             }
-        } else {
-            return new Proxy((funcName, args) => {
-                const result = ipcRenderer.sendSync(`function_${funcName}_call`, ...args);
-                if (result.error) {
-                    target.errorHandler(result.error);
-                    return null;
-                } else {
-                    return result.value;
-                }
-            }, {
-                apply(target, _thisArg, args) {
-                    return target(name, args);
-                }
-            });
-        }
-    },
-    set(target, name, value) {
-        if (info[name] === 'function') {
-            return false;
-        }
-        if (name === 'errorHandler') {
-            target.errorHandler = value;
-            return true;
-        }
-        const result = ipcRenderer.sendSync(`property_${name}_set`, value);
-        if (result.error) {
-            target.errorHandler(result.error);
-            return false;
-        } else {
-            return true;
         }
     }
-});
 
-function alertError(error) {
-    alert(getText(`${error}`.replace('Error: ', '')));
+    set(propName, value) {
+        if (this.info.properties.includes(propName)) {
+            const result = ipcRenderer.sendSync(`property_${String(propName)}_set`, value);
+            if (result.error) {
+                this.errorHandler(result.error);
+            }    
+        }
+    }
+
+    call(funcName, ...args) {
+        if (this.info.functions.includes(funcName)) {
+            const result = ipcRenderer.sendSync(`function_${funcName}_call`, ...args);
+            if (result.error) {
+                this.errorHandler(result.error);
+                return null;
+            } else {
+                return result.value;
+            }
+        }
+    }
 }
 
-export default mainProcess;
+export default new MainProcess();

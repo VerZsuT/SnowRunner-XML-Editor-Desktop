@@ -1,13 +1,14 @@
-require('../../../app/mainPreload.js');
-const {ipcRenderer} = require('electron');
-const {existsSync} = require('fs');
-const {join, basename} = require('path');
+import '../../../app/mainPreload.js';
+import {existsSync} from 'fs';
+import {join, basename} from 'path';
+import {getText} from '../../service/funcs.js';
+import mainProcess from '../../service/mainProcess.js';
 
 class Preload {
-    #openDialog = () => ipcRenderer.sendSync('function_openDialog_call').value
-    #openInitialDialog = () => ipcRenderer.sendSync('function_openInitialDialog_call').value
+    #openDialog = () => mainProcess.call('openDialog')
+    #openInitialDialog = () => mainProcess.call('openInitialDialog')
 
-    errorHandler = (text) => alert(getText(text))
+    errorHandler = text => mainProcess.call('alertSync', getText(text))
     isModsSupport = () => {
         return {
             profile: process.env.USERPROFILE,

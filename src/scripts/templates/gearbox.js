@@ -8,14 +8,14 @@ import {
 	Selector
 } from '../service/templateItems.js';
 
-export default {
+const gearbox = {
 	main: [
 		Template({
-			type: 'Multiply',
+			type: 'multiply',
 			itemSelector: '[GEARBOX]'
 		}, [
 			Group({
-				nameType: 'Computed',
+				nameType: 'computed',
 				nameSelector: '[GEARBOX_ITEM_TEXT]',
 				resNameSelector: '[GEARBOX_ITEM]',
 				nameAttribute: 'UiName',
@@ -53,7 +53,12 @@ export default {
 					desc: '[DAMAGE_CAPACITY]',
 					max: 64000,
 					bold: true,
-					default: 0
+					step: 10,
+					default: 0,
+					areas: {
+						yellow: [[1000, 10000]],
+						red: [[10001, Infinity]],
+					},
 				}),
 				Input({
 					attribute: 'DamagedConsumptionModifier',
@@ -83,6 +88,22 @@ export default {
 					step: 0.1,
 					default: 0.3
 				}),
+				Select({
+					attribute: 'IsManualLowGear',
+					selector: '[GEARBOX_PARAMS]',
+					text: '[LOWER_MANUAL_GEAR]',
+					desc: '[LOWER_MANUAL_GEAR]',
+					default: 'false'
+				}, [
+					Opt({
+						text: '[ALLOW]',
+						value: 'true'
+					}),
+					Opt({
+						text: '[NOT_ALLOW]',
+						value: 'false'
+					})
+				]),
 				Group({
 					name: '[GEARBOX_PARAMS]',
 					defaultSelector: '[GEARBOX_PARAMS]'
@@ -149,61 +170,11 @@ export default {
 					])
 				]),
 				Group({
-					name: '[REVERCE_GEAR]',
-					defaultSelector: '[REVERSE_GEAR]'
-				}, [
-					Input({
-						attribute: 'AngVel',
-						text: '[ANGEL_VELOCITY]',
-						desc: '[ANGEL_VELOCITY]',
-						numberType: 'float',
-						max: 32,
-						step: 1,
-						bold: true,
-						default: 0
-					}),
-					Input({
-						attribute: 'FuelModifier',
-						text: '[FUEL_MODIFIER]',
-						desc: '[FUEL_MODIFIER]',
-						numberType: 'float',
-						max: 10,
-						step: 0.1,
-						default: 1
-					})
-				]),
-				Group({
-					name: '[HIGH_GEAR]',
-					defaultSelector: '[HIGH_GEAR]'
-				}, [
-					Input({
-						attribute: 'AngVel',
-						text: '[ANGEL_VELOCITY]',
-						desc: '[ANGEL_VELOCITY]',
-						numberType: 'float',
-						max: 32,
-						step: 1,
-						bold: true,
-						default: 0
-					}),
-					Input({
-						attribute: 'FuelModifier',
-						text: '[FUEL_MODIFIER]',
-						desc: '[FUEL_MODIFIER]',
-						numberType: 'float',
-						max: 10,
-						step: 0.1,
-						default: 1
-					})
-				]),
-				Template({
-					type: 'Multiply',
-					itemSelector: '[GEAR]'
+					name: '[GEARS]'
 				}, [
 					Group({
-						name: '[GEAR]',
-						defaultSelector: '[GEAR_ITEM]',
-						withCounter: 'true'
+						name: '[REVERCE_GEAR]',
+						defaultSelector: '[REVERSE_GEAR]'
 					}, [
 						Input({
 							attribute: 'AngVel',
@@ -224,6 +195,60 @@ export default {
 							step: 0.1,
 							default: 1
 						})
+					]),
+					Group({
+						name: '[HIGH_GEAR]',
+						defaultSelector: '[HIGH_GEAR]'
+					}, [
+						Input({
+							attribute: 'AngVel',
+							text: '[ANGEL_VELOCITY]',
+							desc: '[ANGEL_VELOCITY]',
+							numberType: 'float',
+							max: 32,
+							step: 1,
+							bold: true,
+							default: 0
+						}),
+						Input({
+							attribute: 'FuelModifier',
+							text: '[FUEL_MODIFIER]',
+							desc: '[FUEL_MODIFIER]',
+							numberType: 'float',
+							max: 10,
+							step: 0.1,
+							default: 1
+						})
+					]),
+					Template({
+						type: 'multiply',
+						itemSelector: '[GEAR]'
+					}, [
+						Group({
+							name: '',
+							defaultSelector: '[GEAR_ITEM]',
+							withCounter: true
+						}, [
+							Input({
+								attribute: 'AngVel',
+								text: '[ANGEL_VELOCITY]',
+								desc: '[ANGEL_VELOCITY]',
+								numberType: 'float',
+								max: 32,
+								step: 1,
+								bold: true,
+								default: 0
+							}),
+							Input({
+								attribute: 'FuelModifier',
+								text: '[FUEL_MODIFIER]',
+								desc: '[FUEL_MODIFIER]',
+								numberType: 'float',
+								max: 10,
+								step: 0.1,
+								default: 1
+							})
+						])
 					])
 				]),
 				Group({
@@ -301,6 +326,11 @@ export default {
 	],
 	selector: 'GearboxVariants',
 	descriptions: {
+		LOWER_MANUAL_GEAR: {
+			RU: 'Позволяет менять передаточное число пониженной и задней передачи.',
+			EN: 'Allows you to change the gear ratio of downshift and reverse gear.',
+			DE: 'Ermöglicht das Ändern des Übersetzungsverhältnisses von Herunter-und Rückwärtsgang.'
+		},
 		PRICE: {
 			RU: 'Цена самого автомобиля (без учёта составляющих)',
 			EN: 'Der Preis des Autos selbst (ohne die Komponenten)',
@@ -385,6 +415,7 @@ export default {
 	translations: {
 		EN: {
 			ID: 'ID',
+			LOWER_MANUAL_GEAR: 'Precise adjustment',
 			AWD_CONSUMPTION_MODIFIER: 'AWD consumption modifier',
 			CRITICAL_DAMAGE_THRESHOLD: 'Critical damage threshold',
 			DAMAGE_CAPACITY: 'Damage capacity',
@@ -392,16 +423,16 @@ export default {
 			FUEL_CONSUMPTION: 'Fuel consumption',
 			IDLE_FUEL_CONSUMPTION: 'IDLE fuel consumption',
 			GEARBOX_PARAMS: 'Gears availability',
-			HIGH_GEAR: 'High gear',
+			HIGH_GEAR: 'High',
 			ALLOW: 'Available',
 			NOT_ALLOW: 'Not Available',
-			LOWER_GEAR: 'Lower gear',
+			LOWER_GEAR: 'Lower',
 			LOWER_PLUS_GEAR: 'Lower+',
 			LOWER_MINUS_GEAR: 'Lower-',
-			REVERCE_GEAR: 'Reverce gear',
+			REVERCE_GEAR: 'Reverce',
 			ANGEL_VELOCITY: 'Max wheel angular velocity',
 			FUEL_MODIFIER: 'Fuel modifier',
-			GEAR: 'Gear',
+			GEARS: 'Gears',
 			UNLOCK_GROUP_NAME: 'Unlock',
 			PRICE: 'Price',
 			BY_EXPLORATION: 'Unlock method',
@@ -411,6 +442,7 @@ export default {
 		},
 		RU: {
 			ID: 'ID',
+			LOWER_MANUAL_GEAR: 'Точная регулировка',
 			AWD_CONSUMPTION_MODIFIER: 'Модификатор потребления топлива при полном приводе',
 			CRITICAL_DAMAGE_THRESHOLD: 'Порог критического повреждения',
 			DAMAGE_CAPACITY: 'Прочность',
@@ -418,16 +450,16 @@ export default {
 			FUEL_CONSUMPTION: 'Потребление топлива',
 			IDLE_FUEL_CONSUMPTION: 'Множитель потребления топлива в бездействии',
 			GEARBOX_PARAMS: 'Наличие передач',
-			HIGH_GEAR: 'Повышенная передача',
+			HIGH_GEAR: 'Повышенная',
 			ALLOW: 'Доступно',
 			NOT_ALLOW: 'Недоступно',
-			LOWER_GEAR: 'Пониженная передача',
+			LOWER_GEAR: 'Пониженная',
 			LOWER_PLUS_GEAR: 'Пониженная+',
 			LOWER_MINUS_GEAR: 'Пониженная-',
-			REVERCE_GEAR: 'Задняя передача',
+			REVERCE_GEAR: 'Задняя',
 			ANGEL_VELOCITY: 'Макс. угловая скорость колеса',
 			FUEL_MODIFIER: 'Модификатор потребления топлива',
-			GEAR: 'Передача',
+			GEARS: 'Передачи',
 			UNLOCK_GROUP_NAME: 'Разблокировка',
 			PRICE: 'Цена',
 			BY_EXPLORATION: 'Способ разблокировки',
@@ -437,6 +469,7 @@ export default {
 		},
 		DE: {
 			ID: 'ID',
+			LOWER_MANUAL_GEAR: 'Feineinstellung',
 			AWD_CONSUMPTION_MODIFIER: 'AWD-Verbrauchsmodifikator',
 			CRITICAL_DAMAGE_THRESHOLD: 'Kritische Schadensschwelle',
 			DAMAGE_CAPACITY: 'Schadenskapazität',
@@ -444,16 +477,16 @@ export default {
 			FUEL_CONSUMPTION: 'Kraftstoffverbrauch',
 			IDLE_FUEL_CONSUMPTION: 'Leerlaufverbrauch',
 			GEARBOX_PARAMS: 'Zahnräder Verfügbarkeit',
-			HIGH_GEAR: 'Hoher Gang',
+			HIGH_GEAR: 'Hoher',
 			ALLOW: 'Verfügbar',
 			NOT_ALLOW: 'Nicht verfügbar',
-			LOWER_GEAR: 'Unterer Gang',
+			LOWER_GEAR: 'Unterer',
 			LOWER_PLUS_GEAR: 'Unterer+',
 			LOWER_MINUS_GEAR: 'Unterer-',
 			REVERCE_GEAR: 'Rückwärtsgang',
 			ANGEL_VELOCITY: 'Winkelgeschwindigkeit',
 			FUEL_MODIFIER: 'Kraftstoffmodifikator',
-			GEAR: 'Gang',
+			GEARS: 'Gangs',
 			UNLOCK_GROUP_NAME: 'Freischalten',
 			PRICE: 'Preis',
 			BY_EXPLORATION: 'Methode entsperren',
@@ -462,4 +495,6 @@ export default {
 			BY_RANK_LEVEL: 'Level freischalten'
 		}
 	}
-};
+}
+
+export default gearbox;

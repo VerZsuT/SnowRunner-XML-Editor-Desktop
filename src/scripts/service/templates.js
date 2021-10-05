@@ -7,7 +7,7 @@ import truck from '../templates/truck.js';
 import wheels from '../templates/wheels.js';
 import winch from '../templates/winch.js';
 
-export default {
+const templates = {
     cargo,
     engine,
     gearbox,
@@ -16,4 +16,6 @@ export default {
     truck,
     wheels,
     winch
-};
+}
+
+export default templates;

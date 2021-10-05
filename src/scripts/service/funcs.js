@@ -4,7 +4,7 @@ const language = config.lang;
 
 /**
  * Делает первую букву слова заглавной, а также заменяет _ на пробелы.
- * @param {string} text - исходный текст.
+ * @param text - исходный текст.
  * @returns форматированный текст.
  */
 export function prettify(text) {
@@ -22,11 +22,11 @@ export function prettify(text) {
  * - style: object - стили элемента.
  * - checked: bool - выбран ли элемен checkbox.
  * - listeners: object - события.
- * @param {string} tag - тег нового элемента.
- * @param {object} attrs - атрибуты нового элемента.
+ * @param tag - тег нового элемента.
+ * @param attrs - атрибуты нового элемента.
  * @returns созданный объект.
  */
-export function create(tag, attrs = {}) {
+export function create(tag, attrs={}) {
     const element = document.createElement(tag);
 
     for (const attrName in attrs) {
@@ -46,19 +46,17 @@ export function create(tag, attrs = {}) {
                 continue;
             case 'disabled':
                 if (attrValue) {
-                    element.disabled = 'disabled';
+                    element.disabled = true;
                 }
                 continue;
             case 'listeners':
                 for (const eventName in attrValue) {
                     const listenerObj = attrValue[eventName];
-                    if (Array.isArray(listenerObj)) {
+                    if (listenerObj instanceof Array) {
                         for (const listener of listenerObj) {
-                            if (typeof listenerObj === 'function') {
-                                element.addEventListener(eventName, listener);
-                            }
+                            element.addEventListener(eventName, listener);
                         }
-                    } else if (typeof listenerObj === 'function') {
+                    } else {
                         element.addEventListener(eventName, listenerObj);
                     }
                 }
@@ -68,14 +66,11 @@ export function create(tag, attrs = {}) {
                 continue;
         }
     }
-
     return element;
 }
 
 /**
  * Находит элемент по указанному селектору.
- * @param {string} selector - селектор.
- * @returns найденный элемент.
  */
 export function get(selector) {
     return document.querySelector(selector);
@@ -83,8 +78,6 @@ export function get(selector) {
 
 /**
  * Находит все элементы по указанному селектору.
- * @param {string} selector - селектор.
- * @returns все найденные элементы.
  */
 export function getAll(selector) {
     return document.querySelectorAll(selector);
@@ -94,10 +87,9 @@ export function getAll(selector) {
  * Возвращает:
  * - текст из глобального перевода по данному ключу.
  * - сам ключ (отсутвии в переводе и при returnKey === true).
- * @param {string} key - ключ.
- * @param {true} returnKey - возвращать ли ключ в случае отсутвия его в объекте перевода.
+ * @param returnKey - возвращать ли ключ в случае отсутвия его в объекте перевода.
  */
-export function getText(key, returnKey = true) {
+export function getText(key, returnKey=true) {
     const translation = getTranslation(language);
     if (translation) {
         let result = translation[removePars(key)];
@@ -116,8 +108,8 @@ export function getText(key, returnKey = true) {
  * - текст из локального перевода.
  * - текст из глобального перевода (при отсутствии в локальном переводе).
  * - ключ (при отсутвия его и в локальном переводе, и в глобальном).
- * @param {string} key - ключ. Автоматически убираются квадратные скобки.
- * @param {string} name - имя шаблона, откуда будет взял локальный перевод.
+ * @param key - ключ. Автоматически убираются квадратные скобки.
+ * @param tname - имя шаблона, откуда будет взял локальный перевод.
  */
 export function getTextFromTemplate(key, tname) {
     const translation = getTemplate(tname).translations;
@@ -131,8 +123,8 @@ export function getTextFromTemplate(key, tname) {
 
 /**
  * Возвращает описание по ключу в шаблоне с указанными именем.
- * @param {string} key - ключ описания.
- * @param {string} tname - имя шаблона.
+ * @param key - ключ описания.
+ * @param tname - имя шаблона.
  */
 export function getDescription(key, tname) {
     const desc = getTemplate(tname).descriptions;
@@ -143,8 +135,8 @@ export function getDescription(key, tname) {
 
 /**
  * Возвращает внутриигровой перевод по ключу.
- * @param {string} key - ключ перевода.
- * @param {string} modId - id модификации.
+ * @param key - ключ перевода.
+ * @param modId - id модификации.
  */
 export function getIngameText(key, modId=null) {
     let value;
@@ -161,7 +153,7 @@ export function getIngameText(key, modId=null) {
 
 /**
  * Возвращает объект перевода с данным именем.
- * @param {string} name - имя перевода.
+ * @param name - имя перевода.
  */
 export function getTranslation(name) {
     return translations[name];
@@ -169,7 +161,7 @@ export function getTranslation(name) {
 
 /**
  * Возвращает объект шаблона с данным именем.
- * @param {string} name - имя шаблона.
+ * @param name - имя шаблона.
  */
 export function getTemplate(name) {
     return templates[name];
@@ -177,18 +169,17 @@ export function getTemplate(name) {
 
 /**
  * Добавляет вариант выбора к переданному select элементу.
- * @param {HTMLSelectElement} element - элемент, к которому надо добавить вариант.
- * @param {string} text - текст option элемента.
- * @param {string} value - значение option элемента.
+ * @param element - элемент, к которому надо добавить вариант.
+ * @param text - текст option элемента.
+ * @param value - значение option элемента.
  */
-export function addOption(element, text, value = null) {
+export function addOption(element, text, value=null) {
     element.options.add(new Option(text, value || text));
 }
 
 /**
  * Удаляет квадратные скобки из текста.
- * @param {string} str - исходный текст.
- * @returns текст без квадратных скобок.
+ * @param str - исходный текст.
  */
 export function removePars(str) {
     if (str || str === '') {

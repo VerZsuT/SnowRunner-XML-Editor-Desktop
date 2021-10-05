@@ -8,14 +8,14 @@ import {
 	Selector
 } from '../service/templateItems.js';
 
-export default {
+const suspension = {
 	main: [
 		Template({
-			type: 'Multiply',
+			type: 'multiply',
 			itemSelector: '[SUSPENSION_SET]'
 		}, [
 			Group({
-				nameType: 'Computed',
+				nameType: 'computed',
 				nameSelector: '[SUSPENSION_SET_ITEM_TEXT]',
 				resNameSelector: '[SUSPENSION_SET_ITEM]',
 				nameAttribute: 'UiName',
@@ -43,11 +43,16 @@ export default {
 					text: '[DAMAGE_CAPACITY]',
 					desc: '[DAMAGE_CAPACITY]',
 					max: 64000,
+					step: 10,
 					default: 0,
-					bold: true
+					bold: true,
+					areas: {
+						yellow: [[1000, 10000]],
+						red: [[10001, Infinity]]
+					}
 				}),
 				Template({
-					type: 'Multiply',
+					type: 'multiply',
 					itemSelector: '[SUSPENSION]'
 				}, [
 					Group({
@@ -58,7 +63,8 @@ export default {
 						Select({
 							attribute: 'WheelType',
 							text: '[WHEEL_TYPE]',
-							desc: '[WHEEL_TYPE]'
+							desc: '[WHEEL_TYPE]',
+							onlyDeveloper: true
 						}, [
 							Opt({
 								text: '[FRONT]',
@@ -75,6 +81,11 @@ export default {
 							numberType: 'float',
 							text: '[HEIGHT]',
 							desc: '[HEIGHT]',
+							step: 0.1,
+							areas: {
+								yellow: [[-2, -1], [1, 2]],
+								red: [[-1000, -2.1], [2.1, 1000]]
+							},
 							min: -1000,
 							max: 1000
 						}),
@@ -83,7 +94,12 @@ export default {
 							type: 'number',
 							numberType: 'float',
 							text: '[STRENGTH]',
-							desc: '[STRENGTH]'
+							desc: '[STRENGTH]',
+							step: 0.01,
+							areas: {
+								yellow: [[0.5, 1.5]],
+								red: [[1.6, Infinity]]
+							}
 						}),
 						Input({
 							attribute: 'Damping',
@@ -91,8 +107,12 @@ export default {
 							numberType: 'float',
 							text: '[DAMPING]',
 							desc: '[DAMPING]',
-							min: 0,
-							max: 1000
+							max: 1000,
+							step: 0.1,
+							areas: {
+								yellow: [[1, 3]],
+								red: [[3, 1000]]
+							}
 						}),
 						Input({
 							attribute: 'SuspensionMin',
@@ -101,7 +121,12 @@ export default {
 							text: '[SUSPENSION_MIN]',
 							desc: '[SUSPENSION_MIN]',
 							min: -1000,
-							max: 1000
+							step: 0.01,
+							max: 1000,
+							areas: {
+								yellow: [[-5, -2], [2, 5]],
+								red: [[-1000, -5.1], [5.1, 1000]]
+							}
 						}),
 						Input({
 							attribute: 'SuspensionMax',
@@ -110,8 +135,13 @@ export default {
 							text: '[SUSPENSION_MAX]',
 							desc: '[SUSPENSION_MAX]',
 							min: -1000,
+							step: 0.01,
 							max: 1000,
-							default: 1
+							default: 1,
+							areas: {
+								yellow: [[-5, -2], [2, 5]],
+								red: [[-1000, -5.1], [5.1, 1000]]
+							}
 						}),
 						Input({
 							attribute: 'BrokenSuspensionMax',
@@ -120,7 +150,12 @@ export default {
 							text: '[BROKEN_SUSPENSION_MAX]',
 							desc: '[BROKEN_SUSPENSION_MAX]',
 							min: -1000,
-							max: 1000
+							step: 0.01,
+							max: 1000,
+							areas: {
+								yellow: [[-5, -2], [2, 5]],
+								red: [[-1000, -5.1], [5.1, 1000]]
+							}
 						})
 					])
 				]),
@@ -138,7 +173,7 @@ export default {
 						attribute: 'UnlockByExploration',
 						text: '[BY_EXPLORATION]',
 						desc: '[UNLOCK_BY_EXPLORATION]',
-						onlyDeveloper: 'true'
+						onlyDeveloper: true
 					}, [
 						Opt({
 							text: '[FIND_ON_MAP]',
@@ -304,3 +339,6 @@ export default {
 		}
 	}
 };
+
+
+export default suspension;

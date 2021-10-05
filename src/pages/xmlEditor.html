@@ -1,26 +1,12 @@
 <!DOCTYPE html>
 <html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+        <title>SnowRunner XML Editor {--VERSION--}</title>
+    </head>
 
-<head>
-    <title>SnowRunner XML Editor {--VERSION--}</title>
-    <link rel="stylesheet" href="../styles/style.css">
-    <script defer src="../scripts/modules/xmlEditor/main.js" type="module"></script>
-</head>
-
-<body>
-    <h1 id="error">PARSE_FILE_ERROR</h1>
-    <div id="main">
-        <section id="work-zone">
-            <div id="editor">
-                <search></search>
-                <h2 id="title" class="title">{{ title }}</h2>
-                <params></params>
-                <button class="btn btn-primary" id="save-params" @click='save'></button>
-                <button class="btn btn-primary" id="back" @click='back'></button>
-            </div>
-        </section>
-    </div>
-
-</body>
-
+    <body>
+        <h1 id="error">PARSE_FILE_ERROR</h1>
+        <div id="main"></div>
+    </body>
 </html>

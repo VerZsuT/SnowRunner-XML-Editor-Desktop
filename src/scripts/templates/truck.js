@@ -8,7 +8,7 @@ import {
 	Selector
 } from '../service/templateItems.js';
 
-export default {
+const truck = {
 	main: [
 		Template({}, [
 			Group({
@@ -39,14 +39,23 @@ export default {
 					desc: '[BACK_STEER_SPEED]',
 					numberType: 'float',
 					step: 0.01,
-					max: 1
+					max: 1,
+					areas: {
+						yellow: [[0.1, 0.3]],
+						red: [[0.31, 1]]
+					}
 				}),
 				Input({
 					attribute: 'SteerSpeed',
 					text: '[STEER_SPEED]',
 					desc: '[STEER_SPEED]',
 					numberType: 'float',
-					bold: true
+					bold: true,
+					step: 0.01,
+					areas: {
+						yellow: [[0.1, 0.5]],
+						red: [[0.5, Infinity]]
+					}
 				})
 			]),
 			Group({
@@ -58,7 +67,7 @@ export default {
 					text: '[DEFAULT_WINCH]',
 					desc: '[DEFAULT_WINCH]',
 					type: 'text',
-					onlyDeveloper: 'true'
+					onlyDeveloper: true
 				}),
 				Select({
 					attribute: 'IsUpgradable',
@@ -113,7 +122,7 @@ export default {
 					name: '[PHYSICS_WHEELS]'
 				}, [
 					Template({
-						type: 'Multiply',
+						type: 'multiply',
 						itemSelector: '[WHEEL]'
 					}, [
 						Group({
@@ -125,7 +134,8 @@ export default {
 								attribute: 'Location',
 								text: '[WHEEL_TYPE]',
 								desc: '[LOCATION]',
-								default: 'front'
+								default: 'front',
+								onlyDeveloper: true
 							}, [
 								Opt({
 									text: '[FRONT]',
@@ -182,7 +192,8 @@ export default {
 					text: '[CENTER_OF_MASS]',
 					desc: '[CENTER_OF_MASS]',
 					type: 'coordinates',
-					selector: '[PHYSICS_BODY]'
+					selector: '[PHYSICS_BODY]',
+					step: 0.1
 				}),
 				Input({
 					attribute: 'Default',
@@ -277,7 +288,8 @@ export default {
 					text: '[EXHAUST_START_TIME]',
 					desc: '[EXHAUST_START_TIME]',
 					selector: '[TRUCK_DATA]',
-					numberType: 'float'
+					numberType: 'float',
+					step: 0.1
 				})
 			]),
 			Group({
@@ -289,14 +301,24 @@ export default {
 					text: '[DAMAGE_CAPACITY]',
 					desc: '[DAMAGE_CAPACITY]',
 					max: 64000,
-					default: 0
+					default: 0,
+					step: 10,
+					areas: {
+						yellow: [[1000, 5000]],
+						red: [[5001, Infinity]]
+					}
 				}),
 				Input({
 					attribute: 'FuelCapacity',
 					desc: '[FUEL_CAPACITY]',
 					text: '[FUEL_CAPACITY]',
 					selector: '[TRUCK_DATA]',
-					bold: true
+					bold: true,
+					step: 10,
+					areas: {
+						yellow: [[1000, 5000]],
+						red: [[5001, Infinity]]
+					}
 				})
 			]),
 			Group({
@@ -559,7 +581,7 @@ export default {
 	},
 	translations: {
 		EN: {
-			PHYSICS_WHEELS: 'Wheels (physical)',
+			PHYSICS_WHEELS: 'Additional settings',
 			WHEEL: 'Wheel',
 			WHEEL_TYPE: 'Type',
 			FRONT: 'Front',
@@ -620,7 +642,7 @@ export default {
 			COMPATIBLE_WHEELS_SCALE: 'Scale'
 		},
 		RU: {
-			PHYSICS_WHEELS: 'Колёса (физические)',
+			PHYSICS_WHEELS: 'Доп. настройки',
 			WHEEL: 'Колесо',
 			WHEEL_TYPE: 'Тип',
 			FRONT: 'Переднее',
@@ -681,7 +703,7 @@ export default {
 			COMPATIBLE_WHEELS_SCALE: 'Размер'
 		},
 		DE: {
-			PHYSICS_WHEELS: 'Räder (physikalisch)',
+			PHYSICS_WHEELS: 'Weitere Einstellungen',
 			WHEEL: 'Rad',
 			WHEEL_TYPE: 'Typ',
 			FRONT: 'Vorne',
@@ -743,3 +765,5 @@ export default {
 		}
 	}
 };
+
+export default truck;

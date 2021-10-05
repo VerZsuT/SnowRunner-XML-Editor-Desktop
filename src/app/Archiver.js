@@ -1,5 +1,5 @@
-const {execSync, exec} = require('child_process');
-const { paths } = require('./service.js');
+import { execSync, exec } from 'child_process';
+import { paths } from './service.js';
 
 /**
  * Предоставляет методы для работы с архивами.
@@ -7,8 +7,8 @@ const { paths } = require('./service.js');
 class Archiver {
     /**
      * Обновляет файлы в архиве.
-     * @param {string} source - путь до папки с файлами.
-     * @param {string} direction - путь до архива.
+     * @param source - путь до папки с файлами.
+     * @param direction - путь до архива.
      */
     update(source, direction) {
         execSync(`WinRAR f -ibck -inul "${direction}" "${source}\\" -r -ep1`, {cwd: paths.winrar});
@@ -16,16 +16,16 @@ class Archiver {
 
     /**
      * Распаковывает файлы в папку.
-     * @param {string} source - путь до ахрива.
-     * @param {string} direction - путь до папки.
+     * @param source - путь до ахрива.
+     * @param direction - путь до папки.
      */
     unpack(source, direction, fromMod=false) {
         return new Promise(resolve => {
             exec(`WinRAR x -ibck -inul "${source}" @${fromMod?'unpack-mod-list.lst':'unpack-list.lst'} "${direction}\\"`, {cwd: paths.winrar}).once('close', () => {
-                resolve();
+                resolve(undefined);
             });
         });
     }
 }
 
-module.exports = new Archiver();
+export default new Archiver();

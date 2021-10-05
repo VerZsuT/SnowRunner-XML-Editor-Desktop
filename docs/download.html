@@ -21,7 +21,54 @@
     </header>
 
     <div class="release">
-        <h2 class="title">v0.6.4e (новейший)</h2>
+        <h2 class="title">v0.6.5 (новейший)</h2>
+        <div class="description">
+            <ul>
+                <li>Переход на новую версию Electron (с 12.0.0 на 15.0.0).</li>
+                <li>Использование Webpack для компиляции Vue шаблонов.</li>
+                <li>Использование Webpack для сборки Bootstrap.</li>
+                <li>Использование Webpack для сборки исходного кода программы в бандлы.</li>
+                <ul>
+                    <li>Увеличение скорости загрузки программы (скорость распаковки не изменится).</li>
+                    <li>Снижение потребления RAM до 50-110МБ вместо 110-200МБ ранее.</li>
+                    <li>Фикс утечки, при которой потребление RAM после сохранения поднималось на 100МБ (в сумме получалось 200-350МБ).</li>
+                    <li>Меньше файлов для обновления с помощью программы.</li>
+                </ul>
+                <li>По просьбам убран ползунок.</li>
+                <li>Убраны кнопки "Режим разработчика" и "Отключить ограничения" из настроек программы.</li>
+                <li>Возможность редактирования размеров коллизии колёс и типа кручения колеса перенесена в "Режим разработчика".</li>
+                <li>Возможность удаления мода из программы.</li>
+                <li>Включить режим разработчика, а также отключить ограничения можно в консоли программы (команды "sset devMode" и "sset limits").</li>
+                <li>Цветовые маркеры.</li>
+                <li>Экспорт и импорт параметров.</li>
+                <li>Возможность установить точную регулировку у коробки.</li>
+                <li>Возможность сброса параметров до изначального состояния.</li>
+                <ul>
+                    <li>Изменение работы сброса параметров. Вместо записи в игровые файлы идёт запись в программу.</li>
+                </ul>
+                <li>Более подробные сообщения об ошибках записи файла, а также загрузки мода.</li>
+                <li>Фикс бага с "бесконечной" загрузкой если файл мода по каким-либо причинам удалился/повредился/переместился/заблокировался(при флаге "только для чтения").</li>
+            </ul>
+        </div>
+        <button 
+            class="download btn btn-primary" 
+            version="v0.6.5" 
+            type="exe" 
+            source='GitHub'
+        >
+            Скачать [GitHub]
+        </button>
+        <button 
+            class="download btn btn-secondary" 
+            source='GoogleDrive'
+            link='https://drive.google.com/file/d/1Wk4GBX2QxVr_gmV98jjCUIXsPQEg_2oA/view?usp=sharing'
+        >
+            Скачать [GoogleDrive]
+        </button>
+    </div>
+
+    <div class="release">
+        <h2 class="title">v0.6.4e</h2>
         <div class="description">
             <ul>
                 <b>v0.6.4</b>
@@ -60,7 +107,14 @@
                 </ul>
             </ul>
         </div>
-        <button class="download btn btn-primary" version="v0.6.4e" type="exe">Скачать</button>
+        <button 
+            class="download btn btn-primary" 
+            version="v0.6.4e" 
+            type="exe" 
+            source='GitHub'
+        >
+            Скачать [GitHub]
+        </button>
     </div>
 
     <div class="release">
@@ -96,7 +150,7 @@
                 </ul>
             </ul>
         </div>
-        <button class="download btn btn-primary" version="v0.6.3c">Скачать</button>
+        <button class="download btn btn-primary" version="v0.6.3c" source='GitHub'>Скачать [GitHub]</button>
     </div>
 </body>
 

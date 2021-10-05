@@ -25,4 +25,5 @@ const help = {
         return array.join('\n\n');
     }
 }
+
 export default help;

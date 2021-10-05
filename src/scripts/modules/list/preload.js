@@ -1,13 +1,17 @@
-require('../../../app/mainPreload.js');
-const {fromDir} = require('../../../app/service.js');
-const {join, basename} = require('path');
-const {existsSync} = require('fs');
+import '../../../app/mainPreload.js';
+import { fromDir } from '../../../app/service.js';
+import { join, basename } from 'path';
+import { existsSync, rmSync } from 'fs';
+import mainProcess from '../../service/mainProcess.js';
 
-const openInitialDialog = () => ipcRenderer.sendSync('function_openInitialDialog_call').value;
+const openInitialDialog = () => mainProcess.call('openInitialDialog');
 
-window.preload = {
-    exists(path) {
+const preload = {
+    exists: (path) => {
         return existsSync(join(__dirname, path));
+    },
+    removeDir: (path) => {
+        rmSync(path, {recursive: true});
     },
     getModPak() {
         const path = openInitialDialog();
@@ -17,7 +21,8 @@ window.preload = {
             name: basename(path)
         };
     },
-    getList: (listType, from = null) => {
+    join: (...args) => join(...args),
+    getList: (listType, from=null) => {
         if (from === 'dlc') {
             const array = [];
             for (const dlcItem of config.dlcList) {
@@ -87,3 +92,5 @@ window.preload = {
         }
     }
 }
+
+window['preload'] = preload;
