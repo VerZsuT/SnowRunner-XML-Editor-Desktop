@@ -1,4 +1,4 @@
-import { create } from './funcs.js';
+import { create, getText } from './funcs.js';
 import mainProcess from './mainProcess.js';
 
 const $menu = create('div', {id: 'menu'});
@@ -49,22 +49,31 @@ function buildMenu(template, root=false) {
         switch (template.role) {
             case 'quitApp':
                 $button.addEventListener('click', () => mainProcess.call('quit'));
-                break;
+            break;
             case 'openURL':
                 $button.addEventListener('click', () => mainProcess.call('openLink', template.url));
-                break;
+            break;
             case 'showFolder':
                 $button.addEventListener('click', () => mainProcess.call('showFolder', template.path));
-                break;
+            break;
             case 'resetConfig':
                 $button.addEventListener('click', () => mainProcess.call('resetConfig'));
-                break;
+            break;
             case 'restoreInitial':
                 $button.addEventListener('click', () => mainProcess.call('restoreInitial'));
-                break;
+            break;
+            case 'joinExported':
+                $button.addEventListener('click', () => mainProcess.call('joinExported'));
+            break;
+            case 'seeExported':
+                $button.addEventListener('click', () => mainProcess.call('seeExported'));
+            break;
             case 'saveBackup':
-                $button.addEventListener('click', () => mainProcess.call('copyBackup'));
-                break;
+                $button.addEventListener('click', () => {
+                    mainProcess.call('copyBackup');
+                    mainProcess.call('alertSync', getText('[SUCCESS_BACKUP_SAVE]'));
+                });
+            break;
             case 'devTools':
                 $button.addEventListener('click', () => mainProcess.call('openDevTools'));
                 document.addEventListener('keypress', (event) => {
@@ -72,7 +81,7 @@ function buildMenu(template, root=false) {
                         $button.click();
                     }
                 });
-                break;
+            break;
             case 'reload':
                 $button.addEventListener('click', () => window.location.reload());
                 document.addEventListener('keypress', (event) => {
@@ -80,10 +89,10 @@ function buildMenu(template, root=false) {
                         $button.click();
                     }
                 });
-                break;
+            break;
             case 'openSettings':
                 $button.addEventListener('click', () => mainProcess.call('openSettings'));
-                break;
+            break;
         }
     }
 

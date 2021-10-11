@@ -1,14 +1,20 @@
 <template>
-    <div>
-        <button
+    <div class='param-input'>
+        <div 
+            class='openCont'
             :key='i.value'
-            v-for='i in items'
-            class='openFile btn btn-secondary btn-sm'
-            @click='openEditor(i.value)'
+            v-for='i in getItems()'
         >
-            {{ i.index + 1 }}
-            <div class='open-file-button'></div>
-        </button>
+            <button
+                class='openFile btn btn-secondary btn-sm'
+                @click='openEditor(i.value)'
+            >
+                {{ i.index + 1 }}
+                <div class='open-file-button'></div>
+            </button>
+            <input type="checkbox" class='file-export' v-model="toExport[i.value]" v-show="isExporting">
+        </div>
+        
     </div>
 </template>
 
@@ -18,20 +24,66 @@ import mainProcess from '../../../service/mainProcess.js';
 
 export default {
     props: {
-        item: Object
+        item: Object,
+        isExporting: Boolean,
+        isExport: {
+            type: Boolean,
+            default: true
+        }
     },
-    inject: ['currentMod', 'currentDLC', 'fileDOM'],
+    inject: ['currentMod', 'currentDLC', 'fileDOM', 'deps'],
     data() {
         return {
             t: new Proxy({}, {
                 get(_, propName) {
                     return getText(propName);
                 }
-            })
+            }),
+            toExport: this.getExport()
         };
     },
+    mounted() {
+        const array = [];
+        for (const item of this.getItems()) {
+            array.push({
+                name: `${item.value}.xml`,
+                isExport: () => this.toExport[item.value],
+                getData: () => {
+                    return new Promise(resolve => {
+                        ipcRenderer.once('bridge-channel', (_, exportedData) => {
+                            resolve(exportedData);
+                        })
+
+                        this.openEditor(item.value, true);
+                    })
+                },
+                toImport: data => {
+                    return new Promise(resolve => {
+                        ipcRenderer.once('bridge-channel', (_, _1) => {
+                            resolve();
+                        });
+
+                        this.openEditor(item.value, true, data);
+                    })
+                }
+            });
+        }
+        this.deps[this.item.fileType] = array;
+    },
+    watch: {
+        isExport() {
+            this.toExport = this.getExport();
+        }
+    },
     methods: {
-        openEditor(fileName) {
+        getExport() {
+            const comp = {};
+                for (const item of this.getItems()) {
+                comp[item.value] = this.isExport
+            }
+            return comp;
+        },
+        openEditor(fileName, bridge=false, importData=null) {
             const paths = [`${config.paths.classes}\\${this.item.fileType}\\${fileName}.xml`];
             let mainPath = null;
 
@@ -55,12 +107,15 @@ export default {
                 mainPath = preload.findFromDLC(fileName, this.item.fileType);
             }
             local.set('filePath', mainPath);
-
-            mainProcess.call('openXMLEditor');
-        }
-    },
-    computed: {
-        items() {
+            if (bridge) {
+                local.set('isBridge', 'true');
+                if (importData) {
+                    local.set('importData', JSON.stringify(importData));
+                }
+            }
+            mainProcess.call('openXMLEditor', bridge);
+        },
+        getItems() {
             const array = this.item.value.split(',').map((value) => value.trim());
             if (this.item.fileType === 'wheels') {
                 for (const compatible of this.fileDOM.querySelectorAll('Truck > TruckData > CompatibleWheels')) {
@@ -75,3 +130,24 @@ export default {
     }
 };
 </script>
+
+
+<style scoped>
+.openFile {
+    margin-right: 30px;
+}
+
+.openCont {
+    position: relative;
+    display: inline-block;
+    top: 3px;
+}
+
+.file-export {
+    position: absolute;
+    width: 20px !important;
+    margin: 0;
+    top: 14px;
+    right: 10px;
+}
+</style>

@@ -1,15 +1,21 @@
 <template>
-    <div>
+    <div class='param-input'>
         <span>X: </span><input :step='item.step' class='x-input form-control inline-block' type='number' v-model='x' :disabled='disabled'>
         <span>Y: </span><input :step='item.step' class='y-input form-control inline-block' type='number' v-model='y' :disabled='disabled'>
         <span>Z: </span><input :step='item.step' class='z-input form-control inline-block' type='number' v-model='z' :disabled='disabled'>
+        <input type="checkbox" class='input-export' v-model="isExport" v-show="isExporting">
     </div>
 </template>
 
 <script>
 export default {
     props: {
-        item: Object
+        item: Object,
+        isExport: {
+            type: Boolean,
+            default: true
+        },
+        isExporting: Boolean
     },
     inject: ['fileDOM', 'filePath', 'ETR', 'getValue', 'setValue', 'params'],
     data() {
@@ -18,11 +24,13 @@ export default {
     mounted() {
         this.params.push({
             forExport: () => {
-                return {
-                    selector: this.item.selector, 
-                    name: this.item.name, 
-                    value: `(${this.x}; ${this.y}; ${this.z})`
-                };
+                if (this.isExport) {
+                    return {
+                        selector: this.item.selector, 
+                        name: this.item.name, 
+                        value: `(${this.x}; ${this.y}; ${this.z})`
+                    };
+                }
             },
             forImport: {
                 setValue: value => {
@@ -96,3 +104,13 @@ export default {
     }
 }
 </script>
+
+
+<style scoped>
+div.param-input > input.x-input,
+div.param-input > input.y-input,
+div.param-input > input.z-input {
+    width: 70px !important;
+    margin-right: 10px;
+}
+</style>

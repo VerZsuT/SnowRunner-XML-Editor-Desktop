@@ -10,21 +10,26 @@
         </div>
         <div class='param-value'>
             <p-select
+                :isExporting='isExporting'
+                :isExport='isExport'
                 v-if='item.inputType === "select"'
                 :item='item'
-                class='param-input'
             ></p-select>
             <p-file
+                :isExporting='isExporting'
+                :isExport='isExport'
                 v-else-if='item.type === "file"'
                 :item='item'
-                class='param-input'
             ></p-file>
             <p-coords
+                :isExporting='isExporting'
+                :isExport='isExport'
                 v-else-if='item.type === "coordinates"'
                 :item='item'
-                class='param-input'
             ></p-coords>
             <p-input
+                :isExporting='isExporting'
+                :isExport='isExport'
                 v-else
                 :item='item'
             ></p-input>
@@ -52,7 +57,12 @@ export default {
     },
     props: {
         tabs: Number,
-        item: Object
+        item: Object,
+        isExporting: Boolean,
+        isExport: {
+            type: Boolean,
+            default: true
+        }
     },
     inject: ['filter', 'fileDOM', 'filePath', 'templates', 'globalTemplates', 'ADV', 'ETR'],
     data() {
@@ -190,3 +200,13 @@ export default {
     }
 }
 </script>
+
+
+<style>
+.input-export {
+    position: absolute;
+    right: 8px;
+    bottom: 5px;
+    width: 20px !important;
+}
+</style>

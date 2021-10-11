@@ -17,6 +17,7 @@
         :disabled='disabled'
         :title='defaultValue'
     />
+    <input type="checkbox" class='input-export' v-model="isExport" v-show="isExporting">
 </template>
 
 <script>
@@ -25,7 +26,12 @@ import {getText} from '../../../service/funcs.js';
 export default {
     props: {
         item: Object,
-        key: Number
+        key: Number,
+        isExport: {
+            type: Boolean,
+            default: true
+        },
+        isExporting: Boolean
     },
     inject: ['fileDOM', 'filePath', 'getValue', 'setValue', 'ETR', 'params'],
     data() {
@@ -43,11 +49,13 @@ export default {
     mounted() {
         this.params.push({
             forExport: () => {
-                return {
-                    selector: this.item.selector, 
-                    name: this.item.name, 
-                    value: this.value
-                };
+                if (this.isExport) {
+                    return {
+                        selector: this.item.selector, 
+                        name: this.item.name, 
+                        value: this.value
+                    };    
+                }
             },
             forImport: {
                 setValue: value => {

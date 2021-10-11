@@ -1,5 +1,5 @@
 import { dialog } from 'electron';
-import { join, dirname, normalize } from 'path';
+import { join, dirname, normalize, extname } from 'path';
 import { createHash } from 'crypto';
 import {
     existsSync,
@@ -26,7 +26,7 @@ export const paths = {
     updateMap: 'https://verzsut.github.io/sxmle_updater/updateMap.json',
 
     /** Путь к папке src. */
-    root: __dirname,
+    root: join(__dirname, '..', '..'),
 
     /** Путь к config. */
     config: `${__dirname}SXMLE\\config.json`.replace('SXMLE', ''),
@@ -148,13 +148,14 @@ export function openEPFDialog() {
 }
 
 export function openSaveDialog(defaultName) {
-    const result = dialog.showSaveDialogSync({
+    let result = dialog.showSaveDialogSync({
         defaultPath: defaultName,
         filters: [{
             name: 'Editor params file',
             extensions: ['epf']
         }]
     });
+    if (result && extname(result) === '') result += '.epf';
     return result;
 }
 

@@ -1,24 +1,32 @@
 <template>
-    <select
-        class='form-select'
-        v-model='value'
-        :disabled='disabled'
-    >
-        <option 
-            :key='option.value'
-            v-for='option in item.selectParams'
-            :value='option.value'
-            :selected='item.value === option.value'
+    <div class='param-input'>
+        <select
+            class='form-select'
+            v-model='value'
+            :disabled='disabled'
         >
-            {{ option.text }}
-        </option>
-    </select>
+            <option 
+                :key='option.value'
+                v-for='option in item.selectParams'
+                :value='option.value'
+                :selected='item.value === option.value'
+            >
+                {{ option.text }}
+            </option>
+        </select>
+        <input type="checkbox" class='input-export' v-model="isExport" v-show="isExporting">    
+    </div>
 </template>
 
 <script>
 export default {
     props: {
-        item: Object
+        item: Object,
+        isExport: {
+            type: Boolean,
+            default: true
+        },
+        isExporting: Boolean
     },
     inject: ['fileDOM', 'filePath', 'getValue', 'setValue', 'ETR', 'params'],
     data() {
@@ -29,11 +37,13 @@ export default {
     mounted() {
         this.params.push({
             forExport: () => {
-                return {
-                    selector: this.item.selector, 
-                    name: this.item.name, 
-                    value: this.value
-                };
+                if (this.isExport) {
+                    return {
+                        selector: this.item.selector, 
+                        name: this.item.name, 
+                        value: this.value
+                    };
+                }
             },
             forImport: {
                 setValue: value => {

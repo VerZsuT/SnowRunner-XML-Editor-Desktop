@@ -20,6 +20,10 @@ body {
     cursor: help;
 }
 
+.openFile {
+    margin-right: 20px;
+}
+
 .open-file-button {
     width: 20px;
     margin-left: 5px;
@@ -304,8 +308,7 @@ header {
 }
 
 div.param-input input {
-    margin-right: 10px;
-    width: 70px !important;
+    width: 70px;
 }
 
 footer span {

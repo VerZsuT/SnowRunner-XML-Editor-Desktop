@@ -2,6 +2,7 @@
     <div id="parameters" class="accordion snow">
         <div :key='item.groupName? (item.groupName+item.name):(item.selector+item.name)' v-for='item in params'>
             <p-group
+                :isExporting='isExporting'
                 v-if='item.paramType === "group" && item.groupItems.length'
                 :item='item'
                 parent='parameters'
@@ -9,6 +10,7 @@
                 :key='item.groupName'
             ></p-group>
             <p-param
+                :isExporting='isExporting'
                 v-if='item.paramType !== "group"'
                 :item='item'
                 :tabs='1'
@@ -28,6 +30,9 @@ export default {
     components: {
         PGroup,
         PParam
+    },
+    props: {
+        isExporting: Boolean
     },
     inject: ['fileDOM', 'filter'],
     computed: {

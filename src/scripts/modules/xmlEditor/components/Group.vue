@@ -1,5 +1,5 @@
 <template>
-    <div class='accordion-item'>
+    <div class='accordion-item' style='position: relative'>
         <div 
             :class='["group", "accordion-button", {collapsed: !Boolean(filter.value)}]'
             data-bs-toggle='collapse'
@@ -19,12 +19,16 @@
         >
             <div class='accordion-body' :id='`_${groupContentId}`'>
                 <p-param
+                    :isExport='isExport'
+                    :isExporting='isExporting'
                     v-for='param in items.params'
                     :item='param'
                     :tabs='tabs + 1'
                     :key='param.name'
                 ></p-param>
                 <p-group
+                    :isExport='isExport'
+                    :isExporting='isExporting'
                     v-for='groupItem in items.groups'
                     :item='groupItem'
                     :parent='`_${groupContentId}`'
@@ -33,6 +37,7 @@
                 ></p-group>
             </div>
         </div>
+        <input type="checkbox" class='group-export' v-model="isExport" v-show="isExporting">
     </div>
 </template>
 
@@ -47,7 +52,12 @@ export default {
     props: {
         item: Object,
         tabs: Number,
-        parent: String
+        parent: String,
+        isExport: {
+            type: Boolean,
+            default: true
+        },
+        isExporting: Boolean
     },
     inject: ['filter'],
     data() {
@@ -91,3 +101,13 @@ export default {
 }
 </script>
 
+<style scoped>
+.group-export {
+    display: inline-block;
+    position: absolute;
+    right: 10px;
+    top: 18px;
+    z-index: 5;
+    width: 20px !important;
+}
+</style>

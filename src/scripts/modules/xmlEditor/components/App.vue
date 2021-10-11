@@ -2,8 +2,8 @@
     <section id="work-zone">
         <div id="editor">
             <search></search>
-            <h2 id="title" class="title">{{ title }}</h2>
-            <params></params>
+            <h2 id="title" class="title" ref='title'>{{ title }}</h2>
+            <params :isExporting='isExporting'></params>
             <button class="btn btn-primary" id="save-params" @click='save' :title="t['SAVE_BUTTON']"></button>
             <button class="btn btn-primary" id="back" @click='back' :title="t['CLOSE']"></button>
             <button class="btn btn-primary" id="reset" @click='reset' v-show='ADV[filePath] || ETR[filePath]' :title="t['RESET_MENU_ITEM_LABEL']"></button>
@@ -23,17 +23,25 @@ import mainProcess from '../../../service/mainProcess.js';
 import Search from './Search.vue';
 import Params from './Params.vue';
 
+const EXPORT_FILE_VERSION = '1.0';
+
 export default {
+    deps: {},
     components: {
         Search,
         Params
     },
     data() {
+        let importData = local.pop('importData');
+        if (importData) importData = JSON.parse(importData)
+
         return {
             ADV: JSON.parse(JSON.stringify(config.ADV)),
             ETR: JSON.parse(JSON.stringify(config.ETR)),
             filePath: local.get('filePath'),
             fileDOM: getDOM(),
+            isBridge: local.pop('isBridge') === 'true',
+            importData: importData,
             currentMod: local.pop('currentMod'),
             filter: {
                 value: null,
@@ -42,11 +50,13 @@ export default {
                 }
             },
             params: [],
+            deps: {},
             t: new Proxy({}, {
                 get(_, propName) {
                     return getText(propName);
                 }
-            })
+            }),
+            isExporting: false
         };
     },
     provide() {
@@ -60,8 +70,18 @@ export default {
             globalTemplates: getGlobalTemplates(),
             ADV: this.ADV,
             ETR: this.ETR,
-            params: this.params
+            params: this.params,
+            deps: this.deps
         };
+    },
+    mounted() {
+        if (this.isBridge) {
+            if (!this.importData) {
+                this.exportFile();
+            } else {
+                this.importFile();
+            }
+        }
     },
     computed: {
         title() {
@@ -81,19 +101,119 @@ export default {
     },
     methods: {
         importFile() {
-            const filePath = mainProcess.call('openJSONDialog');
-            if (!filePath) {
-                mainProcess.call('alert', getText('[PARAMS_FILE_NOT_FOUND]'));
-                return;
+            const currentFileName = preload.basename(this.filePath);
+            let data;
+            if (!this.importData) {
+                const filePath = mainProcess.call('openEPFDialog');
+                if (!filePath) {
+                    mainProcess.call('alertSync', getText('[PARAMS_FILE_NOT_FOUND]'));
+                    return;
+                }
+                data = JSON.parse(preload.readFile(filePath));
+            } else {
+                data = {fileName: currentFileName, data: this.importData, version: EXPORT_FILE_VERSION};
             }
 
-            const data = JSON.parse(preload.readFile(filePath));
+            const next1 = (item, fromArray=false) => {
+                if (currentFileName === item.fileName && !item.version) {
+                    return this.legacyImport(item, fromArray);
+                }
+
+                if (currentFileName !== item.fileName) {
+                    const fonded = this.findIn(currentFileName, item);
+                    if (!fonded) {
+                        if (!fromArray) {
+                            mainProcess.call('alertSync', getText('[BREAK_IMPORT_INVALID_NAME]').replace('%file', currentFileName));
+                        }
+                        return false;
+                    } else {
+                        item = {data: fonded};
+                    }
+                }
+
+                for (const selector in item.data) {
+                    for (const attribute in item.data[selector]) {
+                        for (const obj of this.params) {
+                            const forImport = obj.forImport;
+                            if (forImport.selector === selector && forImport.name === attribute) {
+                                forImport.setValue(item.data[selector][attribute]);
+                            }
+                        }
+                    }
+                }
+
+                const next2 = () => {
+                    if (!this.importData) {
+                        mainProcess.call('alertSync', getText('WAS_IMPORTED'));
+                        return true;
+                    } else {
+                        this.save(false, false).then(() => {
+                            ipcRenderer.send('bridge-channel', 'true');
+                            window.close();
+                        });
+                    }
+                }
+                
+                if (item.deps) {
+                    let count = 1;
+                    let fullCount = 0;
+                    for (const depName in item.deps) {
+                        if (!this.deps[depName]) continue;
+                        for (const fileName in item.deps[depName]) {
+                            for (const dep of this.deps[depName]) {
+                                if (dep.name !== fileName) continue;
+                                fullCount++;
+                            }
+                        }
+                    }
+                    if (fullCount !== 0) {
+                        this.$refs.title.innerText = `${getText('[IN_PROGRESS]')} (${count}/${fullCount})`;
+        
+                        (async () => {
+                            for (const depName in item.deps) {
+                                if (!this.deps[depName]) continue;
+                                for (const fileName in item.deps[depName]) {
+                                    for (const dep of this.deps[depName]) {
+                                        if (dep.name !== fileName) continue;
+                                        await dep.toImport(item.deps[depName][fileName]);
+                                        this.$refs.title.innerText = `${getText('[IN_PROGRESS]')} (${++count}/${fullCount})`;
+                                    }
+                                }
+                            }
+                            this.$refs.title.innerText = this.title;
+                        })().then(next2);
+                    }
+                } else {
+                    next2();
+                }
+            }
+
+            if (data instanceof Array) {
+                let imported = false;
+                
+                for (const item of data) {
+                    const fonded = this.findIn(currentFileName, item);
+                    if (item.fileName === currentFileName || fonded) {
+                        next1(item, true);
+                        imported = true;
+                    }
+                }
+
+                if (!imported) {
+                    mainProcess.call('alertSync', getText('[BREAK_IMPORT_INVALID_NAME]').replace('%file', currentFileName));
+                }
+            } else {
+                next1(data);
+            }
+        },
+        legacyImport(data, fromArray=false) {
             if (preload.basename(this.filePath) !== data.fileName) {
-                mainProcess.call('alert', getText('[BREAK_IMPORT]'));
-                return;
+                if (!fromArray) {
+                    mainProcess.call('alertSync', getText('[BREAK_IMPORT]'));
+                }
+                return false;
             }
             delete data.fileName;
-
             for (const selector in data) {
                 for (const attribute in data[selector]) {
                     for (const obj of this.params) {
@@ -104,60 +224,133 @@ export default {
                     }
                 }
             }
-            mainProcess.call('alert', getText('WAS_IMPORTED'));
+            mainProcess.call('alertSync', getText('WAS_IMPORTED'));
+            return true;
         },
         exportFile() {
-            const out = {
-                fileName: preload.basename(this.filePath)
-            };
-            for (const obj of this.params) {
-                const expObj = obj.forExport();
-
-                if (!out[expObj.selector]) out[expObj.selector] = {};
-                out[expObj.selector][expObj.name] = expObj.value;
-            }
-
-            const pathToSave = mainProcess.call('openSaveDialog', preload.basename(this.filePath, '.xml'));
-            if (!pathToSave) {
-                mainProcess.call('alert', getText('[PATH_TO_SAVE_NOT_FOUND]'));
+            if (!this.isExporting && !this.isBridge) {
+                this.isExporting = true;
                 return;
             }
 
-            preload.saveFile(pathToSave, JSON.stringify(out, null, '\t'));
-            mainProcess.call('alert', getText('[WAS_EXPORTED]'));
+            const out = {};
+            if (!this.isBridge) {
+                out.fileName = preload.basename(this.filePath);
+                out.data = {};
+                out.version = EXPORT_FILE_VERSION;
+            } else {
+                delete out.data;
+            }
+            for (const obj of this.params) {
+                const expObj = obj.forExport();
+                if (!expObj) continue;
+
+                if (this.isBridge) {
+                    if (!out[expObj.selector]) out[expObj.selector] = {};
+                    out[expObj.selector][expObj.name] = expObj.value;
+                } else {
+                    if (!out.data[expObj.selector]) out.data[expObj.selector] = {};
+                    out.data[expObj.selector][expObj.name] = expObj.value;
+                }
+            }
+
+            let pathToSave = '';
+            if (!this.isBridge) {
+                pathToSave = mainProcess.call('openSaveDialog', preload.basename(this.filePath, '.xml'));
+                if (!pathToSave) {
+                    mainProcess.call('alertSync', getText('[PATH_TO_SAVE_NOT_FOUND]'));
+                    return;
+                }
+            }
+            this.getDepsData().then(data => {
+                if (data) out.deps = data;
+                if (!this.isBridge) {
+                    preload.saveFile(pathToSave, JSON.stringify(out, null, '\t'));
+                    mainProcess.call('alertSync', getText('[WAS_EXPORTED]'));
+                    this.isExporting = false;
+                } else {
+                    ipcRenderer.send('bridge-channel', out);
+                    window.close();
+                }
+            });
         },
-        save() {
-            document.querySelector('#title').innerText = getText('SAVING_MESSAGE');
-            setTimeout(() => {
-                const serializer = new XMLSerializer();
-                const copyrightText = `<!--\n\tEdited by: SnowRunner XML Editor Desktop\n\tVersion: v${config.version}\n\tAuthor: VerZsuT\n\tSite: https://verzsut.github.io/SnowRunner-XML-Editor-Desktop/\n-->\n`;
+        findIn(name, object) {
+            if (!object.deps) return false;
 
-                for (const item of this.fileDOM.querySelectorAll('[SXMLE_ID]')) {
-                    item.removeAttribute('SXMLE_ID');
+            for (const depName in object.deps) {
+                if (object.deps[depName][name]) return object.deps[depName][name];
+            }
+            return false;
+        },
+        getDepsData() {
+            return new Promise(async (resolve) => {
+                const fullCount = this.calcCount();
+                let count = 1;
+                let data = null;
+
+                this.$refs.title.innerText = `${getText('[IN_PROGRESS]')} (${count}/${fullCount})`;
+                for (const depName in this.deps) {
+                    if (!data) data = {};
+                    const depObj = data[depName] = {};
+
+                    for (const dep of this.deps[depName]) {
+                        if (!dep.isExport()) continue;
+                        depObj[dep.name] = await dep.getData();
+                        this.$refs.title.innerText = `${getText('[IN_PROGRESS]')} (${++count}/${fullCount})`;
+                    }
                 }
-
-                const xmlString = `${copyrightText}${serializer.serializeToString(this.fileDOM).replace('<root>', '').replace('</root>', '')}`;
-                mainProcess.call('setFileData', this.filePath, xmlString);
-                mainProcess.call('saveToOriginal', this.currentMod);
-
-                const tempADV = JSON.parse(JSON.stringify(config.ADV));
-                if (this.ADV[this.filePath]) {
-                    tempADV[this.filePath] = JSON.parse(JSON.stringify(this.ADV[this.filePath]));
-                } else if (tempADV[this.filePath]) {
-                    delete tempADV[this.filePath];
+                this.$refs.title.innerText = this.title;
+                resolve(data);
+            });
+        },
+        calcCount() {
+            let count = 0;
+            for (const depName in this.deps) {
+                for (const dep of this.deps[depName]) {
+                    if (dep.isExport()) count++;
                 }
-                config.ADV = tempADV;
-
-                const tempETR = JSON.parse(JSON.stringify(config.ETR));
-                if (this.ETR[this.filePath]) {
-                    tempETR[this.filePath] = JSON.parse(JSON.stringify(this.ETR[this.filePath]));
-                } else if (tempETR[this.filePath]) {
-                    delete tempETR[this.filePath];
-                }
-                config.ETR = tempETR;
-                
-                window.close();
-            }, 100);
+            }
+            return count;
+        },
+        save(closeAfter=true, saveToOriginal=true) {
+            return new Promise(resolve => {
+                this.$refs.title.innerText = getText('SAVING_MESSAGE');
+                setTimeout(() => {
+                    const serializer = new XMLSerializer();
+                    const copyrightText = `<!--\n\tEdited by: SnowRunner XML Editor Desktop\n\tVersion: v${config.version}\n\tAuthor: VerZsuT\n\tSite: https://verzsut.github.io/SnowRunner-XML-Editor-Desktop/\n-->\n`;
+        
+                    for (const item of this.fileDOM.querySelectorAll('[SXMLE_ID]')) {
+                        item.removeAttribute('SXMLE_ID');
+                    }
+        
+                    const xmlString = `${copyrightText}${serializer.serializeToString(this.fileDOM).replace('<root>', '').replace('</root>', '')}`;
+                    mainProcess.call('setFileData', this.filePath, xmlString);
+                    if (saveToOriginal) {
+                        mainProcess.call('saveToOriginal', this.currentMod);
+                    }
+        
+                    const tempADV = JSON.parse(JSON.stringify(config.ADV));
+                    if (this.ADV[this.filePath]) {
+                        tempADV[this.filePath] = JSON.parse(JSON.stringify(this.ADV[this.filePath]));
+                    } else if (tempADV[this.filePath]) {
+                        delete tempADV[this.filePath];
+                    }
+                    config.ADV = tempADV;
+        
+                    const tempETR = JSON.parse(JSON.stringify(config.ETR));
+                    if (this.ETR[this.filePath]) {
+                        tempETR[this.filePath] = JSON.parse(JSON.stringify(this.ETR[this.filePath]));
+                    } else if (tempETR[this.filePath]) {
+                        delete tempETR[this.filePath];
+                    }
+                    config.ETR = tempETR;
+                    
+                    if (closeAfter) {
+                        window.close();
+                    }
+                    resolve();
+                }, 100)
+            });
         },
         back() {
             window.close();

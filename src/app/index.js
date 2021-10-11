@@ -1,7 +1,7 @@
 import https from 'https';
 import dns from 'dns';
-import { app, shell, BrowserWindow, Notification, dialog } from 'electron';
-import { join, dirname, basename } from 'path';
+import { app, shell, BrowserWindow, Notification, dialog, ipcMain } from 'electron';
+import { join, dirname, basename, extname } from 'path';
 import {
     readFileSync,
     readdirSync,
@@ -63,9 +63,12 @@ function init() {
         windows.loading.setText(getText('[LOADING]'));
         if (!checkAdmin()) return;
         if (!config.paths.initial) {
-            checkExportedConfig();
-            openFirstSteps();
-            checkUpdate();
+            if (!checkExportedConfig()) {
+                openFirstSteps();
+                checkUpdate();
+            } else {
+                reload();
+            }
         } else {
             checkInitialSum().then(() => {
                 if (checkPaths()) {
@@ -158,10 +161,13 @@ function initMain() {
                 icon: paths.icon,
                 message: message,
                 title: settings.appId,
-                buttons: ['OK', getText('[CLOSE]')]
+                buttons: ['OK', getText('[CLOSE]')],
+                noLink: true
             });
             return index === 0;
         },
+        joinExported: () => {joinExported()},
+        seeExported: () => {seeExported()},
         reload: () => {reload()},
         quit: () => {app.quit()},
         openLink: p => {shell.openExternal(p)},
@@ -169,13 +175,13 @@ function initMain() {
         importConfig: () => {checkExportedConfig()},
         exportConfig: () => {exportConfig()},
 
-        openXMLEditor: () => {openXMLEditor()},
+        openXMLEditor: p => {openXMLEditor(p)},
         openList: () => {openList()},
         openSettings: () => {openSettings()},
         openDialog: () => openDialog(),
         openXMLDialog: () => openXMLDialog(),
         openInitialDialog: () => openInitialDialog(),
-        openJSONDialog: () => openEPFDialog(),
+        openEPFDialog: () => openEPFDialog(),
         openSaveDialog: p => openSaveDialog(p),
         openConsole: () => {openConsole()},
 
@@ -221,7 +227,7 @@ function download(params, cb) {
                 }, cb);
             }
         })
-        return
+        return;
     }
     https.get(params.url, res => {
         if (params.inMemory) {
@@ -240,7 +246,7 @@ function download(params, cb) {
             })
         }
         else {
-            const file = createWriteStream(params.path)
+            const file = createWriteStream(params.path);
             if (params.downloadPage) {
                 const len = parseInt(res.headers['content-length'], 10);
                 let cur = 0;
@@ -330,7 +336,7 @@ function checkExportedConfig() {
         }
         writeFileSync(paths.config, JSON.stringify(exportedConfig));
         rmSync(`${paths.backupFolder}\\config.json`);
-        reload();
+        return true;
     }
 }
 
@@ -360,6 +366,7 @@ function checkMap(map) {
 
 function update() {
     const page = openDownload();
+    let flagToReload = false;
     page.once('show', () => {
         page.download();
     })
@@ -389,7 +396,7 @@ function update() {
         const toDownload = [];
         for (const relativePath of toCreateOrChange) {
             const path = join(paths.root, relativePath);
-            const url = `${paths.updateFiles}/${relativePath.replaceAll('\\', '/')}`;
+            const url = `${paths.updateFiles}/${relativePath.replaceAll('\\', '/').replace('.webpack', 'webpack')}`;
 
             if (!existsSync(dirname(path))) {
                 createDirForPath(path);
@@ -405,8 +412,9 @@ function update() {
             isRoot: true,
         }, () => {
             toCreateOrChange = toCreateOrChange.slice(1);
-            if (toCreateOrChange.length === 0) {
+            if (toCreateOrChange.length === 0 && flagToReload === false) {
                 settings.saveWhenReload = false;
+                flagToReload = true;
                 exportConfig();
                 reload();
             }
@@ -434,7 +442,7 @@ function checkUpdate(whateverCheck=false) {
                 res.on('end', () => {
                     const data = JSON.parse(rawData);
                     if (config.version < data.latestVersion) {
-                        if (data.canAutoUpdate) {
+                        if (config.version >= data.minVersion) {
                             openUpdateMessage(data.latestVersion);
                         } else {
                             showNotification('[NOTIFICATION]', 'ALLOW_NEW_VERSION').then(() => {
@@ -705,25 +713,29 @@ function openFirstSteps() {
     });
 }
 
-function openXMLEditor() {
-    if (windows.xmlEditor) {
+function openXMLEditor(bridge) {
+    if (windows.xmlEditor && !bridge) {
         windows.xmlEditor.hide();
-    }
-
-    if (windows.listWindow) {
+    } else if (windows.listWindow) {
         windows.listWindow.hide();
-    } else {
-        if (windows.mainWindow) {
-            windows.mainWindow.hide();
-        }
     }
-
     const wind = createWindow({
         path: EDITOR_WEBPACK_ENTRY,
         preload: EDITOR_PRELOAD_WEBPACK_ENTRY,
         width: 1000,
-        height: 800
+        height: 800,
+        bridge: bridge
     });
+
+    if (bridge) {
+        ipcMain.once('bridge-channel', (_, data) => {
+            if (windows.xmlEditor) {
+                windows.xmlEditor.webContents.send('bridge-channel', data);
+            }
+        })
+        return;
+    }
+
     if (windows.xmlEditor) {
         wind.once('close', () => {
             if (windows.xmlEditor && !windows.xmlEditor.isDestroyed()) {
@@ -829,6 +841,97 @@ function openUpdateMessage(version) {
     });
 }
 
+function joinExported() {
+    const files = dialog.showOpenDialogSync({
+        properties: ['openFile', 'multiSelections'],
+        filters: [{
+            name: 'Editor params file',
+            extensions: ['epf']
+        }]
+    });
+
+    if (files && files.length > 1) {
+        const result = [];
+        const names = [];
+        for (const filePath of files) {
+            const object = JSON.parse(readFileSync(filePath).toString());
+            if (object instanceof Array) {
+                for (const obj of object) {
+                    if (!names.includes(obj.fileName)) {
+                        result.push(obj)
+                        names.push(obj.fileName);
+                    }
+                }
+            } else {
+                if (!names.includes(object.fileName)) {
+                    result.push(object);
+                    names.push(object.fileName);
+                }
+            }
+        }
+
+        let pathToSave = dialog.showSaveDialogSync({
+            defaultPath: 'joined',
+            filters: [{
+                name: 'Editor params file',
+                extensions: ['epf']
+            }]
+        });
+        if (pathToSave) {
+            if (extname(pathToSave) === '') pathToSave += '.epf';
+            writeFileSync(pathToSave, JSON.stringify(result, null, '\t'));
+            dialog.showMessageBoxSync({
+                title: settings.appId,
+                message: `${getText('[SUCCESS_JOIN]')}\n- ${files.map((value) => basename(value)).join('\n- ')}`
+            });
+        }
+    }
+}
+
+function seeExported() {
+    let path = dialog.showOpenDialogSync({
+        properties: ['openFile'],
+        filters: [{
+            name: 'Editor params file',
+            extensions: ['epf']
+        }]
+    });
+
+    if (path) {path = path[0]}
+
+    const object = JSON.parse(readFileSync(path).toString());
+    const result = [];
+
+    const stringify = item => {
+        const name = item.fileName;
+        
+        if (item.deps) {
+            const deps = [];
+            for (const depName in item.deps) {
+                for (const fileName in item.deps[depName]) {
+                    deps.push(fileName);
+                }
+            }
+            return `${name}:\n- ${deps.join('\n- ')}`;
+        } else {
+            return name;
+        }
+    }
+
+    if (object instanceof Array) {
+        for (const item of object) {
+            result.push(stringify(item));
+        }
+    } else {
+        result.push(stringify(object));
+    }
+
+    dialog.showMessageBoxSync({
+        title: settings.appId,
+        message: `${getText('[SEE_EXPORTED_MESSAGE]')}\n${result.join('\n\n')}`
+    })
+}
+
 function unpackFiles(popup = false) {
     return new Promise(resolve => {
         const loading = openDownload(popup);
@@ -907,7 +1010,7 @@ function saveConfig() {
     }
 }
 
-function createWindow(args = {}) {    
+function createWindow(args={}) {    
     const wind = new BrowserWindow({
         width: args.width || 800,
         height: args.height || 600,
@@ -923,17 +1026,21 @@ function createWindow(args = {}) {
             contextIsolation: false
         }
     });
-    windows.currentWindow = wind;
     wind.setMenu(null);
-    wind.loadURL(args.path).then(() => {
-        wind.show();
-        if (!wind.isDestroyed()) {
-            wind.focus();
-            if (settings.devTools) {
-                wind.webContents.toggleDevTools();
+    if (args.bridge) {
+        wind.loadURL(args.path);
+    } else {
+        windows.currentWindow = wind;
+        wind.loadURL(args.path).then(() => {
+            if (wind && !wind.isDestroyed()) {
+                wind.show();
+                wind.focus();
+                if (settings.devTools) {
+                    wind.webContents.toggleDevTools();
+                }
             }
-        }
-    })
+        })
+    }
     return wind;
 }
 
@@ -1100,6 +1207,21 @@ function getMainMenu() {
                     {
                         label: getText('[RESTORE_MENU_ITEM_LABEL]'),
                         role: 'restoreInitial'
+                    }
+                ]
+            }
+        ]),
+        ...retif(config.paths.initial, [
+            {
+                label: getText('[EPF_MENU_LABEL]'),
+                submenu: [
+                    {
+                        label: getText('[JOIN_EXPORTED_FILES]'),
+                        role: 'joinExported'
+                    },
+                    {
+                        label: getText('[SEE_EXPORTED_FILE]'),
+                        role: 'seeExported'
                     }
                 ]
             }
