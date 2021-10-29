@@ -9,30 +9,30 @@
             </span>
         </div>
         <div class='param-value'>
-            <p-select
+            <Select
                 :isExporting='isExporting'
                 :isExport='isExport'
                 v-if='item.inputType === "select"'
                 :item='item'
-            ></p-select>
-            <p-file
+            />
+            <File
                 :isExporting='isExporting'
                 :isExport='isExport'
                 v-else-if='item.type === "file"'
                 :item='item'
-            ></p-file>
-            <p-coords
+            />
+            <Coords
                 :isExporting='isExporting'
                 :isExport='isExport'
                 v-else-if='item.type === "coordinates"'
                 :item='item'
-            ></p-coords>
-            <p-input
+            />
+            <Input
                 :isExporting='isExporting'
                 :isExport='isExport'
                 v-else
                 :item='item'
-            ></p-input>
+            />
         </div>
         <div 
             class='desc'
@@ -42,18 +42,19 @@
     </div>
 </template>
 
-<script>
-import PInput from './PInput.vue';
-import PFile from './PFile.vue';
-import PCoords from './PCoords.vue';
-import PSelect from './PSelect.vue';
+<script lang='ts'>
+import Input from './PInput.vue'
+import File from './PFile.vue'
+import Coords from './PCoords.vue'
+import Select from './PSelect.vue'
+import { defineComponent } from 'vue'
 
-export default {
+export default defineComponent({
     components: {
-        PInput,
-        PFile,
-        PCoords,
-        PSelect
+        Input,
+        File,
+        Coords,
+        Select
     },
     props: {
         tabs: Number,
@@ -72,122 +73,122 @@ export default {
                 fontWeight: this.item.bold ? 'bold' : 'normal'
             },
             lang: config.lang
-        };
+        }
     },
     computed: {
         text() {
-            const text = this.item.text;
-            const filter = this.filter.value;
+            const text = this.item.text
+            const filter = this.filter.value
             if (!filter) {
-                return text;
+                return text
             }
 
-            const firstIndex = text.toLowerCase().indexOf(filter.toLowerCase());
-            const lastIndex = firstIndex + filter.length;
+            const firstIndex = text.toLowerCase().indexOf(filter.toLowerCase())
+            const lastIndex = firstIndex + filter.length
             return {
                 first: text.slice(0, firstIndex),
                 second: text.slice(firstIndex, lastIndex),
                 last: text.slice(lastIndex, text.length)
-            };
+            }
         }
     },
     methods: {
         getValue() {
-            let value = this.item.value;
+            let value = this.item.value
             if (!value && value !== 0 && this.templates) {
-                let el = this.fileDOM.querySelector(this.item.selector);
-                const array = this.item.selector.split('>').map((value) => value.trim());
-                const innerName = array.slice(array.length - 1)[0];
-                const tagName = innerName.split('[')[0];
+                let el = this.fileDOM.querySelector(this.item.selector)
+                const array = this.item.selector.split('>').map((value) => value.trim())
+                const innerName = array.slice(array.length - 1)[0]
+                const tagName = innerName.split('[')[0]
                 if (!el) {
-                    el = this.fileDOM.querySelector(array.slice(0, array.length - 1).join(' > '));
+                    el = this.fileDOM.querySelector(array.slice(0, array.length - 1).join(' > '))
                 }
                 if (el) {
-                    let templateName = el.getAttribute('_template');
+                    let templateName = el.getAttribute('_template')
                     if (!templateName) {
-                        templateName = this.getParentTemplate(el);
+                        templateName = this.getParentTemplate(el)
                     }
                     if (templateName) {
-                        const template = this.templates.querySelector(templateName);
+                        const template = this.templates.querySelector(templateName)
                         if (template) {
-                            const templateValue = template.getAttribute(this.item.name);
+                            const templateValue = template.getAttribute(this.item.name)
                             if (templateValue) {
-                                value = templateValue;
+                                value = templateValue
                             } else {
-                                const el2 = template.querySelector(tagName);
+                                const el2 = template.querySelector(tagName)
                                 if (el2) {
-                                    const templateValue2 = el2.getAttribute(this.item.name);
+                                    const templateValue2 = el2.getAttribute(this.item.name)
                                     if (templateValue2) {
-                                        value = templateValue2;
+                                        value = templateValue2
                                     } else {
-                                        const templateName1 = el2.getAttribute('_template');
+                                        const templateName1 = el2.getAttribute('_template')
                                         if (templateName1) {
-                                            value = this.getValueInGlobal(templateName1, tagName);
+                                            value = this.getValueInGlobal(templateName1, tagName)
                                         }
                                     }
                                 }
                             }
                         } else {
-                            value = this.getValueInGlobal(templateName, tagName);
+                            value = this.getValueInGlobal(templateName, tagName)
                         }
                     }
                 }
             }
             if (value === null || value === undefined) {
-                value = this.item.default;
+                value = this.item.default
             }
 
-            return value;
+            return value
         },
         setValue(selector, attrName, value) {
-            const element = this.fileDOM.querySelector(selector);
+            const element = this.fileDOM.querySelector(selector)
             if (!this.ADV[this.filePath]) {
-                this.ADV[this.filePath] = {};
+                this.ADV[this.filePath] = {}
             }
 
-            const fileADV = this.ADV[this.filePath];
+            const fileADV = this.ADV[this.filePath]
             if (!fileADV[selector]) {
-                fileADV[selector] = {};
+                fileADV[selector] = {}
             }
 
-            const tagADV = fileADV[selector];
+            const tagADV = fileADV[selector]
             if (!tagADV[attrName]) {
-                const defaultValue = element.getAttribute(attrName);
+                const defaultValue = element.getAttribute(attrName)
 
                 if (defaultValue !== null) {
-                    tagADV[attrName] = defaultValue;
+                    tagADV[attrName] = defaultValue
                 } else {
-                    tagADV[attrName] = 'ADV_NULL';
+                    tagADV[attrName] = 'ADV_NULL'
                 }
             }
 
-            element.setAttribute(attrName, value);
+            element.setAttribute(attrName, value)
         },
         getValueInGlobal(templateName, tagName) {
-            const template = this.globalTemplates.querySelector(`${tagName} > ${templateName}`);
+            const template = this.globalTemplates.querySelector(`${tagName} > ${templateName}`)
             if (template) {
-                const templateValue = template.getAttribute(this.item.name);
+                const templateValue = template.getAttribute(this.item.name)
                 if (templateValue) {
-                    return templateValue;
+                    return templateValue
                 } else {
-                    const el2 = template.querySelector(tagName);
+                    const el2 = template.querySelector(tagName)
                     if (el2) {
-                        const templateValue2 = el2.getAttribute(this.item.name);
+                        const templateValue2 = el2.getAttribute(this.item.name)
                         if (templateValue2) {
-                            return templateValue2;
+                            return templateValue2
                         }
                     }
                 }
             }
-            return this.item.value;
+            return this.item.value
         },
         getParentTemplate(el) {
             if (el.parentElement) {
-                const template = el.parentElement.getAttribute('_template');
+                const template = el.parentElement.getAttribute('_template')
                 if (template) {
-                    return template;
+                    return template
                 } else {
-                    return this.getParentTemplate(el.parentElement);
+                    return this.getParentTemplate(el.parentElement)
                 }
             }
         }
@@ -196,9 +197,9 @@ export default {
         return {
             getValue: this.getValue,
             setValue: this.setValue
-        };
+        }
     }
-}
+})
 </script>
 
 

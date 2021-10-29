@@ -11,101 +11,114 @@
     </div>
 </template>
 
-<script>
-import {getIngameText, prettify} from '../../../service/funcs.js';
-import mainProcess from '../../../service/mainProcess.js';
+<script lang='ts'>
+import { defineComponent, inject, PropType, ref, toRefs } from 'vue'
+import { getIngameText, prettify } from '../../../service/funcs'
+import mainProcess from '../../../service/mainProcess'
 
-export default {
-    props: ['itemType', 'item'],
-    inject: ['filter'],
-    data() {
+export default defineComponent({
+    props: {
+        itemType: {
+            type: String as PropType<ListType>
+        }, 
+        item: Object as PropType<any>
+    },
+    setup(props) {
+        const { itemType, item } = toRefs(props)
+        const filter = inject('filter')
+        const parser = new DOMParser()
+        const isDeleted = ref(false)
+
         return {
-            parser: new DOMParser(),
-            isDeleted: false
-        };
+            filter,
+            parser,
+            isDeleted,
+            itemType,
+            item
+        }
     },
     methods: {
         openEditor() {
-            local.set('filePath', this.item.path);
-            local.set('currentDLC', this.item.dlcName);
-            local.set('currentMod', this.item.modId);
-            mainProcess.call('openXMLEditor');
+            local.set('filePath', this.item.path)
+            local.set('currentDLC', this.item.dlcName)
+            local.set('currentMod', this.item.modId)
+            mainProcess.openXMLEditor()
         },
         show() {
             if (!this.filter['value']) {
-                return true;
+                return true
             }
             if (this.name.toLowerCase().includes(this.filter['value'].toLowerCase())) {
-                return true;
+                return true
             }
-            return false;
+            return false
         },
         delMod(event) {
-            event.preventDefault();
-            delete config.modsList[this.item.modId];
-            preload.removeDir(preload.join(paths.modsTemp, this.item.modId));
+            event.preventDefault()
+            delete config.modsList[this.item.modId]
+            listPreload.removeDir(listPreload.join(paths.modsTemp, this.item.modId))
 
-            config.modsList.length--;
-            this.isDeleted = true;
+            config.modsList.length--
+            this.isDeleted = true
         }
     },
     computed: {
         DOM() {
-            const data = `<root>${mainProcess.call('getFileData', this.item.path)}</root>`;
-            return this.parser.parseFromString(data, 'text/xml');
+            const data = `<root>${mainProcess.getFileData(this.item.path)}</root>`
+            return this.parser.parseFromString(data, 'text/xml')
         },
         imageSource() {
             switch (this.itemType) {
                 case 'cargo':
-                    return require('../../../../images/icons/cargo_item.png');
+                    return require('../../../../images/icons/cargo_item.png')
                 case 'trailers':
                     try {
-                        return require(`../../../../images/trailers/${this.item.name}.png`);
+                        return require(`../../../../images/trailers/${this.item.name}.png`)
                     } catch {
-                        return require('../../../../images/icons/trailer_item.png');
+                        return require('../../../../images/icons/trailer_item.png')
                     }
                 case 'trucks':
                     try {
-                        return require(`../../../../images/trucks/${this.item.name}.jpg`);
+                        return require(`../../../../images/trucks/${this.item.name}.jpg`)
                     } catch {
-                        const defaultImage = require('../../../../images/icons/truck_item.png');
+                        const defaultImage = require('../../../../images/icons/truck_item.png')
 
                         if (this.item.modId && this.DOM.querySelector('GameData > UiDesc')) {
-                            const imgName = this.DOM.querySelector('GameData > UiDesc').getAttribute('UiIcon328x458');
-                            const truckPath = `../../main/modsTemp/${this.item.modId}/ui/textures/${imgName}.png`;
-                            if (!preload.exists(truckPath)) {
-                                return defaultImage;
+                            const imgName = this.DOM.querySelector('GameData > UiDesc').getAttribute('UiIcon328x458')
+                            const truckPath = `../../main/modsTemp/${this.item.modId}/ui/textures/${imgName}.png`
+                            if (!listPreload.exists(truckPath)) {
+                                return defaultImage
                             } else {
                                 return truckPath
                             }
                         } else {
-                            return defaultImage;
+                            return defaultImage
                         }
                     }
             }
         },
         name() {
-            let name = prettify(this.item.name);
+            let name = prettify(this.item.name)
             if (this.DOM.querySelector('GameData > UiDesc')) {
-                const uiName = this.DOM.querySelector('GameData > UiDesc').getAttribute('UiName');
+                const uiName = this.DOM.querySelector('GameData > UiDesc').getAttribute('UiName')
                 if (uiName) {
-                    name = getIngameText(uiName, this.item.modId) || uiName;
+                    name = getIngameText(uiName, this.item.modId) || uiName
                 }
             }
-            return name;
+            return name
         },
         text() {
-            const filter = this.filter['value'];
+            const filter = this.filter['value']
             if (!filter) {
-                return this.name;
+                return this.name
             }
-            const firstIndex = this.name.toLowerCase().indexOf(filter.toLowerCase());
-            const lastIndex = firstIndex + filter.length;
+            const firstIndex = this.name.toLowerCase().indexOf(filter.toLowerCase())
+            const lastIndex = firstIndex + filter.length
             return {
                 first: this.name.slice(0, firstIndex),
                 second: this.name.slice(firstIndex, lastIndex),
                 last: this.name.slice(lastIndex, this.name.length)
-            };
+            }
         },
         error() {
             return (
@@ -115,10 +128,10 @@ export default {
                     this.DOM.querySelector('Truck') &&
                     this.DOM.querySelector('Truck').getAttribute('Type') === 'Trailer'
                 )
-            );
+            )
         }
     }
-}
+})
 </script>
 
 <style scoped>

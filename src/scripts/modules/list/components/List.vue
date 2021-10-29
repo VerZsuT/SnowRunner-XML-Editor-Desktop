@@ -16,110 +16,120 @@
         </span>
         <div class='list'>
             <span v-if='items.length === 0'>{{ t.EMPTY }}</span>
-            <list-item
+            <ListItem
                 v-for='item in items'
-                :item-type='listType'
+                :itemType='listType'
                 :item='item'
                 :key='item.path'
-            ></list-item>
+            />
         </div>
     </div>
 </template>
 
-<script>
-import {getText} from '../../../service/funcs.js';
-import mainProcess from '../../../service/mainProcess.js';
+<script lang='ts'>
+/// <reference path='../types.d.ts' />
 
-import ListItem from './ListItem.vue';
+import { defineComponent, PropType, toRefs } from 'vue'
 
-export default {
+import { getText, t } from '../../../service/funcs'
+import mainProcess from '../../../service/mainProcess'
+
+import ListItem from './ListItem.vue'
+
+export default defineComponent({
     components: {
         ListItem
     },
-    props: ['srcType'],
-    data() {
+    props: {
+        srcType: {
+            type: String as PropType<SrcType>,
+            required: true
+        }
+    },
+    setup(props) {
+        const { srcType } = toRefs(props)
+        const listType = local.get('listType')
+        const isArray = srcType.value !== 'main'
+
         return {
-            t: new Proxy({}, {
-                get(_, propName) {
-                    return getText(String(propName));
-                }
-            }),
-            listType: local.get('listType'),
-            isArray: this.srcType !== 'main'
-        };
+            t,
+            listType,
+            isArray,
+            srcType
+        }
     },
     methods: {
         addMod() {
-            const result = preload.getModPak();
+            const result = listPreload.getModPak()
             if (!config.modsList[result.id]) {
-                config.modsList.length++;
+                config.modsList.length++
             }
             config.modsList[result.id] = {
                 name: result.name,
                 path: result.path
             };
-            if (mainProcess.call('confirm', getText('[RELAUNCH_PROMPT]'))) {
-                mainProcess.call('reload');
+            if (mainProcess.confirm(getText('RELAUNCH_PROMPT'))) {
+                mainProcess.reload()
             }
         }
     },
     computed: {
         items() {
-            let array = [];
+            let array = []
             if (this.listType === 'trucks' || this.listType === 'trailers' || this.listType === 'cargo') {
-                array = preload.getList(this.listType, this.srcType);
+                array = listPreload.getList(this.listType, this.srcType)
             }
             if (this.srcType === 'main') {
                 array = array.map((value) => {
                     if (this.listType !== 'trucks') {
-                        return value;
+                        return value
                     }
-                    const fileData = mainProcess.call('getFileData', value.path);
-                    const dom = new DOMParser().parseFromString(`<root>${fileData}</root>`, 'text/xml');
+                    const fileData = mainProcess.getFileData(value.path)
+                    const dom = new DOMParser().parseFromString(`<root>${fileData}</root>`, 'text/xml')
                     if (dom.querySelector('Truck').getAttribute('Type') !== 'Trailer') {
-                        return value;
+                        return value
                     }
-                });
-                const out = [];
+                })
+                const out = []
                 for (const item of array) {
                     if (item) {
-                        out.push(item);
+                        out.push(item)
                     }
                 }
-                return out;
+                return out
             } else {
-                let newArray = [];
+                let newArray = []
                 for (const dlcOrMod of array) {
                     for (const item of dlcOrMod.items) {
                         newArray.push({
                             ...item,
                             dlcName: dlcOrMod.dlcName,
                             modId: dlcOrMod.id
-                        });
+                        })
                     }
                 }
                 newArray = newArray.map((value) => {
-                    const fileData = mainProcess.call('getFileData', value.path);
-                    const dom = new DOMParser().parseFromString(`<root>${fileData}</root>`, 'text/xml');
+                    const fileData = mainProcess.getFileData(value.path)
+                    const dom = new DOMParser().parseFromString(`<root>${fileData}</root>`, 'text/xml')
                     if (this.listType === 'trailers' && dom.querySelector('Truck') && dom.querySelector('Truck').getAttribute('Type') === 'Trailer') {
-                        return value;
+                        return value
                     } else if (this.listType === 'trucks' && dom.querySelector('Truck') && dom.querySelector('Truck').getAttribute('Type') !== 'Trailer') {
-                        return value;
+                        return value
                     } else if (this.listType === 'cargo') {
-                        return value;
+                        return value
                     }
                 })
-                const out = [];
+                const out = []
                 for (const item of newArray) {
                     if (item) {
-                        out.push(item);
+                        out.push(item)
                     }
                 }
-                return out;
+                return out
             }
         }
     }
-}
+})
 </script>
 
 <style scoped>

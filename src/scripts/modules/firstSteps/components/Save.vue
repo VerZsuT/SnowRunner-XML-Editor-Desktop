@@ -6,28 +6,41 @@
     </div>
 </template>
 
-<script>
-import mainProcess from '../../../service/mainProcess.js';
-import {getText} from '../../../service/funcs.js';
+<script lang='ts'>
+import { defineComponent, inject, toRefs } from 'vue'
 
-export default {
+import mainProcess from '../../../service/mainProcess'
+import { getText, Translation } from '../../../service/funcs'
+
+export default defineComponent({
     props: {
-        pathToInitial: String
+        pathToInitial: {
+            type: String,
+            required: true
+        }
     },
-    inject: ['t'],
+    setup(props) {
+        const t = inject<Translation>('t')
+        const { pathToInitial } = toRefs(props)
+
+        return {
+            t,
+            pathToInitial
+        }
+    },
     methods: {
         save() {
             if (!this.pathToInitial) {
-                mainProcess.call('alertSync', getText('[NO_GAME_FOLDER]'));
+                mainProcess.alertSync(getText('NO_GAME_FOLDER'));
                 return;
             }
 
-            config.paths.initial = this.pathToInitial;
-            mainProcess.call('saveInitialSum');
-            mainProcess.call('saveBackup', true);
+            config.paths.initial = this.pathToInitial
+            mainProcess.saveInitialSum()
+            mainProcess.saveBackup(true)
         }
     }
-}
+})
 </script>
 
 <style scoped>

@@ -1,42 +1,43 @@
 <template>
     <div id="app">
-        <search></search>
-        <list v-if='mods' src-type='mods'></list>
-        <list v-if='dlc' src-type='dlc'></list>
-        <list src-type='main'></list>
+        <Search />
+        <List v-if='mods' srcType='mods' />
+        <List v-if='dlc' srcType='dlc' />
+        <List srcType='main' />
     </div>
 </template>
 
-<script>
-import '../../../bootstrap/bootstrap.bundle.min.js';
-import '../../../service/menu.js';
+<script lang='ts'>
+import '../../../bootstrap/bootstrap.bundle.min.js'
+import '../../../service/menu'
+import { defineComponent, provide, reactive } from 'vue'
 
-import Search from './Search.vue';
-import List from './List.vue';
+import Search from './Search.vue'
+import List from './List.vue'
 
-export default {
+export default defineComponent({
     components: {
         Search,
         List
     },
-    data() {
-        return {
-            dlc: config.settings.DLC,
-            mods: config.settings.mods,
-            filter: {
-                value: '',
-                set(value) {
-                    this.value = value;
-                }
+    setup() {
+        const dlc = config.settings.DLC
+        const mods = config.settings.mods
+        const filter = reactive({
+            value: '',
+            set(value: string) {
+                this.value = value
             }
-        };
-    },
-    provide() {
+        })
+        provide('filter', filter)
+
         return {
-            filter: this.filter
-        };
+            dlc,
+            mods,
+            filter
+        }
     }
-}
+})
 </script>
 
 <style>

@@ -24,5 +24,16 @@ module.exports = [
     {
         test: /\.css$/,
         use: [{ loader: 'style-loader' }, { loader: 'css-loader' }],
+    },
+    {
+        test: /\.ts?$/,
+        exclude: /(node_modules|\.webpack)/,
+        use: {
+            loader: 'ts-loader',
+            options: {
+               transpileOnly: true,
+               appendTsSuffixTo: [/\.vue$/],
+            }
+        }
     }
 ];

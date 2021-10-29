@@ -5,50 +5,45 @@
         </header>
 
         <div class='steps'>
-            <language></language>
-            <game-folder :setPath='setPath'></game-folder>
-            <save :pathToInitial='pathToInitial'></save>
+            <Language />
+            <GameFolder :setPath='setPath' />
+            <Save :pathToInitial='pathToInitial' />
         </div>
     </div>
 </template>
 
-<script>
-import '../../../service/menu.js';
-import '../../../bootstrap/bootstrap.bundle.min.js';
+<script lang='ts'>
+import '../../../service/menu'
+import '../../../bootstrap/bootstrap.bundle.min.js'
+import { defineComponent, provide, ref } from 'vue'
 
-import {getText} from '../../../service/funcs.js';
+import { t } from '../../../service/funcs'
 
-import GameFolder from './GameFolder.vue';
-import Language from './Language.vue';
-import Save from './Save.vue';
+import GameFolder from './GameFolder.vue'
+import Language from './Language.vue'
+import Save from './Save.vue'
 
-export default {
+export default defineComponent({
     components: {
         GameFolder,
         Language,
         Save
     },
-    data() {
+    setup() {
+        const pathToInitial = ref('')
+        provide('t', t)
+
         return {
-            t: new Proxy({}, {
-                get(_, propName) {
-                    return getText(String(propName));
-                }
-            }),
-            pathToInitial: null
-        }
-    },
-    provide() {
-        return {
-            t: this.t
+            t,
+            pathToInitial
         }
     },
     methods: {
-        setPath(value) {
-            this.pathToInitial = value;
+        setPath(value: string) {
+            this.pathToInitial = value
         }
     }
-}
+})
 </script>
 
 <style>

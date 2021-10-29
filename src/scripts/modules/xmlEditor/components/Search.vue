@@ -5,26 +5,24 @@
     </div>
 </template>
 
-<script>
-import {getText} from '../../../service/funcs.js';
+<script lang='ts'>
+import { defineComponent, inject } from 'vue'
+import { t } from '../../../service/funcs'
 
-export default {
+export default defineComponent({
     inject: ['filter'],
     data() {
+        const filter = inject<{value: string}>('filter')
+
         return {
-            value: this.filter.value,
-            t: new Proxy({}, {
-                get(_, propName) {
-                    return getText(propName);
-                }
-            })
-        };
+            value: filter.value,
+            t: t
+        }
     },
     watch: {
         value() {
-            this.filter.set(this.value);
+            this.filter.set(this.value)
         }
     }
-}
-
+})
 </script>

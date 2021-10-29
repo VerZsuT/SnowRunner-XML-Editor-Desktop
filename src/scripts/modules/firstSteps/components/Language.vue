@@ -11,28 +11,33 @@
     </div>
 </template>
 
-<script>
-import mainProcess from '../../../service/mainProcess.js';
+<script lang='ts'>
+import { Translation } from '../../../service/funcs'
+import { defineComponent, inject } from 'vue'
+import mainProcess from '../../../service/mainProcess'
 
-export default {
-    inject: ['t'],
-    data() {
+export default defineComponent({
+    setup() {
+        const t = inject<Translation>('t')
+        const allLangs = ['EN', 'RU', 'DE']
+
         return {
-            allLangs: ['EN', 'RU', 'DE']
-        };
+            allLangs,
+            t
+        }
     },
     computed: {
         lang: {
             get() {
-                return config.lang;
+                return config.lang
             },
             set(value) {
-                config.lang = value;
-                mainProcess.call('reload');
+                config.lang = value
+                mainProcess.reload()
             }
         }
     }
-}
+})
 </script>
 
 <style scoped>

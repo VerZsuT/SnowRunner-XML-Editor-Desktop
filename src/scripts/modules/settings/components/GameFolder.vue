@@ -14,42 +14,49 @@
     </div>
 </template>
 
-<script>
-export default {
+<script lang='ts'>
+import { defineComponent, ref, toRefs, watch } from 'vue'
+
+export default defineComponent({
     props: {
         t: Object,
         pathToInitial: String
     },
     emits: ['update:pathToInitial'],
-    data() {
+    setup(props, { emit }) {
+        const { t, pathToInitial } = toRefs(props)
+        const manual = ref(true)
+        const gameFolder = ref(pathToInitial.value)
+
+        watch(manual, () => {
+            gameFolder.value = ''
+            emit('update:pathToInitial', null)
+        })
+
         return {
-            manual: true,
-            gameFolder: this.pathToInitial
-        };
-    },
-    watch: {
-        manual() {
-            this.gameFolder = null;
-            this.$emit('update:pathToInitial', null);
+            manual,
+            gameFolder,
+            t,
+            pathToInitial
         }
     },
     methods: {
         getFolder() {
-            let data = {};
+            let data: IFolder = {}
             if (this.manual) {
-                data = preload.initial;
-                data.folder = data.initial;
+                data = preload.initial
+                data.folder = data.initial
             } else {
-                data = preload.gameFolder;
+                data = preload.gameFolder
             }
 
-            if (!data) return;
+            if (!data) return
 
-            this.gameFolder = data.folder;
-            this.$emit('update:pathToInitial', data.initial);
+            this.gameFolder = data.folder
+            this.$emit('update:pathToInitial', data.initial)
         }
     }
-}
+})
 </script>
 
 <style scoped>

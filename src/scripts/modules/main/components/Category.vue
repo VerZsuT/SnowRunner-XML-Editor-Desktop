@@ -7,35 +7,38 @@
     </div>
 </template>
 
-<script>
-import {getText} from '../../../service/funcs.js';
-import mainProcess from '../../../service/mainProcess.js';
+<script lang='ts'>
+import { defineComponent, toRefs } from 'vue'
+import { t } from '../../../service/funcs'
+import mainProcess from '../../../service/mainProcess'
 
-export default {
+export default defineComponent({
     props: {
-        name: String
+        name: {
+            type: String,
+            required: true
+        }
     },
-    data() {
+    setup(props) {
+        const { name } = toRefs(props)
+
         return {
-            t: new Proxy({}, {
-                get(_, propName) {
-                    return getText(propName);
-                }
-            })
-        };
+            t,
+            name
+        }
     },
     methods: {
         openList() {
-            local.set('listType', this.name);
-            mainProcess.call('openList');
+            local.set('listType', this.name)
+            mainProcess.openList()
         }
     },
     computed: {
         imgSrc() {
-            return require(`../../../../images/category/${this.name}_category.png`);
+            return require(`../../../../images/category/${this.name}_category.png`)
         }
     }
-}
+})
 </script>
 
 <style scoped>

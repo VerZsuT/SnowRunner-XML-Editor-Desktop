@@ -14,42 +14,52 @@
     </div>
 </template>
 
-<script>
-export default {
+<script lang='ts'>
+/// <reference path='../declare/preload.d.ts' />
+
+import { Translation } from '../../../service/funcs'
+import { defineComponent, inject, ref, watch } from 'vue'
+
+export default defineComponent({
     props: {
-        setPath: Function
+        setPath: {
+            type: Function,
+            required: true
+        }
     },
-    inject: ['t'],
-    data() {
+    setup() {
+        const t = inject<Translation>('t')
+        const manual = ref(false)
+        const gameFolder = ref('')
+
+        watch(manual, () => {
+            gameFolder.value = ''
+        })
+
         return {
-            manual: false,
-            gameFolder: ''
-        };
-    },
-    watch: {
-        manual() {
-            this.gameFolder = '';
+            t,
+            manual,
+            gameFolder
         }
     },
     methods: {
         getFolder() {
-            let data = {};
+            let data: Folder
             if (this.manual) {
-                data = preload.initial;
-                data.folder = data.initial;
+                data = firstStepsPreload.initial
+                data.folder = data.initial
             } else {
-                data = preload.gameFolder;
+                data = firstStepsPreload.gameFolder
             }
 
-            if (!data) return;
+            if (!data) return
 
-            this.gameFolder = data.folder;
-            this.setPath(data.initial);
+            this.gameFolder = data.folder
+            this.setPath(data.initial)
         }
     }
-}
+})
 </script>
-
 
 <style scoped>
 .game-folder-input {

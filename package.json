@@ -10,7 +10,7 @@
 	"main": ".webpack/main",
 	"scripts": {
 		"start": "electron-forge start",
-		"build": "node preBuild.js && npm run package-prod && node postBuild.js",
+		"build": "node ./other/preBuild.js && npm run package-prod && node ./other/postBuild.js",
 		"package-prod": "cross-env NODE_ENV=production electron-forge package --platform=win32 --arch=ia32",
 		"package": "electron-forge package --platform=win32 --arch=ia32"
 	},
@@ -32,8 +32,11 @@
 		"cross-env": "^7.0.3",
 		"css-loader": "^6.3.0",
 		"electron": "^15.0.0",
+		"fork-ts-checker-webpack-plugin": "^6.3.4",
 		"node-loader": "^2.0.0",
 		"style-loader": "^3.3.0",
+		"ts-loader": "^9.2.6",
+		"typescript": "^4.4.4",
 		"vue": "^3.2.19",
 		"vue-loader": "^16.8.1"
 	}

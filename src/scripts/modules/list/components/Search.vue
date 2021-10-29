@@ -5,27 +5,25 @@
     </div>
 </template>
 
-<script>
-import {getText} from '../../../service/funcs.js';
+<script lang='ts'>
+import { defineComponent, inject, ref, watch } from 'vue'
+import { t } from '../../../service/funcs'
 
-export default {
-    inject: ['filter'],
-    data() {
+export default defineComponent({
+    setup() {
+        const filter = inject('filter')
+        const value = ref(filter['value'])
+
+        watch(value, () => {
+            filter['set'](value.value)
+        })
+
         return {
-            value: this.filter['value'],
-            t: new Proxy({}, {
-                get(_, propName) {
-                    return getText(String(propName));
-                }
-            })
-        };
-    },
-    watch: {
-        value() {
-            this.filter['set'](this.value);
+            value,
+            t
         }
     }
-}
+})
 </script>
 
 <style scoped>

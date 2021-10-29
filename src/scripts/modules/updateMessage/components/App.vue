@@ -9,42 +9,42 @@
     </div>
 </template>
 
-<script>
-import mainProcess from '../../../service/mainProcess.js';
-import {getText, get} from '../../../service/funcs.js'
+<script lang='ts'>
+import { defineComponent, ref } from 'vue'
 
-const $header = get('#header');
+import mainProcess from '../../../service/mainProcess'
+import { get, t } from '../../../service/funcs'
 
-export default {
-    data() {
+const $header = get<HTMLHeadingElement>('#header')
+
+export default defineComponent({
+    setup() {
+        const version = ref('')
+
         return {
-            t: new Proxy({}, {
-                get(_, propName) {
-                    return getText(propName);
-                }
-            }),
-            version: null
+            t,
+            version
         };
     },
     mounted() {
         ipcRenderer.on('content', (_event, data) => {
-            this.version = data;
-            $header.innerText += ` v${data}`;
+            this.version = data
+            $header.innerText += ` v${data}`
         });
     },
     methods: {
         close() {
-            window.close();
+            window.close()
         },
         update() {
-            mainProcess.call('update', this.version);
+            mainProcess.update()
         },
         ignore() {
-            config.settings.updates = false;
-            window.close();
+            config.settings.updates = false
+            window.close()
         }
     }
-}
+})
 </script>
 
 <style>

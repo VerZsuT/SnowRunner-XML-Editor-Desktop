@@ -7,7 +7,7 @@
             </option>
         </select><br>
 
-        <game-folder :t='t' v-model:path-to-initial='pathToInitial'></game-folder>
+        <GameFolder :t='t' v-model:pathToInitial='pathToInitial' />
 
         <input type="checkbox" id="ignore-updates" class="form-check-input" v-model='updates'>
         <label for="ignore-updates" class="form-check-label">{{ t.UPDATES_LABEL }}</label><br>
@@ -31,41 +31,47 @@
     </div>
 </template>
 
-<script>
-import '../../../bootstrap/bootstrap.bundle.min.js';
+<script lang='ts'>
+import '../../../bootstrap/bootstrap.bundle.min.js'
+import { defineComponent, ref, watch } from 'vue'
 
-import mainProcess from '../../../service/mainProcess.js';
-import {getText} from '../../../service/funcs.js';
+import mainProcess from '../../../service/mainProcess'
+import { t } from '../../../service/funcs'
 
-import GameFolder from './GameFolder.vue';
+import GameFolder from './GameFolder.vue'
 
-export default {
+export default defineComponent({
     components: {
         GameFolder
     },
-    data() {
+    setup() {
+        const saveBackup = ref(false)
+        const allLangs = ['RU', 'EN', 'DE']
+        const pathToInitial = ref(config.paths.initial)
+        const gameFolder = ref(config.paths.initial)
+        const lang = ref(config.lang)
+        const devMode = ref(config.settings.devMode)
+        const updates = ref(config.settings.updates)
+        const DLC = ref(config.settings.DLC)
+        const mods = ref(config.settings.mods)
+        const resetButton = ref(config.settings.resetButton)
+
+        watch(pathToInitial, () => {
+            saveBackup.value = true
+        })
+
         return {
-            t: new Proxy({}, {
-                get(_, propName) {
-                    return getText(propName);
-                }
-            }),
-            saveBackup: false,
-            allLangs: ['RU', 'EN', 'DE'],
-            pathToInitial: config.paths.initial,
-            gameFolder: config.paths.initial,
-            lang: config.lang,
-            devMode: config.settings.devMode,
-            updates: config.settings.updates,
-            limits: config.settings.limits,
-            DLC: config.settings.DLC,
-            mods: config.settings.mods,
-            resetButton: config.settings.resetButton
-        }
-    },
-    watch: {
-        pathToInitial() {
-            this.saveBackup = true;
+            t,
+            saveBackup,
+            allLangs,
+            pathToInitial,
+            gameFolder,
+            lang,
+            devMode,
+            updates,
+            DLC,
+            mods,
+            resetButton
         }
     },
     methods: {
@@ -84,13 +90,13 @@ export default {
             };
 
             if (this.saveBackup) {
-                mainProcess.call('saveBackup', true);
+                mainProcess.saveBackup(true)
             } else {
-                mainProcess.call('reload');
+                mainProcess.reload()
             }
         }
     }
-}
+})
 </script>
 
 <style>

@@ -18,8 +18,10 @@
     </div>
 </template>
 
-<script>
-export default {
+<script lang='ts'>
+import { defineComponent } from 'vue'
+
+export default defineComponent({
     props: {
         item: Object,
         isExport: {
@@ -32,7 +34,7 @@ export default {
     data() {
         return {
             value: this.getValue()
-        };
+        }
     },
     mounted() {
         this.params.push({
@@ -42,7 +44,7 @@ export default {
                         selector: this.item.selector, 
                         name: this.item.name, 
                         value: this.value
-                    };
+                    }
                 }
             },
             forImport: {
@@ -54,36 +56,36 @@ export default {
                 selector: this.item.selector,
                 name: this.item.name
             }
-        });
+        })
     },
     watch: {
         value(newValue, _) {
             if (!this.fileDOM.querySelector(this.item.selector)) {
-                const array = this.item.selector.split('>').map(value => value.trim());
-                const name = array.pop();
-                const rootSelector = array.join(' > ');
-                const element = this.fileDOM.createElement(name);
-                this.fileDOM.querySelector(rootSelector).append(element);
+                const array = this.item.selector.split('>').map(value => value.trim())
+                const name = array.pop()
+                const rootSelector = array.join(' > ')
+                const element = this.fileDOM.createElement(name)
+                this.fileDOM.querySelector(rootSelector).append(element)
 
                 if (!this.ETR[this.filePath]) {
-                    this.ETR[this.filePath] = [];
+                    this.ETR[this.filePath] = []
                 }
                 if (!this.ETR[this.filePath].includes(this.item.selector)) {
-                    this.ETR[this.filePath].push(this.item.selector);
+                    this.ETR[this.filePath].push(this.item.selector)
                 }
             }
 
-            this.setValue(this.item.selector, this.item.name, newValue);
+            this.setValue(this.item.selector, this.item.name, newValue)
         }
     },
     computed: {
         disabled() {
             if (!this.item.onlyDeveloper) {
-                return false;
+                return false
             } else {
-                return !config.settings.devMode;
+                return !config.settings.devMode
             }
         }
     }
-}
+})
 </script>

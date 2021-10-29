@@ -18,15 +18,15 @@
             :id='`_${groupContainerId}`'
         >
             <div class='accordion-body' :id='`_${groupContentId}`'>
-                <p-param
+                <Param
                     :isExport='isExport'
                     :isExporting='isExporting'
                     v-for='param in items.params'
                     :item='param'
                     :tabs='tabs + 1'
                     :key='param.name'
-                ></p-param>
-                <p-group
+                />
+                <Group
                     :isExport='isExport'
                     :isExporting='isExporting'
                     v-for='groupItem in items.groups'
@@ -34,20 +34,21 @@
                     :parent='`_${groupContentId}`'
                     :tabs='tabs + 1'
                     :key='groupItem.groupName'
-                ></p-group>
+                />
             </div>
         </div>
         <input type="checkbox" class='group-export' v-model="isExport" v-show="isExporting">
     </div>
 </template>
 
-<script>
-import PParam from './Param.vue';
+<script lang='ts'>
+import { defineComponent } from 'vue'
+import Param from './Param.vue'
 
-export default {
+export default defineComponent({
     name: 'PGroup',
     components: {
-        PParam
+        Param
     },
     props: {
         item: Object,
@@ -74,31 +75,31 @@ export default {
     },
     computed: {
         headerId() {
-            return Math.round(Math.random() * 1000000);
+            return Math.round(Math.random() * 1000000)
         },
         groupContainerId() {
-            return Math.round(Math.random() * 1000000);
+            return Math.round(Math.random() * 1000000)
         },
         groupContentId() {
-            return Math.round(Math.random() * 1000000);
+            return Math.round(Math.random() * 1000000)
         },
         items() {
-            const groups = [];
-            const params = [];
+            const groups = []
+            const params = []
             for (const groupItem of this.item.groupItems) {
                 if (groupItem.paramType === 'group') {
-                    groups.push(groupItem);
+                    groups.push(groupItem)
                 } else {
-                    params.push(groupItem);
+                    params.push(groupItem)
                 }
             }
             return {
                 groups,
                 params
-            };
+            }
         }
     }
-}
+})
 </script>
 
 <style scoped>

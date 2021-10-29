@@ -1,38 +1,41 @@
 <template>
     <section id="work-zone">
         <div id="editor">
-            <search></search>
+            <Search />
             <h2 id="title" class="title" ref='title'>{{ title }}</h2>
-            <params :isExporting='isExporting'></params>
-            <button class="btn btn-primary" id="save-params" @click='save' :title="t['SAVE_BUTTON']"></button>
-            <button class="btn btn-primary" id="back" @click='back' :title="t['CLOSE']"></button>
-            <button class="btn btn-primary" id="reset" @click='reset' v-show='ADV[filePath] || ETR[filePath]' :title="t['RESET_MENU_ITEM_LABEL']"></button>
-            <button class="btn btn-primary" id="export" @click='exportFile' :title="t['EXPORT']"></button>
-            <button class="btn btn-primary" id="import" @click='importFile' :title="t['IMPORT']"></button>
+            <Params :isExporting='isExporting' />
+            <button class="btn btn-primary" id="save-params" @click='save' :title="t.SAVE_BUTTON"></button>
+            <button class="btn btn-primary" id="back" @click='back' :title="t.CLOSE"></button>
+            <button class="btn btn-primary" id="reset" @click='reset' v-show='ADV[filePath] || ETR[filePath]' :title="t.RESET_MENU_ITEM_LABEL"></button>
+            <button class="btn btn-primary" id="export" @click='exportFile' :title="t.EXPORT"></button>
+            <button class="btn btn-primary" id="import" @click='importFile' :title="t.IMPORT"></button>
         </div>
     </section>
 </template>
 
-<script>
-import '../../../bootstrap/bootstrap.bundle.min.js';
-import '../../../service/menu.js';
+<script lang='ts'>
+/// <reference path='../types.d.ts' />
 
-import {prettify, getIngameText, getText} from '../../../service/funcs.js';
-import mainProcess from '../../../service/mainProcess.js';
+import '../../../bootstrap/bootstrap.bundle.min.js'
+import '../../../service/menu'
 
-import Search from './Search.vue';
-import Params from './Params.vue';
+import { prettify, getIngameText, getText, t, Translation } from '../../../service/funcs'
+import mainProcess from '../../../service/mainProcess'
 
-const EXPORT_FILE_VERSION = '1.0';
+import Search from './Search.vue'
+import Params from './Params.vue'
+import { defineComponent } from '@vue/runtime-core'
 
-export default {
+const EXPORT_FILE_VERSION = '1.0'
+
+export default defineComponent({
     deps: {},
     components: {
         Search,
         Params
     },
     data() {
-        let importData = local.pop('importData');
+        let importData = local.pop('importData')
         if (importData) importData = JSON.parse(importData)
 
         return {
@@ -45,17 +48,13 @@ export default {
             currentMod: local.pop('currentMod'),
             filter: {
                 value: null,
-                set(value) {
-                    this.value = value;
+                set(value: string) {
+                    this.value = value
                 }
             },
             params: [],
             deps: {},
-            t: new Proxy({}, {
-                get(_, propName) {
-                    return getText(propName);
-                }
-            }),
+            t: t,
             isExporting: false
         };
     },
@@ -101,42 +100,42 @@ export default {
     },
     methods: {
         importFile() {
-            const currentFileName = preload.basename(this.filePath);
+            const currentFileName = editorPreload.basename(this.filePath)
             let data;
             if (!this.importData) {
-                const filePath = mainProcess.call('openEPFDialog');
+                const filePath = mainProcess.openEPFDialog()
                 if (!filePath) {
-                    mainProcess.call('alertSync', getText('[PARAMS_FILE_NOT_FOUND]'));
+                    mainProcess.alertSync(getText('PARAMS_FILE_NOT_FOUND'))
                     return;
                 }
-                data = JSON.parse(preload.readFile(filePath));
+                data = JSON.parse(editorPreload.readFile(filePath).toString())
             } else {
-                data = {fileName: currentFileName, data: this.importData, version: EXPORT_FILE_VERSION};
+                data = {fileName: currentFileName, data: this.importData, version: EXPORT_FILE_VERSION}
             }
 
             const next1 = (item, fromArray=false) => {
                 if (currentFileName === item.fileName && !item.version) {
-                    return this.legacyImport(item, fromArray);
+                    return this.legacyImport(item, fromArray)
                 }
 
                 if (currentFileName !== item.fileName) {
-                    const fonded = this.findIn(currentFileName, item);
+                    const fonded = this.findIn(currentFileName, item)
                     if (!fonded) {
                         if (!fromArray) {
-                            mainProcess.call('alertSync', getText('[BREAK_IMPORT_INVALID_NAME]').replace('%file', currentFileName));
+                            mainProcess.alertSync(getText('BREAK_IMPORT_INVALID_NAME').replace('%file', currentFileName))
                         }
-                        return false;
+                        return false
                     } else {
-                        item = {data: fonded};
+                        item = {data: fonded}
                     }
                 }
 
                 for (const selector in item.data) {
                     for (const attribute in item.data[selector]) {
                         for (const obj of this.params) {
-                            const forImport = obj.forImport;
+                            const forImport = obj.forImport
                             if (forImport.selector === selector && forImport.name === attribute) {
-                                forImport.setValue(item.data[selector][attribute]);
+                                forImport.setValue(item.data[selector][attribute])
                             }
                         }
                     }
@@ -144,286 +143,292 @@ export default {
 
                 const next2 = () => {
                     if (!this.importData) {
-                        mainProcess.call('alertSync', getText('WAS_IMPORTED'));
-                        return true;
+                        mainProcess.alertSync(getText('WAS_IMPORTED'))
+                        return true
                     } else {
                         this.save(false, false).then(() => {
-                            ipcRenderer.send('bridge-channel', 'true');
-                            window.close();
-                        });
+                            ipcRenderer.send('bridge-channel', 'true')
+                            window.close()
+                        })
                     }
                 }
                 
                 if (item.deps) {
-                    let count = 1;
-                    let fullCount = 0;
+                    let count = 1
+                    let fullCount = 0
                     for (const depName in item.deps) {
-                        if (!this.deps[depName]) continue;
+                        if (!this.deps[depName]) continue
                         for (const fileName in item.deps[depName]) {
                             for (const dep of this.deps[depName]) {
-                                if (dep.name !== fileName) continue;
-                                fullCount++;
+                                if (dep.name !== fileName) continue
+                                fullCount++
                             }
                         }
                     }
                     if (fullCount !== 0) {
-                        this.$refs.title.innerText = `${getText('[IN_PROGRESS]')} (${count}/${fullCount})`;
+                        this.$refs.title.innerText = `${getText('IN_PROGRESS')} (${count}/${fullCount})`;
         
                         (async () => {
                             for (const depName in item.deps) {
-                                if (!this.deps[depName]) continue;
+                                if (!this.deps[depName]) continue
                                 for (const fileName in item.deps[depName]) {
                                     for (const dep of this.deps[depName]) {
-                                        if (dep.name !== fileName) continue;
-                                        await dep.toImport(item.deps[depName][fileName]);
-                                        this.$refs.title.innerText = `${getText('[IN_PROGRESS]')} (${++count}/${fullCount})`;
+                                        if (dep.name !== fileName) continue
+                                        await dep.toImport(item.deps[depName][fileName])
+                                        this.$refs.title.innerText = `${getText('IN_PROGRESS')} (${++count}/${fullCount})`
                                     }
                                 }
                             }
-                            this.$refs.title.innerText = this.title;
-                        })().then(next2);
+                            this.$refs.title.innerText = this.title
+                        })().then(next2)
                     }
                 } else {
-                    next2();
+                    next2()
                 }
             }
 
             if (data instanceof Array) {
-                let imported = false;
+                let imported = false
                 
                 for (const item of data) {
-                    const fonded = this.findIn(currentFileName, item);
+                    const fonded = this.findIn(currentFileName, item)
                     if (item.fileName === currentFileName || fonded) {
-                        next1(item, true);
-                        imported = true;
+                        next1(item, true)
+                        imported = true
                     }
                 }
 
                 if (!imported) {
-                    mainProcess.call('alertSync', getText('[BREAK_IMPORT_INVALID_NAME]').replace('%file', currentFileName));
+                    mainProcess.alertSync(getText('BREAK_IMPORT_INVALID_NAME').replace('%file', currentFileName))
                 }
             } else {
-                next1(data);
+                next1(data)
             }
         },
         legacyImport(data, fromArray=false) {
-            if (preload.basename(this.filePath) !== data.fileName) {
+            if (editorPreload.basename(this.filePath) !== data.fileName) {
                 if (!fromArray) {
-                    mainProcess.call('alertSync', getText('[BREAK_IMPORT]'));
+                    mainProcess.alertSync(getText('BREAK_IMPORT_INVALID_NAME'))
                 }
-                return false;
+                return false
             }
-            delete data.fileName;
+            delete data.fileName
             for (const selector in data) {
                 for (const attribute in data[selector]) {
                     for (const obj of this.params) {
-                        const forImport = obj.forImport;
+                        const forImport = obj.forImport
                         if (forImport.selector === selector && forImport.name === attribute) {
-                            forImport.setValue(data[selector][attribute]);
+                            forImport.setValue(data[selector][attribute])
                         }
                     }
                 }
             }
-            mainProcess.call('alertSync', getText('WAS_IMPORTED'));
-            return true;
+            mainProcess.alertSync(getText('WAS_IMPORTED'))
+            return true
         },
         exportFile() {
             if (!this.isExporting && !this.isBridge) {
-                this.isExporting = true;
-                return;
+                this.isExporting = true
+                return
             }
 
-            const out = {};
+            const out = {
+                fileName: null,
+                data: null,
+                version: null,
+                deps: null
+            }
             if (!this.isBridge) {
-                out.fileName = preload.basename(this.filePath);
-                out.data = {};
-                out.version = EXPORT_FILE_VERSION;
+                out.fileName = editorPreload.basename(this.filePath)
+                out.data = {}
+                out.version = EXPORT_FILE_VERSION
             } else {
-                delete out.data;
+                delete out.data
             }
             for (const obj of this.params) {
-                const expObj = obj.forExport();
-                if (!expObj) continue;
+                const expObj = obj.forExport()
+                if (!expObj) continue
 
                 if (this.isBridge) {
-                    if (!out[expObj.selector]) out[expObj.selector] = {};
-                    out[expObj.selector][expObj.name] = expObj.value;
+                    if (!out[expObj.selector]) out[expObj.selector] = {}
+                    out[expObj.selector][expObj.name] = expObj.value
                 } else {
-                    if (!out.data[expObj.selector]) out.data[expObj.selector] = {};
-                    out.data[expObj.selector][expObj.name] = expObj.value;
+                    if (!out.data[expObj.selector]) out.data[expObj.selector] = {}
+                    out.data[expObj.selector][expObj.name] = expObj.value
                 }
             }
 
-            let pathToSave = '';
+            let pathToSave = ''
             if (!this.isBridge) {
-                pathToSave = mainProcess.call('openSaveDialog', preload.basename(this.filePath, '.xml'));
+                pathToSave = mainProcess.openSaveDialog(editorPreload.basename(this.filePath, '.xml'))
                 if (!pathToSave) {
-                    mainProcess.call('alertSync', getText('[PATH_TO_SAVE_NOT_FOUND]'));
-                    return;
+                    mainProcess.alertSync(getText('PATH_TO_SAVE_NOT_FOUND'))
+                    return
                 }
             }
             this.getDepsData().then(data => {
-                if (data) out.deps = data;
+                if (data) out.deps = data
                 if (!this.isBridge) {
-                    preload.saveFile(pathToSave, JSON.stringify(out, null, '\t'));
-                    mainProcess.call('alertSync', getText('[WAS_EXPORTED]'));
-                    this.isExporting = false;
+                    editorPreload.saveFile(pathToSave, JSON.stringify(out, null, '\t'))
+                    mainProcess.alertSync(getText('WAS_EXPORTED'))
+                    this.isExporting = false
                 } else {
-                    ipcRenderer.send('bridge-channel', out);
-                    window.close();
+                    ipcRenderer.send('bridge-channel', out)
+                    window.close()
                 }
             });
         },
         findIn(name, object) {
-            if (!object.deps) return false;
+            if (!object.deps) return false
 
             for (const depName in object.deps) {
-                if (object.deps[depName][name]) return object.deps[depName][name];
+                if (object.deps[depName][name]) return object.deps[depName][name]
             }
-            return false;
+            return false
         },
         getDepsData() {
             return new Promise(async (resolve) => {
-                const fullCount = this.calcCount();
-                let count = 1;
-                let data = null;
+                const fullCount = this.calcCount()
+                let count = 1
+                let data = null
 
-                this.$refs.title.innerText = `${getText('[IN_PROGRESS]')} (${count}/${fullCount})`;
+                this.$refs.title.innerText = `${getText('IN_PROGRESS')} (${count}/${fullCount})`
                 for (const depName in this.deps) {
-                    if (!data) data = {};
-                    const depObj = data[depName] = {};
+                    if (!data) data = {}
+                    const depObj = data[depName] = {}
 
                     for (const dep of this.deps[depName]) {
-                        if (!dep.isExport()) continue;
-                        depObj[dep.name] = await dep.getData();
-                        this.$refs.title.innerText = `${getText('[IN_PROGRESS]')} (${++count}/${fullCount})`;
+                        if (!dep.isExport()) continue
+                        depObj[dep.name] = await dep.getData()
+                        this.$refs.title.innerText = `${getText('IN_PROGRESS')} (${++count}/${fullCount})`
                     }
                 }
-                this.$refs.title.innerText = this.title;
-                resolve(data);
-            });
+                this.$refs.title.innerText = this.title
+                resolve(data)
+            })
         },
         calcCount() {
-            let count = 0;
+            let count = 0
             for (const depName in this.deps) {
                 for (const dep of this.deps[depName]) {
-                    if (dep.isExport()) count++;
+                    if (dep.isExport()) count++
                 }
             }
-            return count;
+            return count
         },
         save(closeAfter=true, saveToOriginal=true) {
             return new Promise(resolve => {
-                this.$refs.title.innerText = getText('SAVING_MESSAGE');
+                this.$refs.title.innerText = getText('SAVING_MESSAGE')
                 setTimeout(() => {
-                    const serializer = new XMLSerializer();
-                    const copyrightText = `<!--\n\tEdited by: SnowRunner XML Editor Desktop\n\tVersion: v${config.version}\n\tAuthor: VerZsuT\n\tSite: https://verzsut.github.io/SnowRunner-XML-Editor-Desktop/\n-->\n`;
+                    const serializer = new XMLSerializer()
+                    const copyrightText = `<!--\n\tEdited by: SnowRunner XML Editor Desktop\n\tVersion: v${config.version}\n\tAuthor: VerZsuT\n\tSite: https://verzsut.github.io/SnowRunner-XML-Editor-Desktop/\n-->\n`
         
                     for (const item of this.fileDOM.querySelectorAll('[SXMLE_ID]')) {
-                        item.removeAttribute('SXMLE_ID');
+                        item.removeAttribute('SXMLE_ID')
                     }
         
-                    const xmlString = `${copyrightText}${serializer.serializeToString(this.fileDOM).replace('<root>', '').replace('</root>', '')}`;
-                    mainProcess.call('setFileData', this.filePath, xmlString);
+                    const xmlString = `${copyrightText}${serializer.serializeToString(this.fileDOM).replace('<root>', '').replace('</root>', '')}`
+                    mainProcess.setFileData(this.filePath, xmlString)
                     if (saveToOriginal) {
-                        mainProcess.call('saveToOriginal', this.currentMod);
+                        mainProcess.saveToOriginal(this.currentMod)
                     }
         
-                    const tempADV = JSON.parse(JSON.stringify(config.ADV));
+                    const tempADV = JSON.parse(JSON.stringify(config.ADV))
                     if (this.ADV[this.filePath]) {
-                        tempADV[this.filePath] = JSON.parse(JSON.stringify(this.ADV[this.filePath]));
+                        tempADV[this.filePath] = JSON.parse(JSON.stringify(this.ADV[this.filePath]))
                     } else if (tempADV[this.filePath]) {
-                        delete tempADV[this.filePath];
+                        delete tempADV[this.filePath]
                     }
-                    config.ADV = tempADV;
+                    config.ADV = tempADV
         
-                    const tempETR = JSON.parse(JSON.stringify(config.ETR));
+                    const tempETR = JSON.parse(JSON.stringify(config.ETR))
                     if (this.ETR[this.filePath]) {
-                        tempETR[this.filePath] = JSON.parse(JSON.stringify(this.ETR[this.filePath]));
+                        tempETR[this.filePath] = JSON.parse(JSON.stringify(this.ETR[this.filePath]))
                     } else if (tempETR[this.filePath]) {
-                        delete tempETR[this.filePath];
+                        delete tempETR[this.filePath]
                     }
-                    config.ETR = tempETR;
+                    config.ETR = tempETR
                     
                     if (closeAfter) {
-                        window.close();
+                        window.close()
                     }
-                    resolve();
+                    resolve(null)
                 }, 100)
-            });
+            })
         },
         back() {
-            window.close();
+            window.close()
         },
         reset() {
-            if (!mainProcess.call('confirm', getText('[RESET_CONFIRM_MESSAGE]'))) {
-                return;
+            if (!mainProcess.confirm(getText('RESET_CONFIRM_MESSAGE'))) {
+                return
             }
             
-            const itemsToReset = this.ADV[this.filePath];
+            const itemsToReset = this.ADV[this.filePath]
             if (itemsToReset) {
                 for (const selector in itemsToReset) {
-                    const item = this.fileDOM.querySelector(selector);
-                    const ADV = itemsToReset[selector];
+                    const item = this.fileDOM.querySelector(selector)
+                    const ADV = itemsToReset[selector]
     
                     for (const attrName in ADV) {
-                        const value = ADV[attrName];
+                        const value = ADV[attrName]
     
                         if (value === 'ADV_NULL') {
-                            item.removeAttribute(attrName);
+                            item.removeAttribute(attrName)
                         } else {
-                            item.setAttribute(attrName, value);
+                            item.setAttribute(attrName, value)
                         }
                     }
                 }
-                delete this.ADV[this.filePath];
+                delete this.ADV[this.filePath]
             }
 
-            const itemsToDelete = this.ETR[this.filePath];
+            const itemsToDelete = this.ETR[this.filePath]
             if (itemsToDelete) {
                 for (const selector in itemsToDelete) {
-                    const item = this.fileDOM.querySelector(selector);
-                    item.remove();
+                    const item = this.fileDOM.querySelector(selector)
+                    item.remove()
                 }
-                delete this.ETR[this.filePath];
+                delete this.ETR[this.filePath]
             }
 
-            mainProcess.call('alert', getText('[FILE_IS_RESETED]'));
-            document.querySelector('#save-params').click();
+            mainProcess.alertSync(getText('FILE_IS_RESETED'));
+            (document.querySelector('#save-params') as HTMLButtonElement).click()
         }
     }
-}
+})
 
 function getGlobalTemplates() {
-    const filePath = preload.join(preload.paths.mainTemp, '[media]', '_templates', 'trucks.xml');
-    const fileData = mainProcess.call('getFileData', filePath);
+    const filePath = editorPreload.join(editorPreload.paths.mainTemp, '[media]', '_templates', 'trucks.xml')
+    const fileData = mainProcess.getFileData(filePath)
 
-    return new DOMParser().parseFromString(fileData, 'text/xml');
+    return new DOMParser().parseFromString(fileData, 'text/xml')
 }
 
 function getDOM() {
-    const filePath = local.pop('filePath');
-    const fileData = mainProcess.call('getFileData', filePath);
-    if (!fileData) return;
+    const filePath = local.pop('filePath')
+    const fileData = mainProcess.getFileData(filePath)
+    if (!fileData) return
 
-    const parser = new DOMParser();
-    const dom = parser.parseFromString(`<root>${fileData}</root>`, 'text/xml');
+    const parser = new DOMParser()
+    const dom = parser.parseFromString(`<root>${fileData}</root>`, 'text/xml')
     if (dom.querySelector('parsererror')) {
-        const error = document.querySelector('#error');
-        error.innerText = getText(error.innerText);
-        error.style.display = 'block';
-        throw new Error('[RECOGNIZE_ERROR]');
+        const error = document.querySelector('#error') as HTMLDivElement
+        error.innerText = getText(<keyof Translation> error.innerText)
+        error.style.display = 'block'
+        throw new Error('[RECOGNIZE_ERROR]')
     }
 
-    for (const child of dom.querySelector('root').childNodes) {
+    dom.querySelector('root').childNodes.forEach((child) => {
         if (child.nodeType === 8) {
-            child.remove();
+            child.remove()
         }
-    }
+    })
+
     if (dom.querySelector('root').childNodes[0].nodeValue === '\n') {
-        dom.querySelector('root').childNodes[0].remove();
+        dom.querySelector('root').childNodes[0].remove()
     }
-    return dom;
+    return dom
 }
 </script>
 

@@ -1,25 +1,32 @@
 <template>
     <div id="categories">
-        <category :key='category' v-for='category in categories' :name='category'/>
+        <Category 
+            :key='category' 
+            v-for='category in categories' 
+            :name='category'
+        />
     </div>
 </template>
 
-<script>
-import '../../../service/menu.js';
-import '../../../bootstrap/bootstrap.bundle.min.js';
+<script lang='ts'>
+import '../../../service/menu'
+import '../../../bootstrap/bootstrap.bundle.min.js'
+import { defineComponent } from 'vue'
 
-import Category from './Category.vue';
+import Category from './Category.vue'
 
-export default {
+export default defineComponent({
     components: {
         Category
     },
-    data() {
+    setup() {
+        const categories = ['trucks', 'trailers', 'cargo']
+
         return {
-            categories: ['trucks', 'trailers', 'cargo']
-        };
+            categories
+        }
     }
-}
+})
 </script>
 
 <style>
