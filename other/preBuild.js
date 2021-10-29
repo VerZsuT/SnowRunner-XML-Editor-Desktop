@@ -22,8 +22,8 @@ Log.stageGroup()
 Log.print('Очистка папки out')
 checkPath(preBuildPaths.out, () => {
     rmSync(preBuildPaths.out, {recursive: true})
-    mkdirSync(preBuildPaths.out)
-}, true)
+})
+mkdirSync(preBuildPaths.out)
 
 Log.separator()
 

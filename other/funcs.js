@@ -53,7 +53,7 @@ function checkVar(variable, callback) {
     if (variable !== null && variable !== undefined) {
         callback()
     } else {
-        Log.error(`Переменная ${variable} не установлена.`)
+        Log.error(`Переменная не установлена.`)
     }
 }
 
