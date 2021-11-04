@@ -1,4 +1,4 @@
-import { removePars, getTextFromTemplate, getIngameText, getDescription } from './funcs'
+import { getTextFromTemplate, getIngameText, getDescription } from './funcs'
 
 class TemplateInputElement {
     protected attribute: string
@@ -56,7 +56,7 @@ class CTemplate implements ICTemplate {
         let params = []
         let newSelectors = {}
         if (multiply) {
-            const items = fileDOM.querySelectorAll(selectors[removePars(this.itemSelector)])
+            const items = fileDOM.querySelectorAll(selectors[this.itemSelector.removePars()])
             const name = this.replaceName + tNumber
             let currentNum = 1
             for (const item of items) {
@@ -127,8 +127,8 @@ class CGroup implements ICGroup {
         let params = []
         let groupName: string
         if (this.nameType !== 'static') {
-            const nameSelector = removePars(this.nameSelector)
-            const resNameSelector = removePars(this.resNameSelector)
+            const nameSelector = this.nameSelector.removePars()
+            const resNameSelector = this.resNameSelector.removePars()
             const $nameElement = props.fileDOM.querySelector(props.selectors[nameSelector] || nameSelector)
             const $resNameElement = props.fileDOM.querySelector(props.selectors[resNameSelector] || resNameSelector)
 
@@ -148,7 +148,7 @@ class CGroup implements ICGroup {
         for (const child of this.children) {
             params = params.concat(child.getParams({
                 selectors: props.selectors,
-                defaultSelector: removePars(this.defaultSelector) || (props.defaultSelector || null),
+                defaultSelector: this.defaultSelector? this.defaultSelector.removePars() :  (props.defaultSelector || null),
                 tNumber: props.tNumber,
                 fileDOM: props.fileDOM,
                 templateName: props.templateName
@@ -188,7 +188,7 @@ class CInput extends TemplateInputElement implements ICInput {
     }
 
     getParams(props: GetParamsProps): [IInputGetParams] | [] {
-        const selector = props.selectors[removePars(this.selector)] || removePars(this.selector) || props.selectors[props.defaultSelector]
+        const selector = this.selector? (props.selectors[this.selector.removePars()] || this.selector.removePars()) : props.selectors[props.defaultSelector]
         let value: string
 
         if (!props.fileDOM.querySelector(selector)) {
@@ -229,9 +229,9 @@ class CSelect extends TemplateInputElement implements ICSelect {
         super(params)
         this.children = children
     }
-
+    
     getParams(props: GetParamsProps): [ISelectGetParams] | [] {
-        const selectorType = removePars(this.selector)
+        const selectorType = this.selector? this.selector.removePars() : undefined
         const selector = props.selectors[selectorType] || selectorType || props.selectors[props.defaultSelector]
         let value: string
 

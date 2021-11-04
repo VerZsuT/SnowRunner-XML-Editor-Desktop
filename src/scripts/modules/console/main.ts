@@ -1,4 +1,5 @@
-import mainProcess from '../../service/mainProcess'
+import { mainProcess } from '../../service'
+
 import AutoComplete from './AutoComplete'
 import EditorConsole from './EditorConsole'
 import help from './help'

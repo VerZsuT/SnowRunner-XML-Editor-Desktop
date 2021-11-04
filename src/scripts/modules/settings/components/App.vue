@@ -35,9 +35,7 @@
 import '../../../bootstrap/bootstrap.bundle.min.js'
 import { defineComponent, ref, watch } from 'vue'
 
-import mainProcess from '../../../service/mainProcess'
-import { t } from '../../../service/funcs'
-
+import { t, mainProcess } from '../../../service'
 import GameFolder from './GameFolder.vue'
 
 export default defineComponent({

@@ -12,9 +12,9 @@
 </template>
 
 <script lang='ts'>
-import { Translation } from '../../../service/funcs'
 import { defineComponent, inject } from 'vue'
-import mainProcess from '../../../service/mainProcess'
+import { mainProcess } from '../../../service'
+import { Translation } from '../../../service/funcs'
 
 export default defineComponent({
     setup() {

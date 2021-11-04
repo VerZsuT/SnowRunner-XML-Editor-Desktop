@@ -2,8 +2,8 @@ import { join, basename } from 'path'
 import { existsSync, rmSync } from 'fs'
 import '../../../app/mainPreload'
 
-import { fromDir } from '../../../app/service'
-import mainProcess from '../../service/mainProcess'
+import { findInDir } from '../../../app/service'
+import { mainProcess } from '../../service'
 
 const openInitialDialog = () => mainProcess.openInitialDialog()
 
@@ -32,11 +32,11 @@ const preload: ListPreload = {
                 let items = []
 
                 if (listType === 'trucks') {
-                    items = fromDir(join(path, 'trucks'))
+                    items = findInDir(join(path, 'trucks'))
                 } else if (listType === 'trailers') {
-                    items = fromDir(join(path, 'trucks', 'trailers'))
+                    items = findInDir(join(path, 'trucks', 'trailers'))
                 } else if (listType === 'cargo') {
-                    items = fromDir(join(path, 'trucks', 'cargo'))
+                    items = findInDir(join(path, 'trucks', 'cargo'))
                 }
 
                 array.push({
@@ -55,11 +55,11 @@ const preload: ListPreload = {
 
                 const item = config.modsList[modId]
                 if (listType === 'trucks') {
-                    items = fromDir(join(paths.modsTemp, modId, 'classes', 'trucks'), false, '.xml', true)
+                    items = findInDir(join(paths.modsTemp, modId, 'classes', 'trucks'), false, '.xml', true)
                 } else if (listType === 'trailers') {
-                    items = fromDir(join(paths.modsTemp, modId, 'classes', 'trucks'), false, '.xml', true)
+                    items = findInDir(join(paths.modsTemp, modId, 'classes', 'trucks'), false, '.xml', true)
                 } else if (listType === 'cargo') {
-                    items = fromDir(join(paths.modsTemp, modId, 'classes', 'trucks', 'cargo'))
+                    items = findInDir(join(paths.modsTemp, modId, 'classes', 'trucks', 'cargo'))
                 }
 
                 array.push({
@@ -71,11 +71,11 @@ const preload: ListPreload = {
             return array
         } else {
             if (listType === 'trucks') {
-                return fromDir(join(paths.classes, 'trucks'))
+                return findInDir(join(paths.classes, 'trucks'))
             } else if (listType === 'trailers') {
-                return fromDir(join(paths.classes, 'trucks', 'trailers'))
+                return findInDir(join(paths.classes, 'trucks', 'trailers'))
             } else if (listType === 'cargo') {
-                return fromDir(join(paths.classes, 'trucks', 'cargo'))
+                return findInDir(join(paths.classes, 'trucks', 'cargo'))
             }
         }
     }

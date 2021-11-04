@@ -9,8 +9,7 @@
 
 <script lang='ts'>
 import { defineComponent, toRefs } from 'vue'
-import { t } from '../../../service/funcs'
-import mainProcess from '../../../service/mainProcess'
+import { t, mainProcess } from '../../../service'
 
 export default defineComponent({
     props: {

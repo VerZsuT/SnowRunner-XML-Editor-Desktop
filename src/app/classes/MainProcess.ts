@@ -10,11 +10,14 @@ ipcMain.on('getInfo', event => {
     event.returnValue = info
 })
 
+/**
+ * Отвечает за публичные переменные/функции для renderer process.
+*/
 export default class MainProcess {
     /**
      * Делает функции публичными, позволяя вызывать их из renderer-процесса.
     */
-    setFunctions(object: IFunctionsAttributes) {
+    public static setPublicFuncs = (object: IFunctionsAttributes): void => {
         for (const name in object) {
             const value = object[name]
 
@@ -35,7 +38,7 @@ export default class MainProcess {
      * Делает переменные публичными, позволяя использовать/изменять из из renderer-процесса.
      * @param object - объект типа {<имя>: (<гетер> | [<гетер>, <сетер>])}
      */
-    setProperties(object: IPropertyAttributes) {
+    public static setPubicProps = (object: IPropertyAttributes): void => {
         for (const name in object) {
             const value = object[name]
             info.properties.push(name)

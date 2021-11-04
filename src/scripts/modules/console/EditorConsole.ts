@@ -1,5 +1,5 @@
-import { get, setHotKey } from '../../service/funcs'
-import mainProcess from '../../service/mainProcess'
+import { get, setHotKey, mainProcess } from '../../service'
+
 import AutoComplete from './AutoComplete'
 import Message from './Message'
 

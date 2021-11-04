@@ -1,4 +1,4 @@
-import { get, create } from '../../service/funcs'
+import { get, create } from '../../service'
 
 const $messages = get('#messages')
 

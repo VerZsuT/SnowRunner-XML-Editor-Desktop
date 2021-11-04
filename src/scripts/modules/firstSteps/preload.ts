@@ -2,14 +2,14 @@ import { existsSync } from 'fs'
 import { join, basename } from 'path'
 
 import '../../../app/mainPreload'
-import mainProcess from '../../service/mainProcess'
-import { getText, TKeys } from '../../service/funcs'
+import { t, mainProcess } from '../../service'
+import { TKeys } from '../../service/funcs'
 
 class Preload implements FirstStepsPreload {
     private openDialog = () => mainProcess.openDialog()
     private openInitialDialog = () => mainProcess.openInitialDialog()
 
-    public errorHandler = (text: TKeys) => {mainProcess.alertSync(getText(text))}
+    public errorHandler = (text: TKeys) => {mainProcess.alertSync(t[text])}
 
     get gameFolder(): Folder {
         const result = this.openDialog()

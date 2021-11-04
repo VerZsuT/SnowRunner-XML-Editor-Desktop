@@ -7,7 +7,7 @@
 
 <script lang='ts'>
 import { defineComponent, inject, ref, watch } from 'vue'
-import { t } from '../../../service/funcs'
+import { t } from '../../../service'
 
 export default defineComponent({
     setup() {

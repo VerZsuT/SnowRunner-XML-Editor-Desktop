@@ -42,7 +42,6 @@ Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChang
 Name: "{app}\resources\app"; Type: filesandordirs; 
 
 [Code]
-
 procedure SetElevationBit(Filename: string);
 var
   Buffer: string;

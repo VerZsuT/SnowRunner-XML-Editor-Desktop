@@ -2,7 +2,7 @@ import { readFileSync, existsSync, writeFileSync, rmSync } from 'fs'
 import { basename, join } from 'path'
 
 import '../../../app/mainPreload'
-import mainProcess from '../../service/mainProcess'
+import { mainProcess } from '../../service'
 
 const preload: ConsolePreload = {
     readFile: (path: string) => readFileSync(path).toString(),

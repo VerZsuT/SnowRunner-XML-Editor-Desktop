@@ -1,6 +1,6 @@
 {
 	"version": "0.6.5a",
-	"lang": "EN",
+	"lang": "RU",
 	"buildType": "dev",
 	"paths": {
 		"initial": null,
@@ -13,7 +13,7 @@
 		"limits": true,
 		"DLC": true,
 		"mods": true,
-		"resetButton": false,
+		"resetButton": true,
 		"devMode": false
 	},
 	"sums": {

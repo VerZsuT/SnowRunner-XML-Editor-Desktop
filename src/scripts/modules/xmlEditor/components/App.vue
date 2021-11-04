@@ -19,8 +19,8 @@
 import '../../../bootstrap/bootstrap.bundle.min.js'
 import '../../../service/menu'
 
-import { prettify, getIngameText, getText, t, Translation } from '../../../service/funcs'
-import mainProcess from '../../../service/mainProcess'
+import { getIngameText, t, mainProcess } from '../../../service'
+import { Translation } from '../../../service/funcs'
 
 import Search from './Search.vue'
 import Params from './Params.vue'
@@ -91,10 +91,10 @@ export default defineComponent({
 
             if (this.filePath.split('/').length !== 1) {
                 let a = this.filePath.split('/');
-                return prettify(a[a.length - 1].replace('.xml', '')).toUpperCase();
+                return a[a.length - 1].replace('.xml', '').prettify().toUpperCase()
             } else {
                 let a = this.filePath.split('\\');
-                return prettify(a[a.length - 1].replace('.xml', '')).toUpperCase();
+                return a[a.length - 1].replace('.xml', '').prettify().toUpperCase()
             }
         }
     },
@@ -105,7 +105,7 @@ export default defineComponent({
             if (!this.importData) {
                 const filePath = mainProcess.openEPFDialog()
                 if (!filePath) {
-                    mainProcess.alertSync(getText('PARAMS_FILE_NOT_FOUND'))
+                    mainProcess.alertSync(t.PARAMS_FILE_NOT_FOUND)
                     return;
                 }
                 data = JSON.parse(editorPreload.readFile(filePath).toString())
@@ -122,7 +122,7 @@ export default defineComponent({
                     const fonded = this.findIn(currentFileName, item)
                     if (!fonded) {
                         if (!fromArray) {
-                            mainProcess.alertSync(getText('BREAK_IMPORT_INVALID_NAME').replace('%file', currentFileName))
+                            mainProcess.alertSync(t.BREAK_IMPORT_INVALID_NAME.replace('%file', currentFileName))
                         }
                         return false
                     } else {
@@ -143,7 +143,7 @@ export default defineComponent({
 
                 const next2 = () => {
                     if (!this.importData) {
-                        mainProcess.alertSync(getText('WAS_IMPORTED'))
+                        mainProcess.alertSync(t.WAS_IMPORTED)
                         return true
                     } else {
                         this.save(false, false).then(() => {
@@ -166,7 +166,7 @@ export default defineComponent({
                         }
                     }
                     if (fullCount !== 0) {
-                        this.$refs.title.innerText = `${getText('IN_PROGRESS')} (${count}/${fullCount})`;
+                        this.$refs.title.innerText = `${t.IN_PROGRESS} (${count}/${fullCount})`;
         
                         (async () => {
                             for (const depName in item.deps) {
@@ -175,7 +175,7 @@ export default defineComponent({
                                     for (const dep of this.deps[depName]) {
                                         if (dep.name !== fileName) continue
                                         await dep.toImport(item.deps[depName][fileName])
-                                        this.$refs.title.innerText = `${getText('IN_PROGRESS')} (${++count}/${fullCount})`
+                                        this.$refs.title.innerText = `${t.IN_PROGRESS} (${++count}/${fullCount})`
                                     }
                                 }
                             }
@@ -199,7 +199,7 @@ export default defineComponent({
                 }
 
                 if (!imported) {
-                    mainProcess.alertSync(getText('BREAK_IMPORT_INVALID_NAME').replace('%file', currentFileName))
+                    mainProcess.alertSync(t.BREAK_IMPORT_INVALID_NAME.replace('%file', currentFileName))
                 }
             } else {
                 next1(data)
@@ -208,7 +208,7 @@ export default defineComponent({
         legacyImport(data, fromArray=false) {
             if (editorPreload.basename(this.filePath) !== data.fileName) {
                 if (!fromArray) {
-                    mainProcess.alertSync(getText('BREAK_IMPORT_INVALID_NAME'))
+                    mainProcess.alertSync(t.BREAK_IMPORT_INVALID_NAME)
                 }
                 return false
             }
@@ -223,7 +223,7 @@ export default defineComponent({
                     }
                 }
             }
-            mainProcess.alertSync(getText('WAS_IMPORTED'))
+            mainProcess.alertSync(t.WAS_IMPORTED)
             return true
         },
         exportFile() {
@@ -262,7 +262,7 @@ export default defineComponent({
             if (!this.isBridge) {
                 pathToSave = mainProcess.openSaveDialog(editorPreload.basename(this.filePath, '.xml'))
                 if (!pathToSave) {
-                    mainProcess.alertSync(getText('PATH_TO_SAVE_NOT_FOUND'))
+                    mainProcess.alertSync(t.PATH_TO_SAVE_NOT_FOUND)
                     return
                 }
             }
@@ -270,7 +270,7 @@ export default defineComponent({
                 if (data) out.deps = data
                 if (!this.isBridge) {
                     editorPreload.saveFile(pathToSave, JSON.stringify(out, null, '\t'))
-                    mainProcess.alertSync(getText('WAS_EXPORTED'))
+                    mainProcess.alertSync(t.WAS_EXPORTED)
                     this.isExporting = false
                 } else {
                     ipcRenderer.send('bridge-channel', out)
@@ -292,7 +292,7 @@ export default defineComponent({
                 let count = 1
                 let data = null
 
-                this.$refs.title.innerText = `${getText('IN_PROGRESS')} (${count}/${fullCount})`
+                this.$refs.title.innerText = `${t.IN_PROGRESS} (${count}/${fullCount})`
                 for (const depName in this.deps) {
                     if (!data) data = {}
                     const depObj = data[depName] = {}
@@ -300,7 +300,7 @@ export default defineComponent({
                     for (const dep of this.deps[depName]) {
                         if (!dep.isExport()) continue
                         depObj[dep.name] = await dep.getData()
-                        this.$refs.title.innerText = `${getText('IN_PROGRESS')} (${++count}/${fullCount})`
+                        this.$refs.title.innerText = `${t.IN_PROGRESS} (${++count}/${fullCount})`
                     }
                 }
                 this.$refs.title.innerText = this.title
@@ -318,7 +318,7 @@ export default defineComponent({
         },
         save(closeAfter=true, saveToOriginal=true) {
             return new Promise(resolve => {
-                this.$refs.title.innerText = getText('SAVING_MESSAGE')
+                this.$refs.title.innerText = t.SAVING_MESSAGE
                 setTimeout(() => {
                     const serializer = new XMLSerializer()
                     const copyrightText = `<!--\n\tEdited by: SnowRunner XML Editor Desktop\n\tVersion: v${config.version}\n\tAuthor: VerZsuT\n\tSite: https://verzsut.github.io/SnowRunner-XML-Editor-Desktop/\n-->\n`
@@ -360,7 +360,7 @@ export default defineComponent({
             window.close()
         },
         reset() {
-            if (!mainProcess.confirm(getText('RESET_CONFIRM_MESSAGE'))) {
+            if (!mainProcess.confirm(t.RESET_CONFIRM_MESSAGE)) {
                 return
             }
             
@@ -392,8 +392,8 @@ export default defineComponent({
                 delete this.ETR[this.filePath]
             }
 
-            mainProcess.alertSync(getText('FILE_IS_RESETED'));
-            (document.querySelector('#save-params') as HTMLButtonElement).click()
+            mainProcess.alertSync(t.FILE_IS_RESETED);
+            (<HTMLButtonElement>document.querySelector('#save-params')).click()
         }
     }
 })
@@ -414,7 +414,7 @@ function getDOM() {
     const dom = parser.parseFromString(`<root>${fileData}</root>`, 'text/xml')
     if (dom.querySelector('parsererror')) {
         const error = document.querySelector('#error') as HTMLDivElement
-        error.innerText = getText(<keyof Translation> error.innerText)
+        error.innerText = t[<keyof Translation> error.innerText]
         error.style.display = 'block'
         throw new Error('[RECOGNIZE_ERROR]')
     }

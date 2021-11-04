@@ -1,4 +1,4 @@
-import { create, getText, setHotKey } from './funcs'
+import { create, t, setHotKey } from './funcs'
 import mainProcess from './mainProcess'
 
 const $menu = create<HTMLDivElement>('div', {id: 'menu'})
@@ -72,7 +72,7 @@ function buildMenu(template: IMenuTemplate, root?: boolean): HTMLDivElement | HT
             case 'saveBackup':
                 onclick = () => {
                     mainProcess.copyBackup()
-                    mainProcess.alertSync(getText('SUCCESS_BACKUP_SAVE'))
+                    mainProcess.alertSync(t.SUCCESS_BACKUP_SAVE)
                 }
             break
             case 'devTools':

@@ -17,7 +17,7 @@ import '../../../service/menu'
 import '../../../bootstrap/bootstrap.bundle.min.js'
 import { defineComponent, provide, ref } from 'vue'
 
-import { t } from '../../../service/funcs'
+import { t } from '../../../service'
 
 import GameFolder from './GameFolder.vue'
 import Language from './Language.vue'

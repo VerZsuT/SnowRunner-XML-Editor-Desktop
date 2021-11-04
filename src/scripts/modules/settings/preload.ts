@@ -2,14 +2,14 @@ import { existsSync } from 'fs'
 import { join, basename } from 'path'
 
 import '../../../app/mainPreload'
-import { getText, Translation } from '../../service/funcs'
-import mainProcess from '../../service/mainProcess'
+import { t, mainProcess } from '../../service'
+import { Translation } from '../../service/funcs'
 
 class Preload implements SettingsPreload {
     private openDialog = () => mainProcess.openDialog()
     private openInitialDialog = () => mainProcess.openInitialDialog()
  
-    public errorHandler = (text: keyof Translation) => mainProcess.alertSync(getText(text))
+    public errorHandler = (text: keyof Translation) => mainProcess.alertSync(t[text])
     get gameFolder() {
         const result = this.openDialog()
         if (!result) {

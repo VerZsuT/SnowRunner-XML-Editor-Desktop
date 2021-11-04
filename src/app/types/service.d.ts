@@ -16,3 +16,33 @@ interface IPaths {
     dlc: string
     classes: string
 }
+
+type DialogType = 'open' | 'save'
+type DialogSourceType = 'file' | 'dir'
+type DialogAlertType = 'sync' | 'async'
+type DialogProperties = ('openFile' | 'openDirectory' | 'multiSelections')[]
+
+interface OpenDialogParams {
+    type?: DialogType
+    source?: DialogSourceType
+    extention?: string
+    defaultPath?: string
+    properties?: DialogProperties
+}
+
+interface DialogAlertParams {
+    title: string
+    message: string
+    dialogType?: DialogAlertType
+    type?: string
+    noLink?: boolean
+    buttons?: string[]
+}
+
+interface DialogParams {
+    properties?: DialogProperties
+    filters?: {
+        name: string
+        extensions: string[]
+    }[]
+}

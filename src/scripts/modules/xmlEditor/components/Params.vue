@@ -21,8 +21,8 @@
 </template>
 
 <script lang='ts'>
-import { defineComponent } from '@vue/runtime-core'
-import templates from '../../../service/templates'
+import { defineComponent } from 'vue'
+import { templates } from '../../../service'
 
 import Group from './Group.vue'
 import Param from './Param.vue'

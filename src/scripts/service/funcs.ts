@@ -1,26 +1,27 @@
-import templates from './templates'
+import { templates } from './index'
 import type RU from '../translations/RU.json'
+import '../../app/extendString'
 
 const language = config.lang
 
 export type TKeys = keyof typeof RU
 export type Translation = {[name in TKeys]: string}
 
+/**
+ * Возвращает текст из глобального перевода по данному ключу.
+*/
 export const t = <Translation>new Proxy({}, {
     get(_, propName: TKeys) {
-        return getText(propName)
+        const translation = getTranslation(language)
+        if (translation) {
+            let result = translation[propName.removePars()]
+            if (!result) {
+                result = propName
+            }
+            return result
+        }
     }
 })
-
-/**
- * Делает первую букву слова заглавной, а также заменяет _ на пробелы.
-*/
-export function prettify(text: string): string {
-    text = text.replaceAll('_', ' ')
-    const firstChar = text[0].toUpperCase()
-
-    return `${firstChar}${text.slice(1)}`
-}
 
 /**
  * Устанавливает событие по нажатию кнопки.
@@ -39,11 +40,6 @@ export function setHotKey(params: SetHotKeyParams, listener: (event: KeyboardEve
 /**
  * Расширенный вариант document.createElement.
  * Создаёт элемент и устанавливает переданые атрибуты.
- * Также поддерживаются следующие параметры: 
- * - innerText: string - текст элемента.
- * - style: object - стили элемента.
- * - checked: bool - выбран ли элемен checkbox.
- * - listeners: object - события.
 */
 export function create<T>(tag: keyof HTMLElementTagNameMap, attrs?: CreateAttributes): T {
     const element = document.createElement(tag)
@@ -104,26 +100,6 @@ export function getAll<T extends Element>(selector: string): NodeListOf<T> {
 
 /**
  * Возвращает:
- * - текст из глобального перевода по данному ключу.
- * - сам ключ (отсутвии в переводе и при returnKey === true).
- * @param returnKey - возвращать ли ключ в случае отсутвия его в объекте перевода.
-*/
-export function getText(key: TKeys, returnKey: boolean=true): string {
-    const translation = getTranslation(language)
-    if (translation) {
-        let result = translation[removePars(key)]
-        if (!result) {
-            result = getTranslation('EN')[removePars(key)]
-        }
-        if (!result && returnKey) {
-            result = key
-        }
-        return result
-    }
-}
-
-/**
- * Возвращает:
  * - текст из локального перевода.
  * - текст из глобального перевода (при отсутствии в локальном переводе).
  * - ключ (при отсутвия его и в локальном переводе, и в глобальном).
@@ -132,9 +108,9 @@ export function getText(key: TKeys, returnKey: boolean=true): string {
 export function getTextFromTemplate(key: string, tname: string): string {
     const translation = getTemplate(tname).translations
     if (translation[language]) {
-        return translation[language][removePars(key)] || getText(<TKeys> key)
+        return translation[language][key.removePars()] || t[<TKeys> key]
     } else {
-        return getText(<TKeys> key)
+        return t[<TKeys> key]
     }
 }
 
@@ -145,8 +121,8 @@ export function getTextFromTemplate(key: string, tname: string): string {
 */
 export function getDescription(key: string, tname: string): string {
     const desc = getTemplate(tname).descriptions
-    if (desc[removePars(key)]) {
-        return desc[removePars(key)][language]
+    if (desc[key.removePars()]) {
+        return desc[key.removePars()][language]
     }
 }
 
@@ -186,13 +162,4 @@ export function getTemplate(name: string): ITemplate {
 */
 export function addOption(element: HTMLSelectElement, text: string, value?: string): void {
     element.options.add(new Option(text, value || text))
-}
-
-/**
- * Удаляет квадратные скобки из текста.
-*/
-export function removePars(str: string): string {
-    if (str || str === '') {
-        return str.replace('[', '').replace(']', '')
-    }
 }

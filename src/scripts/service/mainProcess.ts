@@ -1,8 +1,8 @@
-import { getText, TKeys } from './funcs'
+import { t, TKeys } from './funcs'
 
 const info: IInfo = ipcRenderer.sendSync('getInfo')
 const errorHandler = (error: Error) => {
-    ipcRenderer.sendSync('function_alertSync_call', getText(<TKeys>`${error}`.replace('Error: ', '')))
+    ipcRenderer.sendSync('function_alertSync_call', t[<TKeys>`${error}`.replace('Error: ', '')])
 }
 /**
  * Предоставляет доступ ко всем публичным методам и функция, установленным в index.js.

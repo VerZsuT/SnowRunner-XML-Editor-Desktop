@@ -32,6 +32,7 @@ readFileToVar('config', postBuildPaths.config)
 checkVar(global.config, () => {
     global.config.lang = 'EN'
     global.config.buildType = 'prod'
+    global.config.setting.resetButton = false
     writeFile(postBuildPaths.config, global.config, () => JSON.stringify(global.config))
 })
 

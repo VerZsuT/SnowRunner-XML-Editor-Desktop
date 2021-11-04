@@ -11,9 +11,7 @@
 
 <script lang='ts'>
 import { defineComponent, ref } from 'vue'
-
-import mainProcess from '../../../service/mainProcess'
-import { get, t } from '../../../service/funcs'
+import { get, t, mainProcess } from '../../../service'
 
 const $header = get<HTMLHeadingElement>('#header')
 

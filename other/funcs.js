@@ -17,7 +17,8 @@ const preBuildPaths = {
     config: join(__dirname, '..', 'src', 'app', 'config.json'),
     package: join(__dirname, '..', 'package.json'),
     packageLock: join(__dirname, '..', 'package-lock.json'),
-    public: join(__dirname, '..', '..', 'sxmle_updater', 'public.json')
+    public: join(__dirname, '..', '..', 'sxmle_updater', 'public.json'),
+    issConfig: join(__dirname, '..', 'installer.config.iss')
 }
 
 /**
@@ -85,12 +86,16 @@ function checkPath(path, callback, throwError=false) {
  * @param {string} varName 
  * @param {string} path 
 */
-function readFileToVar(varName, path) {
+function readFileToVar(varName, path, fromJSON=true) {
     const fileName = basename(path)
 
     if (existsSync(path)) {
         try {
-            global[varName] = JSON.parse(readFileSync(path).toString())
+            if (fromJSON) {
+                global[varName] = JSON.parse(readFileSync(path).toString())
+            } else {
+                global[varName] = readFileSync(path).toString()
+            }
         } catch {
             Log.error(`Не удалось считать ${fileName}`)
         }

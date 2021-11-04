@@ -9,8 +9,8 @@
 <script lang='ts'>
 import { defineComponent, inject, toRefs } from 'vue'
 
-import mainProcess from '../../../service/mainProcess'
-import { getText, Translation } from '../../../service/funcs'
+import { t, mainProcess } from '../../../service'
+import { Translation } from '../../../service/funcs'
 
 export default defineComponent({
     props: {
@@ -31,7 +31,7 @@ export default defineComponent({
     methods: {
         save() {
             if (!this.pathToInitial) {
-                mainProcess.alertSync(getText('NO_GAME_FOLDER'));
+                mainProcess.alertSync(t.NO_GAME_FOLDER)
                 return;
             }
 

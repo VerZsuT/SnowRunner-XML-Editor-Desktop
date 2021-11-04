@@ -415,7 +415,7 @@ div.search {
     margin-left: -150px;
 }
 
-div.search>label[for='search'] {
+div.search > label[for='search'] {
     font-size: 0.7em;
     position: relative;
     bottom: 1.5px;

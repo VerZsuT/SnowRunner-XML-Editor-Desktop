@@ -1,4 +1,4 @@
-import { get, setHotKey } from '../../service/funcs'
+import { get, setHotKey } from '../../service'
 
 const $select = get<HTMLSelectElement>('#info')
 const $input = get<HTMLInputElement>('#input')

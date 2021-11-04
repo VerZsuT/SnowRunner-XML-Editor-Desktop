@@ -18,8 +18,7 @@
 </template>
 
 <script lang='ts'>
-import { t } from '../../../service/funcs'
-import mainProcess from '../../../service/mainProcess'
+import { t, mainProcess } from '../../../service'
 
 export default {
     props: {

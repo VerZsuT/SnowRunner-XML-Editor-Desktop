@@ -1,0 +1,8 @@
+export { default as cargo } from './cargo'
+export { default as engine } from './engine'
+export { default as gearbox } from './gearbox'
+export { default as suspension } from './suspension'
+export { default as trailer } from './trailer'
+export { default as truck } from './truck'
+export { default as wheels } from './wheels'
+export { default as winch } from './winch'

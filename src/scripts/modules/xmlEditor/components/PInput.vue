@@ -22,7 +22,7 @@
 
 <script lang='ts'>
 import { defineComponent } from 'vue'
-import { t } from '../../../service/funcs'
+import { t } from '../../../service'
 
 export default defineComponent({
     props: {

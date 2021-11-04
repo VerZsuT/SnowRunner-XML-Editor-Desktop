@@ -4,7 +4,7 @@ import {
 	Input, 
 	Selectors, 
 	Selector
-} from '../service/templateItems'
+} from '../service'
 
 const cargo: ITemplate = {
 	main: [

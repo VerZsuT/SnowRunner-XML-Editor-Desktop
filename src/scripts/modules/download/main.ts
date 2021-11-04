@@ -1,4 +1,4 @@
-import { get } from '../../service/funcs'
+import { get } from '../../service'
 import './style.css'
 
 const $progress = get<HTMLProgressElement>('#progress')

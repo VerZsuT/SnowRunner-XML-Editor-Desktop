@@ -6,7 +6,7 @@ import {
 	Opt,
 	Selectors,
 	Selector
-} from '../service/templateItems'
+} from '../service'
 
 const gearbox: ITemplate = {
 	main: [

@@ -19,6 +19,12 @@ interface IDownloadParams {
     path?: string
 }
 
+interface ISettings {
+    appId?: string
+    saveWhenReload?: boolean
+    devTools?: boolean
+}
+
 interface ITranslation {
     [key: string]: string
 }

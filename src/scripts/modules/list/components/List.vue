@@ -30,10 +30,7 @@
 /// <reference path='../types.d.ts' />
 
 import { defineComponent, PropType, toRefs } from 'vue'
-
-import { getText, t } from '../../../service/funcs'
-import mainProcess from '../../../service/mainProcess'
-
+import { t, mainProcess } from '../../../service'
 import ListItem from './ListItem.vue'
 
 export default defineComponent({
@@ -68,7 +65,7 @@ export default defineComponent({
                 name: result.name,
                 path: result.path
             };
-            if (mainProcess.confirm(getText('RELAUNCH_PROMPT'))) {
+            if (mainProcess.confirm(t.RELAUNCH_PROMPT)) {
                 mainProcess.reload()
             }
         }

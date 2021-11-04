@@ -2,7 +2,7 @@
     Скрипт преобработки билда.
 
     - Очищает выходную папку out.
-    - Изменяет package.json, package-lock.json.
+    - Изменяет package.json, package-lock.json, installer.config.iss.
     -- Меняет версию на указанную в config.json.
     - Изменяет public.json(sxmle_updater).
     -- Меняет версию на указанную в config.json.
@@ -35,15 +35,22 @@ Log.print('Считывание package-lock.json')
 readFileToVar('packageLock', preBuildPaths.packageLock)
 Log.print('Cчитывание public.json')
 readFileToVar('public', preBuildPaths.public)
+Log.print('Считывание installer.config.iss')
+readFileToVar('issConfig', preBuildPaths.issConfig, false)
 
 Log.separator()
 
 Log.print('Установка значения в переменную package')
-checkVar(global.package, () => package.version = config.version)
+checkVar(global.package, () => global.package.version = global.config.version)
 Log.print('Установка значения в переменную packageLock')
-checkVar(global.packageLock, () => packageLock.version = config.version)
+checkVar(global.packageLock, () => global.packageLock.version = global.config.version)
 Log.print('Установка значения в переменную public')
-checkVar(global.public, () => public.latestVersion = config.version)
+checkVar(global.public, () => global.public.latestVersion = global.config.version)
+Log.print('Установка значения в переменную issConfig')
+checkVar(global.issConfig, () => {
+    const partBefore = global.issConfig.split('MyAppVersion ')[1].split('\n')[0]
+    global.issConfig = global.issConfig.replace(partBefore, `"${global.config.version}"`)
+})
 
 Log.separator()
 
@@ -53,6 +60,8 @@ Log.print('Изменение package-lock.json')
 writeFile(preBuildPaths.packageLock, global.packageLock, () => JSON.stringify(global.packageLock, null, '\t'))
 Log.print('Изменение public.json')
 writeFile(preBuildPaths.public, global.public, () => JSON.stringify(global.public, null, '\t'))
+Log.print('Изменение installer.config.iss')
+writeFile(preBuildPaths.issConfig, global.issConfig, () => global.issConfig)
 
 Log.groupEnd()
 Log.print('Завершено', true)
