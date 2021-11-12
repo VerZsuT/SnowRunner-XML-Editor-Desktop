@@ -8,7 +8,7 @@ import { paths } from '../service'
 import Config from './Config'
 import Dialog from './Dialog'
 import Windows from './Windows'
-import Translations from './Translations'
+import Texts from './Texts'
 import Hasher from './Hasher'
 import Notification from './Notification'
 import Backup from './Backup'
@@ -32,9 +32,9 @@ export default class Checker {
             writeFileSync(paths.config, JSON.stringify(this.config, null, '\t'))
             return true
         } catch {
-            const ru = translations['RU']['ADMIN_REQUIRED_MESSAGE']
-            const en = translations['EN']['ADMIN_REQUIRED_MESSAGE']
-            const de = translations['DE']['ADMIN_REQUIRED_MESSAGE']
+            const ru = texts['RU']['ADMIN_REQUIRED_MESSAGE']
+            const en = texts['EN']['ADMIN_REQUIRED_MESSAGE']
+            const de = texts['DE']['ADMIN_REQUIRED_MESSAGE']
             Windows.loading.setPercent(0)
             Dialog.alert({
                 message: `RU: ${ru}\n\nEN: ${en}\n\nDE: ${de}`,
@@ -164,7 +164,7 @@ export default class Checker {
                         const data = JSON.parse(rawData)
                         if (this.config.version < data.latestVersion) {
                             if (this.config.version >= data.minVersion) {
-                                Windows.openUpdateMessage(data.latestVersion)
+                                Windows.openUpdateWindow(data.latestVersion)
                             } else {
                                 Notification.show('NOTIFICATION', 'ALLOW_NEW_VERSION').then(() => {
                                     shell.openExternal(paths.downloadPage)
@@ -188,22 +188,22 @@ export default class Checker {
         if (!existsSync(this.config.paths.initial)) {
             Dialog.alert({
                 type: 'warning',
-                title: Translations.getText('ERROR'),
-                message: Translations.getText('INITIAL_NOT_FOUND')
+                title: Texts.get('ERROR'),
+                message: Texts.get('INITIAL_NOT_FOUND')
             })
             success = false
         } else if (!existsSync(paths.classes)) {
             Dialog.alert({
                 type: 'warning',
-                title: Translations.getText('ERROR'),
-                message: Translations.getText('CLASSES_NOT_FOUND')
+                title: Texts.get('ERROR'),
+                message: Texts.get('CLASSES_NOT_FOUND')
             })
             success = false
         } else if (this.config.settings.DLC && !existsSync(paths.dlc)) {
             Dialog.alert({
                 type: 'warning',
-                title: Translations.getText('ERROR'),
-                message: Translations.getText('DLC_FOLDER_NOT_FOUND')
+                title: Texts.get('ERROR'),
+                message: Texts.get('DLC_FOLDER_NOT_FOUND')
             })
             this.config.settings.DLC = false
         }

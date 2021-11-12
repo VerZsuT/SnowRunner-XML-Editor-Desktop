@@ -4,8 +4,6 @@ export {
     create,
     get,
     getAll,
-    getTextFromTemplate,
-    getDescription,
     getIngameText,
     getTranslation,
     getTemplate,
@@ -18,7 +16,6 @@ export {
     Input,
     Select,
     Opt,
-    Selectors,
-    Selector
+    Selectors
 } from './templateItems'
 export * as templates from '../templates'

@@ -1,6 +1,6 @@
 import { paths } from '../service'
 import Config from './Config'
-import Translations from './Translations'
+import Texts from './Texts'
 
 /**
  * Овечает за меню программы.
@@ -14,18 +14,18 @@ export default class Menu {
     public static get = (): IMenuTemplate[] => {
         return [
             {
-                label: Translations.getText('FILE_MENU_LABEL'),
+                label: Texts.get('FILE_MENU_LABEL'),
                 submenu: [
                     ...this.ifHasInitial([
                         {
-                            label: Translations.getText('SETTINGS_MENU_ITEM_LABEL'),
+                            label: Texts.get('SETTINGS_MENU_ITEM_LABEL'),
                             role: 'openSettings'
                         },
                         { role: 'separator' }
                     ]),
                     ...this.ifDevBuild(this.ifHasInitial([
                         {
-                            label: Translations.getText('RESET_MENU_ITEM_LABEL'),
+                            label: Texts.get('RESET_MENU_ITEM_LABEL'),
                             role: 'resetConfig'
                         }
                     ])),
@@ -40,27 +40,27 @@ export default class Menu {
                         }
                     ]),
                     {
-                        label: Translations.getText('EXIT_MENU_ITEM_LABEL'),
+                        label: Texts.get('EXIT_MENU_ITEM_LABEL'),
                         role: 'quitApp'
                     }
                 ]
             },
             ...this.ifHasInitial([
                 {
-                    label: Translations.getText('BACKUP_MENU_LABEL'),
+                    label: Texts.get('BACKUP_MENU_LABEL'),
                     submenu: [
                         {
-                            label: Translations.getText('OPEN_BUTTON'),
+                            label: Texts.get('OPEN_BUTTON'),
                             role: 'showFolder',
                             path: paths.backupFolder
                         },
                         { role: 'separator' },
                         {
-                            label: Translations.getText('SAVE_BUTTON'),
+                            label: Texts.get('SAVE_BUTTON'),
                             role: 'saveBackup'
                         },
                         {
-                            label: Translations.getText('RESTORE_MENU_ITEM_LABEL'),
+                            label: Texts.get('RESTORE_MENU_ITEM_LABEL'),
                             role: 'restoreInitial'
                         }
                     ]
@@ -68,24 +68,24 @@ export default class Menu {
             ]),
             ...this.ifHasInitial([
                 {
-                    label: Translations.getText('EPF_MENU_LABEL'),
+                    label: Texts.get('EPF_MENU_LABEL'),
                     submenu: [
                         {
-                            label: Translations.getText('JOIN_EXPORTED_FILES'),
+                            label: Texts.get('JOIN_EXPORTED_FILES'),
                             role: 'joinExported'
                         },
                         {
-                            label: Translations.getText('SEE_EXPORTED_FILE'),
+                            label: Texts.get('SEE_EXPORTED_FILE'),
                             role: 'seeExported'
                         }
                     ]
                 }
             ]),
             {
-                label: Translations.getText('HELP_MENU_LABEL'),
+                label: Texts.get('HELP_MENU_LABEL'),
                 submenu: [
                     {
-                        label: Translations.getText('HOW_TO_USE_TITLE'),
+                        label: Texts.get('HOW_TO_USE_TITLE'),
                         role: 'openURL',
                         url: 'https://snowrunner.mod.io/guides/snowrunner-xml-editor'
                     },

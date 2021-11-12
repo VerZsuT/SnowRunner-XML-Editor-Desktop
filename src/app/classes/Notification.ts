@@ -1,7 +1,7 @@
 import { Notification as ElNotification } from 'electron'
 
-import type RU from '../../scripts/translations/RU.json'
-import Translations from './Translations'
+import type RU from '../../scripts/texts/RU.json'
+import Texts from './Texts'
 import { paths } from '../service'
 
 type TKeys = keyof typeof RU
@@ -17,9 +17,9 @@ export default class Notification {
         return new Promise(resolve => {
             if (ElNotification.isSupported()) {
                 const notification = new ElNotification({
-                    title: Translations.getText(titleKey),
+                    title: Texts.get(titleKey),
                     icon: paths.icon,
-                    body: Translations.getText(messageKey)
+                    body: Texts.get(messageKey)
                 })
     
                 notification.show()

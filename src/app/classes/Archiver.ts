@@ -4,7 +4,7 @@ import { join, basename } from 'path'
 
 import { paths } from '../service'
 import Config from './Config'
-import Translations from './Translations'
+import Texts from './Texts'
 import Windows from './Windows'
 
 /**
@@ -41,9 +41,9 @@ export default class Archiver {
     */
     public static unpackMain = (noLock?: boolean) => {
         return new Promise(resolve => {
-            const loading = Windows.openDownload(noLock)
+            const loading = Windows.openLoading(noLock)
             loading.once('show', () => {
-                loading.setText(Translations.getText('UNPACKING'))
+                loading.setText(Texts.get('UNPACKING'))
             })
     
             if (existsSync(paths.mainTemp)) {
@@ -62,21 +62,19 @@ export default class Archiver {
     /**
      * Распаковывает XML файлы модификации из файла по переданному пути.
     */
-    public static unpackMod = (absolutePath: string) => {
+    public static unpackMod = (pathToFile: string) => {
         return new Promise((resolve, reject) => {
-            const modName = join(paths.modsTemp, basename(absolutePath, '.pak'))
+            const pathToDir = join(paths.modsTemp, basename(pathToFile, '.pak'))
             try {
                 if (!existsSync(paths.modsTemp)) {
                     mkdirSync(paths.modsTemp)
                 }
         
-                if (existsSync(modName)) {
-                    rmSync(modName, {recursive: true})
+                if (existsSync(pathToDir)) {
+                    rmSync(pathToDir, {recursive: true})
                 }
-                mkdirSync(modName);
-                this.unpack(absolutePath, modName, true).then(() => resolve(null))
-                
-                resolve(null)
+                mkdirSync(pathToDir);
+                this.unpack(pathToFile, pathToDir, true).then(() => resolve(null))
             } catch {
                 reject()
             }

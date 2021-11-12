@@ -109,13 +109,13 @@ interface ILocal {
 interface Window {
     ipcRenderer: Electron.IpcRenderer
     config: IConfig
-    translations: any
+    texts: any
     local: ILocal
     paths: IPaths
 }
 
 declare const ipcRenderer: Electron.IpcRenderer
 declare const config: IConfig
-declare const translations: any
+declare const texts: any
 declare const local: ILocal
 declare const paths: IPaths

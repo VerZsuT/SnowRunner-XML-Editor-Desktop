@@ -55,19 +55,19 @@ function buildMenu(template: IMenuTemplate, root?: boolean): HTMLDivElement | HT
                 onclick = () => mainProcess.openLink(template.url)
             break
             case 'showFolder':
-                onclick = () => mainProcess.showFolder(template.path)
+                onclick = () => mainProcess.openPath(template.path)
             break
             case 'resetConfig':
                 onclick = () => mainProcess.resetConfig()
             break
             case 'restoreInitial':
-                onclick = () => mainProcess.restoreInitial()
+                onclick = () => mainProcess.recoverFromBackup()
             break
             case 'joinExported':
-                onclick = () => mainProcess.joinExported()
+                onclick = () => mainProcess.joinEPF()
             break
             case 'seeExported':
-                onclick = () => mainProcess.seeExported()
+                onclick = () => mainProcess.seeEPF()
             break
             case 'saveBackup':
                 onclick = () => {
@@ -76,7 +76,7 @@ function buildMenu(template: IMenuTemplate, root?: boolean): HTMLDivElement | HT
                 }
             break
             case 'devTools':
-                onclick = () => mainProcess.openDevTools()
+                onclick = () => mainProcess.toggleDevTools()
                 setHotKey({
                     key: 'KeyI',
                     ctrlKey: true,

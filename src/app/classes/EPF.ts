@@ -3,7 +3,7 @@ import { basename } from 'path'
 
 import Dialog from './Dialog'
 import Settings from './Settings'
-import Translations from './Translations'
+import Texts from './Texts'
 
 /**
  * Отвечает за работу с .epf файлами.
@@ -44,7 +44,7 @@ export default class EPF {
                 writeFileSync(pathToSave, JSON.stringify(result, null, '\t'))
                 Dialog.alert({
                     title: this.settings.appId,
-                    message: `${Translations.getText('SUCCESS_JOIN')}\n- ${files.map((value) => basename(value)).join('\n- ')}`
+                    message: `${Texts.get('SUCCESS_JOIN')}\n- ${files.map((value) => basename(value)).join('\n- ')}`
                 })
             }
         }
@@ -89,7 +89,7 @@ export default class EPF {
     
         Dialog.alert({
             title: this.settings.appId,
-            message: `${Translations.getText('SEE_EXPORTED_MESSAGE')}\n${result.join('\n\n')}`
+            message: `${Texts.get('SEE_EXPORTED_MESSAGE')}\n${result.join('\n\n')}`
         })
     }
 }

@@ -11,27 +11,27 @@ module.exports = {
                     config: './configs/webpack.renderer.js',
                     entryPoints: [
                         {
-                            name: 'main',
+                            name: 'categories',
                             html: './src/pages/template.html',
-                            js: './src/scripts/modules/main/main.ts',
+                            js: './src/scripts/modules/categories/main.ts',
                             preload: {
                                 js: './src/app/mainPreload.ts'
                             }
                         },
                         {
-                            name: 'first_steps',
+                            name: 'setup',
                             html: './src/pages/template.html',
-                            js: './src/scripts/modules/firstSteps/main.ts',
+                            js: './src/scripts/modules/setup/main.ts',
                             preload: {
-                                js: './src/scripts/modules/firstSteps/preload.ts'
+                                js: './src/scripts/modules/setup/preload.ts'
                             }
                         },
                         {
-                            name: 'download',
-                            html: './src/pages/download.html',
-                            js: './src/scripts/modules/download/main.ts',
+                            name: 'loading',
+                            html: './src/pages/loading.html',
+                            js: './src/scripts/modules/loading/main.ts',
                             preload: {
-                                js: './src/scripts/modules/firstSteps/preload.ts'
+                                js: './src/scripts/modules/setup/preload.ts'
                             }
                         },
                         {
@@ -61,14 +61,14 @@ module.exports = {
                         {
                             name: 'update',
                             html: './src/pages/template.html',
-                            js: './src/scripts/modules/updateMessage/main.ts'
+                            js: './src/scripts/modules/updateWindow/main.ts'
                         },
                         {
                             name: 'editor',
-                            html: './src/pages/xmlEditor.html',
-                            js: './src/scripts/modules/xmlEditor/main.ts',
+                            html: './src/pages/editor.html',
+                            js: './src/scripts/modules/editor/main.ts',
                             preload: {
-                                js: './src/scripts/modules/xmlEditor/preload.ts'
+                                js: './src/scripts/modules/editor/preload.ts'
                             }
                         }
                     ]

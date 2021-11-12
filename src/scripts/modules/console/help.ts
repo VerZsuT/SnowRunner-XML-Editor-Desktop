@@ -1,5 +1,5 @@
 const help = {
-    help: '- help [<command_name>]\n<command_name> - имя команды.\nПомощь по командам консоли.',
+    help: '- help [cmd_name]\ncmd_name - имя команды.\nПомощь по командам консоли.',
     exit: '- exit\nЗакрытие консоли.',
     quit: '- quit\nЗакрытие программы.',
     version: '- version\nТекущая версия программы.',
@@ -10,12 +10,12 @@ const help = {
     set: '- set <selector> <attribute> <value>\nНаходит элемент xml файла по селектору и устанавливает значение атрибута.\nВажно! Селектор и значение должны быть БЕЗ ПРОБЕЛОВ.',
     addMod: '- addMod\nОткрывает окно выбора .pak файла модификации и добавляет его в программу.',
     delMod: '- delMod <mod_id>\nУдаляет указанную модификацию из программы.',
-    devTools: '- devTools {enable|disable}\nВключает/выключает devTools на всех последующих страницах.',
-    sset: '- sset <setting_name> {true|false}\nУстанавливает значение настройки.',
-    backup: '- backup {save|restore}\nСохраняет/восстанавливает бэкап initial.pak',
-    archive: '- archive {save|unpack}\nСохраняет изменения или распаковывает initial.pak',
-    lang: '- lang {RU|EN|DE}\nУстанавливает язык перевода программы.',
-    config: '- config {import|export}\nИмпорт/экспорт конфиг-файла.',
+    devTools: '- devTools <"enable"|"disable">\nВключает/выключает devTools на всех последующих страницах.',
+    sset: '- sset <setting_name> <"true"|"false">\nУстанавливает значение настройки.',
+    backup: '- backup <"save"|"restore">\nСохраняет/восстанавливает бэкап initial.pak',
+    archive: '- archive <"save"|"unpack">\nСохраняет изменения или распаковывает initial.pak',
+    lang: '- lang <"RU"|"EN"|"DE">\nУстанавливает язык перевода программы.',
+    config: '- config <"import"|"export">\nИмпорт/экспорт конфиг-файла.',
     toString: () => {
         const array = []
         for (const cmdName in help) {

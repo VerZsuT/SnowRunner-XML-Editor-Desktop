@@ -21,20 +21,20 @@ export default class Updater {
     public static download = (params: IDownloadParams, cb: (data?: any)=>any) => {
         if (params.array) {
             if (params.isRoot) {
-                params.downloadPage.setCount(params.array.length)
+                params.loadingPage.setCount(params.array.length)
             }
             const { url, path } = params.array[0]
-            params.downloadPage.setText(basename(path))
+            params.loadingPage.setText(basename(path))
             this.download({
                 url: url,
                 path: path,
-                downloadPage: params.downloadPage
+                loadingPage: params.loadingPage
             }, () => {
                 cb();
                 if (params.array.length > 1) {
                     this.download({
                         array: params.array.slice(1),
-                        downloadPage: params.downloadPage
+                        loadingPage: params.loadingPage
                     }, cb)
                 }
             })
@@ -58,19 +58,19 @@ export default class Updater {
             }
             else {
                 const file = createWriteStream(params.path)
-                if (params.downloadPage) {
+                if (params.loadingPage) {
                     const len = parseInt(res.headers['content-length'], 10)
                     let cur = 0
     
                     res.on("data", chunk => {
                         cur += chunk.length
-                        params.downloadPage.setPercent((100.0 * (cur / len)).toFixed(2))
+                        params.loadingPage.setPercent((100.0 * (cur / len)).toFixed(2))
                     })
                 }
     
                 res.pipe(file)
                 res.on('end', () => {
-                    params.downloadPage.success()
+                    params.loadingPage.success()
                     file.on('close', cb)
                     file.close()
                 })
@@ -82,7 +82,7 @@ export default class Updater {
      * Запускает процесс обновления программы.
     */
     public static update = () => {
-        const page = Windows.openDownload()
+        const page = Windows.openLoading()
         let flagToReload = false
         page.once('show', () => {
             page.download()
@@ -126,7 +126,7 @@ export default class Updater {
             }
             this.download({
                 array: toDownload,
-                downloadPage: page,
+                loadingPage: page,
                 isRoot: true,
             }, () => {
                 toCreateOrChange = toCreateOrChange.slice(1)

@@ -1,5 +1,5 @@
 import { templates } from './index'
-import type RU from '../translations/RU.json'
+import type RU from '../texts/RU.json'
 import '../../app/extendString'
 
 const language = config.lang
@@ -12,9 +12,9 @@ export type Translation = {[name in TKeys]: string}
 */
 export const t = <Translation>new Proxy({}, {
     get(_, propName: TKeys) {
-        const translation = getTranslation(language)
-        if (translation) {
-            let result = translation[propName.removePars()]
+        const texts = getTranslation(language)
+        if (texts) {
+            let result = texts[propName.removePars()]
             if (!result) {
                 result = propName
             }
@@ -99,43 +99,15 @@ export function getAll<T extends Element>(selector: string): NodeListOf<T> {
 }
 
 /**
- * Возвращает:
- * - текст из локального перевода.
- * - текст из глобального перевода (при отсутствии в локальном переводе).
- * - ключ (при отсутвия его и в локальном переводе, и в глобальном).
- * @param tname - имя шаблона, откуда будет взял локальный перевод.
-*/
-export function getTextFromTemplate(key: string, tname: string): string {
-    const translation = getTemplate(tname).translations
-    if (translation[language]) {
-        return translation[language][key.removePars()] || t[<TKeys> key]
-    } else {
-        return t[<TKeys> key]
-    }
-}
-
-
-/**
- * Возвращает описание по ключу в шаблоне с указанными именем.
- * @param tname - имя шаблона.
-*/
-export function getDescription(key: string, tname: string): string {
-    const desc = getTemplate(tname).descriptions
-    if (desc[key.removePars()]) {
-        return desc[key.removePars()][language]
-    }
-}
-
-/**
  * Возвращает внутриигровой перевод по ключу.
  * @param modId - id модификации.
 */
 export function getIngameText(key: string, modId?: string): string {
     let value: string
-    if (modId && translations.mods[modId]) {
-        value = translations.mods[modId][key]
+    if (modId && texts.mods[modId]) {
+        value = texts.mods[modId][key]
     } else {
-        value = translations.ingame[key]
+        value = texts.ingame[key]
     }
 
     if (value) {
@@ -147,7 +119,7 @@ export function getIngameText(key: string, modId?: string): string {
  * Возвращает объект перевода с данным именем.
 */
 export function getTranslation(name: string): Translation {
-    return translations[name]
+    return texts[name]
 }
 
 /**

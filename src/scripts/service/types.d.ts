@@ -22,7 +22,6 @@ type TemplateType = 'multiply' | 'single'
 type InputType = 'text' | 'number' | 'coordinates' | 'file'
 type InputNumberType = 'int' | 'float'
 type GroupNameType = 'static' | 'computed' | 'tagName'
-type TemplateChildren = ICGroup | ICInput | ICSelect | ICTemplate
 
 interface InputAreas {
     red?: [number, number][]
@@ -30,20 +29,21 @@ interface InputAreas {
     yellow?: [number, number][]
 }
 
-interface TInputElementCParams {
+interface TInputElementCParams<T> {
     attribute: string
     text: string
     default?: string | number
-    selector?: string
+    selector?: keyof T
     bold?: boolean
     onlyDeveloper?: boolean
     canAddTag?: boolean
     desc?: string
 }
 
-interface TTemplateCParams {
+interface TTemplateCParams<T> {
     type?: TemplateType
-    itemSelector?: string
+    itemSelector?: keyof T
+    selectors?: T
 }
 
 interface ICTemplate {
@@ -66,14 +66,14 @@ interface GetParamsProps {
 
 type TemplateGetParams = (IGroupGetParams | IInputGetParams | ISelectGetParams)[]
 
-interface TGroupCParams {
+interface TGroupCParams<T> {
     name?: string
     nameType?: GroupNameType
-    nameSelector?: string
-    resNameSelector?: string
+    nameSelector?: keyof T
+    resNameSelector?: keyof T
     nameAttribute?: string
     resNameAttribute?: string
-    defaultSelector?: string
+    defaultSelector?: keyof T
     withCounter?: boolean
 }
 
@@ -87,7 +87,7 @@ interface IGroupGetParams {
     groupItems: any
 }
 
-interface TInputCParams extends TInputElementCParams {
+interface TInputCParams<T> extends TInputElementCParams<T> {
     type?: InputType
     min?: number
     max?: number
@@ -152,35 +152,9 @@ interface ICOption {
     value: string
 }
 
-interface TSelectorCParams {
-    id: string
-    value: string
-}
-
-interface ICSelector {
-    id: string
-    value: string
-}
-
-interface ICSelectors {
-    toObject(): {
-        [selector: string]: string
-    }
-}
-
 interface ITemplate {
-    main: [ICTemplate, ICSelectors]
+    template: ICTemplate
     selector: string
-    descriptions: {
-        [key: string]: {
-            [language: string]: string
-        }
-    }
-    translations: {
-        [language: string]: {
-            [key: string]: string
-        }
-    }
 }
 
 interface ITemplates {

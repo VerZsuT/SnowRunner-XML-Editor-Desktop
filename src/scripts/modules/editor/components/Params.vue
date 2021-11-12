@@ -49,16 +49,12 @@ export default defineComponent({
                 }
             }
 
-            return this.parseTemplate(template.main, name)
+            return this.parseTemplate(template.template, name)
         }
     },
     methods: {
-        parseTemplate(obj: [ICTemplate, ICSelectors], name: string) {
-            const selectors = obj[1].toObject()
-            const template = obj[0]
-
+        parseTemplate(template: ICTemplate, name: string) {
             return this.filt(template.getParams({
-                selectors: selectors,
                 fileDOM: this.fileDOM,
                 templateName: name
             }))

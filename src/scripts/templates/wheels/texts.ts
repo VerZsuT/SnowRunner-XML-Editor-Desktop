@@ -1,0 +1,101 @@
+export const descs = {
+	RU: {
+		price: 'Цена самого автомобиля (без учёта составляющих)',
+		damageCapacity: 'Запас прочности колёс',
+		radius: 'Базовый радиус колёс (без учёта изменения в файле конкретной машины)',
+		width: 'Ширина колёс. Также этот параметр определяет ширину следа и область налипания грязи на колесо',
+		unlockByExploration: 'Способ разблокировки автомобиля',
+		unlockByRank: 'Уровень разблокировки автомобиля',
+		id: 'ID данных колёс',
+		bodyFriction: 'Коэффициент сцепления на твёрдом грунте',
+		bodyFrictionAsphalt: 'Коэффициент сцепления на асфальте (статических камнях)',
+		substanceFriction: 'Коэффициент сцепления в грязи',
+		ignoreIse: 'Будет ли колесо ехать по льду как цепное'
+	},
+	EN: {
+		price: 'Der Preis des Autos selbst (ohne die Komponenten)',
+		damageCapacity: 'Wheel safety margin',
+		radius: 'The base radius of the wheels (without taking into account changes in the file of a specific machine)',
+		width: 'The width of the wheels. This parameter also determines the width of the track and the area of dirt sticking to the wheel',
+		unlockByExploration: 'How to unlock the car',
+		unlockByRank: 'Car Unlock Level',
+		id: 'Wheel data ID',
+		bodyFriction: 'Coefficient of adhesion on solid ground',
+		bodyFrictionAsphalt: 'Coefficient of adhesion on asphalt (static stones)',
+		substanceFriction: 'Coefficient of grip in mud',
+		ignoreIse: 'Will the wheel ride on the ice like a chain wheel'
+	},
+	DE: {
+		price: 'The price of the car itself (excluding components)',
+		damageCapacity: 'Sicherheitsmarge der Räder',
+		radius: 'Basisradius der Räder (ohne Änderungen in der Datei einer bestimmten Maschine)',
+		width: 'Breite der Räder. Dieser Parameter bestimmt auch die Breite der Spur und den Bereich, in dem sich Schmutz am Rad anhaftet',
+		unlockByExploration: 'Methode zum Entsperren des Autos',
+		unlockByRank: 'Auto entsperren Ebene',
+		id: 'Rad-ID',
+		bodyFriction: 'Koeffizient der Haftung auf hartem Boden',
+		bodyFrictionAsphalt: 'Koeffizient der Haftung auf Asphalt (statische Steine)',
+		substanceFriction: 'Koeffizient der Kupplung im Schlamm',
+		ignoreIse: 'Wird das Rad wie eine Kette auf dem Eis fahren'
+	}
+}[config.lang]
+
+export const texts = {
+	EN: {
+		id: 'ID',
+		general: 'General',
+		damageCapacity: 'Damage capacity',
+		width: 'Width',
+		radius: 'Radius',
+		bodyFriction: 'Body friction',
+		bodyFrictionAsphalt: 'Body friction asphalt',
+		substanceFriction: 'Substance friction',
+		ignoreIse: 'Rides on ice',
+		yes: 'Yes',
+		no: 'No',
+		unlockGroupName: 'Unlock',
+		price: 'Price',
+		unlockByExploration: 'Unlock method',
+		findOnMap: 'Find on map',
+		byRank: 'By rank',
+		unlockByRank: 'Unlock level'
+	},
+	RU: {
+		id: 'ID',
+		width: 'Ширина',
+		radius: 'Радиус',
+		general: 'Общие настройки',
+		damageCapacity: 'Прочность',
+		bodyFriction: 'Сцепление на бездорожье',
+		bodyFrictionAsphalt: 'Сцепление на асфальте',
+		substanceFriction: 'Сцепление в грязи',
+		ignoreIse: 'Едет по льду',
+		yes: 'Да',
+		no: 'Нет',
+		unlockGroupName: 'Разблокировка',
+		price: 'Цена',
+		unlockByExploration: 'Способ разблокировки',
+		findOnMap: 'Найти на карте',
+		byRank: 'По достижению уровня',
+		unlockByRank: 'Уровень разблокировки'
+	},
+	DE: {
+		id: 'ID',
+		width: 'Breite',
+		radius: 'Radius',
+		general: 'Allgemeines',
+		damageCapacity: 'Schadenskapazität',
+		bodyFriction: 'Körperreibung',
+		bodyFrictionAsphalt: 'Körperreibung asphalt',
+		substanceFriction: 'Substanzreibung',
+		ignoreIse: 'Fahrten auf Eis',
+		yes: 'Ja',
+		no: 'Nein',
+		unlockGroupName: 'Freischalten',
+		price: 'Preis',
+		unlockByExploration: 'Methode entsperren',
+		findOnMap: 'Auf Karte finden',
+		byRank: 'Nach Rang',
+		unlockByRank: 'Level freischalten'
+	}
+}[config.lang]

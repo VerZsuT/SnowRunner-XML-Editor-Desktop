@@ -12,7 +12,7 @@ import {
     Hasher,
     MainProcess,
     Settings,
-    Translations,
+    Texts,
     Updater,
     Windows,
     Menu
@@ -46,13 +46,13 @@ process.once('uncaughtExceptionMonitor', app.quit)
 */
 function initProgram() {
     setPublic()
-    Windows.loading = Windows.openDownload(true)
+    Windows.loading = Windows.openLoading(true)
     Windows.loading.once('show', () => {
-        Windows.loading.setText(Translations.getText('LOADING'))
+        Windows.loading.setText(Texts.get('LOADING'))
         if (!Checker.checkAdmin()) return
         if (!config.paths.initial) {
             if (!Checker.checkExportedConfig()) {
-                Windows.openFirstSteps()
+                Windows.openSetup()
                 Checker.checkUpdate()
             } else {
                 reloadProgram()
@@ -60,18 +60,18 @@ function initProgram() {
         } else {
             if (Checker.checkPaths()) {
                 Checker.checkInitialSum().then(() => {
-                    Translations.getIngame().then(() => {
+                    Texts.addIngame().then(() => {
                         config.paths.dlc = paths.dlc
                         config.paths.classes = paths.classes
                         config.paths.mods = paths.modsTemp
                         
                         initDLC()
                         initMods().then(() => {
-                            Translations.getMods().then(() => {
-                                Windows.openMain().then(() => Checker.checkUpdate())
+                            Texts.addFromMods().then(() => {
+                                Windows.openCategories().then(() => Checker.checkUpdate())
                             })
                         }, () => {
-                            Windows.openMain()//.then(() => Checker.checkUpdate())
+                            Windows.openCategories().then(() => Checker.checkUpdate())
                         })
                     })
                 })
@@ -87,8 +87,8 @@ function initProgram() {
 */
 function setPublic() {
     MainProcess.setPubicProps({
-        invalidMod: () => invalidMods,
-        translations: () => Translations.obj,
+        invalidMods: () => invalidMods,
+        texts: () => Texts.obj,
         menu: () => Menu.get(),
         paths: () => paths,
         config: [
@@ -98,15 +98,15 @@ function setPublic() {
     })
 
     MainProcess.setPublicFuncs({
-        saveToOriginal: (modId: string) => {
+        updateFiles: (modId: string) => {
             if (modId) {
                 try {
                     Archiver.update(join(paths.modsTemp, modId), config.modsList[modId].path)
                     Hasher.saveModHash(modId, config.modsList[modId].path)
                 } catch (err) {
                     Dialog.alert({
-                        title: Translations.getText('ERROR'),
-                        message: Translations.getText('SAVE_MOD_ERROR')
+                        title: Texts.get('ERROR'),
+                        message: Texts.get('SAVE_MOD_ERROR')
                     })
                 }
             } else {
@@ -115,16 +115,13 @@ function setPublic() {
                     Hasher.saveInitialHash()
                 } catch (err) {
                     Dialog.alert({
-                        title: Translations.getText('ERROR'),
-                        message: Translations.getText('SAVE_ORIGINAL_ERROR')
+                        title: Texts.get('ERROR'),
+                        message: Texts.get('SAVE_ORIGINAL_ERROR')
                     })
                 }
             }
         },
-        openDevTools: () => {
-            Windows.currentWindow.webContents.toggleDevTools()
-        },
-        getFileData: (filePath: string, reserveFilePath?: string) => {
+        readFile: (filePath: string, reserveFilePath?: string) => {
             if (existsSync(filePath)) {
                 const data = readFileSync(filePath)
                 return data.toString()
@@ -135,11 +132,7 @@ function setPublic() {
                 throw new Error('READ_FILE_ERROR')
             }
         },
-        setDevMode: value => {
-            config.settings.devMode = value
-            reloadProgram()
-        },
-        setFileData: (path, data) => {
+        writeFile: (path, data) => {
             try {
                 writeFileSync(path, data)
             } catch {
@@ -163,21 +156,21 @@ function setPublic() {
             const index = Dialog.alert({
                 message: message,
                 title: settings.appId,
-                buttons: ['OK', Translations.getText('CLOSE')],
+                buttons: ['OK', Texts.get('CLOSE')],
                 noLink: true
             })
             return index === 0
         },
-        joinExported: EPF.join,
-        seeExported: EPF.see,
+        joinEPF: EPF.join,
+        seeEPF: EPF.see,
         importConfig: Checker.checkExportedConfig,
         exportConfig: Config.export,
         reload: reloadProgram,
         quit: app.quit,
         openLink: (path: string) => {shell.openExternal(path)},
-        showFolder: (path: string) => {shell.openPath(path)},
+        openPath: (path: string) => {shell.openPath(path)},
 
-        openXMLEditor: (bridge?: boolean) => {Windows.openXMLEditor(bridge)},
+        openEditor: (bridge?: boolean) => {Windows.openEditor(bridge)},
         openList: Windows.openList,
         openSettings: Windows.openSettings,
         openConsole: Windows.openConsole,
@@ -190,14 +183,21 @@ function setPublic() {
         saveBackup: (reloadAfter?: boolean) => {Backup.save(reloadAfter)},
         copyBackup: Backup.copy,
         resetConfig: Config.reset,
-        restoreInitial: Backup.restore,
+        recoverFromBackup: Backup.recover,
         saveConfig: Config.save,
-        saveInitialSum: Hasher.saveInitialHash,
+        saveInitialHash: Hasher.saveInitialHash,
         checkUpdate: Checker.checkUpdate,
         update: Updater.update,
         unpackFiles: Archiver.unpackMain,
+        setDevMode: value => {
+            config.settings.devMode = value
+            reloadProgram()
+        },
         enableDevTools: () => settings.devTools = true,
-        disableDevTools: () => settings.devTools = false
+        disableDevTools: () => settings.devTools = false,
+        toggleDevTools: () => {
+            Windows.currentWindow.webContents.toggleDevTools()
+        }
     })
 }
 

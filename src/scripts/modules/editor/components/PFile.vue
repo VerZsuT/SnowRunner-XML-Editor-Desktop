@@ -107,7 +107,7 @@ export default {
                     local.set('importData', JSON.stringify(importData))
                 }
             }
-            mainProcess.openXMLEditor(bridge)
+            mainProcess.openEditor(bridge)
         },
         getItems() {
             const array = this.item.value.split(',').map((value) => value.trim())

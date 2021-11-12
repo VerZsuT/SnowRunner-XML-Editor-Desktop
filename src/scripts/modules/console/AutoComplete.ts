@@ -1,4 +1,5 @@
 import { get, setHotKey } from '../../service'
+import help from './help'
 
 const $select = get<HTMLSelectElement>('#info')
 const $input = get<HTMLInputElement>('#input')
@@ -203,7 +204,6 @@ const presets: ACPresets = {
 }
 
 const keys: ACKeys = combine([
-    'help',
     'exit',
     'quit',
     'version',
@@ -214,9 +214,10 @@ const keys: ACKeys = combine([
     'set',
     'addMod'
 ], {
+    help: Object.keys(help).filter(value=>value!=='toString'),
     delMod: getModsList(),
     devTools: [
-        'enable', 
+        'enable',
         'disable'
     ],
     config: [
@@ -232,16 +233,16 @@ const keys: ACKeys = combine([
         'devMode'
     ], presets.bool),
     backup: [
-        'save', 
+        'save',
         'restore'
     ],
     archive: [
-        'save', 
+        'save',
         'unpack'
     ],
     lang: [
-        'RU', 
-        'EN', 
+        'RU',
+        'EN',
         'DE'
     ]
 })

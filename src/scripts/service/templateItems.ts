@@ -1,16 +1,18 @@
-import { getTextFromTemplate, getIngameText, getDescription } from './funcs'
+import { getIngameText } from './funcs'
 
-class TemplateInputElement {
+type TemplateChildren<T extends {[selector: string]: string}> = CGroup<T>|CInput<T>|CSelect<T>|CTemplate<T>
+
+class TemplateInputElement<T> {
     protected attribute: string
     protected text: string
     protected default: string | number
-    protected selector: string
+    protected selector: keyof T
     protected bold: boolean
     protected onlyDeveloper: boolean
     protected canAddTag: boolean
     protected desc: string
 
-    constructor(params: TInputElementCParams) {
+    constructor(params: TInputElementCParams<T>) {
         this.attribute = params.attribute
         this.text = params.text
         this.selector = params.selector
@@ -18,20 +20,22 @@ class TemplateInputElement {
         this.onlyDeveloper = params.onlyDeveloper
         this.default = params.default
         this.canAddTag = params.canAddTag
-        this.desc = params.desc
+        this.desc = params.desc ?? ''
     }
 }
 
-class CTemplate implements ICTemplate {
-    private children: TemplateChildren[]
+class CTemplate<T extends {[selector: string]: string}> implements ICTemplate {
+    private children: TemplateChildren<T>[]
     private replaceName = 'CYCLE'
     private type: TemplateType
-    private itemSelector: string
+    private itemSelector: keyof T
+    private selectors: T
 
-    constructor(params: TTemplateCParams, children: TemplateChildren[]) {
+    constructor(params: TTemplateCParams<T>, children: TemplateChildren<T>[]) {
         this.children = children
         this.type = params.type
         this.itemSelector = params.itemSelector
+        this.selectors = params.selectors
     }
 
     getParams(props: GetParamsProps): TemplateGetParams {
@@ -39,7 +43,7 @@ class CTemplate implements ICTemplate {
             defaultSelector = null,
             tCycleNumber = 1,
             tNumber = 1,
-            selectors,
+            selectors = this.selectors,
             fileDOM,
             templateName
         } = props
@@ -56,7 +60,7 @@ class CTemplate implements ICTemplate {
         let params = []
         let newSelectors = {}
         if (multiply) {
-            const items = fileDOM.querySelectorAll(selectors[this.itemSelector.removePars()])
+            const items = fileDOM.querySelectorAll(selectors[<string>this.itemSelector])
             const name = this.replaceName + tNumber
             let currentNum = 1
             for (const item of items) {
@@ -100,18 +104,18 @@ class CTemplate implements ICTemplate {
     }
 }
 
-class CGroup implements ICGroup {
-    private children: TemplateChildren[]
+class CGroup<T extends {[selector: string]: string}> implements ICGroup {
+    private children: TemplateChildren<T>[]
     private name: string
     private nameType: GroupNameType
-    private nameSelector: string
-    private resNameSelector: string
+    private nameSelector: keyof T
+    private resNameSelector: keyof T
     private nameAttribute: string
     private resNameAttribute: string
-    private defaultSelector: string
+    private defaultSelector: keyof T
     private withCounter: boolean
 
-    constructor(params: TGroupCParams, children: TemplateChildren[]) {
+    constructor(params: TGroupCParams<T>, children: TemplateChildren<T>[]) {
         this.children = children
         this.name = params.name
         this.nameType = params.nameType ?? 'static'
@@ -127,9 +131,9 @@ class CGroup implements ICGroup {
         let params = []
         let groupName: string
         if (this.nameType !== 'static') {
-            const nameSelector = this.nameSelector.removePars()
-            const resNameSelector = this.resNameSelector.removePars()
-            const $nameElement = props.fileDOM.querySelector(props.selectors[nameSelector] || nameSelector)
+            const nameSelector = <string>this.nameSelector
+            const resNameSelector = <string>this.resNameSelector
+            const $nameElement = props.fileDOM.querySelector(props.selectors[nameSelector] ||<string>nameSelector)
             const $resNameElement = props.fileDOM.querySelector(props.selectors[resNameSelector] || resNameSelector)
 
             if (!$nameElement && !$resNameElement) {
@@ -148,13 +152,12 @@ class CGroup implements ICGroup {
         for (const child of this.children) {
             params = params.concat(child.getParams({
                 selectors: props.selectors,
-                defaultSelector: this.defaultSelector? this.defaultSelector.removePars() :  (props.defaultSelector || null),
+                defaultSelector: <string>(this.defaultSelector? this.defaultSelector :  (props.defaultSelector || null)),
                 tNumber: props.tNumber,
                 fileDOM: props.fileDOM,
                 templateName: props.templateName
             }))
         }
-        groupName = getTextFromTemplate(groupName, props.templateName)
         if (this.withCounter) {
             groupName += ` ${props.cycleNumber}`
         }
@@ -167,7 +170,7 @@ class CGroup implements ICGroup {
     }
 }
 
-class CInput extends TemplateInputElement implements ICInput {
+class CInput<T> extends TemplateInputElement<T> implements ICInput {
     private type: InputType
     private min: number
     private max: number
@@ -176,7 +179,7 @@ class CInput extends TemplateInputElement implements ICInput {
     private fileType: string
     private areas: InputAreas
 
-    constructor(params: TInputCParams) {
+    constructor(params: TInputCParams<T>) {
         super(params)
         this.type = params.type ?? 'number'
         this.min = params.min ?? (params.numberType === 'float'? 0.01 : 0)
@@ -188,7 +191,7 @@ class CInput extends TemplateInputElement implements ICInput {
     }
 
     getParams(props: GetParamsProps): [IInputGetParams] | [] {
-        const selector = this.selector? (props.selectors[this.selector.removePars()] || this.selector.removePars()) : props.selectors[props.defaultSelector]
+        const selector = this.selector? (props.selectors[<string>this.selector] || <string>this.selector) : props.selectors[props.defaultSelector]
         let value: string
 
         if (!props.fileDOM.querySelector(selector)) {
@@ -202,7 +205,7 @@ class CInput extends TemplateInputElement implements ICInput {
 
         return [{
             name: this.attribute,
-            text: getTextFromTemplate(this.text, props.templateName),
+            text: this.text,
             value: value,
             selector: selector,
             paramType: 'input',
@@ -215,23 +218,23 @@ class CInput extends TemplateInputElement implements ICInput {
             numberType: this.numberType,
             fileType: this.fileType,
             bold: this.bold,
-            desc: getDescription(this.desc, props.templateName),
+            desc: this.desc,
             default: this.default,
             areas: this.areas
         }]
     }
 }
 
-class CSelect extends TemplateInputElement implements ICSelect {
+class CSelect<T> extends TemplateInputElement<T> implements ICSelect {
     private children: ICOption[]
 
-    constructor(params: TInputElementCParams, children: ICOption[]) {
+    constructor(params: TInputElementCParams<T>, children: ICOption[]) {
         super(params)
         this.children = children
     }
     
     getParams(props: GetParamsProps): [ISelectGetParams] | [] {
-        const selectorType = this.selector? this.selector.removePars() : undefined
+        const selectorType = <string>(this.selector? this.selector : undefined)
         const selector = props.selectors[selectorType] || selectorType || props.selectors[props.defaultSelector]
         let value: string
 
@@ -248,14 +251,14 @@ class CSelect extends TemplateInputElement implements ICSelect {
         for (const option of this.children) {
             const text_1 = option.text
             options.push({
-                text: getTextFromTemplate(text_1, props.templateName),
+                text: text_1,
                 value: option.value
             })
         }
 
         return [{
             name: this.attribute,
-            text: getTextFromTemplate(this.text, props.templateName),
+            text: this.text,
             value: value,
             selectParams: options,
             selector: selector,
@@ -263,7 +266,7 @@ class CSelect extends TemplateInputElement implements ICSelect {
             inputType: 'select',
             onlyDeveloper: this.onlyDeveloper,
             bold: this.bold,
-            desc: getDescription(this.desc, props.templateName),
+            desc: this.desc,
             default: <string>this.default
         }]
     }
@@ -279,73 +282,47 @@ class COption implements ICOption {
     }
 }
 
-class CSelectors implements ICSelectors {
-    private children: ICSelector[]
-
-    constructor(children: ICSelector[]) {
-        this.children = children
-    }
-
-    toObject() {
-        const obj = {}
-        for (const child of this.children) {
-            obj[child.id] = child.value
-                .replaceAll('#every(', '[SXMLE_ID="-CYCLE')
-                .replaceAll('#first(', '[SXMLE_ID="-F_CYCLE')
-                .replaceAll('#last(', '[SXMLE_ID="-L_CYCLE')
-                .replaceAll('#every', '[SXMLE_ID="-CYCLE1-"]')
-                .replaceAll('#first', '[SXMLE_ID="-F_CYCLE1-"]')
-                .replaceAll('#last', '[SXMLE_ID="-L_CYCLE1-"]')
-
-            for (let i = 1; i <= 20; i++) {
-                obj[child.id] = obj[child.id].replaceAll(`#${i}-th(`, `[SXMLE_ID="-N${i}_CYCLE`)
-            }
-            obj[child.id] = obj[child.id].replaceAll(')', '-"]').replaceAll('.', ' > ')
-        }
-
-        for (const id in obj) {
-            for (const id2 in obj) {
-                obj[id2] = obj[id2].replace(`{${id}}`, obj[id])
-            }
-        }
-        return obj
-    }
+export function Template<T extends {[selector: string]: string}>(params: TTemplateCParams<T>, children: TemplateChildren<T>[]) {
+    return new CTemplate<T>(params, children)
 }
 
-class CSelector implements ICSelector {
-    id: string
-    value: string
-
-    constructor(params: TSelectorCParams) {
-        this.id = params.id
-        this.value = params.value
-    }
+export function Group<T extends {[selector: string]: string}>(params: TGroupCParams<T>, children: TemplateChildren<T>[]) {
+    return new CGroup<T>(params, children)
 }
 
-export function Template(params: TTemplateCParams, children: (ICInput|ICSelect|ICGroup|ICTemplate)[]) {
-    return new CTemplate(params, children)
+export function Input<T>(params: TInputCParams<T>) {
+    return new CInput<T>(params)
 }
 
-export function Group(params: TGroupCParams, children: (ICInput|ICSelect|ICGroup|ICTemplate)[]) {
-    return new CGroup(params, children)
-}
-
-export function Input(params: TInputCParams) {
-    return new CInput(params)
-}
-
-export function Select(params: TInputElementCParams, children: ICOption[]) {
-    return new CSelect(params, children)
+export function Select<T>(params: TInputElementCParams<T>, children: ICOption[]) {
+    return new CSelect<T>(params, children)
 }
 
 export function Opt(params: TOptionCParams) {
     return new COption(params)
 }
 
-export function Selectors(children: ICSelector[]) {
-    return new CSelectors(children)
-}
+export function Selectors<T extends {[id: string]: string}>(obj: T): T {
+    const newObj: T = Object.assign({}, obj)
+    for (const id in obj) {
+        newObj[id] = <T[Extract<keyof T, string>]>obj[id]
+            .replaceAll('#every(', '[SXMLE_ID="-CYCLE')
+            .replaceAll('#first(', '[SXMLE_ID="-F_CYCLE')
+            .replaceAll('#last(', '[SXMLE_ID="-L_CYCLE')
+            .replaceAll('#every', '[SXMLE_ID="-CYCLE1-"]')
+            .replaceAll('#first', '[SXMLE_ID="-F_CYCLE1-"]')
+            .replaceAll('#last', '[SXMLE_ID="-L_CYCLE1-"]')
 
-export function Selector(params: TSelectorCParams) {
-    return new CSelector(params)
+        for (let i = 1; i <= 20; i++) {
+            newObj[id] = <T[Extract<keyof T, string>]>newObj[id].replaceAll(`#${i}-th(`, `[SXMLE_ID="-N${i}_CYCLE`)
+        }
+        newObj[id] = <T[Extract<keyof T, string>]>newObj[id].replaceAll(')', '-"]').replaceAll('.', ' > ')
+    }
+
+    for (const id in newObj) {
+        for (const id2 in newObj) {
+            newObj[id2] = <T[Extract<keyof T, string>]>newObj[id2].replace(`{${id}}`, newObj[id])
+        }
+    }
+    return newObj
 }

@@ -73,10 +73,10 @@ window.local = {
 window.ipcRenderer = ipcRenderer
 
 /*
-    Односторонний доступ к paths и translations
+    Односторонний доступ к paths и texts
 */
 window.paths = ipcRenderer.sendSync('property_paths_get').value
-window.translations = ipcRenderer.sendSync('property_translations_get').value
+window.texts = ipcRenderer.sendSync('property_texts_get').value
 
 /*
     Замена <title> на странице.

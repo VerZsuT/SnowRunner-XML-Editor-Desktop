@@ -14,7 +14,7 @@ interface IDownloadParams {
     isRoot?: boolean
     inMemory?: boolean
     fromJSON?: boolean
-    downloadPage?: IDownloadWindow
+    loadingPage?: IDownloadWindow
     url?: string
     path?: string
 }
@@ -49,17 +49,17 @@ interface ICreateWindowAttributes {
 declare const LIST_WEBPACK_ENTRY: string
 declare const LIST_PRELOAD_WEBPACK_ENTRY: string
 
-declare const MAIN_WEBPACK_ENTRY: string
-declare const MAIN_PRELOAD_WEBPACK_ENTRY: string
+declare const CATEGORIES_WEBPACK_ENTRY: string
+declare const CATEGORIES_PRELOAD_WEBPACK_ENTRY: string
 
-declare const FIRST_STEPS_WEBPACK_ENTRY: string
-declare const FIRST_STEPS_PRELOAD_WEBPACK_ENTRY: string
+declare const SETUP_WEBPACK_ENTRY: string
+declare const SETUP_PRELOAD_WEBPACK_ENTRY: string
 
 declare const CONSOLE_WEBPACK_ENTRY: string
 declare const CONSOLE_PRELOAD_WEBPACK_ENTRY: string
 
-declare const DOWNLOAD_WEBPACK_ENTRY: string
-declare const DOWNLOAD_PRELOAD_WEBPACK_ENTRY: string
+declare const LOADING_WEBPACK_ENTRY: string
+declare const LOADING_PRELOAD_WEBPACK_ENTRY: string
 
 declare const SETTINGS_WEBPACK_ENTRY: string
 declare const SETTINGS_PRELOAD_WEBPACK_ENTRY: string

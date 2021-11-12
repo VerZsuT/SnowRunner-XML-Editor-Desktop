@@ -1,7 +1,7 @@
 import { mainProcess } from '../../service'
 
 import AutoComplete from './AutoComplete'
-import EditorConsole from './EditorConsole'
+import { EditorConsole, ANY, OPTIONAL } from './EditorConsole'
 import help from './help'
 import Message from './Message'
 
@@ -23,60 +23,42 @@ EditorConsole.onCmd('reload', () => mainProcess.reload())
 EditorConsole.onCmd('reset', () => mainProcess.resetConfig(false))
 
 EditorConsole.onCmd('devTools', args => {
-    const action = args[0]
+    const { action } = args
     if (action === 'enable') {
         mainProcess.enableDevTools()
         Message.log('DevTools были включены для всех последующих окон.')
-        return
-    }
-    if (action === 'disable') {
+    } else {
         mainProcess.disableDevTools()
         Message.log('DevTools были выключены для всех последующих окон.')
-        return
     }
-    Message.warn(`Неправильный параметр '${action}'. Ожидалось [enable | disable].`)
-});
+}, {
+    action: <unknown>['enable', 'disable'] as 'enable'|'disable'
+})
 
 EditorConsole.onCmd('version', () => {
     Message.log(`Текущая версия программы: ${config.version}.`)
-});
+})
 
 EditorConsole.onCmd('sset', args => {
-    const name = args[0]
-    let value = args[1]
-
-    if (value === undefined) {
-        Message.warn(`Вы не ввели значение, после имени ожидалось [true | false].`)
-        return;
-    }
-    if (!['true', 'false'].includes(value)) {
-        Message.warn(`Неверное значение, ожидалось [true | false].`)
-        return
-    }
+    const { name, value } = args
 
     if (config.settings[name] !== undefined) {
         config.settings[name] = value === 'true' || false
         Message.log(`${name} = ${value}.`)
-    } else {
-        Message.warn(`Настройка '${name}' не обнаружена в config.json.`)
     }
-});
+}, {
+    name: <unknown>Object.keys(config.settings) as keyof typeof config.settings,
+    value: <unknown>['true', 'false'] as 'true'|'false'
+})
 
 EditorConsole.onCmd('lang', args => {
-    const lang = args[0]
+    const { lang } = args
 
-    if (lang === undefined) {
-        Message.warn('Вы не ввели идентификатор языка.')
-        return
-    }
-
-    if (lang === 'RU' || lang === 'EN' || lang === 'DE') {
-        config.lang = lang
-        mainProcess.reload()
-    } else {
-        Message.warn(`Неверное идентификатор языка. Ожидалось [RU | EN | DE]`)
-    }
-});
+    config.lang = lang
+    mainProcess.reload()
+}, {
+    lang: <unknown>['RU', 'EN', 'DE'] as ConfigLang
+})
 
 EditorConsole.onCmd('read', () => {
     const path = mainProcess.openXMLDialog()
@@ -99,22 +81,11 @@ EditorConsole.onCmd('read', () => {
 })
 
 EditorConsole.onCmd('set', args => {
-    let selector = consolePreload.replacePars(args[0])
-    const attributeName = args[1]
-    const value = consolePreload.replacePars(args[2])
+    let { selector, attrName, value } = args
 
-    if (!selector) {
-        Message.warn('Вы не ввели селектор элемента.')
-        return
-    }
-    if (value === undefined) {
-        Message.warn('Вы не ввели значение.')
-        return
-    }
-    if (!attributeName) {
-        Message.warn('Вы не ввели название атрибута.')
-        return
-    }
+    selector = consolePreload.replacePars(selector)
+    value = consolePreload.replacePars(value)
+
     if (!temp.fileDOM) {
         Message.error('Сначала надо считать файл с помощью команды "read".')
         return
@@ -131,31 +102,28 @@ EditorConsole.onCmd('set', args => {
     }
     
     const serializer = new XMLSerializer()
-    element.setAttribute(attributeName, value)
+    element.setAttribute(attrName, value)
     consolePreload.writeFile(temp.filePath, serializer.serializeToString(temp.fileDOM).replace('<root>', '').replace('</root>', ''))
 
-    Message.log(`${attributeName}='${value}'`)
+    Message.log(`${attrName}='${value}'`)
+}, {
+    selector: ANY,
+    attrName: ANY,
+    value: ANY
 })
 
 EditorConsole.onCmd('backup', args => {
-    const action = args[0]
-
-    if (action === undefined) {
-        Message.warn('Вы не ввели действие.')
-        return
-    }
-    if (!['save', 'restore'].includes(action)) {
-        Message.warn('Вы ввели неправильное действие. Ожидалось [save, restore]')
-        return
-    }
+    const { action } = args
 
     if (action === 'save') {
         mainProcess.saveBackup()
     } else {
-        mainProcess.restoreInitial()
+        mainProcess.recoverFromBackup()
     }
 
     Message.log('Операция проведена.')
+}, {
+    action: <unknown> ['save', 'restore'] as 'save'|'restore'
 })
 
 EditorConsole.onCmd('addMod', () => {
@@ -174,7 +142,7 @@ EditorConsole.onCmd('addMod', () => {
     }
     
     mainProcess.reload()
-});
+})
 
 EditorConsole.onCmd('checkUpdate', () => {
     Message.log('Проверка обновления...')
@@ -183,29 +151,25 @@ EditorConsole.onCmd('checkUpdate', () => {
 })
 
 EditorConsole.onCmd('delMod', args => {
-    const modId = args[0]
+    const { modId } = args
 
-    if (modId === undefined) {
-        Message.warn('Вы не ввели название модификации.')
-        return
-    }
-    if (!config.modsList[modId]) {
-        Message.error(`Мод '${modId}' не идентифицирован программой.`)
-        return
-    }
-
-    delete config.modsList[modId];
+    delete config.modsList[modId]
     consolePreload.removeDir(consolePreload.join(paths.modsTemp, modId))
 
     config.modsList.length--
     Message.log(`Модификация '${modId}' удалена.`)
+}, {
+    modId: <unknown>Object.keys(config.modsList) as keyof typeof config.modsList
 })
 
+const cmds = Object.keys(help).filter(value=>value!=='toString')
+type cmdsType = Exclude<keyof typeof help, 'toString'>
+
 EditorConsole.onCmd('help', args => {
-    const cmd = args[0]
+    const { cmd } = args
 
     if (cmd) {
-        if (!help[cmd] || cmd === 'toString') {
+        if (!help[cmd]) {
             Message.warn(`Неизвестная команда '${cmd}'.`)
             return
         }
@@ -213,40 +177,26 @@ EditorConsole.onCmd('help', args => {
     } else {
         Message.log(`Список команд:\n${help.toString()}`)
     }
+}, {
+    cmd: <unknown>[OPTIONAL, cmds] as cmdsType
 })
 
 EditorConsole.onCmd('archive', args => {
-    const action = args[0]
-
-    if (action === undefined) {
-        Message.warn('Вы не ввели действие.')
-        return
-    }
-    if (!['save', 'unpack'].includes(action)) {
-        Message.warn('Неправильное действие. Ожидалось [save|unpack].')
-        return
-    }
+    const { action } = args
 
     if (action === 'save') {
-        mainProcess.saveToOriginal()
+        mainProcess.updateFiles()
         Message.log('Изменения в файлах initial.pak сохранены.')
     } else {
         mainProcess.unpackFiles()
         Message.log('initial.pak был распакован.')
     }
-});
+}, {
+    action: <unknown>['save', 'unpack'] as 'save'|'unpack'
+})
 
 EditorConsole.onCmd('config', args => {
-    const action = args[0]
-
-    if (action === undefined) {
-        Message.warn('Не введено действие.')
-        return
-    }
-    if (!['import', 'export'].includes(action)) {
-        Message.warn('Введено неправильное действие. Ожидалось [import|export]')
-        return
-    }
+    const { action } = args
 
     if (action === 'import') {
         if (!consolePreload.exists(consolePreload.join(paths.backupFolder, 'config.json'))) {
@@ -260,4 +210,6 @@ EditorConsole.onCmd('config', args => {
         mainProcess.exportConfig()
         Message.log('Конфиг был успешно экспортирован.')
     }
+}, {
+    action: <unknown>['import', 'export'] as 'import'|'export'
 })

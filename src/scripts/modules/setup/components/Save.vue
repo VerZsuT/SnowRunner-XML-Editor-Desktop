@@ -36,7 +36,7 @@ export default defineComponent({
             }
 
             config.paths.initial = this.pathToInitial
-            mainProcess.saveInitialSum()
+            mainProcess.saveInitialHash()
             mainProcess.saveBackup(true)
         }
     }

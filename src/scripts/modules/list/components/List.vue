@@ -81,7 +81,7 @@ export default defineComponent({
                     if (this.listType !== 'trucks') {
                         return value
                     }
-                    const fileData = mainProcess.getFileData(value.path)
+                    const fileData = mainProcess.readFile(value.path)
                     const dom = new DOMParser().parseFromString(`<root>${fileData}</root>`, 'text/xml')
                     if (dom.querySelector('Truck').getAttribute('Type') !== 'Trailer') {
                         return value
@@ -106,7 +106,7 @@ export default defineComponent({
                     }
                 }
                 newArray = newArray.map((value) => {
-                    const fileData = mainProcess.getFileData(value.path)
+                    const fileData = mainProcess.readFile(value.path)
                     const dom = new DOMParser().parseFromString(`<root>${fileData}</root>`, 'text/xml')
                     if (this.listType === 'trailers' && dom.querySelector('Truck') && dom.querySelector('Truck').getAttribute('Type') === 'Trailer') {
                         return value

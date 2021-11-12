@@ -4,16 +4,16 @@ import { join } from 'path'
 import { parseStrings, paths } from '../service'
 import Config from './Config'
 
-import RU from '../../scripts/translations/RU.json'
-import EN from '../../scripts/translations/EN.json'
-import DE from '../../scripts/translations/DE.json'
+import RU from '../../scripts/texts/RU.json'
+import EN from '../../scripts/texts/EN.json'
+import DE from '../../scripts/texts/DE.json'
 
 type TKeys = keyof typeof RU
 
 /**
  * Отвечает за работу с переводами.
 */
-export default class Translations {
+export default class Texts {
     private static config: IConfig = Config.obj
 
     /**
@@ -45,7 +45,7 @@ export default class Translations {
     /**
      * Обрабатывает файл с переводом из initial.pak на текущий выбранный язык в программе.
     */
-    public static getIngame = (): Promise<null> => {
+    public static addIngame = (): Promise<null> => {
         return new Promise(resolve => {
             let ingame: ITranslation
             if (existsSync(paths.strings)) {
@@ -80,7 +80,7 @@ export default class Translations {
     /**
      * Обрабатывает файл с переводом из .pak файлов модов на текущий выбранный язык в программе.
     */
-    public static getMods = (): Promise<null> => {
+    public static addFromMods = (): Promise<null> => {
         return new Promise(resolve => {
             const mods = {}
             for (const modId in this.config.modsList) {
@@ -114,7 +114,7 @@ export default class Translations {
     /**
      * Возвращает текст перевода по ключу (в программе).
     */
-    public static getText = (key: TKeys, returnKey: boolean=true): string | undefined => {
+    public static get = (key: TKeys, returnKey: boolean=true): string | undefined => {
         const translation = this.obj[this.config.lang]
         if (translation) {
             return translation[key.removePars()] || (returnKey ? key : undefined)

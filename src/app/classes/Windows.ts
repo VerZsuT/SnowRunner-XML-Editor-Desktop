@@ -9,15 +9,15 @@ export default class Windows {
     /**
      * Главное окно программы (с выбором категории).
     */
-    public static mainWindow: BrowserWindow
+    public static categories: BrowserWindow
     /**
      * Окно со списком авто/грузов/трейлеров.
     */
-    public static listWindow: BrowserWindow
+    public static list: BrowserWindow
     /**
      * Окно самого редактора параметров.
     */
-    public static xmlEditor: BrowserWindow
+    public static editor: BrowserWindow
     /**
      * Окно загрузки.
     */
@@ -33,15 +33,15 @@ export default class Windows {
      * Параметры создания.
     */
     private static createArgs = {
-        xmlEditor: {
+        editor: {
             path: EDITOR_WEBPACK_ENTRY,
             preload: EDITOR_PRELOAD_WEBPACK_ENTRY,
             width: 1000,
             height: 800
         },
-        updateMessage: {
+        updateWindow: {
             path: UPDATE_WEBPACK_ENTRY,
-            preload: MAIN_PRELOAD_WEBPACK_ENTRY,
+            preload: CATEGORIES_PRELOAD_WEBPACK_ENTRY,
             width: 400,
             height: 200,
             frame: false,
@@ -61,22 +61,22 @@ export default class Windows {
             width: 500,
             height: 500
         },
-        download: {
-            path: DOWNLOAD_WEBPACK_ENTRY,
-            preload: DOWNLOAD_PRELOAD_WEBPACK_ENTRY,
+        loading: {
+            path: LOADING_WEBPACK_ENTRY,
+            preload: LOADING_PRELOAD_WEBPACK_ENTRY,
             width: 230,
             height: 100,
             frame: false
         },
-        firstSteps: {
-            path: FIRST_STEPS_WEBPACK_ENTRY,
-            preload: FIRST_STEPS_PRELOAD_WEBPACK_ENTRY,
+        setup: {
+            path: SETUP_WEBPACK_ENTRY,
+            preload: SETUP_PRELOAD_WEBPACK_ENTRY,
             width: 550,
             height: 500
         },
         main: {
-            path: MAIN_WEBPACK_ENTRY,
-            preload: MAIN_PRELOAD_WEBPACK_ENTRY,
+            path: CATEGORIES_WEBPACK_ENTRY,
+            preload: CATEGORIES_PRELOAD_WEBPACK_ENTRY,
             width: 980,
             height: 380,
             resizable: false
@@ -93,42 +93,42 @@ export default class Windows {
      * Открывает окно редактора параметров.
      * @param bridge создать между несколькими окнами редактора `bridge-channel` для передачи данных. 
     */
-    public static openXMLEditor = (bridge?: boolean): BrowserWindow => {
-        if (this.xmlEditor && !bridge) {
-            this.xmlEditor.hide()
-        } else if (this.listWindow) {
-            this.listWindow.hide()
+    public static openEditor = (bridge?: boolean): BrowserWindow => {
+        if (this.editor && !bridge) {
+            this.editor.hide()
+        } else if (this.list) {
+            this.list.hide()
         }
         const wind = this.createWindow({
-            ...this.createArgs.xmlEditor,
+            ...this.createArgs.editor,
             bridge: bridge
         })
     
         if (bridge) {
             ipcMain.once('bridge-channel', (_, data) => {
-                if (this.xmlEditor) {
-                    this.xmlEditor.webContents.send('bridge-channel', data)
+                if (this.editor) {
+                    this.editor.webContents.send('bridge-channel', data)
                 }
             })
             return
         }
     
-        if (this.xmlEditor) {
+        if (this.editor) {
             wind.once('close', () => {
-                if (this.xmlEditor && !this.xmlEditor.isDestroyed()) {
-                    this.currentWindow = this.xmlEditor
-                    this.xmlEditor.show()
-                    this.xmlEditor.focus()
+                if (this.editor && !this.editor.isDestroyed()) {
+                    this.currentWindow = this.editor
+                    this.editor.show()
+                    this.editor.focus()
                 }
             })
         } else {
-            this.xmlEditor = wind
+            this.editor = wind
             wind.once('close', () => {
-                this.xmlEditor = null
-                if (this.listWindow && !this.listWindow.isDestroyed()) {
-                    this.currentWindow = this.listWindow
-                    this.listWindow.show()
-                    this.listWindow.focus()
+                this.editor = null
+                if (this.list && !this.list.isDestroyed()) {
+                    this.currentWindow = this.list
+                    this.list.show()
+                    this.list.focus()
                 }
             })
         }
@@ -138,10 +138,10 @@ export default class Windows {
      * Открывает окно-оповещение об обновлении программы.
      * @param version отображаемая новая версия.
     */
-    public static openUpdateMessage = (version: string): BrowserWindow => {
+    public static openUpdateWindow = (version: string): BrowserWindow => {
         const beforeWindow = this.currentWindow
         const wind = this.createWindow({
-            ...this.createArgs.updateMessage,
+            ...this.createArgs.updateWindow,
             parent: this.currentWindow
         })
     
@@ -188,10 +188,10 @@ export default class Windows {
      * Открывает окно загрузки.
      * @param noLock не блокировать другие окна.
     */
-    public static openDownload = (noLock?: boolean): IDownloadWindow => {
+    public static openLoading = (noLock?: boolean): IDownloadWindow => {
         const beforeWindow = this.currentWindow
         const wind = <IDownloadWindow>this.createWindow({
-            ...this.createArgs.download,
+            ...this.createArgs.loading,
             modal: noLock? false : true,
             parent: noLock? null : this.currentWindow
         })
@@ -215,8 +215,8 @@ export default class Windows {
     /**
      * Открывает окно первоначальной настройки.
     */
-    public static openFirstSteps = (): BrowserWindow => {
-        const wind = this.createWindow(this.createArgs.firstSteps)
+    public static openSetup = (): BrowserWindow => {
+        const wind = this.createWindow(this.createArgs.setup)
         wind.once('show', () => {
             if (!this.loading.isDestroyed()) {
                 this.loading.close()
@@ -231,23 +231,23 @@ export default class Windows {
     /**
      * Открывает окно выбора категории.
     */
-    public static openMain = (): Promise<null> => {
+    public static openCategories = (): Promise<null> => {
         return new Promise(resolve => {
-            if (this.mainWindow) {
-                this.mainWindow.show()
-                this.mainWindow.focus()
+            if (this.categories) {
+                this.categories.show()
+                this.categories.focus()
                 resolve(null)
                 return
             }
-            this.mainWindow = this.createWindow(this.createArgs.main)
+            this.categories = this.createWindow(this.createArgs.main)
     
-            this.mainWindow.once('show', () => {
+            this.categories.once('show', () => {
                 resolve(null)
                 if (!this.loading.isDestroyed()) {
                     this.loading.close()
                 }
             })
-            this.mainWindow.once('close', () => {
+            this.categories.once('close', () => {
                 app.quit()
             })
         })
@@ -257,21 +257,21 @@ export default class Windows {
      * Открывает окно списка авто/груза/прицепа.
     */
     public static openList = (): void => {
-        if (this.listWindow) {
-            this.listWindow.show()
-            this.listWindow.focus()
+        if (this.list) {
+            this.list.show()
+            this.list.focus()
             return
         }
-        if (this.mainWindow) {
-            this.mainWindow.hide()
+        if (this.categories) {
+            this.categories.hide()
         }
-        this.listWindow = this.createWindow(this.createArgs.list)
-        this.listWindow.once('close', () => {
-            delete this.listWindow
-            if (this.mainWindow && !this.mainWindow.isDestroyed()) {
-                this.currentWindow = this.mainWindow
-                this.mainWindow.show()
-                this.mainWindow.focus()
+        this.list = this.createWindow(this.createArgs.list)
+        this.list.once('close', () => {
+            delete this.list
+            if (this.categories && !this.categories.isDestroyed()) {
+                this.currentWindow = this.categories
+                this.categories.show()
+                this.categories.focus()
             }
         })
     }

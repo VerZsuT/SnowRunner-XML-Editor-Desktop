@@ -7,7 +7,7 @@ import Config from './Config'
 import Dialog from './Dialog'
 import Hasher from './Hasher'
 import Notification from './Notification'
-import Translations from './Translations'
+import Texts from './Texts'
 
 
 /**
@@ -60,7 +60,7 @@ export default class Backup {
     /**
      * Заменяет оригинальный initial.pak на сохранённый.
     */
-    public static restore = () => {
+    public static recover = () => {
         if (!existsSync(paths.backupInitial)) {
             return
         }
@@ -70,8 +70,8 @@ export default class Backup {
             } catch {
                 Dialog.alert({
                     type: 'warning',
-                    title: Translations.getText('ERROR'),
-                    message: Translations.getText('DELETE_CURRENT_INITIAL_BACKUP_ERROR')
+                    title: Texts.get('ERROR'),
+                    message: Texts.get('DELETE_CURRENT_INITIAL_BACKUP_ERROR')
                 })
             }
         }
@@ -84,8 +84,8 @@ export default class Backup {
         } catch {
             Dialog.alert({
                 type: 'warning',
-                title: Translations.getText('ERROR'),
-                message: Translations.getText('DELETE_CURRENT_INITIAL_BACKUP_ERROR')
+                title: Texts.get('ERROR'),
+                message: Texts.get('DELETE_CURRENT_INITIAL_BACKUP_ERROR')
             })
         }
     }

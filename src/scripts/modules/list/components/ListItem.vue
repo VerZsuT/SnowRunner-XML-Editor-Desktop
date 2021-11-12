@@ -41,7 +41,7 @@ export default defineComponent({
             local.set('filePath', this.item.path)
             local.set('currentDLC', this.item.dlcName)
             local.set('currentMod', this.item.modId)
-            mainProcess.openXMLEditor()
+            mainProcess.openEditor()
         },
         show() {
             if (!this.filter['value']) {
@@ -63,7 +63,7 @@ export default defineComponent({
     },
     computed: {
         DOM() {
-            const data = `<root>${mainProcess.getFileData(this.item.path)}</root>`
+            const data = `<root>${mainProcess.readFile(this.item.path)}</root>`
             return this.parser.parseFromString(data, 'text/xml')
         },
         imageSource() {

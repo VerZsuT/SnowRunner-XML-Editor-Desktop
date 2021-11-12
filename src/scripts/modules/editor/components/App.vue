@@ -328,9 +328,9 @@ export default defineComponent({
                     }
         
                     const xmlString = `${copyrightText}${serializer.serializeToString(this.fileDOM).replace('<root>', '').replace('</root>', '')}`
-                    mainProcess.setFileData(this.filePath, xmlString)
+                    mainProcess.writeFile(this.filePath, xmlString)
                     if (saveToOriginal) {
-                        mainProcess.saveToOriginal(this.currentMod)
+                        mainProcess.updateFiles(this.currentMod)
                     }
         
                     const tempADV = JSON.parse(JSON.stringify(config.ADV))
@@ -400,14 +400,14 @@ export default defineComponent({
 
 function getGlobalTemplates() {
     const filePath = editorPreload.join(editorPreload.paths.mainTemp, '[media]', '_templates', 'trucks.xml')
-    const fileData = mainProcess.getFileData(filePath)
+    const fileData = mainProcess.readFile(filePath)
 
     return new DOMParser().parseFromString(fileData, 'text/xml')
 }
 
 function getDOM() {
     const filePath = local.pop('filePath')
-    const fileData = mainProcess.getFileData(filePath)
+    const fileData = mainProcess.readFile(filePath)
     if (!fileData) return
 
     const parser = new DOMParser()

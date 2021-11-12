@@ -4,31 +4,31 @@ interface IInfo {
 }
 
 interface IMainProcess {
-    invalidMod: {
+    invalidMods: {
         name: string
         error: 'NOT_EXISTS' | 'NO_PERMISSION' | 'NO_CLASSES'
     }
-    translations: any
+    texts: any
     menu: any
     paths: IPaths
     config: IConfig
-    saveToOriginal(modId?: string): void
-    openDevTools(): void
-    getFileData(filePath: string, resFilePath?: string): string
-    setFileData(filePath: string, data: string): void
+    updateFiles(modId?: string): void
+    toggleDevTools(): void
+    readFile(filePath: string, resFilePath?: string): string
+    writeFile(filePath: string, data: string): void
     setDevMode(value: boolean): void
     alert(message: string): void
     alertSync(message: string): void
     confirm(message: string): boolean
-    joinExported(): void
-    seeExported(): void
+    joinEPF(): void
+    seeEPF(): void
     reload(): void
     quit(): void
-    showFolder(path: string): void
+    openPath(path: string): void
     importConfig(): void
     exportConfig(): void
     openLink(URL: string): void
-    openXMLEditor(isBridge?: boolean): void
+    openEditor(isBridge?: boolean): void
     openList(): void
     openSettings(): void
     openDialog(): string | undefined
@@ -40,9 +40,9 @@ interface IMainProcess {
     saveBackup(reloadAfter?: boolean): void
     copyBackup(): void
     resetConfig(withoutReload?: boolean): void
-    restoreInitial(): void
+    recoverFromBackup(): void
     saveConfig(): void
-    saveInitialSum(): void
+    saveInitialHash(): void
     checkUpdate(ignoreSetting?: boolean): void
     update(): void
     unpackFiles(lockOther?: boolean): void
