@@ -3,9 +3,15 @@ import {
 	Group,
 	Input,
 	Select,
-	Opt,
-	Selectors
+	Selectors,
+	forEach,
+	forEachBy,
+	TemplateType,
+	InputType,
+	NameType,
+	NumberType
 } from '../../service'
+import unlockGroup from '../presets/unlockGroup'
 import {
 	descs,
 	texts
@@ -13,96 +19,88 @@ import {
 
 const selectors = Selectors({
 	suspensionSet: 'SuspensionSetVariants.SuspensionSet',
-	suspensionSetItem: '{suspensionSet}#every',
+	suspensionSetItem: `{suspensionSet}${forEach}`,
 	suspensionSetItemText: '{suspensionSetItem}.GameData.UiDesc',
 	suspension: '{suspensionSetItem}.Suspension',
-	suspensionItem: '{suspension}#every(2)',
+	suspensionItem: `{suspension}${forEachBy(2)}`,
 	gameData: '{suspensionSetItem}.GameData'
 })
 
 export default <ITemplate> {
 	selector: 'SuspensionSetVariants',
 	template: Template({
-		type: 'multiply',
-		itemSelector: 'suspensionSet',
+		type: TemplateType.multiply,
+		itemSelector: selectors.suspensionSet,
 		selectors: selectors
 	}, [
 		Group({
-			nameType: 'computed',
-			nameSelector: 'suspensionSetItemText',
-			resNameSelector: 'suspensionSetItem',
+			nameType: NameType.computed,
 			nameAttribute: 'UiName',
 			resNameAttribute: 'Name',
-			defaultSelector: 'suspensionSetItem'
+			nameSelector: selectors.suspensionSetItemText,
+			resNameSelector: selectors.suspensionSetItem,
+			defaultSelector: selectors.suspensionSetItem
 		}, [
 			Input({
 				attribute: 'Name',
+				type: InputType.text,
 				text: texts.id,
 				desc: descs.name,
-				type: 'text',
 				onlyDeveloper: true
 			}),
 			Input({
 				attribute: 'CriticalDamageThreshold',
 				text: texts.criticalDamageThreshold,
 				desc: descs.criticalDamageThreshold,
-				numberType: 'float',
 				max: 0.99,
 				step: 0.01,
 				default: 0.7
 			}),
 			Input({
 				attribute: 'DamageCapacity',
+				numberType: NumberType.integer,
 				text: texts.damageCapacity,
 				desc: descs.damageCapacity,
 				max: 64000,
 				step: 10,
 				default: 0,
-				bold: true,
 				areas: {
 					yellow: [[1000, 10000]],
 					red: [[10001, Infinity]]
-				}
+				},
+				bold: true
 			}),
 			Template({
-				type: 'multiply',
-				itemSelector: 'suspension'
+				type: TemplateType.multiply,
+				itemSelector: selectors.suspension
 			}, [
 				Group({
 					name: texts.suspension,
-					defaultSelector: 'suspensionItem',
+					defaultSelector: selectors.suspensionItem,
 					withCounter: true
 				}, [
 					Select({
 						attribute: 'WheelType',
 						text: texts.wheelType,
 						desc: descs.wheelType,
+						options: {
+							front: texts.front,
+							rear: texts.rear
+						},
 						onlyDeveloper: true
-					}, [
-						Opt({
-							text: texts.front,
-							value: 'front'
-						}),
-						Opt({
-							text: texts.rear,
-							value: 'rear'
-						})
-					]),
+					}),
 					Input({
 						attribute: 'Height',
-						numberType: 'float',
 						text: texts.height,
-						step: 0.1,
+						max: 1000,
+						min: -1000,
 						areas: {
 							yellow: [[-2, -1], [1, 2]],
 							red: [[-1000, -2.1], [2.1, 1000]]
-						},
-						min: -1000,
-						max: 1000
+						}
 					}),
 					Input({
 						attribute: 'Strength',
-						numberType: 'float',
 						text: texts.strength,
 						step: 0.01,
 						areas: {
@@ -112,10 +110,8 @@ export default <ITemplate> {
 					}),
 					Input({
 						attribute: 'Damping',
-						numberType: 'float',
 						text: texts.damping,
 						max: 1000,
-						step: 0.1,
 						areas: {
 							yellow: [[1, 3]],
 							red: [[3, 1000]]
@@ -123,12 +119,11 @@ export default <ITemplate> {
 					}),
 					Input({
 						attribute: 'SuspensionMin',
-						numberType: 'float',
 						text: texts.suspensionMin,
 						desc: descs.suspensionMin,
+						max: 1000,
 						min: -1000,
 						step: 0.01,
-						max: 1000,
 						areas: {
 							yellow: [[-5, -2], [2, 5]],
 							red: [[-1000, -5.1], [5.1, 1000]]
@@ -136,12 +131,11 @@ export default <ITemplate> {
 					}),
 					Input({
 						attribute: 'SuspensionMax',
-						numberType: 'float',
 						text: texts.suspensionMax,
 						desc: descs.suspensionMax,
+						max: 1000,
 						min: -1000,
 						step: 0.01,
-						max: 1000,
 						default: 1,
 						areas: {
 							yellow: [[-5, -2], [2, 5]],
@@ -150,13 +144,11 @@ export default <ITemplate> {
 					}),
 					Input({
 						attribute: 'BrokenSuspensionMax',
-						type: 'number',
-						numberType: 'float',
 						text: texts.brokenSuspensionMax,
 						desc: descs.brokenSuspensionMax,
+						max: 1000,
 						min: -1000,
 						step: 0.01,
-						max: 1000,
 						areas: {
 							yellow: [[-5, -2], [2, 5]],
 							red: [[-1000, -5.1], [5.1, 1000]]
@@ -164,38 +156,7 @@ export default <ITemplate> {
 					})
 				])
 			]),
-			Group({
-				name: texts.unlockGroupName,
-				defaultSelector: 'gameData'
-			}, [
-				Input({
-					attribute: 'Price',
-					text: texts.price,
-					desc: descs.price,
-					bold: true
-				}),
-				Select({
-					attribute: 'UnlockByExploration',
-					text: texts.unlockByExploration,
-					desc: descs.unlockByExploration,
-					onlyDeveloper: true
-				}, [
-					Opt({
-						text: texts.fincOnMap,
-						value: 'true'
-					}),
-					Opt({
-						text: texts.byRank,
-						value: 'false'
-					})
-				]),
-				Input({
-					attribute: 'UnlockByRank',
-					text: texts.unlockByRank,
-					desc: descs.unlockByRank,
-					min: 1
-				})
-			])
+			unlockGroup(selectors.gameData)
 		])
 	])
 }

@@ -2,7 +2,11 @@ import {
 	Template, 
 	Group, 
 	Input, 
-	Selectors
+	Selectors,
+	forEach,
+	TemplateType,
+	InputType,
+	NumberType
 } from '../../service'
 import { 
 	descs,
@@ -11,23 +15,24 @@ import {
 
 const selectors = Selectors({
 	cargoPart: 'Body',
-	cargoPartItem: 'Body#every',
+	currentCargoPart: `Body${forEach}`,
 	slot: 'TruckAddon.GameData.InstallSlot'
 })
 
 export default <ITemplate> {
 	selector: 'TruckAddon > GameData > InstallSlot[CargoType]',
-	template: Template({selectors: selectors}, [
+	template: Template({selectors}, [
 		Group({
-			name: texts.part,
-			defaultSelector: 'cargoPartItem'
+			name: texts.part
 		}, [
 			Template({
-				type: 'multiply',
-				itemSelector: 'cargoPart'
+				type: TemplateType.multiply,
+				itemSelector: selectors.cargoPart
 			}, [
 				Input({
 					attribute: 'Mass',
+					selector: selectors.currentCargoPart,
+					numberType: NumberType.integer,
 					text: texts.mass,
 					desc: descs.mass
 				})
@@ -35,28 +40,28 @@ export default <ITemplate> {
 		]),
 		Group({
 			name: texts.main,
-			defaultSelector: 'slot'
+			defaultSelector: selectors.slot
 		}, [
 			Input({
 				attribute: 'CargoLength',
+				numberType: NumberType.integer,
 				text: texts.cargoLength,
 				desc: descs.cargoLength,
 				onlyDeveloper: true
 			}),
 			Input({
 				attribute: 'CargoType',
-				onlyDeveloper: true,
-				type: 'text',
+				type: InputType.text,
 				text: texts.cargoType,
-				desc: descs.cargoType
+				desc: descs.cargoType,
+				onlyDeveloper: true
 			}),
 			Input({
-				type: 'coordinates',
-				onlyDeveloper: true,
 				attribute: 'Offset',
+				type: InputType.coordinates,
 				text: texts.offset,
 				desc: descs.offset,
-				step: 0.1
+				onlyDeveloper: true
 			})
 		])
 	])

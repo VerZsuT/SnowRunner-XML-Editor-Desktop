@@ -18,7 +18,7 @@
 </template>
 
 <script lang='ts'>
-import { t, mainProcess } from '../../../service'
+import { t, mainProcess, FileType } from '../../../service'
 
 export default {
     props: {
@@ -111,7 +111,7 @@ export default {
         },
         getItems() {
             const array = this.item.value.split(',').map((value) => value.trim())
-            if (this.item.fileType === 'wheels') {
+            if (this.item.fileType === FileType.wheels) {
                 for (const compatible of this.fileDOM.querySelectorAll('Truck > TruckData > CompatibleWheels')) {
                     const type = compatible.getAttribute('Type')
                     if (array.indexOf(type) === -1) {

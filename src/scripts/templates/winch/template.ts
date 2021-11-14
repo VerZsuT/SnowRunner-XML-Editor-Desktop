@@ -3,9 +3,14 @@ import {
 	Group,
 	Input,
 	Select,
-	Opt,
-	Selectors
+	Selectors,
+	forEach,
+	TemplateType,
+	NameType,
+	InputType,
+	NumberType
 } from '../../service'
+import unlockGroup from '../presets/unlockGroup'
 import {
 	descs,
 	texts
@@ -13,7 +18,7 @@ import {
 
 const selectors = Selectors({
 	winch: 'WinchVariants.Winch',
-	winchItem: '{winch}#every',
+	winchItem: `{winch}${forEach}`,
 	winchItemText: '{winchItem}.GameData.UiDesc',
 	gameData: '{winchItem}.GameData'
 })
@@ -21,101 +26,62 @@ const selectors = Selectors({
 export default <ITemplate> {
 	selector: 'WinchVariants',
 	template: Template({
-		type: 'multiply',
-		itemSelector: 'winch',
+		type: TemplateType.multiply,
+		itemSelector: selectors.winch,
 		selectors: selectors
 	}, [
 		Group({
-			nameType: 'computed',
-			nameSelector: 'winchItemText',
-			resNameSelector: 'winchItem',
+			nameType: NameType.computed,
 			nameAttribute: 'UiName',
 			resNameAttribute: 'Name',
-			defaultSelector: 'winchItem'
+			nameSelector: selectors.winchItemText,
+			resNameSelector: selectors.winchItem,
+			defaultSelector: selectors.winchItem
 		}, [
 			Input({
 				attribute: 'Name',
+				type: InputType.text,
 				text: texts.id,
 				desc: descs.id,
-				type: 'text',
 				onlyDeveloper: true
 			}),
 			Input({
 				attribute: 'Length',
+				numberType: NumberType.integer,
 				text: texts.length,
 				desc: descs.length,
-				min: 0,
-				step: 1,
 				max: 100,
-				bold: true,
 				default: 14,
 				areas: {
 					yellow: [[30, 50]],
 					red: [[51, 100]]
-				}
+				},
+				bold: true
 			}),
 			Input({
 				attribute: 'StrengthMult',
 				text: texts.strengthMult,
 				desc: descs.strengthMult,
-				min: 0,
-				step: 0.1,
 				max: 10,
-				bold: true,
 				default: 1,
 				areas: {
 					yellow: [[2, 5]],
 					red: [[5.1, 10]]
-				}
+				},
+				bold: true
 			}),
 			Select({
 				attribute: 'IsEngineIgnitionRequired',
 				text: texts.isEngineIgnitionRequired,
 				desc: descs.isEngineIgnitionRequired,
-				bold: true,
-				default: 'true'
-			}, [
-				Opt({
-					text: texts.engine,
-					value: 'true'
-				}),
-				Opt({
-					text: texts.battery,
-					value: 'false'
-				})
-			]),
-			Group({
-				name: texts.unlockGroupName,
-				defaultSelector: 'gameData'
-			}, [
-				Input({
-					attribute: 'Price',
-					text: texts.price,
-					desc: descs.price,
-					bold: true
-				}),
-				Select({
-					attribute: 'UnlockByExploration',
-					text: texts.unlockByExploration,
-					desc: descs.unlockByExploration,
-					onlyDeveloper: true
-				}, [
-					Opt({
-						text: texts.findOnMap,
-						value: 'true'
-					}),
-					Opt({
-						text: texts.byRank,
-						value: 'false'
-					})
-				]),
-				Input({
-					attribute: 'UnlockByRank',
-					text: texts.unlockByRank,
-					desc: descs.unlockByRank,
-					min: 1
-				})
-			])
+				options: {
+					true: texts.engine,
+					false: texts.battery
+				},
+				default: 'true',
+				bold: true
+			}),
+			unlockGroup(selectors.gameData)
 		])
 	])
 }

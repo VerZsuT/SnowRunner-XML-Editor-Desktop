@@ -1,3 +1,4 @@
+import { BuildType, MenuRole } from './enums'
 import { paths } from '../service'
 import Config from './Config'
 import Texts from './Texts'
@@ -19,29 +20,29 @@ export default class Menu {
                     ...this.ifHasInitial([
                         {
                             label: Texts.get('SETTINGS_MENU_ITEM_LABEL'),
-                            role: 'openSettings'
+                            role: MenuRole.openSettings
                         },
-                        { role: 'separator' }
+                        { role: MenuRole.separator }
                     ]),
                     ...this.ifDevBuild(this.ifHasInitial([
                         {
                             label: Texts.get('RESET_MENU_ITEM_LABEL'),
-                            role: 'resetConfig'
+                            role: MenuRole.resetConfig
                         }
                     ])),
                     ...this.ifDevBuild([
                         {
                             label: 'DevTools',
-                            role: 'devTools'
+                            role: MenuRole.devTools
                         },
                         {
                             label: 'Reload',
-                            role: 'reload'
+                            role: MenuRole.reload
                         }
                     ]),
                     {
                         label: Texts.get('EXIT_MENU_ITEM_LABEL'),
-                        role: 'quitApp'
+                        role: MenuRole.quitApp
                     }
                 ]
             },
@@ -51,17 +52,17 @@ export default class Menu {
                     submenu: [
                         {
                             label: Texts.get('OPEN_BUTTON'),
-                            role: 'showFolder',
+                            role: MenuRole.showFolder,
                             path: paths.backupFolder
                         },
-                        { role: 'separator' },
+                        { role: MenuRole.separator },
                         {
                             label: Texts.get('SAVE_BUTTON'),
-                            role: 'saveBackup'
+                            role: MenuRole.saveBackup
                         },
                         {
                             label: Texts.get('RESTORE_MENU_ITEM_LABEL'),
-                            role: 'restoreInitial'
+                            role: MenuRole.recoverFromBackup
                         }
                     ]
                 }
@@ -72,11 +73,11 @@ export default class Menu {
                     submenu: [
                         {
                             label: Texts.get('JOIN_EXPORTED_FILES'),
-                            role: 'joinExported'
+                            role: MenuRole.joinEPF
                         },
                         {
                             label: Texts.get('SEE_EXPORTED_FILE'),
-                            role: 'seeExported'
+                            role: MenuRole.seeEPF
                         }
                     ]
                 }
@@ -86,17 +87,17 @@ export default class Menu {
                 submenu: [
                     {
                         label: Texts.get('HOW_TO_USE_TITLE'),
-                        role: 'openURL',
+                        role: MenuRole.openURL,
                         url: 'https://snowrunner.mod.io/guides/snowrunner-xml-editor'
                     },
                     {
                         label: 'GitHub',
-                        role: 'openURL',
+                        role: MenuRole.openURL,
                         url: 'https://github.com/VerZsuT/SnowRunner-XML-Editor-Desktop'
                     },
                     {
                         label: 'YouTube(RU)',
-                        role: 'openURL',
+                        role: MenuRole.openURL,
                         url: 'https://youtube.com/playlist?list=PLDwd4yUwzS2VtWCpC9X6MXm47Kv_s_mq2'
                     }
                 ]
@@ -118,7 +119,7 @@ export default class Menu {
      * Возвращает переданный шаблон если тип билда `dev`.
     */
     private static ifDevBuild = (menu: IMenuTemplate[]): IMenuTemplate[] => {
-        if (this.config.buildType === 'dev') {
+        if (this.config.buildType === BuildType.dev) {
             return menu
         }
         return []

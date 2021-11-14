@@ -1,66 +1,136 @@
 import { getIngameText } from './funcs'
 
-type TemplateChildren<T extends {[selector: string]: string}> = CGroup<T>|CInput<T>|CSelect<T>|CTemplate<T>
+function getSelectorName(selector: string): string {
+    return selector.split('||')[0].split('SELECTOR_ID:')[1]
+}
 
-class TemplateInputElement<T> {
+type TemplateChildren = GroupClass|InputClass|SelectClass|TemplateClass
+
+/** Тип XML файла, открываемого по нажатию кнопки. */
+export enum FileType {
+    /** Файл содержит набор двигателей. */
+    engines = 'engines',
+    /** Файл содержит набор КПП. */
+    gearboxes = 'gearboxes',
+    /** Файл содержит набор подвесок. */
+    suspensions = 'suspensions',
+    /** Файл содержит набор колёс. */
+    wheels = 'wheels',
+    /** Файл содержит набор лебёдок. */
+    winches = 'winches'
+}
+
+/** Тип шаблона. */
+export enum TemplateType {
+    /** 
+     * Шаблон будет запускать итерацию по всем элементам, найденным по переданному селектору.
+     * 
+     * _Требуется {@link ITemplateClassProps.itemSelector itemSelector}_
+    */
+    multiply = 'multiply',
+    /**
+     * Шаблон будет отрисован только один раз.
+     * 
+     * _{@link ITemplateClassProps.itemSelector itemSelector} игнорируется_
+    */
+    single = 'single'
+}
+
+/** Тип поля ввода. */
+export enum InputType {
+    /** Значение поля - `текст` */
+    text = 'text',
+    /** Значение поля - `число` */
+    number = 'number',
+    /** Значение поля - `координата` */
+    coordinates = 'coordinates',
+    /** Значение поля - `кнопки открытия XML файла(ов)` */
+    file = 'file'
+}
+
+/** Тип числового значение поля ввода. */
+export enum NumberType {
+    /** Целочисленное */
+    integer = 'int',
+    /** С плавающей точкой */
+    float = 'float'
+}
+
+/** Тип названия группы. */
+export enum NameType {
+    /** Статическое. */
+    static = 'static',
+    /** 
+     * Значение атрибута {@link IGroupClassProps.nameAttribute nameAttribute}
+     * по селектору {@link IGroupClassProps.nameSelector nameSelector} 
+    */
+    computed = 'computed',
+    /** Название элемента по селектору {@link IGroupClassProps.nameSelector nameSelector} */
+    tagName = 'tagName'
+}
+
+class InputElement {
     protected attribute: string
     protected text: string
     protected default: string | number
-    protected selector: keyof T
+    protected selector: string
     protected bold: boolean
     protected onlyDeveloper: boolean
     protected canAddTag: boolean
     protected desc: string
 
-    constructor(params: TInputElementCParams<T>) {
-        this.attribute = params.attribute
-        this.text = params.text
-        this.selector = params.selector
-        this.bold = params.bold
-        this.onlyDeveloper = params.onlyDeveloper
-        this.default = params.default
-        this.canAddTag = params.canAddTag
-        this.desc = params.desc ?? ''
+    constructor(props: IInputElementProps) {
+        this.attribute = props.attribute
+        this.text = props.text
+        this.bold = props.bold
+        this.onlyDeveloper = props.onlyDeveloper
+        this.default = props.default
+        this.canAddTag = props.canAddTag
+        this.desc = props.desc ?? ''
+        if (props.selector) {
+            this.selector = getSelectorName(props.selector)
+        }
     }
 }
 
-class CTemplate<T extends {[selector: string]: string}> implements ICTemplate {
-    private children: TemplateChildren<T>[]
+class TemplateClass implements ITemplateClass {
+    private children: TemplateChildren[]
     private replaceName = 'CYCLE'
-    private type: TemplateType
-    private itemSelector: keyof T
-    private selectors: T
+    private type: TTemplateType
+    private itemSelector: string
+    private selectors: {[name: string]: string}
 
-    constructor(params: TTemplateCParams<T>, children: TemplateChildren<T>[]) {
+    constructor(props: ITemplateClassProps, children: TemplateChildren[]) {
         this.children = children
-        this.type = params.type
-        this.itemSelector = params.itemSelector
-        this.selectors = params.selectors
+        this.type = props.type
+        this.selectors = props.selectors
+        if (props.itemSelector) {
+            this.itemSelector = getSelectorName(props.itemSelector)
+        }
     }
 
-    getParams(props: GetParamsProps): TemplateGetParams {
+    getParams(props: IGetParamsProps): ITemplateParams {
         const { 
             defaultSelector = null,
             tCycleNumber = 1,
             tNumber = 1,
             selectors = this.selectors,
             fileDOM,
-            templateName
+            templateName,
+            multiply = (this.type === TemplateType.multiply)
         } = props
 
-        let { 
-            counter = 1,
-            multiply
-        } = props
-
-        if (multiply === undefined) {
-            multiply = (this.type === 'multiply');
-        }
+        let { counter = 1 } = props
 
         let params = []
         let newSelectors = {}
+        for (const selector in selectors) {
+            if (selectors[selector].includes('||')) {
+                selectors[selector] = selectors[selector].split('||')[1]
+            }
+        }
         if (multiply) {
-            const items = fileDOM.querySelectorAll(selectors[<string>this.itemSelector])
+            const items = fileDOM.querySelectorAll(selectors[this.itemSelector])
             const name = this.replaceName + tNumber
             let currentNum = 1
             for (const item of items) {
@@ -104,45 +174,51 @@ class CTemplate<T extends {[selector: string]: string}> implements ICTemplate {
     }
 }
 
-class CGroup<T extends {[selector: string]: string}> implements ICGroup {
-    private children: TemplateChildren<T>[]
+class GroupClass implements IGroupClass {
+    private children: TemplateChildren[]
     private name: string
-    private nameType: GroupNameType
-    private nameSelector: keyof T
-    private resNameSelector: keyof T
+    private nameType: TNameType
+    private nameSelector: string
+    private resNameSelector: string
     private nameAttribute: string
     private resNameAttribute: string
-    private defaultSelector: keyof T
+    private defaultSelector: string
     private withCounter: boolean
 
-    constructor(params: TGroupCParams<T>, children: TemplateChildren<T>[]) {
+    constructor(props: IGroupClassProps, children: TemplateChildren[]) {
         this.children = children
-        this.name = params.name
-        this.nameType = params.nameType ?? 'static'
-        this.nameSelector = params.nameSelector
-        this.resNameSelector = params.resNameSelector
-        this.nameAttribute = params.nameAttribute
-        this.resNameAttribute = params.resNameAttribute
-        this.defaultSelector = params.defaultSelector
-        this.withCounter = params.withCounter ?? false
+        this.name = props.name
+        this.nameType = props.nameType ?? NameType.static
+        this.nameAttribute = props.nameAttribute
+        this.resNameAttribute = props.resNameAttribute
+        this.withCounter = props.withCounter ?? false
+        if (props.nameSelector) {
+            this.nameSelector = getSelectorName(props.nameSelector)
+        }
+        if (props.resNameSelector) {
+            this.resNameSelector = getSelectorName(props.resNameSelector)
+        }
+        if (props.defaultSelector) {
+            this.defaultSelector = getSelectorName(props.defaultSelector)
+        }
     }
 
-    getParams(props: GetParamsProps): [IGroupGetParams] | [] {
+    getParams(props: IGetParamsProps): [IGroupParams] | [] {
         let params = []
         let groupName: string
-        if (this.nameType !== 'static') {
-            const nameSelector = <string>this.nameSelector
-            const resNameSelector = <string>this.resNameSelector
-            const $nameElement = props.fileDOM.querySelector(props.selectors[nameSelector] ||<string>nameSelector)
-            const $resNameElement = props.fileDOM.querySelector(props.selectors[resNameSelector] || resNameSelector)
+        if (this.nameType !== NameType.static) {
+            const nameSelector = this.nameSelector
+            const resNameSelector = this.resNameSelector
+            const $nameElement = props.fileDOM.querySelector(props.selectors[nameSelector])
+            const $resNameElement = props.fileDOM.querySelector(props.selectors[resNameSelector])
 
             if (!$nameElement && !$resNameElement) {
                 return []
             }
 
-            if (this.nameType === 'computed') {
+            if (this.nameType === NameType.computed) {
                 groupName = getIngameText($nameElement.getAttribute(this.nameAttribute)) || $resNameElement.getAttribute(this.resNameAttribute)
-            } else if (this.nameType === 'tagName') {
+            } else if (this.nameType === NameType.tagName) {
                 groupName = $nameElement.nodeName
             }
         } else {
@@ -152,7 +228,7 @@ class CGroup<T extends {[selector: string]: string}> implements ICGroup {
         for (const child of this.children) {
             params = params.concat(child.getParams({
                 selectors: props.selectors,
-                defaultSelector: <string>(this.defaultSelector? this.defaultSelector :  (props.defaultSelector || null)),
+                defaultSelector: this.defaultSelector? this.defaultSelector :  (props.defaultSelector || null),
                 tNumber: props.tNumber,
                 fileDOM: props.fileDOM,
                 templateName: props.templateName
@@ -170,28 +246,28 @@ class CGroup<T extends {[selector: string]: string}> implements ICGroup {
     }
 }
 
-class CInput<T> extends TemplateInputElement<T> implements ICInput {
-    private type: InputType
+class InputClass extends InputElement implements IInputClass {
+    private type: TInputType
     private min: number
     private max: number
     private step: number
-    private numberType: InputNumberType
-    private fileType: string
+    private numberType: TNumberType
+    private fileType: TInputFileType
     private areas: InputAreas
 
-    constructor(params: TInputCParams<T>) {
-        super(params)
-        this.type = params.type ?? 'number'
-        this.min = params.min ?? (params.numberType === 'float'? 0.01 : 0)
-        this.max = params.max
-        this.step = params.step
-        this.numberType = params.numberType ?? 'int'
-        this.fileType = params.fileType
-        this.areas = params.areas
+    constructor(props: IInputClassProps) {
+        super(props)
+        this.type = props.type ?? InputType.number
+        this.min = props.min ?? (props.numberType === NumberType.float? 0.01 : 0)
+        this.max = props.max
+        this.numberType = props.numberType ?? NumberType.float
+        this.step = props.step ?? (this.numberType === NumberType.float? 0.1 : 1)
+        this.fileType = props.fileType
+        this.areas = props.areas
     }
 
-    getParams(props: GetParamsProps): [IInputGetParams] | [] {
-        const selector = this.selector? (props.selectors[<string>this.selector] || <string>this.selector) : props.selectors[props.defaultSelector]
+    getParams(props: IGetParamsProps): [IInputParams] | [] {
+        const selector = this.selector? (props.selectors[this.selector] || this.selector) : props.selectors[props.defaultSelector]
         let value: string
 
         if (!props.fileDOM.querySelector(selector)) {
@@ -225,16 +301,16 @@ class CInput<T> extends TemplateInputElement<T> implements ICInput {
     }
 }
 
-class CSelect<T> extends TemplateInputElement<T> implements ICSelect {
-    private children: ICOption[]
+class SelectClass extends InputElement implements ISelectClass {
+    private options: ISelectOptions
 
-    constructor(params: TInputElementCParams<T>, children: ICOption[]) {
-        super(params)
-        this.children = children
+    constructor(params: ISelectClassProps) {
+        super(params as unknown as IInputElementProps)
+        this.options = params.options
     }
     
-    getParams(props: GetParamsProps): [ISelectGetParams] | [] {
-        const selectorType = <string>(this.selector? this.selector : undefined)
+    getParams(props: IGetParamsProps): [ISelectParams] | [] {
+        const selectorType = this.selector? this.selector : undefined
         const selector = props.selectors[selectorType] || selectorType || props.selectors[props.defaultSelector]
         let value: string
 
@@ -248,12 +324,19 @@ class CSelect<T> extends TemplateInputElement<T> implements ICSelect {
         }
 
         let options = []
-        for (const option of this.children) {
-            const text_1 = option.text
-            options.push({
-                text: text_1,
-                value: option.value
-            })
+        for (const optionValue in this.options) {
+            const optionText = this.options[optionValue]
+            if (optionValue === 'EMPTY') {
+                options.push({
+                    text: optionText,
+                    value: ''
+                })
+            } else {
+                options.push({
+                    text: optionText,
+                    value: optionValue
+                })
+            }
         }
 
         return [{
@@ -272,57 +355,137 @@ class CSelect<T> extends TemplateInputElement<T> implements ICSelect {
     }
 }
 
-class COption implements ICOption {
-    public text: string
-    public value: string
-
-    constructor(params: TOptionCParams) {
-        this.text = params.text
-        this.value = params.value
-    }
+/** Шаблон таблицы параметров. Может иметь вложенные под-шаблоны. */
+export function Template(params: ITemplateClassProps, children: TemplateChildren[]) {
+    return new TemplateClass(params, children)
 }
 
-export function Template<T extends {[selector: string]: string}>(params: TTemplateCParams<T>, children: TemplateChildren<T>[]) {
-    return new CTemplate<T>(params, children)
+/** Объединение параметров в раскрывающуюся группу. */
+export function Group(params: IGroupClassProps, children: TemplateChildren[]) {
+    return new GroupClass(params, children)
 }
 
-export function Group<T extends {[selector: string]: string}>(params: TGroupCParams<T>, children: TemplateChildren<T>[]) {
-    return new CGroup<T>(params, children)
+/** Поле ввода. */
+export function Input(params: IInputClassProps) {
+    return new InputClass(params)
 }
 
-export function Input<T>(params: TInputCParams<T>) {
-    return new CInput<T>(params)
+/** Поле выбора значения из предложенных. */
+export function Select(params: ISelectClassProps) {
+    return new SelectClass(params)
 }
 
-export function Select<T>(params: TInputElementCParams<T>, children: ICOption[]) {
-    return new CSelect<T>(params, children)
-}
+/** По каждому элементу с перед-стоящим селектором. */
+export const forEach = '[SXMLE_ID="-CYCLE1-"]'
+/** Первый среди элементов с перед-стоящим селектором. */
+export const first = '[SXMLE_ID="-F_CYCLE1-"]'
+/** Последний среди элементов с перед-стоящим селектором. */
+export const last = '[SXMLE_ID="-L_CYCLE1-"]'
 
-export function Opt(params: TOptionCParams) {
-    return new COption(params)
-}
+/** 
+ * По каждому элементу с перед-стоящим селектором в указанном цикле.
+ * 
+ * __Цикл__ - номер по порядку шаблона с итерацией `Template[type=TemplateType.multiply]`
+*/
+export const forEachBy = (cycleNum: number) => `[SXMLE_ID="-CYCLE${cycleNum}-"]`
+/** 
+ * Первый среди элементов с перед-стоящим селектором в указанном цикле.
+ * 
+ * __Цикл__ - номер по порядку шаблона с итерацией `Template[type=TemplateType.multiply]`
+*/
+export const firstBy = (cycleNum: number) => `[SXMLE_ID="-F_CYCLE${cycleNum}-"]`
+/** 
+ * Последний среди элементов с перед-стоящим селектором в указанном цикле.
+ * 
+ * __Цикл__ - номер по порядку шаблона с итерацией `Template[type=TemplateType.multiply]`
+*/
+export const lastBy = (cycleNum: number) => `[SXMLE_ID="-L_CYCLE${cycleNum}-"]`
+/** 
+ * Элемент, стоящий на позиции `pos` в указанном цикле.
+ * 
+ * __Цикл__ - номер по порядку шаблона с итерацией `Template[type=TemplateType.multiply]`
+*/
+export const th = (pos: number, cycleNum: number = 1) => `[SXMLE_ID="-N${pos}_CYCLE${cycleNum}-"]`
 
+/** 
+ * Создаёт объект селекторов на основе `obj`. 
+ * 
+ * Все точки в селекторе после обработки заменяются на `>`.
+ * 
+ * Для вставки другого селектора используется `{id}`, где _id_ - название селектора для вставки.
+ * 
+ * _Внимение!_ Сначала должен идти тот селектор, **который** будет вставляться, а потом уже тот, **в который** происходит вставка.
+ * 
+ * _Пример:_
+ * ```
+ * {
+ *     selector1: 'el1.el2',
+ *     selector2: '{selector1}.el3', // Правильно, после обработки будет 'el1.el2.el3'
+ *     ...
+ *     selector3: '{selector4}.el6', // Неправильно, вставка должна быть ПОСЛЕ инициализации
+ *     selector4: 'el4.el5'
+ * }
+ * ```
+ * Для относительной навигации в селекторе могут применяться следующие элементы:
+ * - {@link forEach} или {@link forEachBy}()
+ * - {@link first} или {@link firstBy}()
+ * - {@link last} или {@link lastBy}()
+ * - {@link th}()
+ * 
+ * _Внимание!_ Вставка для относительной навигации проводится без точки после селектора.
+ * 
+ * _Пример:_
+ * ```
+ * {
+ *     selector1: `el1.el2${first}`, // Правильно
+ *     selector2: `el1.el2.${first}` // Неправильно
+ * }
+ * ```
+ * _Пример возможных селекторов:_
+ * ```
+ * {
+ *     // Вместо forEach каждую итерацию будет вставляться `ID` текущего элемента.
+ *     first: `Truck.Wheel${forEach}`,
+ *     // После обработки будет 'Truck.Wheel${forEach}.GameData'
+ *     second: '{first}.GameData',
+ *     // Последний <Bone> в <PhysicsModel>,
+ *     third: `PhysicsModel.Bone${last}`, 
+ *     // Аналогично первому, но вставка происходит только во второй итерации.
+ *     example: `Example${forEachBy(2)}` 
+ * }
+ * ```
+ * Допустим, у нас есть такой XML файл:
+ * ```xml
+ * <Truck>
+ *     <Wheels>
+ *          <Wheel number='1'/>
+ *          ...
+ *          <Wheel number='30'/>
+ *     </Wheels>
+ * </Truck>
+ * ```
+ * Нам требуется получить доступ к каждому Wheel. Для этого мы используем два селектора.
+ * ```
+ * {
+ *     // Вставим его как itemSelector в Template и он запустит итерацию по всем <Wheel>.
+ *     wheel: 'Truck.Wheels.Wheel',
+ *     // Во время итерации этот селектор будет указывать на текущий элемент <Wheel>.
+ *     currentWheel: `{wheel}${forEach}`
+ * }
+ * ```
+*/
 export function Selectors<T extends {[id: string]: string}>(obj: T): T {
+    type ItemType = T[Extract<keyof T, string>]
     const newObj: T = Object.assign({}, obj)
-    for (const id in obj) {
-        newObj[id] = <T[Extract<keyof T, string>]>obj[id]
-            .replaceAll('#every(', '[SXMLE_ID="-CYCLE')
-            .replaceAll('#first(', '[SXMLE_ID="-F_CYCLE')
-            .replaceAll('#last(', '[SXMLE_ID="-L_CYCLE')
-            .replaceAll('#every', '[SXMLE_ID="-CYCLE1-"]')
-            .replaceAll('#first', '[SXMLE_ID="-F_CYCLE1-"]')
-            .replaceAll('#last', '[SXMLE_ID="-L_CYCLE1-"]')
-
-        for (let i = 1; i <= 20; i++) {
-            newObj[id] = <T[Extract<keyof T, string>]>newObj[id].replaceAll(`#${i}-th(`, `[SXMLE_ID="-N${i}_CYCLE`)
-        }
-        newObj[id] = <T[Extract<keyof T, string>]>newObj[id].replaceAll(')', '-"]').replaceAll('.', ' > ')
-    }
 
     for (const id in newObj) {
         for (const id2 in newObj) {
-            newObj[id2] = <T[Extract<keyof T, string>]>newObj[id2].replace(`{${id}}`, newObj[id])
+            newObj[id2] = newObj[id2].replace(`{${id}}`, newObj[id]) as ItemType
         }
+    }
+    for (const id in obj) {
+        newObj[id] = `SELECTOR_ID:${id}||${newObj[id]}` as ItemType
+        newObj[id] = newObj[id].replaceAll('.', '>') as ItemType
     }
     return newObj
 }

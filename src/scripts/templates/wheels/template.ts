@@ -3,9 +3,14 @@ import {
 	Group,
 	Input,
 	Select,
-	Opt,
-	Selectors
+	Selectors,
+	forEach,
+	NumberType,
+	NameType,
+	TemplateType,
+	InputType
 } from '../../service'
+import unlockGroup from '../presets/unlockGroup'
 import {
 	descs,
 	texts
@@ -14,7 +19,7 @@ import {
 const selectors = Selectors({
 	truckWheels: 'TruckWheels',
 	truckTire: 'TruckWheels.TruckTires.TruckTire',
-	truckTireItem: '{truckTire}#every',
+	truckTireItem: `{truckTire}${forEach}`,
 	truckTireItemText: '{truckTireItem}.GameData.UiDesc',
 	wheelFriction: '{truckTireItem}.WheelFriction',
 	gameData: '{truckTireItem}.GameData'
@@ -22,16 +27,16 @@ const selectors = Selectors({
 
 export default <ITemplate> {
 	selector: 'TruckWheels',
-	template: Template({selectors: selectors}, [
+	template: Template({selectors}, [
 		Group({
 			name: texts.general,
-			defaultSelector: 'truckWheels'
+			defaultSelector: selectors.truckWheels
 		}, [
 			Input({
 				attribute: 'DamageCapacity',
+				numberType: NumberType.integer,
 				text: texts.damageCapacity,
 				desc: descs.damageCapacity,
-				min: 0,
 				max: 64000,
 				areas: {
 					yellow: [[1000, 5000]],
@@ -40,48 +45,42 @@ export default <ITemplate> {
 			}),
 			Input({
 				attribute: 'Radius',
-				numberType: 'float',
 				text: texts.radius,
 				desc: descs.radius,
-				min: 0,
 				onlyDeveloper: true
 			}),
 			Input({
 				attribute: 'Width',
-				numberType: 'float',
 				text: texts.width,
 				desc: descs.width,
-				min: 0,
 				onlyDeveloper: true
 			})
 		]),
 		Template({
-			type: 'multiply',
-			itemSelector: 'truckTire'
+			type: TemplateType.multiply,
+			itemSelector: selectors.truckTire
 		}, [
 			Group({
-				nameType: 'computed',
-				nameSelector: 'truckTireItemText',
-				resNameSelector: 'truckTireItem',
+				nameType: NameType.computed,
 				nameAttribute: 'UiName',
 				resNameAttribute: 'Name',
-				defaultSelector: 'wheelFriction'
+				nameSelector: selectors.truckTireItemText,
+				resNameSelector: selectors.truckTireItem,
+				defaultSelector: selectors.wheelFriction
 			}, [
 				Input({
 					attribute: 'Name',
+					selector: selectors.truckTireItem,
+					type: InputType.text,
 					text: texts.id,
 					desc: descs.id,
-					type: 'text',
-					onlyDeveloper: true,
-					selector: 'truckTireItem'
+					onlyDeveloper: true
 				}),
 				Input({
 					attribute: 'BodyFriction',
 					text: texts.bodyFriction,
 					desc: descs.bodyFriction,
-					numberType: 'float',
 					max: 10,
-					step: 0.1,
 					default: 1,
 					areas: {
 						yellow: [[7, 8]],
@@ -94,9 +93,7 @@ export default <ITemplate> {
 					attribute: 'BodyFrictionAsphalt',
 					text: texts.bodyFrictionAsphalt,
 					desc: descs.bodyFrictionAsphalt,
-					numberType: 'float',
 					max: 10,
-					step: 0.1,
 					default: 1,
 					areas: {
 						yellow: [[7, 8]],
@@ -109,9 +106,7 @@ export default <ITemplate> {
 					attribute: 'SubstanceFriction',
 					text: texts.substanceFriction,
 					desc: descs.substanceFriction,
-					numberType: 'float',
 					max: 10,
-					step: 0.1,
 					default: 1,
 					areas: {
 						yellow: [[7, 8]],
@@ -126,50 +121,14 @@ export default <ITemplate> {
 					desc: descs.ignoreIse,
 					bold: true,
 					canAddTag: true,
+					options: {
+						true: texts.yes,
+						false: texts.no
+					},
 					default: 'false'
-				}, [
-					Opt({
-						text: texts.yes,
-						value: 'true'
-					}),
-					Opt({
-						text: texts.no,
-						value: 'false'
-					})
-				]),
-				Group({
-					name: texts.unlockGroupName,
-					defaultSelector: 'gameData'
-				}, [
-					Input({
-						attribute: 'Price',
-						text: texts.price,
-						desc: descs.price,
-						bold: true
-					}),
-					Select({
-						attribute: 'UnlockByExploration',
-						text: texts.unlockByExploration,
-						desc: descs.unlockByExploration,
-						onlyDeveloper: true
-					}, [
-						Opt({
-							text: texts.findOnMap,
-							value: 'true'
-						}),
-						Opt({
-							text: texts.byRank,
-							value: 'false'
-						})
-					]),
-					Input({
-						attribute: 'UnlockByRank',
-						text: texts.unlockByRank,
-						desc: descs.unlockByRank,
-						min: 1
-					})
-				])
+				}),
+				unlockGroup(selectors.gameData)
 			])
-		]),	
+		])
 	])
 }

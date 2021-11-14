@@ -26,7 +26,7 @@ export const t = <Translation>new Proxy({}, {
 /**
  * Устанавливает событие по нажатию кнопки.
 */
-export function setHotKey(params: SetHotKeyParams, listener: (event: KeyboardEvent) => any): void {
+export function setHotKey(params: ISetHotKeyParams, listener: (event: KeyboardEvent) => any): void {
     const { key, eventName='keypress', ctrlKey, shiftKey, prevent } = params
 
     document.addEventListener(eventName, event => {
@@ -41,7 +41,7 @@ export function setHotKey(params: SetHotKeyParams, listener: (event: KeyboardEve
  * Расширенный вариант document.createElement.
  * Создаёт элемент и устанавливает переданые атрибуты.
 */
-export function create<T>(tag: keyof HTMLElementTagNameMap, attrs?: CreateAttributes): T {
+export function create<T>(tag: keyof HTMLElementTagNameMap, attrs?: ICreateAttributes): T {
     const element = document.createElement(tag)
 
     for (const attrName in attrs) {

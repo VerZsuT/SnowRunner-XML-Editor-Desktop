@@ -22,7 +22,7 @@
 
 <script lang='ts'>
 import { defineComponent } from 'vue'
-import { t } from '../../../service'
+import { InputType, NumberType, t } from '../../../service'
 
 export default defineComponent({
     props: {
@@ -64,7 +64,7 @@ export default defineComponent({
                 name: this.item.name
             }
         })
-        if (this.item.type === 'number') {
+        if (this.item.type === InputType.number) {
             this.$nextTick(function() {
                 this.setColor()
             })
@@ -121,7 +121,10 @@ export default defineComponent({
                 this.$refs.input.style.borderColor = color
             }
         },
-        limit(value) {
+        limit(value: number) {
+            if (this.item.numberType === NumberType.integer) {
+                value = Math.round(value)
+            }
             if (this.min !== undefined && value < this.min) {
                 return this.min
             }
@@ -133,7 +136,7 @@ export default defineComponent({
     },
     computed: {
         isNumber() {
-            return this.item.type === 'number'
+            return this.item.type === InputType.number
         },
         min() {
             if (this.item.min !== '-∞' && config.settings.limits) {

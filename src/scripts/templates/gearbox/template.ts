@@ -3,22 +3,29 @@ import {
 	Group,
 	Input,
 	Select,
-	Opt,
-	Selectors
+	Selectors,
+	forEach,
+	forEachBy,
+	TemplateType,
+	InputType,
+	NameType,
+	NumberType
 } from '../../service'
 import {
 	descs,
 	texts
 } from './texts'
+import gearPreset from '../presets/gear'
+import unlockGroup from '../presets/unlockGroup'
 
 const selectors = Selectors({
 	gearbox: 'GearboxVariants.Gearbox',
-	gearboxItem: '{gearbox}#every',
+	gearboxItem: `{gearbox}${forEach}`,
 	gearboxItemText: '{gearboxItem}.GameData.UiDesc',
-	gear: '{gearbox}#every.Gear',
+	gear: `{gearbox}${forEach}.Gear`,
 	reverseGear: '{gearboxItem}.ReverseGear',
 	highGear: '{gearboxItem}.HighGear',
-	gearItem: '{gear}#every(2)',
+	gearItem: `{gear}${forEachBy(2)}`,
 	gameData: '{gearboxItem}.GameData',
 	gearboxParams: '{gameData}.GearboxParams'
 })
@@ -26,60 +33,57 @@ const selectors = Selectors({
 export default <ITemplate> {
 	selector: 'GearboxVariants',
 	template: Template({
-		type: 'multiply',
-		itemSelector: 'gearbox',
+		type: TemplateType.multiply,
+		itemSelector: selectors.gearbox,
 		selectors: selectors
 	}, [
 		Group({
-			nameType: 'computed',
-			nameSelector: 'gearboxItemText',
-			resNameSelector: 'gearboxItem',
+			nameType: NameType.computed,
 			nameAttribute: 'UiName',
 			resNameAttribute: 'Name',
-			defaultSelector: 'gearboxItem'
+			nameSelector: selectors.gearboxItemText,
+			resNameSelector: selectors.gearboxItem,
+			defaultSelector: selectors.gearboxItem
 		}, [
 			Input({
 				attribute: 'Name',
+				type: InputType.text,
 				text: texts.id,
-				type: 'text',
 				onlyDeveloper: true
 			}),
 			Input({
 				attribute: 'AWDConsumptionModifier',
 				text: texts.awdConsumptionModifier,
 				desc: descs.awdConsumptionModifier,
-				numberType: 'float',
 				max: 32,
-				step: 0.1,
 				default: 1
 			}),
 			Input({
 				attribute: 'CriticalDamageThreshold',
 				text: texts.criticalDamageThreshold,
 				desc: descs.criticalDamageThreshold,
-				numberType: 'float',
 				max: 0.99,
 				step: 0.01,
 				default: 0.7
 			}),
 			Input({
 				attribute: 'DamageCapacity',
+				numberType: NumberType.integer,
 				text: texts.damageCapacity,
 				desc: descs.damageCapacity,
 				max: 64000,
-				bold: true,
 				step: 10,
 				default: 0,
 				areas: {
 					yellow: [[1000, 10000]],
 					red: [[10001, Infinity]],
 				},
+				bold: true
 			}),
 			Input({
 				attribute: 'DamagedConsumptionModifier',
 				text: texts.damagedConsumptionModifier,
 				desc: descs.damagedConsumptionModifier,
-				numberType: 'float',
 				max: 32,
 				step: 0.01,
 				default: 1
@@ -88,216 +92,96 @@ export default <ITemplate> {
 				attribute: 'FuelConsumption',
 				text: texts.fuelConsumption,
 				desc: descs.fuelConsumption,
-				numberType: 'float',
 				max: 10,
-				step: 0.1,
-				bold: true,
-				default: 0.1
+				default: 0.1,
+				bold: true
 			}),
 			Input({
 				attribute: 'IdleFuelModifier',
 				text: texts.idleFuelConsumption,
 				desc: descs.idleFuelConsumption,
-				numberType: 'float',
 				max: 10,
-				step: 0.1,
 				default: 0.3
 			}),
 			Select({
 				attribute: 'IsManualLowGear',
-				selector: 'gearboxParams',
+				selector: selectors.gearboxParams,
 				text: texts.lowerManualGear,
 				desc: descs.lowerManualGear,
+				options: {
+					true: texts.allow,
+					false: texts.notAllow
+				},
 				default: 'false'
-			}, [
-				Opt({
-					text: texts.allow,
-					value: 'true'
-				}),
-				Opt({
-					text: texts.notAllow,
-					value: 'false'
-				})
-			]),
+			}),
 			Group({
 				name: texts.gearboxParams,
-				defaultSelector: 'gearboxParams'
+				defaultSelector: selectors.gearboxParams
 			}, [
 				Select({
 					attribute: 'IsHighGearExists',
 					text: texts.highGear,
 					desc: descs.highGear,
+					options: {
+						true: texts.allow,
+						false: texts.notAllow
+					},
 					default: 'true'
-				}, [
-					Opt({
-						text: texts.allow,
-						value: 'true'
-					}),
-					Opt({
-						text: texts.notAllow,
-						value: 'false'
-					})
-				]),
+				}),
 				Select({
 					attribute: 'IsLowerGearExists',
 					text: texts.lowerGear,
 					desc: descs.lowerGear,
+					options: {
+						true: texts.allow,
+						false: texts.notAllow
+					},
 					default: 'true'
-				}, [
-					Opt({
-						text: texts.allow,
-						value: 'true'
-					}),
-					Opt({
-						text: texts.notAllow,
-						value: 'false'
-					})
-				]),
+				}),
 				Select({
 					attribute: 'IsLowerPlusGearExists',
 					text: texts.lowerPlusGear,
 					desc: descs.lowerPlusGear,
+					options: {
+						true: texts.allow,
+						false: texts.notAllow
+					},
 					default: 'true'
-				}, [
-					Opt({
-						text: texts.allow,
-						value: 'true'
-					}),
-					Opt({
-						text: texts.notAllow,
-						value: 'false'
-					})
-				]),
+				}),
 				Select({
 					attribute: 'IsLowerMinusGearExists',
 					text: texts.lowerMinusGear,
 					desc: descs.lowerMinusGear,
+					options: {
+						true: texts.allow,
+						false: texts.notAllow
+					},
 					default: 'true'
-				}, [
-					Opt({
-						text: texts.allow,
-						value: 'true'
-					}),
-					Opt({
-						text: texts.notAllow,
-						value: 'false'
-					})
-				])
+				})
 			]),
 			Group({
 				name: texts.gears
 			}, [
 				Group({
 					name: texts.reverceGear,
-					defaultSelector: 'reverseGear'
-				}, [
-					Input({
-						attribute: 'AngVel',
-						text: texts.angelVelocity,
-						desc: descs.angelVelocity,
-						numberType: 'float',
-						max: 32,
-						step: 1,
-						bold: true,
-						default: 0
-					}),
-					Input({
-						attribute: 'FuelModifier',
-						text: texts.fuelModifier,
-						desc: descs.fuelModifier,
-						numberType: 'float',
-						max: 10,
-						step: 0.1,
-						default: 1
-					})
-				]),
+					defaultSelector: selectors.reverseGear
+				}, gearPreset),
 				Group({
 					name: texts.highGear,
-					defaultSelector: 'highGear'
-				}, [
-					Input({
-						attribute: 'AngVel',
-						text: texts.angelVelocity,
-						desc: descs.angelVelocity,
-						numberType: 'float',
-						max: 32,
-						step: 1,
-						bold: true,
-						default: 0
-					}),
-					Input({
-						attribute: 'FuelModifier',
-						text: texts.fuelModifier,
-						desc: descs.fuelModifier,
-						numberType: 'float',
-						max: 10,
-						step: 0.1,
-						default: 1
-					})
-				]),
+					defaultSelector: selectors.highGear
+				}, gearPreset),
 				Template({
-					type: 'multiply',
-					itemSelector: 'gear'
+					type: TemplateType.multiply,
+					itemSelector: selectors.gear
 				}, [
 					Group({
 						name: '',
-						defaultSelector: 'gearItem',
+						defaultSelector: selectors.gearItem,
 						withCounter: true
-					}, [
-						Input({
-							attribute: 'AngVel',
-							text: texts.angelVelocity,
-							desc: descs.angelVelocity,
-							numberType: 'float',
-							max: 32,
-							step: 1,
-							bold: true,
-							default: 0
-						}),
-						Input({
-							attribute: 'FuelModifier',
-							text: texts.fuelModifier,
-							desc: descs.fuelModifier,
-							numberType: 'float',
-							max: 10,
-							step: 0.1,
-							default: 1
-						})
-					])
+					}, gearPreset)
 				])
 			]),
-			Group({
-				name: texts.unlockGroupName,
-				defaultSelector: 'gameData'
-			}, [
-				Input({
-					attribute: 'Price',
-					text: texts.price,
-					desc: descs.price,
-					bold: true
-				}),
-				Select({
-					attribute: 'UnlockByExploration',
-					text: texts.byExploration,
-					desc: descs.byExploration,
-					onlyDeveloper: true
-				}, [
-					Opt({
-						text: texts.findOnMap,
-						value: 'true'
-					}),
-					Opt({
-						text: texts.byRank,
-						value: 'false'
-					})
-				]),
-				Input({
-					attribute: 'UnlockByRank',
-					text: texts.unlockByRank,
-					desc: descs.unlockByRank,
-					min: 1
-				})
-			])
+			unlockGroup(selectors.gameData)
 		])
 	])
 }

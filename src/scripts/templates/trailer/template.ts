@@ -2,7 +2,8 @@ import {
 	Template,
 	Group,
 	Input,
-	Selectors
+	Selectors,
+	NumberType
 } from '../../service'
 import {
 	descs,
@@ -19,13 +20,14 @@ const selectors = Selectors({
 
 export default <ITemplate> {
 	selector: 'Truck[Type="Trailer"]',
-	template: Template({selectors: selectors}, [
+	template: Template({selectors}, [
 		Group({
 			name: texts.inner,
-			defaultSelector: 'truckData'
+			defaultSelector: selectors.truckData
 		}, [
 			Input({
 				attribute: 'FuelCapacity',
+				numberType: NumberType.integer,
 				text: texts.fuelCapacity,
 				desc: descs.fuelCapacity,
 				max: 64000,
@@ -38,6 +40,7 @@ export default <ITemplate> {
 			}),
 			Input({
 				attribute: 'RepairsCapacity',
+				numberType: NumberType.integer,
 				text: texts.repairsCapacity,
 				desc: descs.repairsCapacity,
 				default: 0,
@@ -48,6 +51,7 @@ export default <ITemplate> {
 			}),
 			Input({
 				attribute: 'WheelRepairsCapacity',
+				numberType: NumberType.integer,
 				text: texts.wheelRepairsCapacity,
 				desc: descs.wheelRepairsCapacity,
 				default: 0,
@@ -58,9 +62,10 @@ export default <ITemplate> {
 			}),
 			Input({
 				attribute: 'Quantity',
+				numberType: NumberType.integer,
+				selector: selectors.addonSlots,
 				text: texts.quantity,
-				desc: descs.quantity,
-				selector: 'addonSlots'
+				desc: descs.quantity
 			})
 		]),
 		Group({
@@ -68,23 +73,26 @@ export default <ITemplate> {
 		}, [
 			Input({
 				attribute: 'Mass',
+				numberType: NumberType.integer,
+				selector: selectors.modelBody,
 				text: texts.trailerMass,
-				desc: descs.trailerMass,
-				selector: 'modelBody'
+				desc: descs.trailerMass
 			}),
 			Input({
 				attribute: 'Mass',
+				numberType: NumberType.integer,
+				selector: selectors.fuelMass,
 				text: texts.fuelMass,
-				desc: descs.fuelMass,
-				selector: 'fuelMass'
+				desc: descs.fuelMass
 			})
 		]),
 		Group({
 			name: texts.other,
-			defaultSelector: 'gameData'
+			defaultSelector: selectors.gameData
 		}, [
 			Input({
 				attribute: 'Price',
+				numberType: NumberType.integer,
 				text: texts.price,
 				desc: descs.price
 			})

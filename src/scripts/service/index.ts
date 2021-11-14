@@ -15,7 +15,18 @@ export {
     Group,
     Input,
     Select,
-    Opt,
-    Selectors
+    Selectors,
+    forEach,
+    last,
+    first,
+    forEachBy,
+    lastBy,
+    firstBy,
+    th,
+    InputType,
+    NumberType,
+    NameType,
+    TemplateType,
+    FileType
 } from './templateItems'
 export * as templates from '../templates'

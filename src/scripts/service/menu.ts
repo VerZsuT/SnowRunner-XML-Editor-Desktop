@@ -1,3 +1,4 @@
+import { MenuRole } from '../../app/classes/enums'
 import { create, t, setHotKey } from './funcs'
 import mainProcess from './mainProcess'
 
@@ -12,10 +13,9 @@ document.body.prepend($menu)
 
 /**
  * Создаёт меню на основе шаблона.
- * @param template - шаблон.
 */
 function buildMenu(template: IMenuTemplate, root?: boolean): HTMLDivElement | HTMLButtonElement {
-    if (template.role === 'separator') {
+    if (template.role === MenuRole.separator) {
         return create<HTMLHRElement>('hr', {
             class: 'dropdown-divider'
         })
@@ -48,34 +48,34 @@ function buildMenu(template: IMenuTemplate, root?: boolean): HTMLDivElement | HT
     if (template.role) {
         let onclick: ()=>any
         switch (template.role) {
-            case 'quitApp':
+            case MenuRole.quitApp:
                 onclick = () => mainProcess.quit()
             break
-            case 'openURL':
+            case MenuRole.openURL:
                 onclick = () => mainProcess.openLink(template.url)
             break
-            case 'showFolder':
+            case MenuRole.showFolder:
                 onclick = () => mainProcess.openPath(template.path)
             break
-            case 'resetConfig':
+            case MenuRole.resetConfig:
                 onclick = () => mainProcess.resetConfig()
             break
-            case 'restoreInitial':
+            case MenuRole.recoverFromBackup:
                 onclick = () => mainProcess.recoverFromBackup()
             break
-            case 'joinExported':
+            case MenuRole.joinEPF:
                 onclick = () => mainProcess.joinEPF()
             break
-            case 'seeExported':
+            case MenuRole.seeEPF:
                 onclick = () => mainProcess.seeEPF()
             break
-            case 'saveBackup':
+            case MenuRole.saveBackup:
                 onclick = () => {
                     mainProcess.copyBackup()
                     mainProcess.alertSync(t.SUCCESS_BACKUP_SAVE)
                 }
             break
-            case 'devTools':
+            case MenuRole.devTools:
                 onclick = () => mainProcess.toggleDevTools()
                 setHotKey({
                     key: 'KeyI',
@@ -83,7 +83,7 @@ function buildMenu(template: IMenuTemplate, root?: boolean): HTMLDivElement | HT
                     shiftKey: true
                 }, () => $button.click())
             break
-            case 'reload':
+            case MenuRole.reload:
                 onclick = () => window.location.reload()
                 setHotKey({
                     key: 'KeyR',
@@ -91,7 +91,7 @@ function buildMenu(template: IMenuTemplate, root?: boolean): HTMLDivElement | HT
                     shiftKey: true
                 }, () => $button.click())
             break
-            case 'openSettings':
+            case MenuRole.openSettings:
                 onclick = () => mainProcess.openSettings()
             break
         }

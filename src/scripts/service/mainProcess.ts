@@ -2,10 +2,10 @@ import { t, TKeys } from './funcs'
 
 const info: IInfo = ipcRenderer.sendSync('getInfo')
 const errorHandler = (error: Error) => {
-    ipcRenderer.sendSync('function_alertSync_call', t[<TKeys>`${error}`.replace('Error: ', '')])
+    ipcRenderer.sendSync('function_alertSync_call', t[`${error}`.replace('Error: ', '') as TKeys])
 }
 /**
- * Предоставляет доступ ко всем публичным методам и функция, установленным в index.js.
+ * Предоставляет доступ ко всем публичным методам и функциям, установленным в index.js.
 */
 export default <IMainProcess>new Proxy({}, {
     get(_, name: string) {

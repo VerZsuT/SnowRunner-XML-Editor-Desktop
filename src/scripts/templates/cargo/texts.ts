@@ -1,3 +1,30 @@
+export const texts = {
+	RU: {
+		mass: 'Масса',
+		part: 'Части',
+		main: 'Основное',
+		cargoLength: 'Длина',
+		cargoType: 'Тип',
+		offset: 'Смещение'
+	},
+	EN: {
+		mass: 'Mass',
+		part: 'Parts',
+		main: 'Main',
+		cargoLength: 'Length',
+		cargoType: 'Type',
+		offset: 'Offset'
+	},
+	DE: {
+		mass: 'Masse',
+		part: 'Teilе',
+		main: 'Grundlegende',
+		cargoLength: 'Länge',
+		cargoType: 'Typ',
+		offset: 'Offset'
+	}
+}[config.lang]
+
 export const descs = {
 	RU: {
 		mass: 'Масса части груза',
@@ -16,32 +43,5 @@ export const descs = {
 		cargoLength: 'Anzahl der belegten Plätze (Slots)',
 		cargoType: 'Fracht-ID',
 		offset: 'Versatz jeder neuen Ladung relativ zur vorherigen Ladung'
-	}
-}[config.lang]
-
-export const texts = {
-	EN: {
-		mass: 'Mass',
-		part: 'Parts',
-		main: 'Main',
-		cargoLength: 'Length',
-		cargoType: 'Type',
-		offset: 'Offset'
-	},
-	RU: {
-		mass: 'Масса',
-		part: 'Части',
-		main: 'Основное',
-		cargoLength: 'Длина',
-		cargoType: 'Тип',
-		offset: 'Смещение'
-	},
-	DE: {
-		mass: 'Masse',
-		part: 'Teilе',
-		main: 'Grundlegende',
-		cargoLength: 'Länge',
-		cargoType: 'Typ',
-		offset: 'Offset'
 	}
 }[config.lang]
