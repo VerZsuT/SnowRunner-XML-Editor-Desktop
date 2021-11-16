@@ -2,36 +2,22 @@ import { app, BrowserWindow, ipcMain } from 'electron'
 import { paths } from '../service'
 import Settings from './Settings'
 
-/**
- * Отвечает за взаимодействие с окнами.
-*/
+/** Отвечает за взаимодействие с окнами. */
 export default class Windows {
-    /**
-     * Главное окно программы (с выбором категории).
-    */
+    /** Главное окно программы (с выбором категории). */
     public static categories: BrowserWindow
-    /**
-     * Окно со списком авто/грузов/трейлеров.
-    */
+    /** Окно со списком авто/грузов/трейлеров. */
     public static list: BrowserWindow
-    /**
-     * Окно самого редактора параметров.
-    */
+    /** Окно самого редактора параметров. */
     public static editor: BrowserWindow
-    /**
-     * Окно загрузки.
-    */
+    /** Окно загрузки. */
     public static loading: IDownloadWindow
-    /**
-     * Текущее активное окно.
-    */
+    /** Текущее активное окно. */
     public static currentWindow: BrowserWindow
 
     private static settings: ISettings = Settings.obj
 
-    /**
-     * Параметры создания.
-    */
+    /** Параметры создания. */
     private static createArgs = {
         editor: {
             path: EDITOR_WEBPACK_ENTRY,
@@ -96,13 +82,16 @@ export default class Windows {
     public static openEditor = (bridge?: boolean): BrowserWindow => {
         if (this.editor && !bridge) {
             this.editor.hide()
-        } else if (this.list) {
-            this.list.hide()
-        }
+        } 
+
         const wind = this.createWindow({
             ...this.createArgs.editor,
             bridge: bridge
         })
+
+        if (this.list) {
+            this.list.close()
+        }
     
         if (bridge) {
             ipcMain.once('bridge-channel', (_, data) => {
@@ -115,6 +104,7 @@ export default class Windows {
     
         if (this.editor) {
             wind.once('close', () => {
+                if (Settings.obj.isQuit) return
                 if (this.editor && !this.editor.isDestroyed()) {
                     this.currentWindow = this.editor
                     this.editor.show()
@@ -124,12 +114,9 @@ export default class Windows {
         } else {
             this.editor = wind
             wind.once('close', () => {
-                this.editor = null
-                if (this.list && !this.list.isDestroyed()) {
-                    this.currentWindow = this.list
-                    this.list.show()
-                    this.list.focus()
-                }
+                if (Settings.obj.isQuit) return
+                this.openList()
+                delete this.editor
             })
         }
     }
@@ -155,9 +142,7 @@ export default class Windows {
         return wind
     }
 
-    /**
-     * Открывает окно настроек.
-    */
+    /** Открывает окно настроек. */
     public static openSettings = (): void => {
         const beforeWindow = this.currentWindow
         const wind = this.createWindow({
@@ -171,9 +156,7 @@ export default class Windows {
         })
     }
 
-    /**
-     * Открывает окно консоли.
-    */
+    /** Открывает окно консоли. */
     public static openConsole = (): void => {
         const beforeWindow = this.currentWindow
         const wind = this.createWindow(this.createArgs.console)
@@ -212,9 +195,7 @@ export default class Windows {
         return wind
     }
 
-    /**
-     * Открывает окно первоначальной настройки.
-    */
+    /** Открывает окно первоначальной настройки. */
     public static openSetup = (): BrowserWindow => {
         const wind = this.createWindow(this.createArgs.setup)
         wind.once('show', () => {
@@ -228,19 +209,10 @@ export default class Windows {
         return wind
     }
 
-    /**
-     * Открывает окно выбора категории.
-    */
+    /** Открывает окно выбора категории. */
     public static openCategories = (): Promise<null> => {
         return new Promise(resolve => {
-            if (this.categories) {
-                this.categories.show()
-                this.categories.focus()
-                resolve(null)
-                return
-            }
             this.categories = this.createWindow(this.createArgs.main)
-    
             this.categories.once('show', () => {
                 resolve(null)
                 if (!this.loading.isDestroyed()) {
@@ -248,37 +220,29 @@ export default class Windows {
                 }
             })
             this.categories.once('close', () => {
-                app.quit()
+                if (this.currentWindow === this.categories) {
+                    app.quit()
+                } else {
+                    delete this.categories
+                }
             })
         })
     }
 
-    /**
-     * Открывает окно списка авто/груза/прицепа.
-    */
+    /** Открывает окно списка авто/груза/прицепа. */
     public static openList = (): void => {
-        if (this.list) {
-            this.list.show()
-            this.list.focus()
-            return
-        }
-        if (this.categories) {
-            this.categories.hide()
-        }
         this.list = this.createWindow(this.createArgs.list)
+        if (this.categories) this.categories.close()
         this.list.once('close', () => {
-            delete this.list
-            if (this.categories && !this.categories.isDestroyed()) {
-                this.currentWindow = this.categories
-                this.categories.show()
-                this.categories.focus()
+            if (Settings.obj.isQuit) return
+            if (this.currentWindow === this.list) {
+                this.openCategories()
             }
+            delete this.list
         })
     }
 
-    /**
-     * Создаёт окно с указанными атрибутами.
-    */
+    /** Создаёт окно с указанными атрибутами. */
     private static createWindow = (args: ICreateWindowAttributes): BrowserWindow => {
         const wind = new BrowserWindow({
             width: args.width ?? 800,

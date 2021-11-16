@@ -7,9 +7,7 @@ import Config from './Config'
 import Texts from './Texts'
 import Windows from './Windows'
 
-/**
- * Предоставляет методы для работы с архивами.
-*/
+/** Предоставляет методы для работы с архивами. */
 export default class Archiver {
     private static config: IConfig = Config.obj
     
@@ -36,7 +34,7 @@ export default class Archiver {
     }
 
     /**
-     * Распаковывает основные XML файлы (+ DLC) из initial.pak.
+     * Распаковывает основные XML файлы (+ DLC) из `initial.pak`.
      * @param noLock не блоковать другие окна во время распаковки.
     */
     public static unpackMain = (noLock?: boolean) => {
@@ -59,9 +57,7 @@ export default class Archiver {
         })
     }
 
-    /**
-     * Распаковывает XML файлы модификации из файла по переданному пути.
-    */
+    /** Распаковывает XML файлы модификации из файла по переданному пути. */
     public static unpackMod = (pathToFile: string) => {
         return new Promise((resolve, reject) => {
             const pathToDir = join(paths.modsTemp, basename(pathToFile, '.pak'))

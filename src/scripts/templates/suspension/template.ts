@@ -17,29 +17,30 @@ import {
 	texts
 } from './texts'
 
-const selectors = Selectors({
-	suspensionSet: 'SuspensionSetVariants.SuspensionSet',
-	suspensionSetItem: `{suspensionSet}${forEach}`,
-	suspensionSetItemText: '{suspensionSetItem}.GameData.UiDesc',
-	suspension: '{suspensionSetItem}.Suspension',
-	suspensionItem: `{suspension}${forEachBy(2)}`,
-	gameData: '{suspensionSetItem}.GameData'
+const selectors = Selectors(() => {
+	const suspentionSet = 'SuspensionSetVariants.SuspensionSet'
+	const currentSuspentionSet = `${suspentionSet}${forEach}`
+	const currentSuspentionSetText = `${currentSuspentionSet}.GameData.UiDesc`
+	const suspention = `${currentSuspentionSet}.Suspension`
+	const currentSuspension = `${suspention}${forEachBy(2)}`
+	const gameData = `${currentSuspentionSet}.GameData`
+	return {suspentionSet, currentSuspentionSet, currentSuspentionSetText, suspention, currentSuspension, gameData}
 })
 
 export default <ITemplate> {
 	selector: 'SuspensionSetVariants',
 	template: Template({
 		type: TemplateType.multiply,
-		itemSelector: selectors.suspensionSet,
+		itemSelector: selectors.suspentionSet,
 		selectors: selectors
 	}, [
 		Group({
 			nameType: NameType.computed,
 			nameAttribute: 'UiName',
 			resNameAttribute: 'Name',
-			nameSelector: selectors.suspensionSetItemText,
-			resNameSelector: selectors.suspensionSetItem,
-			defaultSelector: selectors.suspensionSetItem
+			nameSelector: selectors.currentSuspentionSetText,
+			resNameSelector: selectors.currentSuspentionSet,
+			defaultSelector: selectors.currentSuspentionSet
 		}, [
 			Input({
 				attribute: 'Name',
@@ -72,11 +73,11 @@ export default <ITemplate> {
 			}),
 			Template({
 				type: TemplateType.multiply,
-				itemSelector: selectors.suspension
+				itemSelector: selectors.suspention
 			}, [
 				Group({
 					name: texts.suspension,
-					defaultSelector: selectors.suspensionItem,
+					defaultSelector: selectors.currentSuspension,
 					withCounter: true
 				}, [
 					Select({

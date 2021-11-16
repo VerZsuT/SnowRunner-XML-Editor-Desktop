@@ -29,3 +29,9 @@ export enum BuildType {
     dev = 'dev',
     prod = 'prod'
 }
+
+export enum Lang {
+    RU = 'RU',
+    EN = 'EN',
+    DE = 'DE'
+}

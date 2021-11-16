@@ -1,4 +1,4 @@
-import { MenuRole } from '../../app/classes/enums'
+import { MenuRole } from './index'
 import { create, t, setHotKey } from './funcs'
 import mainProcess from './mainProcess'
 
@@ -11,9 +11,7 @@ for (const $item of menu) {
 
 document.body.prepend($menu)
 
-/**
- * Создаёт меню на основе шаблона.
-*/
+/** Создаёт меню на основе шаблона. */
 function buildMenu(template: IMenuTemplate, root?: boolean): HTMLDivElement | HTMLButtonElement {
     if (template.role === MenuRole.separator) {
         return create<HTMLHRElement>('hr', {

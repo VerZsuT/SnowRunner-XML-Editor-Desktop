@@ -16,11 +16,12 @@ import {
 	texts
 } from './texts'
 
-const selectors = Selectors({
-	winch: 'WinchVariants.Winch',
-	winchItem: `{winch}${forEach}`,
-	winchItemText: '{winchItem}.GameData.UiDesc',
-	gameData: '{winchItem}.GameData'
+const selectors = Selectors(() => {
+	const winch = 'WinchVariants.Winch'
+	const currentWinch = `${winch}${forEach}`
+	const currentWinchText = `${currentWinch}.GameData.UiDesc`
+	const gameData = `${currentWinch}.GameData`
+	return {winch, currentWinch, currentWinchText, gameData}
 })
 
 export default <ITemplate> {
@@ -34,9 +35,9 @@ export default <ITemplate> {
 			nameType: NameType.computed,
 			nameAttribute: 'UiName',
 			resNameAttribute: 'Name',
-			nameSelector: selectors.winchItemText,
-			resNameSelector: selectors.winchItem,
-			defaultSelector: selectors.winchItem
+			nameSelector: selectors.currentWinchText,
+			resNameSelector: selectors.currentWinch,
+			defaultSelector: selectors.currentWinch
 		}, [
 			Input({
 				attribute: 'Name',

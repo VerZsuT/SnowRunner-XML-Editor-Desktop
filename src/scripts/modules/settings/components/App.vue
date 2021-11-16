@@ -35,7 +35,7 @@
 import '../../../bootstrap/bootstrap.bundle.min.js'
 import { defineComponent, ref, watch } from 'vue'
 
-import { t, mainProcess } from '../../../service'
+import { t, mainProcess, Lang } from '../../../service'
 import GameFolder from './GameFolder.vue'
 
 export default defineComponent({
@@ -44,7 +44,7 @@ export default defineComponent({
     },
     setup() {
         const saveBackup = ref(false)
-        const allLangs = ['RU', 'EN', 'DE']
+        const allLangs = Object.keys(Lang)
         const pathToInitial = ref(config.paths.initial)
         const gameFolder = ref(config.paths.initial)
         const lang = ref(config.lang)

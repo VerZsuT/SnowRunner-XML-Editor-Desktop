@@ -3,13 +3,12 @@ import { join, basename } from 'path'
 
 import '../../../app/mainPreload'
 import { t, mainProcess } from '../../service'
-import { TKeys } from '../../service/funcs'
 
 class Preload implements FirstStepsPreload {
     private openDialog = () => mainProcess.openDialog()
     private openInitialDialog = () => mainProcess.openInitialDialog()
 
-    public errorHandler = (text: TKeys) => {mainProcess.alertSync(t[text])}
+    public errorHandler = (text: keyof typeof t) => {mainProcess.alertSync(t[text])}
 
     get gameFolder(): Folder {
         const result = this.openDialog()

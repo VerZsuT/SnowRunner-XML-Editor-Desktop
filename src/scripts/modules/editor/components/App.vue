@@ -19,8 +19,8 @@
 import '../../../bootstrap/bootstrap.bundle.min.js'
 import '../../../service/menu'
 
-import { getIngameText, t, mainProcess } from '../../../service'
-import { Translation } from '../../../service/funcs'
+import { getIngameText, t, mainProcess, prettify } from '../../../service'
+import { get } from '../../../service'
 
 import Search from './Search.vue'
 import Params from './Params.vue'
@@ -56,7 +56,7 @@ export default defineComponent({
             deps: {},
             t: t,
             isExporting: false
-        };
+        }
     },
     provide() {
         return {
@@ -71,7 +71,7 @@ export default defineComponent({
             ETR: this.ETR,
             params: this.params,
             deps: this.deps
-        };
+        }
     },
     mounted() {
         if (this.isBridge) {
@@ -91,10 +91,10 @@ export default defineComponent({
 
             if (this.filePath.split('/').length !== 1) {
                 let a = this.filePath.split('/');
-                return a[a.length - 1].replace('.xml', '').prettify().toUpperCase()
+                return prettify(a[a.length - 1].replace('.xml', '')).toUpperCase()
             } else {
                 let a = this.filePath.split('\\');
-                return a[a.length - 1].replace('.xml', '').prettify().toUpperCase()
+                return prettify(a[a.length - 1].replace('.xml', '')).toUpperCase()
             }
         }
     },
@@ -393,7 +393,7 @@ export default defineComponent({
             }
 
             mainProcess.alertSync(t.FILE_IS_RESETED);
-            (<HTMLButtonElement>document.querySelector('#save-params')).click()
+            (get<HTMLButtonElement>('#save-params')).click()
         }
     }
 })
@@ -411,24 +411,25 @@ function getDOM() {
     if (!fileData) return
 
     const parser = new DOMParser()
-    const dom = parser.parseFromString(`<root>${fileData}</root>`, 'text/xml')
-    if (dom.querySelector('parsererror')) {
-        const error = document.querySelector('#error') as HTMLDivElement
-        error.innerText = t[<keyof Translation> error.innerText]
+    const $dom = parser.parseFromString(`<root>${fileData}</root>`, 'text/xml')
+    if ($dom.querySelector('parsererror')) {
+        const error = get<HTMLDivElement>('#error')
+        error.innerText = t[error.innerText]
         error.style.display = 'block'
         throw new Error('[RECOGNIZE_ERROR]')
     }
 
-    dom.querySelector('root').childNodes.forEach((child) => {
+    const $root = $dom.querySelector('root')
+    $root.childNodes.forEach(child => {
         if (child.nodeType === 8) {
             child.remove()
         }
     })
 
-    if (dom.querySelector('root').childNodes[0].nodeValue === '\n') {
-        dom.querySelector('root').childNodes[0].remove()
+    if ($root.childNodes[0].nodeValue === '\n') {
+        $root.childNodes[0].remove()
     }
-    return dom
+    return $dom
 }
 </script>
 

@@ -1,9 +1,7 @@
 import { dialog as elDialog, nativeImage } from 'electron'
 import { paths } from '../service'
 
-/**
- * Отвечает за показ диалоговых окон.
-*/
+/** Отвечает за показ диалоговых окон. */
 export default class Dialog {
     private static extNames = {
         epf: 'Editor params file',
@@ -11,9 +9,7 @@ export default class Dialog {
         xml: 'XML file'
     }
 
-    /**
-     * открывает окно с сообщением.
-    */
+    /** Открывает окно с сообщением. */
     public static alert = (params: DialogAlertParams) => {
         const { dialogType='sync', title, message, buttons=['OK'], noLink=false, type='info' } = params
         const dialogParams = {
@@ -32,18 +28,14 @@ export default class Dialog {
         }
     }
 
-    /**
-     * Открывает окно выбора .epf файла.
-    */
+    /** Открывает окно выбора `.epf` файла. */
     public static getEPF = (): string | undefined => {
         return <string|undefined>this.openDialog({
             extention: 'epf'
         })
     }
 
-    /**
-     * Открывает окно сохранения .epf файла.
-    */
+    /** Открывает окно сохранения `.epf` файла. */
     public static saveEPF = (defaultName: string): string | undefined => {
         return <string|undefined>this.openDialog({
             type: 'save',
@@ -52,27 +44,21 @@ export default class Dialog {
         })
     }
     
-    /**
-     * Открывает окно выбора initial.pak.
-    */
+    /** Открывает окно выбора `initial.pak` */
     public static getInitial = (): string | undefined => {
         return <string|undefined>this.openDialog({
             extention: 'pak'
         })
     }
 
-    /**
-    * Открывает окно выбора папки.
-    */
+    /** Открывает окно выбора папки. */
     public static getDir = (): string | undefined => {
         return <string|undefined>this.openDialog({
             source: 'dir'
         })
     }
 
-    /**
-     * Открывает окно выбора нескольких .epf файлов.
-    */
+    /** Открывает окно выбора нескольких `.epf` файлов. */
     public static getMultiEPF = (): string[] | undefined => {
         return <string[]|undefined>this.openDialog({
             properties: ['openFile', 'multiSelections'],
@@ -80,9 +66,7 @@ export default class Dialog {
         })
     }
 
-    /**
-    * Открывает окно выбора .xml файла.
-    */
+    /** Открывает окно выбора `.xml` файла. */
     public static getXML = (): string | undefined => {
         return <string|undefined>this.openDialog({
             extention: 'xml'

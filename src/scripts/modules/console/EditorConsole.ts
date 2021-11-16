@@ -18,15 +18,11 @@ interface ArgsCheckObj {
 export const ANY = 'ANY_ARGUMENT'
 export const OPTIONAL = 'OPTIONAL_ARGUMENT'
 
-/**
- * Класс консоли программы. 
-*/
+/** Класс консоли программы. */
 export class EditorConsole {
     private static listeners = {}
 
-    /**
-     * Инициализирует консоль.
-    */
+    /** Инициализирует консоль. */
     static init() {
         $input.focus()
 
@@ -59,9 +55,7 @@ export class EditorConsole {
         })
     }
 
-    /**
-     * Устанавливает обработчик на команду. Сработает при введении команды в поле и нажатии Enter.
-    */
+    /** Устанавливает обработчик на команду. Сработает при введении команды в поле и нажатии `Enter`. */
     static onCmd<T extends ArgsCheckObj>(cmd: string, listener: CmdListener<T>, argsCheckObj?: T): void {
         /**
          * Проверяет аргументы на соответствие шаблону.

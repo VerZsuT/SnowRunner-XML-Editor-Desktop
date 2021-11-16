@@ -7,10 +7,9 @@
 </template>
 
 <script lang='ts'>
-import { defineComponent, inject, toRefs } from 'vue'
+import { defineComponent, toRefs } from 'vue'
 
 import { t, mainProcess } from '../../../service'
-import { Translation } from '../../../service/funcs'
 
 export default defineComponent({
     props: {
@@ -20,7 +19,6 @@ export default defineComponent({
         }
     },
     setup(props) {
-        const t = inject<Translation>('t')
         const { pathToInitial } = toRefs(props)
 
         return {

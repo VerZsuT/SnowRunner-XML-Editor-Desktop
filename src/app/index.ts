@@ -18,7 +18,6 @@ import {
     Menu
 } from './classes'
 import { findInDir, paths } from './service'
-import './extendString'
 
 const config = Config.obj
 const settings = {
@@ -31,10 +30,17 @@ Settings.obj = settings
 
 let invalidMods
 
+const quit = app.quit
+app.quit = () => {
+    Settings.obj.isQuit = true
+    quit()
+}
+
 app.disableHardwareAcceleration()
 app.setAppUserModelId(settings.appId)
 app.whenReady().then(initProgram)
 app.on('before-quit', () => {
+    Settings.obj.isQuit = true
     if (settings.saveWhenReload) {
         Config.save()
     }
@@ -51,15 +57,15 @@ function initProgram() {
         Windows.loading.setText(Texts.get('LOADING'))
         if (!Checker.checkAdmin()) return
         if (!config.paths.initial) {
-            if (!Checker.checkExportedConfig()) {
+            Checker.checkExportedConfig().then(() => {
+                reloadProgram()
+            }, () => {
                 Windows.openSetup()
                 Checker.checkUpdate()
-            } else {
-                reloadProgram()
-            }
+            })
         } else {
-            if (Checker.checkPaths()) {
-                Checker.checkInitialSum().then(() => {
+            Checker.checkInitialSum().then(() => {
+                if (Checker.checkPaths()) {
                     Texts.addIngame().then(() => {
                         config.paths.dlc = paths.dlc
                         config.paths.classes = paths.classes
@@ -74,10 +80,10 @@ function initProgram() {
                             Windows.openCategories().then(() => Checker.checkUpdate())
                         })
                     })
-                })
-            } else {
-                Config.reset()
-            }
+                } else {
+                    Config.reset()
+                }
+            })
         }
     })
 }

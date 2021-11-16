@@ -2,34 +2,24 @@ import { get, create } from '../../service'
 
 const $messages = get('#messages')
 
-/**
- * Позволяет писать сообщения в консоль.
-*/
+/** Позволяет писать сообщения в консоль. */
 export default class Message {
-    /**
-     * Сообщение в стиле лога.
-    */
+    /** Сообщение в стиле лога. */
     static log(text: string) {
         this.message(text)
     }
 
-    /**
-     * Сообщение в стиле предупреждения.
-    */
+    /** Сообщение в стиле предупреждения. */
     static warn(text: string) {
         this.message(text, 'warn')
     }
 
-    /**
-     * Сообщение в стиле ошибки.
-    */
+    /** Сообщение в стиле ошибки. */
     static error(text: string) {
         this.message(text, 'error')
     }
 
-    /**
-     * Сообщение в стиле информации.
-    */
+    /** Сообщение в стиле информации. */
     static info(text: string) {
         this.message(text, 'info')
     }

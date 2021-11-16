@@ -15,21 +15,23 @@ import {
 	texts
 } from './texts'
 
-const selectors = Selectors({
-	truckData: 'Truck.TruckData',
-	gameData: 'Truck.GameData',
-	UIDesc: '{gameData}.UiDesc',
-	wheels: '{truckData}.Wheels',
-	compatibleWheels: '{truckData}.CompatibleWheels',
-	compatibleWheelsItem: `{compatibleWheels}${forEach}`,
-	winch: '{truckData}.WinchUpgradeSocket',
-	suspension: '{truckData}.SuspensionSocket',
-	gearbox: '{truckData}.GearboxSocket',
-	engine: '{truckData}.EngineSocket',
-	fuelTank: '{truckData}.FuelTank',
-	physicsBody: 'Truck.PhysicsModel.Body',
-	wheel: '{wheels}.Wheel',
-	wheelItem: `{wheel}${forEach}`
+const selectors = Selectors(() => {
+	const truckData = 'Truck.TruckData'
+	const gameData = 'Truck.GameData'
+	const UIDesc = `${gameData}.UiDesc`
+	const wheels = `${truckData}.Wheels`
+	const compatibleWheels = `${truckData}.CompatibleWheels`
+	const currentCompatibleWheels = `${compatibleWheels}${forEach}`
+	const winch = `${truckData}.WinchUpgradeSocket`
+	const suspension = `${truckData}.SuspensionSocket`
+	const gearbox = `${truckData}.GearboxSocket`
+	const engine = `${truckData}.EngineSocket`
+	const fuelTank = `${truckData}.FuelTank`
+	const physicsBody = 'Truck.PhysicsModel.Body'
+	const wheel = `${wheels}.Wheel`
+	const currentWheel = `${wheel}${forEach}`
+	return {truckData, gameData, UIDesc, wheels, compatibleWheels, currentCompatibleWheels, winch, suspension, gearbox,
+		    engine, fuelTank, physicsBody, wheel, currentWheel}
 })
 
 export default <ITemplate> {
@@ -144,7 +146,7 @@ export default <ITemplate> {
 				}, [
 					Group({
 						name: texts.wheel,
-						defaultSelector: selectors.wheelItem,
+						defaultSelector: selectors.currentWheel,
 						withCounter: true
 					}, [
 						Select({

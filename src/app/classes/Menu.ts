@@ -1,17 +1,13 @@
-import { BuildType, MenuRole } from './enums'
+import { BuildType, MenuRole } from '../enums'
 import { paths } from '../service'
 import Config from './Config'
 import Texts from './Texts'
 
-/**
- * Овечает за меню программы.
-*/
+/** Овечает за меню программы. */
 export default class Menu {
     private static config: IConfig = Config.obj
 
-    /**
-     * Возвращает шаблон меню.
-    */
+    /** Возвращает шаблон меню. */
     public static get = (): IMenuTemplate[] => {
         return [
             {
@@ -105,9 +101,7 @@ export default class Menu {
         ]
     }
 
-    /**
-     * Возвращает переданный шаблон если присутствует путь к initial.pak.
-    */
+    /** Возвращает переданный шаблон если присутствует путь к `initial.pak`. */
     private static ifHasInitial = (menu: IMenuTemplate[]): IMenuTemplate[] => {
         if (this.config.paths.initial) {
             return menu
@@ -115,9 +109,7 @@ export default class Menu {
         return []
     }
 
-    /**
-     * Возвращает переданный шаблон если тип билда `dev`.
-    */
+    /** Возвращает переданный шаблон если тип билда `dev`. */
     private static ifDevBuild = (menu: IMenuTemplate[]): IMenuTemplate[] => {
         if (this.config.buildType === BuildType.dev) {
             return menu

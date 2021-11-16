@@ -116,7 +116,7 @@ class TemplateClass implements ITemplateClass {
             tNumber = 1,
             selectors = this.selectors,
             fileDOM,
-            templateName,
+            //templateName,
             multiply = (this.type === TemplateType.multiply)
         } = props
 
@@ -153,7 +153,7 @@ class TemplateClass implements ITemplateClass {
                     tCycleNumber: currentNum,
                     fileDOM: fileDOM,
                     tNumber: multiply? tNumber+1 : tNumber,
-                    templateName: templateName,
+                    //templateName: templateName,
                     counter: counter
                 }))
                 currentNum++
@@ -166,7 +166,7 @@ class TemplateClass implements ITemplateClass {
                     cycleNumber: tCycleNumber,
                     tNumber: multiply? tNumber+1 : tNumber,
                     fileDOM: fileDOM,
-                    templateName: templateName
+                    //templateName: templateName
                 }))
             }
         }
@@ -408,24 +408,10 @@ export const lastBy = (cycleNum: number) => `[SXMLE_ID="-L_CYCLE${cycleNum}-"]`
 export const th = (pos: number, cycleNum: number = 1) => `[SXMLE_ID="-N${pos}_CYCLE${cycleNum}-"]`
 
 /** 
- * Создаёт объект селекторов на основе `obj`. 
+ * Создаёт объект селекторов на основе возвращаемого результата переданной функции `func`.
  * 
  * Все точки в селекторе после обработки заменяются на `>`.
  * 
- * Для вставки другого селектора используется `{id}`, где _id_ - название селектора для вставки.
- * 
- * _Внимение!_ Сначала должен идти тот селектор, **который** будет вставляться, а потом уже тот, **в который** происходит вставка.
- * 
- * _Пример:_
- * ```
- * {
- *     selector1: 'el1.el2',
- *     selector2: '{selector1}.el3', // Правильно, после обработки будет 'el1.el2.el3'
- *     ...
- *     selector3: '{selector4}.el6', // Неправильно, вставка должна быть ПОСЛЕ инициализации
- *     selector4: 'el4.el5'
- * }
- * ```
  * Для относительной навигации в селекторе могут применяться следующие элементы:
  * - {@link forEach} или {@link forEachBy}()
  * - {@link first} или {@link firstBy}()
@@ -436,23 +422,19 @@ export const th = (pos: number, cycleNum: number = 1) => `[SXMLE_ID="-N${pos}_CY
  * 
  * _Пример:_
  * ```
- * {
- *     selector1: `el1.el2${first}`, // Правильно
- *     selector2: `el1.el2.${first}` // Неправильно
- * }
+ * const selector1 = `el1.el2${first}` // Правильно
+ * const selector2 = `el1.el2.${first}` // Неправильно
  * ```
  * _Пример возможных селекторов:_
  * ```
- * {
- *     // Вместо forEach каждую итерацию будет вставляться `ID` текущего элемента.
- *     first: `Truck.Wheel${forEach}`,
- *     // После обработки будет 'Truck.Wheel${forEach}.GameData'
- *     second: '{first}.GameData',
- *     // Последний <Bone> в <PhysicsModel>,
- *     third: `PhysicsModel.Bone${last}`, 
- *     // Аналогично первому, но вставка происходит только во второй итерации.
- *     example: `Example${forEachBy(2)}` 
- * }
+ * // Вместо forEach каждую итерацию будет вставляться `ID` текущего элемента.
+ * const first = `Truck.Wheel${forEach}`
+ * // Truck.Wheel${forEach}.GameData
+ * const second = `${first}.GameData`
+ * // Последний <Bone> в <PhysicsModel>
+ * const third = `PhysicsModel.Bone${last}`
+ * // Аналогично первому, но вставка происходит только во второй итерации.
+ * const example = `Example${forEachBy(2)}`
  * ```
  * Допустим, у нас есть такой XML файл:
  * ```xml
@@ -464,25 +446,22 @@ export const th = (pos: number, cycleNum: number = 1) => `[SXMLE_ID="-N${pos}_CY
  *     </Wheels>
  * </Truck>
  * ```
- * Нам требуется получить доступ к каждому Wheel. Для этого мы используем два селектора.
+ * Нам требуется получить доступ к каждому Wheel. Для этого мы используем два селектора. Переданная функция:
  * ```
- * {
+ * () => {
  *     // Вставим его как itemSelector в Template и он запустит итерацию по всем <Wheel>.
- *     wheel: 'Truck.Wheels.Wheel',
+ *     const wheel = 'Truck.Wheels.Wheel'
  *     // Во время итерации этот селектор будет указывать на текущий элемент <Wheel>.
- *     currentWheel: `{wheel}${forEach}`
+ *     const currWheel = `${wheel}${forEach}`
+ *     return {wheel, currWheel}
  * }
  * ```
 */
-export function Selectors<T extends {[id: string]: string}>(obj: T): T {
+export function Selectors<T extends {[id: string]: string}>(func: ()=>T): T {
     type ItemType = T[Extract<keyof T, string>]
+    const obj = func()
     const newObj: T = Object.assign({}, obj)
 
-    for (const id in newObj) {
-        for (const id2 in newObj) {
-            newObj[id2] = newObj[id2].replace(`{${id}}`, newObj[id]) as ItemType
-        }
-    }
     for (const id in obj) {
         newObj[id] = `SELECTOR_ID:${id}||${newObj[id]}` as ItemType
         newObj[id] = newObj[id].replaceAll('.', '>') as ItemType

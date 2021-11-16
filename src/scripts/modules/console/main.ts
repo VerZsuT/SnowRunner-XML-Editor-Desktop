@@ -1,4 +1,4 @@
-import { mainProcess } from '../../service'
+import { mainProcess, Lang } from '../../service'
 
 import AutoComplete from './AutoComplete'
 import { EditorConsole, ANY, OPTIONAL } from './EditorConsole'
@@ -57,7 +57,7 @@ EditorConsole.onCmd('lang', args => {
     config.lang = lang
     mainProcess.reload()
 }, {
-    lang: <unknown>['RU', 'EN', 'DE'] as ConfigLang
+    lang: <unknown>Object.keys(Lang) as ConfigLang
 })
 
 EditorConsole.onCmd('read', () => {
@@ -71,7 +71,7 @@ EditorConsole.onCmd('read', () => {
     const fileDOM = parser.parseFromString(`<root>${consolePreload.readFile(path)}</root>`, 'text/xml')
 
     if (fileDOM.querySelector('parsererror')) {
-        Message.error(`Ошибка парсинга файла.\n${(fileDOM.querySelector('parsererror') as HTMLDivElement).innerText}`)
+        Message.error(`Ошибка парсинга файла.\n${fileDOM.querySelector<HTMLDivElement>('parsererror').innerText}`)
         return
     }
 

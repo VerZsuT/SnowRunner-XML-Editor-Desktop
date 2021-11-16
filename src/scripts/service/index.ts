@@ -5,10 +5,11 @@ export {
     get,
     getAll,
     getIngameText,
-    getTranslation,
-    getTemplate,
-    addOption
+    addOption,
+    prettify
 } from './funcs' 
+export * from '../../app/enums'
+//export * from './enums'
 export { default as mainProcess } from './mainProcess'
 export {
     Template,

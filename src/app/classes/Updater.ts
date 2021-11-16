@@ -3,21 +3,17 @@ import https from 'https'
 import { createWriteStream, existsSync, lstatSync, rmSync, unlinkSync } from 'fs'
 import { basename, join, dirname } from 'path'
 
-import { clearTemp, createDirForPath } from '../service'
+import { clearTemp, createDirForPath, paths } from '../service'
 import Windows from './Windows'
 import Checker from './Checker'
 import Config from './Config'
 import Settings from './Settings'
 
-/**
- * Отвечает за работу с обновлениями.
-*/
+/** Отвечает за работу с обновлениями. */
 export default class Updater {
     private static settings: ISettings = Settings.obj
 
-    /**
-     * Загружает файл(ы) из сети.
-    */
+    /** Загружает файл(ы) из сети. */
     public static download = (params: IDownloadParams, cb: (data?: any)=>any) => {
         if (params.array) {
             if (params.isRoot) {
@@ -78,9 +74,7 @@ export default class Updater {
         })
     }
 
-    /**
-     * Запускает процесс обновления программы.
-    */
+    /** Запускает процесс обновления программы. */
     public static update = () => {
         const page = Windows.openLoading()
         let flagToReload = false

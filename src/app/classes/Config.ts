@@ -1,5 +1,6 @@
 import { app } from 'electron'
 import { readFileSync, writeFileSync, existsSync } from 'fs'
+import { Lang } from '../enums'
 
 import { paths, clearTemp } from '../service'
 
@@ -9,15 +10,11 @@ function getConfig() {
     return obj
 }
 
-/**
- * Отвечает за работу с config.json
-*/
+/** Отвечает за работу с `config.json` */
 export default class Config {
     public static obj: IConfig = getConfig()
     
-    /**
-     * Сохранить изменения в config.json
-    */
+    /** Сохранить изменения в `config.json` */
     public static save = (): void => {
         try {
             writeFileSync(paths.config, JSON.stringify(this.obj, null, '\t'))
@@ -27,7 +24,7 @@ export default class Config {
     }
 
     /**
-     * Сбросить config.json на "заводскую" версию.
+     * Сбросить `config.json` на "заводскую" версию.
      * @param noReload отмена перезагрузки после завершения.
     */
     public static reset = (noReload?: boolean): void => {
@@ -55,7 +52,7 @@ export default class Config {
             initial: null,
             mods: {}
         }
-        this.obj.lang = 'EN'
+        this.obj.lang = Lang.EN
     
         clearTemp()
         if (!noReload) {
@@ -66,9 +63,7 @@ export default class Config {
         }
     }
 
-    /**
-     * Экспортирует config.json.
-    */
+    /** Экспортирует `config.json`. */
     public static export = () => {
         if (!existsSync(paths.backupFolder)) return
         writeFileSync(`${paths.backupFolder}\\config.json`, JSON.stringify(this.obj))

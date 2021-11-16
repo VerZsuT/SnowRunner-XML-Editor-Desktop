@@ -13,7 +13,7 @@
 
 <script lang='ts'>
 import { defineComponent, inject, PropType, ref, toRefs } from 'vue'
-import { getIngameText, mainProcess } from '../../../service'
+import { getIngameText, mainProcess, prettify } from '../../../service'
 
 export default defineComponent({
     props: {
@@ -97,7 +97,7 @@ export default defineComponent({
             }
         },
         name() {
-            let name = this.item.name.prettify()
+            let name = prettify(this.item.name)
             if (this.DOM.querySelector('GameData > UiDesc')) {
                 const uiName = this.DOM.querySelector('GameData > UiDesc').getAttribute('UiName')
                 if (uiName) {

@@ -17,8 +17,8 @@
 <script lang='ts'>
 /// <reference path='../declare/preload.d.ts' />
 
-import { Translation } from '../../../service/funcs'
-import { defineComponent, inject, ref, watch } from 'vue'
+import { t } from '../../../service'
+import { defineComponent, ref, watch } from 'vue'
 
 export default defineComponent({
     props: {
@@ -28,7 +28,6 @@ export default defineComponent({
         }
     },
     setup() {
-        const t = inject<Translation>('t')
         const manual = ref(false)
         const gameFolder = ref('')
 

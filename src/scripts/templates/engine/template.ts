@@ -15,11 +15,12 @@ import {
 } from './texts'
 import unlockGroup from '../presets/unlockGroup'
 
-const selectors = Selectors({
-	engine: 'EngineVariants.Engine',
-	engineItem: `{engine}${forEach}`,
-	engineItemText: `{engineItem}.GameData.UiDesc`,
-	gameData: `{engine}${forEach}.GameData`
+const selectors = Selectors(() => {
+	const engine = 'EngineVariants.Engine'
+	const currentEngine = `${engine}${forEach}`
+	const currentEngineText = `${currentEngine}.GameData.UiDesc`
+	const gameData = `${currentEngine}.GameData`
+	return {engine, currentEngine, currentEngineText, gameData}
 })
 
 export default <ITemplate> {
@@ -33,9 +34,9 @@ export default <ITemplate> {
 			nameType: NameType.computed,
 			nameAttribute: 'UiName',
 			resNameAttribute: 'Name',
-			nameSelector: selectors.engineItemText,
-			resNameSelector: selectors.engineItem,
-			defaultSelector: selectors.engineItem,
+			nameSelector: selectors.currentEngineText,
+			resNameSelector: selectors.currentEngine,
+			defaultSelector: selectors.currentEngine,
 		}, [
 			Input({
 				attribute: 'Name',

@@ -1,5 +1,5 @@
 /*
-    Устанавливает основные публичные "не main-process" методы, доступные из renderer процесса.
+    Устанавливает основные публичные "не main-process" методы, доступные из `renderer-process`.
     Должен являться базовым для любого preload скрипта.
 */
 
@@ -9,9 +9,7 @@ function getConfig() {
     return ipcRenderer.sendSync('property_config_get').value
 }
 
-/*
-    Двусторонний доступ к переменной config.
-*/
+// Двусторонний доступ к переменной `config`.
 window.config = <IConfig>new Proxy({}, {
     get: (_target, name) => {
         const value = getConfig()[name]
@@ -46,8 +44,8 @@ window.config = <IConfig>new Proxy({}, {
 })
 
 /*
-    Удобный доступ к localStorage.
-    Используется для передачи данных между окнами без взаимодействия с main процессом.
+    Удобный доступ к `localStorage`.
+    Используется для передачи данных между окнами без взаимодействия с `main-process`.
 */
 window.local = {
     pop(name) {
@@ -72,21 +70,17 @@ window.local = {
 
 window.ipcRenderer = ipcRenderer
 
-/*
-    Односторонний доступ к paths и texts
-*/
+// Односторонний доступ к paths
 window.paths = ipcRenderer.sendSync('property_paths_get').value
 window.texts = ipcRenderer.sendSync('property_texts_get').value
 
-/*
-    Замена <title> на странице.
-*/
+// Замена <title> на странице.
 window.onload = () => {
     document.title = document.title.replace('{--VERSION--}', `v${config.version}`)
 
     document.addEventListener('keydown', event => {
         if (event.ctrlKey && event.code === 'KeyS') {
-            const button = document.querySelector('#save-params') as HTMLButtonElement
+            const button = document.querySelector<HTMLButtonElement>('#save-params')
             if (button) button.click()
         } else if (event.code === 'Escape') {
             window.close()

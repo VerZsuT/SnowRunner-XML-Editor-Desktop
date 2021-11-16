@@ -5,16 +5,14 @@ import Dialog from './Dialog'
 import Settings from './Settings'
 import Texts from './Texts'
 
-/**
- * Отвечает за работу с .epf файлами.
-*/
+/** Отвечает за работу с `.epf` файлами. */
 export default class EPF {
     private static settings: ISettings = Settings.obj
 
     /**
-     * Открывает окно выбора .epf файлов.
+     * Открывает окно выбора `.epf` файлов.
      * 
-     * После выбора объединяет их и сохраняет по выбранному пользователем пути.
+     * _После выбора объединяет их и сохраняет по выбранному пользователем пути._
     */
     public static join = () => {
         const files = Dialog.getMultiEPF()
@@ -51,9 +49,9 @@ export default class EPF {
     }
 
     /**
-     * Выводит окно выбора .epf файла.
+     * Выводит окно выбора `.epf` файла.
      * 
-     * Анализирует выбранный .epf файл и выводит окно с его содержимым в более удобном формате.
+     * _Анализирует выбранный .epf файл и выводит окно с его содержимым в более удобном формате._
     */
     public static see = () => {
         const path = Dialog.getEPF()

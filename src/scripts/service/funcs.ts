@@ -1,31 +1,12 @@
-import { templates } from './index'
 import type RU from '../texts/RU.json'
-import '../../app/extendString'
 
-const language = config.lang
+type Translation = {
+    [name in keyof typeof RU]: string
+}
 
-export type TKeys = keyof typeof RU
-export type Translation = {[name in TKeys]: string}
+export const t: Translation = texts[config.lang]
 
-/**
- * Возвращает текст из глобального перевода по данному ключу.
-*/
-export const t = <Translation>new Proxy({}, {
-    get(_, propName: TKeys) {
-        const texts = getTranslation(language)
-        if (texts) {
-            let result = texts[propName.removePars()]
-            if (!result) {
-                result = propName
-            }
-            return result
-        }
-    }
-})
-
-/**
- * Устанавливает событие по нажатию кнопки.
-*/
+/** Устанавливает событие по нажатию кнопки. */
 export function setHotKey(params: ISetHotKeyParams, listener: (event: KeyboardEvent) => any): void {
     const { key, eventName='keypress', ctrlKey, shiftKey, prevent } = params
 
@@ -38,7 +19,8 @@ export function setHotKey(params: ISetHotKeyParams, listener: (event: KeyboardEv
 }
 
 /**
- * Расширенный вариант document.createElement.
+ * Расширенный вариант `document.createElement`.
+ * 
  * Создаёт элемент и устанавливает переданые атрибуты.
 */
 export function create<T>(tag: keyof HTMLElementTagNameMap, attrs?: ICreateAttributes): T {
@@ -84,22 +66,26 @@ export function create<T>(tag: keyof HTMLElementTagNameMap, attrs?: ICreateAttri
     return element as unknown as T
 }
 
-/**
- * Находит элемент по указанному селектору.
-*/
+/** Находит элемент по указанному селектору. */
 export function get<T extends Element>(selector: string): T {
     return document.querySelector(selector) as T;
 }
 
-/**
- * Находит все элементы по указанному селектору.
-*/
+/** Находит все элементы по указанному селектору. */
 export function getAll<T extends Element>(selector: string): NodeListOf<T> {
     return document.querySelectorAll(selector);
 }
 
+/** Заменяет `_` на пробелы и делает первую букву большой. */
+export function prettify(str: string): string {
+    let text = str.replaceAll('_', ' ')
+    const firstChar = text[0].toUpperCase()
+
+    return `${firstChar}${text.slice(1)}`
+}
+
 /**
- * Возвращает внутриигровой перевод по ключу.
+ * Возвращает игровой перевод по ключу.
  * @param modId - id модификации.
 */
 export function getIngameText(key: string, modId?: string): string {
@@ -115,23 +101,7 @@ export function getIngameText(key: string, modId?: string): string {
     }
 }
 
-/**
- * Возвращает объект перевода с данным именем.
-*/
-export function getTranslation(name: string): Translation {
-    return texts[name]
-}
-
-/**
- * Возвращает объект шаблона с данным именем.
-*/
-export function getTemplate(name: string): ITemplate {
-    return templates[name]
-}
-
-/**
- * Добавляет вариант выбора к переданному select элементу.
-*/
+/** Добавляет вариант выбора к переданному `select` элементу. */
 export function addOption(element: HTMLSelectElement, text: string, value?: string): void {
     element.options.add(new Option(text, value || text))
 }

@@ -11,10 +11,11 @@ const { execSync } = require('child_process')
 const { join } = require('path')
 const {
     renameSync,
-    rmSync
+    rmSync,
+    existsSync
 } = require('fs')
 const Log = require('./Log.js')
-const { checkPath, readFileToVar, checkVar, writeFile, generateMap, postBuildPaths } = require('./funcs.js')
+const { checkPath, readFileToVar, checkVar, writeFile, generateMap, postBuildPaths, preBuildPaths } = require('./funcs.js')
 
 Log.mainGroup()
 Log.print('Запуск срипта постобработки', true)
@@ -32,7 +33,7 @@ readFileToVar('config', postBuildPaths.config)
 checkVar(global.config, () => {
     global.config.lang = 'EN'
     global.config.buildType = 'prod'
-    global.config.setting.resetButton = false
+    global.config.settings.resetButton = false
     writeFile(postBuildPaths.config, global.config, () => JSON.stringify(global.config))
 })
 
@@ -59,11 +60,22 @@ checkPath(postBuildPaths.sxmle_updater, () => {
         rmSync(join(postBuildPaths.sxmle_updater, 'files'), {recursive: true})
         checkPath(appPath, () => {
             renameSync(appPath, join(postBuildPaths.sxmle_updater, 'files'))
+            renameSync(join(postBuildPaths.sxmle_updater, 'files', '.webpack'), join(postBuildPaths.sxmle_updater, 'files', 'webpack'))
         })
     })
 
     rmSync(join(postBuildPaths.renamed), {recursive: true})
 })
+
+Log.separator()
+
+Log.print('Создание установочного файла')
+if (!existsSync(postBuildPaths.renamed)) {
+    Log.print('Распаковка файлов для установки')
+    execSync(`WinRAR x -ibck -inul "${join(postBuildPaths.out, 'SnowRunnerXMLEditor.rar')}" "${postBuildPaths.out}\\"`, {cwd: postBuildPaths.winrar})
+}
+Log.print('Запуск InnoSetup')
+execSync('installer.config.iss', {cwd: join(__dirname, '..')})
 
 Log.groupEnd()
 Log.print('Завершено', true)

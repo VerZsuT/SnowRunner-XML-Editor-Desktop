@@ -18,16 +18,17 @@ import {
 import gearPreset from '../presets/gear'
 import unlockGroup from '../presets/unlockGroup'
 
-const selectors = Selectors({
-	gearbox: 'GearboxVariants.Gearbox',
-	gearboxItem: `{gearbox}${forEach}`,
-	gearboxItemText: '{gearboxItem}.GameData.UiDesc',
-	gear: `{gearbox}${forEach}.Gear`,
-	reverseGear: '{gearboxItem}.ReverseGear',
-	highGear: '{gearboxItem}.HighGear',
-	gearItem: `{gear}${forEachBy(2)}`,
-	gameData: '{gearboxItem}.GameData',
-	gearboxParams: '{gameData}.GearboxParams'
+const selectors = Selectors(() => {
+	const gearbox = 'GearboxVariants.Gearbox'
+	const currentGearbox = `${gearbox}${forEach}`
+	const currentGearboxText = `${currentGearbox}.GameData.UiDesc`
+	const gear = `${currentGearbox}.Gear`
+	const reverseGear = `${currentGearbox}.ReverseGear`
+	const highGear = `${currentGearbox}.HighGear`
+	const gearItem = `${gear}${forEachBy(2)}`
+	const gameData = `${currentGearbox}.GameData`
+	const gearboxParams = `${gameData}.GearboxParams`
+	return {gearbox, currentGearbox, currentGearboxText, gear, reverseGear, highGear, gearItem, gameData, gearboxParams}
 })
 
 export default <ITemplate> {
@@ -41,9 +42,9 @@ export default <ITemplate> {
 			nameType: NameType.computed,
 			nameAttribute: 'UiName',
 			resNameAttribute: 'Name',
-			nameSelector: selectors.gearboxItemText,
-			resNameSelector: selectors.gearboxItem,
-			defaultSelector: selectors.gearboxItem
+			nameSelector: selectors.currentGearboxText,
+			resNameSelector: selectors.currentGearbox,
+			defaultSelector: selectors.currentGearbox
 		}, [
 			Input({
 				attribute: 'Name',

@@ -14,10 +14,9 @@ import Notification from './Notification'
 import Backup from './Backup'
 import Archiver from './Archiver'
 import Settings from './Settings'
+import { Lang } from '../enums'
 
-/**
- * Отвечает за различные проверки.
-*/
+/** Отвечает за различные проверки. */
 export default class Checker {
     private static config: IConfig = Config.obj
     private static settings: ISettings = Settings.obj
@@ -25,16 +24,16 @@ export default class Checker {
     /**
      * Проверяет наличие прав администратора у программы (требуется для чтения/записи файлов).
      * 
-     * Выводит уведомление и закрывает программу при неудаче.
+     * _Выводит уведомление и закрывает программу при неудаче._
     */
     public static checkAdmin = () => {
         try {
             writeFileSync(paths.config, JSON.stringify(this.config, null, '\t'))
             return true
         } catch {
-            const ru = texts['RU']['ADMIN_REQUIRED_MESSAGE']
-            const en = texts['EN']['ADMIN_REQUIRED_MESSAGE']
-            const de = texts['DE']['ADMIN_REQUIRED_MESSAGE']
+            const ru = texts[Lang.RU].ADMIN_REQUIRED_MESSAGE
+            const en = texts[Lang.EN].ADMIN_REQUIRED_MESSAGE
+            const de = texts[Lang.DE].ADMIN_REQUIRED_MESSAGE
             Windows.loading.setPercent(0)
             Dialog.alert({
                 message: `RU: ${ru}\n\nEN: ${en}\n\nDE: ${de}`,
@@ -48,18 +47,22 @@ export default class Checker {
     }
 
     /**
-     * Проверяет на стороннее изменение initial.pak.
+     * Проверяет на стороннее изменение `initial.pak`.
      * 
-     * Если изменения присутствуют, то обновляет файлы в программе.
+     * _Если изменения присутствуют, то обновляет файлы в программе._
     */
     public static checkInitialSum = () => {
         return new Promise(resolve => {
             if (!existsSync(join(paths.mainTemp, '[media]')) || Hasher.getHash(this.config.paths.initial) !== this.config.sums.initial) {
-                Hasher.saveInitialHash()
-                if (!existsSync(paths.backupInitial)) {
-                    Backup.save().then(resolve)
+                if (existsSync(this.config.paths.initial)) {
+                    Hasher.saveInitialHash()
+                    if (!existsSync(paths.backupInitial)) {
+                        Backup.save().then(resolve)
+                    } else {
+                        Archiver.unpackMain(true).then(resolve)
+                    }
                 } else {
-                    Archiver.unpackMain(true).then(resolve)
+                    resolve(null)
                 }
             } else {
                 resolve(null)
@@ -95,28 +98,32 @@ export default class Checker {
     }
 
     /**
-     * Проверяет наличие экпортированного config.json.
+     * Проверяет наличие экпортированного `config.json`.
      * 
-     * В случае удачи импортирует его в программу.
+     * _В случае удачи импортирует его в программу._
     */
     public static checkExportedConfig = () => {
-        if (existsSync(`${paths.backupFolder}\\config.json`)) {
-            const exportedConfig = JSON.parse(readFileSync(`${paths.backupFolder}\\config.json`).toString())
-    
-            exportedConfig.version = this.config.version
-            this.settings.saveWhenReload = false
-            if (exportedConfig.version < 'v0.6.5') {
-                exportedConfig.ADV = {}
-                exportedConfig.ETR = {}
+        return new Promise((resolve, reject) => {
+            if (existsSync(join(paths.backupFolder, 'config.json'))) {
+                const exportedConfig = JSON.parse(readFileSync(`${paths.backupFolder}\\config.json`).toString())
+        
+                exportedConfig.version = this.config.version
+                this.settings.saveWhenReload = false
+                if (exportedConfig.version < 'v0.6.5') {
+                    exportedConfig.ADV = {}
+                    exportedConfig.ETR = {}
+                }
+                writeFileSync(paths.config, JSON.stringify(exportedConfig))
+                rmSync(`${paths.backupFolder}\\config.json`)
+                resolve(null)
+            } else {
+                reject()
             }
-            writeFileSync(paths.config, JSON.stringify(exportedConfig))
-            rmSync(`${paths.backupFolder}\\config.json`)
-            return true
-        }
+        })
     }
 
     /**
-     * Обрабатывает карту обновления: возвращает.
+     * Обрабатывает карту обновления.
      * @param map карта обновления.
      * @returns `[пути_для_удаления, для_обновления]`
     */
@@ -146,7 +153,7 @@ export default class Checker {
 
     /**
      * Проверяет наличие обновления. Выводит оповещение при наличии.
-     * @param whateverCheck игнорировать настройку `settings.updates` в config.json
+     * @param whateverCheck игнорировать настройку `settings.updates` в `config.json`
     */
     public static checkUpdate = (whateverCheck?: boolean) => {
         if (!this.config.settings.updates && !whateverCheck) return
@@ -181,7 +188,7 @@ export default class Checker {
     /**
      * Проверяет наличие всех путей для работы программы. `config.paths`
      * 
-     * В случае неудачи выводит уведомление.
+     * _В случае неудачи выводит уведомление._
     */
     public static checkPaths = () => {
         let success = true
@@ -210,9 +217,7 @@ export default class Checker {
         return success
     }
 
-    /**
-     * Проверяет наличие у программы прав на чтение/запись файла по переданному пути.
-    */
+    /** Проверяет наличие у программы прав на чтение/запись файла по переданному пути. */
     public static checkPermissions = (path: string) => {
         try {
             writeFileSync(path, readFileSync(path))

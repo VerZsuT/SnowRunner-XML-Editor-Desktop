@@ -10,12 +10,13 @@ import {
 	texts
 } from './texts'
 
-const selectors = Selectors({
-	truckData: 'Truck.TruckData',
-	modelBody: 'Truck.PhysicsModel.Body',
-	fuelMass: 'Truck.FuelMass.Body',
-	gameData: 'Truck.GameData',
-	addonSlots: '{gameData}.AddonSlots'
+const selectors = Selectors(() => {
+	const truckData = 'Truck.TruckData'
+	const modelBody = 'Truck.PhysicsModel.Body'
+	const fuelMass = 'Truck.FuelMass.Body'
+	const gameData = 'Truck.GameData'
+	const addonSlots = `${gameData}.AddonSlots`
+	return {truckData, modelBody, fuelMass, gameData, addonSlots}
 })
 
 export default <ITemplate> {

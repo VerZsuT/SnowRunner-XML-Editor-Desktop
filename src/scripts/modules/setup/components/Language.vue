@@ -12,14 +12,12 @@
 </template>
 
 <script lang='ts'>
-import { defineComponent, inject } from 'vue'
-import { mainProcess } from '../../../service'
-import { Translation } from '../../../service/funcs'
+import { defineComponent } from 'vue'
+import { mainProcess, Lang, t } from '../../../service'
 
 export default defineComponent({
     setup() {
-        const t = inject<Translation>('t')
-        const allLangs = ['EN', 'RU', 'DE']
+        const allLangs = Object.keys(Lang)
 
         return {
             allLangs,

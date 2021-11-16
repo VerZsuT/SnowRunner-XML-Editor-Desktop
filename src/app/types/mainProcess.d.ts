@@ -8,8 +8,14 @@ interface IMainProcess {
         name: string
         error: 'NOT_EXISTS' | 'NO_PERMISSION' | 'NO_CLASSES'
     }
-    texts: any
-    menu: any
+    texts: {
+        RU: {[key: string]: string}
+        EN: {[key: string]: string}
+        DE: {[key: string]: string}
+        mods: {[key: string]: string}
+        ingame: {[key: string]: string}
+    }
+    menu: IMenuTemplate[]
     paths: IPaths
     config: IConfig
     updateFiles(modId?: string): void

@@ -1,5 +1,7 @@
 import { app } from 'electron'
 import { copyFileSync, existsSync, mkdirSync, unlinkSync } from 'fs'
+import { Settings } from '.'
+import { BuildType } from '../enums'
 
 import { paths } from '../service'
 import Archiver from './Archiver'
@@ -10,9 +12,7 @@ import Notification from './Notification'
 import Texts from './Texts'
 
 
-/**
- * Отвечает за работу с бэкапом initial.pak
-*/
+/** Отвечает за работу с бэкапом initial.pak */
 export default class Backup {
     private static config: IConfig = Config.obj
 
@@ -35,9 +35,12 @@ export default class Backup {
                     }
                 }
     
-                this.copy()
+                if (this.config.buildType === BuildType.prod) {
+                    this.copy()
+                }
                 if (reloadAfter) {
                     app.relaunch()
+                    Settings.obj.isQuit = true
                     app.quit()
                 }
                 resolve(null)
@@ -45,9 +48,7 @@ export default class Backup {
         })
     }
 
-    /**
-     * Сохраняет бэкап initial.pak без распаковки.
-    */
+    /** Сохраняет бэкап initial.pak без распаковки. */
     public static copy = () => {
         try {
             copyFileSync(this.config.paths.initial, paths.backupInitial)
@@ -57,9 +58,7 @@ export default class Backup {
         }
     }
 
-    /**
-     * Заменяет оригинальный initial.pak на сохранённый.
-    */
+    /** Заменяет оригинальный initial.pak на сохранённый. */
     public static recover = () => {
         if (!existsSync(paths.backupInitial)) {
             return

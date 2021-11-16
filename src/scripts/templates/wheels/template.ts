@@ -16,13 +16,14 @@ import {
 	texts
 } from './texts'
 
-const selectors = Selectors({
-	truckWheels: 'TruckWheels',
-	truckTire: 'TruckWheels.TruckTires.TruckTire',
-	truckTireItem: `{truckTire}${forEach}`,
-	truckTireItemText: '{truckTireItem}.GameData.UiDesc',
-	wheelFriction: '{truckTireItem}.WheelFriction',
-	gameData: '{truckTireItem}.GameData'
+const selectors = Selectors(() => {
+	const truckWheels = 'TruckWheels'
+	const truckTire = 'TruckWheels.TruckTires.TruckTire'
+	const currentTruckTire = `${truckTire}${forEach}`
+	const currentTruckTireText = `${currentTruckTire}.GameData.UiDesc`
+	const wheelFriction = `${currentTruckTire}.WheelFriction`
+	const gameData = `${currentTruckTire}.GameData`
+	return {truckWheels, truckTire, currentTruckTire, currentTruckTireText, wheelFriction, gameData}
 })
 
 export default <ITemplate> {
@@ -64,13 +65,13 @@ export default <ITemplate> {
 				nameType: NameType.computed,
 				nameAttribute: 'UiName',
 				resNameAttribute: 'Name',
-				nameSelector: selectors.truckTireItemText,
-				resNameSelector: selectors.truckTireItem,
+				nameSelector: selectors.currentTruckTireText,
+				resNameSelector: selectors.currentTruckTire,
 				defaultSelector: selectors.wheelFriction
 			}, [
 				Input({
 					attribute: 'Name',
-					selector: selectors.truckTireItem,
+					selector: selectors.currentTruckTire,
 					type: InputType.text,
 					text: texts.id,
 					desc: descs.id,

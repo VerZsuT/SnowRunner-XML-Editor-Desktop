@@ -1,35 +1,28 @@
-import { get, setHotKey } from '../../service'
+import { get, setHotKey, Lang } from '../../service'
 import help from './help'
 
 const $select = get<HTMLSelectElement>('#info')
 const $input = get<HTMLInputElement>('#input')
 
+/** Автозаполнение */
 export default class AutoComplete {
-    /**
-     * Инициализирует подсказки в строке ввода.
-    */
+    /** Инициализирует подсказки в строке ввода. */
     public static init(): void {
         this.setEventListeners()
     }
     
-    /**
-     * Сбрасывает подсказки.
-    */
+    /** Сбрасывает подсказки. */
     public static reset(): void {
         $select.length = 0
     }
     
-    /**
-     * Обновляет список подсказок в соответствии с введённым текстом.
-    */
+    /** Обновляет список подсказок в соответствии с введённым текстом. */
     private static updateOptions(): void {
         $select.length = 0
         this.initOptions($input.value.split(' ').filter(value => value !== ''))
     }
 
-    /**
-     * Инициализирует события нажания на клавиши в поле ввода.
-    */
+    /** Инициализирует события нажания на клавиши в поле ввода. */
     private static setEventListeners(): void {
         setHotKey({
             key: 'ArrowDown',
@@ -75,9 +68,7 @@ export default class AutoComplete {
         }
     }
 
-    /**
-     * Устанавливает подсказки в список.
-    */
+    /** Устанавливает подсказки в список. */
     private static initOptions(params: string[], k=keys): void {
         if (params.length === 0 && k !== keys) {
             if (k instanceof Array) {
@@ -119,9 +110,7 @@ export default class AutoComplete {
         }
     }
     
-    /**
-     * Добавляет текст в поле ввода команды.
-    */
+    /** Добавляет текст в поле ввода команды. */
     private static addLastToInput(text: string): void {
         const params = $input.value.split(' ')
         if (text.startsWith(params.slice(-1)[0]) && params.slice(-1)[0] !== text) {
@@ -137,9 +126,7 @@ export default class AutoComplete {
     }
 }
 
-/**
- * Для каждого ключа в списке устанавливает переданное значение.
-*/
+/** Для каждого ключа в списке устанавливает переданное значение. */
 function setPreset(keys: string[], value: string | string[]): ACKeys {
     const object = {}
 
@@ -151,7 +138,7 @@ function setPreset(keys: string[], value: string | string[]): ACKeys {
 
 /**
  * Объединяет переданные параметры в один объект.
- * Парметры-объекты добавляются неизменными, значение элемента массива становится ключом, а значение устанавливается null.
+ * Парметры-объекты добавляются неизменными, значение элемента массива становится ключом, а значение устанавливается `null`.
 */
 function combine(...params: (Object | string[])[]): ACKeys {
     const object = {}
@@ -170,9 +157,7 @@ function combine(...params: (Object | string[])[]): ACKeys {
     return object
 }
 
-/**
- * Возвращает массив модификаций без поля length.
-*/
+/** Возвращает массив модификаций без поля `length`. */
 function getModsList(): string[] {
     const array = []
 
@@ -183,9 +168,7 @@ function getModsList(): string[] {
     return array
 }
 
-/**
- * Набор пресетов.
-*/
+/** Набор пресетов. */
 const presets: ACPresets = {
     bool: [
         'true', 
@@ -224,14 +207,7 @@ const keys: ACKeys = combine([
         'import',
         'export'
     ],
-    sset: setPreset([
-        'updates',
-        'limits',
-        'DLC',
-        'mods',
-        'resetButton',
-        'devMode'
-    ], presets.bool),
+    sset: setPreset(Object.keys(config.settings), presets.bool),
     backup: [
         'save',
         'restore'
@@ -240,9 +216,5 @@ const keys: ACKeys = combine([
         'save',
         'unpack'
     ],
-    lang: [
-        'RU',
-        'EN',
-        'DE'
-    ]
+    lang: Object.keys(Lang)
 })

@@ -13,10 +13,11 @@ import {
 	texts
 } from './texts'
 
-const selectors = Selectors({
-	cargoPart: 'Body',
-	currentCargoPart: `Body${forEach}`,
-	slot: 'TruckAddon.GameData.InstallSlot'
+const selectors = Selectors(() => {
+	const cargoPart = 'Body'
+	const currentCargoPart = `${cargoPart}${forEach}`
+	const slot = 'TruckAddon.GameData.InstallSlot'
+	return {cargoPart, currentCargoPart, slot}
 })
 
 export default <ITemplate> {

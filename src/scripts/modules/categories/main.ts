@@ -14,6 +14,6 @@ createApp(App).mount('#main')
 
 setTimeout(() => {
     if (invalidMods) {
-        mainProcess.alertSync(`${t.INVALID_MODS_ALERT_MAIN}: ${invalidMods.name}\n${t[`INVALID_MODS_ALERT_${invalidMods.error}`]}`)
+        mainProcess.alertSync(`${texts.INVALID_MODS_ALERT_MAIN}: ${invalidMods.name}\n${t[`INVALID_MODS_ALERT_${invalidMods.error}`]}`)
     }
 }, 1000)

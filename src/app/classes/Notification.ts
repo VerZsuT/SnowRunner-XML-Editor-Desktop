@@ -6,13 +6,9 @@ import { paths } from '../service'
 
 type TKeys = keyof typeof RU
 
-/**
- * Отвечает за показ windows-уведомлений.
-*/
+/** Отвечает за показ `windows-notification`. */
 export default class Notification {
-    /**
-     * Выводит windows-уведомление на экран.
-    */
+    /** Выводит windows-notification на экран. */
     public static show = (titleKey: TKeys, messageKey: TKeys) => {
         return new Promise(resolve => {
             if (ElNotification.isSupported()) {
