@@ -3,21 +3,36 @@ interface IInfo {
     functions: string[]
 }
 
-interface IMainProcess {
-    invalidMods: {
-        name: string
-        error: 'NOT_EXISTS' | 'NO_PERMISSION' | 'NO_CLASSES'
-    }
-    texts: {
-        RU: {[key: string]: string}
-        EN: {[key: string]: string}
-        DE: {[key: string]: string}
-        mods: {[key: string]: string}
-        ingame: {[key: string]: string}
-    }
+interface IMainProcess extends Properties, IFunctions {}
+
+type Texts = {
+    RU: {[key: string]: string}
+    EN: {[key: string]: string}
+    DE: {[key: string]: string}
+    mods: {[key: string]: string}
+    ingame: {[key: string]: string}
+}
+
+type Properties = {
+    invalidMods: string[]
+    texts: Texts
     menu: IMenuTemplate[]
     paths: IPaths
     config: IConfig
+    templates: ITemplates
+}
+
+type PropertyAttributes = {
+    [name in keyof Properties]: 
+        (()=>Properties[name]) |
+        [()=>Properties[name], (value: any)=>void]
+}
+
+interface IFunctions {
+    getParams(domString: string, templateName: string): {
+        params: ITemplateParams
+        dom: string
+    }
     updateFiles(modId?: string): void
     toggleDevTools(): void
     readFile(filePath: string, resFilePath?: string): string
@@ -54,12 +69,4 @@ interface IMainProcess {
     unpackFiles(lockOther?: boolean): void
     enableDevTools(): void
     disableDevTools(): void
-}
-
-interface IPropertyAttributes {
-    [name: string]: (() => any) | [()=>any, (value: any)=>any]
-}
-
-interface IFunctionsAttributes {
-    [name: string]: (...args: any[])=>any
 }
