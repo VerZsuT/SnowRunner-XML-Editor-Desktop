@@ -19,6 +19,19 @@ export default class Windows {
 
     /** Параметры создания. */
     private static createArgs = {
+        loading: {
+            path: LOADING_WEBPACK_ENTRY,
+            preload: LOADING_PRELOAD_WEBPACK_ENTRY,
+            width: 230,
+            height: 100,
+            frame: false
+        },
+        setup: {
+            path: SETUP_WEBPACK_ENTRY,
+            preload: SETUP_PRELOAD_WEBPACK_ENTRY,
+            width: 550,
+            height: 500
+        },
         editor: {
             path: EDITOR_WEBPACK_ENTRY,
             preload: EDITOR_PRELOAD_WEBPACK_ENTRY,
@@ -47,20 +60,7 @@ export default class Windows {
             width: 500,
             height: 500
         },
-        loading: {
-            path: LOADING_WEBPACK_ENTRY,
-            preload: LOADING_PRELOAD_WEBPACK_ENTRY,
-            width: 230,
-            height: 100,
-            frame: false
-        },
-        setup: {
-            path: SETUP_WEBPACK_ENTRY,
-            preload: SETUP_PRELOAD_WEBPACK_ENTRY,
-            width: 550,
-            height: 500
-        },
-        main: {
+        categories: {
             path: CATEGORIES_WEBPACK_ENTRY,
             preload: CATEGORIES_PRELOAD_WEBPACK_ENTRY,
             width: 980,
@@ -104,7 +104,7 @@ export default class Windows {
     
         if (this.editor) {
             wind.once('close', () => {
-                if (Settings.obj.isQuit) return
+                if (this.settings.isQuit) return
                 if (this.editor && !this.editor.isDestroyed()) {
                     this.currentWindow = this.editor
                     this.editor.show()
@@ -114,7 +114,7 @@ export default class Windows {
         } else {
             this.editor = wind
             wind.once('close', () => {
-                if (Settings.obj.isQuit) return
+                if (this.settings.isQuit) return
                 this.openList()
                 delete this.editor
             })
@@ -196,34 +196,36 @@ export default class Windows {
     }
 
     /** Открывает окно первоначальной настройки. */
-    public static openSetup = (): BrowserWindow => {
+    public static openSetup = async () => {
         const wind = this.createWindow(this.createArgs.setup)
-        wind.once('show', () => {
-            if (!this.loading.isDestroyed()) {
-                this.loading.close()
-            }
-        })
         wind.once('close', () => {
             app.quit()
         })
-        return wind
-    }
-
-    /** Открывает окно выбора категории. */
-    public static openCategories = (): Promise<null> => {
-        return new Promise(resolve => {
-            this.categories = this.createWindow(this.createArgs.main)
-            this.categories.once('show', () => {
-                resolve(null)
+        await new Promise<void>(resolve => {
+            wind.once('show', () => {
+                resolve()
                 if (!this.loading.isDestroyed()) {
                     this.loading.close()
                 }
             })
-            this.categories.once('close', () => {
-                if (this.currentWindow === this.categories) {
-                    app.quit()
-                } else {
-                    delete this.categories
+        })
+    }
+
+    /** Открывает окно выбора категории. */
+    public static openCategories = async () => {
+        this.categories = this.createWindow(this.createArgs.categories)
+        this.categories.once('close', () => {
+            if (this.currentWindow === this.categories) {
+                app.quit()
+            } else {
+                delete this.categories
+            }
+        })
+        await new Promise<void>(resolve => {
+            this.categories.once('show', () => {
+                resolve()
+                if (!this.loading.isDestroyed()) {
+                    this.loading.close()
                 }
             })
         })
