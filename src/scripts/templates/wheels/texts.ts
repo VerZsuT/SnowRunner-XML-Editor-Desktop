@@ -1,3 +1,5 @@
+import Config from '@editor-app/classes/Config'
+
 export const texts = {
 	RU: {
 		id: 'ID',
@@ -38,7 +40,7 @@ export const texts = {
 		yes: 'Ja',
 		no: 'Nein'
 	}
-}[config.lang]
+}[Config.obj.lang]
 
 export const descs = {
 	RU: {
@@ -71,4 +73,4 @@ export const descs = {
 		substanceFriction: 'Koeffizient der Kupplung im Schlamm',
 		ignoreIse: 'Wird das Rad wie eine Kette auf dem Eis fahren'
 	}
-}[config.lang]
+}[Config.obj.lang]

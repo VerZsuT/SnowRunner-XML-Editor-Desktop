@@ -1,3 +1,5 @@
+import Config from '@editor-app/classes/Config'
+
 export const texts = {
 	RU: {
 		quantity: 'Кол-во груза',
@@ -35,7 +37,7 @@ export const texts = {
 		trailerMass: 'Gewicht des Anhängers',
 		fuelMass: 'Gewicht des Kraftstoffs'
 	}
-}[config.lang]
+}[Config.obj.lang]
 
 export const descs = {
 	RU: {
@@ -65,4 +67,4 @@ export const descs = {
 		fuelMass: 'Gewicht des Kraftstoffs',
 		quantity: 'Maximale Menge der Fracht'
 	}
-}[config.lang]
+}[Config.obj.lang]

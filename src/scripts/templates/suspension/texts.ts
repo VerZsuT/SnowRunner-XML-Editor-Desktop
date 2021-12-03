@@ -1,3 +1,5 @@
+import Config from '@editor-app/classes/Config'
+
 export const texts = {
 	RU: {
 		id: 'ID',
@@ -44,7 +46,7 @@ export const texts = {
 		criticalDamageThreshold: 'Kritische Schadensschwelle',
 		damageCapacity: 'Schadenskapazität'
 	}
-}[config.lang]
+}[Config.obj.lang]
 
 export const descs = {
 	RU: {
@@ -74,4 +76,4 @@ export const descs = {
 		criticalDamageThreshold: 'Prozentsatz des Schadens (Prozent = Wert * 100), bei dem die Federung Anzeichen von Bruch zeigt',
 		damageCapacity: 'Sicherheitsmarge dieser Aufhängung'
 	}
-}[config.lang]
+}[Config.obj.lang]

@@ -1,3 +1,5 @@
+import Config from '@editor-app/classes/Config'
+
 export const texts = {
 	RU: {
 		mass: 'Масса',
@@ -23,7 +25,7 @@ export const texts = {
 		cargoType: 'Typ',
 		offset: 'Offset'
 	}
-}[config.lang]
+}[Config.obj.lang]
 
 export const descs = {
 	RU: {
@@ -44,4 +46,4 @@ export const descs = {
 		cargoType: 'Fracht-ID',
 		offset: 'Versatz jeder neuen Ladung relativ zur vorherigen Ladung'
 	}
-}[config.lang]
+}[Config.obj.lang]

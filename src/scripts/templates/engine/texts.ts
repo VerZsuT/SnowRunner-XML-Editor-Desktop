@@ -1,3 +1,5 @@
+import Config from '@editor-app/classes/Config'
+
 export const texts = {
 	RU: {
 		id: 'ID',
@@ -8,7 +10,9 @@ export const texts = {
 		fuelConsumption: 'Потребление топлива',
 		torque: 'Крутящий момент',
 		damagedMinTorqueModifier: 'Минимальный множитель мощности при повреждении',
-		damagedMaxTorqueModifier: 'Максимальный множитель мощности при повреждении'
+		damagedMaxTorqueModifier: 'Максимальный множитель мощности при повреждении',
+		breakesDelay: 'Задержка торможения',
+		maxDeltaAngVel: 'Замедление ускорения'
 	},
 	EN: {
 		id: 'ID',
@@ -19,7 +23,9 @@ export const texts = {
 		fuelConsumption: 'Fuel consumption',
 		torque: 'Torque',
 		damagedMinTorqueModifier: 'Damaged min torque modifier',
-		damagedMaxTorqueModifier: 'Damaged max torque modifier'
+		damagedMaxTorqueModifier: 'Damaged max torque modifier',
+		breakesDelay: 'Braking delay',
+		maxDeltaAngVel: 'Deceleration of acceleration'
 	},
 	DE: {
 		id: 'ID',
@@ -30,9 +36,11 @@ export const texts = {
 		fuelConsumption: 'Kraftstoffverbrauch',
 		torque: 'Drehmoment',
 		damagedMinTorqueModifier: 'Beschädigter min Drehmomentmodifikator',
-		damagedMaxTorqueModifier: 'Beschädigte max Drehmoment-Modifikator'
+		damagedMaxTorqueModifier: 'Beschädigte max Drehmoment-Modifikator',
+		breakesDelay: 'Verzögerung beim Bremsen',
+		maxDeltaAngVel: 'Verlangsamung der Beschleunigung'
 	}
-}[config.lang]
+}[Config.obj.lang]
 
 export const descs = {
 	RU: {
@@ -44,7 +52,8 @@ export const descs = {
 		fuelConsumption: 'Множитель потребления топлива двигателя.',
 		torque: 'Мощность данного двигателя',
 		damagedMinTorqueModifier: 'Множитель мощности, когда ущерб движка достиг порога CriticalDamageThresold',
-		damagedMaxTorqueModifier: 'Множитель мощности, когда движок близок к полной поломке'
+		damagedMaxTorqueModifier: 'Множитель мощности, когда движок близок к полной поломке',
+		maxDeltaAngVel: 'Ограничитель максимального углового ускорения колёс. Чем он меньше, тем медленнее разгоняется машина.'
 	},
 	EN: {
 		name: 'ID of this engine',
@@ -55,7 +64,8 @@ export const descs = {
 		fuelConsumption: 'The multiplier of the engine fuel consumption.',
 		torque: 'Power of this engine',
 		damagedMinTorqueModifier: 'Power multiplier when engine damage has reached the CriticalDamageThresold threshold',
-		damagedMaxTorqueModifier: 'Power multiplier when the engine is close to complete failure'
+		damagedMaxTorqueModifier: 'Power multiplier when the engine is close to complete failure',
+		maxDeltaAngVel: 'Limiter of the maximum angular acceleration of the wheels. The smaller it is, the slower the car accelerates.'
 	},
 	DE: {
 		name: 'ID dieses Motors',
@@ -66,6 +76,7 @@ export const descs = {
 		fuelConsumption: 'Multiplikator des Kraftstoffverbrauchs des Motors.',
 		torque: 'Leistung dieses Motors',
 		damagedMinTorqueModifier: 'Leistungsmultiplikator, wenn der Motorschaden den CriticalDamageThresold-Schwellenwert erreicht hat',
-		damagedMaxTorqueModifier: 'Leistungsmultiplikator, wenn der Motor kurz vor einem Totalausfall steht'
+		damagedMaxTorqueModifier: 'Leistungsmultiplikator, wenn der Motor kurz vor einem Totalausfall steht',
+		maxDeltaAngVel: 'Begrenzer für maximale Winkelbeschleunigung der Räder. Je kleiner es ist, desto langsamer beschleunigt das Auto.'
 	}
-}[config.lang]
+}[Config.obj.lang]

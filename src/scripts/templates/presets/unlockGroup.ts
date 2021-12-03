@@ -1,4 +1,12 @@
-import { Group, Input, NumberType, Select } from '../../service'
+import {
+    Group,
+    Select,
+    Number
+} from '../items'
+import {
+    NumberType
+} from '../enums'
+import Config from '@editor-app/classes/Config'
 
 const texts = {
     RU: {
@@ -25,7 +33,7 @@ const texts = {
 		byRank: 'Nach Rang',
 		unlockByRank: 'Level freischalten'
     }
-}[config.lang]
+}[Config.obj.lang]
 
 const descs = {
     RU: {
@@ -43,15 +51,15 @@ const descs = {
 		byExploration: 'Methode zum Entsperren',
 		unlockByRank: 'Entsperren Ebene'
     }
-}[config.lang]
+}[Config.obj.lang]
 
 export default (selector: string) => Group({
     name: texts.unlockGroupName,
     defaultSelector: selector
 }, [
-    Input({
+    Number({
         attribute: 'Price',
-        numberType: NumberType.integer,
+        type: NumberType.integer,
         text: texts.price,
         desc: descs.price,
         bold: true
@@ -63,12 +71,11 @@ export default (selector: string) => Group({
         options: {
             true: texts.findOnMap,
             false: texts.byRank
-        },
-        onlyDeveloper: true
+        }
     }),
-    Input({
+    Number({
         attribute: 'UnlockByRank',
-        numberType: NumberType.integer,
+        type: NumberType.integer,
         text: texts.unlockByRank,
         desc: descs.unlockByRank,
         max: 30,

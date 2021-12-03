@@ -1,3 +1,5 @@
+import Config from '@editor-app/classes/Config'
+
 export const texts = {
 	RU: {
 		id: 'ID',
@@ -56,7 +58,7 @@ export const texts = {
 		reverceGear: 'Rückwärtsgang',
 		gears: 'Gangs'
 	}
-}[config.lang]
+}[Config.obj.lang]
 
 export const descs = {
 	RU: {
@@ -98,4 +100,4 @@ export const descs = {
 		lowerPlusGear: 'Gibt es ein reduziertes+ Getriebe im Getriebe',
 		lowerMinusGear: 'Gibt es ein erhöhte+s Getriebe im Getriebe'
 	}	
-}[config.lang]
+}[Config.obj.lang]

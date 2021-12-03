@@ -1,3 +1,5 @@
+import Config from '@editor-app/classes/Config'
+
 export const texts = {
 	RU: {
 		id: 'ID',
@@ -23,7 +25,7 @@ export const texts = {
 		engine: 'Motor',
 		battery: 'Batterie'
 	}
-}[config.lang]
+}[Config.obj.lang]
 
 export const descs = {
 	RU: {
@@ -44,4 +46,4 @@ export const descs = {
 		strengthMult: 'Kraft der Winde',
 		isEngineIgnitionRequired: 'Was funktioniert (Batterie-autonom).'
 	}
-}[config.lang]
+}[Config.obj.lang]

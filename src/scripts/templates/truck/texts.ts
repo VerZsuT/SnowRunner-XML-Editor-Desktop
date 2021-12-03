@@ -1,16 +1,25 @@
+import Config from '@editor-app/classes/Config'
+
 export const texts = {
 	RU: {
 		physicsWheels: 'Доп. настройки',
 		wheel: 'Колесо',
+		wheelsSizes: 'Доступные размеры колёс',
+		wheelsSet: 'Набор колёс',
+		wheelScale: 'Размер колеса',
+		winchLength: 'Длина лебёдки',
+		winchStrength: 'Сила лебёдки',
 		location: 'Тип',
 		front: 'Переднее',
 		rear: 'Заднее',
+		responsiveness: 'Чувствительность руля',
 		torque: 'Тип кручения',
 		torqueDefault: 'Всегда ведущее',
 		torqueFull: 'Ведущее при полном приводе',
 		torqueNone: 'Ведомое',
 		torqueConnectable: 'Определяется аддоном',
 		steeringAngle: 'Угол поворота',
+		steeringCastor: 'Угол наклона',
 		centerOfMass: 'Смещение центра масс',
 		any: 'Любая',
 		none: 'Отсутствует',
@@ -29,7 +38,7 @@ export const texts = {
 		wheelsGroupName: 'Колёса',
 		defaultRim: 'Обод по умолчанию',
 		defaultTire: 'Колёса по умолчанию',
-		defaultWheelType: 'Файл с колёсами',
+		wheelType: 'Файл с колёсами',
 		suspensionGroupName: 'Подвеска',
 		defaultSuspension: 'Подвеска по умолчанию',
 		suspensionsFile: 'Файл с подвесками',
@@ -61,15 +70,22 @@ export const texts = {
 	EN: {
 		physicsWheels: 'Additional settings',
 		wheel: 'Wheel',
+		wheelsSizes: 'Available wheel sizes',
+		wheelsSet: 'Set of wheels',
+		wheelScale: 'Wheel size',
+		winchLength: 'Winch length',
+		winchStrength: 'Winch strength',
 		location: 'Type',
 		front: 'Front',
 		rear: 'Back',
+		responsiveness: 'Steering wheel sensitivity',
 		torque: 'Torsion type',
 		torqueDefault: 'Always leading',
 		torqueFull: 'Driving with all-wheel drive',
 		torqueNone: 'Slave',
 		torqueConnectable: 'Defined by the addon',
-		steeringAngle: 'Angle of rotation',
+		steeringAngle: 'Steering angle',
+		steeringCastor: 'Steering castor',
 		centerOfMass: 'Center of mass offset',
 		any: 'AnyA',
 		none: 'None',
@@ -120,15 +136,22 @@ export const texts = {
 	DE: {
 		physicsWheels: 'Weitere Einstellungen',
 		wheel: 'Rad',
+		wheelsSizes: 'Verfügbare Radgrößen',
+		wheelsSet: 'Satz von Rädern',
+		wheelScale: 'Rad-Größe',
+		winchLength: 'Länge der Winde',
+		winchStrength: 'Kraft der Winde',
 		location: 'Typ',
 		front: 'Vorne',
 		rear: 'Hinten',
+		responsiveness: 'Empfindlichkeit des Lenkers',
 		torque: 'Torsionsart',
 		torqueDefault: 'Immer Moderator',
 		torqueFull: 'Allradantrieb',
 		torqueNone: 'Slave',
 		torqueConnectable: 'Definiert durch Addon',
 		steeringAngle: 'Drehwinkel',
+		steeringCastor: 'Neigungswinkel',
 		centerOfMass: 'Versatz des Massenzentrums',
 		any: 'Jede',
 		none: 'Fehlt',
@@ -176,7 +199,7 @@ export const texts = {
 		byRank: 'Nach Rang',
 		unlockByRank: 'Level freischalten'
 	}
-}[config.lang]
+}[Config.obj.lang]
 
 export const descs = {
 	RU: {
@@ -189,7 +212,7 @@ export const descs = {
 		winchesFile: 'Кнопки для редактирования лебёдок',
 		defaultRim: 'ID обода по умолчанию',
 		defaultTire: 'ID покрышки по умолчанию',
-		defaultWheelType: 'Название xml-файла с колёсами',
+		wheelType: 'Название xml-файла с колёсами',
 		defaultSuspension: 'ID подвески по умолчанию',
 		suspensionsFile: 'Название файла с подвесками',
 		diffLock: 'Настройки блокировки дифференциала',
@@ -208,7 +231,8 @@ export const descs = {
 		centerOfMass: 'Смещение центра масс тела относительно центра масс, рассчитанного движком игры',
 		location: 'Используется только для составных колес, для определения того, переднее это колесо или заднее.',
 		torque: 'То, когда колесо будет ведущим',
-		steeringAngle: 'Максимальный угол поворота колеса при рулении'
+		steeringAngle: 'Максимальный угол поворота колеса при рулении',
+		steeringCastor: 'Угол наклона колеса по оси OX в сторону поворота',
 	},
 	EN: {
 		UIName: 'The name of the car in the game (or the transfer key)',
@@ -220,7 +244,7 @@ export const descs = {
 		winchesFile: 'Buttons for editing winches',
 		defaultRim: 'Default rim ID',
 		defaultTire: 'Default tire ID',
-		defaultWheelType: 'Name of the xml file with wheels',
+		wheelType: 'Name of the xml file with wheels',
 		defaultSuspension: 'Default suspension ID',
 		suspensionsFile: 'Name of the file with suspensions',
 		diffLock: 'Differential Lock Settings',
@@ -239,7 +263,8 @@ export const descs = {
 		centerOfMass: 'The displacement of the center of mass of the body relative to the center of mass calculated by the game engine',
 		location: 'Used only for compound wheels, to determine whether it is a front wheel or a rear wheel.',
 		torque: 'When the wheel will be leading',
-		steeringAngle: 'Maximum steering angle of the wheel'
+		steeringAngle: 'Maximum steering angle of the wheel',
+		steeringCastor: 'The angle of inclination of the wheel on the axis OX in the direction of rotation'
 	},
 	DE: {
 		UIName: 'Name des Autos im Spiel (oder Übersetzungsschlüssel)',
@@ -251,7 +276,7 @@ export const descs = {
 		winchesFile: 'Schaltflächen zum Bearbeiten von Winden',
 		defaultRim: 'Standard-Felge-ID',
 		defaultTire: 'Standard-Reifen-ID',
-		defaultWheelType: 'Name der XML - Datei mit den Standardrädern',
+		wheelType: 'Name der XML - Datei mit den Standardrädern',
 		defaultSuspension: 'Standard-Suspension-ID',
 		suspensionsFile: 'Dateiname mit Aufhängungen',
 		diffLock: 'Differentialsperre Einstellungen',
@@ -270,6 +295,7 @@ export const descs = {
 		centerOfMass: 'Verschiebung der Körpermassenmitte relativ zum von der Spiel-Engine berechneten Massenzentrum',
 		location: 'Wird nur für zusammengesetzte Räder verwendet, um zu bestimmen, ob das Vorderrad oder das Hinterrad ist.',
 		torque: 'Wann das Rad fahren wird',
-		steeringAngle: 'Maximaler Lenkwinkel des Rades beim Lenken'
+		steeringAngle: 'Maximaler Lenkwinkel des Rades beim Lenken',
+		steeringCastor: 'Der Winkel des Rades nach der Achse OX in die Richtung der Wendung'
 	}
-}[config.lang]
+}[Config.obj.lang]
