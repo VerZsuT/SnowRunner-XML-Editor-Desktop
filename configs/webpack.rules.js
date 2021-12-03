@@ -18,22 +18,12 @@ module.exports = [
         type: 'asset/resource'
     },
     {
-        test: /\.vue$/,
-        loader: 'vue-loader',  
-    },
-    {
         test: /\.css$/,
-        use: [{ loader: 'style-loader' }, { loader: 'css-loader' }],
+        use: ['style-loader', 'css-loader'],
     },
     {
-        test: /\.ts?$/,
+        test: /\.(ts|tsx)$/,
         exclude: /(node_modules|\.webpack)/,
-        use: {
-            loader: 'ts-loader',
-            options: {
-               transpileOnly: true,
-               appendTsSuffixTo: [/\.vue$/],
-            }
-        }
+        use: 'ts-loader'
     }
-];
+]
