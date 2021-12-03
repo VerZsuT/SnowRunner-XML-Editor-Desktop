@@ -3,10 +3,7 @@ import { join } from 'path'
 
 import { parseStrings, paths } from '../service'
 import Config from './Config'
-
-import RU from '../../scripts/texts/RU.json'
-import EN from '../../scripts/texts/EN.json'
-import DE from '../../scripts/texts/DE.json'
+import { RU, EN, DE } from '@editor-texts'
 import { Lang } from '../enums'
 
 type TKeys = keyof typeof RU
@@ -30,10 +27,36 @@ export default class Texts {
     }
 
     /** Обрабатывает файл с переводом из `initial.pak` на текущий выбранный язык в программе. */
-    public static addIngame = (): Promise<null> => {
-        return new Promise(resolve => {
-            let ingame: ITranslation
-            if (existsSync(paths.strings)) {
+    public static addIngame = () => {
+        let ingame: ITranslation
+        if (existsSync(paths.strings)) {
+            let fileName: string
+            switch (this.config.lang) {
+                case Lang.RU:
+                    fileName = 'strings_russian.str'
+                break
+                case Lang.EN:
+                    fileName = 'strings_english.str'
+                break
+                case Lang.DE:
+                    fileName = 'strings_german.str'
+                break
+            }
+            const stringsFilePath = join(paths.strings, fileName)
+            if (existsSync(stringsFilePath)) {
+                ingame = parseStrings(readFileSync(stringsFilePath, {
+                    encoding: 'utf16le'
+                }).toString())
+                this.obj.ingame = ingame
+            }
+        }
+    }
+
+    /** Обрабатывает файл с переводом из `.pak` файлов модов на текущий выбранный язык в программе. */
+    public static addFromMods = () => {
+        const mods = {}
+        for (const modId in this.config.modsList) {
+            if (existsSync(join(paths.modsTemp, modId, 'texts'))) {
                 let fileName: string
                 switch (this.config.lang) {
                     case Lang.RU:
@@ -46,52 +69,16 @@ export default class Texts {
                         fileName = 'strings_german.str'
                     break
                 }
-                const stringsFilePath = join(paths.strings, fileName)
+                const stringsFilePath = join(paths.modsTemp, modId, 'texts', fileName)
                 if (existsSync(stringsFilePath)) {
-                    ingame = parseStrings(readFileSync(stringsFilePath, {
+                    const result = parseStrings(readFileSync(stringsFilePath, {
                         encoding: 'utf16le'
                     }).toString())
-                    this.obj.ingame = ingame
-                    resolve(null)
-                } else {
-                    resolve(null)
-                }
-            } else {
-                resolve(null)
-            }
-        })
-    }
-
-    /** Обрабатывает файл с переводом из `.pak` файлов модов на текущий выбранный язык в программе. */
-    public static addFromMods = (): Promise<null> => {
-        return new Promise(resolve => {
-            const mods = {}
-            for (const modId in this.config.modsList) {
-                if (existsSync(join(paths.modsTemp, modId, 'texts'))) {
-                    let fileName: string
-                    switch (this.config.lang) {
-                        case Lang.RU:
-                            fileName = 'strings_russian.str'
-                        break
-                        case Lang.EN:
-                            fileName = 'strings_english.str'
-                        break
-                        case Lang.DE:
-                            fileName = 'strings_german.str'
-                        break
-                    }
-                    const stringsFilePath = join(paths.modsTemp, modId, 'texts', fileName)
-                    if (existsSync(stringsFilePath)) {
-                        const result = parseStrings(readFileSync(stringsFilePath, {
-                            encoding: 'utf16le'
-                        }).toString())
-                        mods[modId] = result
-                    }
+                    mods[modId] = result
                 }
             }
-            this.obj.mods = mods
-            resolve(null)
-        })
+        }
+        this.obj.mods = mods
     }
 
     /** Возвращает текст перевода по ключу (в программе). */
