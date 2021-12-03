@@ -13,3 +13,8 @@ interface Window {
 }
 
 declare const editorPreload: EditorPreload
+
+type Filter = {
+    value?: string
+    set(value: string): void
+}
