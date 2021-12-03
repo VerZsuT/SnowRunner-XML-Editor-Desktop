@@ -24,6 +24,7 @@ interface ISettings {
     saveWhenReload?: boolean
     devTools?: boolean
     isQuit?: boolean
+    invalidMods?: string[]
 }
 
 interface ITranslation {
