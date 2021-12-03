@@ -1,18 +1,15 @@
-const rules = require('./webpack.rules');
-const { VueLoaderPlugin } = require('vue-loader');
-const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
+const rules = require('./webpack.rules')
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 
 module.exports = {
-    mode: process.env.NODE_ENV === 'production'? 'production' : 'development',
+    mode: process.env.NODE_ENV || 'development',
     devtool: process.env.NODE_ENV === 'production'? false : 'source-map',
     plugins: [
-        new ForkTsCheckerWebpackPlugin(),
-        new VueLoaderPlugin()
+        new ForkTsCheckerWebpackPlugin()
     ],
-    module: {
-        rules,
-    },
+    module: {rules},
     resolve: {
-        extensions: ['.vue', '.js', '.ts', '.jsx', '.tsx', '.css']
+        alias: require('./webpack.aliases'),
+        extensions: ['.js', '.ts', '.jsx', '.tsx', '.css']
     }
-};
+}
