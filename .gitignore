@@ -94,3 +94,5 @@ src/backups/
 .vscode/
 src/scripts/mainTemp/
 src/scripts/modsTemp/
+.changes.txt
+test.js
