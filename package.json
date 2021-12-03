@@ -1,7 +1,7 @@
 {
 	"name": "snowrunner-xml-editor-desktop",
 	"productName": "SnowRunner XML Editor",
-	"version": "0.6.5b",
+	"version": "0.6.6-beta",
 	"description": "Allows you to visually edit the game's XML files.",
 	"repository": {
 		"type": "git",
@@ -10,7 +10,7 @@
 	"main": ".webpack/main",
 	"scripts": {
 		"start": "electron-forge start",
-		"build": "node ./other/preBuild.js && npm run package-prod && node ./other/postBuild.js",
+		"build": "node ./build_scripts/preBuild.js && npm run package-prod && node ./build_scripts/postBuild.js",
 		"package-prod": "cross-env NODE_ENV=production electron-forge package --platform=win32 --arch=ia32",
 		"package": "electron-forge package --platform=win32 --arch=ia32"
 	},
@@ -26,8 +26,10 @@
 	"devDependencies": {
 		"@electron-forge/cli": "^6.0.0-beta.61",
 		"@electron-forge/plugin-webpack": "^6.0.0-beta.61",
+		"@types/react": "^17.0.37",
+		"@types/react-dom": "^17.0.11",
 		"@vercel/webpack-asset-relocator-loader": "^1.7.0",
-		"@vue/compiler-sfc": "^3.2.19",
+		"cheerio": "^1.0.0-rc.10",
 		"copy-webpack-plugin": "^9.0.1",
 		"cross-env": "^7.0.3",
 		"css-loader": "^6.3.0",
@@ -36,8 +38,10 @@
 		"node-loader": "^2.0.0",
 		"style-loader": "^3.3.0",
 		"ts-loader": "^9.2.6",
-		"typescript": "^4.4.4",
-		"vue": "^3.2.19",
-		"vue-loader": "^16.8.1"
+		"typescript": "^4.4.4"
+	},
+	"dependencies": {
+		"react": "^17.0.2",
+		"react-dom": "^17.0.2"
 	}
 }
