@@ -1,46 +1,47 @@
-import { app, shell } from 'electron'
+import { app } from 'electron'
 import { join } from 'path'
-import { readFileSync, existsSync, writeFileSync } from 'fs'
+import { existsSync } from 'fs'
 
 import {
     Archiver,
-    Backup,
     Checker,
     Config,
-    Dialog,
-    EPF,
     Hasher,
-    MainProcess,
+    Public,
     Settings,
     Texts,
-    Updater,
-    Windows,
-    Menu
+    Windows
 } from './classes'
 import { findInDir, paths } from './service'
 
 const config = Config.obj
-const settings = {
+const settings = Settings.set({
     appId: 'SnowRunner XML editor',
     saveWhenReload: true,
-    devTools: false
-}
+    devTools: false,
+    invalidMods: []
+})
 
-Settings.obj = settings
-
-let invalidMods
+Public.init()
 
 const quit = app.quit
 app.quit = () => {
-    Settings.obj.isQuit = true
+    settings.isQuit = true
     quit()
 }
 
 app.disableHardwareAcceleration()
 app.setAppUserModelId(settings.appId)
-app.whenReady().then(initProgram)
+app.whenReady().then(() => {
+    Windows.loading = Windows.openLoading(true)
+    Windows.loading.once('show', () => {
+        Windows.loading.setText(Texts.get('LOADING'))
+        initProgram()
+    })
+})
+
 app.on('before-quit', () => {
-    Settings.obj.isQuit = true
+    settings.isQuit = true
     if (settings.saveWhenReload) {
         Config.save()
     }
@@ -50,161 +51,31 @@ process.once('uncaughtExceptionMonitor', app.quit)
 /**
  * `Main`функция.
 */
-function initProgram() {
-    setPublic()
-    Windows.loading = Windows.openLoading(true)
-    Windows.loading.once('show', () => {
-        Windows.loading.setText(Texts.get('LOADING'))
-        if (!Checker.checkAdmin()) return
-        if (!config.paths.initial) {
-            Checker.checkExportedConfig().then(() => {
-                reloadProgram()
-            }, () => {
-                Windows.openSetup()
-                Checker.checkUpdate()
-            })
+async function initProgram() {
+    if (!Checker.checkAdmin()) return
+
+    if (!config.paths.initial) {
+        Checker.checkExportedConfig()
+        await Windows.openSetup()
+        Checker.checkUpdate()
+    } else {
+        await Checker.checkInitialHash()
+
+        if (Checker.hasAllPaths()) {
+            Texts.addIngame()
+
+            config.paths.dlc = paths.dlc
+            config.paths.classes = paths.classes
+            config.paths.mods = paths.modsTemp
+            
+            initDLC()
+            await initMods()
+            await Windows.openCategories()
+            Checker.checkUpdate()
         } else {
-            Checker.checkInitialSum().then(() => {
-                if (Checker.checkPaths()) {
-                    Texts.addIngame().then(() => {
-                        config.paths.dlc = paths.dlc
-                        config.paths.classes = paths.classes
-                        config.paths.mods = paths.modsTemp
-                        
-                        initDLC()
-                        initMods().then(() => {
-                            Texts.addFromMods().then(() => {
-                                Windows.openCategories().then(() => Checker.checkUpdate())
-                            })
-                        }, () => {
-                            Windows.openCategories().then(() => Checker.checkUpdate())
-                        })
-                    })
-                } else {
-                    Config.reset()
-                }
-            })
+            Config.reset()
         }
-    })
-}
-
-/**
- * Устанавливает публичные методы и свойства для renderer-process.
-*/
-function setPublic() {
-    MainProcess.setPubicProps({
-        invalidMods: () => invalidMods,
-        texts: () => Texts.obj,
-        menu: () => Menu.get(),
-        paths: () => paths,
-        config: [
-            () => config,
-            value => {config[value.key] = value.value}
-        ]
-    })
-
-    MainProcess.setPublicFuncs({
-        updateFiles: (modId: string) => {
-            if (modId) {
-                try {
-                    Archiver.update(join(paths.modsTemp, modId), config.modsList[modId].path)
-                    Hasher.saveModHash(modId, config.modsList[modId].path)
-                } catch (err) {
-                    Dialog.alert({
-                        title: Texts.get('ERROR'),
-                        message: Texts.get('SAVE_MOD_ERROR')
-                    })
-                }
-            } else {
-                try {
-                    Archiver.update(paths.mainTemp, config.paths.initial)
-                    Hasher.saveInitialHash()
-                } catch (err) {
-                    Dialog.alert({
-                        title: Texts.get('ERROR'),
-                        message: Texts.get('SAVE_ORIGINAL_ERROR')
-                    })
-                }
-            }
-        },
-        readFile: (filePath: string, reserveFilePath?: string) => {
-            if (existsSync(filePath)) {
-                const data = readFileSync(filePath)
-                return data.toString()
-            } else if (existsSync(reserveFilePath)) {
-                const data = readFileSync(reserveFilePath)
-                return data.toString()
-            } else {
-                throw new Error('READ_FILE_ERROR')
-            }
-        },
-        writeFile: (path, data) => {
-            try {
-                writeFileSync(path, data)
-            } catch {
-                throw new Error('WRITE_FILE_ERROR')
-            }
-        },
-        alert: (message: string) => {
-            Dialog.alert({
-                message: message, 
-                title: settings.appId,
-                type: 'async'
-            })
-        },
-        alertSync: (message: string) => {
-            Dialog.alert({
-                message: message, 
-                title: settings.appId
-            })
-        },
-        confirm: (message: string) => {
-            const index = Dialog.alert({
-                message: message,
-                title: settings.appId,
-                buttons: ['OK', Texts.get('CLOSE')],
-                noLink: true
-            })
-            return index === 0
-        },
-        joinEPF: EPF.join,
-        seeEPF: EPF.see,
-        importConfig: Checker.checkExportedConfig,
-        exportConfig: Config.export,
-        reload: reloadProgram,
-        quit: app.quit,
-        openLink: (path: string) => {shell.openExternal(path)},
-        openPath: (path: string) => {shell.openPath(path)},
-
-        openEditor: (bridge?: boolean) => {Windows.openEditor(bridge)},
-        openList: Windows.openList,
-        openSettings: Windows.openSettings,
-        openConsole: Windows.openConsole,
-        openDialog: Dialog.getDir,
-        openXMLDialog: Dialog.getXML,
-        openInitialDialog: Dialog.getInitial,
-        openEPFDialog: Dialog.getEPF,
-        openSaveDialog: Dialog.saveEPF,
-
-        saveBackup: (reloadAfter?: boolean) => {Backup.save(reloadAfter)},
-        copyBackup: Backup.copy,
-        resetConfig: Config.reset,
-        recoverFromBackup: Backup.recover,
-        saveConfig: Config.save,
-        saveInitialHash: Hasher.saveInitialHash,
-        checkUpdate: Checker.checkUpdate,
-        update: Updater.update,
-        unpackFiles: Archiver.unpackMain,
-        setDevMode: value => {
-            config.settings.devMode = value
-            reloadProgram()
-        },
-        enableDevTools: () => settings.devTools = true,
-        disableDevTools: () => settings.devTools = false,
-        toggleDevTools: () => {
-            Windows.currentWindow.webContents.toggleDevTools()
-        }
-    })
+    }
 }
 
 /**
@@ -216,74 +87,63 @@ function initDLC() {
 }
 
 /**
- * Инициализирует модификации, указанные в config.json.
+ * Инициализирует модификации, указанные в `config.json`.
 */
-function initMods() {
-    return new Promise((resolve, reject) => {
-        if (!config.settings.mods) {
-            reject()
-            return
-        }
-        if (config.modsList.length === 0) {
-            reject()
-            return
+async function initMods() {
+    if (!config.settings.mods) {
+        return
+    }
+    if (config.modsList.length === 0) {
+        return
+    }
+
+    let counter = config.modsList.length
+
+    function deleteFromList(name: string) {
+        name = name.replace('.pak', '')
+        delete config.modsList[name]
+        delete config.sums.mods[name]
+        config.modsList.length--
+        counter--
+    }
+
+    for (const modName in config.modsList) {
+        const mod = config.modsList[modName]
+        if (typeof mod === 'number') {
+            continue
         }
 
-        let counter = config.modsList.length
+        if (!existsSync(mod.path)) {
+            settings.invalidMods.push(config.modsList[modName].name)
+            deleteFromList(config.modsList[modName].name)
+            continue
+        } else if (!Checker.checkPermissions(mod.path)) {
+            settings.invalidMods.push(config.modsList[modName].name)
+            deleteFromList(config.modsList[modName].name)
+            continue
+        }
 
-        function deleteFromList(name: string) {
-            name = name.replace('.pak', '')
-            delete config.modsList[name]
-            delete config.sums.mods[name]
-            config.modsList.length--
+        const hash = Hasher.getHash(mod.path)
+        if (existsSync(join(paths.modsTemp, modName)) && hash === config.sums.mods[modName]) {
             counter--
-        }
+            continue
+        } else {
+            await Archiver.unpackMod(mod.path)
 
-        for (const modName in config.modsList) {
-            const mod = config.modsList[modName]
-            if (typeof mod === 'number') {
-                continue
-            }
-
-            if (!existsSync(mod.path)) {
-                invalidMods = {name: config.modsList[modName].name, error: 'NOT_EXISTS'}
+            if (!existsSync(join(paths.modsTemp, modName, 'classes'))) {
+                settings.invalidMods.push(config.modsList[modName].name)
                 deleteFromList(config.modsList[modName].name)
-                continue
-            } else if (!Checker.checkPermissions(mod.path)) {
-                invalidMods = {name: config.modsList[modName].name, error: 'NO_PERMISSION'}
-                deleteFromList(config.modsList[modName].name)
-                continue
-            }
-
-            const hash = Hasher.getHash(mod.path)
-            if (existsSync(join(paths.modsTemp, modName)) && hash === config.sums.mods[modName]) {
-                counter--
-                continue
             } else {
-                Archiver.unpackMod(mod.path).then(() => {
-                    if (!existsSync(join(paths.modsTemp, modName, 'classes'))) {
-                        invalidMods = {name: config.modsList[modName].name, error: 'NO_CLASSES'}
-                        deleteFromList(config.modsList[modName].name)
-                    } else {
-                        config.sums.mods[modName] = hash
-                        counter--
-                    }
-                    if (counter === 0) {
-                        resolve(null)
-                    }
-                })
+                config.sums.mods[modName] = hash
+                counter--
+            }
+            if (counter === 0) {
+                Texts.addFromMods()
+                return
             }
         }
-        if (counter <= 0) {
-            resolve(null)
-        }
-    })
-}
-
-/**
- * Немедленно перезагружает программу.
-*/
-function reloadProgram() {
-    app.relaunch()
-    app.quit()
+    }
+    if (counter <= 0) {
+        Texts.addFromMods()
+    }
 }
