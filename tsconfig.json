@@ -1,21 +1,35 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
+    "target": "ES2021",
+    "lib": ["ES2021", "DOM"],
+    "jsx": "react-jsx",
     "allowJs": true,
     "module": "ESNext",
+    "pretty": true,
+    "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
     "noImplicitAny": false,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
     "sourceMap": true,
-    "baseUrl": ".",
     "outDir": "dist",
+    "newLine": "LF",
     "moduleResolution": "node",
     "resolveJsonModule": true,
+    "baseUrl": ".",
     "paths": {
+      "@editor-app": ["src/app/index"],
+      "@editor-app/*": ["src/app/*"],
+      "@editor-service": ["src/scripts/service/index"],
+      "@editor-service/*": ["src/scripts/service/*"],
+      "@editor-templates": ["src/scripts/templates/index"],
+      "@editor-templates/*": ["src/scripts/templates/*"],
+      "@editor-texts": ["src/scripts/texts/index"],
+      "@editor-texts/*": ["src/scripts/texts/*"],
+      "@editor-bootstrap": ["src/scripts/bootstrap/bootstrap.bundle.min.js"],
       "*": ["node_modules/*"]
     }
   },
-  "include": [
-    "src/**/*"
-  ]
+  "include": ["src/**/*"]
 }
