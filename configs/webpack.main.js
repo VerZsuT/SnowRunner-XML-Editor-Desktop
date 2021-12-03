@@ -1,8 +1,8 @@
 const CopyPlugin = require('copy-webpack-plugin')
 
 module.exports = {
-    mode: process.env.NODE_ENV === 'production'? 'production' : 'development',
-    devtool: process.env.NODE_ENV === 'production'? false : 'source-map',
+    mode: process.env.NODE_ENV || 'development',
+    devtool: process.env.NODE_ENV === 'production'? false : 'inline-source-map',
     plugins: [
         new CopyPlugin({
             patterns: [
@@ -32,6 +32,7 @@ module.exports = {
         rules: require('./webpack.rules'),
     },
     resolve: {
+        alias: require('./webpack.aliases'),
         extensions: ['.js', '.ts', '.jsx', '.tsx', '.css', '.json']
     }
-};
+}
