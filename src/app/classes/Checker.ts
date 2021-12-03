@@ -41,7 +41,7 @@ export default class Checker {
                 buttons: ['Exit'],
                 title: 'Error'
             })
-            app.quit()
+            setTimeout(app.quit, 2000)
             return false
         }
     }
@@ -51,23 +51,17 @@ export default class Checker {
      * 
      * _Если изменения присутствуют, то обновляет файлы в программе._
     */
-    public static checkInitialSum = () => {
-        return new Promise(resolve => {
-            if (!existsSync(join(paths.mainTemp, '[media]')) || Hasher.getHash(this.config.paths.initial) !== this.config.sums.initial) {
-                if (existsSync(this.config.paths.initial)) {
-                    Hasher.saveInitialHash()
-                    if (!existsSync(paths.backupInitial)) {
-                        Backup.save().then(resolve)
-                    } else {
-                        Archiver.unpackMain(true).then(resolve)
-                    }
+    public static checkInitialHash = async () => {
+        if (!existsSync(join(paths.mainTemp, '[media]')) || Hasher.getHash(this.config.paths.initial) !== this.config.sums.initial) {
+            if (existsSync(this.config.paths.initial)) {
+                Hasher.saveInitialHash()
+                if (!existsSync(paths.backupInitial)) {
+                    await Backup.save()
                 } else {
-                    resolve(null)
+                    await Archiver.unpackMain(true)
                 }
-            } else {
-                resolve(null)
             }
-        })
+        }
     }
 
     /**
@@ -103,23 +97,20 @@ export default class Checker {
      * _В случае удачи импортирует его в программу._
     */
     public static checkExportedConfig = () => {
-        return new Promise((resolve, reject) => {
-            if (existsSync(join(paths.backupFolder, 'config.json'))) {
-                const exportedConfig = JSON.parse(readFileSync(`${paths.backupFolder}\\config.json`).toString())
-        
-                exportedConfig.version = this.config.version
-                this.settings.saveWhenReload = false
-                if (exportedConfig.version < 'v0.6.5') {
-                    exportedConfig.ADV = {}
-                    exportedConfig.ETR = {}
-                }
-                writeFileSync(paths.config, JSON.stringify(exportedConfig))
-                rmSync(`${paths.backupFolder}\\config.json`)
-                resolve(null)
-            } else {
-                reject()
+        if (existsSync(join(paths.backupFolder, 'config.json'))) {
+            const exportedConfig = JSON.parse(readFileSync(`${paths.backupFolder}\\config.json`).toString())
+    
+            exportedConfig.version = this.config.version
+            this.settings.saveWhenReload = false
+            if (exportedConfig.version < 'v0.6.5') {
+                exportedConfig.ADV = {}
+                exportedConfig.ETR = {}
             }
-        })
+            writeFileSync(paths.config, JSON.stringify(exportedConfig))
+            rmSync(`${paths.backupFolder}\\config.json`)
+            app.relaunch()
+            app.quit()
+        }
     }
 
     /**
@@ -190,7 +181,7 @@ export default class Checker {
      * 
      * _В случае неудачи выводит уведомление._
     */
-    public static checkPaths = () => {
+    public static hasAllPaths = () => {
         let success = true
         if (!existsSync(this.config.paths.initial)) {
             Dialog.alert({
