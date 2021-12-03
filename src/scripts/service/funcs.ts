@@ -1,10 +1,16 @@
-import type RU from '../texts/RU.json'
+import type { RU } from '@editor-texts'
 
 type Translation = {
     [name in keyof typeof RU]: string
 }
 
-export const t: Translation = texts[config.lang]
+export const t = texts[config.lang] as Translation
+
+const _tmp_: any = {}
+Object.defineProperty(_tmp_, 'MAIN', {
+    get: () => get('#main')
+})
+export const MAIN = _tmp_['MAIN']
 
 /** Устанавливает событие по нажатию кнопки. */
 export function setHotKey(params: ISetHotKeyParams, listener: (event: KeyboardEvent) => any): void {
