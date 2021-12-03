@@ -1,56 +1,50 @@
 import {
 	Template,
 	Group,
-	Input,
 	Select,
-	Selectors,
-	forEach,
-	InputType,
-	NumberType,
-	FileType,
-	TemplateType
-} from '../../service'
-import {
-	descs,
-	texts
-} from './texts'
+	Coordinates,
+	ForEach,
+	File,
+	Number,
+	Text
+} from '../items'
+import { NumberType, FileType } from '../enums'
+import { getSelectors } from '../service'
+import { descs, texts } from './texts'
 
-const selectors = Selectors(() => {
+const selectors = getSelectors(function() {
 	const truckData = 'Truck.TruckData'
 	const gameData = 'Truck.GameData'
 	const UIDesc = `${gameData}.UiDesc`
 	const wheels = `${truckData}.Wheels`
-	const compatibleWheels = `${truckData}.CompatibleWheels`
-	const currentCompatibleWheels = `${compatibleWheels}${forEach}`
-	const winch = `${truckData}.WinchUpgradeSocket`
+	const compatibleWheels = `${truckData}.CompatibleWheels${this.forEach}`
+	const upgradableWinch = `${truckData}.WinchUpgradeSocket`
+	const staticWinch = `${truckData}.Winch`
 	const suspension = `${truckData}.SuspensionSocket`
 	const gearbox = `${truckData}.GearboxSocket`
 	const engine = `${truckData}.EngineSocket`
 	const fuelTank = `${truckData}.FuelTank`
 	const physicsBody = 'Truck.PhysicsModel.Body'
-	const wheel = `${wheels}.Wheel`
-	const currentWheel = `${wheel}${forEach}`
-	return {truckData, gameData, UIDesc, wheels, compatibleWheels, currentCompatibleWheels, winch, suspension, gearbox,
-		    engine, fuelTank, physicsBody, wheel, currentWheel}
+	const wheel = `${wheels}.Wheel${this.forEach}`
+	return {truckData, gameData, UIDesc, wheels, compatibleWheels, upgradableWinch, suspension, gearbox,
+		    engine, fuelTank, physicsBody, wheel, staticWinch}
 })
 
 export default <ITemplate> {
 	selector: 'Truck',
-	template: Template({selectors}, [
+	template: Template(selectors, [
 		Group({
 			name: texts.textGroupName,
 			defaultSelector: selectors.UIDesc
 		}, [
-			Input({
+			Text({
 				attribute: 'UiName',
-				type: InputType.text,
 				text: texts.UIName,
 				desc: descs.UIName,
 				bold: true
 			}),
-			Input({
+			Text({
 				attribute: 'UiDesc',
-				type: InputType.text,
 				text: texts.UIDesc,
 				desc: descs.UIDesc
 			})
@@ -59,42 +53,61 @@ export default <ITemplate> {
 			name: texts.controlGroupName,
 			defaultSelector: selectors.truckData
 		}, [
-			Input({
+			Number({
+				attribute: 'Responsiveness',
+				text: texts.responsiveness,
+				max: 1.0,
+				min: 0.0,
+				step: 0.01
+			}),
+			Number({
 				attribute: 'BackSteerSpeed',
 				text: texts.backSteerSpeed,
 				desc: descs.backSteerSpeed,
-				max: 1,
-				step: 0.01,
-				areas: {
-					yellow: [[0.1, 0.3]],
-					red: [[0.31, 1]]
-				}
+				max: 1.0,
+				min: 0.0,
+				step: 0.01
 			}),
-			Input({
+			Number({
 				attribute: 'SteerSpeed',
 				text: texts.steerSpeed,
 				desc: descs.steerSpeed,
+				max: 1.0,
+				min: 0.0,
 				step: 0.01,
-				areas: {
-					yellow: [[0.1, 0.5]],
-					red: [[0.5, Infinity]]
-				},
 				bold: true
 			})
 		]),
-		Group({
-			name: texts.winchGroupName,
-			defaultSelector: selectors.winch
-		}, [
-			Input({
+		Group(texts.winchGroupName, [
+			// Static
+			Number({
+				attribute: 'Length',
+				selector: selectors.staticWinch,
+				text: texts.winchLength,
+				max: 100,
+				min: 0,
+				step: 1,
+				default: 14
+			}),
+			Number({
+				attribute: 'StrengthMult',
+				selector: selectors.staticWinch,
+				text: texts.winchStrength,
+				max: 10,
+				min: 0,
+				default: 1
+			}),
+			// Upgradable
+			Text({
 				attribute: 'Default',
-				type: InputType.text,
+				selector: selectors.upgradableWinch,
 				text: texts.defaultWinch,
 				desc: descs.defaultWinch,
-				onlyDeveloper: true
+				onlyDev: true
 			}),
 			Select({
 				attribute: 'IsUpgradable',
+				selector: selectors.upgradableWinch,
 				text: texts.isUpgradable,
 				desc: descs.isUpgradable,
 				options: {
@@ -102,10 +115,10 @@ export default <ITemplate> {
 					false: texts.notAllow
 				}
 			}),
-			Input({
+			File({
 				attribute: 'Type',
-				type: InputType.file,
-				fileType: FileType.winches,
+				selector: selectors.upgradableWinch,
+				type: FileType.winches,
 				text: texts.winchesFile,
 				desc: descs.winchesFile,
 				bold: true
@@ -115,38 +128,30 @@ export default <ITemplate> {
 			name: texts.wheelsGroupName,
 			defaultSelector: selectors.wheels
 		}, [
-			Input({
+			Text({
 				attribute: 'DefaultRim',
-				type: InputType.text,
 				text: texts.defaultRim,
 				desc: descs.defaultRim,
-				onlyDeveloper: true
+				onlyDev: true
 			}),
-			Input({
+			Text({
 				attribute: 'DefaultTire',
-				type: InputType.text,
 				text: texts.defaultTire,
 				desc: descs.defaultTire,
-				onlyDeveloper: true
+				onlyDev: true
 			}),
-			Input({
+			File({
 				attribute: 'DefaultWheelType',
-				type: InputType.file,
-				fileType: FileType.wheels,
-				text: texts.defaultWheelType,
-				desc: descs.defaultWheelType,
+				type: FileType.wheels,
+				text: texts.wheelType,
+				desc: descs.wheelType,
 				bold: true
 			}),
-			Group({
-				name: texts.physicsWheels
-			}, [
-				Template({
-					type: TemplateType.multiply,
-					itemSelector: selectors.wheel
-				}, [
+			Group(texts.physicsWheels, [
+				ForEach(selectors.wheel, [
 					Group({
 						name: texts.wheel,
-						defaultSelector: selectors.currentWheel,
+						defaultSelector: selectors.wheel,
 						withCounter: true
 					}, [
 						Select({
@@ -172,14 +177,43 @@ export default <ITemplate> {
 							},
 							default: 'none'
 						}),
-						Input({
+						Number({
 							attribute: 'SteeringAngle',
-							numberType: NumberType.integer,
 							text: texts.steeringAngle,
 							desc: descs.steeringAngle,
-							max: 50,
-							min: -50,
+							max: 90,
+							min: -90,
+							step: 1,
 							default: 0
+						}),
+						Number({
+							attribute: 'SteeringCastor',
+							text: texts.steeringCastor,
+							desc: descs.steeringCastor,
+							max: 45,
+							min: 0,
+							step: 1,
+							default: 0
+						})
+					])
+				])
+			]),
+			Group(texts.wheelsSizes, [
+				ForEach(selectors.compatibleWheels, [
+					Group({
+						name: texts.wheelsSet,
+						defaultSelector: selectors.compatibleWheels,
+						withCounter: true
+					}, [
+						File({
+							attribute: 'Type',
+							type: FileType.wheels,
+							text: texts.wheelType,
+							desc: descs.wheelType
+						}),
+						Number({
+							attribute: 'Scale',
+							text: texts.wheelScale
 						})
 					])
 				])
@@ -189,24 +223,21 @@ export default <ITemplate> {
 			name: texts.suspensionGroupName,
 			defaultSelector: selectors.suspension
 		}, [
-			Input({
+			Coordinates({
 				attribute: 'CenterOfMassOffset',
-				type: InputType.coordinates,
 				selector: selectors.physicsBody,
 				text: texts.centerOfMass,
 				desc: descs.centerOfMass
 			}),
-			Input({
+			Text({
 				attribute: 'Default',
-				type: InputType.text,
 				text: texts.defaultSuspension,
 				desc: descs.defaultSuspension,
-				onlyDeveloper: true
+				onlyDev: true
 			}),
-			Input({
+			File({
 				attribute: 'Type',
-				type: InputType.file,
-				fileType: FileType.suspensions,
+				type: FileType.suspensions,
 				text: texts.suspensionsFile,
 				desc: descs.suspensionsFile,
 				bold: true
@@ -229,17 +260,15 @@ export default <ITemplate> {
 			name: texts.gearboxGroupName,
 			defaultSelector: selectors.gearbox
 		}, [
-			Input({
+			Text({
 				attribute: 'Default',
-				type: InputType.text,
 				text: texts.defaultGearbox,
 				desc: descs.defaultGearbox,
-				onlyDeveloper: true
+				onlyDev: true
 			}),
-			Input({
+			File({
 				attribute: 'Type',
-				type: InputType.file,
-				fileType: FileType.gearboxes,
+				type: FileType.gearboxes,
 				text: texts.gearboxesFile,
 				desc: descs.gearboxesFile,
 				bold: true
@@ -249,45 +278,44 @@ export default <ITemplate> {
 			name: texts.engineGroupName,
 			defaultSelector: selectors.engine
 		}, [
-			Input({
+			Text({
 				attribute: 'Default',
-				type: InputType.text,
 				text: texts.defaultEngine,
 				desc: descs.defaultEngine,
-				onlyDeveloper: true
+				onlyDev: true
 			}),
-			Input({
+			File({
 				attribute: 'Type',
-				type: InputType.file,
-				fileType: FileType.engines,
+				type: FileType.engines,
 				text: texts.enginesFile,
 				desc: descs.enginesFile,
 				bold: true
 			}),
-			Input({
+			Number({
 				attribute: 'EngineStartDelay',
 				selector: selectors.truckData,
 				text: texts.engineStartDelay,
 				desc: descs.engineStartDelay,
-				max: 8.0
+				max: 8,
+				min: 0
 			}),
-			Input({
+			Number({
 				attribute: 'ExhaustStartTime',
 				selector: selectors.truckData,
 				text: texts.exhaustStartTime,
-				desc: descs.exhaustStartTime
+				desc: descs.exhaustStartTime,
+				min: 0
 			})
 		]),
 		Group({
 			name: texts.fuelGroupName,
 			defaultSelector: selectors.fuelTank
 		}, [
-			Input({
+			Number({
 				attribute: 'DamageCapacity',
-				numberType: NumberType.integer,
+				type: NumberType.integer,
 				text: texts.damageCapacity,
 				desc: descs.damageCapacity,
-				max: 64000,
 				step: 10,
 				default: 0,
 				areas: {
@@ -295,9 +323,9 @@ export default <ITemplate> {
 					red: [[5001, Infinity]]
 				}
 			}),
-			Input({
+			Number({
 				attribute: 'FuelCapacity',
-				numberType: NumberType.integer,
+				type: NumberType.integer,
 				selector: selectors.truckData,
 				desc: texts.fuelCapacity,
 				text: descs.fuelCapacity,
@@ -324,9 +352,9 @@ export default <ITemplate> {
 				},
 				bold: true
 			}),
-			Input({
+			Number({
 				attribute: 'Price',
-				numberType: NumberType.integer,
+				type: NumberType.integer,
 				text: texts.price,
 				desc: descs.price,
 				bold: true
@@ -340,11 +368,12 @@ export default <ITemplate> {
 					false: texts.byRank
 				}
 			}),
-			Input({
+			Number({
 				attribute: 'UnlockByRank',
-				numberType: NumberType.integer,
+				type: NumberType.integer,
 				text: texts.unlockByRank,
 				desc: descs.unlockByRank,
+				max: 30,
 				min: 1
 			})
 		])

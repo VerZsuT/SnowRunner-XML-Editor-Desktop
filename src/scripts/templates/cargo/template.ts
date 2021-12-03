@@ -1,39 +1,30 @@
 import {
-	Template, 
-	Group, 
-	Input, 
-	Selectors,
-	forEach,
-	TemplateType,
-	InputType,
-	NumberType
-} from '../../service'
-import { 
-	descs,
-	texts
-} from './texts'
+	Template,
+	ForEach,
+	Group,
+	Number,
+	Text,
+	Coordinates
+} from '../items'
+import { NumberType } from '../enums'
+import { getSelectors } from '../service'
+import { descs, texts } from './texts'
 
-const selectors = Selectors(() => {
-	const cargoPart = 'Body'
-	const currentCargoPart = `${cargoPart}${forEach}`
+const selectors = getSelectors(function() {
+	const cargoPart = `Body${this.forEach}`
 	const slot = 'TruckAddon.GameData.InstallSlot'
-	return {cargoPart, currentCargoPart, slot}
+	return {cargoPart, slot}
 })
 
 export default <ITemplate> {
 	selector: 'TruckAddon > GameData > InstallSlot[CargoType]',
-	template: Template({selectors}, [
-		Group({
-			name: texts.part
-		}, [
-			Template({
-				type: TemplateType.multiply,
-				itemSelector: selectors.cargoPart
-			}, [
-				Input({
+	template: Template(selectors, [
+		Group(texts.part, [
+			ForEach(selectors.cargoPart, [
+				Number({
 					attribute: 'Mass',
-					selector: selectors.currentCargoPart,
-					numberType: NumberType.integer,
+					selector: selectors.cargoPart,
+					type: NumberType.integer,
 					text: texts.mass,
 					desc: descs.mass
 				})
@@ -43,26 +34,24 @@ export default <ITemplate> {
 			name: texts.main,
 			defaultSelector: selectors.slot
 		}, [
-			Input({
+			Number({
 				attribute: 'CargoLength',
-				numberType: NumberType.integer,
+				type: NumberType.integer,
 				text: texts.cargoLength,
 				desc: descs.cargoLength,
-				onlyDeveloper: true
+				onlyDev: true
 			}),
-			Input({
+			Text({
 				attribute: 'CargoType',
-				type: InputType.text,
 				text: texts.cargoType,
 				desc: descs.cargoType,
-				onlyDeveloper: true
+				onlyDev: true
 			}),
-			Input({
+			Coordinates({
 				attribute: 'Offset',
-				type: InputType.coordinates,
 				text: texts.offset,
 				desc: descs.offset,
-				onlyDeveloper: true
+				onlyDev: true
 			})
 		])
 	])

@@ -1,16 +1,13 @@
 import {
 	Template,
 	Group,
-	Input,
-	Selectors,
-	NumberType
-} from '../../service'
-import {
-	descs,
-	texts
-} from './texts'
+	Number
+} from '../items'
+import { NumberType } from '../enums'
+import { getSelectors } from '../service'
+import { descs, texts } from './texts'
 
-const selectors = Selectors(() => {
+const selectors = getSelectors(function() {
 	const truckData = 'Truck.TruckData'
 	const modelBody = 'Truck.PhysicsModel.Body'
 	const fuelMass = 'Truck.FuelMass.Body'
@@ -21,14 +18,14 @@ const selectors = Selectors(() => {
 
 export default <ITemplate> {
 	selector: 'Truck[Type="Trailer"]',
-	template: Template({selectors}, [
+	template: Template(selectors, [
 		Group({
 			name: texts.inner,
 			defaultSelector: selectors.truckData
 		}, [
-			Input({
+			Number({
 				attribute: 'FuelCapacity',
-				numberType: NumberType.integer,
+				type: NumberType.integer,
 				text: texts.fuelCapacity,
 				desc: descs.fuelCapacity,
 				max: 64000,
@@ -39,9 +36,9 @@ export default <ITemplate> {
 					red: [[5001, Infinity]]
 				}
 			}),
-			Input({
+			Number({
 				attribute: 'RepairsCapacity',
-				numberType: NumberType.integer,
+				type: NumberType.integer,
 				text: texts.repairsCapacity,
 				desc: descs.repairsCapacity,
 				default: 0,
@@ -50,9 +47,9 @@ export default <ITemplate> {
 					red: [[5001, Infinity]]
 				}
 			}),
-			Input({
+			Number({
 				attribute: 'WheelRepairsCapacity',
-				numberType: NumberType.integer,
+				type: NumberType.integer,
 				text: texts.wheelRepairsCapacity,
 				desc: descs.wheelRepairsCapacity,
 				default: 0,
@@ -61,27 +58,25 @@ export default <ITemplate> {
 					red: [[501, Infinity]]
 				}
 			}),
-			Input({
+			Number({
 				attribute: 'Quantity',
-				numberType: NumberType.integer,
+				type: NumberType.integer,
 				selector: selectors.addonSlots,
 				text: texts.quantity,
 				desc: descs.quantity
 			})
 		]),
-		Group({
-			name: texts.mass
-		}, [
-			Input({
+		Group(texts.mass, [
+			Number({
 				attribute: 'Mass',
-				numberType: NumberType.integer,
+				type: NumberType.integer,
 				selector: selectors.modelBody,
 				text: texts.trailerMass,
 				desc: descs.trailerMass
 			}),
-			Input({
+			Number({
 				attribute: 'Mass',
-				numberType: NumberType.integer,
+				type: NumberType.integer,
 				selector: selectors.fuelMass,
 				text: texts.fuelMass,
 				desc: descs.fuelMass
@@ -91,9 +86,9 @@ export default <ITemplate> {
 			name: texts.other,
 			defaultSelector: selectors.gameData
 		}, [
-			Input({
+			Number({
 				attribute: 'Price',
-				numberType: NumberType.integer,
+				type: NumberType.integer,
 				text: texts.price,
 				desc: descs.price
 			})

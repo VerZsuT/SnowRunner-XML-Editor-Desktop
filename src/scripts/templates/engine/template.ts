@@ -1,131 +1,140 @@
 import {
 	Template,
 	Group,
-	Input,
-	Selectors,
-	forEach,
-	TemplateType,
-	NameType,
-	InputType,
-	NumberType
-} from '../../service'
-import {
-	descs,
-	texts
-} from './texts'
-import unlockGroup from '../presets/unlockGroup'
+	Text,
+	Number,
+	ForEach
+} from '../items'
+import { NameType, NumberType } from '../enums'
+import { getSelectors } from '../service'
+import { descs, texts } from './texts'
+import { unlockGroup } from '../presets'
 
-const selectors = Selectors(() => {
-	const engine = 'EngineVariants.Engine'
-	const currentEngine = `${engine}${forEach}`
-	const currentEngineText = `${currentEngine}.GameData.UiDesc`
-	const gameData = `${currentEngine}.GameData`
-	return {engine, currentEngine, currentEngineText, gameData}
+const selectors = getSelectors(function() {
+	const engine = `EngineVariants.Engine${this.forEach}`
+	const engineText = `${engine}.GameData.UiDesc`
+	const engineGameData = `${engine}.GameData`
+	return {engine, engineText, engineGameData}
 })
 
 export default <ITemplate> {
 	selector: 'EngineVariants',
-	template: Template({
-		type: TemplateType.multiply,
-		itemSelector: selectors.engine,
-		selectors: selectors
-	}, [
-		Group({
-			nameType: NameType.computed,
-			nameAttribute: 'UiName',
-			resNameAttribute: 'Name',
-			nameSelector: selectors.currentEngineText,
-			resNameSelector: selectors.currentEngine,
-			defaultSelector: selectors.currentEngine,
-		}, [
-			Input({
-				attribute: 'Name',
-				type: InputType.text,
-				text: texts.id,
-				desc: descs.name,
-				onlyDeveloper: true
-			}),
-			Input({
-				attribute: 'CriticalDamageThreshold',
-				text: texts.criticalDamageThreshold,
-				desc: descs.criticalDamageTheshold,
-				max: 0.99,
-				step: 0.01,
-				default: 0.7
-			}),
-			Input({
-				attribute: 'DamageCapacity',
-				numberType: NumberType.integer,
-				text: texts.damageCapacity,
-				desc: descs.damageCapacity,
-				max: 64000,
-				step: 10,
-				default: 0,
-				areas: {
-					yellow: [[1001, 5000]],
-					red: [[5001, Infinity]]
-				},
-				bold: true
-			}),
-			Input({
-				attribute: 'DamagedConsumptionModifier',
-				text: texts.damagedConsumptionModifier,
-				desc: descs.damagedConsumptionModifier,
-				max: 32,
-				min: 0.1,
-				default: 1
-			}),
-			Input({
-				attribute: 'EngineResponsiveness',
-				text: texts.responsiveness,
-				desc: descs.responsiveness,
-				max: 1,
-				step: 0.01,
-				default: 0.04,
-				areas: {
-					yellow: [[0.1, 0.5]],
-					red: [[0.5, 1]]
-				}
-			}),
-			Input({
-				attribute: 'FuelConsumption',
-				text: texts.fuelConsumption,
-				desc: descs.fuelConsumption,
-				max: 100.0,
-				default: 0.5,
-				bold: true
-			}),
-			Input({
-				attribute: 'Torque',
-				numberType: NumberType.integer,
-				text: texts.torque,
-				desc: descs.torque,
-				max: 1000000,
-				step: 100,
-				default: 0,
-				areas: {
-					yellow: [[700000, 80000]],
-					red: [[800001, Infinity]]
-				},
-				bold: true
-			}),
-			Input({
-				attribute: 'DamagedMinTorqueMultiplier',
-				text: texts.damagedMinTorqueModifier,
-				desc: descs.damagedMinTorqueModifier,
-				max: 1,
-				step: 0.01,
-				default: 0
-			}),
-			Input({
-				attribute: 'DamagedMaxTorqueMultiplier',
-				text: texts.damagedMaxTorqueModifier,
-				desc: descs.damagedMaxTorqueModifier,
-				max: 1,
-				step: 0.01,
-				default: 0
-			}),
-			unlockGroup(selectors.gameData)
+	template: Template(selectors, [
+		ForEach(selectors.engine, [
+			Group({
+				nameType: NameType.computed,
+				nameAttribute: 'UiName',
+				resNameAttribute: 'Name',
+				nameSelector: selectors.engineText,
+				resNameSelector: selectors.engine,
+				defaultSelector: selectors.engine
+			}, [
+				Text({
+					attribute: 'Name',
+					text: texts.id,
+					desc: descs.name,
+					onlyDev: true
+				}),
+				Number({
+					attribute: 'CriticalDamageThreshold',
+					text: texts.criticalDamageThreshold,
+					desc: descs.criticalDamageTheshold,
+					max: 0.990,
+					min: 0,
+					step: 0.01,
+					default: 0.7
+				}),
+				Number({
+					attribute: 'DamageCapacity',
+					type: NumberType.integer,
+					text: texts.damageCapacity,
+					desc: descs.damageCapacity,
+					max: 64000,
+					step: 10,
+					default: 0,
+					areas: {
+						yellow: [[1001, 5000]],
+						red: [[5001, Infinity]]
+					},
+					bold: true
+				}),
+				Number({
+					attribute: 'DamagedConsumptionModifier',
+					text: texts.damagedConsumptionModifier,
+					desc: descs.damagedConsumptionModifier,
+					max: 32,
+					default: 1
+				}),
+				Number({
+					attribute: 'EngineResponsiveness',
+					text: texts.responsiveness,
+					desc: descs.responsiveness,
+					max: 1,
+					min: 0.01,
+					step: 0.01,
+					default: 0.04,
+					areas: {
+						yellow: [[0.1, 0.5]],
+						red: [[0.5, 1]]
+					}
+				}),
+				Number({
+					attribute: 'FuelConsumption',
+					text: texts.fuelConsumption,
+					desc: descs.fuelConsumption,
+					max: 100.0,
+					default: 0.5,
+					bold: true
+				}),
+				Number({
+					attribute: 'Torque',
+					type: NumberType.integer,
+					text: texts.torque,
+					desc: descs.torque,
+					max: 1000000,
+					step: 100,
+					default: 0,
+					areas: {
+						yellow: [[700000, 80000]],
+						red: [[800001, Infinity]]
+					},
+					bold: true
+				}),
+				Number({
+					attribute: 'DamagedMinTorqueMultiplier',
+					text: texts.damagedMinTorqueModifier,
+					desc: descs.damagedMinTorqueModifier,
+					max: 1,
+					min: 0,
+					step: 0.01,
+					default: 0
+				}),
+				Number({
+					attribute: 'DamagedMaxTorqueMultiplier',
+					text: texts.damagedMaxTorqueModifier,
+					desc: descs.damagedMaxTorqueModifier,
+					max: 1,
+					min: 0,
+					step: 0.01,
+					default: 0
+				}),
+				Number({
+					attribute: 'BrakesDelay',
+					text: texts.breakesDelay,
+					max: 1,
+					min: 0,
+					default: 0
+				}),
+				Number({
+					attribute: 'MaxDeltaAngVel',
+					text: texts.maxDeltaAngVel,
+					desc: descs.maxDeltaAngVel,
+					max: 1000000,
+					min: 0,
+					default: 0
+				}),
+				unlockGroup(selectors.engineGameData)
+			])
 		])
 	])
 }

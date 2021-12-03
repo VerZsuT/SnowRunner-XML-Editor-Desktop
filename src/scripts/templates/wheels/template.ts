@@ -1,41 +1,35 @@
 import {
 	Template,
 	Group,
-	Input,
 	Select,
-	Selectors,
-	forEach,
-	NumberType,
-	NameType,
-	TemplateType,
-	InputType
-} from '../../service'
-import unlockGroup from '../presets/unlockGroup'
-import {
-	descs,
-	texts
-} from './texts'
+	Text,
+	ForEach,
+	Number
+} from '../items'
+import { NumberType, NameType } from '../enums'
+import { getSelectors } from '../service'
+import { descs, texts } from './texts'
+import { unlockGroup } from '../presets'
 
-const selectors = Selectors(() => {
+const selectors = getSelectors(function() {
 	const truckWheels = 'TruckWheels'
-	const truckTire = 'TruckWheels.TruckTires.TruckTire'
-	const currentTruckTire = `${truckTire}${forEach}`
-	const currentTruckTireText = `${currentTruckTire}.GameData.UiDesc`
-	const wheelFriction = `${currentTruckTire}.WheelFriction`
-	const gameData = `${currentTruckTire}.GameData`
-	return {truckWheels, truckTire, currentTruckTire, currentTruckTireText, wheelFriction, gameData}
+	const truckTire = `TruckWheels.TruckTires.TruckTire${this.forEach}`
+	const truckTireText = `${truckTire}.GameData.UiDesc`
+	const wheelFriction = `${truckTire}.WheelFriction`
+	const gameData = `${truckTire}.GameData`
+	return {truckWheels, truckTire, truckTireText, wheelFriction, gameData}
 })
 
 export default <ITemplate> {
 	selector: 'TruckWheels',
-	template: Template({selectors}, [
+	template: Template(selectors, [
 		Group({
 			name: texts.general,
 			defaultSelector: selectors.truckWheels
 		}, [
-			Input({
+			Number({
 				attribute: 'DamageCapacity',
-				numberType: NumberType.integer,
+				type: NumberType.integer,
 				text: texts.damageCapacity,
 				desc: descs.damageCapacity,
 				max: 64000,
@@ -44,40 +38,36 @@ export default <ITemplate> {
 					red: [[5001, Infinity]]
 				}
 			}),
-			Input({
+			Number({
 				attribute: 'Radius',
 				text: texts.radius,
 				desc: descs.radius,
-				onlyDeveloper: true
+				onlyDev: true
 			}),
-			Input({
+			Number({
 				attribute: 'Width',
 				text: texts.width,
 				desc: descs.width,
-				onlyDeveloper: true
+				onlyDev: true
 			})
 		]),
-		Template({
-			type: TemplateType.multiply,
-			itemSelector: selectors.truckTire
-		}, [
+		ForEach(selectors.truckTire, [
 			Group({
 				nameType: NameType.computed,
 				nameAttribute: 'UiName',
 				resNameAttribute: 'Name',
-				nameSelector: selectors.currentTruckTireText,
-				resNameSelector: selectors.currentTruckTire,
+				nameSelector: selectors.truckTireText,
+				resNameSelector: selectors.truckTire,
 				defaultSelector: selectors.wheelFriction
 			}, [
-				Input({
+				Text({
 					attribute: 'Name',
-					selector: selectors.currentTruckTire,
-					type: InputType.text,
+					selector: selectors.truckTire,
 					text: texts.id,
 					desc: descs.id,
-					onlyDeveloper: true
+					onlyDev: true
 				}),
-				Input({
+				Number({
 					attribute: 'BodyFriction',
 					text: texts.bodyFriction,
 					desc: descs.bodyFriction,
@@ -90,7 +80,7 @@ export default <ITemplate> {
 					bold: true,
 					canAddTag: true
 				}),
-				Input({
+				Number({
 					attribute: 'BodyFrictionAsphalt',
 					text: texts.bodyFrictionAsphalt,
 					desc: descs.bodyFrictionAsphalt,
@@ -103,7 +93,7 @@ export default <ITemplate> {
 					bold: true,
 					canAddTag: true
 				}),
-				Input({
+				Number({
 					attribute: 'SubstanceFriction',
 					text: texts.substanceFriction,
 					desc: descs.substanceFriction,
