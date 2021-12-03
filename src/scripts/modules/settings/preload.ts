@@ -1,8 +1,8 @@
 import { existsSync } from 'fs'
 import { join, basename } from 'path'
 
-import '../../../app/mainPreload'
-import { t, mainProcess } from '../../service'
+import '@editor-app/mainPreload'
+import { t, mainProcess } from '@editor-service'
 
 class Preload implements SettingsPreload {
     private openDialog = () => mainProcess.openDialog()

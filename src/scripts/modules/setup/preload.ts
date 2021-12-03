@@ -1,8 +1,8 @@
 import { existsSync } from 'fs'
 import { join, basename } from 'path'
 
-import '../../../app/mainPreload'
-import { t, mainProcess } from '../../service'
+import '@editor-app/mainPreload'
+import { t, mainProcess } from '@editor-service'
 
 class Preload implements FirstStepsPreload {
     private openDialog = () => mainProcess.openDialog()
@@ -18,6 +18,9 @@ class Preload implements FirstStepsPreload {
         }
         const folder = result
         const paths = [
+            join(folder, 'steamapps', 'common', 'SnowRunner', 'en_us', 'preload', 'paks', 'client', 'initial.pak'),
+            join(folder, 'common', 'SnowRunner', 'en_us', 'preload', 'paks', 'client', 'initial.pak'),
+            join(folder, 'SnowRunner', 'en_us', 'preload', 'paks', 'client', 'initial.pak'),
             join(folder, 'en_us', 'preload', 'paks', 'client', 'initial.pak'),
             join(folder, 'preload', 'paks', 'client', 'initial.pak'),
             join(folder, 'paks', 'client', 'initial.pak'),

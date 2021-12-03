@@ -1,8 +1,8 @@
 import { existsSync, readdirSync, writeFileSync, readFileSync } from 'fs'
 import { join, basename } from 'path'
 
-import '../../../app/mainPreload'
-import { mainProcess } from '../../service'
+import '@editor-app/mainPreload'
+import { mainProcess } from '@editor-service'
 
 window.editorPreload = {
     existsSync: existsSync,

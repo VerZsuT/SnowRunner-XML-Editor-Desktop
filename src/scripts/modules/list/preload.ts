@@ -1,9 +1,9 @@
 import { join, basename } from 'path'
 import { existsSync, rmSync } from 'fs'
-import '../../../app/mainPreload'
+import '@editor-app/mainPreload'
 
-import { findInDir } from '../../../app/service'
-import { mainProcess } from '../../service'
+import { findInDir } from '@editor-app/service'
+import { mainProcess } from '@editor-service'
 
 const openInitialDialog = () => mainProcess.openInitialDialog()
 
