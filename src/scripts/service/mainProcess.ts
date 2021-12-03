@@ -1,5 +1,3 @@
-import { t } from './funcs'
-
 const info: IInfo = ipcRenderer.sendSync('getInfo')
 const errorHandler = (error: Error) => {
     ipcRenderer.sendSync('function_alertSync_call', `${error}`.replace('Error: ', ''))
