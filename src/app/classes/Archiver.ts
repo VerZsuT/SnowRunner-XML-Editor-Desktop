@@ -17,7 +17,10 @@ export default class Archiver {
      * @param direction - путь до архива.
     */
     public static update = (source: string, direction: string): void => {
-        execSync(`WinRAR f -ibck -inul "${direction}" "${source}\\" -r -ep1`, {cwd: paths.winrar})
+        execSync(`WinRAR f -ibck -inul "${direction}" "${source}\\" -r -ep1`, {
+            cwd: paths.winrar,
+            windowsHide: true
+        })
     }
 
     /**
@@ -25,11 +28,12 @@ export default class Archiver {
      * @param source - путь до ахрива.
      * @param direction - путь до папки.
     */
-    public static unpack = (source: string, direction: string, fromMod?: boolean): Promise<null> => {
-        return new Promise(resolve => {
-            exec(`WinRAR x -ibck -inul "${source}" @${fromMod?'unpack-mod-list.lst':'unpack-list.lst'} "${direction}\\"`, {cwd: paths.winrar}).once('close', () => {
-                resolve(null)
-            })
+    public static unpack = async (source: string, direction: string, fromMod?: boolean) => {
+        await new Promise(resolve => {
+            exec(`WinRAR x -ibck -inul "${source}" @${fromMod?'unpack-mod-list.lst':'unpack-list.lst'} "${direction}\\"`, {
+                cwd: paths.winrar,
+                windowsHide: true
+            }).once('close', resolve)
         })
     }
 
@@ -37,43 +41,35 @@ export default class Archiver {
      * Распаковывает основные XML файлы (+ DLC) из `initial.pak`.
      * @param noLock не блоковать другие окна во время распаковки.
     */
-    public static unpackMain = (noLock?: boolean) => {
-        return new Promise(resolve => {
-            const loading = Windows.openLoading(noLock)
-            loading.once('show', () => {
-                loading.setText(Texts.get('UNPACKING'))
-            })
-    
-            if (existsSync(paths.mainTemp)) {
-                rmSync(paths.mainTemp, {recursive: true})
-            }
-            mkdirSync(paths.mainTemp)
-            this.unpack(this.config.paths.initial, paths.mainTemp).then(() => {
-                resolve(null)
-                if (!loading.isDestroyed()) {
-                    loading.close()
-                }
-            })
+    public static unpackMain = async (noLock?: boolean) => {
+        const loading = Windows.openLoading(noLock)
+        loading.once('show', () => {
+            loading.setText(Texts.get('UNPACKING'))
         })
+
+        if (existsSync(paths.mainTemp)) {
+            rmSync(paths.mainTemp, {recursive: true})
+        }
+        mkdirSync(paths.mainTemp)
+        await this.unpack(this.config.paths.initial, paths.mainTemp)
+        if (!loading.isDestroyed()) {
+            loading.close()
+        }
     }
 
     /** Распаковывает XML файлы модификации из файла по переданному пути. */
-    public static unpackMod = (pathToFile: string) => {
-        return new Promise((resolve, reject) => {
-            const pathToDir = join(paths.modsTemp, basename(pathToFile, '.pak'))
-            try {
-                if (!existsSync(paths.modsTemp)) {
-                    mkdirSync(paths.modsTemp)
-                }
-        
-                if (existsSync(pathToDir)) {
-                    rmSync(pathToDir, {recursive: true})
-                }
-                mkdirSync(pathToDir);
-                this.unpack(pathToFile, pathToDir, true).then(() => resolve(null))
-            } catch {
-                reject()
+    public static unpackMod = async (pathToFile: string) => {
+        const pathToDir = join(paths.modsTemp, basename(pathToFile, '.pak'))
+        try {
+            if (!existsSync(paths.modsTemp)) {
+                mkdirSync(paths.modsTemp)
             }
-        })
+    
+            if (existsSync(pathToDir)) {
+                rmSync(pathToDir, {recursive: true})
+            }
+            mkdirSync(pathToDir)
+            await this.unpack(pathToFile, pathToDir, true)
+        } catch {}
     }
 }
