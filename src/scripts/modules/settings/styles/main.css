@@ -1,0 +1,62 @@
+@import '../../../../styles/main.css';
+
+body {
+    text-align: center;
+}
+
+header {
+    padding-top: 5px;
+    margin-bottom: 20px;
+}
+
+header h2 {
+    color: white;
+}
+
+input[type='text']:disabled {
+    background: white !important;
+}
+
+input[type='checkbox'] {
+    width: 15px !important;
+    margin-left: 5px;
+}
+
+label {
+    font-weight: bold;
+}
+
+body {
+    background-color: #fff;
+}
+
+#main {
+    width: 380px;
+    margin: 0 auto;
+    display: block;
+    text-align: left;
+    padding-left: 40px;
+    box-sizing: border-box;
+}
+
+#language-select {
+    margin: 0;
+}
+
+#game-folder-input {
+    margin-bottom: 20px;
+}
+
+#save-to-config {
+    position: relative;
+    margin: 0 auto;
+    display: block;
+    margin-top: 20px;
+    left: -30px;
+    z-index: 6;
+}
+
+input[type="checkbox"] {
+    width: 15px !important;
+    margin-right: 5px;
+}

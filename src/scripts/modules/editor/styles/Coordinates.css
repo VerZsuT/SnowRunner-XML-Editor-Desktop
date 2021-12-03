@@ -1,0 +1,6 @@
+div.param-input > input.x-input,
+div.param-input > input.y-input,
+div.param-input > input.z-input {
+    width: 70px !important;
+    margin-right: 10px;
+}

@@ -1,0 +1,8 @@
+.group-export {
+    display: inline-block;
+    position: absolute;
+    right: 10px;
+    top: 18px;
+    z-index: 5;
+    width: 20px !important;
+}
