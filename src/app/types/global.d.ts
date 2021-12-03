@@ -4,7 +4,6 @@ declare module '*.vue' {
     export default Component
 }
 
-type ConfigLang = 'EN' | 'RU' | 'DE'
 type ConfigBuildType = 'dev' | 'prod'
 
 interface IConfigPaths {
@@ -65,7 +64,7 @@ interface IConfig {
     /**
      * Текущий язык перевода программы.
     */
-    lang: ConfigLang
+    lang: import('../enums').Lang
     /**
      * Тип билда, при dev доступны некоторые функции для отладки.
     */
@@ -109,13 +108,13 @@ interface ILocal {
 interface Window {
     ipcRenderer: Electron.IpcRenderer
     config: IConfig
-    texts: any
+    texts: Texts
     local: ILocal
     paths: IPaths
 }
 
 declare const ipcRenderer: Electron.IpcRenderer
 declare const config: IConfig
-declare const texts: any
+declare const texts: Texts
 declare const local: ILocal
 declare const paths: IPaths
