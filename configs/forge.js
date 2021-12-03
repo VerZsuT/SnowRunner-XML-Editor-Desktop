@@ -11,33 +11,33 @@ module.exports = {
                     config: './configs/webpack.renderer.js',
                     entryPoints: [
                         {
-                            name: 'categories',
-                            html: './src/pages/template.html',
-                            js: './src/scripts/modules/categories/main.ts',
-                            preload: {
-                                js: './src/app/mainPreload.ts'
-                            }
-                        },
-                        {
                             name: 'setup',
                             html: './src/pages/template.html',
-                            js: './src/scripts/modules/setup/main.ts',
+                            js: './src/scripts/modules/setup/main.tsx',
                             preload: {
                                 js: './src/scripts/modules/setup/preload.ts'
                             }
                         },
                         {
                             name: 'loading',
-                            html: './src/pages/loading.html',
-                            js: './src/scripts/modules/loading/main.ts',
+                            html: './src/pages/template.html',
+                            js: './src/scripts/modules/loading/main.tsx',
                             preload: {
                                 js: './src/scripts/modules/setup/preload.ts'
                             }
                         },
                         {
+                            name: 'categories',
+                            html: './src/pages/template.html',
+                            js: './src/scripts/modules/categories/main.tsx',
+                            preload: {
+                                js: './src/app/mainPreload.ts'
+                            }
+                        },
+                        {
                             name: 'console',
-                            html: './src/pages/console.html',
-                            js: './src/scripts/modules/console/main.ts',
+                            html: './src/pages/template.html',
+                            js: './src/scripts/modules/console/main.tsx',
                             preload: {
                                 js: './src/scripts/modules/console/preload.ts'
                             }
@@ -45,7 +45,7 @@ module.exports = {
                         {
                             name: 'list',
                             html: './src/pages/template.html',
-                            js: './src/scripts/modules/list/main.ts',
+                            js: './src/scripts/modules/list/main.tsx',
                             preload: {
                                 js: './src/scripts/modules/list/preload.ts'
                             }
@@ -53,7 +53,7 @@ module.exports = {
                         {
                             name: 'settings',
                             html: './src/pages/template.html',
-                            js: './src/scripts/modules/settings/main.ts',
+                            js: './src/scripts/modules/settings/main.tsx',
                             preload: {
                                 js: './src/scripts/modules/settings/preload.ts'
                             }
@@ -61,12 +61,12 @@ module.exports = {
                         {
                             name: 'update',
                             html: './src/pages/template.html',
-                            js: './src/scripts/modules/updateWindow/main.ts'
+                            js: './src/scripts/modules/updateWindow/main.tsx'
                         },
                         {
                             name: 'editor',
-                            html: './src/pages/editor.html',
-                            js: './src/scripts/modules/editor/main.ts',
+                            html: './src/pages/template.html',
+                            js: './src/scripts/modules/editor/main.tsx',
                             preload: {
                                 js: './src/scripts/modules/editor/preload.ts'
                             }
