@@ -36,8 +36,8 @@ export default class Dialog {
     }
 
     /** Открывает окно сохранения `.epf` файла. */
-    public static saveEPF = (defaultName: string): string | undefined => {
-        return <string|undefined>this.openDialog({
+    public static saveEPF = (defaultName: string) => {
+        return <string>this.openDialog({
             type: 'save',
             defaultPath: defaultName,
             extention: 'epf'
@@ -45,30 +45,30 @@ export default class Dialog {
     }
     
     /** Открывает окно выбора `initial.pak` */
-    public static getInitial = (): string | undefined => {
-        return <string|undefined>this.openDialog({
+    public static getInitial = () => {
+        return <string>this.openDialog({
             extention: 'pak'
         })
     }
 
     /** Открывает окно выбора папки. */
-    public static getDir = (): string | undefined => {
-        return <string|undefined>this.openDialog({
+    public static getDir = () => {
+        return <string>this.openDialog({
             source: 'dir'
         })
     }
 
     /** Открывает окно выбора нескольких `.epf` файлов. */
-    public static getMultiEPF = (): string[] | undefined => {
-        return <string[]|undefined>this.openDialog({
+    public static getMultiEPF = () => {
+        return <string[]>this.openDialog({
             properties: ['openFile', 'multiSelections'],
             extention: 'epf'
         })
     }
 
     /** Открывает окно выбора `.xml` файла. */
-    public static getXML = (): string | undefined => {
-        return <string|undefined>this.openDialog({
+    public static getXML = () => {
+        return <string>this.openDialog({
             extention: 'xml'
         })
     }
