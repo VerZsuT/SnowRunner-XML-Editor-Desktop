@@ -1,6 +1,7 @@
 import { app, BrowserWindow, ipcMain } from 'electron'
 import { paths } from '../service'
 import Settings from './Settings'
+import Config from './Config'
 
 /** Отвечает за взаимодействие с окнами. */
 export default class Windows {
@@ -15,7 +16,8 @@ export default class Windows {
     /** Текущее активное окно. */
     public static currentWindow: BrowserWindow
 
-    private static settings: ISettings = Settings.obj
+    private static settings = Settings.obj
+    private static config = Config.obj
 
     /** Параметры создания. */
     private static createArgs = {
@@ -72,6 +74,12 @@ export default class Windows {
             preload: LIST_PRELOAD_WEBPACK_ENTRY,
             width: 1100,
             height: 640
+        },
+        whatsNew: {
+            path: WHATS_NEW_WEBPACK_ENTRY,
+            preload: CATEGORIES_PRELOAD_WEBPACK_ENTRY,
+            width: 600,
+            height: 500
         }
     }
 
@@ -79,7 +87,7 @@ export default class Windows {
      * Открывает окно редактора параметров.
      * @param bridge создать между несколькими окнами редактора `bridge-channel` для передачи данных. 
     */
-    public static openEditor = (bridge?: boolean): BrowserWindow => {
+    public static openEditor = (bridge?: boolean) => {
         if (this.editor && !bridge) {
             this.editor.hide()
         } 
@@ -125,7 +133,7 @@ export default class Windows {
      * Открывает окно-оповещение об обновлении программы.
      * @param version отображаемая новая версия.
     */
-    public static openUpdateWindow = (version: string): BrowserWindow => {
+    public static openUpdateWindow = (version: string) => {
         const beforeWindow = this.currentWindow
         const wind = this.createWindow({
             ...this.createArgs.updateWindow,
@@ -157,7 +165,7 @@ export default class Windows {
     }
 
     /** Открывает окно консоли. */
-    public static openConsole = (): void => {
+    public static openConsole = () => {
         const beforeWindow = this.currentWindow
         const wind = this.createWindow(this.createArgs.console)
     
@@ -232,7 +240,7 @@ export default class Windows {
     }
 
     /** Открывает окно списка авто/груза/прицепа. */
-    public static openList = (): void => {
+    public static openList = () => {
         this.list = this.createWindow(this.createArgs.list)
         if (this.categories) this.categories.close()
         this.list.once('close', () => {
@@ -241,6 +249,13 @@ export default class Windows {
                 this.openCategories()
             }
             delete this.list
+        })
+    }
+
+    public static openWhatsNew = () => {
+        const wind = this.createWindow(this.createArgs.whatsNew)
+        wind.once('close', () => {
+            this.config.settings.showWatsNew = false
         })
     }
 
@@ -257,7 +272,7 @@ export default class Windows {
             frame: !(args.frame === false),
             paintWhenInitiallyHidden: false,
             webPreferences: {
-                preload: args.preload,
+                ...(()=>(args.preload? {preload: args.preload} : {}))(),
                 contextIsolation: false
             }
         })

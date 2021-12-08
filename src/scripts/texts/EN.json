@@ -99,5 +99,6 @@
 	"WAS_IMPORTED": "The parameters are imported. Don't forget to save the changes!",
 	"WHEELS_CATEGORY_TITLE": "Wheels",
 	"WINCHES_CATEGORY_TITLE": "Winches",
-	"WRITE_FILE_ERROR": "Could not write to file."
+	"WRITE_FILE_ERROR": "Could not write to file.",
+	"WHATS_NEW_TITLE": "What's new in the version"
 }

@@ -52,6 +52,7 @@ declare const LIST_WEBPACK_ENTRY: string
 declare const LIST_PRELOAD_WEBPACK_ENTRY: string
 
 declare const CATEGORIES_WEBPACK_ENTRY: string
+/** mainPreload.ts */
 declare const CATEGORIES_PRELOAD_WEBPACK_ENTRY: string
 
 declare const SETUP_WEBPACK_ENTRY: string
@@ -70,3 +71,4 @@ declare const EDITOR_WEBPACK_ENTRY: string
 declare const EDITOR_PRELOAD_WEBPACK_ENTRY: string
 
 declare const UPDATE_WEBPACK_ENTRY: string
+declare const WHATS_NEW_WEBPACK_ENTRY: string

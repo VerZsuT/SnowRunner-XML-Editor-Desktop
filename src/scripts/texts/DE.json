@@ -99,5 +99,6 @@
 	"WAS_IMPORTED": "Einstellungen importiert. Vergessen Sie nicht, die Änderungen zu speichern!",
 	"WHEELS_CATEGORY_TITLE": "Räder",
 	"WINCHES_CATEGORY_TITLE": "Winden",
-	"WRITE_FILE_ERROR": "Fehler beim Schreiben in die Datei."
+	"WRITE_FILE_ERROR": "Fehler beim Schreiben in die Datei.",
+	"WHATS_NEW_TITLE": "Was ist neu in der version"
 }

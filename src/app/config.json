@@ -1,5 +1,5 @@
 {
-	"version": "0.6.6-beta",
+	"version": "0.6.6",
 	"lang": "RU",
 	"buildType": "dev",
 	"paths": {
@@ -14,7 +14,8 @@
 		"DLC": true,
 		"mods": true,
 		"resetButton": true,
-		"devMode": false
+		"devMode": false,
+		"showWatsNew": true
 	},
 	"sums": {
 		"initial": null,

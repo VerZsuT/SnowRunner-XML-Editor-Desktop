@@ -1,42 +1,46 @@
-import { join, dirname, normalize } from 'path'
+import { join, resolve as res, dirname } from 'path'
 import { existsSync, lstatSync, readdirSync, mkdirSync, rmSync, unlinkSync } from 'fs'
+
+const resolve = (...args: string[]) => res(__dirname, ...args)
+const updaterURL = 'https://verzsut.github.io/sxmle_updater'
+const mainURL = 'https://verzsut.github.io/SnowRunner-XML-Editor-Desktop'
 
 /**
  * Пути, используемые в программе.
 */
 export const paths = {
     /** URL json файла обновления. */
-    publicInfo: 'https://verzsut.github.io/sxmle_updater/public.json',
+    publicInfo: `${updaterURL}/public.json`,
     /** URL страницы скачивании программы. */
-    downloadPage: 'https://verzsut.github.io/SnowRunner-XML-Editor-Desktop/download.html',
+    downloadPage: `${mainURL}/download.html`,
     /** URL папки с файлами обновления. */
-    updateFiles: 'https://verzsut.github.io/sxmle_updater/files',
+    updateFiles: `${updaterURL}/files`,
     /** URL с hash-картой файлов обновления.*/
-    updateMap: 'https://verzsut.github.io/sxmle_updater/updateMap.json',
+    updateMap: `${updaterURL}/updateMap.json`,
     /** Путь к папке src. */
-    root: join(__dirname, '..', '..'),
+    root: resolve('..', '..'),
     /** Путь к config. */
-    config: `${__dirname}SXMLE\\config.json`.replace('SXMLE', ''),
+    config: resolve('config.json'),
     /** Путь к папке с бэкапами. */
-    backupFolder: `${__dirname}\\backups`,
+    backupFolder: resolve('backups'),
     /** Путь к иконке программы. */
-    icon: `${__dirname}\\favicon.ico`,
+    icon: resolve('favicon.ico'),
     /** Путь к бэкапу initial.pak. */
-    backupInitial: `${__dirname}\\backups\\initial.pak`,
+    backupInitial: resolve('backups', 'initial.pak'),
     /** Путь к папке с файлами переводов. */
-    translations: normalize(`${__dirname}SXMLE\\translations`.replace('SXMLE', '')),
+    translations: resolve('translations'),
     /** Путь к папке WinRAR */
-    winrar: `${__dirname}\\winrar`,
+    winrar: resolve('winrar'),
     /** Путь к временной папке для основных файлов. */
-    mainTemp: `${__dirname}\\mainTemp`,
+    mainTemp: resolve('mainTemp'),
     /** Путь к временной папке для файлов модификаций. */
-    modsTemp: `${__dirname}\\modsTemp`,
+    modsTemp: resolve('modsTemp'),
     /** Путь к временной папке [strings] */
-    strings: `${__dirname}\\mainTemp\\[strings]`,
+    strings: resolve('mainTemp', '[strings]'),
     /** Путь к временной папке _dlc */
-    dlc: `${__dirname}\\mainTemp\\[media]\\_dlc`,
+    dlc: resolve('mainTemp', '[media]', '_dlc'),
     /** Путь к временной папке classes */
-    classes: `${__dirname}\\mainTemp\\[media]\\classes`
+    classes: resolve('mainTemp', '[media]', 'classes')
 }
 
 /**

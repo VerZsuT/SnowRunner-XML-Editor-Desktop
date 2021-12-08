@@ -1,3 +1,20 @@
+const { join } = require('path')
+
+const template = './src/pages/template.html'
+const mainPreload = './src/app/mainPreload.ts'
+
+function getModule(name) {
+    const modules = './src/scripts/modules'
+    return {
+        main: `${modules}/${name}/main.tsx`,
+        preload: `${modules}/${name}/preload.ts`
+    }
+}
+
+function getConfig(name) {
+    return `./configs/${name}`
+}
+
 module.exports = {
     packagerConfig: {
         icon: '.webpack/main/favicon.ico'
@@ -6,70 +23,75 @@ module.exports = {
         [
             '@electron-forge/plugin-webpack',
             {
-                mainConfig: './configs/webpack.main.js',
+                mainConfig: getConfig('webpack.main.js'),
                 renderer: {
-                    config: './configs/webpack.renderer.js',
+                    config: getConfig('webpack.renderer.js'),
                     entryPoints: [
                         {
                             name: 'setup',
-                            html: './src/pages/template.html',
-                            js: './src/scripts/modules/setup/main.tsx',
+                            html: template,
+                            js: getModule('setup').main,
                             preload: {
-                                js: './src/scripts/modules/setup/preload.ts'
+                                js: getModule('setup').preload
                             }
                         },
                         {
                             name: 'loading',
-                            html: './src/pages/template.html',
-                            js: './src/scripts/modules/loading/main.tsx',
+                            html: template,
+                            js: getModule('loading').main,
                             preload: {
-                                js: './src/scripts/modules/setup/preload.ts'
+                                js: getModule('setup').preload
                             }
                         },
                         {
                             name: 'categories',
-                            html: './src/pages/template.html',
-                            js: './src/scripts/modules/categories/main.tsx',
+                            html: template,
+                            js: getModule('categories').main,
                             preload: {
-                                js: './src/app/mainPreload.ts'
+                                js: mainPreload
                             }
                         },
                         {
                             name: 'console',
-                            html: './src/pages/template.html',
-                            js: './src/scripts/modules/console/main.tsx',
+                            html: template,
+                            js: getModule('console').main,
                             preload: {
-                                js: './src/scripts/modules/console/preload.ts'
+                                js: getModule('console').preload
                             }
                         },
                         {
                             name: 'list',
-                            html: './src/pages/template.html',
-                            js: './src/scripts/modules/list/main.tsx',
+                            html: template,
+                            js: getModule('list').main,
                             preload: {
-                                js: './src/scripts/modules/list/preload.ts'
+                                js: getModule('list').preload
                             }
                         },
                         {
                             name: 'settings',
-                            html: './src/pages/template.html',
-                            js: './src/scripts/modules/settings/main.tsx',
+                            html: template,
+                            js: getModule('settings').main,
                             preload: {
-                                js: './src/scripts/modules/settings/preload.ts'
+                                js: getModule('settings').preload
                             }
                         },
                         {
                             name: 'update',
-                            html: './src/pages/template.html',
-                            js: './src/scripts/modules/updateWindow/main.tsx'
+                            html: template,
+                            js: getModule('update').main
                         },
                         {
                             name: 'editor',
-                            html: './src/pages/template.html',
-                            js: './src/scripts/modules/editor/main.tsx',
+                            html: template,
+                            js: getModule('editor').main,
                             preload: {
-                                js: './src/scripts/modules/editor/preload.ts'
+                                js: getModule('editor').preload
                             }
+                        },
+                        {
+                            name: 'whats_new',
+                            html: template,
+                            js: getModule('whatsNew').main
                         }
                     ]
                 }

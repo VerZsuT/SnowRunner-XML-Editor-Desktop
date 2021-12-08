@@ -195,6 +195,7 @@ export default class Public {
             openPath: shell.openPath,
     
             openEditor: (bridge?: boolean) => {Windows.openEditor(bridge)},
+            openWhatsNew: Windows.openWhatsNew,
             openList: Windows.openList,
             openSettings: Windows.openSettings,
             openConsole: Windows.openConsole,

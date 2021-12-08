@@ -46,7 +46,8 @@ export default class Config {
             DLC: true,
             mods: true,
             resetButton: false,
-            devMode: false
+            devMode: false,
+            showWatsNew: true
         }
         this.obj.sums = {
             initial: null,

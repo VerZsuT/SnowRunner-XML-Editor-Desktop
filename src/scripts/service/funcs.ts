@@ -10,6 +10,8 @@ const _tmp_: any = {}
 Object.defineProperty(_tmp_, 'MAIN', {
     get: () => get('#main')
 })
+
+/** Ссылка на `#main` элемент в `template.html` */
 export const MAIN = _tmp_['MAIN']
 
 /** Устанавливает событие по нажатию кнопки. */

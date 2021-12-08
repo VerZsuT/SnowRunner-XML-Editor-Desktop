@@ -1,0 +1,10 @@
+@import '../../../styles/main.css';
+
+body {
+    margin-top: 10px;
+    background-color: white;
+}
+
+ol.content {
+    margin-left: 20px;
+}

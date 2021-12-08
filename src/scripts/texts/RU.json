@@ -99,5 +99,6 @@
 	"WAS_IMPORTED": "Параметры импортированы. Не забудьте сохранить изменения!",
 	"WHEELS_CATEGORY_TITLE": "Колёса",
 	"WINCHES_CATEGORY_TITLE": "Лебёдки",
-	"WRITE_FILE_ERROR": "Не удалось записать в файл."
+	"WRITE_FILE_ERROR": "Не удалось записать в файл.",
+	"WHATS_NEW_TITLE": "Что нового в версии"
 }

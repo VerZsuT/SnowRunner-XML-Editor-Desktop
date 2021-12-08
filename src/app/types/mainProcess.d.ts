@@ -48,6 +48,7 @@ interface IFunctions {
     openPath(path: string): void
     importConfig(): void
     exportConfig(): void
+    openWhatsNew(): void
     openLink(URL: string): void
     openEditor(isBridge?: boolean): void
     openList(): void
