@@ -1,16 +1,16 @@
-interface Folder {
+interface IFolder {
     folder?: string
     initial?: string
 }
 
-interface SettingsPreload {
+interface ISettingsPreload {
     errorHandler(text: string): void
-    get gameFolder(): Folder
-    get initial(): Folder
+    get gameFolder(): IFolder
+    get initial(): IFolder
 }
 
 interface Window {
-    settingsPreload: SettingsPreload
+    settingsPreload: ISettingsPreload
 }
 
-declare const settingsPreload: SettingsPreload
+declare const settingsPreload: ISettingsPreload

@@ -207,6 +207,7 @@ export default class Windows {
     public static openSetup = async () => {
         const wind = this.createWindow(this.createArgs.setup)
         wind.once('close', () => {
+            this.settings.isQuit = true
             app.quit()
         })
         await new Promise<void>(resolve => {
@@ -224,6 +225,7 @@ export default class Windows {
         this.categories = this.createWindow(this.createArgs.categories)
         this.categories.once('close', () => {
             if (this.currentWindow === this.categories) {
+                this.settings.isQuit = true
                 app.quit()
             } else {
                 delete this.categories

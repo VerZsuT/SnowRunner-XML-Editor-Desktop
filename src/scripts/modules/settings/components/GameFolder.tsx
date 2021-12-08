@@ -48,7 +48,7 @@ export default class GameFolder extends PureComponent<IProps, IState> {
     }
 
     private getFolder = () => {
-        let data: Folder = {}
+        let data: IFolder = {}
         if (this.state.manual) {
             data = settingsPreload.initial
             if (!data) return

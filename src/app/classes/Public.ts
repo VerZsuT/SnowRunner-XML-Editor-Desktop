@@ -187,10 +187,10 @@ export default class Public {
             },
             joinEPF: EPF.join,
             seeEPF: EPF.see,
-            importConfig: Checker.checkExportedConfig,
+            importConfig: Config.import,
             exportConfig: Config.export,
-            reload: () => {app.relaunch(); app.quit()},
-            quit: app.quit,
+            reload: () => {this.settings.isQuit = true; app.relaunch(); app.quit()},
+            quit: () => {this.settings.isQuit = true; app.quit()},
             openLink: shell.openExternal,
             openPath: shell.openPath,
     

@@ -24,12 +24,6 @@ const settings = Settings.set({
 
 Public.init()
 
-const quit = app.quit
-app.quit = () => {
-    settings.isQuit = true
-    quit()
-}
-
 app.disableHardwareAcceleration()
 app.setAppUserModelId(settings.appId)
 app.whenReady().then(() => {
@@ -46,7 +40,10 @@ app.on('before-quit', () => {
         Config.save()
     }
 })
-process.once('uncaughtExceptionMonitor', app.quit)
+process.once('uncaughtExceptionMonitor', () => {
+    settings.isQuit = true
+    app.quit()
+})
 
 /**
  * `Main`функция.
@@ -55,7 +52,6 @@ async function initProgram() {
     if (!Checker.checkAdmin()) return
 
     if (!config.paths.initial) {
-        Checker.checkExportedConfig()
         await Windows.openSetup()
         Checker.checkUpdate()
     } else {

@@ -102,6 +102,7 @@ export default class Updater {
             if (toCreateOrChange.length === 0) {
                 this.settings.saveWhenReload = false
                 Config.export()
+                this.settings.isQuit = true
                 app.relaunch()
                 app.quit()
             }
@@ -128,6 +129,7 @@ export default class Updater {
                     this.settings.saveWhenReload = false
                     flagToReload = true
                     Config.export()
+                    this.settings.isQuit = true
                     app.relaunch()
                     app.quit()
                 }

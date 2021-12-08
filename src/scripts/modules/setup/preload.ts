@@ -4,13 +4,15 @@ import { join, basename } from 'path'
 import '@editor-app/mainPreload'
 import { t, mainProcess } from '@editor-service'
 
-class Preload implements FirstStepsPreload {
+class Preload implements IFirstStepsPreload {
     private openDialog = () => mainProcess.openDialog()
     private openInitialDialog = () => mainProcess.openInitialDialog()
 
-    public errorHandler = (text: keyof typeof t) => {mainProcess.alertSync(t[text])}
+    errorHandler = (text: keyof typeof t) => {mainProcess.alertSync(t[text])}
+    existsSync = existsSync
+    join = join
 
-    get gameFolder(): Folder {
+    get gameFolder(): IFolder {
         const result = this.openDialog()
         if (!result) {
             this.errorHandler('EMPTY_FOLDER_ERROR')
@@ -46,7 +48,7 @@ class Preload implements FirstStepsPreload {
         }
     }
 
-    get initial(): Folder {
+    get initial(): IFolder {
         const result = this.openInitialDialog()
         if (!result || basename(result) !== 'initial.pak' || !existsSync(result)) {
             this.errorHandler('INVALID_INITIAL_ERROR')
@@ -58,4 +60,4 @@ class Preload implements FirstStepsPreload {
     }
 }
 
-window.firstStepsPreload = new Preload()
+window.setupPreload = new Preload()

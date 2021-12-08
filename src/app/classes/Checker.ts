@@ -1,6 +1,6 @@
 import https from 'https'
 import dns from 'dns'
-import { writeFileSync, existsSync, lstatSync, readdirSync, readFileSync, rmSync } from 'fs'
+import { writeFileSync, existsSync, lstatSync, readdirSync, readFileSync } from 'fs'
 import { join } from 'path'
 import { app, shell } from 'electron'
 
@@ -13,13 +13,11 @@ import Hasher from './Hasher'
 import Notification from './Notification'
 import Backup from './Backup'
 import Archiver from './Archiver'
-import Settings from './Settings'
 import { Lang } from '../enums'
 
 /** Отвечает за различные проверки. */
 export default class Checker {
     private static config: IConfig = Config.obj
-    private static settings: ISettings = Settings.obj
 
     /**
      * Проверяет наличие прав администратора у программы (требуется для чтения/записи файлов).
@@ -89,31 +87,6 @@ export default class Checker {
         }
     
         return toRemove
-    }
-
-    /**
-     * Проверяет наличие экпортированного `config.json`.
-     * 
-     * _В случае удачи импортирует его в программу._
-    */
-    public static checkExportedConfig = () => {
-        if (existsSync(join(paths.backupFolder, 'config.json'))) {
-            const exportedConfig = JSON.parse(readFileSync(`${paths.backupFolder}\\config.json`).toString())
-    
-            exportedConfig.version = this.config.version
-            this.settings.saveWhenReload = false
-            if (exportedConfig.version < 'v0.6.5') {
-                exportedConfig.ADV = {}
-                exportedConfig.ETR = {}
-            }
-            if (exportedConfig.version < 'v0.6.6') {
-                exportedConfig.settings.showWhatsNew = true
-            }
-            writeFileSync(paths.config, JSON.stringify(exportedConfig))
-            rmSync(`${paths.backupFolder}\\config.json`)
-            app.relaunch()
-            app.quit()
-        }
     }
 
     /**

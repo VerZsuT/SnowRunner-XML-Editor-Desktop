@@ -1,8 +1,9 @@
 import { app } from 'electron'
-import { readFileSync, writeFileSync, existsSync } from 'fs'
+import { readFileSync, writeFileSync, existsSync, rmSync } from 'fs'
 import { Lang } from '../enums'
 
 import { paths, clearTemp } from '../service'
+import Settings from './Settings'
 
 function getConfig() {
     const data = readFileSync(paths.config)
@@ -12,10 +13,12 @@ function getConfig() {
 
 /** Отвечает за работу с `config.json` */
 export default class Config {
-    public static obj: IConfig = getConfig()
+    static obj: IConfig = getConfig()
+
+    private static settings = Settings.obj
     
     /** Сохранить изменения в `config.json` */
-    public static save = (): void => {
+    static save = (): void => {
         try {
             writeFileSync(paths.config, JSON.stringify(this.obj, null, '\t'))
         } catch {
@@ -27,7 +30,7 @@ export default class Config {
      * Сбросить `config.json` на "заводскую" версию.
      * @param noReload отмена перезагрузки после завершения.
     */
-    public static reset = (noReload?: boolean): void => {
+    static reset = (noReload?: boolean): void => {
         this.obj.paths = {
             initial: null,
             dlc: null,
@@ -65,8 +68,24 @@ export default class Config {
     }
 
     /** Экспортирует `config.json`. */
-    public static export = () => {
+    static export = () => {
         if (!existsSync(paths.backupFolder)) return
         writeFileSync(`${paths.backupFolder}\\config.json`, JSON.stringify(this.obj))
+    }
+
+    static import = () => {
+        const exportedConfig = JSON.parse(readFileSync(`${paths.backupFolder}\\config.json`).toString())
+    
+        exportedConfig.version = this.obj.version
+        this.settings.saveWhenReload = false
+        if (exportedConfig.version < 'v0.6.5') {
+            exportedConfig.ADV = {}
+            exportedConfig.ETR = {}
+        }
+        if (exportedConfig.version < 'v0.6.6') {
+            exportedConfig.settings.showWhatsNew = true
+        }
+        writeFileSync(paths.config, JSON.stringify(exportedConfig))
+        rmSync(`${paths.backupFolder}\\config.json`)
     }
 }

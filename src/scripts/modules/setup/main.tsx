@@ -4,7 +4,7 @@ import '@editor-bootstrap'
 import '@editor-service/menu'
 import './styles/main.css'
 
-import { MAIN, t } from '@editor-service'
+import { MAIN, mainProcess, t } from '@editor-service'
 
 import Language from './components/Language'
 import GameFolder from './components/GameFolder'
@@ -17,6 +17,12 @@ interface IState {
 class Setup extends PureComponent<any, IState> {
     state = {
         pathToInitial: ''
+    }
+
+    componentDidMount() {
+        setTimeout(() => {
+            this.checkExportedConfig()
+        }, 500)
     }
 
     render() {
@@ -36,9 +42,16 @@ class Setup extends PureComponent<any, IState> {
     }
 
     private setPath = (path: string) => {
-        this.setState({
-            pathToInitial: path
-        })
+        this.setState({pathToInitial: path})
+    }
+
+    private checkExportedConfig() {
+        if (setupPreload.existsSync(setupPreload.join(paths.backupFolder, 'config.json'))) {
+            if (mainProcess.confirm(t.IMPORT_CONFIG_MESSAGE)) {
+                mainProcess.importConfig()
+                mainProcess.reload()
+            }
+        }
     }
 }
 

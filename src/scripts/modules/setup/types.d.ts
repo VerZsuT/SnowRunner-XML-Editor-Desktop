@@ -1,4 +1,4 @@
-interface Folder {
+interface IFolder {
     /**
      * Путь к папке с initial.pak
     */
@@ -10,25 +10,28 @@ interface Folder {
     initial: string
 }
 
-interface FirstStepsPreload {
+interface IFirstStepsPreload {
     /**
      * Обработчик ошибок.
     */
     errorHandler(text: string): void
 
+    existsSync(path: string): boolean
+    join(...args: string[]): string
+
     /**
      * Открывает выбор папки с игрой для поиска initial.pak.
     */
-    get gameFolder(): Folder
+    get gameFolder(): IFolder
 
     /**
      * Открывает выбор initial.pak.
     */
-    get initial(): Folder
+    get initial(): IFolder
 }
 
 interface Window {
-    firstStepsPreload: FirstStepsPreload
+    setupPreload: IFirstStepsPreload
 }
 
-declare const firstStepsPreload: FirstStepsPreload
+declare const setupPreload: IFirstStepsPreload

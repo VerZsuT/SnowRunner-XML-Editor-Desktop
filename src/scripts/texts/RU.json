@@ -36,6 +36,7 @@
 	"HOW_TO_USE_TITLE": "Как пользоваться",
 	"IGNORE": "Игнорировать",
 	"IMPORT": "Импорт",
+	"IMPORT_CONFIG_MESSAGE": "Обнаружены настройки программы с предыдущей версии. Хотите использовать их?",
 	"IN_PROGRESS": "В процессе",
 	"INITIAL_LABEL": "Путь к initial.pak",
 	"INITIAL_NOT_FOUND": "initial.pak не найден.",

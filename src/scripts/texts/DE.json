@@ -36,6 +36,7 @@
 	"HOW_TO_USE_TITLE": "Wie benutzt man",
 	"IGNORE": "Ignorieren",
 	"IMPORT": "Import",
+	"IMPORT_CONFIG_MESSAGE": "Programmeinstellungen aus einer früheren Version wurden gefunden. Willst du sie benutzen?",
 	"IN_PROGRESS": "In progress",
 	"INITIAL_LABEL": "Pfad zu initial.pak",
 	"INITIAL_NOT_FOUND": "initial.pak nicht gefunden",

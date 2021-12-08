@@ -4,7 +4,7 @@ import { join, basename } from 'path'
 import '@editor-app/mainPreload'
 import { t, mainProcess } from '@editor-service'
 
-class Preload implements SettingsPreload {
+class Preload implements ISettingsPreload {
     private openDialog = () => mainProcess.openDialog()
     private openInitialDialog = () => mainProcess.openInitialDialog()
  

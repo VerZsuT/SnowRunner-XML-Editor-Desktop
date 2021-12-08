@@ -10,8 +10,6 @@
     "skipLibCheck": true,
     "esModuleInterop": true,
     "noImplicitAny": false,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
     "sourceMap": true,
     "outDir": "dist",
     "newLine": "LF",
