@@ -50,7 +50,7 @@ export default class Config {
             mods: true,
             resetButton: false,
             devMode: false,
-            showWatsNew: true
+            showWhatsNew: true
         }
         this.obj.sums = {
             initial: null,

@@ -5,8 +5,6 @@ import '@editor-app/mainPreload'
 import { findInDir } from '@editor-app/service'
 import { mainProcess } from '@editor-service'
 
-const openInitialDialog = () => mainProcess.openInitialDialog()
-
 const preload: ListPreload = {
     exists: (path: string) => {
         return existsSync(join(__dirname, path))
@@ -15,7 +13,7 @@ const preload: ListPreload = {
         rmSync(path, {recursive: true})
     },
     getModPak() {
-        const path = openInitialDialog()
+        const path = mainProcess.openInitialDialog()
 
         return {
             id: basename(path, '.pak'),

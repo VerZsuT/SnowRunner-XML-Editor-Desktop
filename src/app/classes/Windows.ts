@@ -257,7 +257,7 @@ export default class Windows {
     public static openWhatsNew = () => {
         const wind = this.createWindow(this.createArgs.whatsNew)
         wind.once('close', () => {
-            this.config.settings.showWatsNew = false
+            this.config.settings.showWhatsNew = false
         })
     }
 

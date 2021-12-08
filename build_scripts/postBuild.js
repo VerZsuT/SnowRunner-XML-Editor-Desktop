@@ -34,6 +34,7 @@ checkVar(global.config, () => {
     global.config.lang = 'EN'
     global.config.buildType = 'prod'
     global.config.settings.resetButton = false
+    global.config.settings.showWhatsNew = true
     writeFile(postBuildPaths.config, global.config, () => JSON.stringify(global.config))
 })
 

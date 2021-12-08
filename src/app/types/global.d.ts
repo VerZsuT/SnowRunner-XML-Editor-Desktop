@@ -20,7 +20,7 @@ interface IConfigSettings {
     mods: boolean
     resetButton: boolean
     devMode: boolean
-    showWatsNew: boolean
+    showWhatsNew: boolean
 }
 
 interface IConfigSums {

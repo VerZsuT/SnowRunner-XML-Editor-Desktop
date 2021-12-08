@@ -25,7 +25,7 @@ class Categories extends PureComponent {
             if (invalidMods.length !== 0) {
                 mainProcess.alertSync(`${t.INVALID_MODS_ALERT_MAIN}: \n- ${invalidMods.join('\n- ')}`)
             }
-            if (config.settings.showWatsNew) {
+            if (config.settings.showWhatsNew) {
                 mainProcess.openWhatsNew()
             }
         }, 500)

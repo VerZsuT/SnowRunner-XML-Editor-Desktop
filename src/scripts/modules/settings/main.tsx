@@ -112,7 +112,7 @@ class Settings extends PureComponent<any, IState> {
             resetButton: this.state.resetButton,
             limits: config.settings.limits,
             devMode: config.settings.devMode,
-            showWatsNew: config.settings.showWatsNew
+            showWhatsNew: config.settings.showWhatsNew
         }
 
         if (this.state.saveBackup) {

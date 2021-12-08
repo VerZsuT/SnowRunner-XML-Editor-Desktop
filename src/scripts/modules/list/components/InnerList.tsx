@@ -6,13 +6,13 @@ import InnerListItem from './InnerListItem'
 import { FilterContext } from '../FilterContext'
 
 interface IProps {
-    srcType: 'main' | 'mods' | 'dlc'
+    srcType: SrcType
 }
 
 export default class InnerList extends PureComponent<IProps> {
     static contextType = FilterContext
 
-    private listType = local.get('listType') as 'trucks'|'trailers'|'cargo'
+    private listType = local.get('listType') as ListType
     private title = this.getTitle()
     private items = this.getItems().map(item => 
         <InnerListItem
@@ -37,7 +37,7 @@ export default class InnerList extends PureComponent<IProps> {
         )
     }
 
-    private addMod = () => {
+    private addMod() {
         const result = listPreload.getModPak()
         if (!config.modsList[result.id]) {
             config.modsList.length++
@@ -45,7 +45,7 @@ export default class InnerList extends PureComponent<IProps> {
         config.modsList[result.id] = {
             name: result.name,
             path: result.path
-        };
+        }
         if (mainProcess.confirm(t.RELAUNCH_PROMPT)) {
             mainProcess.reload()
         }
@@ -58,7 +58,7 @@ export default class InnerList extends PureComponent<IProps> {
                     {t.MODS_LIST_TITLE}
                     <button
                         className='btn btn-primary'
-                        onClick={this.addMod}
+                        onClick={()=>this.addMod()}
                         style={{padding: '0 10px'}}
                     >
                         {t.MODS_ADD_BUTTON}
