@@ -1,7 +1,7 @@
 {
 	"name": "snowrunner-xml-editor-desktop",
 	"productName": "SnowRunner XML Editor",
-	"version": "0.6.6",
+	"version": "0.6.6a",
 	"description": "Allows you to visually edit the game's XML files.",
 	"repository": {
 		"type": "git",
@@ -9,10 +9,15 @@
 	},
 	"main": ".webpack/main",
 	"scripts": {
-		"start": "electron-forge start",
-		"build": "node ./build_scripts/preBuild.js && npm run package-prod && node ./build_scripts/postBuild.js",
-		"package-prod": "cross-env NODE_ENV=production electron-forge package --platform=win32 --arch=ia32",
-		"package": "electron-forge package --platform=win32 --arch=ia32"
+		"set-arch-x32": "node ./build_scripts/setArch.js x32",
+		"set-arch-x64": "node ./build_scripts/setArch.js x64",
+		"build": "node ./build_scripts/preBuild.js && npm run package-prod && node ./build_scripts/postBuild.js x32",
+		"build-x64": "node ./build_scripts/preBuild.js && npm run package-prod-x64 && node ./build_scripts/postBuild.js x64",
+		"package-prod": "npm run set-arch-x32 && cross-env NODE_ENV=production electron-forge package --platform=win32 --arch=ia32",
+		"package-prod-x64": "npm run set-arch-x64 && cross-env NODE_ENV=production electron-forge package --platform=win32 --arch=x64",
+		"package": "npm run set-arch-x32 && electron-forge package --platform=win32 --arch=ia32",
+		"package-x64": "npm run set-arch-x64 && electron-forge package --platform=win32 --arch=x64",
+		"start": "electron-forge start"
 	},
 	"keywords": [],
 	"author": {
@@ -30,13 +35,13 @@
 		"@types/react-dom": "^17.0.11",
 		"@vercel/webpack-asset-relocator-loader": "^1.7.0",
 		"cheerio": "^1.0.0-rc.10",
-		"copy-webpack-plugin": "^9.0.1",
+		"copy-webpack-plugin": "^10.0.0",
 		"cross-env": "^7.0.3",
-		"css-loader": "^6.3.0",
-		"electron": "^16.0.0",
-		"fork-ts-checker-webpack-plugin": "^6.3.4",
+		"css-loader": "^6.5.1",
+		"electron": "^16.0.2",
+		"fork-ts-checker-webpack-plugin": "^6.5.0",
 		"node-loader": "^2.0.0",
-		"style-loader": "^3.3.0",
+		"style-loader": "^3.3.1",
 		"ts-loader": "^9.2.6",
 		"typescript": "^4.4.4"
 	},

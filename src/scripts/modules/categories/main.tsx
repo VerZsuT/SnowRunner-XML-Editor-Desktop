@@ -8,19 +8,32 @@ import { setHotKey, mainProcess, MAIN, t } from '@editor-service'
 import Category from './components/Category'
 
 class Categories extends PureComponent {
-    private categories = ['trucks', 'trailers', 'cargo']
-    private items = this.categories.map(category => 
-        <Category key={category} name={category}/>
-    )
+    private items: JSX.Element[]
+
+    constructor(props: any) {
+        super(props)
+
+        const categories = ['trucks', 'trailers', 'cargo']
+        this.items = categories.map(category => 
+            <Category key={category} name={category}/>
+        )
+    }
 
     componentDidMount() {
-        setHotKey({
-            key: 'Backquote'
-        }, () => {
-            mainProcess.openConsole()
-        })
+        this.setConsoleHotkey()
+        this.checkInvalidMods()
+    }
+
+    render() {
+        return (
+            <div id='categories'>
+                {this.items}
+            </div>
+        )
+    }
+
+    private checkInvalidMods() {
         const invalidMods = mainProcess.invalidMods
-        
         setTimeout(() => {
             if (invalidMods.length !== 0) {
                 mainProcess.alertSync(`${t.INVALID_MODS_ALERT_MAIN}: \n- ${invalidMods.join('\n- ')}`)
@@ -31,12 +44,12 @@ class Categories extends PureComponent {
         }, 500)
     }
 
-    render() {
-        return (
-            <div id='categories'>
-                {this.items}
-            </div>
-        )
+    private setConsoleHotkey() {
+        setHotKey({
+            key: 'Backquote'
+        }, () => {
+            mainProcess.openConsole()
+        })
     }
 }
 

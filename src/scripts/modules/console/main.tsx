@@ -3,30 +3,31 @@ import { render } from 'react-dom'
 import './style.css'
 
 import { mainProcess, Lang, MAIN } from '@editor-service'
-import { ANY, checkArgs, OPTIONAL, help, Message } from './service'
+import { ANY, OPTIONAL, checkArgs, help, Message } from './service'
 import EditorConsole from './components/EditorConsole'
-
-const temp = {
-    fileDOM: null,
-    filePath: null
-}
 
 interface IState {
     messages: JSX.Element[]
 }
 
-const cmds = Object.keys(help).filter(value=>value!=='toString')
-type cmdsType = Exclude<keyof typeof help, 'toString'>
-
 class Console extends PureComponent<any, IState> {
-    private listeners = this.getListeners()
+    private listeners: {
+        [cmd: string]: (args: string[])=>JSX.Element
+    }
+    private fileDOM: Document
+    private filePath: string
 
-    state = {
-        messages: [
-            <Fragment key='0'>
-                {Message.info("Командная строка v1.0.\n- Введите 'help' для вывода списка команд.\n- Стрелки на клавиатуре для переключения предложенного варианта.\n- TAB для выбора варианта.\n- Сообщения можно скролить.")}
-            </Fragment>
-        ]
+    constructor(props: any) {
+        super(props)
+        this.state = {
+            messages: [
+                <Fragment key='0'>
+                    {Message.info("Командная строка v1.0.\n- Введите 'help' для вывода списка команд.\n- Стрелки на клавиатуре для переключения предложенного варианта.\n- TAB для выбора варианта.\n- Сообщения можно скролить.")}
+                </Fragment>
+            ]
+        }
+
+        this.listeners = this.getListeners()
     }
 
     render() {
@@ -45,12 +46,15 @@ class Console extends PureComponent<any, IState> {
     }
 
     private getListeners() {
+        const cmds = Object.keys(help).filter(value=>value!=='toString')
+        type cmdsType = Exclude<keyof typeof help, 'toString'>
+
         return {
-            exit: checkArgs(() => window.close()),
-            quit: checkArgs(() => mainProcess.quit()),
-            reload: checkArgs(() => mainProcess.reload()),
-            reset: checkArgs(() => mainProcess.resetConfig(false)),
-            devTools: checkArgs(args => {
+            'exit': checkArgs(() => window.close()),
+            'quit': checkArgs(() => mainProcess.quit()),
+            'reload': checkArgs(() => mainProcess.reload()),
+            'reset': checkArgs(() => mainProcess.resetConfig(false)),
+            'devTools': checkArgs(args => {
                 const { action } = args
                 if (action === 'enable') {
                     mainProcess.enableDevTools()
@@ -62,10 +66,10 @@ class Console extends PureComponent<any, IState> {
             }, {
                 action: ['enable', 'disable'] as unknown as 'enable'|'disable'
             }),
-            version: checkArgs(() => {
+            'version': checkArgs(() => {
                 this.pushMessage(Message.log(`Текущая версия программы: ${config.version}.`))
             }),
-            sset: checkArgs(args => {
+            'sset': checkArgs(args => {
                 const { name, value } = args
             
                 if (config.settings[name] !== undefined) {
@@ -76,7 +80,7 @@ class Console extends PureComponent<any, IState> {
                 name: Object.keys(config.settings) as unknown as keyof typeof config.settings,
                 value: ['true', 'false'] as unknown as 'true'|'false'
             }),
-            lang: checkArgs(args => {
+            'lang': checkArgs(args => {
                 const { lang } = args
             
                 config.lang = lang
@@ -84,7 +88,7 @@ class Console extends PureComponent<any, IState> {
             }, {
                 lang: Object.keys(Lang) as unknown as Lang
             }),
-            read: checkArgs(() => {
+            'read': checkArgs(() => {
                 const path = mainProcess.openXMLDialog()
                 const parser = new DOMParser()
             
@@ -100,25 +104,25 @@ class Console extends PureComponent<any, IState> {
                 }
             
                 this.pushMessage(Message.log(`Файл '${path}' успешно считан в память.`))
-                temp.fileDOM = fileDOM
-                temp.filePath = path
+                this.fileDOM = fileDOM
+                this.filePath = path
             }),
-            set: checkArgs(args => {
+            'set': checkArgs(args => {
                 let { selector, attrName, value } = args
             
                 selector = consolePreload.replacePars(selector)
                 value = consolePreload.replacePars(value)
             
-                if (!temp.fileDOM) {
+                if (!this.fileDOM) {
                     this.pushMessage(Message.error('Сначала надо считать файл с помощью команды "read".'))
                     return
                 }
-                if (!consolePreload.exists(temp.filePath)) {
-                    this.pushMessage(Message.error(`Искомый файл '${temp.filePath}' не обнаружен.`))
+                if (!consolePreload.exists(this.filePath)) {
+                    this.pushMessage(Message.error(`Искомый файл '${this.filePath}' не обнаружен.`))
                     return
                 }
             
-                const element = temp.fileDOM.querySelector(selector)
+                const element = this.fileDOM.querySelector(selector)
                 if (!element) {
                     this.pushMessage(Message.error(`Элемент с селектором '${selector}' не обнаружен.`))
                     return
@@ -126,7 +130,7 @@ class Console extends PureComponent<any, IState> {
                 
                 const serializer = new XMLSerializer()
                 element.setAttribute(attrName, value)
-                consolePreload.writeFile(temp.filePath, serializer.serializeToString(temp.fileDOM).replace('<root>', '').replace('</root>', ''))
+                consolePreload.writeFile(this.filePath, serializer.serializeToString(this.fileDOM).replace('<root>', '').replace('</root>', ''))
             
                 this.pushMessage(Message.log(`${attrName}='${value}'`))
             }, {
@@ -134,7 +138,7 @@ class Console extends PureComponent<any, IState> {
                 attrName: ANY,
                 value: ANY
             }),
-            backup: checkArgs(args => {
+            'backup': checkArgs(args => {
                 const { action } = args
             
                 if (action === 'save') {
@@ -147,7 +151,7 @@ class Console extends PureComponent<any, IState> {
             }, {
                 action: ['save', 'restore'] as unknown as 'save'|'restore'
             }),
-            addMod: checkArgs(() => {
+            'addMod': checkArgs(() => {
                 const result = consolePreload.getModPak()
                 if (!result) {
                     this.pushMessage(Message.error('Не выбран .pak файл модификации.'))
@@ -164,12 +168,12 @@ class Console extends PureComponent<any, IState> {
                 
                 mainProcess.reload()
             }),
-            checkUpdate: checkArgs(() => {
+            'checkUpdate': checkArgs(() => {
                 this.pushMessage(Message.log('Проверка обновления...'))
                 this.pushMessage(Message.log('В случае удачи выведется соответствующее окно.'))
                 mainProcess.checkUpdate()
             }),
-            delMod: checkArgs(args => {
+            'delMod': checkArgs(args => {
                 const { modId } = args
             
                 delete config.modsList[modId]
@@ -180,7 +184,7 @@ class Console extends PureComponent<any, IState> {
             }, {
                 modId: Object.keys(config.modsList) as unknown as keyof typeof config.modsList
             }),
-            help: checkArgs(args => {
+            'help': checkArgs(args => {
                 const { cmd } = args
             
                 if (cmd) {
@@ -195,7 +199,7 @@ class Console extends PureComponent<any, IState> {
             }, {
                 cmd: [OPTIONAL, cmds] as unknown as cmdsType
             }),
-            archive: checkArgs(args => {
+            'archive': checkArgs(args => {
                 const { action } = args
             
                 if (action === 'save') {
@@ -208,7 +212,7 @@ class Console extends PureComponent<any, IState> {
             }, {
                 action: ['save', 'unpack'] as unknown as 'save'|'unpack'
             }),
-            config: checkArgs(args => {
+            'config': checkArgs(args => {
                 const { action } = args
             
                 if (action === 'import') {
@@ -225,6 +229,9 @@ class Console extends PureComponent<any, IState> {
                 }
             }, {
                 action: ['import', 'export'] as unknown as 'import'|'export'
+            }),
+            'whatsNew': checkArgs(() => {
+                mainProcess.openWhatsNew()
             })
         }
     }

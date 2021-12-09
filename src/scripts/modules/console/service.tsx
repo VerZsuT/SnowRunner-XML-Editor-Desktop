@@ -1,4 +1,6 @@
+/** Агрумент любого содержания (кроме пустого) */
 export const ANY = 'ANY_ARGUMENT'
+/** Опциональный аргумент (может быть пустым) */
 export const OPTIONAL = 'OPTIONAL_ARGUMENT'
 
 type CmdListener<T extends ArgsCheckObj> = (args: CheckedArgs<T>, error?: JSX.Element) => any

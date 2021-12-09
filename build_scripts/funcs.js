@@ -5,10 +5,12 @@ const Log = require('./Log.js')
 
 const postBuildPaths = {
     out: join(__dirname, '..', 'out'),
-    original: join(__dirname, '..', 'out', 'SnowRunner XML Editor-win32-ia32'),
+    original_x32: join(__dirname, '..', 'out', 'SnowRunner XML Editor-win32-ia32'),
+    original_x64: join(__dirname, '..', 'out', 'SnowRunner XML Editor-win32-x64'),
     renamed: join(__dirname, '..', 'out', 'SnowRunnerXMLEditor'),
     config: join(__dirname, '..', 'out', 'SnowRunnerXMLEditor', 'resources', 'app', '.webpack', 'main', 'config.json'),
-    winrar: join(__dirname, '..', 'src', 'scripts', 'winrar'),
+    winrar_x32: join(__dirname, '..', 'src', 'scripts', 'winrar', 'x32'),
+    winrar_x64: join(__dirname, '..', 'src', 'scripts', 'winrar', 'x64'),
     sxmle_updater: join(__dirname, '..', '..', 'sxmle_updater')
 }
 

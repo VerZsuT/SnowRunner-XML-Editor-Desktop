@@ -148,7 +148,9 @@ export default class Parameter extends PureComponent<IProps, IState> {
         let value = this.props.item.value
         if (!value && value !== 0 && templates) {
             let el = fileDOM.querySelector(this.props.item.selector)
-            const array = this.props.item.selector.split(' ').map((value) => value.trim())
+            const array = this.props.item.selector.split(' ')
+                .map((value: string) => value.trim())
+                .filter((value: string) => value !== '>')
             const innerName = array.slice(array.length - 1)[0]
             const tagName = innerName.split('[')[0]
             if (!el) {

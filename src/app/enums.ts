@@ -25,11 +25,13 @@ export enum MenuRole {
     openURL = 'openURL'
 }
 
+/** Тип билда */
 export enum BuildType {
     dev = 'dev',
     prod = 'prod'
 }
 
+/** Язык перевода программы */
 export enum Lang {
     RU = 'RU',
     EN = 'EN',

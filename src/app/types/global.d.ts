@@ -5,6 +5,7 @@ declare module '*.vue' {
 }
 
 type ConfigBuildType = 'dev' | 'prod'
+type ConfigArch = 'x32' | 'x64'
 
 interface IConfigPaths {
     initial: string
@@ -70,6 +71,7 @@ interface IConfig {
      * Тип билда, при dev доступны некоторые функции для отладки.
     */
     buildType: ConfigBuildType
+    arch: ConfigArch
     /**
      * Пути к некоторым файлам.
     */

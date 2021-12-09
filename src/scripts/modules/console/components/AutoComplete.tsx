@@ -219,7 +219,8 @@ const keys: ACKeys = combine([
     'checkUpdate',
     'read',
     'set',
-    'addMod'
+    'addMod',
+    'whatsNew'
 ], {
     help: Object.keys(help).filter(value=>value!=='toString'),
     delMod: getModsList(),

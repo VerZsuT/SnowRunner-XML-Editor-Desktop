@@ -8,7 +8,7 @@ const mainURL = 'https://verzsut.github.io/SnowRunner-XML-Editor-Desktop'
 /**
  * Пути, используемые в программе.
 */
-export const paths = {
+export const paths: IPaths = {
     /** URL json файла обновления. */
     publicInfo: `${updaterURL}/public.json`,
     /** URL страницы скачивании программы. */
@@ -29,8 +29,10 @@ export const paths = {
     backupInitial: resolve('backups', 'initial.pak'),
     /** Путь к папке с файлами переводов. */
     translations: resolve('translations'),
-    /** Путь к папке WinRAR */
-    winrar: resolve('winrar'),
+    /** Путь к папке WinRAR(x32) */
+    winrar_x32: resolve('winrar', 'x32'),
+    /** Путь к папке WinRAR(x64) */
+    winrar_x64: resolve('winrar', 'x64'),
     /** Путь к временной папке для основных файлов. */
     mainTemp: resolve('mainTemp'),
     /** Путь к временной папке для файлов модификаций. */

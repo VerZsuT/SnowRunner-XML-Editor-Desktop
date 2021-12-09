@@ -7,7 +7,29 @@ import { Lang, MAIN, mainProcess, setHotKey, t } from '@editor-service'
 class WhatsNew extends PureComponent {
     render() {
         return (<>
-            <h1 className='title'>{t.WHATS_NEW_TITLE} v{config.version}</h1>
+            <h1 className='title'>{t.WHATS_NEW_TITLE} v0.6.6a</h1>
+            <ol className='content'>
+                {config.lang === Lang.RU? <>
+                    <li>Исправлен <i>баг с пустым окном при редактировании колёс.</i></li>
+                    <li>Исправлен <i>баг с дублированием кнопок файлов колёс.</i></li>
+                    <li>Исправлен <i>баг с пустым окном при редактировании авто на языках EN и DE.</i></li>
+                    <li>Исправлен <i>баг с неправильным счётчиком файлов обновления.</i></li>
+                </> :null}
+                {config.lang === Lang.EN? <>
+                    <li>Fixed <i>a bug with an empty window when editing wheels.</i></li>
+                    <li>Fixed <i>a bug with duplicate buttons of wheel files.</i></li>
+                    <li>Fixed <i>a bug with an empty window when editing cars in EN and DE languages.</i></li>
+                    <li>Fixed <i>bug with incorrect update file counter.</i></li>
+                </> :null}
+                {config.lang === Lang.DE? <>
+                    <li>Behoben <i>Fehler mit leerem Fenster beim Bearbeiten von Rädern.</i></li>
+                    <li>Behoben <i>Fehler mit Duplizierung von Rad-Datei-Tasten.</i></li>
+                    <li>Behoben <i>Fehler mit einem leeren Fenster beim Bearbeiten von Autos in EN- und DE-Sprachen.</i></li>
+                    <li>Behoben <i>Fehler mit falschem Dateizähler Update.</i></li>
+                </> :null}
+            </ol>
+            
+            <h1 className='title'>{t.WHATS_NEW_TITLE} v0.6.6</h1>
             <ol className='content'>
             {config.lang === Lang.RU? <>
                 <li>Добавлено окно <i>"Что нового"</i>, на которое вы смотрите :)</li>

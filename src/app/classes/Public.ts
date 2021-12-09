@@ -46,6 +46,8 @@ export default class Public {
                         const result = object[name](...args)
                         if (!(result instanceof Promise)) {
                             event.returnValue = {value: result}
+                        } else {
+                            event.returnValue = {value: undefined}
                         }
                     } catch (error) {
                         event.returnValue = {error: error}

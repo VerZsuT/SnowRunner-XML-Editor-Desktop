@@ -111,7 +111,7 @@ export default class File extends PureComponent<IProps, IState> {
         if (item.fileType === FileType.wheels && item.name !== 'Type') {
             fileDOM.querySelectorAll('Truck > TruckData > CompatibleWheels').forEach(compatible => {
                 const type = compatible.getAttribute('Type')
-                if (array.includes(type)) {
+                if (!array.includes(type)) {
                     array.push(type)
                 }
             })

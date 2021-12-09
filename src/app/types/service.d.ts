@@ -9,7 +9,8 @@ interface IPaths {
     icon: string
     backupInitial: string
     translations: string
-    winrar: string
+    winrar_x32: string
+    winrar_x64: string
     mainTemp: string
     modsTemp: string
     strings: string

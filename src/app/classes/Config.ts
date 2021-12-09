@@ -82,9 +82,10 @@ export default class Config {
             exportedConfig.ADV = {}
             exportedConfig.ETR = {}
         }
-        if (exportedConfig.version < 'v0.6.6') {
-            exportedConfig.settings.showWhatsNew = true
+        if (exportedConfig.version < 'v0.6.6a') {
+            exportedConfig.arch = 'x32'
         }
+        exportedConfig.settings.showWhatsNew = true
         writeFileSync(paths.config, JSON.stringify(exportedConfig))
         rmSync(`${paths.backupFolder}\\config.json`)
     }

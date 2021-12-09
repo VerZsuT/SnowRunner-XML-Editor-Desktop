@@ -128,7 +128,7 @@ export function getSelectors<T extends {[id: string]: string}>(func: (this: This
     for (const id in obj) {
         newObj[id] = `SELECTOR_ID:${id}||${newObj[id]}` as ItemType
         newObj[id] = newObj[id]
-            .replaceAll('.', ' > ')
+            .replaceAll('.', '>')
             .replaceAll('>', ' > ')
             .replaceAll(' ', '!')
             .replaceAll('!!', '!')

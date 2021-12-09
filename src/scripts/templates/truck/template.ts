@@ -143,7 +143,7 @@ export default <ITemplate> {
 			File({
 				attribute: 'DefaultWheelType',
 				type: FileType.wheels,
-				text: texts.wheelType,
+				text: texts.defaultWheelType,
 				desc: descs.wheelType,
 				bold: true
 			}),
@@ -208,7 +208,7 @@ export default <ITemplate> {
 						File({
 							attribute: 'Type',
 							type: FileType.wheels,
-							text: texts.wheelType,
+							text: texts.defaultWheelType,
 							desc: descs.wheelType
 						}),
 						Number({

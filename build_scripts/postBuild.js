@@ -15,15 +15,19 @@ const {
     existsSync
 } = require('fs')
 const Log = require('./Log.js')
-const { checkPath, readFileToVar, checkVar, writeFile, generateMap, postBuildPaths, preBuildPaths } = require('./funcs.js')
+const { checkPath, readFileToVar, checkVar, writeFile, generateMap, postBuildPaths } = require('./funcs.js')
+const { argv } = require('process')
+
+const winrarPath = argv[2] === 'x32'? postBuildPaths.winrar_x32 : postBuildPaths.winrar_x64
+const originalPath = argv[2] === 'x32'? postBuildPaths.original_x32 : postBuildPaths.original_x64
 
 Log.mainGroup()
 Log.print('Запуск срипта постобработки', true)
 Log.stageGroup()
 
 Log.print('Переименование билда')
-checkPath(postBuildPaths.original, () => {
-    renameSync(postBuildPaths.original, postBuildPaths.renamed)
+checkPath(originalPath, () => {
+    renameSync(originalPath, postBuildPaths.renamed)
 }, true)
 
 Log.separator()
@@ -41,8 +45,8 @@ checkVar(global.config, () => {
 Log.separator()
 
 Log.print('Архивация билда')
-checkPath(postBuildPaths.winrar, () => {
-    execSync(`WinRAR a -ibck -ep1 -m5 "${join(postBuildPaths.out, 'SnowRunnerXMLEditor.rar')}" "${postBuildPaths.renamed}"`, {cwd: postBuildPaths.winrar})
+checkPath(winrarPath, () => {
+    execSync(`WinRAR a -ibck -ep1 -m5 "${join(postBuildPaths.out, 'SnowRunnerXMLEditor.rar')}" "${postBuildPaths.renamed}"`, {cwd: winrarPath})
 })
 
 Log.separator()
@@ -73,7 +77,7 @@ Log.separator()
 Log.print('Создание установочного файла')
 if (!existsSync(postBuildPaths.renamed)) {
     Log.print('Распаковка файлов для установки')
-    execSync(`WinRAR x -ibck -inul "${join(postBuildPaths.out, 'SnowRunnerXMLEditor.rar')}" "${postBuildPaths.out}\\"`, {cwd: postBuildPaths.winrar})
+    execSync(`WinRAR x -ibck -inul "${join(postBuildPaths.out, 'SnowRunnerXMLEditor.rar')}" "${postBuildPaths.out}\\"`, {cwd: winrarPath})
 }
 Log.print('Запуск InnoSetup')
 execSync('installer.config.iss', {cwd: join(__dirname, '..')})

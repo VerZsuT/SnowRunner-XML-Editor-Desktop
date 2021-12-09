@@ -18,7 +18,7 @@ export default class Archiver {
     */
     public static update = (source: string, direction: string): void => {
         execSync(`WinRAR f -ibck -inul "${direction}" "${source}\\" -r -ep1`, {
-            cwd: paths.winrar,
+            cwd: this.config.arch === 'x32'? paths.winrar_x32 : paths.winrar_x64,
             windowsHide: true
         })
     }
@@ -31,7 +31,7 @@ export default class Archiver {
     public static unpack = async (source: string, direction: string, fromMod?: boolean) => {
         await new Promise(resolve => {
             exec(`WinRAR x -ibck -inul "${source}" @${fromMod?'unpack-mod-list.lst':'unpack-list.lst'} "${direction}\\"`, {
-                cwd: paths.winrar,
+                cwd: this.config.arch === 'x32'? paths.winrar_x32 : paths.winrar_x64,
                 windowsHide: true
             }).once('close', resolve)
         })

@@ -35,7 +35,7 @@ class Loading extends PureComponent<any, IState> {
         ipcRenderer.on('success', () => {
             this.setState({
                 percent: 0,
-                loadedCount: this.state.allCount
+                loadedCount: this.state.loadedCount+1
             })
         })
         ipcRenderer.on('fileName', (_e, msg) => {
@@ -58,7 +58,9 @@ class Loading extends PureComponent<any, IState> {
                 {this.state.isDownload
                     ? [
                         <progress id='progress' value={this.state.percent} max='100'></progress>,
-                        <p id='count'>{this.state.loadedCount}/{this.state.allCount}</p>
+                        <p id='count'>{this.state.loadedCount}/{this.state.allCount}</p>,
+                        <br/>,
+                        <div id='percent'>{Math.round(this.state.percent)}%</div>
                     ]
                     : <div id='circularG'>
                         <div id='circularG_1' className='circularG'></div>

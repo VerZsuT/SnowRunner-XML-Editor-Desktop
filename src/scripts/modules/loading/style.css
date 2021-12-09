@@ -12,7 +12,13 @@ body {
 #count {
     display: inline;
     float: right;
-    margin-top: 35px;
+    margin-top: 25px;
+}
+
+#percent {
+	display: inline;
+	margin-top: 25px;
+	float: right;
 }
 
 #progress {
@@ -29,7 +35,7 @@ body {
     font-weight: bold;
     font-size: 20px;
     position: absolute;
-    top: 5px;
+    top: 10px;
 }
 
 #circularG {
