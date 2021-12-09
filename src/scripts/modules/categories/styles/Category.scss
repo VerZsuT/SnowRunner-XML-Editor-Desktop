@@ -1,17 +1,20 @@
+$hover-name-color: yellow;
+$name-color: white;
+
 .category {
     display: flex;
     height: 320px;
     width: 320px;
     position: relative;
     cursor: pointer;
-}
 
-.category:hover {
-    filter: brightness(0.8);
-}
+    :hover {
+        filter: brightness(0.8);
 
-.category:hover .category-name {
-    color: yellow;
+        .category-name {
+            color: $hover-name-color;
+        }
+    }
 }
 
 img {
@@ -22,7 +25,7 @@ img {
 
 .category-name {
     width: 100%;
-    color: white;
+    color: $name-color;
     background-color: black;
     position: absolute;
     top: 0;

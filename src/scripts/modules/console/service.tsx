@@ -1,3 +1,5 @@
+import { MessageType } from './enums'
+
 /** Агрумент любого содержания (кроме пустого) */
 export const ANY = 'ANY_ARGUMENT'
 /** Опциональный аргумент (может быть пустым) */
@@ -22,29 +24,29 @@ export class Message {
 
     /** Сообщение в стиле предупреждения. */
     static warn(text: string) {
-        return this.message(text, 'warn')
+        return this.message(text, MessageType.warn)
     }
 
     /** Сообщение в стиле ошибки. */
     static error(text: string) {
-        return this.message(text, 'error')
+        return this.message(text, MessageType.error)
     }
 
     /** Сообщение в стиле информации. */
     static info(text: string) {
-        return this.message(text, 'info')
+        return this.message(text, MessageType.info)
     }
 
     private static message(text: string, type?: MessageType) {
         let color = 'white'
         switch (type) {
-            case 'warn':
+            case MessageType.warn:
                 color = 'yellow'
             break
-            case 'error':
+            case MessageType.error:
                 color = 'red'
             break
-            case 'info':
+            case MessageType.info:
                 color = 'lightblue'
             break
         }
@@ -58,7 +60,7 @@ export class Message {
  * 
  * В случае ошибки `listener` не будет вызван, а в консоль выведется ошибка.
 */
-export function checkArgs<T extends ArgsCheckObj>(listener: CmdListener<T>, argsCheckObj?: T) {
+export function addCheck<T extends ArgsCheckObj>(listener: CmdListener<T>, argsCheckObj?: T) {
     const checkArgs = (args: string[]) => {
         let checkedArgs: {[name: string]: string} = {}
         let counter = 0

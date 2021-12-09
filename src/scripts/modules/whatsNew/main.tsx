@@ -5,8 +5,31 @@ import './style.css'
 import { Lang, MAIN, mainProcess, setHotKey, t } from '@editor-service'
 
 class WhatsNew extends PureComponent {
+    componentDidMount() {
+        this.setDevtoolsHotkey()
+    }
+
     render() {
         return (<>
+            <h1 className='title'>{t.WHATS_NEW_TITLE} v0.6.6b</h1>
+            <ol className='content'>
+                {config.lang === Lang.RU? <>
+                    <li>Исправлен <i>баг с вводом в числовое поле.</i></li>
+                    <li>Исправлен <i>баг с вводом в текстовое поле.</i></li>
+                    <li>Исправлен <i>баг с вводом в поле ввода координат.</i></li>
+                </> :null}
+                {config.lang === Lang.EN? <>
+                    <li>Fixed <i>a bug with entering into a numeric field.</i></li>
+                    <li>Fixed <i>bug with text field input.</i></li>
+                    <li>Fixed <i>bug with entering coordinates in the input field.</i></li>
+                </> :null}
+                {config.lang === Lang.DE? <>
+                    <li>Behoben <i>Fehler mit Eingabe in das numerische Feld.</i></li>
+                    <li>Behoben <i>Fehler mit der Eingabe in das Textfeld.</i></li>
+                    <li>Behoben <i>Fehler mit Eingabe in das Eingabefeld Koordinaten.</i></li>
+                </> :null}
+            </ol>
+
             <h1 className='title'>{t.WHATS_NEW_TITLE} v0.6.6a</h1>
             <ol className='content'>
                 {config.lang === Lang.RU? <>
@@ -112,12 +135,14 @@ class WhatsNew extends PureComponent {
             </ol>
         </>)
     }
-}
 
-setHotKey({
-    key: 'KeyI',
-    ctrlKey: true,
-    shiftKey: true
-}, () => mainProcess.toggleDevTools())
+    private setDevtoolsHotkey() {
+        setHotKey({
+            key: 'KeyI',
+            ctrlKey: true,
+            shiftKey: true
+        }, () => mainProcess.toggleDevTools())
+    }
+}
 
 render(<WhatsNew/>, MAIN)

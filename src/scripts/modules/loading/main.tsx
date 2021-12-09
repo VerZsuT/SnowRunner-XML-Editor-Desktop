@@ -13,41 +13,20 @@ interface IState {
 }
 
 class Loading extends PureComponent<any, IState> {
-    state = {
-        allCount: 0,
-        loadedCount: 0,
-        percent: 0,
-        isDownload: false,
-        name: ''
+    constructor(props: any) {
+        super(props)
+
+        this.state = {
+            allCount: 0,
+            loadedCount: 0,
+            percent: 0,
+            isDownload: false,
+            name: ''
+        }
     }
 
     componentDidMount() {
-        ipcRenderer.once('count', (_e, msg) => {
-            this.setState({
-                allCount: +msg
-            })
-        })
-        ipcRenderer.once('download', () => {
-            this.setState({
-                isDownload: true
-            })
-        })
-        ipcRenderer.on('success', () => {
-            this.setState({
-                percent: 0,
-                loadedCount: this.state.loadedCount+1
-            })
-        })
-        ipcRenderer.on('fileName', (_e, msg) => {
-            this.setState({
-                name: msg
-            })
-        })
-        ipcRenderer.on('percent', (_event, msg) => {
-            this.setState({
-                percent: +msg
-            })
-        })
+        this.listenIPC()   
     }
 
     render() {
@@ -75,6 +54,35 @@ class Loading extends PureComponent<any, IState> {
                 }
             </div>
         )
+    }
+
+    private listenIPC() {
+        ipcRenderer.once('count', (_e, msg) => {
+            this.setState({
+                allCount: +msg
+            })
+        })
+        ipcRenderer.once('download', () => {
+            this.setState({
+                isDownload: true
+            })
+        })
+        ipcRenderer.on('success', () => {
+            this.setState({
+                percent: 0,
+                loadedCount: this.state.loadedCount+1
+            })
+        })
+        ipcRenderer.on('fileName', (_e, msg) => {
+            this.setState({
+                name: msg
+            })
+        })
+        ipcRenderer.on('percent', (_event, msg) => {
+            this.setState({
+                percent: +msg
+            })
+        })
     }
 }
 

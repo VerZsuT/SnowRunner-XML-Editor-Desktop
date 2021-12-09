@@ -21,24 +21,31 @@ export default class Group extends PureComponent<IProps, IState> {
     static contextType = MainContext
     declare context: IMainContext
 
-    private headerID = Math.round(Math.random() * 1000000)
-    private containerID = Math.round(Math.random() * 1000000)
-    private contentID = Math.round(Math.random() * 1000000)
-    private items = this.getItems()
+    private headerID: number
+    private containerID: number
+    private contentID: number
+    private items: {
+        groups: any[]
+        params: any[]
+    }
     private styles: {
         [name: string]: React.CSSProperties
     }
 
     constructor(props: IProps) {
         super(props)
+
         this.state = {
             isExport: props.isParentExport
         }
-
         this.styles = {
             header: { paddingLeft: `${props.tabs * 10}px` },
             headerCont: { paddingLeft: `${props.tabs * 5}px` }
         }
+        this.headerID = Math.round(Math.random() * 1000000)
+        this.containerID = Math.round(Math.random() * 1000000)
+        this.contentID = Math.round(Math.random() * 1000000)
+        this.items = this.getItems()
     }
 
     render() {

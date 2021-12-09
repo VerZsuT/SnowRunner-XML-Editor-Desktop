@@ -304,7 +304,7 @@ interface ITemplate {
     selector: string
 }
 
-interface ITemplates {
+interface Templates {
     cargo: ITemplate
     engine: ITemplate
     gearbox: ITemplate
@@ -329,13 +329,13 @@ type MenuRole =
     'seeEPF' |
     'openURL'
 
-interface IMenuTemplate {
+interface MenuTemplate {
     /** __Текст__ кнопки. */
     label?: string
     /** __Роль__ кнопки (название шаблона поведения). */
     role?: MenuRole
     /** __Меню__, выводимое при наведении на кнопку. */
-    submenu?: IMenuTemplate[]
+    submenu?: MenuTemplate[]
     /**
      * Путь к файлу/папке.
      * 

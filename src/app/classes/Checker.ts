@@ -17,14 +17,14 @@ import { Lang } from '../enums'
 
 /** Отвечает за различные проверки. */
 export default class Checker {
-    private static config: IConfig = Config.obj
+    private static config = Config.obj
 
     /**
      * Проверяет наличие прав администратора у программы (требуется для чтения/записи файлов).
      * 
      * _Выводит уведомление и закрывает программу при неудаче._
     */
-    public static checkAdmin = () => {
+    static checkAdmin = () => {
         try {
             writeFileSync(paths.config, JSON.stringify(this.config, null, '\t'))
             return true
@@ -49,7 +49,7 @@ export default class Checker {
      * 
      * _Если изменения присутствуют, то обновляет файлы в программе._
     */
-    public static checkInitialHash = async () => {
+    static checkInitialHash = async () => {
         if (!existsSync(join(paths.mainTemp, '[media]')) || Hasher.getHash(this.config.paths.initial) !== this.config.sums.initial) {
             if (existsSync(this.config.paths.initial)) {
                 Hasher.saveInitialHash()
@@ -67,7 +67,7 @@ export default class Checker {
      * @param path начальный путь (вложенные папки тоже проверяются).
      * @param map карта обновления.
     */
-    public static checkPathToDelete = (path: string, map: IUpdateMap) => {
+    static checkPathToDelete = (path: string, map: UpdateMap) => {
         const toRemove: string[] = []
         const items = readdirSync(path)
         for (const item of items) {
@@ -94,7 +94,7 @@ export default class Checker {
      * @param map карта обновления.
      * @returns `[пути_для_удаления, для_обновления]`
     */
-    public static checkMap = (map: IUpdateMap) => {
+    static checkMap = (map: UpdateMap) => {
         const toRemove = this.checkPathToDelete(paths.root, map)
         const toCreateOrChange = []
     
@@ -122,7 +122,7 @@ export default class Checker {
      * Проверяет наличие обновления. Выводит оповещение при наличии.
      * @param whateverCheck игнорировать настройку `settings.updates` в `config.json`
     */
-    public static checkUpdate = (whateverCheck?: boolean) => {
+    static checkUpdate = (whateverCheck?: boolean) => {
         if (!this.config.settings.updates && !whateverCheck) return
 
         dns.resolve('github.com', error => {
@@ -157,7 +157,7 @@ export default class Checker {
      * 
      * _В случае неудачи выводит уведомление._
     */
-    public static hasAllPaths = () => {
+    static hasAllPaths = () => {
         let success = true
         if (!existsSync(this.config.paths.initial)) {
             Dialog.alert({
@@ -185,7 +185,7 @@ export default class Checker {
     }
 
     /** Проверяет наличие у программы прав на чтение/запись файла по переданному пути. */
-    public static checkPermissions = (path: string) => {
+    static checkPermissions = (path: string) => {
         try {
             writeFileSync(path, readFileSync(path))
             return true

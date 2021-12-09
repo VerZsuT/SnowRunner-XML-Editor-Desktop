@@ -1,10 +1,11 @@
 import { PureComponent } from 'react'
-import '../styles/Category.css'
+import '../styles/Category'
 
 import { mainProcess, t } from '@editor-service'
+import { ListType } from '../../list/enums'
 
 interface IProps {
-    name: string
+    name: ListType
 }
 
 export default class Category extends PureComponent<IProps> {

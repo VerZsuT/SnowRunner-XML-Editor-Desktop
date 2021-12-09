@@ -18,6 +18,7 @@ import Windows from './Windows'
 
 import { paths } from '../service'
 import * as templates from '@editor-templates'
+import { DialogAlertType } from '../enums'
 
 const info = {
     properties: [],
@@ -35,7 +36,7 @@ export default class Public {
     private static config = Config.obj
 
     /** Делает функции публичными, позволяя вызывать их из `renderer-process`. */
-    public static addMethods = (object: IFunctions): void => {
+    static addMethods = (object: Functions): void => {
         for (const name in object) {
             const value = object[name]
 
@@ -57,7 +58,7 @@ export default class Public {
         }
     }
     /** Делает переменные публичными, позволяя использовать/изменять из из `renderer-process`. */
-    public static addProps = (object: PropertyAttributes): void => {
+    static addProps = (object: PropertyAttributes): void => {
         for (const name in object) {
             const value = object[name]
             info.properties.push(name)
@@ -102,7 +103,7 @@ export default class Public {
     /**
      * Устанавливает публичные для `renderer-process` методы и свойства.
     */
-    public static init() {
+    static init() {
         this.addProps({
             invalidMods: () => this.settings.invalidMods,
             texts: () => Texts.obj,
@@ -169,7 +170,7 @@ export default class Public {
                 Dialog.alert({
                     message: message, 
                     title: this.settings.appId,
-                    type: 'async'
+                    type: DialogAlertType.async
                 })
             },
             alertSync: (message: string) => {

@@ -15,14 +15,14 @@ import Texts from './Texts'
 
 /** Отвечает за работу с бэкапом initial.pak */
 export default class Backup {
-    private static config: IConfig = Config.obj
-    private static settings: ISettings = Settings.obj
+    private static config = Config.obj
+    private static settings = Settings.obj
 
     /**
      * Сохраняет бэкап и распаковывает файлы.
      * @param reloadAfter перезагрузка после завершения.
     */
-    public static save = async (reloadAfter?: boolean) => {
+    static save = async (reloadAfter?: boolean) => {
         await Archiver.unpackMain()
         if (!existsSync(paths.backupFolder)) {
             mkdirSync(paths.backupFolder)
@@ -47,7 +47,7 @@ export default class Backup {
     }
 
     /** Сохраняет бэкап initial.pak без распаковки. */
-    public static copy = () => {
+    static copy = () => {
         try {
             copyFileSync(this.config.paths.initial, paths.backupInitial)
             Notification.show('SUCCESS', 'SUCCESS_BACKUP_SAVE')
@@ -57,7 +57,7 @@ export default class Backup {
     }
 
     /** Заменяет оригинальный initial.pak на сохранённый. */
-    public static recover = async () => {
+    static recover = async () => {
         if (!existsSync(paths.backupInitial)) {
             return
         }

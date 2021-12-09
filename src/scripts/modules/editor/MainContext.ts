@@ -1,10 +1,10 @@
 import { createContext } from 'react'
 
 export interface IMainContext {
-    ADV: IConfigADV
-    ETR: IConfigETR
-    setADV: (newADV: IConfigADV) => void
-    setETR: (newETR: IConfigETR) => void
+    ADV: ConfigADV
+    ETR: ConfigETR
+    setADV: (newADV: ConfigADV) => void
+    setETR: (newETR: ConfigETR) => void
     fileDOM: Document
     filePath: string
     addParam: (param: any) => void

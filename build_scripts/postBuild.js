@@ -18,7 +18,7 @@ const Log = require('./Log.js')
 const { checkPath, readFileToVar, checkVar, writeFile, generateMap, postBuildPaths } = require('./funcs.js')
 const { argv } = require('process')
 
-const winrarPath = argv[2] === 'x32'? postBuildPaths.winrar_x32 : postBuildPaths.winrar_x64
+const winrarPath = postBuildPaths.winrar_x32
 const originalPath = argv[2] === 'x32'? postBuildPaths.original_x32 : postBuildPaths.original_x64
 
 Log.mainGroup()

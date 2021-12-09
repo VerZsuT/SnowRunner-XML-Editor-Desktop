@@ -17,20 +17,25 @@ interface IState {
 }
 
 class Settings extends PureComponent<any, IState> {
-    private langOptions = Object.keys(Lang).map(lang => 
-        <option key={lang} lang={lang}>
-            {lang}
-        </option>
-    )
+    private langOptions: JSX.Element[]
 
-    state = {
-        updates: config.settings.updates,
-        DLC: config.settings.DLC,
-        mods: config.settings.mods,
-        resetButton: config.settings.resetButton,
-        lang: config.lang,
-        saveBackup: false,
-        pathToInitial: ''
+    constructor(props: any) {
+        super(props)
+
+        this.state = {
+            updates: config.settings.updates,
+            DLC: config.settings.DLC,
+            mods: config.settings.mods,
+            resetButton: config.settings.resetButton,
+            lang: config.lang,
+            saveBackup: false,
+            pathToInitial: ''
+        }
+        this.langOptions = Object.keys(Lang).map(lang => 
+            <option key={lang} lang={lang}>
+                {lang}
+            </option>
+        )
     }
 
     render() {
@@ -123,5 +128,4 @@ class Settings extends PureComponent<any, IState> {
     }
 }
 
-settingsPreload.errorHandler = message => mainProcess.alertSync(t[`${message}`.replace('Error: ', '')])
 render(<Settings/>, MAIN)

@@ -1,4 +1,4 @@
-import { FormEvent, PureComponent, createRef } from 'react'
+import { FormEvent, PureComponent, createRef, RefObject } from 'react'
 
 import { setHotKey, mainProcess } from '@editor-service'
 import { Message } from '../service'
@@ -17,43 +17,20 @@ interface IState {
 
 /** Класс консоли программы. */
 export default class EditorConsole extends PureComponent<IProps, IState> {
-    private $input = createRef<HTMLInputElement>()
+    private $input: RefObject<HTMLInputElement>
 
-    state = {
-        cmd: ''
+    constructor(props: IProps) {
+        super(props)
+
+        this.state = {
+            cmd: ''
+        }
+        this.$input = createRef<HTMLInputElement>() 
     }
 
     componentDidMount() {
-        setHotKey({
-            key: 'Enter'
-        }, () => {
-            const params = this.state.cmd.split(' ')
-            const cmd = params[0]
-    
-            if (this.props.listeners[cmd]) {
-                const error = this.props.listeners[cmd](params.slice(1))
-                if (error) this.props.onError(error)
-            } else {
-                this.props.onError(Message.warn(`Неверная команда '${cmd}'`))
-            }
-    
-            this.setState({
-                cmd: ''
-            })
-            this.$input.current.focus()
-        })
-
-        setHotKey({
-            key: 'KeyI',
-            ctrlKey: true,
-            shiftKey: true
-        }, () => {
-            mainProcess.toggleDevTools()
-        })
-
-        document.addEventListener('click', () => {
-            this.$input.current.focus()
-        })
+        this.setEnterHotkey()
+        this.setDevtoolsHotkey()
     }
 
     render() {
@@ -77,6 +54,41 @@ export default class EditorConsole extends PureComponent<IProps, IState> {
     private onInput = (e: FormEvent<HTMLInputElement>) => {
         this.setState({
             cmd: e.currentTarget.value
+        })
+    }
+
+    private setDevtoolsHotkey() {
+        setHotKey({
+            key: 'KeyI',
+            ctrlKey: true,
+            shiftKey: true
+        }, () => {
+            mainProcess.toggleDevTools()
+        })
+
+        document.addEventListener('click', () => {
+            this.$input.current.focus()
+        })
+    }
+
+    private setEnterHotkey() {
+        setHotKey({
+            key: 'Enter'
+        }, () => {
+            const params = this.state.cmd.split(' ')
+            const cmd = params[0]
+    
+            if (this.props.listeners[cmd]) {
+                const error = this.props.listeners[cmd](params.slice(1))
+                if (error) this.props.onError(error)
+            } else {
+                this.props.onError(Message.warn(`Неверная команда '${cmd}'`))
+            }
+    
+            this.setState({
+                cmd: ''
+            })
+            this.$input.current.focus()
         })
     }
 

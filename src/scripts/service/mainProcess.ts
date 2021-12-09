@@ -1,10 +1,10 @@
-const info: IInfo = ipcRenderer.sendSync('getInfo')
+const info: Info = ipcRenderer.sendSync('getInfo')
 const errorHandler = (error: Error) => {
     ipcRenderer.sendSync('function_alertSync_call', `${error}`.replace('Error: ', ''))
 }
 
 /** Предоставляет доступ ко всем публичным методам и функциям, установленным в `index.ts`. */
-export default <IMainProcess>new Proxy({}, {
+export default <MainProcess>new Proxy({}, {
     get(_, name: string) {
         if (info.properties.includes(name)) {
             const propResult = ipcRenderer.sendSync(`property_${name}_get`)

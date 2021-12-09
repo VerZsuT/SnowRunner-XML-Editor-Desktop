@@ -7,14 +7,14 @@ import Texts from './Texts'
 
 /** Отвечает за работу с `.epf` файлами. */
 export default class EPF {
-    private static settings: ISettings = Settings.obj
+    private static settings = Settings.obj
 
     /**
      * Открывает окно выбора `.epf` файлов.
      * 
      * _После выбора объединяет их и сохраняет по выбранному пользователем пути._
     */
-    public static join = () => {
+    static join = () => {
         const files = Dialog.getMultiEPF()
     
         if (files && files.length > 1) {
@@ -53,7 +53,7 @@ export default class EPF {
      * 
      * _Анализирует выбранный .epf файл и выводит окно с его содержимым в более удобном формате._
     */
-    public static see = () => {
+    static see = () => {
         const path = Dialog.getEPF()
     
         if (!path) return

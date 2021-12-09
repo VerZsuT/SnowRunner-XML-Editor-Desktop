@@ -13,32 +13,46 @@ interface IState {
     isExporting: boolean
     filter: string
     title: string
-    ADV: IConfigADV
-    ETR: IConfigETR
+    ADV: ConfigADV
+    ETR: ConfigETR
 }
 
 class Editor extends PureComponent<any, IState> {
-    private importData = local.get('importData')? JSON.parse(local.pop('importData')) : null
-    private fileDOM = this.getDOM()[0]
-    private tableItems = this.getDOM()[1]
-    private filePath = local.pop('filePath')
-    private isBridge = local.pop('isBridge') === 'true'
-    private currentMod = local.pop('currentMod')
-    private currentDLC = local.pop('currentDLC')
-    private mainTitle = this.getMainTitle()
-    private templates = this.fileDOM.querySelector('_templates')
-    private globalTemplates = this.getGlobalTemplates()
+    private importData: any
+    private fileDOM: Document
+    private tableItems: ITemplateParams
+    private filePath: string
+    private isBridge: boolean
+    private currentMod: string
+    private currentDLC: string
+    private mainTitle: string
+    private templates: Element
+    private globalTemplates: Document
 
     private EXPORT_FILE_VERSION = '1.0'
     private params = []
     private deps = {}
 
-    state = {
-        isExporting: false,
-        filter: '',
-        title: this.mainTitle,
-        ADV: Object.assign({}, config.ADV),
-        ETR: Object.assign({}, config.ETR)
+    constructor(props: any) {
+        super(props)
+
+        this.state = {
+            isExporting: false,
+            filter: '',
+            title: this.mainTitle,
+            ADV: Object.assign({}, config.ADV),
+            ETR: Object.assign({}, config.ETR)
+        }
+        this.importData = local.get('importData')? JSON.parse(local.pop('importData')) : null
+        this.fileDOM = this.getDOM()[0]
+        this.tableItems = this.getDOM()[1]
+        this.filePath = local.pop('filePath')
+        this.isBridge = local.pop('isBridge') === 'true'
+        this.currentMod = local.pop('currentMod')
+        this.currentDLC = local.pop('currentDLC')
+        this.mainTitle = this.getMainTitle()
+        this.templates = this.fileDOM.querySelector('_templates')
+        this.globalTemplates = this.getGlobalTemplates()
     }
 
     componentDidMount() {
@@ -52,29 +66,34 @@ class Editor extends PureComponent<any, IState> {
     }
 
     render() {
+        const mainContext = {
+            ADV: this.state.ADV,
+            ETR: this.state.ETR,
+            setADV: this.setADV,
+            setETR: this.setETR,
+            fileDOM: this.fileDOM,
+            filePath: this.filePath,
+            addParam: this.addParam,
+            addDep: this.addDep,
+            currentDLC: this.currentDLC,
+            currentMod: this.currentMod,
+            templates: this.templates,
+            globalTemplates: this.globalTemplates,
+            tableItems: this.tableItems,
+            filter: this.state.filter
+        }
+
         return (<>
             <h1 id='error'>{t.PARSE_FILE_ERROR}</h1>
             <section id='work-zone'>
                 <div id='editor'>
-                    <MainContext.Provider value={{
-                        ADV: this.state.ADV,
-                        ETR: this.state.ETR,
-                        setADV: this.setADV,
-                        setETR: this.setETR,
-                        fileDOM: this.fileDOM,
-                        filePath: this.filePath,
-                        addParam: this.addParam,
-                        addDep: this.addDep,
-                        currentDLC: this.currentDLC,
-                        currentMod: this.currentMod,
-                        templates: this.templates,
-                        globalTemplates: this.globalTemplates,
-                        tableItems: this.tableItems,
-                        filter: this.state.filter
-                    }}>
+                    <MainContext.Provider value={mainContext}>
                         <Search value={this.state.filter} onChange={filter=>this.setState({filter})} />
+
                         <h2 id='title' className='title'>{this.state.title}</h2>
+
                         <Parameters isExporting={this.state.isExporting} />
+                        
                         <button
                             className='btn btn-primary'
                             id='save-params'
@@ -114,13 +133,13 @@ class Editor extends PureComponent<any, IState> {
         </>)
     }
 
-    private setADV = (newADV: IConfigADV) => {
+    private setADV = (newADV: ConfigADV) => {
         this.setState({
             ADV: newADV
         })
     }
 
-    private setETR = (newETR: IConfigETR) => {
+    private setETR = (newETR: ConfigETR) => {
         this.setState({
             ETR: newETR
         })

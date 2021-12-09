@@ -13,9 +13,13 @@ interface IState {
 }
 
 export default class GameFolder extends PureComponent<IProps, IState> {
-    state = {
-        manual: false,
-        gameFolder: ''
+    constructor(props: IProps) {
+        super(props)
+
+        this.state = {
+            manual: false,
+            gameFolder: ''
+        }
     }
 
     render() {
@@ -51,7 +55,7 @@ export default class GameFolder extends PureComponent<IProps, IState> {
     }
 
     private getFolder = () => {
-        let data: IFolder
+        let data: Folder
         if (this.state.manual) {
             data = setupPreload.initial
             if (!data) return

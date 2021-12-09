@@ -3,7 +3,7 @@ import { render } from 'react-dom'
 import './style.css'
 
 import { mainProcess, Lang, MAIN } from '@editor-service'
-import { ANY, OPTIONAL, checkArgs, help, Message } from './service'
+import { ANY, OPTIONAL, addCheck, help, Message } from './service'
 import EditorConsole from './components/EditorConsole'
 
 interface IState {
@@ -19,6 +19,7 @@ class Console extends PureComponent<any, IState> {
 
     constructor(props: any) {
         super(props)
+
         this.state = {
             messages: [
                 <Fragment key='0'>
@@ -26,7 +27,6 @@ class Console extends PureComponent<any, IState> {
                 </Fragment>
             ]
         }
-
         this.listeners = this.getListeners()
     }
 
@@ -50,11 +50,11 @@ class Console extends PureComponent<any, IState> {
         type cmdsType = Exclude<keyof typeof help, 'toString'>
 
         return {
-            'exit': checkArgs(() => window.close()),
-            'quit': checkArgs(() => mainProcess.quit()),
-            'reload': checkArgs(() => mainProcess.reload()),
-            'reset': checkArgs(() => mainProcess.resetConfig(false)),
-            'devTools': checkArgs(args => {
+            'exit': addCheck(() => window.close()),
+            'quit': addCheck(() => mainProcess.quit()),
+            'reload': addCheck(() => mainProcess.reload()),
+            'reset': addCheck(() => mainProcess.resetConfig(false)),
+            'devTools': addCheck(args => {
                 const { action } = args
                 if (action === 'enable') {
                     mainProcess.enableDevTools()
@@ -66,10 +66,10 @@ class Console extends PureComponent<any, IState> {
             }, {
                 action: ['enable', 'disable'] as unknown as 'enable'|'disable'
             }),
-            'version': checkArgs(() => {
+            'version': addCheck(() => {
                 this.pushMessage(Message.log(`Текущая версия программы: ${config.version}.`))
             }),
-            'sset': checkArgs(args => {
+            'sset': addCheck(args => {
                 const { name, value } = args
             
                 if (config.settings[name] !== undefined) {
@@ -80,7 +80,7 @@ class Console extends PureComponent<any, IState> {
                 name: Object.keys(config.settings) as unknown as keyof typeof config.settings,
                 value: ['true', 'false'] as unknown as 'true'|'false'
             }),
-            'lang': checkArgs(args => {
+            'lang': addCheck(args => {
                 const { lang } = args
             
                 config.lang = lang
@@ -88,7 +88,7 @@ class Console extends PureComponent<any, IState> {
             }, {
                 lang: Object.keys(Lang) as unknown as Lang
             }),
-            'read': checkArgs(() => {
+            'read': addCheck(() => {
                 const path = mainProcess.openXMLDialog()
                 const parser = new DOMParser()
             
@@ -107,7 +107,7 @@ class Console extends PureComponent<any, IState> {
                 this.fileDOM = fileDOM
                 this.filePath = path
             }),
-            'set': checkArgs(args => {
+            'set': addCheck(args => {
                 let { selector, attrName, value } = args
             
                 selector = consolePreload.replacePars(selector)
@@ -138,7 +138,7 @@ class Console extends PureComponent<any, IState> {
                 attrName: ANY,
                 value: ANY
             }),
-            'backup': checkArgs(args => {
+            'backup': addCheck(args => {
                 const { action } = args
             
                 if (action === 'save') {
@@ -151,7 +151,7 @@ class Console extends PureComponent<any, IState> {
             }, {
                 action: ['save', 'restore'] as unknown as 'save'|'restore'
             }),
-            'addMod': checkArgs(() => {
+            'addMod': addCheck(() => {
                 const result = consolePreload.getModPak()
                 if (!result) {
                     this.pushMessage(Message.error('Не выбран .pak файл модификации.'))
@@ -168,12 +168,12 @@ class Console extends PureComponent<any, IState> {
                 
                 mainProcess.reload()
             }),
-            'checkUpdate': checkArgs(() => {
+            'checkUpdate': addCheck(() => {
                 this.pushMessage(Message.log('Проверка обновления...'))
                 this.pushMessage(Message.log('В случае удачи выведется соответствующее окно.'))
                 mainProcess.checkUpdate()
             }),
-            'delMod': checkArgs(args => {
+            'delMod': addCheck(args => {
                 const { modId } = args
             
                 delete config.modsList[modId]
@@ -184,7 +184,7 @@ class Console extends PureComponent<any, IState> {
             }, {
                 modId: Object.keys(config.modsList) as unknown as keyof typeof config.modsList
             }),
-            'help': checkArgs(args => {
+            'help': addCheck(args => {
                 const { cmd } = args
             
                 if (cmd) {
@@ -199,7 +199,7 @@ class Console extends PureComponent<any, IState> {
             }, {
                 cmd: [OPTIONAL, cmds] as unknown as cmdsType
             }),
-            'archive': checkArgs(args => {
+            'archive': addCheck(args => {
                 const { action } = args
             
                 if (action === 'save') {
@@ -212,7 +212,7 @@ class Console extends PureComponent<any, IState> {
             }, {
                 action: ['save', 'unpack'] as unknown as 'save'|'unpack'
             }),
-            'config': checkArgs(args => {
+            'config': addCheck(args => {
                 const { action } = args
             
                 if (action === 'import') {
@@ -230,7 +230,7 @@ class Console extends PureComponent<any, IState> {
             }, {
                 action: ['import', 'export'] as unknown as 'import'|'export'
             }),
-            'whatsNew': checkArgs(() => {
+            'whatsNew': addCheck(() => {
                 mainProcess.openWhatsNew()
             })
         }

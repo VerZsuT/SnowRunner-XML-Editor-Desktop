@@ -10,7 +10,7 @@ function getConfig() {
 }
 
 // Двусторонний доступ к переменной `config`.
-window.config = <IConfig>new Proxy({}, {
+window.config = <ProgramConfig>new Proxy({}, {
     get: (_target, name) => {
         const value = getConfig()[name]
 

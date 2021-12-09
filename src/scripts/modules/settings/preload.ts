@@ -4,15 +4,16 @@ import { join, basename } from 'path'
 import '@editor-app/mainPreload'
 import { t, mainProcess } from '@editor-service'
 
-class Preload implements ISettingsPreload {
-    private openDialog = () => mainProcess.openDialog()
-    private openInitialDialog = () => mainProcess.openInitialDialog()
- 
-    public errorHandler = (text: keyof typeof t) => mainProcess.alertSync(t[text])
+const openDialog = () => mainProcess.openDialog()
+const openInitialDialog = () => mainProcess.openInitialDialog()
+
+const preload: SettingsPreload = {
+    errorHandler: (text: keyof typeof t) => mainProcess.alertSync(t[text]),
+
     get gameFolder() {
-        const result = this.openDialog()
+        const result = openDialog()
         if (!result) {
-            this.errorHandler('EMPTY_FOLDER_ERROR')
+            preload.errorHandler('EMPTY_FOLDER_ERROR')
             return
         }
         const folder = result
@@ -32,7 +33,7 @@ class Preload implements ISettingsPreload {
         }
 
         if (!existed) {
-            this.errorHandler('INVALID_FOLDER_ERROR')
+            preload.errorHandler('INVALID_FOLDER_ERROR')
             return
         }
 
@@ -40,12 +41,12 @@ class Preload implements ISettingsPreload {
             folder: folder,
             initial: existed
         }
-    }
+    },
 
     get initial() {
-        const result = this.openInitialDialog()
+        const result = openInitialDialog()
         if (!result || basename(result) !== 'initial.pak' || !existsSync(result)) {
-            this.errorHandler('INVALID_INITIAL_ERROR')
+            preload.errorHandler('INVALID_INITIAL_ERROR')
             return
         }
         return {
@@ -54,4 +55,4 @@ class Preload implements ISettingsPreload {
     }
 }
 
-window.settingsPreload = new Preload()
+window.settingsPreload = preload

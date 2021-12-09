@@ -3,6 +3,7 @@ import '../styles/InnerListItem.css'
 
 import { getIngameText, mainProcess, prettify } from '@editor-service'
 import { FilterContext } from '../FilterContext'
+import { ListType } from '../enums'
 
 interface IProps {
     item: any
@@ -16,26 +17,30 @@ export default class InnerListItem extends PureComponent<IProps, IState> {
     static contextType = FilterContext
     declare context: string
 
-    private DOM = this.getDOM()
-    private name = this.getName()
-    private error = this.getError()
-    private imgSrc = this.getImgSrc()
+    private DOM: Document
+    private name: string
+    private hasError: boolean
+    private imgSrc: string
     private isMod: boolean
-
-    state = {
-        isDeleted: false
-    }
 
     constructor(props: IProps) {
         super(props)
+
+        this.state = {
+            isDeleted: false
+        }
         this.isMod = Boolean(this.props.item.modId)
+        this.DOM = this.getDOM()
+        this.name = this.getName()
+        this.hasError = this.checkError()
+        this.imgSrc = this.getImgSrc()
     }
 
     render() {
         const isShow = this.isShow()
         const text = this.getText()
 
-        if (!this.error && isShow && !this.state.isDeleted) {
+        if (!this.hasError && isShow && !this.state.isDeleted) {
             const itemText = typeof text === 'string'
                 ? <span className='item-text'>{text}</span>
                 : <span className='item-text'>
@@ -115,7 +120,7 @@ export default class InnerListItem extends PureComponent<IProps, IState> {
         }
     }
 
-    private getError() {
+    private checkError() {
         return Boolean(
             this.DOM.querySelector('parsererror') ||
             (
@@ -127,16 +132,16 @@ export default class InnerListItem extends PureComponent<IProps, IState> {
     }
 
     private getImgSrc() {
-        switch (local.get('listType')) {
-            case 'cargo':
+        switch (local.get('listType') as ListType) {
+            case ListType.cargo:
                 return require('../../../../images/icons/cargo_item.png')
-            case 'trailers':
+            case ListType.trailers:
                 try {
                     return require(`../../../../images/trailers/${this.props.item.name}.png`)
                 } catch {
                     return require('../../../../images/icons/trailer_item.png')
                 }
-            case 'trucks':
+            case ListType.trucks:
                 try {
                     return require(`../../../../images/trucks/${this.props.item.name}.jpg`)
                 } catch {

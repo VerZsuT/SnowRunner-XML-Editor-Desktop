@@ -23,6 +23,7 @@ export default class Select extends PureComponent<IProps, IState> {
 
     constructor(props: IProps) {
         super(props)
+
         this.state = {
             value: props.getValue(),
         }
@@ -37,29 +38,7 @@ export default class Select extends PureComponent<IProps, IState> {
     }
 
     componentDidMount() {
-        const { addParam } = this.context
-
-        addParam({
-            forExport: () => {
-                if (this.props.isExport && this.props.isParentExport) {
-                    return {
-                        selector: this.props.item.selector,
-                        name: this.props.item.name,
-                        value: this.props.getValue()
-                    }
-                }
-            },
-            forImport: {
-                setValue: (newValue: string) => {
-                    this.setState({
-                        value: newValue
-                    })
-                    this.props.setValue(this.props.item.selector, this.props.item.name, newValue)
-                },
-                selector: this.props.item.selector,
-                name: this.props.item.name
-            }
-        })
+        this.initImportExport()
     }
 
     render() {
@@ -102,6 +81,32 @@ export default class Select extends PureComponent<IProps, IState> {
         this.props.setValue(this.props.item.selector, this.props.item.name, newVal)
         this.setState({
             value: newVal
+        })
+    }
+
+    private initImportExport() {
+        const { addParam } = this.context
+
+        addParam({
+            forExport: () => {
+                if (this.props.isExport && this.props.isParentExport) {
+                    return {
+                        selector: this.props.item.selector,
+                        name: this.props.item.name,
+                        value: this.props.getValue()
+                    }
+                }
+            },
+            forImport: {
+                setValue: (newValue: string) => {
+                    this.setState({
+                        value: newValue
+                    })
+                    this.props.setValue(this.props.item.selector, this.props.item.name, newValue)
+                },
+                selector: this.props.item.selector,
+                name: this.props.item.name
+            }
         })
     }
 }

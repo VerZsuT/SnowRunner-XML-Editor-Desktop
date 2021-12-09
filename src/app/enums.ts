@@ -25,6 +25,21 @@ export enum MenuRole {
     openURL = 'openURL'
 }
 
+export enum DialogType {
+    open = 'open',
+    save = 'save'
+}
+
+export enum DialogSourceType {
+    file = 'file',
+    dir = 'dir'
+}
+
+export enum DialogAlertType {
+    sync = 'sync',
+    async = 'async'
+}
+
 /** Тип билда */
 export enum BuildType {
     dev = 'dev',

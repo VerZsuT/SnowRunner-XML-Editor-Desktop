@@ -13,7 +13,7 @@ function getConfig() {
 
 /** Отвечает за работу с `config.json` */
 export default class Config {
-    static obj: IConfig = getConfig()
+    static obj: ProgramConfig = getConfig()
 
     private static settings = Settings.obj
     
@@ -81,9 +81,6 @@ export default class Config {
         if (exportedConfig.version < 'v0.6.5') {
             exportedConfig.ADV = {}
             exportedConfig.ETR = {}
-        }
-        if (exportedConfig.version < 'v0.6.6a') {
-            exportedConfig.arch = 'x32'
         }
         exportedConfig.settings.showWhatsNew = true
         writeFileSync(paths.config, JSON.stringify(exportedConfig))

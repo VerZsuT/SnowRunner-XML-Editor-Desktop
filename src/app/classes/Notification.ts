@@ -9,7 +9,7 @@ type TKeys = keyof typeof RU
 /** Отвечает за показ `windows-notification`. */
 export default class Notification {
     /** Выводит windows-notification на экран. */
-    public static show = async (titleKey: TKeys, messageKey: TKeys) => {
+    static show = async (titleKey: TKeys, messageKey: TKeys) => {
         if (ElNotification.isSupported()) {
             const notification = new ElNotification({
                 title: Texts.get(titleKey),

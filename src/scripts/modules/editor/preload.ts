@@ -4,7 +4,7 @@ import { join, basename } from 'path'
 import '@editor-app/mainPreload'
 import { mainProcess } from '@editor-service'
 
-window.editorPreload = {
+const editorPreload: EditorPreload = {
     existsSync: existsSync,
     findFromDLC: (fileName, type) => {
         for (const dlcFolder of readdirSync(config.paths.dlc)) {
@@ -20,3 +20,5 @@ window.editorPreload = {
     basename: basename,
     readFile: readFileSync
 }
+
+window.editorPreload = editorPreload

@@ -24,40 +24,14 @@ export default class Coordinates extends PureComponent<IProps, IState> {
 
     constructor(props: IProps) {
         super(props)
+        
         this.state = {
             ...this.parse(props.getValue())
         }
     }
 
     componentDidMount() {
-        const { addParam } = this.context
-
-        addParam({
-            forExport: () => {
-                if (this.props.isExport && this.props.isParentExport) {
-                    return {
-                        selector: this.props.item.selector,
-                        name: this.props.item.name, 
-                        value: `(${this.state.x}; ${this.state.y}; ${this.state.z})`
-                    }
-                }
-            },
-            forImport: {
-                setValue: (value: string) => {
-                    const thisValue = `(${this.state.x}; ${this.state.y}; ${this.state.z})`
-                    if (thisValue !== value) {
-                        const newCoords = this.parse(value)
-                        this.setState({
-                            x: newCoords.x,
-                            y: newCoords.y,
-                            z: newCoords.z
-                        })
-                    }
-                },
-                selector: this.props.item.selector,
-                name: this.props.item.name
-            }
-        })
+        this.initImportExport()
     }
 
     render() {
@@ -95,24 +69,20 @@ export default class Coordinates extends PureComponent<IProps, IState> {
     }
 
     private saveX = (e: ChangeEvent<HTMLInputElement>) => {
-        this.save(+e.target.value)
+        this.save({x: Number(e.target.value)})
     }
 
     private saveY = (e: ChangeEvent<HTMLInputElement>) => {
-        this.save(null, +e.target.value)
+        this.save({y: Number(e.target.value)})
     }
 
     private saveZ = (e: ChangeEvent<HTMLInputElement>) => {
-        this.save(null, null, +e.target.value)
+        this.save({z: Number(e.target.value)})
     }
 
-    private save(saveX?: number, saveY?: number, saveZ?: number) {
+    private save({x=this.state.x, y=this.state.y, z=this.state.z}) {
         const { fileDOM, ETR, setETR, filePath } = this.context
-
-        let newX = String(saveX)
-        let newY = String(saveY)
-        let newZ = String(saveZ)
-        const newValue = `(${this.state.x||newX}; ${this.state.y||newY}; ${this.state.z||newZ})`
+        const newValue = `(${x}; ${y}; ${z})`
 
         if (!fileDOM.querySelector(this.props.item.selector)) {
             const array = this.props.item.selector.split('>').map(value => value.trim())
@@ -147,5 +117,36 @@ export default class Coordinates extends PureComponent<IProps, IState> {
         }
         const [x, y, z] = array
         return {x: Number(x), y: Number(y), z: Number(z)}
+    }
+
+    private initImportExport() {
+        const { addParam } = this.context
+
+        addParam({
+            forExport: () => {
+                if (this.props.isExport && this.props.isParentExport) {
+                    return {
+                        selector: this.props.item.selector,
+                        name: this.props.item.name, 
+                        value: `(${this.state.x}; ${this.state.y}; ${this.state.z})`
+                    }
+                }
+            },
+            forImport: {
+                setValue: (value: string) => {
+                    const thisValue = `(${this.state.x}; ${this.state.y}; ${this.state.z})`
+                    if (thisValue !== value) {
+                        const newCoords = this.parse(value)
+                        this.setState({
+                            x: newCoords.x,
+                            y: newCoords.y,
+                            z: newCoords.z
+                        })
+                    }
+                },
+                selector: this.props.item.selector,
+                name: this.props.item.name
+            }
+        })
     }
 }

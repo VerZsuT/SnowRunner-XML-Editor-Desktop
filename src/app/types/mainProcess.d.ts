@@ -1,9 +1,9 @@
-interface IInfo {
+interface Info {
     properties: string[]
     functions: string[]
 }
 
-interface IMainProcess extends Properties, IFunctions {}
+interface MainProcess extends Properties, Functions {}
 
 type Texts = {
     RU: {[key: string]: string}
@@ -16,10 +16,10 @@ type Texts = {
 type Properties = {
     invalidMods: string[]
     texts: Texts
-    menu: IMenuTemplate[]
-    paths: IPaths
-    config: IConfig
-    templates: ITemplates
+    menu: MenuTemplate[]
+    paths: Paths
+    config: ProgramConfig
+    templates: Templates
 }
 
 type PropertyAttributes = {
@@ -28,7 +28,7 @@ type PropertyAttributes = {
         [()=>Properties[name], (value: any)=>void]
 }
 
-interface IFunctions {
+interface Functions {
     getParams(domString: string, templateName: string): {
         params: ITemplateParams
         dom: string

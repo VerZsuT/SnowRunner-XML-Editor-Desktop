@@ -42,31 +42,7 @@ export default class Input extends PureComponent<IProps, IState> {
     }
 
     componentDidMount() {
-        const { addParam } = this.context
-
-        addParam({
-            forExport: () => {
-                if (this.props.isExport && this.props.isParentExport) {
-                    return {
-                        selector: this.props.item.selector, 
-                        name: this.props.item.name, 
-                        value: this.state.value
-                    }
-                }
-            },
-            forImport: {
-                setValue: (newValue: string) => {
-                    if (this.state.value !== newValue) {
-                        this.setState({
-                            value: newValue
-                        })
-                        this.props.setValue(this.props.item.selector, this.props.item.name, newValue)
-                    }
-                },
-                selector: this.props.item.selector,
-                name: this.props.item.name
-            }
-        })
+        this.initImportExport()
     }
 
     render() {
@@ -101,7 +77,9 @@ export default class Input extends PureComponent<IProps, IState> {
         if (newVal === '') {
             newVal = this.defaultValue
         }
-        newVal = this.limit(+newVal)
+        if (this.props.item.type !== InputType.text) {
+            newVal = this.limit(Number(newVal))
+        }
         
         if (!fileDOM.querySelector(this.props.item.selector)) {
             const array = this.props.item.selector.split('>').map(value => value.trim())
@@ -139,11 +117,11 @@ export default class Input extends PureComponent<IProps, IState> {
         return num
     }
 
-    private setColor(e: ChangeEvent<HTMLInputElement>) {
-        const v = e.target.value
-        let newVal: string|number = v
+    private setColor = (e: ChangeEvent<HTMLInputElement>) => {
+        const v = +e.target.value
+        let newVal: number = v
 
-        if (v === null) newVal = 0
+        if (v === null || v === NaN) newVal = 0
         if (this.props.item.areas) {
             let color = '#ced4da'
 
@@ -166,5 +144,33 @@ export default class Input extends PureComponent<IProps, IState> {
                 borderColor: color
             })
         }
+    }
+
+    private initImportExport() {
+        const { addParam } = this.context
+
+        addParam({
+            forExport: () => {
+                if (this.props.isExport && this.props.isParentExport) {
+                    return {
+                        selector: this.props.item.selector, 
+                        name: this.props.item.name, 
+                        value: this.state.value
+                    }
+                }
+            },
+            forImport: {
+                setValue: (newValue: string) => {
+                    if (this.state.value !== newValue) {
+                        this.setState({
+                            value: newValue
+                        })
+                        this.props.setValue(this.props.item.selector, this.props.item.name, newValue)
+                    }
+                },
+                selector: this.props.item.selector,
+                name: this.props.item.name
+            }
+        })
     }
 }

@@ -8,7 +8,7 @@ const mainURL = 'https://verzsut.github.io/SnowRunner-XML-Editor-Desktop'
 /**
  * Пути, используемые в программе.
 */
-export const paths: IPaths = {
+export const paths: Paths = {
     /** URL json файла обновления. */
     publicInfo: `${updaterURL}/public.json`,
     /** URL страницы скачивании программы. */
@@ -30,9 +30,7 @@ export const paths: IPaths = {
     /** Путь к папке с файлами переводов. */
     translations: resolve('translations'),
     /** Путь к папке WinRAR(x32) */
-    winrar_x32: resolve('winrar', 'x32'),
-    /** Путь к папке WinRAR(x64) */
-    winrar_x64: resolve('winrar', 'x64'),
+    winrar_x32: resolve('winrar'),
     /** Путь к временной папке для основных файлов. */
     mainTemp: resolve('mainTemp'),
     /** Путь к временной папке для файлов модификаций. */
@@ -50,7 +48,7 @@ export const paths: IPaths = {
  * @param data - содержимое файла.
  * @returns {object} - неполный объект переводов игры.
 */
-export function parseStrings(data: string): ITranslation {
+export function parseStrings(data: string): Translation {
     const strings = {}
     const lines = data.match(/[^\r\n]+/g)
     if (lines) {

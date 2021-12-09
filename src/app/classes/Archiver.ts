@@ -9,16 +9,16 @@ import Windows from './Windows'
 
 /** Предоставляет методы для работы с архивами. */
 export default class Archiver {
-    private static config: IConfig = Config.obj
+    static config = Config.obj
     
     /**
      * Обновляет файлы в архиве.
      * @param source - путь до папки с файлами.
      * @param direction - путь до архива.
     */
-    public static update = (source: string, direction: string): void => {
+    static update = (source: string, direction: string): void => {
         execSync(`WinRAR f -ibck -inul "${direction}" "${source}\\" -r -ep1`, {
-            cwd: this.config.arch === 'x32'? paths.winrar_x32 : paths.winrar_x64,
+            cwd: paths.winrar_x32,
             windowsHide: true
         })
     }
@@ -28,10 +28,10 @@ export default class Archiver {
      * @param source - путь до ахрива.
      * @param direction - путь до папки.
     */
-    public static unpack = async (source: string, direction: string, fromMod?: boolean) => {
+    static unpack = async (source: string, direction: string, fromMod?: boolean) => {
         await new Promise(resolve => {
             exec(`WinRAR x -ibck -inul "${source}" @${fromMod?'unpack-mod-list.lst':'unpack-list.lst'} "${direction}\\"`, {
-                cwd: this.config.arch === 'x32'? paths.winrar_x32 : paths.winrar_x64,
+                cwd: paths.winrar_x32,
                 windowsHide: true
             }).once('close', resolve)
         })
@@ -41,7 +41,7 @@ export default class Archiver {
      * Распаковывает основные XML файлы (+ DLC) из `initial.pak`.
      * @param noLock не блоковать другие окна во время распаковки.
     */
-    public static unpackMain = async (noLock?: boolean) => {
+    static unpackMain = async (noLock?: boolean) => {
         const loading = Windows.openLoading(noLock)
         loading.once('show', () => {
             loading.setText(Texts.get('UNPACKING'))
@@ -58,7 +58,7 @@ export default class Archiver {
     }
 
     /** Распаковывает XML файлы модификации из файла по переданному пути. */
-    public static unpackMod = async (pathToFile: string) => {
+    static unpackMod = async (pathToFile: string) => {
         const pathToDir = join(paths.modsTemp, basename(pathToFile, '.pak'))
         try {
             if (!existsSync(paths.modsTemp)) {

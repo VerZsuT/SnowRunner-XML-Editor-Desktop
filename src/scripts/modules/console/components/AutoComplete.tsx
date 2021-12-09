@@ -16,13 +16,15 @@ interface IState {
 export default class AutoComplete extends PureComponent<IProps, IState> {
     private items: string[]
 
-    state = {
-        value: ''
-    }
-
     constructor(props: IProps) {
         super(props)
 
+        this.state = {
+            value: ''
+        }
+    }
+
+    componentDidMount() {
         this.setEventListeners()
     }
 

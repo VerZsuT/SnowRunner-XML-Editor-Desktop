@@ -5,10 +5,10 @@ import Texts from './Texts'
 
 /** Овечает за меню программы. */
 export default class Menu {
-    private static config: IConfig = Config.obj
+    private static config = Config.obj
 
     /** Возвращает шаблон меню. */
-    public static get = (): IMenuTemplate[] => [
+    static get = (): MenuTemplate[] => [
         {
             label: Texts.get('FILE_MENU_LABEL'),
             submenu: [
@@ -100,7 +100,7 @@ export default class Menu {
     ]
 
     /** Возвращает переданный шаблон если присутствует путь к `initial.pak`. */
-    private static ifHasInitial = (menu: IMenuTemplate[]): IMenuTemplate[] => {
+    private static ifHasInitial = (menu: MenuTemplate[]): MenuTemplate[] => {
         if (this.config.paths.initial) {
             return menu
         }
@@ -108,7 +108,7 @@ export default class Menu {
     }
 
     /** Возвращает переданный шаблон если тип билда `dev`. */
-    private static ifDevBuild = (menu: IMenuTemplate[]): IMenuTemplate[] => {
+    private static ifDevBuild = (menu: MenuTemplate[]): MenuTemplate[] => {
         if (this.config.buildType === BuildType.dev) {
             return menu
         }

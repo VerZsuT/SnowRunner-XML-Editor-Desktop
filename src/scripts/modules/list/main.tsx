@@ -8,14 +8,19 @@ import { MAIN } from '@editor-service'
 import InnerList from './components/InnerList'
 import Search from './components/Search'
 import { FilterContext } from './FilterContext'
+import { SrcType } from './enums'
 
 interface IState {
     filter: string
 }
 
 class List extends PureComponent<any, IState> {
-    state = {
-        filter: ''
+    constructor(props: any) {
+        super(props)
+
+        this.state = {
+            filter: ''
+        }
     }
 
     render() {
@@ -25,13 +30,13 @@ class List extends PureComponent<any, IState> {
                     <Search value={this.state.filter} onChange={this.setFilter}/>
 
                     {config.settings.mods? 
-                        <InnerList srcType='mods'/> 
+                        <InnerList srcType={SrcType.mods}/> 
                     :null}
                     {config.settings.DLC? 
-                        <InnerList srcType='dlc'/>
+                        <InnerList srcType={SrcType.dlc}/>
                     :null}
                     
-                    <InnerList srcType='main'/>
+                    <InnerList srcType={SrcType.main}/>
                 </div>
             </FilterContext.Provider>
         )

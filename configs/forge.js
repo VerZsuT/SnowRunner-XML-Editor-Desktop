@@ -1,5 +1,3 @@
-const { join } = require('path')
-
 const template = './src/pages/template.html'
 const mainPreload = './src/app/mainPreload.ts'
 

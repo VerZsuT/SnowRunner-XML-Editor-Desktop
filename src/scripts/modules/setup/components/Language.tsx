@@ -4,9 +4,17 @@ import '../styles/Language.css'
 import { Lang, mainProcess, t } from '@editor-service'
 
 export default class Language extends PureComponent {
-    private langOptions = Object.keys(Lang).map(lang =>
-        <option key={lang}>{lang}</option>
-    )
+    private langOptions: JSX.Element[]
+
+    constructor(props: any) {
+        super(props)
+
+        this.langOptions = Object.keys(Lang).map(lang =>
+            <option key={lang}>
+                {lang}
+            </option>
+        )
+    }
 
     render() {
         return (

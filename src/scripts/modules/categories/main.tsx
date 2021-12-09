@@ -2,10 +2,11 @@ import { PureComponent } from 'react'
 import { render } from 'react-dom'
 import '@editor-service/menu'
 import '@editor-bootstrap'
-import './styles/main.css'
+import './styles/main'
 
 import { setHotKey, mainProcess, MAIN, t } from '@editor-service'
 import Category from './components/Category'
+import { ListType } from '../list/enums'
 
 class Categories extends PureComponent {
     private items: JSX.Element[]
@@ -13,7 +14,7 @@ class Categories extends PureComponent {
     constructor(props: any) {
         super(props)
 
-        const categories = ['trucks', 'trailers', 'cargo']
+        const categories = Object.keys(ListType) as ListType[]
         this.items = categories.map(category => 
             <Category key={category} name={category}/>
         )

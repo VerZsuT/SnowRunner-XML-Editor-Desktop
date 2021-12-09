@@ -85,9 +85,7 @@ export default class Parameter extends PureComponent<IProps, IState> {
             <div className='info'>
                 <div className='param-text' style={this.style}>
                     {typeof text === 'string'
-                        ? <span>
-                            {text}
-                          </span>
+                        ? <span>{text}</span>
                         : <span>
                             {text.first}<span style={{color: 'red'}}>{text.second}</span>{text.last}
                           </span>

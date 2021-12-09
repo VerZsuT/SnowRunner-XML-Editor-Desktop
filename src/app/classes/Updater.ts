@@ -11,10 +11,10 @@ import Settings from './Settings'
 
 /** Отвечает за работу с обновлениями. */
 export default class Updater {
-    private static settings: ISettings = Settings.obj
+    private static settings = Settings.obj
 
     /** Загружает файл(ы) из сети. */
-    public static download = (params: IDownloadParams, cb: (data?: any)=>any) => {
+    static download = (params: DownloadParams, cb: (data?: any)=>any) => {
         if (params.array) {
             if (params.isRoot) {
                 params.loadingPage.setCount(params.array.length)
@@ -75,7 +75,7 @@ export default class Updater {
     }
 
     /** Запускает процесс обновления программы. */
-    public static update = () => {
+    static update = () => {
         const page = Windows.openLoading()
         let flagToReload = false
         page.once('show', () => {

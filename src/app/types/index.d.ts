@@ -1,4 +1,4 @@
-interface IDownloadWindow extends Electron.BrowserWindow {
+interface DownloadWindow extends Electron.BrowserWindow {
     setText?(text: string): void
     setCount?(count: number): void
     setPercent?(percent: number | string): void
@@ -6,7 +6,7 @@ interface IDownloadWindow extends Electron.BrowserWindow {
     download?(): void
 }
 
-interface IDownloadParams {
+interface DownloadParams {
     array?: {
         url: string
         path: string
@@ -14,7 +14,7 @@ interface IDownloadParams {
     isRoot?: boolean
     inMemory?: boolean
     fromJSON?: boolean
-    loadingPage?: IDownloadWindow
+    loadingPage?: DownloadWindow
     url?: string
     path?: string
 }
@@ -27,15 +27,15 @@ interface ISettings {
     invalidMods?: string[]
 }
 
-interface ITranslation {
+interface Translation {
     [key: string]: string
 }
 
-interface IUpdateMap {
+interface UpdateMap {
     [relativePath: string]: string
 }
 
-interface ICreateWindowAttributes {
+interface CreateWindowAttributes {
     path: string
     width?: number
     height?: number

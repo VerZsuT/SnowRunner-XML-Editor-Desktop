@@ -13,7 +13,7 @@ import { descs, texts } from './texts'
 const selectors = getSelectors(function() {
 	const cargoPart = `Body${this.forEach}`
 	const slot = 'TruckAddon.GameData.InstallSlot'
-	return {cargoPart, slot}
+	return { cargoPart, slot }
 })
 
 export default <ITemplate> {

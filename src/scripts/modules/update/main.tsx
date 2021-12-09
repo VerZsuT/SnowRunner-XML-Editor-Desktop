@@ -9,16 +9,16 @@ interface IState {
 }
 
 class UpdateWindow extends PureComponent<any, IState> {
-    state = {
-        version: ''
+    constructor(props: any) {
+        super(props)
+
+        this.state = {
+            version: ''
+        }
     }
 
     componentDidMount() {
-        ipcRenderer.on('content', (_event, data) => {
-            this.setState({
-                version: data
-            })
-        })
+        this.listenIPC()
     }
 
     render() {
@@ -45,6 +45,14 @@ class UpdateWindow extends PureComponent<any, IState> {
     private ignore = () => {
         config.settings.updates = false
         window.close()
+    }
+
+    private listenIPC() {
+        ipcRenderer.on('content', (_event, data) => {
+            this.setState({
+                version: data
+            })
+        })
     }
 }
 

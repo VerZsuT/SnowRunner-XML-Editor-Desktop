@@ -1,4 +1,4 @@
-interface IPaths {
+interface Paths {
     publicInfo: string
     downloadPage: string
     updateFiles: string
@@ -10,7 +10,6 @@ interface IPaths {
     backupInitial: string
     translations: string
     winrar_x32: string
-    winrar_x64: string
     mainTemp: string
     modsTemp: string
     strings: string
@@ -18,14 +17,11 @@ interface IPaths {
     classes: string
 }
 
-type DialogType = 'open' | 'save'
-type DialogSourceType = 'file' | 'dir'
-type DialogAlertType = 'sync' | 'async'
 type DialogProperties = ('openFile' | 'openDirectory' | 'multiSelections')[]
 
 interface OpenDialogParams {
-    type?: DialogType
-    source?: DialogSourceType
+    type?: import('../enums').DialogType
+    source?: import('../enums').DialogSourceType
     extention?: string
     defaultPath?: string
     properties?: DialogProperties
@@ -34,7 +30,7 @@ interface OpenDialogParams {
 interface DialogAlertParams {
     title: string
     message: string
-    dialogType?: DialogAlertType
+    dialogType?: import('../enums').DialogAlertType
     type?: string
     noLink?: boolean
     buttons?: string[]

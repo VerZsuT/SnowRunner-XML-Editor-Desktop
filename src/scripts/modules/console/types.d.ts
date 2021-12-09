@@ -12,8 +12,6 @@ interface ConsolePreload {
     join(...args: string[]): string
 }
 
-type MessageType = 'warn' | 'info' | 'error'
-
 interface ACKeys {
     [cmd: string]: null | AutoCompleteKeys
 }

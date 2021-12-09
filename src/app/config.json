@@ -1,8 +1,7 @@
 {
-	"version": "0.6.6a",
+	"version": "0.6.6b",
 	"lang": "RU",
 	"buildType": "dev",
-	"arch": "x32",
 	"paths": {
 		"initial": null,
 		"dlc": null,

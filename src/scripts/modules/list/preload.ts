@@ -4,6 +4,7 @@ import '@editor-app/mainPreload'
 
 import { findInDir } from '@editor-app/service'
 import { mainProcess } from '@editor-service'
+import { FromList, ListType } from './enums'
 
 const preload: ListPreload = {
     exists: (path: string) => {
@@ -23,17 +24,17 @@ const preload: ListPreload = {
     },
     join: (...args: string[]) => join(...args),
     getList: (listType: ListType, from?: FromList) => {
-        if (from === 'dlc') {
+        if (from === FromList.dlc) {
             const array = []
             for (const dlcItem of config.dlcList) {
                 const path = `${dlcItem.path}\\classes`
                 let items = []
 
-                if (listType === 'trucks') {
+                if (listType === ListType.trucks) {
                     items = findInDir(join(path, 'trucks'))
-                } else if (listType === 'trailers') {
+                } else if (listType === ListType.trailers) {
                     items = findInDir(join(path, 'trucks', 'trailers'))
-                } else if (listType === 'cargo') {
+                } else if (listType === ListType.cargo) {
                     items = findInDir(join(path, 'trucks', 'cargo'))
                 }
 
@@ -43,7 +44,7 @@ const preload: ListPreload = {
                 })
             }
             return array
-        } else if (from === 'mods') {
+        } else if (from === FromList.mods) {
             const array = []
             for (const modId in config.modsList) {
                 let items = []
@@ -52,11 +53,11 @@ const preload: ListPreload = {
                 }
 
                 const item = config.modsList[modId]
-                if (listType === 'trucks') {
+                if (listType === ListType.trucks) {
                     items = findInDir(join(paths.modsTemp, modId, 'classes', 'trucks'), false, '.xml', true)
-                } else if (listType === 'trailers') {
+                } else if (listType === ListType.trailers) {
                     items = findInDir(join(paths.modsTemp, modId, 'classes', 'trucks'), false, '.xml', true)
-                } else if (listType === 'cargo') {
+                } else if (listType === ListType.cargo) {
                     items = findInDir(join(paths.modsTemp, modId, 'classes', 'trucks', 'cargo'))
                 }
 
@@ -68,11 +69,11 @@ const preload: ListPreload = {
             }
             return array
         } else {
-            if (listType === 'trucks') {
+            if (listType === ListType.trucks) {
                 return findInDir(join(paths.classes, 'trucks'))
-            } else if (listType === 'trailers') {
+            } else if (listType === ListType.trailers) {
                 return findInDir(join(paths.classes, 'trucks', 'trailers'))
-            } else if (listType === 'cargo') {
+            } else if (listType === ListType.cargo) {
                 return findInDir(join(paths.classes, 'trucks', 'cargo'))
             }
         }

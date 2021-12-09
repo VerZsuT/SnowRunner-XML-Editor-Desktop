@@ -31,35 +31,10 @@ export default class File extends PureComponent<IProps, IState> {
     }
 
     componentDidMount() {
-        const { addDep } = this.context
         this.setState({
             toExport: this.getExport()
         })
-
-        const array = []
-        for (const i of this.getItems()) {
-            array.push({
-                name: `${i.value}.xml`,
-                isExport: () => (this.state.toExport[i.value] && this.props.isParentExport),
-                getData: () => {
-                    return new Promise(resolve => {
-                        ipcRenderer.once('bridge-channel', (_, exportedData) => {
-                            resolve(exportedData)
-                        })
-                        this.openEditor(i.value, true)
-                    })
-                },
-                toImport: data => {
-                    return new Promise<void>(resolve => {
-                        ipcRenderer.once('bridge-channel', (_, _1) => {
-                            resolve()
-                        })
-                        this.openEditor(i.value, true, data)
-                    })
-                }
-            })
-        }
-        addDep(this.props.item.fileType, array)
+        this.initImportExport()
     }
 
     render() {
@@ -163,5 +138,34 @@ export default class File extends PureComponent<IProps, IState> {
             }
         }
         mainProcess.openEditor(bridge)
+    }
+
+    private initImportExport() {
+        const { addDep } = this.context
+
+        const array = []
+        for (const i of this.getItems()) {
+            array.push({
+                name: `${i.value}.xml`,
+                isExport: () => (this.state.toExport[i.value] && this.props.isParentExport),
+                getData: () => {
+                    return new Promise(resolve => {
+                        ipcRenderer.once('bridge-channel', (_, exportedData) => {
+                            resolve(exportedData)
+                        })
+                        this.openEditor(i.value, true)
+                    })
+                },
+                toImport: data => {
+                    return new Promise<void>(resolve => {
+                        ipcRenderer.once('bridge-channel', (_, _1) => {
+                            resolve()
+                        })
+                        this.openEditor(i.value, true, data)
+                    })
+                }
+            })
+        }
+        addDep(this.props.item.fileType, array)
     }
 }

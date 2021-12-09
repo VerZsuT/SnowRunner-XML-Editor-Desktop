@@ -1,8 +1,3 @@
-type SrcType = 'mods' | 'dlc' | 'main'
-
-type ListType = 'trucks' | 'trailers' | 'cargo'
-type FromList = 'dlc' | 'mods'
-
 interface ListPreload {
     exists(path: string): boolean
     removeDir(path: string): void
@@ -12,7 +7,7 @@ interface ListPreload {
         name: string
     }
     join(...args: string[]): string
-    getList(listType: ListType, from?: FromList): {
+    getList(listType: import('./enums').ListType, from?: import('./enums').FromList): {
         dlcName?: string
         id?: string
         name?: string

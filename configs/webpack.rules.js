@@ -25,5 +25,9 @@ module.exports = [
         test: /\.(ts|tsx)$/,
         exclude: /(node_modules|\.webpack)/,
         use: 'ts-loader'
+    },
+    {
+        test: /\.s[ac]ss$/i,
+        use: ['style-loader', 'css-loader', 'sass-loader'],
     }
 ]

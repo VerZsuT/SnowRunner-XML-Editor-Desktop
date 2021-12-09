@@ -1,20 +1,11 @@
-declare module '*.vue' {
-    import { defineComponent } from 'vue'
-    const Component: ReturnType<typeof defineComponent>
-    export default Component
-}
-
-type ConfigBuildType = 'dev' | 'prod'
-type ConfigArch = 'x32' | 'x64'
-
-interface IConfigPaths {
+interface ConfigPaths {
     initial: string
     dlc: string
     classes: string
     mods: string
 }
 
-interface IConfigSettings {
+interface ConfigSettings {
     updates: boolean
     limits: boolean
     DLC: boolean
@@ -24,14 +15,14 @@ interface IConfigSettings {
     showWhatsNew: boolean
 }
 
-interface IConfigSums {
+interface ConfigSums {
     initial: string
     mods: {
         [modName: string]: string
     }
 }
 
-interface IConfigModsList {
+interface ConfigModsList {
     length: number
     items?: {
         [modName: string]: {
@@ -41,12 +32,12 @@ interface IConfigModsList {
     }
 }
 
-interface IConfigDLC {
+interface ConfigDLC {
     name: string
     path: string
 }
 
-interface IConfigADV {
+interface ConfigADV {
     [filePath: string]: {
         [selector: string]: {
             [attrName: string]: string | 'ADV_NULL'
@@ -54,11 +45,11 @@ interface IConfigADV {
     }
 }
 
-interface IConfigETR {
+interface ConfigETR {
     [filePath: string]: string[]
 }
 
-interface IConfig {
+interface ProgramConfig {
     /**
      * Версия программы.
     */
@@ -70,39 +61,38 @@ interface IConfig {
     /**
      * Тип билда, при dev доступны некоторые функции для отладки.
     */
-    buildType: ConfigBuildType
-    arch: ConfigArch
+    buildType: import('../enums').BuildType
     /**
      * Пути к некоторым файлам.
     */
-    paths: IConfigPaths
+    paths: ConfigPaths
     /**
      * Настройки программы.
     */
-    settings: IConfigSettings
+    settings: ConfigSettings
     /**
      * Хеши файлов.
     */
-    sums: IConfigSums
+    sums: ConfigSums
     /**
      * Список модов.
     */
-    modsList: IConfigModsList
+    modsList: ConfigModsList
     /**
      * Список DLC.
     */
-    dlcList: IConfigDLC[]
+    dlcList: ConfigDLC[]
     /**
      * Arributes Default Values. Объект для сброса параметров в изначальное состояние.
     */
-    ADV: IConfigADV
+    ADV: ConfigADV
     /**
      * Elements To Remove. Объект для сброса параметров в изначальное состояние.
     */
-    ETR: IConfigETR
+    ETR: ConfigETR
 }
 
-interface ILocal {
+interface Local {
     pop(name: string): null | undefined | string
     get(name: string): null | undefined | string
     set(name: string, value: string): void
@@ -110,14 +100,14 @@ interface ILocal {
 
 interface Window {
     ipcRenderer: Electron.IpcRenderer
-    config: IConfig
+    config: ProgramConfig
     texts: Texts
-    local: ILocal
-    paths: IPaths
+    local: Local
+    paths: Paths
 }
 
 declare const ipcRenderer: Electron.IpcRenderer
-declare const config: IConfig
+declare const config: ProgramConfig
 declare const texts: Texts
-declare const local: ILocal
-declare const paths: IPaths
+declare const local: Local
+declare const paths: Paths

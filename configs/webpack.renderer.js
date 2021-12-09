@@ -10,6 +10,6 @@ module.exports = {
     module: {rules},
     resolve: {
         alias: require('./webpack.aliases'),
-        extensions: ['.js', '.ts', '.jsx', '.tsx', '.css']
+        extensions: ['.js', '.ts', '.tsx', '.css', '.scss']
     }
 }

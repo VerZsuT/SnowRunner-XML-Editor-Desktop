@@ -4,6 +4,7 @@ import '../styles/InnerList.css'
 import { mainProcess, t } from '@editor-service'
 import InnerListItem from './InnerListItem'
 import { FilterContext } from '../FilterContext'
+import { FromList, ListType, SrcType } from '../enums'
 
 interface IProps {
     srcType: SrcType
@@ -12,14 +13,22 @@ interface IProps {
 export default class InnerList extends PureComponent<IProps> {
     static contextType = FilterContext
 
-    private listType = local.get('listType') as ListType
-    private title = this.getTitle()
-    private items = this.getItems().map(item => 
-        <InnerListItem
-            item={item}
-            key={item.path}
-        />
-    )
+    private listType: ListType
+    private title: JSX.Element
+    private items: JSX.Element[]
+
+    constructor(props: IProps) {
+        super(props)
+
+        this.listType = local.get('listType') as ListType
+        this.title = this.getTitle()
+        this.items = this.getItems().map(item => 
+            <InnerListItem
+                item={item}
+                key={item.path}
+            />
+        )
+    }
 
     render() {
         return (
@@ -52,7 +61,7 @@ export default class InnerList extends PureComponent<IProps> {
     }
 
     private getTitle() {
-        if (this.props.srcType === 'mods') {
+        if (this.props.srcType === SrcType.mods) {
             return (
                 <span>
                     {t.MODS_LIST_TITLE}
@@ -66,7 +75,7 @@ export default class InnerList extends PureComponent<IProps> {
                 </span>
             )
         }
-        if (this.props.srcType === 'dlc') {
+        if (this.props.srcType === SrcType.dlc) {
             return <span>{t.DLC_LIST_TITLE}</span>
         }
         return <span>{t.MAIN_LIST_TITLE}</span>
@@ -74,12 +83,12 @@ export default class InnerList extends PureComponent<IProps> {
 
     private getItems() {
         let array = []
-        if (this.listType === 'trucks' || this.listType === 'trailers' || this.listType === 'cargo') {
-            array = listPreload.getList(this.listType, this.props.srcType as FromList)
+        if (this.listType === ListType.trucks || this.listType === ListType.trailers || this.listType === ListType.cargo) {
+            array = listPreload.getList(this.listType, this.props.srcType as unknown as FromList)
         }
-        if (this.props.srcType === 'main') {
+        if (this.props.srcType === SrcType.main) {
             array = array.map((value) => {
-                if (this.listType !== 'trucks') {
+                if (this.listType !== ListType.trucks) {
                     return value
                 }
                 const fileData = mainProcess.readFile(value.path)
@@ -110,11 +119,11 @@ export default class InnerList extends PureComponent<IProps> {
                 const fileData = mainProcess.readFile(value.path)
                 const $dom = new DOMParser().parseFromString(`<root>${fileData}</root>`, 'text/xml')
                 const $Truck = $dom.querySelector('Truck')
-                if (this.listType === 'trailers' && $Truck && $Truck.getAttribute('Type') === 'Trailer') {
+                if (this.listType === ListType.trailers && $Truck && $Truck.getAttribute('Type') === 'Trailer') {
                     return value
-                } else if (this.listType === 'trucks' && $Truck && $Truck.getAttribute('Type') !== 'Trailer') {
+                } else if (this.listType === ListType.trucks && $Truck && $Truck.getAttribute('Type') !== 'Trailer') {
                     return value
-                } else if (this.listType === 'cargo') {
+                } else if (this.listType === ListType.cargo) {
                     return value
                 }
             })

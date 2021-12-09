@@ -1,5 +1,6 @@
 import { dialog as elDialog, nativeImage } from 'electron'
 import { paths } from '../service'
+import { DialogType, DialogSourceType, DialogAlertType } from '../enums'
 
 /** Отвечает за показ диалоговых окон. */
 export default class Dialog {
@@ -10,8 +11,14 @@ export default class Dialog {
     }
 
     /** Открывает окно с сообщением. */
-    public static alert = (params: DialogAlertParams) => {
-        const { dialogType='sync', title, message, buttons=['OK'], noLink=false, type='info' } = params
+    static alert = (params: DialogAlertParams) => {
+        const { 
+            dialogType=DialogAlertType.sync,
+            title, message,
+            buttons=['OK'],
+            noLink=false,
+            type='info'
+        } = params
         const dialogParams = {
             icon: nativeImage.createFromPath(paths.icon),
             title,
@@ -21,7 +28,7 @@ export default class Dialog {
             type
         }
 
-        if (dialogType === 'sync') {
+        if (dialogType === DialogAlertType.sync) {
             return elDialog.showMessageBoxSync(dialogParams)
         } else {
             return elDialog.showMessageBox(dialogParams)
@@ -29,37 +36,37 @@ export default class Dialog {
     }
 
     /** Открывает окно выбора `.epf` файла. */
-    public static getEPF = (): string | undefined => {
+    static getEPF = (): string | undefined => {
         return <string|undefined>this.openDialog({
             extention: 'epf'
         })
     }
 
     /** Открывает окно сохранения `.epf` файла. */
-    public static saveEPF = (defaultName: string) => {
+    static saveEPF = (defaultName: string) => {
         return <string>this.openDialog({
-            type: 'save',
+            type: DialogType.save,
             defaultPath: defaultName,
             extention: 'epf'
         })
     }
     
     /** Открывает окно выбора `initial.pak` */
-    public static getInitial = () => {
+    static getInitial = () => {
         return <string>this.openDialog({
             extention: 'pak'
         })
     }
 
     /** Открывает окно выбора папки. */
-    public static getDir = () => {
+    static getDir = () => {
         return <string>this.openDialog({
-            source: 'dir'
+            source: DialogSourceType.dir
         })
     }
 
     /** Открывает окно выбора нескольких `.epf` файлов. */
-    public static getMultiEPF = () => {
+    static getMultiEPF = () => {
         return <string[]>this.openDialog({
             properties: ['openFile', 'multiSelections'],
             extention: 'epf'
@@ -67,14 +74,18 @@ export default class Dialog {
     }
 
     /** Открывает окно выбора `.xml` файла. */
-    public static getXML = () => {
+    static getXML = () => {
         return <string>this.openDialog({
             extention: 'xml'
         })
     }
 
-    private static openDialog = (params: OpenDialogParams): string | string[] | undefined => {
-        const { type='open', source='file', defaultPath, extention, properties=(source==='file'? ['openFile']:['openDirectory']) } = params
+    static openDialog = (params: OpenDialogParams): string | string[] => {
+        const { 
+            type=DialogType.open,
+            source=DialogSourceType.file,
+            defaultPath, extention,
+            properties=(source===DialogSourceType.file? ['openFile']:['openDirectory']) } = params
         const dialogParams: DialogParams = {
             properties
         }
@@ -86,7 +97,7 @@ export default class Dialog {
             }]
         }
 
-        if (type === 'open') {
+        if (type === DialogType.open) {
             const result = elDialog.showOpenDialogSync(dialogParams)
             if (result instanceof Array) {
                 if (!dialogParams.properties.includes('multiSelections')) {

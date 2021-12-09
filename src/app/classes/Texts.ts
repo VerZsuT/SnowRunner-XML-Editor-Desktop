@@ -10,10 +10,10 @@ type TKeys = keyof typeof RU
 
 /** Отвечает за работу с переводами. */
 export default class Texts {
-    private static config: IConfig = Config.obj
+    private static config = Config.obj
 
     /** Объект переводов. */
-    public static obj = {
+    static obj = {
         /** Русский перевод программы. */
         RU: RU,
         /** Английский перевод программы. */
@@ -27,8 +27,8 @@ export default class Texts {
     }
 
     /** Обрабатывает файл с переводом из `initial.pak` на текущий выбранный язык в программе. */
-    public static addIngame = () => {
-        let ingame: ITranslation
+    static addIngame = () => {
+        let ingame: Translation
         if (existsSync(paths.strings)) {
             let fileName: string
             switch (this.config.lang) {
@@ -53,7 +53,7 @@ export default class Texts {
     }
 
     /** Обрабатывает файл с переводом из `.pak` файлов модов на текущий выбранный язык в программе. */
-    public static addFromMods = () => {
+    static addFromMods = () => {
         const mods = {}
         for (const modId in this.config.modsList) {
             if (existsSync(join(paths.modsTemp, modId, 'texts'))) {
@@ -82,7 +82,7 @@ export default class Texts {
     }
 
     /** Возвращает текст перевода по ключу (в программе). */
-    public static get = (key: TKeys, returnKey: boolean=true): string | undefined => {
+    static get = (key: TKeys, returnKey: boolean=true): string | undefined => {
         const translation = this.obj[this.config.lang]
         if (translation) {
             return translation[key] || (returnKey ? key : undefined)

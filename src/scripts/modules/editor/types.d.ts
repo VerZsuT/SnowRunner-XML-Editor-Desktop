@@ -2,7 +2,7 @@ interface EditorPreload {
     existsSync(path: string): boolean
     findFromDLC(fileNmae: string, type: string): string
     join(...args: string[]): string
-    paths: IPaths
+    paths: Paths
     saveFile(path: string, data: string): void
     basename(str: string, ext?: string): string
     readFile(path: string): Buffer
@@ -13,8 +13,3 @@ interface Window {
 }
 
 declare const editorPreload: EditorPreload
-
-type Filter = {
-    value?: string
-    set(value: string): void
-}

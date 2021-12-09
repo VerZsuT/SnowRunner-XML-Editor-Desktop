@@ -6,15 +6,15 @@ import Config from './Config'
 /** Отвечает за взаимодействие с окнами. */
 export default class Windows {
     /** Главное окно программы (с выбором категории). */
-    public static categories: BrowserWindow
+    static categories: BrowserWindow
     /** Окно со списком авто/грузов/трейлеров. */
-    public static list: BrowserWindow
+    static list: BrowserWindow
     /** Окно самого редактора параметров. */
-    public static editor: BrowserWindow
+    static editor: BrowserWindow
     /** Окно загрузки. */
-    public static loading: IDownloadWindow
+    static loading: DownloadWindow
     /** Текущее активное окно. */
-    public static currentWindow: BrowserWindow
+    static currentWindow: BrowserWindow
 
     private static settings = Settings.obj
     private static config = Config.obj
@@ -87,7 +87,7 @@ export default class Windows {
      * Открывает окно редактора параметров.
      * @param bridge создать между несколькими окнами редактора `bridge-channel` для передачи данных. 
     */
-    public static openEditor = (bridge?: boolean) => {
+    static openEditor = (bridge?: boolean) => {
         if (this.editor && !bridge) {
             this.editor.hide()
         } 
@@ -133,7 +133,7 @@ export default class Windows {
      * Открывает окно-оповещение об обновлении программы.
      * @param version отображаемая новая версия.
     */
-    public static openUpdateWindow = (version: string) => {
+    static openUpdateWindow = (version: string) => {
         const beforeWindow = this.currentWindow
         const wind = this.createWindow({
             ...this.createArgs.updateWindow,
@@ -151,7 +151,7 @@ export default class Windows {
     }
 
     /** Открывает окно настроек. */
-    public static openSettings = (): void => {
+    static openSettings = (): void => {
         const beforeWindow = this.currentWindow
         const wind = this.createWindow({
             ...this.createArgs.settings,
@@ -165,7 +165,7 @@ export default class Windows {
     }
 
     /** Открывает окно консоли. */
-    public static openConsole = () => {
+    static openConsole = () => {
         const beforeWindow = this.currentWindow
         const wind = this.createWindow(this.createArgs.console)
     
@@ -179,9 +179,9 @@ export default class Windows {
      * Открывает окно загрузки.
      * @param noLock не блокировать другие окна.
     */
-    public static openLoading = (noLock?: boolean): IDownloadWindow => {
+    static openLoading = (noLock?: boolean): DownloadWindow => {
         const beforeWindow = this.currentWindow
-        const wind = <IDownloadWindow>this.createWindow({
+        const wind = <DownloadWindow>this.createWindow({
             ...this.createArgs.loading,
             modal: noLock? false : true,
             parent: noLock? null : this.currentWindow
@@ -204,7 +204,7 @@ export default class Windows {
     }
 
     /** Открывает окно первоначальной настройки. */
-    public static openSetup = async () => {
+    static openSetup = async () => {
         const wind = this.createWindow(this.createArgs.setup)
         wind.once('close', () => {
             this.settings.isQuit = true
@@ -221,7 +221,7 @@ export default class Windows {
     }
 
     /** Открывает окно выбора категории. */
-    public static openCategories = async () => {
+    static openCategories = async () => {
         this.categories = this.createWindow(this.createArgs.categories)
         this.categories.once('close', () => {
             if (this.currentWindow === this.categories) {
@@ -242,7 +242,7 @@ export default class Windows {
     }
 
     /** Открывает окно списка авто/груза/прицепа. */
-    public static openList = () => {
+    static openList = () => {
         this.list = this.createWindow(this.createArgs.list)
         if (this.categories) this.categories.close()
         this.list.once('close', () => {
@@ -254,7 +254,7 @@ export default class Windows {
         })
     }
 
-    public static openWhatsNew = () => {
+    static openWhatsNew = () => {
         const wind = this.createWindow(this.createArgs.whatsNew)
         wind.once('close', () => {
             this.config.settings.showWhatsNew = false
@@ -262,7 +262,7 @@ export default class Windows {
     }
 
     /** Создаёт окно с указанными атрибутами. */
-    private static createWindow = (args: ICreateWindowAttributes): BrowserWindow => {
+    private static createWindow = (args: CreateWindowAttributes): BrowserWindow => {
         const wind = new BrowserWindow({
             width: args.width ?? 800,
             height: args.height ?? 600,

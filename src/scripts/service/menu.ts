@@ -12,7 +12,7 @@ for (const $item of menu) {
 document.body.prepend($menu)
 
 /** Создаёт меню на основе шаблона. */
-function buildMenu(template: IMenuTemplate, root?: boolean): HTMLDivElement | HTMLButtonElement {
+function buildMenu(template: MenuTemplate, root?: boolean): HTMLDivElement | HTMLButtonElement {
     if (template.role === MenuRole.separator) {
         return create<HTMLHRElement>('hr', {
             class: 'dropdown-divider'

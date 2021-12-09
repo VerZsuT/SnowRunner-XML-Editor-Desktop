@@ -15,8 +15,12 @@ interface IState {
 }
 
 class Setup extends PureComponent<any, IState> {
-    state = {
-        pathToInitial: ''
+    constructor(props: any) {
+        super(props)
+
+        this.state = {
+            pathToInitial: ''
+        }
     }
 
     componentDidMount() {
