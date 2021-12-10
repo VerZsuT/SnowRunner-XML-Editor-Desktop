@@ -1,8 +1,8 @@
 import { existsSync, readdirSync, writeFileSync, readFileSync } from 'fs'
 import { join, basename } from 'path'
 
-import '@editor-app/mainPreload'
-import { mainProcess } from '@editor-service'
+import '@sxmle-app/mainPreload'
+import { mainProcess } from '@sxmle-service'
 
 const editorPreload: EditorPreload = {
     existsSync: existsSync,

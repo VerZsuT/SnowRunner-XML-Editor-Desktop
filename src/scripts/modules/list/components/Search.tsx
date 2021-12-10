@@ -1,7 +1,7 @@
 import { ChangeEvent, PureComponent } from 'react'
-import '../styles/Search.css'
+import '../styles/Search'
 
-import { t } from '@editor-service'
+import { t } from '@sxmle-service'
 
 interface IProps {
     value: string

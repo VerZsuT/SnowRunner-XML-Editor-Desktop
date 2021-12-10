@@ -1,7 +1,7 @@
 import { ChangeEvent, PureComponent } from 'react'
-import '../styles/Language.css'
+import '../styles/Language'
 
-import { Lang, mainProcess, t } from '@editor-service'
+import { Lang, mainProcess, t } from '@sxmle-service'
 
 export default class Language extends PureComponent {
     private langOptions: JSX.Element[]

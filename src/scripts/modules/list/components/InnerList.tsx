@@ -1,7 +1,7 @@
 import { PureComponent } from 'react'
-import '../styles/InnerList.css'
+import '../styles/InnerList'
 
-import { mainProcess, t } from '@editor-service'
+import { mainProcess, t } from '@sxmle-service'
 import InnerListItem from './InnerListItem'
 import { FilterContext } from '../FilterContext'
 import { FromList, ListType, SrcType } from '../enums'
@@ -25,6 +25,7 @@ export default class InnerList extends PureComponent<IProps> {
         this.items = this.getItems().map(item => 
             <InnerListItem
                 item={item}
+                type={this.listType}
                 key={item.path}
             />
         )
@@ -68,7 +69,10 @@ export default class InnerList extends PureComponent<IProps> {
                     <button
                         className='btn btn-primary'
                         onClick={()=>this.addMod()}
-                        style={{padding: '0 10px'}}
+                        style={{
+                            padding: '0 10px',
+                            marginLeft: '10px'
+                        }}
                     >
                         {t.MODS_ADD_BUTTON}
                     </button>
@@ -82,7 +86,7 @@ export default class InnerList extends PureComponent<IProps> {
     }
 
     private getItems() {
-        let array = []
+        let array: Item[] = []
         if (this.listType === ListType.trucks || this.listType === ListType.trailers || this.listType === ListType.cargo) {
             array = listPreload.getList(this.listType, this.props.srcType as unknown as FromList)
         }
@@ -97,7 +101,7 @@ export default class InnerList extends PureComponent<IProps> {
                     return value
                 }
             })
-            const out = []
+            const out: Item[] = []
             for (const item of array) {
                 if (item) {
                     out.push(item)
@@ -105,7 +109,7 @@ export default class InnerList extends PureComponent<IProps> {
             }
             return out
         } else {
-            let newArray = []
+            let newArray: Item[] = []
             for (const dlcOrMod of array) {
                 for (const item of dlcOrMod.items) {
                     newArray.push({
@@ -127,7 +131,7 @@ export default class InnerList extends PureComponent<IProps> {
                     return value
                 }
             })
-            const out = []
+            const out: Item[] = []
             for (const item of newArray) {
                 if (item) {
                     out.push(item)

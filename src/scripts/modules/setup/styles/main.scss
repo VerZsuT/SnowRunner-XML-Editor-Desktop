@@ -1,0 +1,27 @@
+body {
+    text-align: center;
+}
+
+input {
+    &[type='text']:disabled {
+        background: white !important;
+    }
+
+    &[type='checkbox'] {
+        width: 15px !important;
+        margin-left: 5px;
+    }
+}
+
+label {
+    font-weight: bold;
+}
+
+header {
+    padding-top: 5px;
+    margin-bottom: 20px;
+
+    h2 {
+        color: white;
+    }
+}

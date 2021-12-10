@@ -1,8 +1,8 @@
 import { PureComponent, Fragment } from 'react'
 import { render } from 'react-dom'
-import './style.css'
+import './style'
 
-import { mainProcess, Lang, MAIN } from '@editor-service'
+import { mainProcess, Lang, MAIN } from '@sxmle-service'
 import { ANY, OPTIONAL, addCheck, help, Message } from './service'
 import EditorConsole from './components/EditorConsole'
 

@@ -1,4 +1,4 @@
-import Texts from '@editor-app/classes/Texts'
+import Texts from '@sxmle-app/classes/Texts'
 
 const texts = Texts.obj
 

@@ -1,7 +1,7 @@
 import { PureComponent } from 'react'
-import '../styles/Save.css'
+import '../styles/Save'
 
-import { mainProcess, t } from '@editor-service'
+import { mainProcess, t } from '@sxmle-service'
 
 interface IProps {
     pathToInitial: string

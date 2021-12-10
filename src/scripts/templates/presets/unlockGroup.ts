@@ -6,7 +6,7 @@ import {
 import {
     NumberType
 } from '../enums'
-import Config from '@editor-app/classes/Config'
+import Config from '@sxmle-app/classes/Config'
 
 const texts = {
     RU: {

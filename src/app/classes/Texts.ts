@@ -3,7 +3,7 @@ import { join } from 'path'
 
 import { parseStrings, paths } from '../service'
 import Config from './Config'
-import { RU, EN, DE } from '@editor-texts'
+import { RU, EN, DE } from '@sxmle-texts'
 import { Lang } from '../enums'
 
 type TKeys = keyof typeof RU

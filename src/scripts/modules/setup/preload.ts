@@ -1,8 +1,8 @@
 import { existsSync } from 'fs'
 import { join, basename } from 'path'
 
-import '@editor-app/mainPreload'
-import { t, mainProcess } from '@editor-service'
+import '@sxmle-app/mainPreload'
+import { t, mainProcess } from '@sxmle-service'
 
 const openDialog = () => mainProcess.openDialog()
 const openInitialDialog = () => mainProcess.openInitialDialog()

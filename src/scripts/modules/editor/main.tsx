@@ -1,10 +1,10 @@
 import { PureComponent } from 'react'
 import { render } from 'react-dom'
-import '@editor-bootstrap'
-import '@editor-service/menu'
-import '../../../styles/main.css'
+import '@sxmle-bootstrap'
+import '@sxmle-service/menu'
+import '@sxmle-main-style'
 
-import { get, getIngameText, MAIN, mainProcess, prettify, t } from '@editor-service'
+import { get, getIngameText, MAIN, mainProcess, prettify, t } from '@sxmle-service'
 import Search from './components/Search'
 import Parameters from './components/Parameters'
 import { MainContext } from './MainContext'
@@ -36,6 +36,17 @@ class Editor extends PureComponent<any, IState> {
     constructor(props: any) {
         super(props)
 
+        this.importData = local.get('importData')? JSON.parse(local.pop('importData')) : null
+        this.filePath = local.pop('filePath')
+        const [fileDOM, tableItems] = this.getDOM()
+        this.fileDOM = fileDOM
+        this.tableItems = tableItems
+        this.isBridge = local.pop('isBridge') === 'true'
+        this.currentMod = local.pop('currentMod')
+        this.currentDLC = local.pop('currentDLC')
+        this.mainTitle = this.getMainTitle()
+        this.templates = this.fileDOM.querySelector('_templates')
+        this.globalTemplates = this.getGlobalTemplates()
         this.state = {
             isExporting: false,
             filter: '',
@@ -43,16 +54,6 @@ class Editor extends PureComponent<any, IState> {
             ADV: Object.assign({}, config.ADV),
             ETR: Object.assign({}, config.ETR)
         }
-        this.importData = local.get('importData')? JSON.parse(local.pop('importData')) : null
-        this.fileDOM = this.getDOM()[0]
-        this.tableItems = this.getDOM()[1]
-        this.filePath = local.pop('filePath')
-        this.isBridge = local.pop('isBridge') === 'true'
-        this.currentMod = local.pop('currentMod')
-        this.currentDLC = local.pop('currentDLC')
-        this.mainTitle = this.getMainTitle()
-        this.templates = this.fileDOM.querySelector('_templates')
-        this.globalTemplates = this.getGlobalTemplates()
     }
 
     componentDidMount() {
@@ -497,8 +498,7 @@ class Editor extends PureComponent<any, IState> {
     }
 
     private getDOM() {
-        const filePath = local.get('filePath')
-        const fileData = mainProcess.readFile(filePath)
+        const fileData = mainProcess.readFile(this.filePath)
         if (!fileData) return
     
         const parser = new DOMParser()

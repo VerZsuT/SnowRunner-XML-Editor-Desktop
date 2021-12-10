@@ -1,9 +1,10 @@
 import { PureComponent } from 'react'
 import { render } from 'react-dom'
-import '@editor-bootstrap'
-import './styles/main.css'
+import '@sxmle-bootstrap'
+import '@sxmle-main-style'
+import './styles/main'
 
-import { t, mainProcess, Lang, MAIN } from '@editor-service'
+import { t, mainProcess, Lang, MAIN } from '@sxmle-service'
 import GameFolder from './components/GameFolder'
 
 interface IState {

@@ -1,8 +1,9 @@
 import { PureComponent } from 'react'
 import { render } from 'react-dom'
-import './style.css'
+import '@sxmle-main-style'
+import './style'
 
-import { MAIN, mainProcess, t } from '@editor-service'
+import { MAIN, mainProcess, t } from '@sxmle-service'
 
 interface IState {
     version: string

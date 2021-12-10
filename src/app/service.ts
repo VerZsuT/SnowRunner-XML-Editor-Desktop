@@ -78,10 +78,10 @@ export function parseStrings(data: string): Translation {
  * @param inner - искать ли во внутренних папках (по умолчанию они игнорируются).
  * @returns массив путей
 */
-export function findInDir(startPath: string, onlyDirs?: boolean, extension='.xml', inner?: boolean) {
+export function findInDir(startPath: string, onlyDirs?: boolean, extension='.xml', inner?: boolean): FindItem[] {
     if (!existsSync(startPath)) return []
 
-    let array = []
+    let array: FindItem[] = []
     const files = readdirSync(startPath)
     for (let i = 0; i < files.length; i++) {
         const filePath = join(startPath, files[i])

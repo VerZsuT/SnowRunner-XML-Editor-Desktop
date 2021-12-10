@@ -1,6 +1,6 @@
 import { ChangeEvent, PureComponent } from 'react'
 
-import { InputType, NumberType } from '@editor-service'
+import { InputType, NumberType } from '@sxmle-service'
 import { IMainContext, MainContext } from '../MainContext'
 
 interface IProps {

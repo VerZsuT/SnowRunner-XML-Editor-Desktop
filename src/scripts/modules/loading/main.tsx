@@ -1,8 +1,8 @@
 import { PureComponent } from 'react'
 import { render } from 'react-dom'
-import './style.css'
+import './style'
 
-import { MAIN } from '@editor-service'
+import { MAIN } from '@sxmle-service'
 
 interface IState {
     allCount: number

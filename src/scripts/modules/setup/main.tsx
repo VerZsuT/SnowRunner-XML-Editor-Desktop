@@ -1,10 +1,11 @@
 import { PureComponent } from 'react'
 import { render } from 'react-dom'
-import '@editor-bootstrap'
-import '@editor-service/menu'
-import './styles/main.css'
+import '@sxmle-bootstrap'
+import '@sxmle-service/menu'
+import '@sxmle-main-style'
+import './styles/main'
 
-import { MAIN, mainProcess, t } from '@editor-service'
+import { MAIN, mainProcess, t } from '@sxmle-service'
 
 import Language from './components/Language'
 import GameFolder from './components/GameFolder'

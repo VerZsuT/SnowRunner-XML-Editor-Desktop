@@ -1,12 +1,13 @@
 import { MouseEvent, PureComponent } from 'react'
-import '../styles/InnerListItem.css'
+import '../styles/InnerListItem'
 
-import { getIngameText, mainProcess, prettify } from '@editor-service'
+import { getIngameText, mainProcess, prettify } from '@sxmle-service'
 import { FilterContext } from '../FilterContext'
 import { ListType } from '../enums'
 
 interface IProps {
-    item: any
+    item: Item
+    type: ListType
 }
 
 interface IState {
@@ -17,7 +18,7 @@ export default class InnerListItem extends PureComponent<IProps, IState> {
     static contextType = FilterContext
     declare context: string
 
-    private DOM: Document
+    private fileDOM: Document
     private name: string
     private hasError: boolean
     private imgSrc: string
@@ -30,7 +31,7 @@ export default class InnerListItem extends PureComponent<IProps, IState> {
             isDeleted: false
         }
         this.isMod = Boolean(this.props.item.modId)
-        this.DOM = this.getDOM()
+        this.fileDOM = this.getDOM()
         this.name = this.getName()
         this.hasError = this.checkError()
         this.imgSrc = this.getImgSrc()
@@ -92,8 +93,8 @@ export default class InnerListItem extends PureComponent<IProps, IState> {
     private getName() {
         let name = prettify(this.props.item.name)
 
-        if (this.DOM.querySelector('GameData > UiDesc')) {
-            const uiName = this.DOM.querySelector('GameData > UiDesc').getAttribute('UiName')
+        if (this.fileDOM.querySelector('GameData > UiDesc')) {
+            const uiName = this.fileDOM.querySelector('GameData > UiDesc').getAttribute('UiName')
             if (uiName) {
                 name = getIngameText(uiName, this.props.item.modId) || uiName
             }
@@ -122,33 +123,34 @@ export default class InnerListItem extends PureComponent<IProps, IState> {
 
     private checkError() {
         return Boolean(
-            this.DOM.querySelector('parsererror') ||
+            this.fileDOM.querySelector('parsererror') ||
             (
-                this.props.item.type === 'trucks' &&
-                this.DOM.querySelector('Truck') &&
-                this.DOM.querySelector('Truck').getAttribute('Type') === 'Trailer'
+                this.props.type === ListType.trucks &&
+                this.fileDOM.querySelector('Truck') &&
+                this.fileDOM.querySelector('Truck').getAttribute('Type') === 'Trailer'
             )
         )
     }
 
     private getImgSrc() {
-        switch (local.get('listType') as ListType) {
+        switch (this.props.type) {
             case ListType.cargo:
-                return require('../../../../images/icons/cargo_item.png')
+                return require('@sxmle-images/cargo/default.png')
             case ListType.trailers:
                 try {
-                    return require(`../../../../images/trailers/${this.props.item.name}.png`)
+                    return require(`@sxmle-images/trailers/${this.props.item.name}.png`)
                 } catch {
-                    return require('../../../../images/icons/trailer_item.png')
+                    return require('@sxmle-images/trailers/default.png')
                 }
             case ListType.trucks:
                 try {
-                    return require(`../../../../images/trucks/${this.props.item.name}.jpg`)
+                    return require(`@sxmle-images/trucks/${this.props.item.name}.jpg`)
                 } catch {
-                    const defaultImage = require('../../../../images/icons/truck_item.png')
+                    console.warn(`Не найдена картинка ${this.props.item.name}`)
+                    const defaultImage = require('@sxmle-images/trucks/default.png')
 
-                    if (this.props.item.modId && this.DOM.querySelector('GameData > UiDesc')) {
-                        const imgName = this.DOM.querySelector('GameData > UiDesc').getAttribute('UiIcon328x458')
+                    if (this.props.item.modId && this.fileDOM.querySelector('GameData > UiDesc')) {
+                        const imgName = this.fileDOM.querySelector('GameData > UiDesc').getAttribute('UiIcon328x458')
                         const truckPath = `../../main/modsTemp/${this.props.item.modId}/ui/textures/${imgName}.png`
                         if (!listPreload.exists(truckPath)) {
                             return defaultImage

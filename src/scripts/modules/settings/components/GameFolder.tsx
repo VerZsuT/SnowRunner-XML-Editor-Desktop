@@ -1,7 +1,7 @@
 import { PureComponent } from 'react'
-import '../styles/GameFolder.css'
+import '../styles/GameFolder'
 
-import { t } from '@editor-service'
+import { t } from '@sxmle-service'
 
 interface IProps {
     onChange(value: string): void
@@ -24,7 +24,7 @@ export default class GameFolder extends PureComponent<IProps, IState> {
 
     render() {
         return (
-            <div id="gameFolder">
+            <div id='gameFolder'>
                 <label className='form-label'>
                     {this.state.manual? t.INITIAL_LABEL : t.GAME_FOLDER_LABEL}
                 </label><br/>

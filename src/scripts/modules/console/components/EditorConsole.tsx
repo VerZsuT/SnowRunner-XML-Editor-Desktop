@@ -1,6 +1,6 @@
 import { FormEvent, PureComponent, createRef, RefObject } from 'react'
 
-import { setHotKey, mainProcess } from '@editor-service'
+import { setHotKey, mainProcess } from '@sxmle-service'
 import { Message } from '../service'
 import AutoComplete from './AutoComplete'
 

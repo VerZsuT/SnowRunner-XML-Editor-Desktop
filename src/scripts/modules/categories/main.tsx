@@ -1,10 +1,11 @@
 import { PureComponent } from 'react'
 import { render } from 'react-dom'
-import '@editor-service/menu'
-import '@editor-bootstrap'
+import '@sxmle-service/menu'
+import '@sxmle-bootstrap'
+import '@sxmle-main-style'
 import './styles/main'
 
-import { setHotKey, mainProcess, MAIN, t } from '@editor-service'
+import { setHotKey, mainProcess, MAIN, t } from '@sxmle-service'
 import Category from './components/Category'
 import { ListType } from '../list/enums'
 

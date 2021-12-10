@@ -1,4 +1,4 @@
-import type { RU } from '@editor-texts'
+import type { RU } from '@sxmle-texts'
 
 type Translation = {
     [name in keyof typeof RU]: string
@@ -98,9 +98,9 @@ export function prettify(str: string): string {
 */
 export function getIngameText(key: string, modId?: string): string {
     let value: string
-    if (modId && texts.mods[modId]) {
+    if (modId && texts.mods[modId] && texts.mods[modId][key]) {
         value = texts.mods[modId][key]
-    } else {
+    } else if (texts.ingame[key]) {
         value = texts.ingame[key]
     }
 

@@ -1,5 +1,5 @@
 import { ChangeEvent, PureComponent } from 'react'
-import '../styles/Coordinates.css'
+import '../styles/Coordinates'
 
 import { IMainContext, MainContext } from '../MainContext'
 

@@ -1,8 +1,9 @@
 import { PureComponent } from 'react'
 import { render } from 'react-dom'
-import './style.css'
+import '@sxmle-main-style'
+import './style'
 
-import { Lang, MAIN, mainProcess, setHotKey, t } from '@editor-service'
+import { Lang, MAIN, mainProcess, setHotKey, t } from '@sxmle-service'
 
 class WhatsNew extends PureComponent {
     componentDidMount() {
@@ -11,6 +12,31 @@ class WhatsNew extends PureComponent {
 
     render() {
         return (<>
+            <h1 className='title'>{t.WHATS_NEW_TITLE} v0.6.6c</h1>
+            <ol className='content'>
+                {config.lang === Lang.RU? <>
+                    <li>Исправлен <i>баг с заголовком файла.</i></li>
+                    <li><i>Вес картинок уменьшен</i> примерно в 3 раза.</li>
+                    <li><i>Вес установщика уменьшен</i> до ~70МБ.</li>
+                    <li><i>Потребление RAM уменьшено</i> до 50-60МБ.</li>
+                    <li><i>Добавлены картинки</i> для 3-х новых авто.</li>
+                </> :null}
+                {config.lang === Lang.EN? <>
+                    <li>Fixed <i>file header bug.</i></li>
+                    <li><i>The weight of the images has been reduced</i> by about 3 times.</li>
+                    <li><i>The weight of the installer has been reduced</i> to ~70MB.</li>
+                    <li><i>RAM consumption is reduced</i> to 50-60MB.</li>
+                    <li><i>Added images</i> for 3 new cars.</li>
+                </> :null}
+                {config.lang === Lang.DE? <> 
+                    <li>Behoben <i>Fehler mit Datei-Header.</i></li>
+                    <li><i>Das Gewicht der Bilder wurde</i> um das 3-fache reduziert.</li>
+                    <li><i>Das Gewicht des Installationsprogramms wurde</i> auf ~70MB reduziert.</li>
+                    <li><i>RAM-Verbrauch reduziert</i> auf 50-60MB.</li>
+                    <li><i>Bilder hinzugefügt</i> für 3 neue Autos.</li>
+                </> :null}
+            </ol>
+
             <h1 className='title'>{t.WHATS_NEW_TITLE} v0.6.6b</h1>
             <ol className='content'>
                 {config.lang === Lang.RU? <>

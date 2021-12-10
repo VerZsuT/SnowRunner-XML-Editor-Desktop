@@ -17,7 +17,7 @@ import Updater from './Updater'
 import Windows from './Windows'
 
 import { paths } from '../service'
-import * as templates from '@editor-templates'
+import * as templates from '@sxmle-templates'
 import { DialogAlertType } from '../enums'
 
 const info = {

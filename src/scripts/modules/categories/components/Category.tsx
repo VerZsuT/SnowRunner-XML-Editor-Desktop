@@ -1,7 +1,7 @@
 import { PureComponent } from 'react'
 import '../styles/Category'
 
-import { mainProcess, t } from '@editor-service'
+import { mainProcess, t } from '@sxmle-service'
 import { ListType } from '../../list/enums'
 
 interface IProps {

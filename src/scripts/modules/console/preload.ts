@@ -1,8 +1,8 @@
 import { readFileSync, existsSync, writeFileSync, rmSync } from 'fs'
 import { basename, join } from 'path'
 
-import '@editor-app/mainPreload'
-import { mainProcess } from '@editor-service'
+import '@sxmle-app/mainPreload'
+import { mainProcess } from '@sxmle-service'
 
 const preload: ConsolePreload = {
     readFile: (path: string) => readFileSync(path).toString(),

@@ -1,8 +1,9 @@
-@import './bootstrap.min.css';
+@import 'bootstrap.min';
 
 body {
-    margin: 0;
-    margin-top: 24px;
+    margin: 0 {
+        top: 24px;
+    }
     padding: 0;
     background-color: #dceaf7;
 }
@@ -14,7 +15,7 @@ body {
 .desc {
     width: 36px;
     height: 36px;
-    background: url(../images/icons/info.png) 50% no-repeat;
+    background: url(@sxmle-images/icons/info.png) 50% no-repeat;
     position: absolute;
     right: 0;
     cursor: help;
@@ -28,7 +29,7 @@ body {
     width: 20px;
     margin-left: 5px;
     height: 20px;
-    background: url(../images/icons/pencil.svg) 50% no-repeat; 
+    background: url(@sxmle-images/icons/pencil.svg) 50% no-repeat; 
     filter: invert(1);
     float: right;
 }
@@ -65,13 +66,17 @@ h1#error {
     font-size: 0.7em;
 }
 
-.accordion-button::after {
-    margin-left: 0;
-    margin-right: auto;
-}
+.accordion-button {
+    &::after {
+        margin: {
+            left: 0;
+            right: auto;
+        }
+    }
 
-.accordion-button:not(.collapsed) {
-    color: black;
+    &:not(.collapsed) {
+        color: black;
+    }
 }
 
 .menu-item button {
@@ -115,96 +120,104 @@ table {
 }
 
 .title {
-    font-size: 25px;
     text-align: center;
     margin-bottom: 20px;
-    font-weight: bold;
-    font-family: Arial, Helvetica, sans-serif;
+    font: {
+        size: 25px;
+        weight: bold;
+        family: Arial, Helvetica, sans-serif;
+    }
 }
 
 #editor tr:last-child {
     border-bottom: 2px solid #597595 !important;
 }
 
-#parameters td div {
-    transition: all 0.6s ease 0s;
-    height: 30px;
-    overflow: hidden;
-    padding: 5px;
-}
-
 #parameters {
     width: 80%;
     margin: 0 auto;
+
+    td {
+        padding: 0;
+        width: 50%;
+        border: none;
+
+        div {
+            transition: all 0.6s ease 0s;
+            height: 30px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            padding: 0px;
+            height: 0px;
+        }
+    }
+
+    .group {
+        display: flex;
+        align-items: center;
+        background-color: #d2daef;
+        font-weight: bold;
+        border: {
+            color: #597595;
+            width: 2px;
+        }
+        padding-left: 15px;
+        width: 100%;
+        height: 50px;
+        box-sizing: border-box;
+
+        &:hover {
+            background-color: #e7eaf2 !important;
+            cursor: pointer;
+        }
+
+        div {
+            height: 35px;
+            padding: 5px;
+        }
+
+        &.group-item {
+            td {
+                &:first-child {
+                    border-left: 2px solid #597595 !important;
+                }
+
+                &:last-child {
+                    border-right: 2px solid #597595 !important;
+                }
+            }
+
+            div {
+                height: 0px;
+                border: none;
+                padding: 0;
+            }
+        }
+    }
 }
 
 .accordion-item {
     border: 1px solid #597595;
-}
 
-.accordion-item .accordion-item {
-    border: none;
-    border-bottom: 1px solid #597595;
-    margin-bottom: 0;
-}
+    .accordion-item {
+        border: none {
+            bottom: 1px solid #597595;
+        }
+        margin-bottom: 0;
 
-.accordion-item .accordion-item .accordion-button {
-    border-radius: 0;
+        .accordion-button {
+            border-radius: 0;
+        }
+    }
 }
 
 .accordion-body {
     padding: 0;
-}
 
-#parameters td div {
-    display: flex;
-    align-items: center;
-    padding: 0px;
-    height: 0px;
-}
-
-#parameters td {
-    padding: 0;
-    width: 50%;
-    border: none;
-}
-
-#parameters .group {
-    display: flex;
-    align-items: center;
-    background-color: #d2daef;
-    font-weight: bold;
-    border-color: #597595;
-    border-width: 2px;
-    padding-left: 15px;
-    width: 100%;
-    height: 50px;
-    box-sizing: border-box;
-}
-
-#parameters .group div {
-    height: 35px;
-    padding: 5px;
-}
-
-#parameters .group-item,
-#parameters .group.group-item div {
-    height: 0px;
-    border: none;
-    padding: 0;
-}
-
-.group:hover {
-    background-color: #e7eaf2 !important;
-    cursor: pointer;
-}
-
-.group-item td:first-child {
-    border-left: 2px solid #597595 !important;
-}
-
-.group-item td:last-child {
-    border-right: 2px solid #597595 !important;
+    > div:last-child {
+        border-bottom: none;
+    }
 }
 
 header {
@@ -219,25 +232,6 @@ header {
     color: #e3e31b;
 }
 
-::-webkit-scrollbar-button {
-    width: 5px;
-    height: 0px;
-}
-
-::-webkit-scrollbar-track {
-    background-color: #535151;
-}
-
-::-webkit-scrollbar-thumb {
-    border-radius: 0px;
-    border-radius: 0px;
-    background-color: #808080;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background-color: #c7cfc1;
-}
-
 ::-webkit-resizer {
     width: 4px;
     height: 0px;
@@ -245,16 +239,49 @@ header {
 
 ::-webkit-scrollbar {
     width: 4px;
+
+    &-thumb {
+        border-radius: 0px;
+        background-color: #808080;
+    
+        &:hover {
+            background-color: #c7cfc1;
+        }
+    }
+
+    &-track {
+        background-color: #535151;
+    }
+
+    &-button {
+        width: 5px;
+        height: 0px;
+    }
 }
 
 .group-cont {
     transition: all 0.5s ease 0s;
     overflow: hidden;
-    border-top: none;
-    border-bottom: none;
+    border: {
+        top: none;
+        bottom: none;
+    }
     background: white;
     width: 100%;
     box-sizing: border-box;
+
+    .group {
+        margin-top: 0;
+        border: {
+            left: none !important;
+            right: none !important;
+            top: none !important;
+        }
+    }
+
+    .group-cont {
+        border: none;
+    }
 }
 
 .info,
@@ -263,10 +290,6 @@ header {
     height: 50px;
     border-bottom: 1px solid #597595;
     box-sizing: border-box;
-}
-
-.accordion-body>div:last-child {
-    border-bottom: none;
 }
 
 .inline-block {
@@ -288,26 +311,15 @@ header {
     border-right: 1px solid #597595;
 }
 
-.group-cont .group {
-    margin-top: 0;
-    border-left: none !important;
-    border-right: none !important;
-    border-top: none !important;
-}
-
 :nth-child(1n+2).group {
     border-top: none !important;
-}
-
-.group-cont .group-cont {
-    border: none;
 }
 
 #work-zone .dev-enabled {
     border-color: red;
 }
 
-div.param-input input {
+.param-input input {
     width: 70px;
 }
 
@@ -345,7 +357,7 @@ footer span {
     width: 34px;
     left: 60px;
     height: 34px;
-    background: url(../images/icons/save-icon.png) 50% no-repeat;
+    background: url(@sxmle-images/icons/save.png) 50% no-repeat;
     border: none;
     filter: invert(1);
     display: block;
@@ -353,7 +365,7 @@ footer span {
 }
 
 #reset {
-    background: url(../images/icons/reset.png) 50% no-repeat;
+    background: url(@sxmle-images/icons/reset.png) 50% no-repeat;
     width: 34px;
     height: 34px;
     border: none;
@@ -363,21 +375,21 @@ footer span {
 
 #back {
     left: 10px;
-    background: url(../images/icons/back-arrow.png) 50% no-repeat;
+    background: url(@sxmle-images/icons/back-arrow.png) 50% no-repeat;
     filter: invert(1) contrast(0.5);
 }
 
 #export {
     left: auto;
     right: 30px;
-    background: url(../images/icons/export.png) 50% no-repeat;
+    background: url(@sxmle-images/icons/export.png) 50% no-repeat;
     filter: invert(1) contrast(0.6);
 }
 
 #import {
     left: auto;
     right: 80px;
-    background: url(../images/icons/import.png) 50% no-repeat;
+    background: url(@sxmle-images/icons/import.png) 50% no-repeat;
     filter: invert(1) contrast(0.7);
 }
 
@@ -394,17 +406,17 @@ img.desc {
     right: 10px;
     top: 10px;
     cursor: help;
+
+    &:hover {
+        filter: contrast(0.5);
+    }
 }
 
-img.desc:hover {
-    filter: contrast(0.5);
-}
-
-div.info {
+.info {
     position: relative;
 }
 
-div.search {
+.search {
     position: fixed;
     text-align: center;
     top: 0;
@@ -413,12 +425,12 @@ div.search {
     width: 300px;
     left: 50%;
     margin-left: -150px;
-}
 
-div.search > label[for='search'] {
-    font-size: 0.7em;
-    position: relative;
-    bottom: 1.5px;
+    > label[for='search'] {
+        font-size: 0.7em;
+        position: relative;
+        bottom: 1.5px;
+    }
 }
 
 #search {
@@ -426,12 +438,13 @@ div.search > label[for='search'] {
     height: 24px;
     margin-left: 10px;
     font-size: 0.9em;
-}
 
-#search:focus {
-    outline: 0 !important;
-    outline-color: transparent !important;
-    outline-width: 0 !important;
-    outline-style: none !important;
-    box-shadow: 0 0 0 0 rgba(0, 123, 255, 0) !important;
+    &:focus {
+        outline: 0 !important {
+            color: transparent !important;
+            width: 0 !important;
+            style: none !important;
+        }
+        box-shadow: 0 0 0 0 rgba(0, 123, 255, 0) !important;
+    }
 }

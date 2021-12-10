@@ -1,7 +1,7 @@
 import { PureComponent } from 'react'
-import '../styles/GameFolder.css'
+import '../styles/GameFolder'
 
-import { t } from '@editor-service'
+import { t } from '@sxmle-service'
 
 interface IProps {
     onChange(path: string): void

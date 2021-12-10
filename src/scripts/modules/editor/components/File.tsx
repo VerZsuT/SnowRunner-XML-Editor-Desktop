@@ -1,7 +1,7 @@
 import { PureComponent } from 'react'
-import '../styles/File.css'
+import '../styles/File'
 
-import { FileType, mainProcess } from '@editor-service'
+import { FileType, mainProcess } from '@sxmle-service'
 import { IMainContext, MainContext } from '../MainContext'
 
 interface IProps {

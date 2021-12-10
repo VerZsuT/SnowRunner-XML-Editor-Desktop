@@ -8,30 +8,31 @@ $name-color: white;
     position: relative;
     cursor: pointer;
 
-    :hover {
+    &:hover {
         filter: brightness(0.8);
 
         .category-name {
             color: $hover-name-color;
         }
     }
+
+    img {
+        width: 100%;
+        height: 100%;
+        border-radius: 5px;
+    }
+
+    .category-name {
+        width: 100%;
+        color: $name-color;
+        background-color: black;
+        position: absolute;
+        top: 0;
+        padding: 10px 0;
+        text-align: center;
+        text-transform: uppercase;
+        border-top-right-radius: 5px;
+        border-top-left-radius: 5px;
+    }
 }
 
-img {
-    width: 100%;
-    height: 100%;
-    border-radius: 5px;
-}
-
-.category-name {
-    width: 100%;
-    color: $name-color;
-    background-color: black;
-    position: absolute;
-    top: 0;
-    padding: 10px 0;
-    text-align: center;
-    text-transform: uppercase;
-    border-top-right-radius: 5px;
-    border-top-left-radius: 5px;
-}

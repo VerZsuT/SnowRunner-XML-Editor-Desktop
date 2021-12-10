@@ -1,6 +1,6 @@
 import { ChangeEvent, PureComponent } from 'react'
 
-import { t } from '@editor-service'
+import { t } from '@sxmle-service'
 import { IMainContext, MainContext } from '../MainContext'
 
 interface IProps {

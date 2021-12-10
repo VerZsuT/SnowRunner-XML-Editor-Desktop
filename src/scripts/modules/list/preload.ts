@@ -1,9 +1,9 @@
 import { join, basename } from 'path'
 import { existsSync, rmSync } from 'fs'
-import '@editor-app/mainPreload'
+import '@sxmle-app/mainPreload'
 
-import { findInDir } from '@editor-app/service'
-import { mainProcess } from '@editor-service'
+import { findInDir } from '@sxmle-app/service'
+import { mainProcess } from '@sxmle-service'
 import { FromList, ListType } from './enums'
 
 const preload: ListPreload = {
@@ -28,7 +28,7 @@ const preload: ListPreload = {
             const array = []
             for (const dlcItem of config.dlcList) {
                 const path = `${dlcItem.path}\\classes`
-                let items = []
+                let items: FindItem[] = []
 
                 if (listType === ListType.trucks) {
                     items = findInDir(join(path, 'trucks'))
@@ -45,9 +45,9 @@ const preload: ListPreload = {
             }
             return array
         } else if (from === FromList.mods) {
-            const array = []
+            const array: Item[] = []
             for (const modId in config.modsList) {
-                let items = []
+                let items: FindItem[] = []
                 if (modId === 'length') {
                     continue
                 }

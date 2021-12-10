@@ -1,5 +1,5 @@
 import { PureComponent } from 'react'
-import '../styles/Group.css'
+import '../styles/Group'
 
 import { IMainContext, MainContext } from '../MainContext'
 

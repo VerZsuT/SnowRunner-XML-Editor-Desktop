@@ -1,5 +1,5 @@
 import { PureComponent } from 'react'
-import '../styles/Parameter.css'
+import '../styles/Parameter'
 
 import { IMainContext, MainContext } from '../MainContext'
 

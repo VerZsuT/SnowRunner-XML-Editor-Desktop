@@ -1,6 +1,6 @@
 import { FormEvent, PureComponent } from 'react'
 
-import { setHotKey, Lang } from '@editor-service'
+import { setHotKey, Lang } from '@sxmle-service'
 import { help } from '../service'
 
 interface IProps {

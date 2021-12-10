@@ -1,2 +1,2 @@
-export * from '@editor-templates/enums'
-export * from '@editor-app/enums'
+export * from '@sxmle-templates/enums'
+export * from '@sxmle-app/enums'
