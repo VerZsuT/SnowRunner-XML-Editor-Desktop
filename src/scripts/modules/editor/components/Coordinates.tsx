@@ -1,4 +1,4 @@
-import { ChangeEvent, PureComponent } from 'react'
+import { ChangeEvent, FocusEvent, PureComponent } from 'react'
 import '../styles/Coordinates'
 
 import { IMainContext, MainContext } from '../MainContext'
@@ -13,9 +13,9 @@ interface IProps {
 }
 
 interface IState {
-    x: number
-    y: number
-    z: number
+    x: number|string
+    y: number|string
+    z: number|string
 }
 
 export default class Coordinates extends PureComponent<IProps, IState> {
@@ -43,7 +43,8 @@ export default class Coordinates extends PureComponent<IProps, IState> {
                     className='x-input form-control inline-block'
                     type='number'
                     value={this.state.x}
-                    onChange={this.saveX}
+                    onBlur={e => this.save({x: Number(e.target.value)})}
+                    onChange={e => this.setState({x: e.target.value})}
                     disabled={this.props.item.onlyDeveloper}
                 />
                 <span>Y: </span>
@@ -52,7 +53,8 @@ export default class Coordinates extends PureComponent<IProps, IState> {
                     className='y-input form-control inline-block'
                     type='number'
                     value={this.state.y}
-                    onChange={this.saveY}
+                    onBlur={e => this.save({y: Number(e.target.value)})}
+                    onChange={e => this.setState({y: e.target.value})}
                     disabled={this.props.item.onlyDeveloper}
                 />
                 <span>Z: </span>
@@ -61,23 +63,12 @@ export default class Coordinates extends PureComponent<IProps, IState> {
                     className='z-input form-control inline-block'
                     type='number'
                     value={this.state.z}
-                    onChange={this.saveZ}
+                    onBlur={e => this.save({z: Number(e.target.value)})}
+                    onChange={e => this.setState({z: e.target.value})}
                     disabled={this.props.item.onlyDeveloper}
                 />
             </div>
         )
-    }
-
-    private saveX = (e: ChangeEvent<HTMLInputElement>) => {
-        this.save({x: Number(e.target.value)})
-    }
-
-    private saveY = (e: ChangeEvent<HTMLInputElement>) => {
-        this.save({y: Number(e.target.value)})
-    }
-
-    private saveZ = (e: ChangeEvent<HTMLInputElement>) => {
-        this.save({z: Number(e.target.value)})
     }
 
     private save({x=this.state.x, y=this.state.y, z=this.state.z}) {

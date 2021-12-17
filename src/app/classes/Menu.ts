@@ -1,10 +1,10 @@
 import { BuildType, MenuRole } from '../enums'
 import { paths } from '../service'
-import Config from './Config'
-import Texts from './Texts'
+import { Config } from './Config'
+import { Texts } from './Texts'
 
 /** Овечает за меню программы. */
-export default class Menu {
+export class Menu {
     private static config = Config.obj
 
     /** Возвращает шаблон меню. */
@@ -19,19 +19,19 @@ export default class Menu {
                     },
                     { role: MenuRole.separator }
                 ]),
-                ...this.ifDevBuild(this.ifHasInitial([
+                ...this.ifHasInitial(this.config.settings.resetButton? [
                     {
                         label: Texts.get('RESET_MENU_ITEM_LABEL'),
                         role: MenuRole.resetConfig
                     }
-                ])),
+                ]:[]),
                 ...this.ifDevBuild([
                     {
                         label: 'DevTools',
                         role: MenuRole.devTools
                     },
                     {
-                        label: 'Reload',
+                        label: 'Обновить окно',
                         role: MenuRole.reload
                     }
                 ]),

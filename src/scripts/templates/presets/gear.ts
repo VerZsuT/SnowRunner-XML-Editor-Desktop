@@ -1,5 +1,5 @@
 import { Number } from '../items'
-import Config from '@sxmle-app/classes/Config'
+import { Config } from'@sxmle-app/classes/Config'
 
 const texts = {
     RU: {

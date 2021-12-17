@@ -1,17 +1,16 @@
 import { app } from 'electron'
-import { join } from 'path'
 import { existsSync } from 'fs'
+import { join } from 'path'
 
-import {
-    Archiver,
-    Checker,
-    Config,
-    Hasher,
-    Public,
-    Settings,
-    Texts,
-    Windows
-} from './classes'
+import { Checker } from './classes/Checker'
+import { Config } from './classes/Config'
+import { Public } from './classes/Public'
+import { Settings } from './classes/Settings'
+import { Texts } from './classes/Texts'
+import { Windows } from './classes/Windows'
+import { Hasher } from './classes/Hasher'
+import { Archiver } from './classes/Archiver'
+
 import { findInDir, paths } from './service'
 
 const config = Config.obj
@@ -41,8 +40,7 @@ app.on('before-quit', () => {
     }
 })
 process.once('uncaughtExceptionMonitor', () => {
-    settings.isQuit = true
-    app.quit()
+    app.exit()
 })
 
 /**
@@ -55,7 +53,7 @@ async function initProgram() {
         await Windows.openSetup()
         Checker.checkUpdate()
     } else {
-        await Checker.checkInitialHash()
+        await Checker.checkInitial()
 
         if (Checker.hasAllPaths()) {
             Texts.addIngame()
@@ -86,19 +84,14 @@ function initDLC() {
  * Инициализирует модификации, указанные в `config.json`.
 */
 async function initMods() {
-    if (!config.settings.mods) {
-        return
-    }
-    if (config.modsList.length === 0) {
-        return
-    }
+    if (!config.settings.mods) return
+    if (config.modsList.length === 0) return
 
     let counter = config.modsList.length
 
     function deleteFromList(name: string) {
         name = name.replace('.pak', '')
         delete config.modsList[name]
-        delete config.sums.mods[name]
         config.modsList.length--
         counter--
     }
@@ -119,18 +112,16 @@ async function initMods() {
             continue
         }
 
-        const hash = Hasher.getHash(mod.path)
-        if (existsSync(join(paths.modsTemp, modName)) && hash === config.sums.mods[modName]) {
+        if (Hasher.getSize(mod.path) === config.sizes.mods[modName]) {
             counter--
             continue
         } else {
             await Archiver.unpackMod(mod.path)
-
+    
             if (!existsSync(join(paths.modsTemp, modName, 'classes'))) {
                 settings.invalidMods.push(config.modsList[modName].name)
                 deleteFromList(config.modsList[modName].name)
             } else {
-                config.sums.mods[modName] = hash
                 counter--
             }
             if (counter === 0) {

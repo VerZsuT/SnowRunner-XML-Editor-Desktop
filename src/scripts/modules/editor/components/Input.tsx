@@ -1,4 +1,4 @@
-import { ChangeEvent, PureComponent } from 'react'
+import { ChangeEvent, FocusEvent, PureComponent } from 'react'
 
 import { InputType, NumberType } from '@sxmle-service'
 import { IMainContext, MainContext } from '../MainContext'
@@ -55,7 +55,7 @@ export default class Input extends PureComponent<IProps, IState> {
                     step={this.props.item.step}
                     disabled={this.props.item.onlyDeveloper}
                     style={{borderColor: this.state.borderColor}}
-                    onInput={this.setColor}
+                    onBlur={this.saveValue}
                     onChange={this.onValueChange}
                   />
                 : <input 
@@ -65,20 +65,18 @@ export default class Input extends PureComponent<IProps, IState> {
                     title={this.defaultValue}
                     value={this.state.value}
                     onChange={this.onValueChange}
+                    onBlur={this.saveValue}
                   />
             }
         </>)
     }
 
-    private onValueChange = (e: ChangeEvent<HTMLInputElement>) => {
+    private saveValue = (e: FocusEvent<HTMLInputElement>) => {
         let newVal: string|number = e.target.value
         const { fileDOM, ETR, setETR, filePath } = this.context
 
         if (newVal === '') {
             newVal = this.defaultValue
-        }
-        if (this.props.item.type !== InputType.text) {
-            newVal = this.limit(Number(newVal))
         }
         
         if (!fileDOM.querySelector(this.props.item.selector)) {
@@ -98,7 +96,19 @@ export default class Input extends PureComponent<IProps, IState> {
             }
         }
         this.props.setValue(this.props.item.selector, this.props.item.name, String(newVal))
-        this.setColor(e)
+        this.setState({
+            value: newVal
+        })
+    }
+
+    private onValueChange = (e: ChangeEvent<HTMLInputElement>) => {
+        let newVal: string|number = e.target.value
+
+        if (this.props.item.type !== InputType.text && newVal !== '') {
+            newVal = this.limit(Number(newVal))
+        }
+        
+        this.setColor(Number(newVal))
         this.setState({
             value: newVal
         })
@@ -117,11 +127,10 @@ export default class Input extends PureComponent<IProps, IState> {
         return num
     }
 
-    private setColor = (e: ChangeEvent<HTMLInputElement>) => {
-        const v = +e.target.value
-        let newVal: number = v
+    private setColor = (value: number) => {
+        let newVal: number = value
 
-        if (v === null || v === NaN) newVal = 0
+        if (value === null || value === NaN) newVal = 0
         if (this.props.item.areas) {
             let color = '#ced4da'
 

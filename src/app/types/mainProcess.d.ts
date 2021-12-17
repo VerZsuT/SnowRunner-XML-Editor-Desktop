@@ -64,7 +64,6 @@ interface Functions {
     resetConfig(withoutReload?: boolean): void
     recoverFromBackup(): void
     saveConfig(): void
-    saveInitialHash(): void
     checkUpdate(ignoreSetting?: boolean): void
     update(): void
     unpackFiles(lockOther?: boolean): void

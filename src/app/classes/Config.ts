@@ -3,7 +3,7 @@ import { readFileSync, writeFileSync, existsSync, rmSync } from 'fs'
 import { Lang } from '../enums'
 
 import { paths, clearTemp } from '../service'
-import Settings from './Settings'
+import { Settings } from './Settings'
 
 function getConfig() {
     const data = readFileSync(paths.config)
@@ -12,7 +12,7 @@ function getConfig() {
 }
 
 /** Отвечает за работу с `config.json` */
-export default class Config {
+export class Config {
     static obj: ProgramConfig = getConfig()
 
     private static settings = Settings.obj
@@ -52,7 +52,7 @@ export default class Config {
             devMode: false,
             showWhatsNew: true
         }
-        this.obj.sums = {
+        this.obj.sizes = {
             initial: null,
             mods: {}
         }
@@ -78,9 +78,16 @@ export default class Config {
     
         exportedConfig.version = this.obj.version
         this.settings.saveWhenReload = false
-        if (exportedConfig.version < 'v0.6.5') {
+        if (exportedConfig.version < '0.6.5') {
             exportedConfig.ADV = {}
             exportedConfig.ETR = {}
+        }
+        if (exportedConfig.version < '0.6.7') {
+            delete exportedConfig.sums
+            exportedConfig.sizes = {
+                initial: null,
+                mods: {}
+            }
         }
         exportedConfig.settings.showWhatsNew = true
         writeFileSync(paths.config, JSON.stringify(exportedConfig))

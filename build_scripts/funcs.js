@@ -55,7 +55,7 @@ function checkVar(variable, callback) {
     if (variable !== null && variable !== undefined) {
         callback()
     } else {
-        Log.error(`Переменная не установлена.`)
+        Log.error(`Variable ${variable} is not set.`)
     }
 }
 
@@ -73,7 +73,7 @@ function checkPath(path, callback, throwError=false) {
     if (existsSync(path)) {
         callback()
     } else {
-        Log.error(`Не найден путь ${path}`)
+        Log.error(`Path '${path}' not found.`)
         if (throwError) {
             throw new Error()
         }
@@ -98,10 +98,10 @@ function readFileToVar(varName, path, fromJSON=true) {
                 global[varName] = readFileSync(path).toString()
             }
         } catch {
-            Log.error(`Не удалось считать ${fileName}`)
+            Log.error(`Error reading file ${fileName}`)
         }
     } else {
-        Log.error(`${fileName} не найден.`)
+        Log.error(`${fileName} not found.`)
     }
 }
 
@@ -120,11 +120,11 @@ function writeFile(path, dependency, dataFunc) {
             try {
                 writeFileSync(path, data)
             } catch {
-                Log.error(`Не удалось записать ${fileName}`)
+                Log.error(`Error writing ${fileName}`)
             }
         })
     } else {
-        Log.error(`${basename(path)} не найден.`)
+        Log.error(`${basename(path)} not found.`)
     }
 }
 

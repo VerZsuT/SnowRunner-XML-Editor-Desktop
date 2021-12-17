@@ -52,7 +52,8 @@ class Setup extends PureComponent<any, IState> {
 
     private checkExportedConfig() {
         if (setupPreload.existsSync(setupPreload.join(paths.backupFolder, 'config.json'))) {
-            if (mainProcess.confirm(t.IMPORT_CONFIG_MESSAGE)) {
+            const exported = JSON.parse(setupPreload.readFileSync(setupPreload.join(paths.backupFolder, 'config.json')))
+            if (mainProcess.confirm(texts[exported.lang].IMPORT_CONFIG_MESSAGE)) {
                 mainProcess.importConfig()
                 mainProcess.reload()
             }

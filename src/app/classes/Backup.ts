@@ -4,17 +4,17 @@ import { copyFileSync, existsSync, mkdirSync, unlinkSync } from 'fs'
 import { BuildType } from '../enums'
 import { paths } from '../service'
 
-import Settings from './Settings'
-import Archiver from './Archiver'
-import Config from './Config'
-import Dialog from './Dialog'
-import Hasher from './Hasher'
-import Notification from './Notification'
-import Texts from './Texts'
+import { Settings } from './Settings'
+import { Archiver } from './Archiver'
+import { Config } from './Config'
+import { Dialog } from './Dialog'
+import { Hasher } from './Hasher'
+import { Notification } from './Notification'
+import { Texts } from './Texts'
 
 
 /** Отвечает за работу с бэкапом initial.pak */
-export default class Backup {
+export class Backup {
     private static config = Config.obj
     private static settings = Settings.obj
 
@@ -75,7 +75,6 @@ export default class Backup {
         try {
             copyFileSync(paths.backupInitial, this.config.paths.initial)
             await Archiver.unpackMain()
-            Hasher.saveInitialHash()
             Notification.show('SUCCESS', 'SUCCESS_INITIAL_RESTORE')
         } catch {
             Dialog.alert({

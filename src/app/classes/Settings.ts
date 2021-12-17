@@ -1,5 +1,5 @@
 /** Для неявной передачи настроек в остальные классы программы. */
-export default class Settings {
+export class Settings {
     static obj: ISettings = {}
     static set(newObj: ISettings): ISettings {    
         for (const key in newObj) {

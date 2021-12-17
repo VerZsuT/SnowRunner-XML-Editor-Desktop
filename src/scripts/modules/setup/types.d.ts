@@ -18,6 +18,7 @@ interface SetupPreload {
 
     existsSync(path: string): boolean
     join(...args: string[]): string
+    readFileSync(path: string): string
 
     /**
      * Открывает выбор папки с игрой для поиска initial.pak.

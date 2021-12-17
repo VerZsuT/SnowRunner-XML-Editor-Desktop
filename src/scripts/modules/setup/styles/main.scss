@@ -19,7 +19,9 @@ label {
 
 header {
     padding-top: 5px;
-    margin-bottom: 20px;
+    margin: {
+        bottom: 45px;
+    }
 
     h2 {
         color: white;

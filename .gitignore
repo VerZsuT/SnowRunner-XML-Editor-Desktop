@@ -86,7 +86,7 @@ typings/
 .webpack/
 
 # Electron-Forge
-out/
+out
 
 # program backup
 src/backups/
@@ -94,5 +94,5 @@ src/backups/
 .vscode/
 src/scripts/mainTemp/
 src/scripts/modsTemp/
-.changes.txt
+build_scripts/out
 test.js

@@ -2,14 +2,14 @@ import { existsSync, readFileSync } from 'fs'
 import { join } from 'path'
 
 import { parseStrings, paths } from '../service'
-import Config from './Config'
+import { Config } from './Config'
 import { RU, EN, DE } from '@sxmle-texts'
 import { Lang } from '../enums'
 
 type TKeys = keyof typeof RU
 
 /** Отвечает за работу с переводами. */
-export default class Texts {
+export class Texts {
     private static config = Config.obj
 
     /** Объект переводов. */

@@ -1,12 +1,12 @@
 import { readFileSync, writeFileSync } from 'fs'
 import { basename } from 'path'
 
-import Dialog from './Dialog'
-import Settings from './Settings'
-import Texts from './Texts'
+import { Dialog } from './Dialog'
+import { Settings } from './Settings'
+import { Texts } from './Texts'
 
 /** Отвечает за работу с `.epf` файлами. */
-export default class EPF {
+export class EPF {
     private static settings = Settings.obj
 
     /**

@@ -53,41 +53,43 @@ class Settings extends PureComponent<any, IState> {
 
             <GameFolder onChange={this.onChangePath} />
 
-            <input
-                type='checkbox'
-                id='ignore-updates'
-                className='form-check-input'
-                checked={this.state.updates}
-                onChange={e => this.onChangeSetting('updates', e.target.checked)}
-            />
-            <label htmlFor='ignore-updates' className='form-check-label'>{t.UPDATES_LABEL}</label><br/>
+            <div id='checkboxes'>
+                <input
+                    type='checkbox'
+                    id='ignore-updates'
+                    className='form-check-input'
+                    checked={this.state.updates}
+                    onChange={e => this.onChangeSetting('updates', e.target.checked)}
+                />
+                <label htmlFor='ignore-updates' className='form-check-label'>{t.UPDATES_LABEL}</label><br/>
 
-            <input
-                type='checkbox'
-                id='disable-dlc'
-                className='form-check-input'
-                checked={this.state.DLC}
-                onChange={e => this.onChangeSetting('DLC', e.target.checked)}
-            />
-            <label htmlFor='disable-dlc' className='form-check-label'>{t.DLC_LABEL}</label><br/>
+                <input
+                    type='checkbox'
+                    id='disable-dlc'
+                    className='form-check-input'
+                    checked={this.state.DLC}
+                    onChange={e => this.onChangeSetting('DLC', e.target.checked)}
+                />
+                <label htmlFor='disable-dlc' className='form-check-label'>{t.DLC_LABEL}</label><br/>
 
-            <input
-                type='checkbox'
-                id='disable-mods'
-                className='form-check-input'
-                checked={this.state.mods}
-                onChange={e => this.onChangeSetting('mods', e.target.checked)}
-            />
-            <label htmlFor='disable-mods' className='form-check-label'>{t.MODS_LABEL}</label><br/>
+                <input
+                    type='checkbox'
+                    id='disable-mods'
+                    className='form-check-input'
+                    checked={this.state.mods}
+                    onChange={e => this.onChangeSetting('mods', e.target.checked)}
+                />
+                <label htmlFor='disable-mods' className='form-check-label'>{t.MODS_LABEL}</label><br/>
 
-            <input
-                type='checkbox'
-                id='hide-reset-button'
-                className='form-check-input'
-                checked={this.state.resetButton}
-                onChange={e => this.onChangeSetting('resetButton', e.target.checked)}
-            />
-            <label htmlFor='hide-reset-button' className='form-check-label'>{t.RESET_BUTTON_LABEL}</label><br/>
+                <input
+                    type='checkbox'
+                    id='hide-reset-button'
+                    className='form-check-input'
+                    checked={this.state.resetButton}
+                    onChange={e => this.onChangeSetting('resetButton', e.target.checked)}
+                />
+                <label htmlFor='hide-reset-button' className='form-check-label'>{t.RESET_BUTTON_LABEL}</label><br/>
+            </div>
 
             <button className='btn btn-primary' id='save-to-config' onClick={this.save}>{t.SAVE_BUTTON}</button>
         </>)

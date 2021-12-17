@@ -3,12 +3,13 @@ import { existsSync, mkdirSync, rmSync } from 'fs'
 import { join, basename } from 'path'
 
 import { paths } from '../service'
-import Config from './Config'
-import Texts from './Texts'
-import Windows from './Windows'
+import { Config } from './Config'
+import { Hasher } from './Hasher'
+import { Texts } from './Texts'
+import { Windows } from './Windows'
 
 /** Предоставляет методы для работы с архивами. */
-export default class Archiver {
+export class Archiver {
     static config = Config.obj
     
     /**
@@ -17,10 +18,18 @@ export default class Archiver {
      * @param direction - путь до архива.
     */
     static update = (source: string, direction: string): void => {
+        const fileName = basename(direction, '.pak')
+
         execSync(`WinRAR f -ibck -inul "${direction}" "${source}\\" -r -ep1`, {
             cwd: paths.winrar_x32,
             windowsHide: true
         })
+
+        if (fileName === 'initial') {
+            this.config.sizes.initial = Hasher.getSize(direction)
+        } else {
+            this.config.sizes.mods[fileName] = Hasher.getSize(direction)
+        }
     }
 
     /**
@@ -52,6 +61,7 @@ export default class Archiver {
         }
         mkdirSync(paths.mainTemp)
         await this.unpack(this.config.paths.initial, paths.mainTemp)
+        this.config.sizes.initial = Hasher.getSize(this.config.paths.initial)
         if (!loading.isDestroyed()) {
             loading.close()
         }
@@ -59,17 +69,17 @@ export default class Archiver {
 
     /** Распаковывает XML файлы модификации из файла по переданному пути. */
     static unpackMod = async (pathToFile: string) => {
-        const pathToDir = join(paths.modsTemp, basename(pathToFile, '.pak'))
-        try {
-            if (!existsSync(paths.modsTemp)) {
-                mkdirSync(paths.modsTemp)
-            }
-    
-            if (existsSync(pathToDir)) {
-                rmSync(pathToDir, {recursive: true})
-            }
-            mkdirSync(pathToDir)
-            await this.unpack(pathToFile, pathToDir, true)
-        } catch {}
+        const modId = basename(pathToFile, '.pak')
+        const pathToDir = join(paths.modsTemp, modId)
+        if (!existsSync(paths.modsTemp)) {
+            mkdirSync(paths.modsTemp)
+        }
+
+        if (existsSync(pathToDir)) {
+            rmSync(pathToDir, {recursive: true})
+        }
+        mkdirSync(pathToDir)
+        this.config.sizes.mods[modId] = Hasher.getSize(pathToFile)
+        await this.unpack(pathToFile, pathToDir, true)
     }
 }

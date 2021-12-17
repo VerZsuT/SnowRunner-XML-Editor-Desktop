@@ -1,6 +1,10 @@
 const template = './src/pages/template.html'
 const mainPreload = './src/app/mainPreload.ts'
 
+/**
+ * Возвращает путь к модулю
+ * @param {string} name
+ */
 function getModule(name) {
     const modules = './src/scripts/modules'
     return {
@@ -9,6 +13,10 @@ function getModule(name) {
     }
 }
 
+/**
+ * Возвращает путь к конфигу
+ * @param {string} name
+ */
 function getConfig(name) {
     return `./configs/${name}`
 }

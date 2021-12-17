@@ -35,8 +35,8 @@ class Categories extends PureComponent {
     }
 
     private checkInvalidMods() {
-        const invalidMods = mainProcess.invalidMods
         setTimeout(() => {
+            const invalidMods = mainProcess.invalidMods
             if (invalidMods.length !== 0) {
                 mainProcess.alertSync(`${t.INVALID_MODS_ALERT_MAIN}: \n- ${invalidMods.join('\n- ')}`)
             }

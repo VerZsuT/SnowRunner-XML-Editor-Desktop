@@ -1,5 +1,5 @@
 {
-	"version": "0.6.6c",
+	"version": "0.6.6d",
 	"lang": "RU",
 	"buildType": "dev",
 	"paths": {
@@ -17,9 +17,9 @@
 		"devMode": false,
 		"showWhatsNew": false
 	},
-	"sums": {
-		"initial": null,
-		"mods": {}
+	"sizes": {
+		"mods": {},
+		"initial": null
 	},
 	"modsList": {
 		"length": 0

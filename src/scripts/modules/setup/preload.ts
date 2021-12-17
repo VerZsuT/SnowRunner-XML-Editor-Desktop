@@ -1,4 +1,4 @@
-import { existsSync } from 'fs'
+import { existsSync, readFileSync } from 'fs'
 import { join, basename } from 'path'
 
 import '@sxmle-app/mainPreload'
@@ -9,8 +9,9 @@ const openInitialDialog = () => mainProcess.openInitialDialog()
 
 const preload: SetupPreload = {
     errorHandler: (text: keyof typeof t) => {mainProcess.alertSync(t[text])},
-    existsSync: existsSync,
-    join: join,
+    existsSync,
+    join,
+    readFileSync: (path: string) => readFileSync(path).toString(),
 
     get gameFolder(): Folder {
         const result = openDialog()

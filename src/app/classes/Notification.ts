@@ -1,13 +1,13 @@
 import { Notification as ElNotification } from 'electron'
 
 import type RU from '../../scripts/texts/RU.json'
-import Texts from './Texts'
+import { Texts } from './Texts'
 import { paths } from '../service'
 
 type TKeys = keyof typeof RU
 
 /** Отвечает за показ `windows-notification`. */
-export default class Notification {
+export class Notification {
     /** Выводит windows-notification на экран. */
     static show = async (titleKey: TKeys, messageKey: TKeys) => {
         if (ElNotification.isSupported()) {

@@ -25,7 +25,6 @@ export default class Save extends PureComponent<IProps> {
         }
 
         config.paths.initial = this.props.pathToInitial
-        mainProcess.saveInitialHash()
         mainProcess.saveBackup(true)
     }
 }

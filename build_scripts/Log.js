@@ -10,7 +10,7 @@ class Log {
     static prefix = `${this.FgYellow}[POST_BUILD]${this.Reset}`
 
     /**
-     * Пишет сообщение в консоль. Если стоит флаг isLog, то пишет зелёным вне группы.
+     * Пишет сообщение в консоль. Если стоит флаг `isLog`, то пишет зелёным вне группы.
      * @param {string} message 
      * @param {boolean} isLog 
     */

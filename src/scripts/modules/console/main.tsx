@@ -43,6 +43,7 @@ class Console extends PureComponent<any, IState> {
         this.setState({
             messages: [...this.state.messages, <Fragment key={this.state.messages.length}>{message}</Fragment>]
         })
+        document.querySelector('html').scrollTop = 10000000
     }
 
     private getListeners() {

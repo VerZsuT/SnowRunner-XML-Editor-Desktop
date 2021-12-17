@@ -13,13 +13,16 @@ header {
 }
 
 input {
-    [type='text']:disabled {
+    &[type='text']:disabled {
         background: white !important;
     }
 
-    [type='checkbox'] {
+    &[type='checkbox'] {
         width: 15px !important;
-        margin-left: 5px;
+        margin: {
+            left: 5px;
+            right: 10px;
+        }
     }
 }
 
@@ -31,12 +34,10 @@ label {
     width: 380px;
     margin: 0 auto;
     display: block;
-    text-align: left;
-    padding-left: 40px;
     box-sizing: border-box;
 
     #language-select {
-        margin: 0;
+        margin: 0 auto;
     }
     
     #game-folder-input {
@@ -44,11 +45,20 @@ label {
     }
     
     #save-to-config {
-        position: relative;
         margin: 0 auto;
         display: block;
         margin-top: 20px;
         left: -30px;
         z-index: 6;
+    }
+
+    #game-folder {
+        margin-bottom: 10px;
+    }
+
+    #checkboxes {
+        text-align: left;
+        width: 170px;
+        margin: 0 auto;
     }
 }

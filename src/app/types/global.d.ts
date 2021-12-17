@@ -15,13 +15,6 @@ interface ConfigSettings {
     showWhatsNew: boolean
 }
 
-interface ConfigSums {
-    initial: string
-    mods: {
-        [modName: string]: string
-    }
-}
-
 interface ConfigModsList {
     length: number
     items?: {
@@ -70,10 +63,12 @@ interface ProgramConfig {
      * Настройки программы.
     */
     settings: ConfigSettings
-    /**
-     * Хеши файлов.
-    */
-    sums: ConfigSums
+    sizes: {
+        initial: number
+        mods: {
+            [name: string]: number
+        }
+    }
     /**
      * Список модов.
     */

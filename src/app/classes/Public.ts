@@ -3,18 +3,18 @@ import { existsSync, readFileSync, writeFileSync } from 'fs'
 import { join } from 'path'
 import $ from 'cheerio'
 
-import Archiver from './Archiver'
-import Backup from './Backup'
-import Checker from './Checker'
-import Config from './Config'
-import Dialog from './Dialog'
-import EPF from './EPF'
-import Hasher from './Hasher'
-import Menu from './Menu'
-import Settings from './Settings'
-import Texts from './Texts'
-import Updater from './Updater'
-import Windows from './Windows'
+import { Archiver } from './Archiver'
+import { Backup } from './Backup'
+import { Checker } from './Checker'
+import { Config } from './Config'
+import { Dialog } from './Dialog'
+import { EPF } from './EPF'
+import { Hasher } from './Hasher'
+import { Menu } from './Menu'
+import { Settings } from './Settings'
+import { Texts } from './Texts'
+import { Updater } from './Updater'
+import { Windows } from './Windows'
 
 import { paths } from '../service'
 import * as templates from '@sxmle-templates'
@@ -31,7 +31,7 @@ ipcMain.on('getInfo', event => {
 })
 
 /** Отвечает за публичные переменные/функции для `renderer-process`. */
-export default class Public {
+export class Public {
     private static settings = Settings.obj
     private static config = Config.obj
 
@@ -129,7 +129,6 @@ export default class Public {
                 if (modId) {
                     try {
                         Archiver.update(join(paths.modsTemp, modId), this.config.modsList[modId].path)
-                        Hasher.saveModHash(modId, this.config.modsList[modId].path)
                     } catch (err) {
                         Dialog.alert({
                             title: Texts.get('ERROR'),
@@ -139,7 +138,6 @@ export default class Public {
                 } else {
                     try {
                         Archiver.update(paths.mainTemp, this.config.paths.initial)
-                        Hasher.saveInitialHash()
                     } catch (err) {
                         Dialog.alert({
                             title: Texts.get('ERROR'),
@@ -213,7 +211,6 @@ export default class Public {
             resetConfig: Config.reset,
             recoverFromBackup: Backup.recover,
             saveConfig: Config.save,
-            saveInitialHash: Hasher.saveInitialHash,
             checkUpdate: Checker.checkUpdate,
             update: Updater.update,
             unpackFiles: Archiver.unpackMain,

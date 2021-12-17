@@ -1,22 +1,22 @@
 import https from 'https'
 import dns from 'dns'
-import { writeFileSync, existsSync, lstatSync, readdirSync, readFileSync } from 'fs'
+import { writeFileSync, existsSync, lstatSync, readdirSync, accessSync, constants } from 'fs'
 import { join } from 'path'
 import { app, shell } from 'electron'
 
 import { paths } from '../service'
-import Config from './Config'
-import Dialog from './Dialog'
-import Windows from './Windows'
-import Texts from './Texts'
-import Hasher from './Hasher'
-import Notification from './Notification'
-import Backup from './Backup'
-import Archiver from './Archiver'
+import { Config } from './Config'
+import { Dialog } from './Dialog'
+import { Windows } from './Windows'
+import { Texts } from './Texts'
+import { Hasher } from './Hasher'
+import { Notification } from './Notification'
+import { Backup } from './Backup'
+import { Archiver } from './Archiver'
 import { Lang } from '../enums'
 
 /** Отвечает за различные проверки. */
-export default class Checker {
+export class Checker {
     private static config = Config.obj
 
     /**
@@ -49,10 +49,9 @@ export default class Checker {
      * 
      * _Если изменения присутствуют, то обновляет файлы в программе._
     */
-    static checkInitialHash = async () => {
-        if (!existsSync(join(paths.mainTemp, '[media]')) || Hasher.getHash(this.config.paths.initial) !== this.config.sums.initial) {
+    static checkInitial = async () => {
+        if (!existsSync(join(paths.mainTemp, '[media]')) || Hasher.getSize(this.config.paths.initial) !== this.config.sizes.initial) {
             if (existsSync(this.config.paths.initial)) {
-                Hasher.saveInitialHash()
                 if (!existsSync(paths.backupInitial)) {
                     await Backup.save()
                 } else {
@@ -187,7 +186,7 @@ export default class Checker {
     /** Проверяет наличие у программы прав на чтение/запись файла по переданному пути. */
     static checkPermissions = (path: string) => {
         try {
-            writeFileSync(path, readFileSync(path))
+            accessSync(path, constants.W_OK)
             return true
         } catch {
             return false

@@ -1,10 +1,10 @@
 import { app, BrowserWindow, ipcMain } from 'electron'
 import { paths } from '../service'
-import Settings from './Settings'
-import Config from './Config'
+import { Settings } from './Settings'
+import { Config } from './Config'
 
 /** Отвечает за взаимодействие с окнами. */
-export default class Windows {
+export class Windows {
     /** Главное окно программы (с выбором категории). */
     static categories: BrowserWindow
     /** Окно со списком авто/грузов/трейлеров. */
@@ -53,7 +53,7 @@ export default class Windows {
             path: SETTINGS_WEBPACK_ENTRY,
             preload: SETTINGS_PRELOAD_WEBPACK_ENTRY,
             width: 400,
-            height: 550,
+            height: 480,
             modal: true
         },
         console: {
@@ -159,8 +159,10 @@ export default class Windows {
         })
     
         wind.once('close', () => {
-            this.currentWindow = beforeWindow
-            beforeWindow.focus()
+            if (!beforeWindow.isDestroyed()) {
+                this.currentWindow = beforeWindow
+                beforeWindow.focus()
+            }
         })
     }
 
@@ -170,8 +172,10 @@ export default class Windows {
         const wind = this.createWindow(this.createArgs.console)
     
         wind.once('close', () => {
-            this.currentWindow = beforeWindow
-            beforeWindow.focus()
+            if (!beforeWindow.isDestroyed()) {
+                this.currentWindow = beforeWindow
+                beforeWindow.focus()
+            }
         })
     }
 

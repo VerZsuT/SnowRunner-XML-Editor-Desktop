@@ -1,4 +1,4 @@
-import Config from '@sxmle-app/classes/Config'
+import { Config } from'@sxmle-app/classes/Config'
 
 export const texts = {
 	RU: {

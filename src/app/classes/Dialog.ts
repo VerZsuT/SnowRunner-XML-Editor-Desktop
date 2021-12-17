@@ -3,7 +3,7 @@ import { paths } from '../service'
 import { DialogType, DialogSourceType, DialogAlertType } from '../enums'
 
 /** Отвечает за показ диалоговых окон. */
-export default class Dialog {
+export class Dialog {
     private static extNames = {
         epf: 'Editor params file',
         pak: 'Pakage file',

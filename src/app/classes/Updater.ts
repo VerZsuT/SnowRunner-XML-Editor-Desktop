@@ -4,13 +4,13 @@ import { createWriteStream, existsSync, lstatSync, rmSync, unlinkSync } from 'fs
 import { basename, join, dirname } from 'path'
 
 import { clearTemp, createDirForPath, paths } from '../service'
-import Windows from './Windows'
-import Checker from './Checker'
-import Config from './Config'
-import Settings from './Settings'
+import { Windows } from './Windows'
+import { Checker } from './Checker'
+import { Config } from './Config'
+import { Settings } from './Settings'
 
 /** Отвечает за работу с обновлениями. */
-export default class Updater {
+export class Updater {
     private static settings = Settings.obj
 
     /** Загружает файл(ы) из сети. */
