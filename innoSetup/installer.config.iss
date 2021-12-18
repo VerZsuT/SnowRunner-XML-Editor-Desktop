@@ -14,21 +14,22 @@ AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
 DefaultDirName={autopf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
-OutputDir=out
+OutputDir="..\out"
 OutputBaseFilename={#MyAppName}
-SetupIconFile=out\{#MyAppName}\resources\app\.webpack\main\favicon.ico
+SetupIconFile="..\out\{#MyAppName}\resources\app\.webpack\main\favicon.ico"
 Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
 PrivilegesRequired=lowest
 
 [Languages]
-Name: "english"; MessagesFile: "compiler:Default.isl"
-Name: "german"; MessagesFile: "compiler:Languages\German.isl"
-Name: "russian"; MessagesFile: "compiler:Languages\Russian.isl"
+Name: "english"; MessagesFile: "Default.isl"
+Name: "german"; MessagesFile: "German.isl"
+Name: "russian"; MessagesFile: "Russian.isl"
 
 [Files]
-Source: "out\{#MyAppName}\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "..\out\{#MyAppName}\resources\app\.webpack\main\config.json"; DestDir: "{app}"; BeforeInstall: MigrateConfig; Flags: ignoreversion
+Source: "..\out\{#MyAppName}\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Icons]
 Name: "{userdesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; AfterInstall: SetElevationBit('{userdesktop}\{#MyAppName}.lnk')
@@ -39,7 +40,7 @@ Name: "{group}\Uninstall {#MyAppName}"; Filename: "{uninstallexe}"
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent runascurrentuser
 
 [UninstallDelete]
-Name: "{app}\resources\app"; Type: filesandordirs; 
+Name: "{app}\resources\app"; Type: filesandordirs
 
 [Code]
 procedure SetElevationBit(Filename: string);
@@ -48,7 +49,6 @@ var
   Stream: TStream;
 begin
   Filename := ExpandConstant(Filename);
-  Log('Setting elevation bit for ' + Filename);
 
   Stream := TFileStream.Create(FileName, fmOpenReadWrite);
   try
@@ -61,4 +61,16 @@ begin
   finally
     Stream.Free;
   end;
+end;
+
+procedure MigrateConfig;
+var
+  ConfigPath: string;
+  BackupConfigPath: string;
+begin
+  ConfigPath := WizardDirValue() + '\resources\app\.webpack\main\config.json';
+  BackupConfigPath := WizardDirValue() + '\resources\app\.webpack\main\backups\config.json';
+  
+  if FileExists(ConfigPath) then
+    FileCopy(ConfigPath, BackupConfigPath, False);
 end;

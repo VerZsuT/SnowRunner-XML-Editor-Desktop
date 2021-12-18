@@ -79,7 +79,7 @@ if (!existsSync(paths.renamed)) {
     execSync(`WinRAR x -ibck -inul "${join(paths.out, 'SnowRunnerXMLEditor.rar')}" "${paths.out}\\"`, {cwd: winrarPath})
 }
 Log.print('Launching InnoSetup')
-execSync('installer.config.iss', {cwd: join(__dirname, '..')})
+execSync('installer.config.iss', {cwd: join(__dirname, '..', 'innoSetup')})
 Log.print('Copying .exe file for Google Drive')
 if (existsSync(join(paths.out, 'SnowRunnerXMLEditor.exe'))) {
     copyFileSync(join(paths.out, 'SnowRunnerXMLEditor.exe'), join(paths.out, `SnowRunnerXMLEditor_v${config.version}.exe`))

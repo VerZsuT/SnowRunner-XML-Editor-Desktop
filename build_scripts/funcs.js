@@ -19,7 +19,7 @@ const preBuildPaths = {
     package: join(__dirname, '..', 'package.json'),
     packageLock: join(__dirname, '..', 'package-lock.json'),
     public: join(__dirname, '..', '..', 'sxmle_updater', 'public.json'),
-    issConfig: join(__dirname, '..', 'installer.config.iss')
+    issConfig: join(__dirname, '..', 'innoSetup', 'installer.config.iss')
 }
 
 /**
