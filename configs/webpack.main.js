@@ -1,16 +1,25 @@
 const CopyPlugin = require('copy-webpack-plugin')
+const {
+    existsSync
+} = require('fs')
+const {
+    join
+} = require('path')
 
 module.exports = {
     mode: process.env.NODE_ENV || 'development',
-    devtool: process.env.NODE_ENV === 'production'? false : 'inline-source-map',
+    devtool: process.env.NODE_ENV === 'production' ? false : 'inline-source-map',
     plugins: [
         new CopyPlugin({
             patterns: [
-                {
-                    from: 'src/app/config.json'
+                process.env.NODE_ENV === 'development' && existsSync(join(__dirname, '../src/main/test-config.json')) ? {
+                    from: 'src/main/test-config.json',
+                    to: 'config.json'
+                } : {
+                    from: 'src/main/config.json'
                 },
                 {
-                    from: 'src/scripts/winrar',
+                    from: 'src/main/winrar',
                     to: 'winrar/'
                 },
                 {
@@ -27,7 +36,7 @@ module.exports = {
             ]
         })
     ],
-    entry: './src/app/index.ts',
+    entry: './src/main/index.ts',
     module: {
         rules: require('./webpack.rules'),
     },

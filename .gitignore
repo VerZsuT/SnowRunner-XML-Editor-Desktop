@@ -92,7 +92,7 @@ out
 src/backups/
 
 .vscode/
-src/scripts/mainTemp/
-src/scripts/modsTemp/
+src/main/test-config.json
 build_scripts/out
 test.js
+dist

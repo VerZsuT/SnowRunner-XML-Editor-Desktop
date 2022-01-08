@@ -1,0 +1,30 @@
+.input-export {
+    position: absolute;
+    right: 8px;
+    bottom: 5px;
+    width: 20px !important;
+}
+
+.desc {
+    position: relative;
+
+    &:hover {
+        .message-box {
+            display: inline-block;
+        }
+    }
+
+    .message-box {
+        position: absolute;
+        z-index: 21;
+        bottom: 21px;
+        right: 23px;
+        display: none;
+        padding: 10px;
+        min-width: 200px;
+        min-height: 50px;
+        background: white;
+        border: 1px solid;
+        border-radius: 5px;
+    }
+}

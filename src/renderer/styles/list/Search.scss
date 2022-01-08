@@ -1,0 +1,32 @@
+div.search {
+    position: fixed;
+    text-align: center;
+    top: 0;
+    background: none;
+    width: 300px;
+    left: 50%;
+    margin-left: -150px;
+
+    >label[for='search'] {
+        font-size: 0.7em;
+        position: relative;
+        bottom: 1.5px;
+    }
+
+    #search {
+        display: inline-block;
+        height: 24px;
+        margin-left: 10px;
+        font-size: 0.9em;
+
+        &:focus {
+            outline: 0 !important {
+                color: transparent !important;
+                width: 0 !important;
+                style: none !important;
+            }
+
+            box-shadow: 0 0 0 0 rgba(0, 123, 255, 0) !important;
+        }
+    }
+}

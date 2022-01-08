@@ -1,6 +1,6 @@
 const translate = require('translate')
 
-function parseToNative(str, prefix='') {
+function parseToNative(str, prefix = '') {
     let ulStarted_1 = false
     let ulStarted_2 = false
     const trimmed = str.split('\n').filter(value => value !== '')
@@ -27,7 +27,7 @@ function parseToNative(str, prefix='') {
             }
         }
 
-        if (trimmed.length-1 === index) {
+        if (trimmed.length - 1 === index) {
             if (value.startsWith('  - ')) {
                 return `${prefix}\t\t<li>${prepValue}</li>\n${prefix}\t</ul>\n${prefix}</ul>`
             }
@@ -44,7 +44,7 @@ function parseToNative(str, prefix='') {
             if (!ulStarted_1) {
                 ulStarted_1 = true
                 return `${prefix}<ul>\n${prefix}\t<li>${prepValue}</li>`
-            } 
+            }
             return `${prefix}\t<li>${prepValue}</li>`
         }
 
@@ -73,17 +73,30 @@ function parseToNative(str, prefix='') {
     }).join('\n')
 }
 
-async function parseToWhatsNew(str, prefix='') {
+async function parseToWhatsNew(str, prefix = '') {
     const RU = parseToNative(str, prefix)
-    const EN = parseToNative(await translate(str, {from: 'ru', to: 'en'}), prefix)
-    const DE = parseToNative(await translate(str, {from: 'ru', to: 'de'}), prefix)
+    const EN = parseToNative(await translate(str, {
+        from: 'ru',
+        to: 'en'
+    }), prefix)
+    const DE = parseToNative(await translate(str, {
+        from: 'ru',
+        to: 'de'
+    }), prefix)
     return `${prefix.replace('\t', '')}{config.lang === Lang.RU? <>\n${RU}\n${prefix.replace('\t', '')}</> :null}\n${prefix.replace('\t', '')}{config.lang === Lang.EN? <>\n${EN}\n${prefix.replace('\t', '')}</> :null}\n${prefix.replace('\t', '')}{config.lang === Lang.DE? <>\n${DE}\n${prefix.replace('\t', '')}</> :null}\n`
 }
 
 async function parseToGithub(str) {
     const RU = str
-    const EN = await translate(str, {from: 'ru', to: 'en'})
+    const EN = await translate(str, {
+        from: 'ru',
+        to: 'en'
+    })
     return `### [RU]\n\n${RU}\n### [EN]\n\n${EN}`
 }
 
-module.exports = { parseToNative, parseToWhatsNew, parseToGithub }
+module.exports = {
+    parseToNative,
+    parseToWhatsNew,
+    parseToGithub
+}

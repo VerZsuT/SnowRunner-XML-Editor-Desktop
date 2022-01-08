@@ -1,0 +1,36 @@
+@import 'styles/main';
+@import 'styles/setup/GameFolder';
+@import 'styles/setup/Language';
+@import 'styles/setup/Save';
+
+body {
+    text-align: center;
+}
+
+input {
+    &[type='text']:disabled {
+        background: white !important;
+    }
+
+    &[type='checkbox'] {
+        width: 15px !important;
+        margin-left: 5px;
+    }
+}
+
+label {
+    font-weight: bold;
+}
+
+header {
+    padding-top: 5px;
+    margin-bottom: 45px;
+    text-align: center;
+    background: #2c3c6b;
+    padding: 1px;
+    border-bottom: 1px solid lightgray;
+
+    h2 {
+        color: white;
+    }
+}

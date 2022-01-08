@@ -1,0 +1,71 @@
+.list {
+    display: flex;
+    margin-top: 140px;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+    width: 100%;
+
+    .add-mod {
+        text-align: center;
+        width: 100%;
+        margin-bottom: 10px;
+
+        button {
+            padding: 5px 10px;
+        }
+    }
+}
+
+.list-title {
+    position: fixed;
+    top: 25px;
+    width: 100%;
+    background-color: #2c3c6b;
+    color: white;
+    text-align: center;
+    padding-top: 10px;
+    z-index: 5;
+    font: {
+        weight: bold;
+        size: 20px;
+    }
+
+    img {
+        position: relative;
+        bottom: 3px;
+        margin-left: 10px;
+    }
+}
+
+.inverted {
+    filter: invert(1);
+}
+
+.gray {
+    filter: grayscale(1) brightness(2);
+}
+
+.accordion-button {
+    display: block !important;
+    padding: 0 !important;
+    margin-bottom: 2px;
+
+    &:hover .list-title {
+        cursor: pointer;
+        background-color: #475996 !important;
+    }
+
+    &::after {
+        position: absolute;
+        top: 16px;
+        right: 14px;
+        background-image: url('data:image/svg+xml,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 16 16%27 fill=%27%23212529%27%3e%3cpath fill-rule=%27evenodd%27 d=%27M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z%27/%3e%3c/svg%3e') !important;
+        filter: invert(1) brightness(2);
+    }
+}
+
+.accordion-collapse {
+    >span {
+        margin-bottom: 7px;
+    }
+}

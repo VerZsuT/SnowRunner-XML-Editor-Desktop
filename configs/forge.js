@@ -1,12 +1,12 @@
-const template = './src/pages/template.html'
-const mainPreload = './src/app/mainPreload.ts'
+const template = './src/renderer/pages/template.html'
+const provider = './src/renderer/scripts/provider.ts'
 
 /**
- * Возвращает путь к модулю
+ * Р’РѕР·РІСЂР°С‰Р°РµС‚ РїСѓС‚СЊ Рє РјРѕРґСѓР»СЋ
  * @param {string} name
  */
 function getModule(name) {
-    const modules = './src/scripts/modules'
+    const modules = './src/renderer/modules'
     return {
         main: `${modules}/${name}/main.tsx`,
         preload: `${modules}/${name}/preload.ts`
@@ -14,7 +14,7 @@ function getModule(name) {
 }
 
 /**
- * Возвращает путь к конфигу
+ * РџРѕР·РІСЂР°С‰Р°РµС‚ РїСѓС‚СЊ Рє РєРѕРЅС„РёРіСѓ
  * @param {string} name
  */
 function getConfig(name) {
@@ -32,8 +32,7 @@ module.exports = {
                 mainConfig: getConfig('webpack.main.js'),
                 renderer: {
                     config: getConfig('webpack.renderer.js'),
-                    entryPoints: [
-                        {
+                    entryPoints: [{
                             name: 'setup',
                             html: template,
                             js: getModule('setup').main,
@@ -46,7 +45,7 @@ module.exports = {
                             html: template,
                             js: getModule('loading').main,
                             preload: {
-                                js: getModule('setup').preload
+                                js: provider
                             }
                         },
                         {
@@ -54,7 +53,7 @@ module.exports = {
                             html: template,
                             js: getModule('categories').main,
                             preload: {
-                                js: mainPreload
+                                js: provider
                             }
                         },
                         {
@@ -84,7 +83,10 @@ module.exports = {
                         {
                             name: 'update',
                             html: template,
-                            js: getModule('update').main
+                            js: getModule('update').main,
+                            preload: {
+                                js: provider
+                            }
                         },
                         {
                             name: 'editor',
@@ -97,7 +99,10 @@ module.exports = {
                         {
                             name: 'whats_new',
                             html: template,
-                            js: getModule('whatsNew').main
+                            js: getModule('whatsNew').main,
+                            preload: {
+                                js: provider
+                            }
                         }
                     ]
                 }

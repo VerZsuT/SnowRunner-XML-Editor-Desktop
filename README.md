@@ -10,18 +10,18 @@
 
 Редактор имеет модули:
 
- - _обновление_
- - _сброс программы и параметров_
- - _импорт/экспорт настроек и параметров_
- - _консоль_
- - _редактирование XML_
+- _обновление_
+- _сброс программы и параметров_
+- _импорт/экспорт настроек и параметров_
+- _консоль_
+- _редактирование XML_
 
 ## Установка
 
 В релизах есть две версии:
 
- - _установщик_. Устанавливает программу в систему (.exe).
- - _архив_. Портативная версия программы (.rar).
+- _установщик_. Устанавливает программу в систему (.exe).
+- _архив_. Портативная версия программы (.rar).
 
 Различие между версиями только в способе установки.
 
@@ -34,12 +34,14 @@
 _Подразумевается, что у вас есть всё необходимое для работы с NodeJS._
 
 Установите все необходимые зависимости:
-```
+
+```cmd
 npm i
 ```
 
 Для тестовой сборки проекта выполните команду:
-```
+
+```cmd
 npm run package
 ```
 
@@ -48,25 +50,25 @@ npm run package
 В данной сборке вам доступен сброс программы, обновление окна, инструменты разработчика (Ctrl+Shift+I), а также не сохраняется бэкап initial.pak.
 
 Значения каталогов проекта:
-```
+
+```text
 |- build_scripts      (скрипты, выполняемые перед и после продакшн сборки)
 |- configs            (конфигурации Webpack и Electron Forge)
 |- docs               (страница GitHub Pages)
 |- src                (основные ресурсы программы)
-   |-app               (файлы главного-процесса)
-      |-index.ts        (стартовый файл)
+   |-main                (файлы главного-процесса)
+      |-index.ts         (стартовый файл)
+      |-templates     (шаблоны для редактора XML)
+      |-texts         (переводы)
    |-images
-   |-pages
-      |-template.html   (главный шаблон)
-   |-scripts
-      |-modules         (крипты разных окон)
-         |-service       (сервисные скрипты)
-         |-templates     (шаблоны для редактора XML)
-         |-texts         (переводы)
-   |-styles
-      |-main.scss       (главный стиль)
+   |-renderer
+      |-modules       (крипты разных окон)
+      |-service       (сервисные скрипты)
+      |-styles
+         |-main.scss     (главный стиль)
+      |-pages
+         |-template.html (главный шаблон)
 ```
-
 
 ## Картинки
 
@@ -86,18 +88,18 @@ Everything works using **Electron**, **Webpack** and **Typescript**.
 
 The editor has modules:
 
- - _update_
- - _setting the program and parameters_
- - _import/export settings and parameters_
- - _console_
- - _editing XML_
+- _update_
+- _setting the program and parameters_
+- _import/export settings and parameters_
+- _console_
+- _editing XML_
 
 ## Installation
 
 There are two versions in the releases:
 
- - _installer_. Installs the program into the system (.exe).
- - _archive_. Portable version of the program (.rar).
+- _installer_. Installs the program into the system (.exe).
+- _archive_. Portable version of the program (.rar).
 
 The difference between the versions is only in the installation method.
 

@@ -1,8 +1,0 @@
-export { default as cargo } from './cargo/template'
-export { default as engine } from './engine/template'
-export { default as gearbox } from './gearbox/template'
-export { default as suspension } from './suspension/template'
-export { default as trailer } from './trailer/template'
-export { default as truck } from './truck/template'
-export { default as wheels } from './wheels/template'
-export { default as winch } from './winch/template'

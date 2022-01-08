@@ -1,6 +1,17 @@
-const { createHash } = require('crypto')
-const { existsSync, readFileSync, writeFileSync, readdirSync, statSync } = require('fs')
-const { join, basename } = require('path')
+const {
+    createHash
+} = require('crypto')
+const {
+    existsSync,
+    readFileSync,
+    writeFileSync,
+    readdirSync,
+    statSync
+} = require('fs')
+const {
+    join,
+    basename
+} = require('path')
 const Log = require('./Log.js')
 
 const postBuildPaths = {
@@ -9,13 +20,13 @@ const postBuildPaths = {
     original_x64: join(__dirname, '..', 'out', 'SnowRunner XML Editor-win32-x64'),
     renamed: join(__dirname, '..', 'out', 'SnowRunnerXMLEditor'),
     config: join(__dirname, '..', 'out', 'SnowRunnerXMLEditor', 'resources', 'app', '.webpack', 'main', 'config.json'),
-    winrar_x32: join(__dirname, '..', 'src', 'scripts', 'winrar'),
+    winrar_x32: join(__dirname, '..', 'src', 'main', 'winrar'),
     sxmle_updater: join(__dirname, '..', '..', 'sxmle_updater')
 }
 
 const preBuildPaths = {
     out: join(__dirname, '..', 'out'),
-    config: join(__dirname, '..', 'src', 'app', 'config.json'),
+    config: join(__dirname, '..', 'src', 'main', 'config.json'),
     package: join(__dirname, '..', 'package.json'),
     packageLock: join(__dirname, '..', 'package-lock.json'),
     public: join(__dirname, '..', '..', 'sxmle_updater', 'public.json'),
@@ -25,7 +36,7 @@ const preBuildPaths = {
 /**
  * Генерирует карту обновления.
  * @param {string} rootPath 
-*/
+ */
 function generateMap(rootPath) {
     let map = {}
     const items = readdirSync(rootPath)
@@ -50,7 +61,7 @@ function generateMap(rootPath) {
  * В случае отсутствия пишет ошибку в консоль.
  * @param {any} variable 
  * @param {Function} callback 
-*/
+ */
 function checkVar(variable, callback) {
     if (variable !== null && variable !== undefined) {
         callback()
@@ -68,8 +79,8 @@ function checkVar(variable, callback) {
  * @param {string} path 
  * @param {Function} callback 
  * @param {boolean} throwError 
-*/
-function checkPath(path, callback, throwError=false) {
+ */
+function checkPath(path, callback, throwError = false) {
     if (existsSync(path)) {
         callback()
     } else {
@@ -82,12 +93,13 @@ function checkPath(path, callback, throwError=false) {
 
 /**
  * Считывает содержимое файла и записывает его в глобальную переменную с переданным именем.
- * 
+ *
  * В случае неудачи пишет ошибку в консоль.
- * @param {string} varName 
- * @param {string} path 
-*/
-function readFileToVar(varName, path, fromJSON=true) {
+ * @param {string} varName
+ * @param {string} path
+ * @param {boolean} fromJSON
+ */
+function readFileToVar(varName, path, fromJSON = true) {
     const fileName = basename(path)
 
     if (existsSync(path)) {
@@ -112,7 +124,7 @@ function readFileToVar(varName, path, fromJSON=true) {
  * @param {string} path 
  * @param {any} dependency 
  * @param {Function} dataFunc 
-*/
+ */
 function writeFile(path, dependency, dataFunc) {
     if (existsSync(path)) {
         checkVar(dependency, () => {
@@ -120,7 +132,7 @@ function writeFile(path, dependency, dataFunc) {
             try {
                 writeFileSync(path, data)
             } catch {
-                Log.error(`Error writing ${fileName}`)
+                Log.error(`Error writing ${basename(path)}`)
             }
         })
     } else {

@@ -1,0 +1,16 @@
+{
+	"ADD_FAVORITE": "Добавить в избранное",
+	"APPLY": "Применить",
+	"DLC_LIST_TITLE": "Из DLC",
+	"FAVORITES_LIST_TITLE": "Избранное",
+	"MAIN_LIST_TITLE": "Базовые",
+	"MANUAL_MOD": "Выбрать вручную",
+	"MODS_CHANGE_BUTTON": "Изменить",
+	"MODS_LIST_TITLE": "Из модов",
+	"REMOVE_FAVORITE": "Удалить из избранного",
+	"REMOVE_MOD": "Убрать модификацию",
+	"RELAUNCH_PROMPT": "Для загрузки мода необходима перезагрузка программы. Выполнить перезагрузку?",
+	"EMPTY_MODS_TITLE": "Не обнаружено",
+	"TRUCKS_LIST_TITLE": "Список авто",
+	"TRAILERS_LIST_TITLE": "Список прицепов"
+}

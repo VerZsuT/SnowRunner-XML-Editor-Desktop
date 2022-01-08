@@ -1,0 +1,19 @@
+.openCont {
+    position: relative;
+    width: 40px;
+    display: inline-block;
+    top: 3px;
+
+    .openFile {
+        margin-right: 30px;
+        margin-bottom: 5px;
+    }
+
+    .file-export {
+        position: absolute;
+        width: 20px !important;
+        margin: 0;
+        top: 14px;
+        right: 10px;
+    }
+}

@@ -1,0 +1,66 @@
+@import 'styles/main';
+
+%no-scrollbar {
+    &::-webkit-scrollbar {
+        width: 0;
+    }
+}
+
+body {
+    font: {
+        family: 'Andale Mono';
+        size: 17px;
+    }
+
+    background: black;
+    color: white;
+    @extend %no-scrollbar;
+}
+
+#messages {
+    overflow: auto;
+    width: 100%;
+    height: 100%;
+    margin-bottom: 40px;
+    padding: 0 10px;
+    @extend %no-scrollbar;
+
+    p {
+        margin: 5px 0;
+    }
+}
+
+.line {
+    color: cyan;
+    position: fixed;
+    padding: 10px;
+    background: black;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+
+    #info {
+        color: limegreen;
+        border: none;
+        background: black;
+        overflow: hidden;
+        position: absolute;
+        bottom: 50px;
+        outline: none;
+        font-size: 15px;
+    }
+
+    #input {
+        border: none;
+
+        font: {
+            family: inherit;
+            size: inherit;
+        }
+
+        background: none;
+        outline: none;
+        color: inherit;
+        width: 90%;
+    }
+}

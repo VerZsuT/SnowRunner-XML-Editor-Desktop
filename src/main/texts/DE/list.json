@@ -1,0 +1,16 @@
+{
+	"ADD_FAVORITE": "Zu Favoriten hinzufügen",
+	"APPLY": "Anwenden",
+	"DLC_LIST_TITLE": "Von DLC",
+	"FAVORITES_LIST_TITLE": "Auswahl",
+	"MAIN_LIST_TITLE": "Basic",
+	"MANUAL_MOD": "Manuell auswählen",
+	"MODS_CHANGE_BUTTON": "Ändern",
+	"MODS_LIST_TITLE": "Von Mods",
+	"REMOVE_FAVORITE": "Aus Favoriten entfernen",
+	"REMOVE_MOD": "Änderung entfernen",
+	"RELAUNCH_PROMPT": "Um den Mod zu laden, müssen Sie das Programm neu starten. Einen Neustart durchführen?",
+	"EMPTY_MODS_TITLE": "Nicht gefunden",
+	"TRUCKS_LIST_TITLE": "Automatische Liste",
+	"TRAILERS_LIST_TITLE": "Liste der Anhänger"
+}

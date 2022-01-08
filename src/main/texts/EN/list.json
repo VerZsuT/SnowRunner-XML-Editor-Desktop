@@ -1,0 +1,16 @@
+{
+	"ADD_FAVORITE": "Add to Favorites",
+	"APPLY": "Apply",
+	"DLC_LIST_TITLE": "From DLC",
+	"FAVORITES_LIST_TITLE": "Favorites",
+	"MAIN_LIST_TITLE": "Basic",
+	"MANUAL_MOD": "Select manually",
+	"MODS_CHANGE_BUTTON": "Change",
+	"MODS_LIST_TITLE": "From mods",
+	"REMOVE_FAVORITE": "Delete from Favorites",
+	"REMOVE_MOD": "Remove the modification",
+	"RELAUNCH_PROMPT": "To add the mod, you need to restart the program. Perform a reboot?",
+	"EMPTY_MODS_TITLE": "Not detected",
+	"TRUCKS_LIST_TITLE": "Auto list",
+	"TRAILERS_LIST_TITLE": "List of trailers"
+}

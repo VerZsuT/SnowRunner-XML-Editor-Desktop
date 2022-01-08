@@ -1,0 +1,10 @@
+{
+	"AUTO_INITIAL_TITLE": "Автоматичекий выбор initial.pak работает только в версии от Epic Games.",
+	"FIRST_STEPS_DESCRIPTION": "Первоначальная настройка",
+	"GAME_FOLDER_LABEL": "Папка с игрой",
+	"IMPORT_CONFIG_MESSAGE": "Обнаружены настройки программы с предыдущей версии. Хотите использовать их?",
+	"INITIAL_LABEL": "Путь к initial.pak",
+	"LANGUAGE_MENU_ITEM_LABEL": "Язык программы",
+	"MANUAL_INITIAL": "Ручной выбор initial.pak",
+	"OPEN_BUTTON": "Открыть"
+}

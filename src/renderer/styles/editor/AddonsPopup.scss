@@ -1,0 +1,90 @@
+.addons-popup {
+    display: flex;
+    position: fixed;
+    overflow: hidden;
+    transition: 0.2s;
+    width: 100%;
+    top: 0;
+    left: 0;
+    height: 100%;
+    text-align: center;
+    z-index: 2;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    background: rgb(34 33 33 / 69%);
+
+    .content {
+        display: inline-block;
+        background-color: white;
+        padding-bottom: 10px;
+        border-radius: 7px;
+        z-index: 3;
+        width: 350px;
+        min-height: 290px;
+
+        input,
+        select {
+            margin: 0 auto;
+        }
+
+        #file,
+        #id {
+            width: 300px !important;
+            margin: 0 auto;
+        }
+
+        #id {
+            border: none;
+        }
+
+        header {
+            position: relative;
+            background: #2c3c6b;
+            color: white;
+            border-top-left-radius: 6px;
+            border-top-right-radius: 6px;
+            padding: 5px;
+            font-size: 18px;
+            margin-bottom: 20px;
+            height: 60px;
+
+            .tabs {
+                position: absolute;
+                bottom: 0;
+                font-size: 15px;
+                width: 350px;
+            }
+
+            .tab {
+                border: none;
+                background: white;
+                margin-right: 10px;
+                border-top-left-radius: 5px;
+                border-top-right-radius: 5px;
+            }
+
+            .unactive {
+                background: #9b9b9b;
+            }
+        }
+
+        .add-crane,
+        .remove-crane {
+            margin-right: 10px;
+            margin-left: 10px;
+        }
+
+        .cranes-warn {
+            color: red;
+
+            &-message {
+                width: 80%;
+                margin: 0 auto;
+                margin-bottom: 10px;
+            }
+        }
+    }
+}
