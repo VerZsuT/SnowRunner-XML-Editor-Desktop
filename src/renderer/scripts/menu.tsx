@@ -1,121 +1,244 @@
-import { MenuRole } from './enums'
-import { t, setHotKey } from './funcs'
+import { MouseEvent, PureComponent } from 'react'
 import { mainProcess } from './mainProcess'
-import 'bootstrap'
+import { t } from 'scripts'
+import { BuildType } from './enums'
+
+import {
+    Button,
+    Menu,
+    MenuItem,
+    Divider,
+    Grid,
+    styled
+} from '@mui/material'
 
 const {
-    menu, quit, openLink, openPath,
+    quit, openLink, openPath,
     resetConfig, recoverFromBackup, copyBackup,
     joinEPF, seeEPF, runUninstall, importConfig,
-    exportConfig, alertSync, toggleDevTools, openSettings,
+    exportConfig, toggleDevTools, openSettings,
     openWhatsNew
 } = mainProcess
+const { config, paths } = window.provider
 
-export const Menu = (
-    <div id='menu'>
-        {menu.map(value => buildMenu(value, true))}
-    </div>
-)
+const MenuGrid = styled(Grid)({
+    position: 'fixed',
+    top: 0,
+    zIndex: 20,
+    backgroundColor: '#f9f9f9'
+})
 
-function buildMenu(template: MenuTemplate, isRoot?: boolean): JSX.Element {
-    const id = String(Math.random())
+export class ProgramMenu extends PureComponent {
+    render() {
+        const isDevBuild = config.buildType === BuildType.dev
+        const hasInitial = Boolean(config.initial)
 
-    if (template.role === MenuRole.separator) {
-        return <hr key={`${id}-hr`} className='dropdown-divider' />
+        return (
+            <MenuGrid
+                justifyContent='flex-start'
+                container
+            >
+                <MenuButton
+                    text={t.FILE_MENU_LABEL}
+                    items={[
+                        {
+                            text: t.JOIN_EXPORTED_FILES,
+                            show: isDevBuild,
+                            onClick: joinEPF
+                        },
+                        {
+                            text: t.SEE_EXPORTED_FILES,
+                            show: isDevBuild,
+                            onClick: seeEPF
+                        },
+                        {
+                            isDivider: true,
+                            show: isDevBuild
+                        },
+                        {
+                            text: 'DevTools',
+                            show: isDevBuild,
+                            onClick: toggleDevTools
+                        },
+                        {
+                            text: t.EXIT_MENU_ITEM_LABEL,
+                            onClick: quit
+                        }
+                    ]}
+                />
+                <MenuButton
+                    text={t.BACKUP_MENU_LABEL}
+                    show={hasInitial}
+                    items={[
+                        {
+                            text: t.OPEN_BUTTON,
+                            onClick: () => openPath(paths.backupFolder)
+                        },
+                        { isDivider: true },
+                        {
+                            text: t.SAVE_BUTTON,
+                            onClick: copyBackup
+                        },
+                        {
+                            text: t.RESTORE_MENU_ITEM_LABEL,
+                            onClick: recoverFromBackup
+                        }
+                    ]}
+                />
+                <MenuButton
+                    text={t.SETTINGS_MENU_LABEL}
+                    items={[
+                        {
+                            text: t.SETTINGS_MENU_LABEL,
+                            show: hasInitial,
+                            onClick: openSettings
+                        },
+                        {
+                            isDivider: true,
+                            show: hasInitial
+                        },
+                        {
+                            text: t.IMPORT_MENU_ITEM_LABEL,
+                            onClick: importConfig
+                        },
+                        {
+                            text: t.EXPORT_MENU_ITEM_LABEL,
+                            show: hasInitial,
+                            onClick: exportConfig
+                        },
+                        {
+                            text: t.RESET_MENU_ITEM_LABEL,
+                            show: hasInitial,
+                            onClick: resetConfig
+                        },
+                        { isDivider: true },
+                        {
+                            text: t.UNINSTALL_MENU_ITEM_LABEL,
+                            onClick: runUninstall
+                        }
+                    ]}
+                />
+                <MenuButton
+                    text={t.HELP_MENU_LABEL}
+                    items={[
+                        {
+                            text: t.VERSION_MENU_ITEM_LABEL,
+                            onClick: openWhatsNew
+                        },
+                        {
+                            text: t.HOW_TO_USE_TITLE,
+                            onClick: () => openLink('https://snowrunner.mod.io/guides/snowrunner-xml-editor')
+                        },
+                        {
+                            text: 'GitHub',
+                            onClick: () => openLink('https://github.com/VerZsuT/SnowRunner-XML-Editor-Desktop')
+                        },
+                        {
+                            text: 'YouTube(RU)',
+                            onClick: () => openLink('https://youtube.com/playlist?list=PLDwd4yUwzS2VtWCpC9X6MXm47Kv_s_mq2')
+                        }
+                    ]}
+                />
+            </MenuGrid>
+        )
     }
-    const button = (
-        <button
-            className='btn btn-sm dropdown-item'
-            id={id}
-            key={`${id}-button`}
-            data-bs-toggle={template.submenu ? 'dropdown' : ''}
-            onClick={getOnclick(template)}
-        >
-            {template.label}
-        </button>
-    )
-    const root = (
-        <div
-            className={`menu-item${!isRoot ? ' dropright' : ''}`}
-            key={`${id}-root`}
-        >
-            {button}
-            {template.submenu ?
-                <ul className='dropdown-menu' aria-labelledby={id}>
-                    {template.submenu ?
-                        template.submenu.map(value => buildMenu(value))
-                        : null}
-                </ul>
-                : null}
-        </div>
-    )
-    return template.submenu ? root : button
 }
 
-function getOnclick(template: MenuTemplate) {
-    if (template.role) {
-        let onclick: () => any
-        switch (template.role) {
-            case MenuRole.quitApp:
-                onclick = () => quit()
-                break
-            case MenuRole.openURL:
-                onclick = () => openLink(template.url)
-                break
-            case MenuRole.showFolder:
-                onclick = () => openPath(template.path)
-                break
-            case MenuRole.resetConfig:
-                onclick = () => resetConfig()
-                break
-            case MenuRole.recoverFromBackup:
-                onclick = () => recoverFromBackup()
-                break
-            case MenuRole.joinEPF:
-                onclick = () => joinEPF()
-                break
-            case MenuRole.seeEPF:
-                onclick = () => seeEPF()
-                break
-            case MenuRole.uninstall:
-                onclick = () => runUninstall()
-                break
-            case MenuRole.importConfig:
-                onclick = () => importConfig(false)
-                break
-            case MenuRole.exportConfig:
-                onclick = () => exportConfig(false)
-                break
-            case MenuRole.openWhatsNew:
-                onclick = () => openWhatsNew()
-                break
-            case MenuRole.saveBackup:
-                onclick = () => {
-                    copyBackup()
-                    alertSync(t.SUCCESS_BACKUP_SAVE)
-                }
-                break
-            case MenuRole.devTools:
-                onclick = () => toggleDevTools()
-                setHotKey({
-                    key: 'KeyI',
-                    ctrlKey: true,
-                    shiftKey: true
-                }, () => onclick())
-                break
-            case MenuRole.reload:
-                onclick = () => window.location.reload()
-                setHotKey({
-                    key: 'KeyR',
-                    ctrlKey: true,
-                    shiftKey: true
-                }, () => onclick())
-                break
-            case MenuRole.openSettings:
-                onclick = () => openSettings()
-                break
+interface IMenuButtonProps {
+    text: string
+    items: {
+        text?: string
+        onClick?(): void
+        isDivider?: boolean
+        show?: boolean
+    }[]
+    show?: boolean
+}
+
+interface IMenuButtonState {
+    anchorEl: HTMLElement
+}
+
+class MenuButton extends PureComponent<IMenuButtonProps, IMenuButtonState> {
+    private buttonID = `menu-button${Math.random()}`
+    private containerID = `menu-container${Math.random()}`
+    private show: boolean
+
+    constructor(props: IMenuButtonProps) {
+        super(props)
+        this.state = {
+            anchorEl: null
         }
-        return onclick
+        this.show = props.show?? true
     }
-    return () => { }
+
+    render() {
+        if (!this.show) return null
+        const isOpen = Boolean(this.state.anchorEl)
+
+        return (<>
+            <Button
+                className='not-upper font-black'
+                id={this.buttonID}
+                aria-controls={isOpen ? this.containerID : undefined}
+                aria-haspopup={true}
+                aria-expanded={isOpen ? 'true' : undefined}
+                onClick={this.onClick}
+                size='small'
+            >
+                {this.props.text}
+            </Button>
+            <Menu
+                id={this.containerID}
+                anchorEl={this.state.anchorEl}
+                open={isOpen}
+                onClose={this.onClose}
+                MenuListProps={{
+                    'aria-labelledby': this.buttonID,
+                    dense: true
+                }}
+            >
+                {this.props.items.map((item, key) => {
+                    const {
+                        show=true,
+                        isDivider=false,
+                        onClick,
+                        text
+                    } = item
+                    if (!show) return null
+                    if (isDivider) {
+                        return <Divider key={key} />
+                    } else {
+                        return (
+                            <MenuItem
+                                key={key}
+                                onClick={() => {
+                                    onClick()
+                                    this.onClose()
+                                }}
+                                style={{
+                                    fontSize: '0.9rem',
+                                    color: 'black'
+                                }}
+                            >
+                                {text}
+                            </MenuItem>
+                        )
+                    }
+                })}
+            </Menu>
+        </>)
+    }
+
+    private onClick = (e: MouseEvent<HTMLElement>) => {
+        this.setState({
+            anchorEl: e.currentTarget
+        })
+    }
+
+    private onClose = () => {
+        this.setState({
+            anchorEl: null
+        })
+    }
 }

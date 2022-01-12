@@ -3,6 +3,11 @@ export { EN } from './EN'
 export { DE } from './DE'
 
 export interface ITexts {
+	SUCCESS_RESET: string
+	MODS_POPUP_TITLE: string
+	DIALOG_NO: string
+	DIALOG_YES: string
+	SEE_EXPORTED_FILES: string
 	TRAILERS_LIST_TITLE: string
 	TRUCKS_LIST_TITLE: string
 	CRANES_NOT_SUPPORT: string
@@ -55,7 +60,6 @@ export interface ITexts {
 	EXIT_MENU_ITEM_LABEL: string
 	EXPORT: string
 	EMPTY_MODS_TITLE: string
-	EPF_MENU_LABEL: string
 	FAVORITES_LIST_TITLE: string
 	FILE_IS_RESETED: string
 	FILE_MENU_LABEL: string

@@ -1,28 +1,96 @@
 import { PureComponent } from 'react'
 import { render } from 'react-dom'
-import { MAIN, mainProcess, t } from 'scripts'
+import { MAIN, mainProcess, setHotKey, t } from 'scripts'
 import { InnerList } from './components/InnerList'
-import { Search } from './components/Search'
+import { Search } from '../components/Search'
 import { ListContext } from './FilterContext'
 import { ListType, SrcType } from './enums'
-import { Menu } from 'menu'
+import { ProgramMenu } from 'menu'
 import 'styles/list/main'
+
+import {
+    Container,
+    Typography,
+    Tooltip,
+    IconButton,
+    Tabs,
+    Tab as MuiTab,
+    Backdrop,
+    CircularProgress,
+    ContainerProps,
+    IconButtonProps,
+    TabProps,
+    styled
+} from '@mui/material'
+import { 
+    ArrowBack as ArrowBackIcon,
+    StarRounded
+} from '@mui/icons-material'
+import { ErrorHandler } from '../components/ErrorHandler'
 
 const { getList } = window.listPreload
 const { config, local } = window.provider
 const { readFile, openCategories } = mainProcess
 
-enum Tab {
+const Title = styled((props: ContainerProps) =>
+    <Container sx={{ boxShadow: 2 }} {...props} />
+)({
+    position: 'fixed',
+    backgroundColor: '#1c7dca',
+    top: '31px',
+    color: '#fafafa',
+    padding: '8px 0',
+    textAlign: 'center',
+    zIndex: 20
+})
+
+const TabsContainer = styled((props: ContainerProps) => 
+    <Container sx={{ boxShadow: 2 }} {...props} />
+)({
+    position: 'fixed',
+    top: '78px',
+    zIndex: 20,
+    backgroundColor: 'white',
+    paddingLeft: '0',
+    paddingRight: '0'
+})
+
+const ArrowBack = styled(ArrowBackIcon)({
+    fontSize: '30px'
+})
+
+const BackIconButton = styled((props: IconButtonProps) =>
+    <IconButton color='inherit' {...props}/>
+)({
+    position: 'absolute',
+    top: '0',
+    left: '0'
+})
+
+const Tab = styled((props: TabProps) =>
+    <MuiTab iconPosition='end' {...props}/>
+)({
+    fontSize: '0.92rem',
+    minHeight: '57px'
+})
+
+const TabIcon = styled('img')({
+    width: '20px',
+    marginLeft: '10px'
+})
+
+enum TabType {
+    main,
     dlc,
     mods,
     favorites,
-    main
 }
 
 interface IState {
     filter: string
     favorites: Item[]
-    activeTab: Tab
+    activeTab: TabType
+    isLoading: boolean
 }
 
 class List extends PureComponent<any, IState> {
@@ -42,64 +110,83 @@ class List extends PureComponent<any, IState> {
         this.state = {
             filter: '',
             favorites: this.getFavorites(),
-            activeTab: Tab.main
+            activeTab: TabType.main,
+            isLoading: false
         }
+    }
+
+    componentDidMount(): void {
+        this.setBackHotkey()
     }
 
     render() {
         return (<>
-            {Menu}
+            <ProgramMenu />
+            <ErrorHandler />
             <ListContext.Provider value={{
                 filter: this.state.filter,
                 toggleFavorite: this.toggleFavorite
             }}>
-                <div id='list'>
-                    <Search value={this.state.filter} onChange={this.setFilter} />
 
-                    <header className='list-title'>
-                        {this.listType === ListType.trucks? t.TRUCKS_LIST_TITLE : t.TRAILERS_LIST_TITLE}
-                        <button
-                            className='back'
+                <Title >
+                    <Search value={this.state.filter} onChange={this.setFilter} />
+                    <Typography variant='h5'>
+                        {this.listType === ListType.trucks ? t.TRUCKS_LIST_TITLE : t.TRAILERS_LIST_TITLE}
+                    </Typography>
+                    <Tooltip
+                        title={t.BACK_BUTTON}
+                        placement='right'
+                    >
+                        <BackIconButton
                             onClick={this.back}
-                            title={t.BACK_BUTTON}
-                        ></button>
-                        <div className='tabs'>
-                            <div
-                                className={this.state.activeTab === Tab.main ? 'active' : ''}
-                                onClick={() => this.setState({ activeTab: Tab.main })}
-                            >
-                                <span>{t.MAIN_LIST_TITLE}</span>
-                                <img className='inverted' src={require('images/icons/list/main.png')} />
-                            </div>
-                            <div
-                                className={this.state.activeTab === Tab.dlc ? 'active' : ''}
-                                onClick={() => this.setState({ activeTab: Tab.dlc })}
-                            >
-                                <span>{t.DLC_LIST_TITLE}</span>
-                                <img className='inverted' src={require('images/icons/list/dlc.png')} />
-                            </div>
-                            <div
-                                className={this.state.activeTab === Tab.mods ? 'active' : ''}
-                                onClick={() => this.setState({ activeTab: Tab.mods })}
-                            >
-                                <span>{t.MODS_LIST_TITLE}</span>
-                                <img className='inverted' src={require('images/icons/list/mods.png')} />
-                            </div>
-                            <div 
-                                className={this.state.activeTab === Tab.favorites ? 'active' : ''}
-                                onClick={() => this.setState({ activeTab: Tab.favorites })}
-                            >
-                                <span>{t.FAVORITES_LIST_TITLE}</span>
-                                <img className='gray' src={require('images/icons/list/filled_star.png')} />
-                            </div>
-                        </div>
-                    </header>
-                    <InnerList srcType={SrcType.main} items={this.main} opened={this.state.activeTab === Tab.main} />
-                    <InnerList srcType={SrcType.dlc} items={this.dlc} opened={this.state.activeTab === Tab.dlc} />
-                    <InnerList srcType={SrcType.mods} items={this.mods} opened={this.state.activeTab === Tab.mods} />
-                    <InnerList srcType={SrcType.favorites} items={this.state.favorites} opened={this.state.activeTab === Tab.favorites} />
-                </div>
+                        >
+                            <ArrowBack />
+                        </BackIconButton>
+                    </Tooltip>
+                </Title>
+                <TabsContainer>
+                    <Tabs
+                        value={this.state.activeTab}
+                        onChange={(_, value) => this.setState({ activeTab: +value as TabType })}
+                        textColor='inherit'
+                        variant='fullWidth'
+                    >
+                        <Tab
+                            label={t.MAIN_LIST_TITLE}
+                            icon={<TabIcon src={require('images/icons/list/main.png')}/>}
+                        />
+                        <Tab
+                            label={t.DLC_LIST_TITLE}
+                            disabled={!config.settings.DLC}
+                            icon={<TabIcon src={require('images/icons/list/dlc.png')}/>}
+                        />
+                        <Tab
+                            label={t.MODS_LIST_TITLE}
+                            disabled={!config.settings.mods}
+                            icon={<TabIcon src={require('images/icons/list/mods.png')}/>}
+                        />
+                        <Tab
+                            label={t.FAVORITES_LIST_TITLE}
+                            icon={<StarRounded style={{ fontSize: '27px' }} />}
+                        />
+                    </Tabs>
+                </TabsContainer>
+
+                <InnerList srcType={SrcType.main} items={this.main} opened={this.state.activeTab === TabType.main} />
+                {config.settings.DLC ?
+                    <InnerList srcType={SrcType.dlc} items={this.dlc} opened={this.state.activeTab === TabType.dlc} />
+                    : null}
+                {config.settings.mods ?
+                    <InnerList srcType={SrcType.mods} items={this.mods} opened={this.state.activeTab === TabType.mods} />
+                    : null}
+                <InnerList srcType={SrcType.favorites} items={this.state.favorites} opened={this.state.activeTab === TabType.favorites} />
             </ListContext.Provider>
+            <Backdrop
+                style={{ color: '#fff', zIndex: 30 }}
+                open={this.state.isLoading}
+            >
+                <CircularProgress color='inherit' />
+            </Backdrop>
         </>)
     }
 
@@ -109,7 +196,19 @@ class List extends PureComponent<any, IState> {
         })
     }
 
+    private setBackHotkey = () => {
+        setHotKey({
+            key: 'Escape',
+            eventName: 'keydown'
+        }, () => {
+            this.back()
+        })
+    }
+
     private back = () => {
+        this.setState({
+            isLoading: true
+        })
         openCategories()
     }
 

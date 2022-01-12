@@ -1,4 +1,4 @@
-import { app, ipcRenderer } from 'electron'
+import { ipcRenderer } from 'electron'
 
 function getConfig() {
     return ipcRenderer.sendSync('property_config_get').value
@@ -10,21 +10,12 @@ class Provider implements IPovider {
             document.title = document.title.replace('{--VERSION--}', `v${this.config.version}`)
             document.addEventListener('keydown', event => {
                 if (event.ctrlKey && event.code === 'KeyS') {
-                    const button = document.querySelector<HTMLButtonElement>('#save-params')
+                    const button = document.querySelector<HTMLButtonElement>('#save')
                     if (button) button.click()
-                } else if (event.code === 'Escape') {
-                    const windowsState = ipcRenderer.sendSync('get-windows-state')
-                    if (windowsState.categories) {
-                        app.quit()
-                    } else if (windowsState.list) {
-                        ipcRenderer.sendSync('function_openCategories_call')
-                    } else if (windowsState.editor) {
-                        ipcRenderer.sendSync('function_openList_call')
-                    } else {
-                        window.close()
-                    }
-                } else if (event.ctrlKey && event.code === 'KeyQ') {
+                }  else if (event.ctrlKey && event.code === 'KeyQ') {
                     ipcRenderer.sendSync('function_quit_call')
+                } else if (event.code === 'KeyI' && event.ctrlKey && event.shiftKey && getConfig().buildType === 'dev') {
+                    ipcRenderer.sendSync('function_toggleDevTools_call')
                 }
             })
         }
@@ -34,7 +25,7 @@ class Provider implements IPovider {
         get: (_target, name) => {
             const value = getConfig()[name]
 
-            if (!Array.isArray(value) && typeof value === 'object') {
+            if (!Array.isArray(value) && typeof value === 'object' && value !== null) {
                 return new Proxy(value, {
                     get: (_target, name) => {
                         return value[name]

@@ -25,7 +25,20 @@ module.exports = [{
     {
         test: /\.(ts|tsx)$/,
         exclude: /(node_modules|\.webpack)/,
-        use: 'ts-loader'
+        use: [
+            {
+                loader: 'babel-loader',
+                options: {
+                    cacheDirectory: true
+                }
+            },
+            {
+                loader: 'ts-loader',
+                options: {
+                    transpileOnly: true
+                }
+            }
+        ]
     },
     {
         test: /\.s[ac]ss$/i,

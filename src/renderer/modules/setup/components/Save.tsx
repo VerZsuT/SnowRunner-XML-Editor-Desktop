@@ -1,7 +1,9 @@
 import { PureComponent } from 'react'
 import { mainProcess, t } from 'scripts'
 
-const { alertSync, saveBackup } = mainProcess
+import { Button, Container } from '@mui/material'
+
+const { saveBackup } = mainProcess
 const { config } = window.provider
 
 interface IProps {
@@ -11,17 +13,21 @@ interface IProps {
 export class Save extends PureComponent<IProps> {
     render() {
         return (
-            <div id='save'>
-                <button className='btn btn-primary save-button' onClick={this.save}>
+            <Container>
+                <Button
+                    className='not-upper'
+                    variant='contained'
+                    onClick={this.save}
+                >
                     {t.SAVE_BUTTON}
-                </button>
-            </div>
+                </Button>
+            </Container>
         )
     }
 
     private save = () => {
         if (!this.props.pathToInitial) {
-            alertSync(t.NO_GAME_FOLDER)
+            window['errorHandler'](t.NO_GAME_FOLDER)
             return
         }
 

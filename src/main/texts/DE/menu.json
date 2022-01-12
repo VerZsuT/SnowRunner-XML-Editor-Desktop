@@ -1,11 +1,10 @@
 {
 	"BACKUP_MENU_LABEL": "Sicherung",
 	"EXIT_MENU_ITEM_LABEL": "Exit",
-	"EPF_MENU_LABEL": "EPF",
 	"FILE_MENU_LABEL": "Datei",
 	"HELP_MENU_LABEL": "Hilfe",
 	"HOW_TO_USE_TITLE": "Wie benutzt man",
-	"JOIN_EXPORTED_FILES": "Vereinigen",
+	"JOIN_EXPORTED_FILES": "EPF zusammenführen",
 	"RESET_MENU_ITEM_LABEL": "Zurücksetzen",
 	"RESTORE_MENU_ITEM_LABEL": "Standard Wiederherstellen",
 	"SAVE_BUTTON": "Datei",
@@ -21,5 +20,6 @@
 	"EXPORT_MENU_ITEM_LABEL": "Export",
 	"SUCCESS_EXPORT_MESSAGE": "Konfiguration erfolgreich exportiert",
 	"SETTINGS_MENU_LABEL": "Einstellungen",
-	"VERSION_MENU_ITEM_LABEL": "Ausführung"
+	"VERSION_MENU_ITEM_LABEL": "Ausführung",
+	"SEE_EXPORTED_FILES": "EPF anzeigen"
 }

@@ -8,6 +8,7 @@ import notifications from './notifications.json'
 import settings from './settings.json'
 import setup from './setup.json'
 import update from './update.json'
+import other from './other.json'
 
 export const EN = {
     ...categories,
@@ -19,5 +20,6 @@ export const EN = {
     ...notifications,
     ...settings,
     ...setup,
-    ...update
+    ...update,
+    ...other
 }

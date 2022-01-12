@@ -12,5 +12,6 @@
 	"RELAUNCH_PROMPT": "To add the mod, you need to restart the program. Perform a reboot?",
 	"EMPTY_MODS_TITLE": "Not detected",
 	"TRUCKS_LIST_TITLE": "Auto list",
-	"TRAILERS_LIST_TITLE": "List of trailers"
+	"TRAILERS_LIST_TITLE": "List of trailers",
+	"MODS_POPUP_TITLE": "Modifications"
 }

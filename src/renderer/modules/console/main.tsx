@@ -298,7 +298,6 @@ class Console extends PureComponent<any, IState> {
                     }
                     importConfig()
                     this.pushMessage(Message.log('Конфиг был успешно импортирован.'))
-                    reload()
                 } else {
                     exportConfig()
                     this.pushMessage(Message.log('Конфиг был успешно экспортирован.'))

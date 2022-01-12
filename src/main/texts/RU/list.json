@@ -12,5 +12,6 @@
 	"RELAUNCH_PROMPT": "Для загрузки мода необходима перезагрузка программы. Выполнить перезагрузку?",
 	"EMPTY_MODS_TITLE": "Не обнаружено",
 	"TRUCKS_LIST_TITLE": "Список авто",
-	"TRAILERS_LIST_TITLE": "Список прицепов"
+	"TRAILERS_LIST_TITLE": "Список прицепов",
+	"MODS_POPUP_TITLE": "Модификации"
 }

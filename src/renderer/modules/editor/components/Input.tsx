@@ -3,8 +3,20 @@ import { InputType, NumberType } from 'scripts'
 import { IMainContext, MainContext } from '../MainContext'
 import { ResetMenu } from './ResetMenu'
 
+import {
+    TextField as MuiTextField,
+    TextFieldProps,
+    styled
+} from '@mui/material'
+
 const { config } = window.provider
 const { basename } = window.editorPreload
+
+const TextField = styled((props: TextFieldProps) =>
+    <MuiTextField size='small' {...props}/>
+)({
+    width: '100px'
+})
 
 interface IProps {
     item: IInputParams
@@ -21,15 +33,17 @@ interface IProps {
 interface IState {
     borderColor: string
     value: string | number
-    menuX: number
-    menuY: number
-    showMenu: boolean
+    menu: {
+        show?: boolean
+        x?: number
+        y?: number
+    }
 }
 
 export class Input extends PureComponent<IProps, IState> {
     static contextType = MainContext
     declare context: IMainContext
-    private componentID = String(Math.random())
+    private componentID = `input-${Math.round(Math.random()*100)}`
 
     private min: number
     private max: number
@@ -40,9 +54,7 @@ export class Input extends PureComponent<IProps, IState> {
         this.state = {
             borderColor: '#ced4da',
             value: props.getValue(),
-            showMenu: false,
-            menuX: 0,
-            menuY: 0
+            menu: {}
         }
 
         if (props.item.min !== -Infinity && config.settings.limits) {
@@ -71,32 +83,35 @@ export class Input extends PureComponent<IProps, IState> {
 
         return (<>
             <ResetMenu
-                show={this.state.showMenu}
-                x={this.state.menuX}
-                y={this.state.menuY}
-                onClick={this.reset}
-                onBlur={() => this.setState({ showMenu: false })}
+                show={this.state.menu.show ?? false}
+                onReset={this.reset}
+                onClose={() => this.setState({ menu: {} })}
+                x={this.state.menu.x ?? 0}
+                y={this.state.menu.y ?? 0}
+                text={this.props.item.text}
             />
             {this.props.item.type === InputType.number
-                ? <input
+                ? <TextField
+                    id={this.componentID}
                     value={this.state.value}
-                    className='form-control'
                     type='number'
-                    step={this.props.item.step}
-                    style={{ borderColor: this.state.borderColor }}
+                    inputProps={{
+                        step: this.props.item.step
+                    }}
                     onBlur={this.saveValue}
                     onChange={this.onValueChange}
                     placeholder={placeholder}
                     onContextMenu={this.onContextMenu}
                 />
-                : <input
-                    className='form-control'
+                : <TextField
+                    id={this.componentID}
                     type='text'
                     placeholder={placeholder}
                     value={this.state.value}
                     onChange={this.onValueChange}
                     onBlur={this.saveValue}
                     onContextMenu={this.onContextMenu}
+                    style={{ width: '150px' }}
                 />
             }
         </>)
@@ -105,9 +120,11 @@ export class Input extends PureComponent<IProps, IState> {
     private onContextMenu = (e: MouseEvent<HTMLInputElement>) => {
         e.stopPropagation()
         this.setState({
-            showMenu: true,
-            menuX: e.clientX,
-            menuY: e.clientY
+            menu: {
+                show: true,
+                x: e.clientX,
+                y: e.clientY
+            }
         })
     }
 
@@ -121,7 +138,7 @@ export class Input extends PureComponent<IProps, IState> {
 
         if (!fileDOM.querySelector(this.props.item.selector)) {
             const array = this.props.item.selector.split('>').map(value => value.trim())
-            const name = array.pop()
+            const name = array.pop().split('[')[0]
             const rootSelector = array.join(' > ')
             fileDOM.querySelector(rootSelector).append(fileDOM.createElement(name))
         }
@@ -222,9 +239,8 @@ export class Input extends PureComponent<IProps, IState> {
     private reset = () => {
         const defaultValue = this.props.getDefaultValue()
         this.setState({
-            showMenu: false
+            menu: {}
         })
-        console.log(defaultValue)
         if (defaultValue !== undefined) {
             this.saveValue({ target: { value: defaultValue } } as FocusEvent<HTMLInputElement>)
         }

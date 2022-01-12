@@ -1,18 +1,39 @@
 import { PureComponent } from 'react'
 import { render } from 'react-dom'
 import { MAIN, mainProcess, t } from 'scripts'
-import { Language } from './components/Language'
-import { GameFolder } from './components/GameFolder'
+import { Language } from '../components/Language'
+import { GameFolder } from '../components/GameFolder'
 import { Save } from './components/Save'
-import { Menu } from 'menu'
+import { ProgramMenu } from 'menu'
 import 'styles/setup/main'
+import { Confirm } from '../components/Confirm'
+import { ErrorHandler } from '../components/ErrorHandler'
 
+import {
+    Typography,
+    Container,
+    ContainerProps,
+    styled
+} from '@mui/material'
+
+const { importConfig } = mainProcess
 const { existsSync, join, readFileSync } = window.setupPreload
 const { paths, texts } = window.provider
-const { confirm, importConfig, reload } = mainProcess
+
+const Title = styled((props: ContainerProps) =>
+    <Container sx={{ boxShadow: 2 }} {...props} />
+)({
+    backgroundColor: '#1c7dca',
+    marginTop: '31px',
+    marginBottom: '8px',
+    color: '#fafafa',
+    padding: '8px 0'
+})
 
 interface IState {
     pathToInitial: string
+    confirmIsOpened: boolean
+    confirmText: string
 }
 
 class Setup extends PureComponent<any, IState> {
@@ -20,11 +41,13 @@ class Setup extends PureComponent<any, IState> {
         super(props)
 
         this.state = {
-            pathToInitial: ''
+            pathToInitial: '',
+            confirmText: '',
+            confirmIsOpened: false
         }
     }
 
-    componentDidMount() {
+    componentDidMount(): void {
         setTimeout(() => {
             this.checkExportedConfig()
         }, 500)
@@ -32,18 +55,23 @@ class Setup extends PureComponent<any, IState> {
 
     render() {
         return (<>
-            {Menu}
-            <div id='app'>
-                <header>
-                    <h2 className='h2'>{t.FIRST_STEPS_DESCRIPTION}</h2>
-                </header>
+            <ProgramMenu />
+            <Confirm
+                open={this.state.confirmIsOpened}
+                text={this.state.confirmText}
+                onSuccess={this.import}
+                onClose={() => this.setState({ confirmIsOpened: false })}
+            />
+            <ErrorHandler preload={window.setupPreload} />
+            <Title>
+                <Typography variant='h5'>
+                    {t.FIRST_STEPS_DESCRIPTION}
+                </Typography>
+            </Title>
 
-                <div className='steps'>
-                    <Language />
-                    <GameFolder onChange={this.setPath} />
-                    <Save pathToInitial={this.state.pathToInitial} />
-                </div>
-            </div>
+            <Language />
+            <GameFolder onChange={this.setPath} preload={window.setupPreload} />
+            <Save pathToInitial={this.state.pathToInitial} />
         </>)
     }
 
@@ -54,11 +82,15 @@ class Setup extends PureComponent<any, IState> {
     private checkExportedConfig() {
         if (existsSync(join(paths.backupFolder, 'config.json'))) {
             const exported = JSON.parse(readFileSync(join(paths.backupFolder, 'config.json')).toString())
-            if (confirm(texts[exported.lang].IMPORT_CONFIG_MESSAGE)) {
-                importConfig()
-                reload()
-            }
+            this.setState({
+                confirmIsOpened: true,
+                confirmText: texts[exported.lang].IMPORT_CONFIG_MESSAGE
+            })
         }
+    }
+
+    private import = () => {
+        importConfig()
     }
 }
 

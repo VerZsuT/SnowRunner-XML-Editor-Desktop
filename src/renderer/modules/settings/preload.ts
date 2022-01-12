@@ -6,14 +6,14 @@ import { mainProcess, t } from 'scripts'
 const { alertSync, openDialog, openInitialDialog } = mainProcess
 
 class SettingsPreload implements ISettingsPreload {
-    errorHandler = (text: keyof typeof t) => {
-        alertSync(t[text])
+    errorHandler = (message: string) => {
+        alertSync(message)
     }
 
     getGameFolder = () => {
         const result = openDialog()
         if (!result) {
-            this.errorHandler('EMPTY_FOLDER_ERROR')
+            this.errorHandler(t.EMPTY_FOLDER_ERROR)
             return
         }
         const folder = result
@@ -33,7 +33,7 @@ class SettingsPreload implements ISettingsPreload {
         }
 
         if (!existed) {
-            this.errorHandler('INVALID_FOLDER_ERROR')
+            this.errorHandler(t.INVALID_FOLDER_ERROR)
             return
         }
 
@@ -46,7 +46,7 @@ class SettingsPreload implements ISettingsPreload {
     getInitial = () => {
         const result = openInitialDialog()
         if (!result || basename(result) !== 'initial.pak' || !existsSync(result)) {
-            this.errorHandler('INVALID_INITIAL_ERROR')
+            this.errorHandler(t.INVALID_INITIAL_ERROR)
             return
         }
         return {

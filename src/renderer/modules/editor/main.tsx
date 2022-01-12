@@ -1,24 +1,87 @@
 import { PureComponent } from 'react'
 import { render } from 'react-dom'
-import { getIngameText, MAIN, mainProcess, prettify, t } from 'scripts'
-import { Search } from './components/Search'
+import { getIngameText, MAIN, mainProcess, prettify, setHotKey, t } from 'scripts'
+import { Search } from '../components/Search'
 import { Parameters } from './components/Parameters'
 import { AddonsPopup } from './components/addonsPopup/AddonsPopup'
 import { IMainContext, MainContext } from './MainContext'
 import { getDOM, getGlobalTemplates } from './service'
-import { Menu } from 'menu'
+import { Loading } from '../components/Loading'
+import { ProgramMenu } from 'menu'
 import 'styles/editor/main'
+
+import {
+    AlertColor,
+    Container,
+    IconButton,
+    Menu,
+    MenuItem,
+    Tooltip,
+    Typography,
+    styled,
+    ContainerProps
+} from '@mui/material'
+import {
+    ArrowBack as ArrowBackIcon,
+    Menu as MenuIcon,
+    SaveRounded
+} from '@mui/icons-material'
+import { ErrorHandler } from 'modules/components/ErrorHandler'
+import { Alert } from 'modules/components/Alert'
+import { Confirm } from 'modules/components/Confirm'
 
 const { basename, readFile, saveFile } = window.editorPreload
 const { config, local } = window.provider
-const { writeFile, updateFiles, alertSync, openEPFDialog, openSaveDialog, openList, confirm } = mainProcess
+const { writeFile, updateFiles, openEPFDialog, openSaveDialog, openList } = mainProcess
+
+const Title = styled((props: ContainerProps) =>
+    <Container sx={{ boxShadow: 2 }} {...props}/>
+)({
+    backgroundColor: '#1c7dca',
+    position: 'fixed',
+    top: '31px',
+    color: '#fafafa',
+    padding: '8px 0',
+    textAlign: 'center',
+    zIndex: 20
+})
+
+const BackArrowButton = styled(IconButton)({
+    position: 'absolute',
+    top: '0',
+    left: '0'
+})
+
+const SaveButton = styled(IconButton)({
+    position: 'absolute',
+    top: '0',
+    left: '43px'
+})
+
+const TasksButton = styled(IconButton)({
+    position: 'absolute',
+    top: '0',
+    left: '86px'
+})
 
 interface IState {
     isExporting: boolean
+    isLoading: boolean
     filter: string
     title: string
     showPopup: boolean
+    menuAnchor: Element
     enableReset: boolean
+    alert: {
+        show?: boolean
+        text?: string
+        type?: AlertColor
+    }
+    confirm: {
+        show?: boolean
+        text?: string
+        onSuccess?(): void
+    }
 }
 
 class Editor extends PureComponent<any, IState> {
@@ -38,7 +101,6 @@ class Editor extends PureComponent<any, IState> {
             [attribute: string]: string | number
         }
     }
-
     private EXPORT_FILE_VERSION = '2.0'
     private params: IIEParam[] = []
     private files: {
@@ -67,7 +129,11 @@ class Editor extends PureComponent<any, IState> {
             filter: '',
             title: this.mainTitle,
             showPopup: false,
-            enableReset: !Boolean(this.currentMod)
+            enableReset: !Boolean(this.currentMod),
+            isLoading: false,
+            menuAnchor: null,
+            alert: {},
+            confirm: {}
         }
         this.files = [{
             path: this.filePath,
@@ -75,6 +141,10 @@ class Editor extends PureComponent<any, IState> {
             mod: this.currentMod,
             dlc: this.currentDLC
         }]
+    }
+
+    componentDidMount(): void {
+        this.setBackHotkey()
     }
 
     render() {
@@ -96,68 +166,94 @@ class Editor extends PureComponent<any, IState> {
 
 
         return (<>
-            {Menu}
-            <h1 id='error'>{t.PARSE_FILE_ERROR}</h1>
-            <section id='work-zone'>
-                <div id='editor'>
-                    <Search value={this.state.filter} onChange={filter => this.setState({ filter })} />
-                    <h2 id='title' className='title'>{this.state.title}</h2>
-
-                    <button
-                        className='btn btn-primary'
-                        id='save'
-                        onClick={() => this.save()}
-                        title={t.SAVE_BUTTON}
-                    ></button>
-                    <button
-                        className='btn btn-primary'
-                        id='back'
+            <ProgramMenu />
+            <ErrorHandler />
+            <Alert 
+                show={this.state.alert.show ?? false}
+                onClose={() => this.setState({ alert: {} })}
+                text={this.state.alert.text ?? ''}
+                type={this.state.alert.type ?? 'info'}
+            />
+            <Confirm
+                open={this.state.confirm.show ?? false}
+                text={this.state.confirm.text ?? ''}
+                onClose={() => this.setState({ confirm: {} })}
+                onSuccess={this.state.confirm.onSuccess ?? (() => {})}
+            />
+            <Loading open={this.state.isLoading} />
+            
+            <Title>
+                {/* <Search
+                    value={this.state.filter}
+                    onChange={value => this.setState({ filter: value })}
+                /> */}
+                <Typography variant='h5'>
+                    {this.state.title}
+                </Typography>
+                <Tooltip title={t.BACK_BUTTON}>
+                    <BackArrowButton
                         onClick={this.back}
-                        title={t.BACK_BUTTON}
-                    ></button>
-                    <button
-                        className='btn btn-primary'
-                        id='reset'
-                        onClick={this.reset}
-                        title={t.RESET_MENU_ITEM_LABEL}
+                        color='inherit'
+                    >
+                        <ArrowBackIcon style={{ fontSize: '30px' }} />
+                    </BackArrowButton>
+                </Tooltip>
+                <Tooltip title={t.SAVE_BUTTON}>
+                    <SaveButton
+                        onClick={() => this.save()}
+                        color='inherit'
+                    >
+                        <SaveRounded style={{ fontSize: '30px' }} />
+                    </SaveButton>
+                </Tooltip>
+                <TasksButton
+                    onClick={e => this.openTasksMenu(e.currentTarget)}
+                    color='inherit'
+                >
+                    <MenuIcon style={{ fontSize: '30px' }} />
+                </TasksButton>
+                <Menu
+                    anchorEl={this.state.menuAnchor}
+                    open={Boolean(this.state.menuAnchor)}
+                    onClose={this.closeTasksMenu}
+                >
+                    <MenuItem
                         disabled={!this.state.enableReset}
-                    ></button>
-
-                    <button
-                        className='btn btn-primary'
-                        id='show-addons'
+                        onClick={this.reset}
+                    >
+                        {t.RESET_MENU_ITEM_LABEL}
+                    </MenuItem>
+                    <MenuItem
                         onClick={this.showAddonPopup}
-                        title={t.ADDONS_POPUP_TITLE}
                         disabled={!Boolean(this.fileDOM.querySelector('Truck') && !this.fileDOM.querySelector('Truck').getAttribute('Type'))}
-                    ></button>
-                    <AddonsPopup
-                        fileDOM={this.fileDOM}
-                        modId={this.currentMod}
-                        truckName={basename(this.filePath, '.xml')}
-                        hidePopup={this.hidePopup}
-                        show={this.state.showPopup}
+                    >
+                        {t.ADDONS_POPUP_TITLE}
+                    </MenuItem>
+                    <MenuItem onClick={this.exportFile}>
+                        {t.EXPORT}
+                    </MenuItem>
+                    <MenuItem onClick={this.importFile} >
+                        {t.IMPORT}
+                    </MenuItem>
+                </Menu>
+            </Title>
+
+            <AddonsPopup
+                fileDOM={this.fileDOM}
+                modId={this.currentMod}
+                truckName={basename(this.filePath, '.xml')}
+                hidePopup={this.hidePopup}
+                show={this.state.showPopup}
+            />
+            <MainContext.Provider value={mainContext}>
+                <Container style={{ padding: '0 30px', marginTop: '100px' }}>
+                    <Parameters
+                        isExporting={this.state.isExporting}
+                        regReset={this.regReset}
+                        unregReset={this.unregReset}
                     />
-                    <button
-                        className='btn btn-primary'
-                        id='export'
-                        onClick={this.exportFile}
-                        title={t.EXPORT}
-                    ></button>
-                    <button
-                        className='btn btn-primary'
-                        id='import'
-                        onClick={this.importFile}
-                        title={t.IMPORT}
-                    ></button>
-                    <MainContext.Provider value={mainContext}>
-                        <Parameters
-                            isExporting={this.state.isExporting}
-                            regReset={this.regReset}
-                            unregReset={this.unregReset}
-                        />
-                    </MainContext.Provider>
-                </div>
-            </section>
+                </Container>
+            </MainContext.Provider>
         </>)
     }
 
@@ -183,13 +279,45 @@ class Editor extends PureComponent<any, IState> {
 
     private showAddonPopup = () => {
         this.setState({
-            showPopup: true
+            showPopup: true,
+            menuAnchor: null
+        })
+    }
+
+    private alert(text: string, type: AlertColor='info') {
+        this.setState({
+            alert: {
+                show: true,
+                text,
+                type
+            }
+        })
+    }
+
+    private openTasksMenu = (element: Element) => {
+        this.setState({
+            menuAnchor: element
+        })
+    }
+
+    private closeTasksMenu = () => {
+        this.setState({
+            menuAnchor: null
         })
     }
 
     private hidePopup = () => {
         this.setState({
             showPopup: false
+        })
+    }
+
+    private setBackHotkey = () => {
+        setHotKey({
+            key: 'Escape',
+            eventName: 'keydown'
+        }, () => {
+            this.back()
         })
     }
 
@@ -225,7 +353,7 @@ class Editor extends PureComponent<any, IState> {
                     writeFile(file.path, xmlString)
                 }
 
-                
+
                 if (this.currentMod) {
                     updateFiles(this.currentMod)
                 }
@@ -233,7 +361,7 @@ class Editor extends PureComponent<any, IState> {
                 this.setState({
                     title: this.mainTitle
                 })
-                alertSync(t.SUCCESS_SAVE_FILES)
+                this.alert(t.SUCCESS_SAVE_FILES, 'success')
                 resolve()
             }, 100)
         })
@@ -244,7 +372,7 @@ class Editor extends PureComponent<any, IState> {
         const filePath = openEPFDialog()
 
         if (!filePath) {
-            alertSync(t.PARAMS_FILE_NOT_FOUND)
+            this.alert(t.PARAMS_FILE_NOT_FOUND, 'error')
             return
         }
         const data = JSON.parse(readFile(filePath).toString())
@@ -252,7 +380,7 @@ class Editor extends PureComponent<any, IState> {
         const next = (item: any, fromArray?: boolean) => {
             if (currentFileName !== item.fileName) {
                 if (!fromArray) {
-                    alertSync(t.BREAK_IMPORT_INVALID_NAME.replace('%file', currentFileName))
+                    this.alert(t.BREAK_IMPORT_INVALID_NAME.replace('%file', currentFileName), 'error')
                 }
                 return false
             }
@@ -269,7 +397,7 @@ class Editor extends PureComponent<any, IState> {
                     }
                 }
             }
-            alertSync(t.WAS_IMPORTED)
+            this.alert(t.WAS_IMPORTED, 'success')
             return true
         }
 
@@ -285,11 +413,12 @@ class Editor extends PureComponent<any, IState> {
             }
 
             if (!imported) {
-                alertSync(t.BREAK_IMPORT_INVALID_NAME.replace('%file', currentFileName))
+                this.alert(t.BREAK_IMPORT_INVALID_NAME.replace('%file', currentFileName), 'error')
             }
         } else {
             next(data)
         }
+        this.closeTasksMenu()
     }
 
     private exportFile = () => {
@@ -318,29 +447,46 @@ class Editor extends PureComponent<any, IState> {
 
         const pathToSave = openSaveDialog(basename(this.filePath, '.xml'))
         if (!pathToSave) {
-            alertSync(t.PATH_TO_SAVE_NOT_FOUND)
+            this.alert(t.PATH_TO_SAVE_NOT_FOUND, 'error')
             return
         }
 
         saveFile(pathToSave, JSON.stringify(out, null, '\t'))
-        alertSync(t.WAS_EXPORTED)
+        this.alert(t.WAS_EXPORTED, 'success')
         this.setState({
-            isExporting: false
+            isExporting: false,
+            menuAnchor: null
         })
     }
 
     private back = () => {
+        this.setState({
+            isLoading: true
+        })
         openList()
     }
 
+    private confirm(text: string, onSuccess: () => void) {
+        this.setState({
+            confirm: {
+                show: true,
+                text,
+                onSuccess
+            }
+        })
+    }
+
     private reset = () => {
-        if (!confirm(t.RESET_CONFIRM_MESSAGE)) {
-            return
-        }
-        
-        for (const itemID in this.toReset) {
-            this.toReset[itemID]()
-        }
+        this.confirm(t.RESET_CONFIRM_MESSAGE, () => {
+            for (const itemID in this.toReset) {
+                this.toReset[itemID]()
+            }
+            this.setState({
+                confirm: {},
+                menuAnchor: null
+            })
+            this.alert(t.SUCCESS_RESET, 'success')
+        })
     }
 }
 

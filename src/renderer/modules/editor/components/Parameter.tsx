@@ -1,13 +1,42 @@
-import { Fragment, PureComponent, CSSProperties } from 'react'
+import { Fragment, PureComponent } from 'react'
 import { IMainContext, MainContext } from '../MainContext'
 import { Coordinates } from './Coordinates'
 import { Input } from './Input'
 import { Select } from './Select'
-import { FileType, mainProcess, t } from 'scripts'
+import { FileType, mainProcess } from 'scripts'
 import { Parameters } from './Parameters'
 
-const { existsSync, findFromDLC, basename } = window.editorPreload
+import {
+    Checkbox,
+    TableCell,
+    TableRow as MuiTableRow,
+    Typography,
+    styled,
+    TableCellProps
+} from '@mui/material'
+
+const { existsSync, findFromDLC } = window.editorPreload
 const { paths } = window.provider
+
+const TableRow = styled(MuiTableRow)({
+    '&:last-child td': {
+        borderBottom: 0
+    }
+})
+
+const ParamText = styled(TableCell)({
+    paddingLeft: '41px',
+    paddingRight: '16px',
+    paddingTop: '10px',
+    paddingBottom: '10px',
+    width: '50%'
+})
+
+const ParamValue = styled((props: TableCellProps) =>
+    <TableCell align='center' {...props}/>
+)({
+    padding: '10px 16px'
+})
 
 interface InnerItem {
     filePath: string
@@ -40,8 +69,6 @@ interface IState {
 export class Parameter extends PureComponent<IProps, IState> {
     static contextType = MainContext
     declare context: IMainContext
-
-    private style: CSSProperties
 
     constructor(props: IProps) {
         super(props)
@@ -182,47 +209,33 @@ export class Parameter extends PureComponent<IProps, IState> {
             )
         }
 
-        const defaultValue = this.getDefaultValue()
-
-        return this.includes(this.props.item.text) ?
-            <div className='info'>
-                <div className='param-text' style={this.style}>
+        return this.includes(this.props.item.text) ? 
+            <TableRow>
+                <ParamText>
+                    <Typography>
                     {typeof text === 'string'
-                        ? <span>{text}</span>
-                        : <span>
+                        ? text
+                        : <>
                             {text.first}
                             <span style={{ color: 'red' }}>
                                 {text.second}
                             </span>
                             {text.last}
-                        </span>
+                            </>
                     }
-                </div>
-                <div className='param-value'>
-                    {item}
-                    {this.props.isExporting && this.props.item.type !== 'file' ?
-                        <input
-                            type='checkbox'
-                            className='input-export'
+                    </Typography>
+                </ParamText>
+                <ParamValue>{item}</ParamValue>
+                {this.props.isExporting && this.props.item.type !== 'file' ?
+                    <TableCell style={{ width: '20px' }}>
+                        <Checkbox
                             checked={this.state.isExport && this.props.isParentExport}
-                            onChange={this.toggleExporting}
+                            onChange={this.toggleExporting}    
                         />
-                        : null}
-                </div>
-                <div className='desc'>
-                    <div className='message-box'>
-                        {this.props.item.desc ?
-                            <p>{this.props.item.desc}</p>
-                            : null}
-                        <p
-                            style={{ margin: 0 }}
-                        >
-                            {t.BY_DEFAULT}: {this.props.item.inputType === 'select'? this.props.item.selectParams.filter(item => item.value === defaultValue)[0].text : defaultValue}
-                        </p>
-                    </div>
-                </div>
-            </div>
-            : null
+                    </TableCell>
+                : null}
+            </TableRow>
+        : null
     }
 
     private toggleExporting = () => {

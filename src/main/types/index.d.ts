@@ -38,7 +38,9 @@ interface UpdateMap {
 interface CreateWindowAttributes {
     path: string
     width?: number
+    minWidth?: number
     height?: number
+    minHeight?: number
     resizable?: boolean
     show?: boolean
     parent?: BrowserWindow

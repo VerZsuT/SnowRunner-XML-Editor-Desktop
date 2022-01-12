@@ -6,8 +6,8 @@ import { t, mainProcess } from 'scripts'
 const { alertSync, openDialog, openInitialDialog } = mainProcess
 
 class SetupPreload implements ISetupPreload {
-    errorHandler = (text: keyof typeof t) => {
-        alertSync(t[text])
+    errorHandler = (text: string) => {
+        alertSync(text)
     }
 
     existsSync = existsSync
@@ -17,7 +17,7 @@ class SetupPreload implements ISetupPreload {
     getGameFolder = () => {
         const result = openDialog()
         if (!result) {
-            this.errorHandler('EMPTY_FOLDER_ERROR')
+            this.errorHandler(t.EMPTY_FOLDER_ERROR)
             return
         }
         const folder = result
@@ -40,7 +40,7 @@ class SetupPreload implements ISetupPreload {
         }
 
         if (!existed) {
-            this.errorHandler('INVALID_FOLDER_ERROR')
+            this.errorHandler(t.INVALID_FOLDER_ERROR)
             return
         }
 
@@ -53,7 +53,7 @@ class SetupPreload implements ISetupPreload {
     getInitial = () => {
         const result = openInitialDialog()
         if (!result || basename(result) !== 'initial.pak' || !existsSync(result)) {
-            this.errorHandler('INVALID_INITIAL_ERROR')
+            this.errorHandler(t.INVALID_INITIAL_ERROR)
             return
         }
         return {

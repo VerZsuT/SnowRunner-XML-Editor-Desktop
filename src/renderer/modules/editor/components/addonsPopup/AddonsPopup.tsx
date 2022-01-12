@@ -1,12 +1,19 @@
+import { Popup } from 'modules/components/Popup'
 import { PureComponent } from 'react'
 import { t } from 'scripts'
 import { AddonContent } from './AddonContent'
 import { Cranes } from './Cranes'
 
-enum Tab {
-    content = 'content',
-    cranes = 'cranes',
-    none = 'none'
+import {
+    Container,
+    Tab,
+    Tabs
+} from '@mui/material'
+
+enum TabType {
+    content,
+    cranes,
+    none
 }
 
 interface IProps {
@@ -18,7 +25,7 @@ interface IProps {
 }
 
 interface IState {
-    selectedTab: Tab
+    selectedTab: TabType
 }
 
 export class AddonsPopup extends PureComponent<IProps, IState> {
@@ -26,63 +33,51 @@ export class AddonsPopup extends PureComponent<IProps, IState> {
         super(props)
 
         this.state = {
-            selectedTab: Tab.none
+            selectedTab: TabType.none
         }
     }
 
     componentDidUpdate() {
-        if (this.state.selectedTab === Tab.none) {
+        if (this.state.selectedTab === TabType.none) {
             this.setState({
-                selectedTab: Tab.content
+                selectedTab: TabType.content
             })
         }
     }
 
     render() {
         return (
-            <div
-                className='addons-popup'
-                onClick={this.props.hidePopup}
-                style={{ height: this.props.show ? '100%' : '0%' }}
+            <Popup
+                show={this.props.show}
+                onClose={this.props.hidePopup}
+                title={t.ADDONS_POPUP_TITLE}
             >
-                <div
-                    className='content'
-                    onClick={e => e.stopPropagation()}
-                >
-                    <header>{t.ADDONS_POPUP_TITLE}
-                        <div className='tabs'>
-                            <button
-                                className={`tab${this.state.selectedTab !== Tab.content ? ' unactive' : ''}`}
-                                onClick={() => this.selectTab(Tab.content)}
-                            >
-                                {t.ADDON_CONTENT}
-                            </button>
-                            <button
-                                className={`tab${this.state.selectedTab !== Tab.cranes ? ' unactive' : ''}`}
-                                onClick={() => this.selectTab(Tab.cranes)}
-                            >
-                                {t.CRANES}
-                            </button>
-                        </div>
-                    </header>
+                <Container style={{ marginBottom: '10px' }}>
+                    <Tabs
+                        value={this.state.selectedTab}
+                        onChange={(_, value) => this.selectTab(value)}
+                        centered
+                    >
+                        <Tab label={t.ADDON_CONTENT}/>
+                        <Tab label={t.CRANES}/>
+                    </Tabs>
+                </Container>
+                <AddonContent
+                    fileDOM={this.props.fileDOM}
+                    truckName={this.props.truckName}
+                    modId={this.props.modId}
+                    show={this.state.selectedTab === TabType.content}
+                />
 
-                    <AddonContent
-                        fileDOM={this.props.fileDOM}
-                        truckName={this.props.truckName}
-                        modId={this.props.modId}
-                        show={this.state.selectedTab === Tab.content}
-                    />
-
-                    <Cranes
-                        fileDOM={this.props.fileDOM}
-                        show={this.state.selectedTab === Tab.cranes}
-                    />
-                </div>
-            </div>
+                <Cranes
+                    fileDOM={this.props.fileDOM}
+                    show={this.state.selectedTab === TabType.cranes}
+                />
+            </Popup>
         )
     }
 
-    private selectTab = (tab: Tab) => {
+    private selectTab = (tab: TabType) => {
         this.setState({
             selectedTab: tab
         })

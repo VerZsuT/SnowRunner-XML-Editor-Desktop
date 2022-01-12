@@ -1,11 +1,49 @@
 import { PureComponent } from 'react'
 import { render } from 'react-dom'
 import { t, mainProcess, Lang, MAIN } from 'scripts'
-import { GameFolder } from './components/GameFolder'
 import 'styles/settings/main'
+import { GameFolder } from 'modules/components/GameFolder'
+
+import {
+    Button,
+    Checkbox,
+    Container,
+    InputLabel,
+    List,
+    ListItem as MuiListItem,
+    ListItemButton as MuiListItemButton,
+    ListItemIcon as MuiListItemIcon,
+    ListItemText,
+    MenuItem,
+    Select,
+    styled
+} from '@mui/material'
+import { ErrorHandler } from 'modules/components/ErrorHandler'
 
 const { config } = window.provider
 const { saveBackup, reload } = mainProcess
+
+const ListItem = styled(MuiListItem)({
+    paddingTop: 0,
+    paddingBottom: 0
+})
+
+const ListItemButton = styled(MuiListItemButton)({
+    paddingTop: 0,
+    paddingBottom: 0
+})
+
+const ListItemIcon = styled(MuiListItemIcon)({
+    minWidth: '40px'
+})
+
+const Label = styled(InputLabel)({
+    color: 'black',
+    display: 'inline-block',
+    position: 'relative',
+    top: '8px',
+    marginRight: '15px'
+})
 
 interface IState {
     updates: boolean
@@ -31,62 +69,85 @@ class Settings extends PureComponent<any, IState> {
             pathToInitial: ''
         }
         this.langOptions = Object.keys(Lang).map(lang =>
-            <option key={lang} lang={lang}>
+            <MenuItem key={lang} value={lang}>
                 {lang}
-            </option>
+            </MenuItem>
         )
     }
 
     render() {
         return (<>
-            <label className='form-label' htmlFor='language-select'>{t.LANGUAGE_MENU_ITEM_LABEL}</label>
-            <select
-                id='language-select'
-                className='form-select'
-                value={this.state.lang}
-                onChange={e => this.onChangeSetting('lang', e.target.value)}
+            <ErrorHandler preload={window.settingsPreload} />
+            <Container>
+                <Label id='language-label'>
+                    {t.LANGUAGE_MENU_ITEM_LABEL}
+                </Label>
+                <Select
+                    labelId='language-label'
+                    value={this.state.lang}
+                    onChange={e => this.onChangeSetting('lang', e.target.value)}
+                    variant='standard'
+                >
+                    {this.langOptions}
+                </Select>
+            </Container>
+            <GameFolder onChange={this.onChangePath} preload={window.settingsPreload} />
+            <Container>
+                <List>
+                    <ListItem>
+                        <ListItemButton onClick={() => this.onChangeSetting('updates')}>
+                            <ListItemIcon>
+                                <Checkbox
+                                    edge='start'
+                                    checked={this.state.updates}
+                                    tabIndex={-1}
+                                    disableRipple
+                                />
+                            </ListItemIcon>
+                            <ListItemText primary={t.UPDATES_LABEL} />
+                        </ListItemButton>
+                    </ListItem>
+                    <ListItem>
+                        <ListItemButton onClick={() => this.onChangeSetting('DLC')}>
+                            <ListItemIcon>
+                                <Checkbox
+                                    edge='start'
+                                    checked={this.state.DLC}
+                                    tabIndex={-1}
+                                    disableRipple
+                                />
+                            </ListItemIcon>
+                            <ListItemText primary={t.DLC_LABEL} />
+                        </ListItemButton>
+                    </ListItem>
+                    <ListItem>
+                        <ListItemButton onClick={() => this.onChangeSetting('mods')}>
+                            <ListItemIcon>
+                                <Checkbox
+                                    edge='start'
+                                    checked={this.state.mods}
+                                    tabIndex={-1}
+                                    disableRipple
+                                />
+                            </ListItemIcon>
+                            <ListItemText primary={t.MODS_LABEL} />
+                        </ListItemButton>
+                    </ListItem>
+                </List>
+            </Container>
+            <Button
+                className='not-upper'
+                onClick={this.save}
+                variant='contained'
             >
-                {this.langOptions}
-            </select><br />
-
-            <GameFolder onChange={this.onChangePath} />
-
-            <div id='checkboxes'>
-                <input
-                    type='checkbox'
-                    id='ignore-updates'
-                    className='form-check-input'
-                    checked={this.state.updates}
-                    onChange={e => this.onChangeSetting('updates', e.target.checked)}
-                />
-                <label htmlFor='ignore-updates' className='form-check-label'>{t.UPDATES_LABEL}</label><br />
-
-                <input
-                    type='checkbox'
-                    id='disable-dlc'
-                    className='form-check-input'
-                    checked={this.state.DLC}
-                    onChange={e => this.onChangeSetting('DLC', e.target.checked)}
-                />
-                <label htmlFor='disable-dlc' className='form-check-label'>{t.DLC_LABEL}</label><br />
-
-                <input
-                    type='checkbox'
-                    id='disable-mods'
-                    className='form-check-input'
-                    checked={this.state.mods}
-                    onChange={e => this.onChangeSetting('mods', e.target.checked)}
-                />
-                <label htmlFor='disable-mods' className='form-check-label'>{t.MODS_LABEL}</label><br />
-            </div>
-
-            <button className='btn btn-primary' id='save-to-config' onClick={this.save}>{t.SAVE_BUTTON}</button>
+                {t.SAVE_BUTTON}
+            </Button>
         </>)
     }
 
-    private onChangeSetting = (name: string, value: string | boolean) => {
+    private onChangeSetting = (name: string, value?: string | boolean) => {
         this.setState({
-            [name]: value
+            [name]: value ?? !this.state[name]
         } as unknown as IState)
     }
 

@@ -2,7 +2,26 @@ import { MouseEvent, PureComponent } from 'react'
 import { IMainContext, MainContext } from '../MainContext'
 import { ResetMenu } from './ResetMenu'
 
+import {
+    Grid,
+    TextField as MuiTextField,
+    Typography,
+    styled,
+    TextFieldProps,
+    TextField
+} from '@mui/material'
+
 const { basename } = window.editorPreload
+
+const CoordinateField = styled((props: TextFieldProps) =>
+    <MuiTextField 
+        type='number'
+        size='small'
+    {...props}/>
+)({
+    width: '80px',
+    marginRight: '10px'
+})
 
 interface IProps {
     item: IInputParams
@@ -20,24 +39,24 @@ interface IState {
     x: number | string
     y: number | string
     z: number | string
-    showMenu: boolean
-    menuX: number
-    menuY: number
+    menu: {
+        show?: boolean
+        x?: number
+        y?: number
+    }
 }
 
 export class Coordinates extends PureComponent<IProps, IState> {
     static contextType = MainContext
     declare context: IMainContext
-    private componentID = String(Math.random())
+    private componentID = `coordinates-${Math.round(Math.random()*100)}`
 
     constructor(props: IProps) {
         super(props)
 
         this.state = {
             ...this.parse(props.getValue()),
-            showMenu: false,
-            menuX: 0,
-            menuY: 0
+            menu: {}
         }
     }
 
@@ -56,44 +75,48 @@ export class Coordinates extends PureComponent<IProps, IState> {
     render() {
         return (<>
             <ResetMenu
-                show={this.state.showMenu}
-                x={this.state.menuX}
-                y={this.state.menuY}
-                onClick={this.reset}
-                onBlur={() => this.setState({ showMenu: false })}
+                show={this.state.menu.show ?? false}
+                onReset={this.reset}
+                onClose={() => this.setState({ menu: {} })}
+                x={this.state.menu.x ?? 0}
+                y={this.state.menu.y ?? 0}
+                text={this.props.item.text}
             />
-            <div
-                className='param-input'
+            <Grid
+                container
+                id={this.componentID}
                 onContextMenu={this.onContextMenu}
+                justifyContent='center'
+                alignItems='center'
             >
-                <span>X: </span>
-                <input
-                    step={this.props.item.step}
-                    className='x-input form-control inline-block'
-                    type='number'
+                <Typography>X: </Typography>
+                <CoordinateField
+                    inputProps={{
+                        step: this.props.item.step
+                    }}
                     value={this.state.x}
                     onBlur={e => this.save({ x: Number(e.target.value) })}
                     onChange={e => this.setState({ x: e.target.value })}
                 />
-                <span>Y: </span>
-                <input
-                    step={this.props.item.step}
-                    className='y-input form-control inline-block'
-                    type='number'
+                <Typography>Y: </Typography>
+                <CoordinateField
+                    inputProps={{
+                        step: this.props.item.step
+                    }}
                     value={this.state.y}
                     onBlur={e => this.save({ y: Number(e.target.value) })}
                     onChange={e => this.setState({ y: e.target.value })}
                 />
-                <span>Z: </span>
-                <input
-                    step={this.props.item.step}
-                    className='z-input form-control inline-block'
-                    type='number'
+                <Typography>Z: </Typography>
+                <CoordinateField
+                    inputProps={{
+                        step: this.props.item.step
+                    }}
                     value={this.state.z}
                     onBlur={e => this.save({ z: Number(e.target.value) })}
                     onChange={e => this.setState({ z: e.target.value })}
                 />
-            </div>
+            </Grid>
         </>)
     }
 
@@ -158,9 +181,11 @@ export class Coordinates extends PureComponent<IProps, IState> {
     private onContextMenu = (e: MouseEvent<HTMLDivElement>) => {
         e.stopPropagation()
         this.setState({
-            showMenu: true,
-            menuX: e.clientX,
-            menuY: e.clientY
+            menu: {
+                show: true,
+                x: e.clientX,
+                y: e.clientY
+            }
         })
     }
 
@@ -171,9 +196,8 @@ export class Coordinates extends PureComponent<IProps, IState> {
     private reset = () => {
         const defaultValue = this.props.getDefaultValue()
         this.setState({
-            showMenu: false
+            menu: {}
         })
-        console.log(defaultValue)
         if (defaultValue !== undefined) {
             this.save(this.parse(defaultValue))
         }

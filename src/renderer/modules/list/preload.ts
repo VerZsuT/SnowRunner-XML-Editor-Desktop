@@ -18,7 +18,7 @@ class ListPreload implements IListPreload {
         rmSync(path, { recursive: true })
     }
 
-    findMods = () => {
+    findMods = async () => {
         const pathToUser = userInfo().homedir || homedir() || process.env.HOME
         if (!existsSync(pathToUser)) return []
 

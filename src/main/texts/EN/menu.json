@@ -1,11 +1,10 @@
 {
 	"BACKUP_MENU_LABEL": "Backup",
 	"EXIT_MENU_ITEM_LABEL": "Exit",
-	"EPF_MENU_LABEL": "EPF",
 	"FILE_MENU_LABEL": "File",
 	"HELP_MENU_LABEL": "Help",
 	"HOW_TO_USE_TITLE": "How to use",
-	"JOIN_EXPORTED_FILES": "Join",
+	"JOIN_EXPORTED_FILES": "Merge EPF",
 	"RESET_MENU_ITEM_LABEL": "Reset",
 	"RESTORE_MENU_ITEM_LABEL": "Restore",
 	"SAVE_BUTTON": "Save",
@@ -21,5 +20,6 @@
 	"EXPORT_MENU_ITEM_LABEL": "Export",
 	"SUCCESS_EXPORT_MESSAGE": "Configuration exported successfully",
 	"SETTINGS_MENU_LABEL": "Settings",
-	"VERSION_MENU_ITEM_LABEL": "Version"
+	"VERSION_MENU_ITEM_LABEL": "Version",
+	"SEE_EXPORTED_FILES": "View EPF"
 }

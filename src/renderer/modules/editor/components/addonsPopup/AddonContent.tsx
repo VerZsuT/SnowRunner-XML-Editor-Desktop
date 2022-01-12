@@ -1,8 +1,28 @@
 import { ChangeEvent, PureComponent } from 'react'
 import { getIngameText, mainProcess, t } from 'scripts'
 
+import {
+    Button,
+    Container,
+    InputLabel as MuiInputLabel,
+    MenuItem,
+    Select,
+    SelectChangeEvent,
+    TextField as MuiTextField,
+    styled
+} from '@mui/material'
+
 const { readFile, getAddons, saveFile, existsSync } = window.editorPreload
 const { alertSync } = mainProcess
+
+const InputLabel = styled(MuiInputLabel)({
+    color: 'black'
+})
+
+const TextField = styled(MuiTextField)({
+    marginBottom: '10px',
+    width: '100px'
+})
 
 interface IProps {
     truckName: string
@@ -34,7 +54,7 @@ export class AddonContent extends PureComponent<IProps, IState> {
         }
     }
 
-    componentDidUpdate(): void {
+    componentDidMount() {
         setTimeout(() => {
             if (this.state.items === null) {
                 const items = getAddons(this.props.truckName, this.props.modId, this.isInstalled)
@@ -53,52 +73,66 @@ export class AddonContent extends PureComponent<IProps, IState> {
 
     render() {
         if (!this.props.show) return null
+        
         return <>
-            <label htmlFor='file'>{t.ADDON_NAME}</label>
-            <select
-                value={this.state.selectedAddon}
-                id='file'
-                onChange={this.selectAddon}
-                className='form-select'
-            >
-                {this.options}
-            </select><br />
+            <Container>
+                <InputLabel id='addon-name-label'>
+                    {t.ADDON_NAME}
+                </InputLabel>
+                <Select
+                    labelId='addon-name-label'
+                    value={this.state.selectedAddon}
+                    onChange={this.selectAddon}
+                    size='small'
+                >
+                    {this.options}
+                </Select>
+            </Container>
+            <Container>
+                <InputLabel id='addon-wheels-label'>
+                    {t.ADDON_WHEELS}
+                </InputLabel>
+                <TextField
+                    type='number'
+                    value={this.state.wheels}
+                    onChange={this.changeWheels}
+                    size='small'
+                />
+            </Container>
+            <Container>
+                <InputLabel id='addon-repairs-label'>
+                    {t.ADDON_REPAIRS}
+                </InputLabel>
+                <TextField
+                    type='number'
+                    value={this.state.repairs}
+                    onChange={this.changeRepairs}
+                    size='small'
+                />
+            </Container>
+            <Container>
+                <InputLabel id='addon-fuel-label'>
+                    {t.ADDON_FUEL}
+                </InputLabel>
+                <TextField
+                    type='number'
+                    value={this.state.fuel}
+                    onChange={this.changeFuel}
+                    size='small'
+                />
+            </Container>
 
-            <label htmlFor='wheels'>{t.ADDON_WHEELS}</label>
-            <input
-                type='number'
-                className='form-control'
-                id='wheels'
-                value={this.state.wheels}
-                onChange={this.changeWheels}
-            /><br />
-            <label htmlFor='repairs'>{t.ADDON_REPAIRS}</label>
-            <input
-                type='number'
-                className='form-control'
-                id='repairs'
-                value={this.state.repairs}
-                onChange={this.changeRepairs}
-            /><br />
-            <label htmlFor='fuel'>{t.ADDON_FUEL}</label>
-            <input
-                type='number'
-                className='form-control'
-                id='fuel'
-                value={this.state.fuel}
-                onChange={this.changeFuel}
-            /><br />
-
-            <button
-                className='btn btn-primary'
+            <Button
                 onClick={this.saveChanges}
+                variant='contained'
+                color='success'
             >
                 {t.ADDON_CHANGE_BUTTON}
-            </button>
+            </Button>
         </>
     }
 
-    private selectAddon = (e: ChangeEvent<HTMLSelectElement>) => {
+    private selectAddon = (e: SelectChangeEvent) => {
         const name = e.target.value
         const data = this.getAddonData(this.getItem(name).path)
 
@@ -178,12 +212,12 @@ export class AddonContent extends PureComponent<IProps, IState> {
         return items.map(addon => {
             const name = this.getAddonName(addon)
             return (
-                <option
+                <MenuItem
                     key={addon.name}
                     value={addon.name}
                 >
                     {name}
-                </option>
+                </MenuItem>
             )
         })
     }

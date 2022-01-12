@@ -1,6 +1,12 @@
-import { ChangeEvent, MouseEvent, PureComponent } from 'react'
+import { MouseEvent, PureComponent } from 'react'
 import { IMainContext, MainContext } from '../MainContext'
 import { ResetMenu } from './ResetMenu'
+
+import {
+    MenuItem,
+    Select as SelectMUI,
+    SelectChangeEvent
+} from '@mui/material'
 
 const { basename } = window.editorPreload
 
@@ -18,15 +24,17 @@ interface IProps {
 
 interface IState {
     value: string
-    showMenu: boolean
-    menuX: number
-    menuY: number
+    menu: {
+        show?: boolean
+        x?: number
+        y?: number
+    }
 }
 
 export class Select extends PureComponent<IProps, IState> {
     static contextType = MainContext
     declare context: IMainContext
-    private componentID = String(Math.random())
+    private componentID = `select-${Math.round(Math.random()*100)}`
 
     private options: JSX.Element[]
 
@@ -35,17 +43,15 @@ export class Select extends PureComponent<IProps, IState> {
 
         this.state = {
             value: props.getValue(),
-            showMenu: false,
-            menuX: 0,
-            menuY: 0
+            menu: {}
         }
         this.options = this.props.item.selectParams.map(option =>
-            <option
+            <MenuItem
                 key={option.value}
                 value={option.value}
             >
                 {option.text}
-            </option>
+            </MenuItem>
         )
     }
 
@@ -64,28 +70,29 @@ export class Select extends PureComponent<IProps, IState> {
     render() {
         return (<>
             <ResetMenu
-                show={this.state.showMenu}
-                x={this.state.menuX}
-                y={this.state.menuY}
-                onClick={this.reset}
-                onBlur={() => this.setState({ showMenu: false })}
+                show={this.state.menu.show ?? false}
+                onReset={this.reset}
+                onClose={() => this.setState({ menu: {} })}
+                x={this.state.menu.x ?? 0}
+                y={this.state.menu.y ?? 0}
+                text={this.props.item.text}
             />
-            <div className='param-input'>
-                <select
-                    className='form-select'
+            
+                <SelectMUI
+                    id={this.componentID}
                     value={this.state.value}
                     onChange={this.setValue}
                     onContextMenu={this.onContextMenu}
+                    size='small'
                 >
                     {this.options}
-                </select>
-            </div>
+                </SelectMUI>
         </>)
     }
 
-    private setValue = (e: ChangeEvent<HTMLSelectElement>) => {
+    private setValue = (e: SelectChangeEvent) => {
         const newVal = e.target.value
-        const { fileDOM, filePath } = this.context
+        const { fileDOM } = this.context
 
         if (!fileDOM.querySelector(this.props.item.selector)) {
             const array = this.props.item.selector.split('>').map(value => value.trim())
@@ -118,7 +125,7 @@ export class Select extends PureComponent<IProps, IState> {
             },
             forImport: {
                 setValue: (newValue: string) => {
-                    this.setValue({ target: { value: newValue } } as ChangeEvent<HTMLSelectElement>)
+                    this.setValue({ target: { value: newValue } } as SelectChangeEvent)
                 },
                 selector: this.props.item.selector,
                 name: this.props.item.name,
@@ -127,12 +134,14 @@ export class Select extends PureComponent<IProps, IState> {
         })
     }
 
-    private onContextMenu = (e: MouseEvent<HTMLSelectElement>) => {
+    private onContextMenu = (e: MouseEvent<HTMLDivElement>) => {
         e.stopPropagation()
         this.setState({
-            showMenu: true,
-            menuX: e.clientX,
-            menuY: e.clientY
+            menu: {
+                show: true,
+                x: e.clientX,
+                y: e.clientY
+            }
         })
     }
 
@@ -145,11 +154,10 @@ export class Select extends PureComponent<IProps, IState> {
     private reset = () => {
         const defaultValue = this.props.getDefaultValue()
         this.setState({
-            showMenu: false
+            menu: {}
         })
-        console.log(defaultValue)
         if (defaultValue !== undefined) {
-            this.setValue({ target: { value: defaultValue } } as ChangeEvent<HTMLSelectElement>)
+            this.setValue({ target: { value: defaultValue } } as SelectChangeEvent)
         }
     }
 }

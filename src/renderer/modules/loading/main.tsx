@@ -1,10 +1,23 @@
 import { PureComponent } from 'react'
 import { render } from 'react-dom'
 import 'styles/loading/main'
-
 import { MAIN } from 'scripts'
 
+import {
+    Typography,
+    LinearProgress as MuiLinearProgress,
+    Grid,
+    CircularProgress,
+    Container,
+    styled
+} from '@mui/material'
+
 const { ipcRenderer } = window.provider
+
+const LinearProgress = styled(MuiLinearProgress)({
+    marginTop: '17px',
+    marginBottom: '17px'
+})
 
 interface IState {
     allCount: number
@@ -33,26 +46,31 @@ class Loading extends PureComponent<any, IState> {
 
     render() {
         return (
-            <div id='loading'>
-                <div id='file-name'>{this.state.name}</div>
+            <Container style={{ textAlign: 'center' }}>
+                <Container>
+                    <Typography variant='h6'>
+                        {this.state.name}
+                    </Typography>
+                </Container>
 
-                {this.state.isDownload ? <>
-                    <progress id='progress' value={this.state.percent} max='100'></progress>
-                    <p id='count'>{this.state.loadedCount}/{this.state.allCount}</p>
-                    <p id='percent'>{Math.round(this.state.percent)}%</p>
-                </>
-                    : <div id='circularG'>
-                        <div id='circularG_1' className='circularG'></div>
-                        <div id='circularG_2' className='circularG'></div>
-                        <div id='circularG_3' className='circularG'></div>
-                        <div id='circularG_4' className='circularG'></div>
-                        <div id='circularG_5' className='circularG'></div>
-                        <div id='circularG_6' className='circularG'></div>
-                        <div id='circularG_7' className='circularG'></div>
-                        <div id='circularG_8' className='circularG'></div>
-                    </div>
+                {this.state.isDownload 
+                    ? <>
+                        <LinearProgress
+                            variant='determinate'
+                            value={this.state.percent}
+                        />
+                        <Grid container justifyContent='center'>
+                            <Typography variant='body2'>
+                                {this.state.loadedCount}/{this.state.allCount}
+                            </Typography>
+                            <Typography variant='body2' style={{ marginLeft: '10px' }}>
+                                {Math.round(this.state.percent)}%
+                            </Typography>
+                        </Grid>
+                    </>
+                    : <CircularProgress style={{ marginTop: '15px' }}/>
                 }
-            </div>
+            </Container>
         )
     }
 

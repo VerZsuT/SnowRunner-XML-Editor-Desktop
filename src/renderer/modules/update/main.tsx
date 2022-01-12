@@ -1,11 +1,40 @@
 import { PureComponent } from 'react'
 import { render } from 'react-dom'
 import 'styles/update/main'
-
 import { MAIN, mainProcess, t } from 'scripts'
+
+import {
+    Button as MuiButton,
+    Grid,
+    Typography,
+    ButtonProps,
+    TypographyProps,
+    styled
+} from '@mui/material'
 
 const { config, ipcRenderer } = window.provider
 const { update } = mainProcess
+
+const VersionTitle = styled((props: TypographyProps) => 
+    <Typography variant='h6' {...props}/>
+)({
+    marginTop: '20px'
+})
+
+const ButtonsGrid = styled(Grid)({
+    position: 'absolute',
+    bottom: '20px',
+    width: '100%',
+    justifyContent: 'center'
+})
+
+const Button = styled((props: ButtonProps) => 
+    <MuiButton variant='contained' {...props}/>
+)({
+    marginLeft: '5px',
+    marginRight: '5px',
+    textTransform: 'none'
+})
 
 interface IState {
     version: string
@@ -25,16 +54,16 @@ class UpdateWindow extends PureComponent<any, IState> {
     }
 
     render() {
-        return (
-            <div id='app'>
-                <h2 id='header'>{t.ALLOW_NEW_VERSION_AUTO} (v{this.state.version})</h2>
-                <div id='buttons'>
-                    <button id='update' className='btn btn-primary' onClick={this.update}>{t.UPDATE}</button>
-                    <button id='ignore' className='btn btn-danger' onClick={this.ignore}>{t.IGNORE}</button>
-                    <button id='close' className='btn btn-secondary' onClick={this.close}>{t.CLOSE}</button>
-                </div>
-            </div>
-        )
+        return (<> 
+            <VersionTitle>
+                {t.ALLOW_NEW_VERSION_AUTO} (v{this.state.version})
+            </VersionTitle>
+            <ButtonsGrid>
+                <Button color='success' onClick={this.update}>{t.UPDATE}</Button>
+                <Button color='error' onClick={this.ignore}>{t.IGNORE}</Button>
+                <Button color='primary' onClick={this.close}>{t.CLOSE}</Button>
+            </ButtonsGrid>
+        </>)
     }
 
     private close = () => {

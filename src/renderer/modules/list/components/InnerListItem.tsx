@@ -3,9 +3,33 @@ import { getIngameText, mainProcess, prettify, t } from 'scripts'
 import { IListContext, ListContext } from '../FilterContext'
 import { ListType } from '../enums'
 
+import {
+    Menu,
+    MenuItem,
+    Card as MuiCard,
+    CardActionArea,
+    CardMedia,
+    CardContent,
+    Typography,
+    styled
+} from '@mui/material'
+import { StarRounded as StarRoundedIcon } from '@mui/icons-material'
+import { Loading } from 'modules/components/Loading'
+
 const { exists } = window.listPreload
 const { config, local } = window.provider
 const { openEditor, readFile } = mainProcess
+
+const Card = styled(MuiCard)({
+    maxWidth: '250px',
+    marginBottom: '10px'
+})
+
+const StarRounded = styled(StarRoundedIcon)({
+    position: 'absolute',
+    top: '5px',
+    left: '5px'
+})
 
 interface IProps {
     item: Item
@@ -14,6 +38,11 @@ interface IProps {
 
 interface IState {
     isDeleted: boolean
+    isLoading: boolean
+    contextMenu: {
+        mouseX: number
+        mouseY: number
+    }
 }
 
 export class InnerListItem extends PureComponent<IProps, IState> {
@@ -29,7 +58,9 @@ export class InnerListItem extends PureComponent<IProps, IState> {
         super(props)
 
         this.state = {
-            isDeleted: false
+            isDeleted: false,
+            isLoading: false,
+            contextMenu: null
         }
         this.fileDOM = this.getDOM()
         this.name = this.getName()
@@ -43,36 +74,88 @@ export class InnerListItem extends PureComponent<IProps, IState> {
         const text = this.getText()
 
         if (!this.hasError && isShow && !this.state.isDeleted) {
-            const itemText = typeof text === 'string'
-                ? <span className='item-text'>{text}</span>
-                : <span className='item-text'>
-                    {text.first}<span style={{ color: 'red' }}>{text.second}</span>{text.last}
-                </span>
-            return (
-                <div className='item'>
-                    {itemText}
-                    <img src={this.imgSrc} onClick={this.openEditor} />
-                    <button
-                        className={`toggle-favorite ${isFavorite ? 'filled' : 'empty'}`}
-                        onClick={this.toggleFavorite}
-                        title={isFavorite ? t.REMOVE_FAVORITE : t.ADD_FAVORITE}
-                    />
-                </div>
-            )
+            return (<>
+                <Card onContextMenu={this.onContextMenu}>
+                    <CardActionArea onClick={this.openEditor}>
+                        <CardMedia
+                            component='img'
+                            height='350px'
+                            image={this.imgSrc}
+                        />
+                        {isFavorite ?
+                            <StarRounded htmlColor='yellow'/>
+                        : null}
+                        <CardContent style={{ padding: '5px' }}>
+                            <Typography
+                                component='div'
+                                style={{ textAlign: 'center', fontSize: '1.1rem' }}
+                            >
+                                {typeof text === 'string'
+                                    ? text
+                                    : <>
+                                        {text.first}
+                                        <span style={{ color: 'red' }}>
+                                            {text.second}
+                                        </span>
+                                        {text.last}
+                                    </>
+                                }
+                            </Typography>
+                        </CardContent>
+                    </CardActionArea>
+                </Card>
+                <Menu
+                    open={this.state.contextMenu !== null}
+                    onClose={this.onCloseContext}
+                    anchorReference='anchorPosition'
+                    anchorPosition={
+                    this.state.contextMenu !== null
+                        ? {
+                            top: this.state.contextMenu.mouseY,
+                            left: this.state.contextMenu.mouseX
+                        }
+                        : undefined
+                    }
+                >
+                    <MenuItem onClick={this.toggleFavorite}>
+                        {isFavorite? t.REMOVE_FAVORITE : t.ADD_FAVORITE}
+                    </MenuItem>
+                </Menu>
+                <Loading open={this.state.isLoading} />
+            </>)
         } else {
             return null
         }
     }
 
-
     private openEditor = () => {
+        this.setState({
+            isLoading: true
+        })
         local.set('filePath', this.props.item.path)
         local.set('currentDLC', this.props.item.dlcName)
         local.set('currentMod', this.props.item.modId)
         openEditor()
     }
 
+    private onContextMenu = (event: React.MouseEvent) => {
+        event.preventDefault()
+        this.setState({
+            contextMenu: this.state.contextMenu === null ? {
+                mouseX: event.clientX - 2,
+                mouseY: event.clientY - 4,
+            } : null
+        })
+    }
+
+    private onCloseContext = () => {
+        this.setState({
+            contextMenu: null
+        })
+    }
+
     private toggleFavorite = () => {
+        this.onCloseContext()
         this.context.toggleFavorite(this.props.item.name)
     }
 

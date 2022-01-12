@@ -299,27 +299,6 @@ interface Templates {
     winch: ITemplate
 }
 
-interface MenuTemplate {
-    /** __Текст__ кнопки. */
-    label?: string
-    /** __Роль__ кнопки (название шаблона поведения). */
-    role?: import('main/enums').MenuRole
-    /** __Меню__, выводимое при наведении на кнопку. */
-    submenu?: MenuTemplate[]
-    /**
-     * Путь к файлу/папке.
-     * 
-     * _Только при {@link role}=`'showFolder'`_
-    */
-    path?: string
-    /**
-     * URL страницы.
-     * 
-     * _Только при {@link role}=`'openURL'`_
-    */
-    url?: string
-}
-
 type DefaultInputProps = {
     attribute: string
     selector?: string

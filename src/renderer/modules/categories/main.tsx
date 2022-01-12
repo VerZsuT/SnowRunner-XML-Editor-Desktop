@@ -3,10 +3,25 @@ import { render } from 'react-dom'
 import { setHotKey, mainProcess, MAIN } from 'scripts'
 import { Category } from './components/Category'
 import { ListType } from 'modules/list/enums'
-import { Menu } from 'menu'
+import { ProgramMenu } from 'menu'
 import 'styles/categories/main'
 
-const { openConsole } = mainProcess
+import {
+    Grid as MuiGrid,
+    GridProps,
+    styled
+} from '@mui/material'
+
+const { openConsole, quit } = mainProcess
+
+const Grid = styled((props: GridProps) =>
+    <MuiGrid
+        container
+        justifyContent='space-evenly'
+    {...props}/>
+)({
+    marginTop: '31px'
+})
 
 class Categories extends PureComponent {
     private items: JSX.Element[]
@@ -22,15 +37,15 @@ class Categories extends PureComponent {
 
 
     componentDidMount() {
-        this.setConsoleHotkey()
+        this.setHotkeys()
     }
 
     render() {
         return (<>
-            {Menu}
-            <div id='categories'>
+            <ProgramMenu />
+            <Grid>
                 {this.items}
-            </div>
+            </Grid>
         </>)
     }
 
@@ -38,11 +53,17 @@ class Categories extends PureComponent {
         return Object.keys(ListType) as ListType[]
     }
 
-    private setConsoleHotkey() {
+    private setHotkeys() {
         setHotKey({
             key: 'Backquote'
         }, () => {
             openConsole()
+        })
+        setHotKey({
+            key: 'Escape',
+            eventName: 'keydown'
+        }, () => {
+            quit()
         })
     }
 }

@@ -1,4 +1,4 @@
-import { PureComponent } from 'react'
+import { Fragment, PureComponent } from 'react'
 import { IMainContext, MainContext } from '../MainContext'
 import { Parameter } from './Parameter'
 import { Group } from './Group'
@@ -16,35 +16,26 @@ export class Parameters extends PureComponent<IProps> {
 
     render() {
         const { tableItems } = this.context
-        const id = `parameters${this.props.postfix ?? ''}`
+        const items = tableItems.map((item, index) => <Fragment key={index}>
+            {item.paramType === 'group' && item.groupItems.length ?
+                <Group
+                    isExporting={this.props.isExporting}
+                    isParentExport={true}
+                    item={item}
+                    regReset={this.props.regReset}
+                />
+                : null}
+            {item.paramType !== 'group' && this.includes(item.text) ?
+                <Parameter
+                    isParentExport={true}
+                    isExporting={this.props.isExporting}
+                    item={item}
+                    regReset={this.props.regReset}
+                />
+            : null}
+        </Fragment>)
 
-        return (
-            <div id={id} className='accordion show'>
-                {tableItems.map((item, index) =>
-                    <div key={item.groupName ? `${item.groupName}-${index}` : `${item.selector}-${index}`}>
-                        {item.paramType === 'group' && item.groupItems.length ?
-                            <Group
-                                isExporting={this.props.isExporting}
-                                isParentExport={true}
-                                item={item}
-                                parent={id}
-                                key={`${item.groupName}-${index}`}
-                                regReset={this.props.regReset}
-                            />
-                            : null}
-                        {item.paramType !== 'group' && this.includes(item.text) ?
-                            <Parameter
-                                isParentExport={true}
-                                isExporting={this.props.isExporting}
-                                item={item}
-                                key={`${item.name}-${index}`}
-                                regReset={this.props.regReset}
-                            />
-                            : null}
-                    </div>
-                )}
-            </div>
-        )
+        return items
     }
 
     private includes(text: string) {

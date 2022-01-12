@@ -1,11 +1,10 @@
 {
 	"BACKUP_MENU_LABEL": "Бэкап",
 	"EXIT_MENU_ITEM_LABEL": "Выход",
-	"EPF_MENU_LABEL": "EPF",
 	"FILE_MENU_LABEL": "Файл",
 	"HELP_MENU_LABEL": "Помощь",
 	"HOW_TO_USE_TITLE": "Как пользоваться",
-	"JOIN_EXPORTED_FILES": "Объединить",
+	"JOIN_EXPORTED_FILES": "Объединить EPF",
 	"RESET_MENU_ITEM_LABEL": "Сбросить",
 	"RESTORE_MENU_ITEM_LABEL": "Восстановить",
 	"SAVE_BUTTON": "Сохранить",
@@ -21,5 +20,6 @@
 	"EXPORT_MENU_ITEM_LABEL": "Экспорт",
 	"SUCCESS_EXPORT_MESSAGE": "Конфигурация успешно экпортирована",
 	"SETTINGS_MENU_LABEL": "Настройки",
-	"VERSION_MENU_ITEM_LABEL": "Версия"
+	"VERSION_MENU_ITEM_LABEL": "Версия",
+	"SEE_EXPORTED_FILES": "Просмотреть EPF"
 }

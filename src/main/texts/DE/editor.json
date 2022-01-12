@@ -28,5 +28,6 @@
 	"DEFAULT_VALUE_TITLE": "Default:",
 	"BY_DEFAULT": "Default",
 	"BACK_BUTTON": "zurück",
-	"CRANES_NOT_SUPPORT": "Bei diesem Auto wird das Wechseln von Wasserhähnen nicht unterstützt"
+	"CRANES_NOT_SUPPORT": "Bei diesem Auto wird das Wechseln von Wasserhähnen nicht unterstützt",
+	"SUCCESS_RESET": "Parameter wurden zurückgesetzt"
 }

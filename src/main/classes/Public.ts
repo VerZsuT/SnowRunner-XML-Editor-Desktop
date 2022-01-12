@@ -9,7 +9,6 @@ import { Checker } from './Checker'
 import { Config } from './Config'
 import { Dialog } from './Dialog'
 import { EPF } from './EPF'
-import { Menu } from './Menu'
 import { Settings } from './Settings'
 import { Texts } from './Texts'
 import { Updater } from './Updater'
@@ -106,7 +105,6 @@ export class Public {
         this.addProps({
             invalidMods: () => this.settings.invalidMods,
             texts: () => Texts.obj,
-            menu: () => Menu.get(),
             paths: () => paths,
             config: [
                 () => this.config,
@@ -228,6 +226,7 @@ export class Public {
             openCategories: Windows.openCategories,
             openWhatsNew: Windows.openWhatsNew,
             openList: Windows.openList,
+            openLoading: Windows.openLoading,
             openSettings: Windows.openSettings,
             openConsole: Windows.openConsole,
             openDialog: Dialog.getDir,

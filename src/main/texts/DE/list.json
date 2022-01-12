@@ -12,5 +12,6 @@
 	"RELAUNCH_PROMPT": "Um den Mod zu laden, müssen Sie das Programm neu starten. Einen Neustart durchführen?",
 	"EMPTY_MODS_TITLE": "Nicht gefunden",
 	"TRUCKS_LIST_TITLE": "Automatische Liste",
-	"TRAILERS_LIST_TITLE": "Liste der Anhänger"
+	"TRAILERS_LIST_TITLE": "Liste der Anhänger",
+	"MODS_POPUP_TITLE": "Änderungen"
 }

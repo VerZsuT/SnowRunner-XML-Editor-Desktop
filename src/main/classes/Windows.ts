@@ -28,62 +28,78 @@ export class Windows {
         loading: {
             path: LOADING_WEBPACK_ENTRY,
             preload: LOADING_PRELOAD_WEBPACK_ENTRY,
-            width: 250,
-            height: 120,
+            minWidth: 280,
+            width: 280,
+            minHeight: 130,
+            height: 130,
             frame: false
         },
         setup: {
             path: SETUP_WEBPACK_ENTRY,
             preload: SETUP_PRELOAD_WEBPACK_ENTRY,
-            width: 550,
-            height: 500
+            minWidth: 540,
+            width: 540,
+            minHeight: 320,
+            height: 320
         },
         editor: {
             path: EDITOR_WEBPACK_ENTRY,
             preload: EDITOR_PRELOAD_WEBPACK_ENTRY,
-            width: 1000,
-            height: 800
+            minWidth: 800,
+            width: 800,
+            minHeight: 630,
+            height: 630
         },
         updateWindow: {
             path: UPDATE_WEBPACK_ENTRY,
             preload: CATEGORIES_PRELOAD_WEBPACK_ENTRY,
+            minWidth: 400,
             width: 400,
+            minHeight: 200,
             height: 200,
             frame: false,
-            modal: true,
-            resizable: false
+            modal: true
         },
         settings: {
             path: SETTINGS_WEBPACK_ENTRY,
             preload: SETTINGS_PRELOAD_WEBPACK_ENTRY,
             width: 400,
-            height: 480,
+            minWidth: 400,
+            height: 430,
+            minHeight: 430,
             modal: true
         },
         console: {
             path: CONSOLE_WEBPACK_ENTRY,
             preload: CONSOLE_PRELOAD_WEBPACK_ENTRY,
             width: 500,
-            height: 500
+            minWidth: 500,
+            height: 500,
+            minHeight: 500
         },
         categories: {
             path: CATEGORIES_WEBPACK_ENTRY,
             preload: CATEGORIES_PRELOAD_WEBPACK_ENTRY,
-            width: 650,
-            height: 380,
-            resizable: false
+            minWidth: 615,
+            width: 615,
+            minHeight: 360,
+            height: 360
         },
         list: {
             path: LIST_WEBPACK_ENTRY,
             preload: LIST_PRELOAD_WEBPACK_ENTRY,
             width: 1100,
-            height: 640
+            minWidth: 1100,
+            height: 640,
+            minHeight: 640
         },
         whatsNew: {
             path: WHATS_NEW_WEBPACK_ENTRY,
             preload: CATEGORIES_PRELOAD_WEBPACK_ENTRY,
             width: 600,
-            height: 500
+            minWidth: 600,
+            height: 500,
+            minHeight: 500
         }
     }
 
@@ -91,14 +107,12 @@ export class Windows {
      * Открывает окно редактора параметров.
      * @param bridge создать между несколькими окнами редактора `bridge-channel` для передачи данных. 
      */
-    static openEditor = () => {
+    static openEditor = async () => {
         this.isOpening = true
-        this.loading.show()
         const wind = this.createWindow(this.createArgs.editor)
         wind.once('show', () => {
             if (this.list && !this.list.isDestroyed()) {
                 this.list.close()
-                this.loading.hide()
                 this.isOpening = false
             }
         })
@@ -184,7 +198,6 @@ export class Windows {
     /** Открывает окно выбора категории. */
     static openCategories = async () => {
         this.isOpening = true
-        this.loading.show()
         this.categories = this.createWindow(this.createArgs.categories)
 
         this.categories.once('close', () => {
@@ -208,15 +221,12 @@ export class Windows {
     }
 
     /** Открывает окно списка авто/груза/прицепа. */
-    static openList = () => {
+    static openList = async () => {
         this.isOpening = true
-        this.loading.setText(Texts.get('LOADING'))
-        this.loading.show()
         this.list = this.createWindow(this.createArgs.list)
         this.list.once('show', () => {
             if (this.categories) this.categories.close()
             if (this.editor) this.editor.close()
-            this.loading.hide()
             this.isOpening = false
         })
         this.list.once('close', () => {
@@ -244,7 +254,9 @@ export class Windows {
     private static createWindow(args: CreateWindowAttributes): BrowserWindow {
         const wind = new BrowserWindow({
             width: args.width ?? 800,
+            minWidth: args.minWidth ?? 0,
             height: args.height ?? 600,
+            minHeight: args.minHeight ?? 0,
             resizable: args.resizable ?? true,
             icon: paths.icon,
             show: args.show ?? false,

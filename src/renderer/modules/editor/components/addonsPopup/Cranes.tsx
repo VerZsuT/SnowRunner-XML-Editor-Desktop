@@ -1,6 +1,30 @@
 import { PureComponent } from 'react'
 import { t } from 'scripts'
 
+import {
+    Button,
+    Box,
+    Typography,
+    Grid,
+    styled
+} from '@mui/material'
+
+const Warning = styled(Typography)({
+    color: 'red'
+})
+
+const Container = styled(Grid)({
+    marginTop: '10px',
+    justifyContent: 'center',
+    width: '100%'
+})
+
+const ButtonBox = styled(Box)({
+    textAlign: 'center',
+    marginLeft: '5px',
+    marginRight: '5px'
+})
+
 enum Crane {
     RU = 'MinicraneRU',
     US = 'MinicraneUS'
@@ -30,49 +54,58 @@ export class Cranes extends PureComponent<IProps, IState> {
         if (!this.props.show) return null
         const hasRUCrane = this.state.hasRUCrane
         const hasUSCrane = this.state.hasUSCrane
+        const hasCrane = hasRUCrane || hasUSCrane
 
         return <>
-            {hasRUCrane || hasRUCrane ? <>
-                <b className='cranes-warn'>{t.CRANES_WARN_TITLE}</b>
-                <p className='cranes-warn-message'>{t.CRANES_WARN_MESSAGE}</p>
+            {hasCrane ? <>
+                <Warning>{t.CRANES_WARN_TITLE}</Warning>
+                <Typography>{t.CRANES_WARN_MESSAGE}</Typography>
 
-                <label>US {t.CRANE}</label><br />
-                {!hasUSCrane
-                    ? <button
-                        className='btn btn-primary add-crane'
-                        disabled={!(hasRUCrane && !hasUSCrane)}
-                        onClick={() => this.addCrane(Crane.US, Crane.RU)}
-                    >
-                        {t.ADD}
-                    </button>
-                    : <button
-                        className='btn btn-danger remove-crane'
-                        disabled={!(hasRUCrane && hasUSCrane)}
-                        onClick={() => this.removeCrane(Crane.US)}
-                    >
-                        {t.REMOVE}
-                    </button>
-                }
-                <br /><br />
-
-                <label>RU {t.CRANE}</label><br />
-                {!hasRUCrane
-                    ? <button
-                        className='btn btn-primary add-crane'
-                        disabled={!(hasUSCrane && !hasRUCrane)}
-                        onClick={() => this.addCrane(Crane.RU, Crane.US)}
-                    >
-                        {t.ADD}
-                    </button>
-                    : <button
-                        className='btn btn-danger remove-crane'
-                        disabled={!(hasRUCrane && hasUSCrane)}
-                        onClick={() => this.removeCrane(Crane.RU)}
-                    >
-                        {t.REMOVE}
-                    </button>
-                }
-            </> : <p>{t.CRANES_NOT_SUPPORT}</p>
+                <Container>
+                    <ButtonBox>
+                        <Typography variant='body1'>US {t.CRANE}</Typography>
+                        {!hasUSCrane
+                            ? <Button
+                                variant='contained'
+                                color='primary'
+                                disabled={!(hasRUCrane && !hasUSCrane)}
+                                onClick={() => this.addCrane(Crane.US, Crane.RU)}
+                            >
+                                {t.ADD}
+                            </Button>
+                            : <Button
+                                variant='contained'
+                                color='error'
+                                disabled={!(hasRUCrane && hasUSCrane)}
+                                onClick={() => this.removeCrane(Crane.US)}
+                            >
+                                {t.REMOVE}
+                            </Button>
+                        }
+                    </ButtonBox>
+                    <ButtonBox>
+                        <Typography variant='body1'>RU {t.CRANE}</Typography>
+                        {!hasRUCrane
+                            ? <Button
+                                variant='contained'
+                                color='primary'
+                                disabled={!(hasUSCrane && !hasRUCrane)}
+                                onClick={() => this.addCrane(Crane.RU, Crane.US)}
+                            >
+                                {t.ADD}
+                            </Button>
+                            : <Button
+                                variant='contained'
+                                color='error'
+                                disabled={!(hasRUCrane && hasUSCrane)}
+                                onClick={() => this.removeCrane(Crane.RU)}
+                            >
+                                {t.REMOVE}
+                            </Button>
+                        }
+                    </ButtonBox>
+                </Container>
+            </> : <Typography variant='body1'>{t.CRANES_NOT_SUPPORT}</Typography>
             }
         </>
     }
@@ -100,7 +133,7 @@ export class Cranes extends PureComponent<IProps, IState> {
             this.setState({
                 hasRUCrane: true
             })
-        } else {
+        } else if (crane === Crane.US) {
             this.setState({
                 hasUSCrane: true
             })
@@ -125,7 +158,7 @@ export class Cranes extends PureComponent<IProps, IState> {
             this.setState({
                 hasRUCrane: false
             })
-        } else {
+        } else if (crane === Crane.US) {
             this.setState({
                 hasUSCrane: false
             })

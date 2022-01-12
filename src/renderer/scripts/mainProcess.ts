@@ -2,7 +2,11 @@ const { ipcRenderer } = window.provider
 
 const info: Info = ipcRenderer.sendSync('getInfo')
 const errorHandler = (error: Error) => {
-    ipcRenderer.sendSync('function_alertSync_call', `${error}`.replace('Error: ', ''))
+    if (window['errorHandler']) {
+        window['errorHandler'](error.message)
+    } else {
+        ipcRenderer.sendSync('function_alertSync_call', `${error}`.replace('Error: ', ''))
+    }
 }
 
 /** Предоставляет доступ ко всем публичным методам и функциям, установленным в `index.ts`. */

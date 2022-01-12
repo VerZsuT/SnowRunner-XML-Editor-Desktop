@@ -1,6 +1,19 @@
 import { PureComponent } from 'react'
 import { t } from 'scripts'
 
+import {
+    Button,
+    Checkbox,
+    CircularProgress,
+    Container,
+    List,
+    ListItem,
+    ListItemButton,
+    ListItemIcon,
+    ListItemText
+} from '@mui/material'
+import { Popup } from 'modules/components/Popup'
+
 const { findMods, basename, getModPak } = window.listPreload
 const { config } = window.provider
 
@@ -30,8 +43,8 @@ export class ModsPopup extends PureComponent<IProps, IState> {
     componentDidUpdate(): void {
         setTimeout(() => {
             if (this.state.items === null) {
-                this.setState({
-                    items: findMods()
+                findMods().then(items => {
+                    this.setState({ items })
                 })
             }
         }, 500)
@@ -42,59 +55,70 @@ export class ModsPopup extends PureComponent<IProps, IState> {
         if (this.state.items !== null) {
             items = this.state.items.map(value => {
                 const isExists = Boolean(this.state.selected[basename(value.path, '.pak')])
+                const onClick = isExists ? () => this.remove(value) : () => this.select(value)
 
                 return (
-                    <li key={value.name}>
-                        {value.name}
-                        {!isExists
-                            ? <button className='check-mod add' onClick={() => this.select(value)}></button>
-                            : <button className='check-mod remove' onClick={() => this.remove(value)}></button>
-                        }
-                    </li>
+                    <ListItem disablePadding key={value.name}>
+                        <ListItemButton onClick={onClick}>
+                            <ListItemIcon>
+                                <Checkbox
+                                    edge='start'
+                                    checked={isExists}
+                                    tabIndex={-1}
+                                    disableRipple
+                                />
+                            </ListItemIcon>
+                            <ListItemText primary={value.name} />
+                        </ListItemButton>
+                    </ListItem>
                 )
             })
         }
 
         return (
-            <div
-                className='mods-popup'
-                onClick={this.hidePopup}
-                style={{
-                    height: this.props.show ? '100%' : '0%'
-                }}
+            <Popup
+                show={this.props.show}
+                onClose={() => this.hidePopup()}
+                title={this.state.items ? t.MODS_POPUP_TITLE : t.LOADING}
             >
-                <div className='content' onClick={e => e.stopPropagation()}>
-                    <header>
-                        {this.state.items === null
-                            ? t.LOADING
-                            : t.MODS_LIST_TITLE
-                        }
-                    </header>
-                    <ul>
-                        {items.length
-                            ? items
-                            : this.state.items !== null
-                                ? <li style={{ justifyContent: 'center' }}>{t.EMPTY_MODS_TITLE}</li>
-                                : []
-                        }
-                    </ul>
-                    {this.state.items !== null ? <>
-                        <button
-                            className='btn-secondary add-manual'
+                {!this.state.items ?
+                    <CircularProgress />
+                    : null}
+
+                <List style={{ maxHeight: '250px' }}>
+                    {items.length
+                        ? items
+                        : this.state.items !== null
+                            ? <ListItemText primary={t.EMPTY_MODS_TITLE} />
+                            : []
+                    }
+                </List>
+                {this.state.items? <>
+                    <Container>
+                        <Button
+                            className='not-upper'
+                            variant='contained'
                             onClick={this.addManual}
+                            style={{
+                                marginTop: '10px',
+                                marginBottom: '10px'
+                            }}
                         >
                             {t.MANUAL_MOD}
-                        </button>
-                        <br />
-                        <button
-                            className='btn-primary save-mods'
+                        </Button>
+                    </Container>
+                    <Container>
+                        <Button
+                            className='not-upper'
+                            variant='contained'
+                            color='success'
                             onClick={this.applyChanges}
                         >
                             {t.APPLY}
-                        </button>
-                    </> : null}
-                </div>
-            </div>
+                        </Button>
+                    </Container>
+                </> : null}
+            </Popup>
         )
     }
 
@@ -115,7 +139,6 @@ export class ModsPopup extends PureComponent<IProps, IState> {
         if (copy[basename(value.path, '.pak')]) {
             delete copy[basename(value.path, '.pak')]
         } else {
-            console.log(value.name)
             delete copy[value.name]
         }
 

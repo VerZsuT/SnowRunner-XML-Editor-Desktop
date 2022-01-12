@@ -1,12 +1,5 @@
 @import 'styles/main';
-@import 'styles/categories/Category';
 
 body {
     background-color: white;
-}
-
-#categories {
-    margin-top: 2px;
-    display: flex;
-    justify-content: space-evenly;
 }

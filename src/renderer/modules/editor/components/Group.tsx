@@ -1,10 +1,23 @@
+import { GroupAccordion } from 'modules/components/GroupAccordion'
 import { PureComponent, MouseEvent } from 'react'
+import { InputType } from 'scripts'
 import { IMainContext, MainContext } from '../MainContext'
 import { Parameter } from './Parameter'
 import { ResetMenu } from './ResetMenu'
 
+import {
+    Table as MuiTable,
+    TableBody,
+    styled
+} from '@mui/material'
+
+const Table = styled(MuiTable)({
+    width: '100%',
+    position: 'relative',
+    bottom: '8px'
+})
+
 interface IProps {
-    parent: string
     item: IGroupParams
     isParentExport: boolean
     isExporting: boolean
@@ -14,23 +27,25 @@ interface IProps {
 
 interface IState {
     isExport: boolean
-    showContextMenu: boolean
-    menuX: number
-    menuY: number
+    menu: {
+        show?: boolean
+        x?: number
+        y?: number
+    }
 }
 
 export class Group extends PureComponent<IProps, IState> {
     static contextType = MainContext
     declare context: IMainContext
 
-    private componentID = String(Math.random())
-    private headerID: number
-    private containerID: number
-    private contentID: number
+    private componentID = `group-${Math.round(Math.random()*100)}`
     private iconSRC: string
     private items: {
         groups: any[]
-        params: any[]
+        params: {
+            files: any[]
+            default: any[]
+        }
     }
     private toReset: {
         [id: string]: () => void
@@ -41,14 +56,9 @@ export class Group extends PureComponent<IProps, IState> {
 
         this.state = {
             isExport: props.isParentExport,
-            showContextMenu: false,
-            menuX: 0,
-            menuY: 0
+            menu: {}
         }
         this.toReset = {}
-        this.headerID = Math.round(Math.random() * 1000000)
-        this.containerID = Math.round(Math.random() * 1000000)
-        this.contentID = Math.round(Math.random() * 1000000)
         this.items = this.getItems()
         if (props.item.icon) {
             this.iconSRC = require(`images/icons/editor/${props.item.icon}`)
@@ -66,74 +76,64 @@ export class Group extends PureComponent<IProps, IState> {
     }
 
     render() {
-        const { filter } = this.context
-
         return this.filt(this.props.item.groupItems) ? <>
             <ResetMenu
-                show={this.state.showContextMenu}
-                x={this.state.menuX}
-                y={this.state.menuY}
-                onClick={this.reset}
-                onBlur={() => this.setState({ showContextMenu: false })}
+                show={this.state.menu.show ?? false}
+                onReset={this.reset}
+                onClose={() => this.setState({ menu: {} })}
                 text={this.props.item.groupName}
+                x={this.state.menu.x ?? 0}
+                y={this.state.menu.y ?? 0}
             />
-            <div
-                className='accordion-item'
+            <GroupAccordion
+                id={this.componentID}
+                title={this.props.item.groupName}
+                iconSRC={this.iconSRC}
+                showExport={this.props.isExporting}
+                isExport={this.state.isExport && this.props.isParentExport}
+                onChangeExport={this.toggleExporting}
+                onContextMenu={this.showContextMenu}
             >
-                <div
-                    className={`group accordion-button${!Boolean(filter) ? ' collapsed' : ''}`}
-                    data-bs-toggle='collapse'
-                    data-bs-target={`#_${this.containerID}`}
-                    aria-expanded='false'
-                    onContextMenu={this.showContextMenu}
-                >
-                    {this.iconSRC ?
-                        <img src={this.iconSRC} />
-                        : null}
-                    <div className='accordion-header' id={`_${this.headerID}`}>
-                        {this.props.item.groupName}
-                    </div>
-                </div>
-                <div
-                    className={`group-cont accordion-collapse collapse${Boolean(filter) ? ' show' : ''}`}
-                    aria-labelledby={`_${this.headerID}`}
-                    data-bs-parent={`#${this.props.parent}`}
-                    id={`_${this.containerID}`}
-                >
-                    <div className='accordion-body' id={`_${this.contentID}`}>
-                        {this.items.params.map((param, index) =>
+                {this.items.params.default.length ?
+                    <Table>
+                        <TableBody>
+                        {this.items.params.default.map((param, index) =>
                             <Parameter
                                 isParentExport={this.state.isExport && this.props.isParentExport}
                                 isExporting={this.props.isExporting}
                                 item={param}
+                                regReset={this.regReset}
                                 key={`${param.name}-${index}`}
-                                regReset={this.regReset}
                                 unregReset={this.unregReset}
                             />
-                        )}
+                        )} 
+                        </TableBody>
+                    </Table>
+                : null}
+                {this.items.params.files.length ? 
+                    this.items.params.files.map((param, index) =>
+                        <Parameter
+                            isParentExport={this.state.isExport && this.props.isParentExport}
+                            isExporting={this.props.isExporting}
+                            item={param}
+                            key={`${param.name}-${index}`}
+                            regReset={this.regReset}
+                            unregReset={this.unregReset}
+                        />
+                    )
+                : null}
 
-                        {this.items.groups.map((groupItem, index) =>
-                            <Group
-                                isParentExport={this.state.isExport && this.props.isParentExport}
-                                isExporting={this.props.isExporting}
-                                item={groupItem}
-                                parent={`_${this.contentID}`}
-                                key={`${groupItem.groupName}-${index}`}
-                                regReset={this.regReset}
-                                unregReset={this.unregReset}
-                            />
-                        )}
-                    </div>
-                </div>
-                {this.props.isExporting ?
-                    <input
-                        type='checkbox'
-                        className='group-export'
-                        checked={this.state.isExport && this.props.isParentExport}
-                        onChange={this.toggleExporting}
+                {this.items.groups.map((groupItem, index) =>
+                    <Group
+                        isParentExport={this.state.isExport && this.props.isParentExport}
+                        isExporting={this.props.isExporting}
+                        item={groupItem}
+                        key={`${groupItem.groupName}-${index}`}
+                        regReset={this.regReset}
+                        unregReset={this.unregReset}
                     />
-                    : null}
-            </div>
+                )}
+            </GroupAccordion>
         </> : null
     }
 
@@ -156,7 +156,7 @@ export class Group extends PureComponent<IProps, IState> {
             this.toReset[itemID]()
         }
         this.setState({
-            showContextMenu: false
+            menu: {}
         })
     }
 
@@ -170,12 +170,19 @@ export class Group extends PureComponent<IProps, IState> {
 
     private getItems() {
         const groups = []
-        const params = []
+        const params = {
+            files: [],
+            default: []
+        }
         for (const groupItem of this.props.item.groupItems) {
             if (groupItem.paramType === 'group') {
                 groups.push(groupItem)
             } else {
-                params.push(groupItem)
+                if (groupItem.type === InputType.file) {
+                    params.files.push(groupItem)
+                } else {
+                    params.default.push(groupItem)
+                }
             }
         }
         return { groups, params }
@@ -201,9 +208,11 @@ export class Group extends PureComponent<IProps, IState> {
     private showContextMenu = (e: MouseEvent<HTMLDivElement>) => {
         e.stopPropagation()
         this.setState({
-            showContextMenu: true,
-            menuX: e.clientX,
-            menuY: e.clientY
+            menu: {
+                show: true,
+                x: e.clientX,
+                y: e.clientY
+            }
         })
 
     }

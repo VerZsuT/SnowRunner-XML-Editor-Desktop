@@ -16,7 +16,6 @@ type Texts = {
 interface Properties {
     invalidMods: string[]
     texts: Texts
-    menu: MenuTemplate[]
     paths: Paths
     config: ProgramConfig
     templates: Templates
@@ -49,6 +48,7 @@ interface Functions {
     openLink(URL: string): void
     openEditor(isBridge?: boolean): void
     openList(): void
+    openLoading(): void
     openCategories(): void
     openSettings(): void
     openDialog(): string | undefined
