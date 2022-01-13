@@ -18,12 +18,11 @@ import {
     Backdrop,
     CircularProgress,
     ContainerProps,
-    IconButtonProps,
     TabProps,
     styled
 } from '@mui/material'
 import { 
-    ArrowBack as ArrowBackIcon,
+    ArrowBack,
     StarRounded
 } from '@mui/icons-material'
 import { ErrorHandler } from '../components/ErrorHandler'
@@ -55,13 +54,7 @@ const TabsContainer = styled((props: ContainerProps) =>
     paddingRight: '0'
 })
 
-const ArrowBack = styled(ArrowBackIcon)({
-    fontSize: '30px'
-})
-
-const BackIconButton = styled((props: IconButtonProps) =>
-    <IconButton color='inherit' {...props}/>
-)({
+const BackIconButton = styled(IconButton)({
     position: 'absolute',
     top: '0',
     left: '0'
@@ -128,7 +121,7 @@ class List extends PureComponent<any, IState> {
                 toggleFavorite: this.toggleFavorite
             }}>
 
-                <Title >
+                <Title>
                     <Search value={this.state.filter} onChange={this.setFilter} />
                     <Typography variant='h5'>
                         {this.listType === ListType.trucks ? t.TRUCKS_LIST_TITLE : t.TRAILERS_LIST_TITLE}
@@ -137,10 +130,8 @@ class List extends PureComponent<any, IState> {
                         title={t.BACK_BUTTON}
                         placement='right'
                     >
-                        <BackIconButton
-                            onClick={this.back}
-                        >
-                            <ArrowBack />
+                        <BackIconButton color='inherit' onClick={this.back}>
+                            <ArrowBack style={{ fontSize: '30px' }} />
                         </BackIconButton>
                     </Tooltip>
                 </Title>

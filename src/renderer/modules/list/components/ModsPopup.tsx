@@ -85,7 +85,7 @@ export class ModsPopup extends PureComponent<IProps, IState> {
                     <CircularProgress />
                     : null}
 
-                <List style={{ maxHeight: '250px' }}>
+                <List style={{ maxHeight: '250px', overflow: 'auto' }}>
                     {items.length
                         ? items
                         : this.state.items !== null
