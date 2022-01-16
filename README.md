@@ -52,7 +52,7 @@ npm run package
 Значения каталогов проекта:
 
 ```text
-|- build_scripts      (скрипты, выполняемые перед и после продакшн сборки)
+|- build_scripts      (скрипты, выполняемые перед и после prod сборки)
 |- configs            (конфигурации Webpack и Electron Forge)
 |- docs               (страница GitHub Pages)
 |- src                (основные ресурсы программы)
@@ -62,7 +62,7 @@ npm run package
       |-texts         (переводы)
    |-images
    |-renderer
-      |-modules       (крипты разных окон)
+      |-modules       (cкрипты разных окон)
       |-service       (сервисные скрипты)
       |-styles
          |-main.scss     (главный стиль)
@@ -72,9 +72,9 @@ npm run package
 
 ## Картинки
 
-![категории](https://image.modcdn.io/members/4a97/2992192/profile/2021-06-0.1.png)
-![список авто](https://image.modcdn.io/members/4a97/2992192/profile/2021-09-1.1.png)
-![таблица параметров](https://image.modcdn.io/members/4a97/2992192/profile/2021-09-1.2.png)
+![категории](https://image.modcdn.io/members/4a97/2992192/profile/2022-01-1.1.png)
+![список авто](https://image.modcdn.io/members/4a97/2992192/profile/2022-01-1.2.png)
+![таблица параметров](https://image.modcdn.io/members/4a97/2992192/profile/2022-01-1.3.png)
 
 # SnowRunner XML Editor Desktop (EN)
 
@@ -109,6 +109,6 @@ You can read about how to work in the program [in the guide at the link](https:/
 
 ## Images
 
-![categories](https://image.modcdn.io/members/4a97/2992192/profile/2021-06-0.5.png)
-![list of trucks](https://image.modcdn.io/members/4a97/2992192/profile/2021-09-1.4.png)
-![table](https://image.modcdn.io/members/4a97/2992192/profile/2021-09-1.5.png)
+![categories](https://image.modcdn.io/members/4a97/2992192/profile/2022-01-1.13.png)
+![list of trucks](https://image.modcdn.io/members/4a97/2992192/profile/2022-01-1.14.png)
+![table](https://image.modcdn.io/members/4a97/2992192/profile/2022-01-1.15.png)
