@@ -59,6 +59,7 @@ interface IProps {
     isParentExport: boolean
     regReset?(id: string, func: () => void): void
     unregReset?(id: string): void
+    isShow?: boolean
 }
 
 interface IState {
@@ -165,6 +166,7 @@ export class Parameter extends PureComponent<IProps, IState> {
                             postfix={item.fileName}
                             regReset={this.props.regReset}
                             unregReset={this.props.unregReset}
+                            isShow={this.props.isShow}
                         />
                     </MainContext.Provider>
                 </Fragment>)
@@ -175,7 +177,6 @@ export class Parameter extends PureComponent<IProps, IState> {
             return items
         }
 
-        const text = this.getText()
         const defaultProps = {
             isExporting: this.props.isExporting,
             isParentExport: this.props.isParentExport,
@@ -184,7 +185,8 @@ export class Parameter extends PureComponent<IProps, IState> {
             getDefaultValue: this.getDefaultValue,
             setValue: this.setValue,
             regReset: this.props.regReset,
-            unregReset: this.props.unregReset
+            unregReset: this.props.unregReset,
+            isShow: this.props.isShow ?? true
         }
         let item = (
             <Input
@@ -209,20 +211,13 @@ export class Parameter extends PureComponent<IProps, IState> {
             )
         }
 
-        return this.includes(this.props.item.text) ? 
+        if (this.props.isShow === false) return item
+
+        return (
             <TableRow>
                 <ParamText>
                     <Typography>
-                    {typeof text === 'string'
-                        ? text
-                        : <>
-                            {text.first}
-                            <span style={{ color: 'red' }}>
-                                {text.second}
-                            </span>
-                            {text.last}
-                            </>
-                    }
+                        {this.props.item.text}
                     </Typography>
                 </ParamText>
                 <ParamValue>{item}</ParamValue>
@@ -235,7 +230,7 @@ export class Parameter extends PureComponent<IProps, IState> {
                     </TableCell>
                 : null}
             </TableRow>
-        : null
+        )
     }
 
     private toggleExporting = () => {
@@ -246,33 +241,15 @@ export class Parameter extends PureComponent<IProps, IState> {
         }
     }
 
-    private getText = () => {
-        const { filter } = this.context
-        const text = this.props.item.text
-        if (!filter) {
-            return text
-        }
-
-        const firstIndex = text.toLowerCase().indexOf(filter.toLowerCase())
-        const lastIndex = firstIndex + filter.length
-        return {
-            first: text.slice(0, firstIndex),
-            second: text.slice(firstIndex, lastIndex),
-            last: text.slice(lastIndex, text.length)
-        }
-    }
-
-    private includes = (text: string) => {
-        const { filter } = this.context
-
-        if (!filter) return true
-        return text.toLowerCase().includes(filter)
-    }
-
     private getValue = () => {
-        const { templates } = this.context
+        const { templates, fileDOM } = this.context
 
         let value = this.props.item.value
+        if (fileDOM.querySelector(this.props.item.selector)) {
+            if (fileDOM.querySelector(this.props.item.selector).getAttribute(this.props.item.name)) {
+                value = fileDOM.querySelector(this.props.item.selector).getAttribute(this.props.item.name)
+            }
+        }
         if (!value && value !== 0 && templates) {
             value = this.getFromTemplates()
         }

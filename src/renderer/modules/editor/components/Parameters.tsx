@@ -8,6 +8,7 @@ interface IProps {
     postfix?: string
     regReset?(id: string, func: () => void): void
     unregReset?(id: string): void
+    isShow?: boolean
 }
 
 export class Parameters extends PureComponent<IProps> {
@@ -23,25 +24,20 @@ export class Parameters extends PureComponent<IProps> {
                     isParentExport={true}
                     item={item}
                     regReset={this.props.regReset}
+                    isShow={this.props.isShow}
                 />
                 : null}
-            {item.paramType !== 'group' && this.includes(item.text) ?
+            {item.paramType !== 'group' ?
                 <Parameter
                     isParentExport={true}
                     isExporting={this.props.isExporting}
                     item={item}
                     regReset={this.props.regReset}
+                    isShow={this.props.isShow}
                 />
             : null}
         </Fragment>)
 
         return items
-    }
-
-    private includes(text: string) {
-        const { filter } = this.context
-
-        if (!filter) return true
-        return text.toLowerCase().includes(filter)
     }
 }

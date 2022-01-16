@@ -14,6 +14,22 @@ class WhatsNew extends PureComponent {
 
     render() {
         return (<>
+            <h1 className="title">{t.WHATS_NEW_TITLE} v0.6.7b</h1>
+            <ol className="content">
+                {config.lang === Lang.RU ? <>
+                    <li>Исправлен баг с появлением доп. колеса под машиной если файл сохранялся несколько раз подряд.</li>
+                    <li>Значительно улучшена производительность таблицы.</li>
+                </> : null}
+                {config.lang === Lang.EN ? <>
+                    <li>Fixed a bug with the appearance of an additional wheel under the car if the file was saved several times in a row.</li>
+                    <li>Performance has been significantly improved.</li>
+                </> : null}
+                {config.lang === Lang.DE ? <>
+                    <li>Es wurde ein Fehler behoben, bei dem ein zusätzliches Rad unter der Maschine angezeigt wurde, wenn die Datei mehrmals hintereinander gespeichert wurde.</li>
+                    <li>Die Leistung wurde erheblich verbessert.</li>
+                </> : null}
+            </ol>
+
             <h1 className="title">{t.WHATS_NEW_TITLE} v0.6.7a</h1>
             <ol className="content">
                 {config.lang === Lang.RU ? <>

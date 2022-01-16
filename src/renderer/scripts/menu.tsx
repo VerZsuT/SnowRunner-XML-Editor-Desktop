@@ -8,9 +8,9 @@ import {
     Menu,
     MenuItem,
     Divider,
-    Grid,
     styled
 } from '@mui/material'
+import { GridContainer } from 'modules/components/styled'
 
 const {
     quit, openLink, openPath,
@@ -21,11 +21,12 @@ const {
 } = mainProcess
 const { config, paths } = window.provider
 
-const MenuGrid = styled(Grid)({
+const MenuGrid = styled(GridContainer)({
     position: 'fixed',
     top: 0,
     zIndex: 20,
-    backgroundColor: '#f9f9f9'
+    backgroundColor: '#f9f9f9',
+    justifyContent: 'flex-start'
 })
 
 export class ProgramMenu extends PureComponent {
@@ -34,10 +35,7 @@ export class ProgramMenu extends PureComponent {
         const hasInitial = Boolean(config.initial)
 
         return (
-            <MenuGrid
-                justifyContent='flex-start'
-                container
-            >
+            <MenuGrid>
                 <MenuButton
                     text={t.FILE_MENU_LABEL}
                     items={[

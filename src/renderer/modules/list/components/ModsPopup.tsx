@@ -5,7 +5,6 @@ import {
     Button,
     Checkbox,
     CircularProgress,
-    Container,
     List,
     ListItem,
     ListItemButton,
@@ -13,6 +12,7 @@ import {
     ListItemText
 } from '@mui/material'
 import { Popup } from 'modules/components/Popup'
+import { Container } from 'modules/components/styled'
 
 const { findMods, basename, getModPak } = window.listPreload
 const { config } = window.provider

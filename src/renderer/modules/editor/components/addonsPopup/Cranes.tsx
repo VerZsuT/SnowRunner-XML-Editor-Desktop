@@ -3,23 +3,21 @@ import { t } from 'scripts'
 
 import {
     Button,
-    Box,
     Typography,
-    Grid,
     styled
 } from '@mui/material'
+import { GridContainer } from 'modules/components/styled'
 
 const Warning = styled(Typography)({
     color: 'red'
 })
 
-const Container = styled(Grid)({
+const Container = styled(GridContainer)({
     marginTop: '10px',
-    justifyContent: 'center',
-    width: '100%'
+    justifyContent: 'center'
 })
 
-const ButtonBox = styled(Box)({
+const ButtonBox = styled('div')({
     textAlign: 'center',
     marginLeft: '5px',
     marginRight: '5px'

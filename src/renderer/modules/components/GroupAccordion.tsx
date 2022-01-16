@@ -8,25 +8,23 @@ import {
     Typography,
     Checkbox,
     AccordionSummaryProps,
-    AccordionProps,
     TypographyProps,
     CheckboxProps
 } from '@mui/material'
 import { ArrowForwardIosSharp as ArrowIcon } from '@mui/icons-material'
 import { styled } from '@mui/system'
+import { boxShadow2 } from './styled'
 
 const ArrowForward = styled(ArrowIcon)({
     fontSize: '0.9rem'
 })
 
-const Accordion = styled((props: AccordionProps) => 
-    <MuiAccordion sx={{ boxShadow: 2 }} {...props}/>
-)(({ theme }) => ({
-    border: `1px solid ${theme.palette.divider}`,
+const Accordion = styled(MuiAccordion)({
+    boxShadow: boxShadow2,
     '&:before': {
         display: 'none'
     }
-}))
+})
   
 const Summary = styled((props: AccordionSummaryProps) =>
     <MuiAccordionSummary
@@ -84,6 +82,8 @@ interface IProps {
     onChangeExport?(): void
     onContextMenu?(e: MouseEvent<HTMLDivElement>): void
     id: string
+    expanded: boolean
+    onChange(expanded: boolean): void
 }
 
 export class GroupAccordion extends PureComponent<IProps> {
@@ -94,8 +94,9 @@ export class GroupAccordion extends PureComponent<IProps> {
         return (
             <Accordion
                 id={this.props.id}
-                {...(this.context.filter !== ''? {expanded: true} : {})}
                 onContextMenu={this.props.onContextMenu ?? (() => {})}
+                expanded={this.props.expanded}
+                onChange={(_, expanded) => this.props.onChange(expanded)}
             >
                 <Summary>
                     <Title>{this.props.title}</Title>

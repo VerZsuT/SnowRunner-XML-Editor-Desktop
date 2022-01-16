@@ -6,9 +6,9 @@ import {
     Select,
     SelectChangeEvent,
     InputLabel,
-    Container,
     styled
 } from '@mui/material'
+import { Container } from './styled'
 
 const { config } = window.provider
 const { reload } = mainProcess

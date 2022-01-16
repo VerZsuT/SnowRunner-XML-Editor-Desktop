@@ -6,11 +6,10 @@ import { MAIN } from 'scripts'
 import {
     Typography,
     LinearProgress as MuiLinearProgress,
-    Grid,
     CircularProgress,
-    Container,
     styled
 } from '@mui/material'
+import { Container, GridContainer } from 'modules/components/styled'
 
 const { ipcRenderer } = window.provider
 
@@ -59,14 +58,14 @@ class Loading extends PureComponent<any, IState> {
                             variant='determinate'
                             value={this.state.percent}
                         />
-                        <Grid container justifyContent='center'>
+                        <GridContainer style={{ justifyContent: 'center' }}>
                             <Typography variant='body2'>
                                 {this.state.loadedCount}/{this.state.allCount}
                             </Typography>
                             <Typography variant='body2' style={{ marginLeft: '10px' }}>
                                 {Math.round(this.state.percent)}%
                             </Typography>
-                        </Grid>
+                        </GridContainer>
                     </>
                     : <CircularProgress style={{ marginTop: '15px' }}/>
                 }

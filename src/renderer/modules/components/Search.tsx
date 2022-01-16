@@ -3,7 +3,6 @@ import { t } from 'scripts'
 
 import {
     InputBase,
-    Box,
     styled
 } from '@mui/material'
 import {
@@ -35,7 +34,7 @@ const StyledInputBase = styled(InputBase)({
     }
 })
 
-const SearchContainer = styled(Box)({
+const SearchContainer = styled('div')({
     position: 'absolute',
     top: 0,
     right: '10px',

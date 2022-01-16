@@ -1,5 +1,5 @@
 import { app } from 'electron'
-import { copyFileSync, existsSync, mkdirSync, unlinkSync } from 'fs'
+import { copyFileSync, existsSync, mkdirSync, rmSync } from 'fs'
 import { BuildType } from '../enums'
 import { paths } from '../service'
 import { Settings } from './Settings'
@@ -27,7 +27,7 @@ export class Backup {
 
         if (existsSync(paths.backupInitial)) {
             try {
-                unlinkSync(paths.backupInitial)
+                rmSync(paths.backupInitial)
             } catch {
                 throw new Error('DELETE_OLD_INITIAL_BACKUP_ERROR')
             }
@@ -60,7 +60,7 @@ export class Backup {
         }
         if (existsSync(this.config.initial)) {
             try {
-                unlinkSync(this.config.initial)
+                rmSync(this.config.initial)
             } catch {
                 Dialog.alert({
                     type: 'warning',

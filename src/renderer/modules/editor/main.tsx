@@ -1,7 +1,6 @@
 import { PureComponent } from 'react'
 import { render } from 'react-dom'
 import { getIngameText, MAIN, mainProcess, prettify, setHotKey, t } from 'scripts'
-import { Search } from '../components/Search'
 import { Parameters } from './components/Parameters'
 import { AddonsPopup } from './components/addonsPopup/AddonsPopup'
 import { IMainContext, MainContext } from './MainContext'
@@ -12,14 +11,12 @@ import 'styles/editor/main'
 
 import {
     AlertColor,
-    Container,
     IconButton,
     Menu,
     MenuItem,
     Tooltip,
     Typography,
-    styled,
-    ContainerProps
+    styled
 } from '@mui/material'
 import {
     ArrowBack as ArrowBackIcon,
@@ -29,14 +26,13 @@ import {
 import { ErrorHandler } from 'modules/components/ErrorHandler'
 import { Alert } from 'modules/components/Alert'
 import { Confirm } from 'modules/components/Confirm'
+import { Container } from 'modules/components/styled'
 
 const { basename, readFile, saveFile } = window.editorPreload
 const { config, local } = window.provider
 const { writeFile, updateFiles, openEPFDialog, openSaveDialog, openList } = mainProcess
 
-const Title = styled((props: ContainerProps) =>
-    <Container sx={{ boxShadow: 2 }} {...props}/>
-)({
+const Title = styled(Container)({
     backgroundColor: '#1c7dca',
     position: 'fixed',
     top: '31px',
@@ -67,7 +63,6 @@ const TasksButton = styled(IconButton)({
 interface IState {
     isExporting: boolean
     isLoading: boolean
-    filter: string
     title: string
     showPopup: boolean
     menuAnchor: Element
@@ -81,6 +76,7 @@ interface IState {
         show?: boolean
         text?: string
         onSuccess?(): void
+        onClose?(): void
     }
 }
 
@@ -126,7 +122,6 @@ class Editor extends PureComponent<any, IState> {
         this.defaults = mainProcess.defaults[basename(this.filePath)] ?? {}
         this.state = {
             isExporting: false,
-            filter: '',
             title: this.mainTitle,
             showPopup: false,
             enableReset: !Boolean(this.currentMod),
@@ -160,7 +155,6 @@ class Editor extends PureComponent<any, IState> {
             templates: this.templates,
             globalTemplates: this.globalTemplates,
             tableItems: this.tableItems,
-            filter: this.state.filter,
             defaults: this.defaults
         }
 
@@ -177,16 +171,12 @@ class Editor extends PureComponent<any, IState> {
             <Confirm
                 open={this.state.confirm.show ?? false}
                 text={this.state.confirm.text ?? ''}
-                onClose={() => this.setState({ confirm: {} })}
+                onClose={this.state.confirm.onClose ?? (() => this.setState({ confirm: {} }))}
                 onSuccess={this.state.confirm.onSuccess ?? (() => {})}
             />
             <Loading open={this.state.isLoading} />
             
             <Title>
-                {/* <Search
-                    value={this.state.filter}
-                    onChange={value => this.setState({ filter: value })}
-                /> */}
                 <Typography variant='h5'>
                     {this.state.title}
                 </Typography>
@@ -343,13 +333,20 @@ class Editor extends PureComponent<any, IState> {
         await new Promise<void>(resolve => {
             setTimeout(() => {
                 const serializer = new XMLSerializer()
+                const parser = new DOMParser()
                 const copyrightText = `<!--\n\tEdited by: SnowRunner XML Editor Desktop\n\tVersion: v${config.version}\n\tAuthor: VerZsuT\n\tSite: https://verzsut.github.io/SnowRunner-XML-Editor-Desktop/\n-->\n`
                 for (const file of this.files) {
-                    file.dom.querySelectorAll('[SXMLE_ID]').forEach(item => {
+                    const dom = parser.parseFromString(serializer.serializeToString(file.dom), 'text/xml')
+                    dom.querySelectorAll('[SXMLE_ID]').forEach(item => {
                         item.removeAttribute('SXMLE_ID')
                     })
+                    dom.querySelectorAll('Wheels > Wheel').forEach(wheel => {
+                        if (!wheel.attributes.length) {
+                            wheel.remove()
+                        }
+                    })
 
-                    const xmlString = `${copyrightText}${serializer.serializeToString(file.dom).replace('<root>', '').replace('</root>', '')}`
+                    const xmlString = `${copyrightText}${serializer.serializeToString(dom).replace('<root>', '').replace('</root>', '')}`
                     writeFile(file.path, xmlString)
                 }
 
@@ -466,12 +463,13 @@ class Editor extends PureComponent<any, IState> {
         openList()
     }
 
-    private confirm(text: string, onSuccess: () => void) {
+    private confirm(text: string, onSuccess: () => void, onClose?: () => void) {
         this.setState({
             confirm: {
                 show: true,
                 text,
-                onSuccess
+                onSuccess,
+                onClose
             }
         })
     }

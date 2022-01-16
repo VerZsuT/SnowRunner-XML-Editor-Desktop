@@ -9,20 +9,15 @@ import 'styles/setup/main'
 import { Confirm } from '../components/Confirm'
 import { ErrorHandler } from '../components/ErrorHandler'
 
-import {
-    Typography,
-    Container,
-    ContainerProps,
-    styled
-} from '@mui/material'
+import { Typography, styled } from '@mui/material'
+import { boxShadow2, Container } from 'modules/components/styled'
 
 const { importConfig } = mainProcess
 const { existsSync, join, readFileSync } = window.setupPreload
 const { paths, texts } = window.provider
 
-const Title = styled((props: ContainerProps) =>
-    <Container sx={{ boxShadow: 2 }} {...props} />
-)({
+const Title = styled(Container)({
+    boxShadow: boxShadow2,
     backgroundColor: '#1c7dca',
     marginTop: '31px',
     marginBottom: '8px',

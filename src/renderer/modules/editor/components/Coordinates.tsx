@@ -3,13 +3,12 @@ import { IMainContext, MainContext } from '../MainContext'
 import { ResetMenu } from './ResetMenu'
 
 import {
-    Grid,
     TextField as MuiTextField,
     Typography,
-    styled,
     TextFieldProps,
-    TextField
+    styled
 } from '@mui/material'
+import { GridContainer } from 'modules/components/styled'
 
 const { basename } = window.editorPreload
 
@@ -33,6 +32,7 @@ interface IProps {
     setValue(selector: string, attName: string, value: string): void
     regReset?(id: string, func: () => void): void
     unregReset?(id: string): void
+    isShow?: boolean
 }
 
 interface IState {
@@ -73,6 +73,8 @@ export class Coordinates extends PureComponent<IProps, IState> {
     }
 
     render() {
+        if (this.props.isShow === false) return null
+        
         return (<>
             <ResetMenu
                 show={this.state.menu.show ?? false}
@@ -82,12 +84,13 @@ export class Coordinates extends PureComponent<IProps, IState> {
                 y={this.state.menu.y ?? 0}
                 text={this.props.item.text}
             />
-            <Grid
-                container
+            <GridContainer
+                style={{
+                    justifyContent: 'center',
+                    alignItems: 'center'
+                }}
                 id={this.componentID}
                 onContextMenu={this.onContextMenu}
-                justifyContent='center'
-                alignItems='center'
             >
                 <Typography>X: </Typography>
                 <CoordinateField
@@ -116,7 +119,7 @@ export class Coordinates extends PureComponent<IProps, IState> {
                     onBlur={e => this.save({ z: Number(e.target.value) })}
                     onChange={e => this.setState({ z: e.target.value })}
                 />
-            </Grid>
+            </GridContainer>
         </>)
     }
 

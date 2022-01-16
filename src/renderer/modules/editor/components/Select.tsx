@@ -20,6 +20,7 @@ interface IProps {
     setValue(selector: string, attName: string, value: string): void
     regReset?(id: string, func: () => void): void
     unregReset?(id: string): void
+    isShow?: boolean
 }
 
 interface IState {
@@ -68,6 +69,8 @@ export class Select extends PureComponent<IProps, IState> {
     }
 
     render() {
+        if (this.props.isShow === false) return null
+
         return (<>
             <ResetMenu
                 show={this.state.menu.show ?? false}

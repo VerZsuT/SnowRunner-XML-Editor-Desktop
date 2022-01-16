@@ -6,21 +6,21 @@ import {
     IconButton as MuiIconButton,
     FormControlLabel,
     Checkbox,
-    Container as MuiContainer,
     styled
 } from '@mui/material'
 import {
     FileOpen as FileOpenIcon,
     FolderOpen as FolderOpenIcon
 } from '@mui/icons-material'
+import { Container } from './styled'
 
 const { config } = window.provider
 
-const TopContainer = styled(MuiContainer)({
+const TopContainer = styled(Container)({
     marginTop: '15px'
 })
 
-const BottomContainer = styled(MuiContainer)({
+const BottomContainer = styled(Container)({
     marginBottom: '15px'
 })
 

@@ -9,7 +9,6 @@ import { ProgramMenu } from 'menu'
 import 'styles/list/main'
 
 import {
-    Container,
     Typography,
     Tooltip,
     IconButton,
@@ -17,7 +16,6 @@ import {
     Tab as MuiTab,
     Backdrop,
     CircularProgress,
-    ContainerProps,
     TabProps,
     styled
 } from '@mui/material'
@@ -26,15 +24,15 @@ import {
     StarRounded
 } from '@mui/icons-material'
 import { ErrorHandler } from '../components/ErrorHandler'
+import { boxShadow2, Container } from 'modules/components/styled'
 
 const { getList } = window.listPreload
 const { config, local } = window.provider
 const { readFile, openCategories } = mainProcess
 
-const Title = styled((props: ContainerProps) =>
-    <Container sx={{ boxShadow: 2 }} {...props} />
-)({
+const Title = styled(Container)({
     position: 'fixed',
+    boxShadow: boxShadow2,
     backgroundColor: '#1c7dca',
     top: '31px',
     color: '#fafafa',
@@ -43,10 +41,9 @@ const Title = styled((props: ContainerProps) =>
     zIndex: 20
 })
 
-const TabsContainer = styled((props: ContainerProps) => 
-    <Container sx={{ boxShadow: 2 }} {...props} />
-)({
+const TabsContainer = styled(Container)({
     position: 'fixed',
+    boxShadow: boxShadow2,
     top: '78px',
     zIndex: 20,
     backgroundColor: 'white',

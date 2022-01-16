@@ -5,12 +5,12 @@ import { MAIN, mainProcess, t } from 'scripts'
 
 import {
     Button as MuiButton,
-    Grid,
     Typography,
     ButtonProps,
     TypographyProps,
     styled
 } from '@mui/material'
+import { GridContainer } from 'modules/components/styled'
 
 const { config, ipcRenderer } = window.provider
 const { update } = mainProcess
@@ -21,10 +21,9 @@ const VersionTitle = styled((props: TypographyProps) =>
     marginTop: '20px'
 })
 
-const ButtonsGrid = styled(Grid)({
+const ButtonsGrid = styled(GridContainer)({
     position: 'absolute',
     bottom: '20px',
-    width: '100%',
     justifyContent: 'center'
 })
 

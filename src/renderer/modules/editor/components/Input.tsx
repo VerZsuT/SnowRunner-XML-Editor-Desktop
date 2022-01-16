@@ -28,6 +28,7 @@ interface IProps {
     setValue(selector: string, attName: string, value: string): void
     regReset?(id: string, func: () => void): void
     unregReset?(id: string): void
+    isShow?: boolean
 }
 
 interface IState {
@@ -79,6 +80,8 @@ export class Input extends PureComponent<IProps, IState> {
     }
 
     render() {
+        if (this.props.isShow === false) return null
+        
         const placeholder = this.props.getDefaultValue()
 
         return (<>

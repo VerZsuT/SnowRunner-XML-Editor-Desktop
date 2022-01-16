@@ -3,7 +3,6 @@ import { getIngameText, mainProcess, t } from 'scripts'
 
 import {
     Button,
-    Container,
     InputLabel as MuiInputLabel,
     MenuItem,
     Select,
@@ -11,6 +10,7 @@ import {
     TextField as MuiTextField,
     styled
 } from '@mui/material'
+import { Container } from 'modules/components/styled'
 
 const { readFile, getAddons, saveFile, existsSync } = window.editorPreload
 const { alertSync } = mainProcess

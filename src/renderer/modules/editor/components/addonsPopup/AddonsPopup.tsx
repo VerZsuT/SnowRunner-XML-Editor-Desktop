@@ -5,10 +5,10 @@ import { AddonContent } from './AddonContent'
 import { Cranes } from './Cranes'
 
 import {
-    Container,
     Tab,
     Tabs
 } from '@mui/material'
+import { Container } from 'modules/components/styled'
 
 enum TabType {
     content,

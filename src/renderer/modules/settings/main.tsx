@@ -7,7 +7,6 @@ import { GameFolder } from 'modules/components/GameFolder'
 import {
     Button,
     Checkbox,
-    Container,
     InputLabel,
     List,
     ListItem as MuiListItem,
@@ -19,6 +18,7 @@ import {
     styled
 } from '@mui/material'
 import { ErrorHandler } from 'modules/components/ErrorHandler'
+import { Container } from 'modules/components/styled'
 
 const { config } = window.provider
 const { saveBackup, reload } = mainProcess

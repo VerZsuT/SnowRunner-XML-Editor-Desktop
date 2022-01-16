@@ -1,26 +1,18 @@
-import { PureComponent, ReactNode } from 'react'
+import { PureComponent } from 'react'
 import { mainProcess, t } from 'scripts'
 import { InnerListItem } from './InnerListItem'
 import { IListContext, ListContext } from '../FilterContext'
 import { ListType, SrcType } from '../enums'
 import { ModsPopup } from './ModsPopup'
 
-import {
-    Grid,
-    Container,
-    Button,
-    GridProps,
-    styled
-} from '@mui/material'
+import { Button, styled } from '@mui/material'
 import { Confirm } from 'modules/components/Confirm'
-import { CommonProps } from '@mui/material/OverridableComponent'
+import { Container, GridContainer } from 'modules/components/styled'
 
 const { reload } = mainProcess
 const { config, local } = window.provider
 
-const ListContainer = styled((props: GridProps & CommonProps & {children: ReactNode}) =>
-    <Grid container {...props}/>
-)({
+const ListContainer = styled(GridContainer)({
     marginTop: '145px',
     justifyContent: 'space-evenly'
 })
@@ -50,6 +42,8 @@ export class InnerList extends PureComponent<IProps, IState> {
     }
 
     render() {
+        if (this.props.opened === false) return null
+        
         const listType = local.get('listType') as ListType
         const items = this.props.items.map(item =>
             <InnerListItem

@@ -12,7 +12,6 @@ export interface IMainContext {
     templates: Element
     globalTemplates: Document
     tableItems: any[]
-    filter: string
     defaults: {
         [selector: string]: {
             [attr: string]: string | number

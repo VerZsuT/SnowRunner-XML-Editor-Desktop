@@ -1,7 +1,8 @@
 import { PureComponent } from 'react'
 import { mainProcess, t } from 'scripts'
 
-import { Button, Container } from '@mui/material'
+import { Button } from '@mui/material'
+import { Container } from 'modules/components/styled'
 
 const { saveBackup } = mainProcess
 const { config } = window.provider

@@ -6,20 +6,13 @@ import { ListType } from 'modules/list/enums'
 import { ProgramMenu } from 'menu'
 import 'styles/categories/main'
 
-import {
-    Grid as MuiGrid,
-    GridProps,
-    styled
-} from '@mui/material'
+import { styled } from '@mui/system'
+import { GridContainer } from 'modules/components/styled'
 
 const { openConsole, quit } = mainProcess
 
-const Grid = styled((props: GridProps) =>
-    <MuiGrid
-        container
-        justifyContent='space-evenly'
-    {...props}/>
-)({
+const Grid = styled(GridContainer)({
+    justifyContent: 'space-evenly',
     marginTop: '31px'
 })
 
