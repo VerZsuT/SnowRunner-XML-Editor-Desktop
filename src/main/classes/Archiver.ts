@@ -1,4 +1,4 @@
-import { execSync, exec } from 'child_process'
+import { execFileSync, execFile } from 'child_process'
 import { existsSync, mkdirSync, rmSync } from 'fs'
 import { join, basename } from 'path'
 import { paths } from '../service'
@@ -18,12 +18,10 @@ export class Archiver {
      */
     static update = (source: string, direction: string) => {
         const fileName = basename(direction, '.pak')
-
-        execSync(`WinRAR f -ibck -inul "${direction}" "${source}\\" -r -ep1`, {
-            cwd: paths.winrar_x32,
-            windowsHide: true
+        execFileSync('WinRAR.exe', ['f', '-ibck', '-inul', direction, `${source}\\`, '-r', '-ep1'], {
+            cwd: paths.winrar_x32
         })
-
+        
         if (fileName === 'initial') {
             this.config.sizes.initial = Hasher.getSize(direction)
         } else {
@@ -42,9 +40,8 @@ export class Archiver {
             force: true
         })
         await new Promise(resolve => {
-            exec(`WinRAR x -ibck -inul "${source}" @${fromMod ? 'unpack-mod-list.lst' : 'unpack-list.lst'} "${direction}\\"`, {
-                cwd: paths.winrar_x32,
-                windowsHide: true
+            execFile('WinRAR.exe', ['x', '-ibck', '-inul', source, `@${fromMod ? 'unpack-mod-list.lst' : 'unpack-list.lst'}`, `${direction}\\`], {
+                cwd: paths.winrar_x32
             }).once('close', resolve)
         })
     }
@@ -55,9 +52,8 @@ export class Archiver {
             force: true
         })
         try {
-            execSync(`WinRAR x -ibck -inul "${source}" @${fromMod ? 'unpack-mod-list.lst' : 'unpack-list.lst'} "${direction}\\"`, {
+            execFileSync('WinRAR.exe', ['x', 'ibck', '-inul', source, `@${fromMod ? 'unpack-mod-list.lst' : 'unpack-list.lst'}`, `${direction}\\`], {
                 cwd: paths.winrar_x32,
-                windowsHide: true
             })
         } catch { }
     }
