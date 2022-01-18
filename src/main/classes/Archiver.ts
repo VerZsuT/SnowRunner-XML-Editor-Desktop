@@ -18,7 +18,7 @@ export class Archiver {
      */
     static update = (source: string, direction: string) => {
         const fileName = basename(direction, '.pak')
-        execFileSync('WinRAR.exe', ['f', '-ibck', '-inul', direction, `${source}\\`, '-r', '-ep1'], {
+        execFileSync('WinRAR.exe', ['f', '-ibck', '-inul', direction, source+'\\', '-r', '-ep1'], {
             cwd: paths.winrar_x32
         })
         
@@ -40,7 +40,7 @@ export class Archiver {
             force: true
         })
         await new Promise(resolve => {
-            execFile('WinRAR.exe', ['x', '-ibck', '-inul', source, `@${fromMod ? 'unpack-mod-list.lst' : 'unpack-list.lst'}`, `${direction}\\`], {
+            execFile('WinRAR.exe', ['x', '-ibck', '-inul', source, `@${fromMod ? 'unpack-mod-list.lst' : 'unpack-list.lst'}`, direction+'\\'], {
                 cwd: paths.winrar_x32
             }).once('close', resolve)
         })
@@ -52,10 +52,10 @@ export class Archiver {
             force: true
         })
         try {
-            execFileSync('WinRAR.exe', ['x', 'ibck', '-inul', source, `@${fromMod ? 'unpack-mod-list.lst' : 'unpack-list.lst'}`, `${direction}\\`], {
-                cwd: paths.winrar_x32,
+            execFileSync('WinRAR.exe', ['x', '-ibck', '-inul', source, `@${fromMod ? 'unpack-mod-list.lst' : 'unpack-list.lst'}`, direction+'\\'], {
+                cwd: paths.winrar_x32
             })
-        } catch { }
+        } catch {}
     }
 
     /**

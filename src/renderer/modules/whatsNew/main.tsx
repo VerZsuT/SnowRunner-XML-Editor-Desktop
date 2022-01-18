@@ -14,6 +14,19 @@ class WhatsNew extends PureComponent {
 
     render() {
         return (<>
+            <h1 className="title">{t.WHATS_NEW_TITLE} v0.6.7c</h1>
+            <ol className="content">
+                {config.lang === Lang.RU ? <>
+                    <li>Исправлена работа модификаций.</li>
+                </> : null}
+                {config.lang === Lang.EN ? <>
+                    <li>Fixed finding modifications.</li>
+                </> : null}
+                {config.lang === Lang.DE ? <>
+                    <li>Das Finden von Änderungen wurde korrigiert.</li>
+                </> : null}
+            </ol>
+
             <h1 className="title">{t.WHATS_NEW_TITLE} v0.6.7b</h1>
             <ol className="content">
                 {config.lang === Lang.RU ? <>
