@@ -10,10 +10,11 @@ interface IConsolePreload {
         name: string
     }
     join(...args: string[]): string
+    basename(path: string, ext?: string): string
 }
 
 interface ACKeys {
-    [cmd: string]: null | AutoCompleteKeys
+    [cmd: string]: null | ACKeys
 }
 
 interface ACPresets {

@@ -29,5 +29,10 @@
 	"BY_DEFAULT": "Default",
 	"BACK_BUTTON": "zurück",
 	"CRANES_NOT_SUPPORT": "Bei diesem Auto wird das Wechseln von Wasserhähnen nicht unterstützt",
-	"SUCCESS_RESET": "Parameter wurden zurückgesetzt"
+	"SUCCESS_RESET": "Parameter wurden zurückgesetzt",
+	"TRAILERS_ADDONS_POPUP_TAB": "Anhänger",
+	"SCOUT_TRAILERS": "Scout-Anhänger",
+	"TRUCK_TRAILERS": "Herkömmliche Anhänger",
+	"TRAILERS_NOT_SUPPORT": "Das Wechseln der Anhängerkupplung wird bei diesem Fahrzeug nicht unterstützt.",
+	"DIALOG_ENTER": "Eingang"
 }

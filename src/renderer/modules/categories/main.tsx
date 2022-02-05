@@ -4,7 +4,7 @@ import { setHotKey, mainProcess, MAIN } from 'scripts'
 import { Category } from './components/Category'
 import { ListType } from 'modules/list/enums'
 import { ProgramMenu } from 'menu'
-import 'styles/categories/main'
+import 'styles/categories'
 
 import { styled } from '@mui/system'
 import { GridContainer } from 'modules/components/styled'

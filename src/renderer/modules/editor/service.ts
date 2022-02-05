@@ -1,6 +1,6 @@
 import { get, mainProcess, t } from 'scripts'
 
-const { join } = window.editorPreload
+const { join, basename } = window.editorPreload
 const { paths } = window.provider
 const { readFile, templates: mainTemplates, getParams } = mainProcess
 
@@ -41,15 +41,15 @@ export function getDOM(filePath: string): [Document, ITemplateParams] {
     const tempDOM = $dom
     const templates = mainTemplates
     let name: string
-    for (let tmp in templates) {
-        let selector = `root > ${templates[tmp].selector}`
-        if (tempDOM.querySelector(selector)) {
+    for (const tmp in templates) {
+        const selector = `root > ${templates[tmp].selector}`
+        if (selector && tempDOM.querySelector(selector)) {
             name = tmp
             break
         }
     }
     const domString = serializer.serializeToString(tempDOM)
-    const result = getParams(domString, name)
+    const result = getParams(domString, name, basename(filePath, '.xml'))
 
     return [parser.parseFromString(result.dom, 'application/xml'), result.params]
 }

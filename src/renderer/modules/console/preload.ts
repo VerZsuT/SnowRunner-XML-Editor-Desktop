@@ -35,6 +35,7 @@ class ConsolePreload implements IConsolePreload {
     existsSync = existsSync
     join = join
     readFileSync = readFileSync
+    basename = basename
 }
 
 window.consolePreload = new ConsolePreload()

@@ -3,21 +3,13 @@ import { mainProcess } from './mainProcess'
 import { t } from 'scripts'
 import { BuildType } from './enums'
 
-import {
-    Button,
-    Menu,
-    MenuItem,
-    Divider,
-    styled
-} from '@mui/material'
+import { Button, Menu, MenuItem, Divider, styled } from '@mui/material'
 import { GridContainer } from 'modules/components/styled'
 
 const {
-    quit, openLink, openPath,
-    resetConfig, recoverFromBackup, copyBackup,
-    joinEPF, seeEPF, runUninstall, importConfig,
-    exportConfig, toggleDevTools, openSettings,
-    openWhatsNew
+    quit, openLink, openPath, resetConfig, recoverFromBackup, copyBackup,
+    joinEPF, seeEPF, runUninstall, importConfig, exportConfig, toggleDevTools,
+    openSettings, openWhatsNew
 } = mainProcess
 const { config, paths } = window.provider
 
@@ -97,12 +89,12 @@ export class ProgramMenu extends PureComponent {
                         },
                         {
                             text: t.IMPORT_MENU_ITEM_LABEL,
-                            onClick: importConfig
+                            onClick: () => importConfig(false)
                         },
                         {
                             text: t.EXPORT_MENU_ITEM_LABEL,
                             show: hasInitial,
-                            onClick: exportConfig
+                            onClick: () => exportConfig(false)
                         },
                         {
                             text: t.RESET_MENU_ITEM_LABEL,

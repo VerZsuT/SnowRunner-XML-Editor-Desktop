@@ -1,4 +1,6 @@
 import { MessageType } from './enums'
+import { Typography } from '@mui/material'
+import { Fragment } from 'react'
 
 /** Агрумент любого содержания (кроме пустого) */
 export const ANY = 'ANY_ARGUMENT'
@@ -19,25 +21,26 @@ interface ArgsCheckObj {
 export class Message {
     /** Сообщение в стиле лога. */
     static log(text: string) {
-        return this.message(text)
+        return this.create(text)
     }
 
     /** Сообщение в стиле предупреждения. */
     static warn(text: string) {
-        return this.message(text, MessageType.warn)
+        return this.create(text, MessageType.warn)
     }
 
     /** Сообщение в стиле ошибки. */
     static error(text: string) {
-        return this.message(text, MessageType.error)
+        return this.create(text, MessageType.error)
     }
 
     /** Сообщение в стиле информации. */
     static info(text: string) {
-        return this.message(text, MessageType.info)
+        return this.create(text, MessageType.info)
     }
 
-    private static message(text: string, type?: MessageType) {
+    static create(text: string, type?: MessageType) {
+        const items = text.split('\n')
         let color = 'white'
         switch (type) {
             case MessageType.warn:
@@ -51,7 +54,15 @@ export class Message {
                 break
         }
 
-        return <p style={{ color }}>&gt; {text}</p>
+        return <Typography style={{color}}>
+            #&nbsp;
+            {items.map((item, key) => <Fragment key={key}>
+                <Typography component='span' style={{wordBreak: 'break-all'}}>
+                    {item}
+                </Typography>
+                <br />
+            </Fragment>)}
+        </Typography>
     }
 }
 
@@ -134,9 +145,13 @@ export const help = {
     devTools: '- devTools enable|disable \nВключает/выключает devTools на всех последующих страницах.',
     sset: '- sset <setting_name> true|false \nУстанавливает значение настройки.',
     backup: '- backup save|restore \nСохраняет/восстанавливает бэкап initial.pak',
-    archive: '- archive save|unpack \nСохраняет изменения или распаковывает initial.pak',
+    archive: '- archive saveChanges|unpack \nСохраняет изменения или распаковывает initial.pak',
     lang: '- lang RU|EN|DE \nУстанавливает язык перевода программы.',
     config: '- config import|export \nИмпорт/экспорт конфиг-файла.',
+    whatsNew: '- whatsNew \nОткрывает окно "Что нового".',
+    exportAll: '- exportAll \nЭкспортирует все параметры всех авто и их зависимостей в файл в папке backups.',
+    epf: '- epf see|join \nПозволяет работать с файлами .epf.',
+    exec: '- exec [-force] \nПозволяет использовать систему SXMLE_Execute.\nФлаг -force убирает предупреждения о DLC, модах и версии игры.',
     toString: () => {
         const array = []
         for (const cmdName in help) {

@@ -1,4 +1,4 @@
-const template = './src/renderer/pages/template.html'
+const template = './src/renderer/template.html'
 const provider = './src/renderer/scripts/provider.ts'
 
 /**

@@ -1,7 +1,7 @@
 import { PureComponent } from 'react'
 import { render } from 'react-dom'
 import { t, mainProcess, Lang, MAIN } from 'scripts'
-import 'styles/settings/main'
+import 'styles/settings'
 import { GameFolder } from 'modules/components/GameFolder'
 
 import {

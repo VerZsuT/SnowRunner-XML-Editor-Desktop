@@ -3,16 +3,15 @@ import { PureComponent } from 'react'
 import { t } from 'scripts'
 import { AddonContent } from './AddonContent'
 import { Cranes } from './Cranes'
+import { Trailers } from './Trailers'
 
-import {
-    Tab,
-    Tabs
-} from '@mui/material'
+import { Tab, Tabs } from '@mui/material'
 import { Container } from 'modules/components/styled'
 
 enum TabType {
     content,
     cranes,
+    trailers,
     none
 }
 
@@ -60,18 +59,23 @@ export class AddonsPopup extends PureComponent<IProps, IState> {
                     >
                         <Tab label={t.ADDON_CONTENT}/>
                         <Tab label={t.CRANES}/>
+                        <Tab label={t.TRAILERS_ADDONS_POPUP_TAB}/>
                     </Tabs>
                 </Container>
+
                 <AddonContent
                     fileDOM={this.props.fileDOM}
                     truckName={this.props.truckName}
                     modId={this.props.modId}
                     show={this.state.selectedTab === TabType.content}
                 />
-
                 <Cranes
                     fileDOM={this.props.fileDOM}
                     show={this.state.selectedTab === TabType.cranes}
+                />
+                <Trailers
+                    fileDOM={this.props.fileDOM}
+                    show={this.state.selectedTab === TabType.trailers}
                 />
             </Popup>
         )

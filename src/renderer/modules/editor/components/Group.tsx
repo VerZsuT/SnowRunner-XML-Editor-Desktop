@@ -20,21 +20,23 @@ const Table = styled(MuiTable)({
 
 interface IProps {
     item: IGroupParams
-    isParentExport: boolean
-    isExporting: boolean
     regReset?(id: string, func: () => void): void
     unregReset?(id: string): void
-    isShow?: boolean
+    toggle(expand: boolean): void
+    isParentExport: boolean
+    isExporting: boolean
+    isShow: boolean
+    isOpen: boolean
 }
 
 interface IState {
     isExport: boolean
-    expanded: boolean
     menu: {
         show?: boolean
         x?: number
         y?: number
     }
+    openedGroup: number
 }
 
 export class Group extends PureComponent<IProps, IState> {
@@ -60,7 +62,7 @@ export class Group extends PureComponent<IProps, IState> {
         this.state = {
             isExport: props.isParentExport,
             menu: {},
-            expanded: false
+            openedGroup: null
         }
         this.toReset = {}
         this.items = this.getItems()
@@ -88,37 +90,39 @@ export class Group extends PureComponent<IProps, IState> {
                 regReset={this.regReset}
                 key={`${param.name}-${index}`}
                 unregReset={this.unregReset}
-                isShow={this.state.expanded}
+                isShow={this.props.isOpen}
             />
         )
         const filesParams = this.items.params.files.map((param, index) =>
             <Parameter
-                isParentExport={this.state.isExport && this.props.isParentExport}
-                isExporting={this.props.isExporting}
                 item={param}
                 key={`${param.name}-${index}`}
                 regReset={this.regReset}
                 unregReset={this.unregReset}
-                isShow={this.state.expanded}
+                isParentExport={this.state.isExport && this.props.isParentExport}
+                isExporting={this.props.isExporting}
+                isShow={this.props.isOpen}
             />
         )
         const groups = this.items.groups.map((groupItem, index) =>
             <Group
-                isParentExport={this.state.isExport && this.props.isParentExport}
-                isExporting={this.props.isExporting}
                 item={groupItem}
                 key={`${groupItem.groupName}-${index}`}
                 regReset={this.regReset}
                 unregReset={this.unregReset}
-                isShow={this.state.expanded}
+                isParentExport={this.state.isExport && this.props.isParentExport}
+                isExporting={this.props.isExporting}
+                isShow={this.props.isOpen}
+                isOpen={this.state.openedGroup === index}
+                toggle={(expand: boolean) => this.setState({ openedGroup: expand? index : null })}
             />
         )
 
-        if (this.props.isShow === false) return <>
+        if (this.props.isShow === false) return <div style={{height: '47px'}}>
             {defaultParams}
             {filesParams}
             {groups}
-        </>
+        </div>
 
         return <>
             <ResetMenu
@@ -137,8 +141,8 @@ export class Group extends PureComponent<IProps, IState> {
                 isExport={this.state.isExport && this.props.isParentExport}
                 onChangeExport={this.toggleExporting}
                 onContextMenu={this.showContextMenu}
-                expanded={this.state.expanded}
-                onChange={expanded => this.setState({ expanded })}
+                onChange={this.props.toggle}
+                expanded={this.props.isOpen}
             >
                 {defaultParams.length ?
                     <Table>

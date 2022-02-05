@@ -231,6 +231,13 @@ const keys: ACKeys = combine([
         'enable',
         'disable'
     ],
+    exec: [
+        '-force'
+    ],
+    epf: [
+        'see',
+        'join'
+    ],
     config: [
         'import',
         'export'
@@ -241,7 +248,7 @@ const keys: ACKeys = combine([
         'restore'
     ],
     archive: [
-        'save',
+        'saveChanges',
         'unpack'
     ],
     lang: Object.keys(Lang)

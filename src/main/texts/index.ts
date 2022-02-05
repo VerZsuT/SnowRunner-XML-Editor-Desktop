@@ -3,6 +3,11 @@ export { EN } from './EN'
 export { DE } from './DE'
 
 export interface ITexts {
+	DIALOG_ENTER: string
+	TRAILERS_NOT_SUPPORT: string
+	TRUCK_TRAILERS: string
+	SCOUT_TRAILERS: string
+	TRAILERS_ADDONS_POPUP_TAB: string
 	SUCCESS_RESET: string
 	MODS_POPUP_TITLE: string
 	DIALOG_NO: string

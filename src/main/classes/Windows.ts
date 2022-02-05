@@ -72,7 +72,7 @@ export class Windows {
         console: {
             path: CONSOLE_WEBPACK_ENTRY,
             preload: CONSOLE_PRELOAD_WEBPACK_ENTRY,
-            width: 500,
+            width: 700,
             minWidth: 500,
             height: 500,
             minHeight: 500
@@ -108,8 +108,10 @@ export class Windows {
      * @param bridge создать между несколькими окнами редактора `bridge-channel` для передачи данных. 
      */
     static openEditor = async () => {
+        let wind: BrowserWindow
+
         this.isOpening = true
-        const wind = this.createWindow(this.createArgs.editor)
+        wind = this.createWindow(this.createArgs.editor)
         wind.once('show', () => {
             if (this.list && !this.list.isDestroyed()) {
                 this.list.close()
@@ -168,15 +170,15 @@ export class Windows {
      * @param noLock не блокировать другие окна.
      */
     static openLoading = (): DownloadWindow => {
-        this.loading = <DownloadWindow>this.createWindow(this.createArgs.loading)
+        const loading = <DownloadWindow>this.createWindow(this.createArgs.loading)
 
-        this.loading.setText = (text: string) => this.loading.webContents.postMessage('fileName', text)
-        this.loading.setCount = (count: number) => this.loading.webContents.postMessage('count', count)
-        this.loading.setPercent = (percent: string | number) => this.loading.webContents.postMessage('percent', percent)
-        this.loading.success = () => this.loading.webContents.postMessage('success', true)
-        this.loading.download = () => this.loading.webContents.postMessage('download', true)
+        loading.setText = (text: string) => this.loading.webContents.postMessage('fileName', text)
+        loading.setCount = (count: number) => this.loading.webContents.postMessage('count', count)
+        loading.setPercent = (percent: string | number) => this.loading.webContents.postMessage('percent', percent)
+        loading.success = () => this.loading.webContents.postMessage('success', true)
+        loading.download = () => this.loading.webContents.postMessage('download', true)
 
-        return this.loading
+        return this.loading = loading
     }
 
     /** Открывает окно первоначальной настройки. */

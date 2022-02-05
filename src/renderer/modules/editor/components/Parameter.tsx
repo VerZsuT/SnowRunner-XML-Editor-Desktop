@@ -211,7 +211,7 @@ export class Parameter extends PureComponent<IProps, IState> {
             )
         }
 
-        if (this.props.isShow === false) return item
+        if (this.props.isShow === false) return <div style={{height: '60px'}}>{item}</div>
 
         return (
             <TableRow>

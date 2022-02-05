@@ -14,7 +14,9 @@ const { config, local } = window.provider
 
 const ListContainer = styled(GridContainer)({
     marginTop: '145px',
-    justifyContent: 'space-evenly'
+    justifyContent: 'space-evenly',
+    overflow: 'auto',
+    height: 'calc(100vh - 145px)'
 })
 
 interface IProps {
@@ -32,6 +34,8 @@ export class InnerList extends PureComponent<IProps, IState> {
     static contextType = ListContext
     declare context: IListContext
 
+    private id: string
+
     constructor(props: IProps) {
         super(props)
 
@@ -39,6 +43,7 @@ export class InnerList extends PureComponent<IProps, IState> {
             showModsPopup: false,
             showConfirm: false
         }
+        this.id = `list-${props.srcType}`
     }
 
     render() {
@@ -50,6 +55,7 @@ export class InnerList extends PureComponent<IProps, IState> {
                 item={item}
                 type={listType}
                 key={item.path}
+                listId={this.id}
             />
         )
 
@@ -58,6 +64,7 @@ export class InnerList extends PureComponent<IProps, IState> {
 
         return (<>
             <ListContainer
+                id={this.id}
                 style={{
                     display: this.props.opened ? 'flex' : 'none'
                 }}

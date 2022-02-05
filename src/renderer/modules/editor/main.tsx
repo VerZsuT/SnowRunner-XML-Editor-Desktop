@@ -7,7 +7,7 @@ import { IMainContext, MainContext } from './MainContext'
 import { getDOM, getGlobalTemplates } from './service'
 import { Loading } from '../components/Loading'
 import { ProgramMenu } from 'menu'
-import 'styles/editor/main'
+import 'styles/editor'
 
 import {
     AlertColor,

@@ -29,5 +29,10 @@
 	"BY_DEFAULT": "По умолчанию",
 	"BACK_BUTTON": "Назад",
 	"CRANES_NOT_SUPPORT": "На данном авто изменение кранов не поддерживается",
-	"SUCCESS_RESET": "Параметры были сброшены"
+	"SUCCESS_RESET": "Параметры были сброшены",
+	"TRAILERS_ADDONS_POPUP_TAB": "Прицепы",
+	"SCOUT_TRAILERS": "Прицепы для скаута",
+	"TRUCK_TRAILERS": "Обычные прицепы",
+	"TRAILERS_NOT_SUPPORT": "Изменение фаркопа не поддерживается на данном авто.",
+	"DIALOG_ENTER": "Ввод"
 }

@@ -1,10 +1,13 @@
 import { PureComponent, Fragment } from 'react'
 import { render } from 'react-dom'
-import 'styles/console/main'
+import 'styles/console'
 
 import { Lang, MAIN, mainProcess, ParamType } from 'scripts'
 import { ANY, OPTIONAL, addCheck, help, Message } from './service'
 import { EditorConsole } from './components/EditorConsole'
+import { Executor } from 'scripts/exec/exec'
+import { Confirm } from 'modules/components/Confirm'
+import { Prompt } from 'modules/components/Prompt'
 
 const { config, paths } = window.provider
 const {
@@ -13,15 +16,32 @@ const {
     recoverFromBackup, checkUpdate, updateFiles,
     unpackFiles, importConfig, exportConfig,
     openWhatsNew, findInDir, templates: mainTemplates,
-    getParams
+    getParams, seeEPF, joinEPF
 } = mainProcess
 const {
     readFileSync, replacePars, existsSync,
-    writeFileSync, getModPak, removeDir, join
+    writeFileSync, getModPak, removeDir, join,
+    basename
 } = window.consolePreload
 
 interface IState {
     messages: JSX.Element[]
+    confirm: {
+        open?: boolean
+        text?: string
+        onSuccess?: ()=>void
+        onClose?: ()=>void
+    }
+    prompt: {
+        open?: boolean
+        text?: string
+        default?: string
+        type?: string
+        min?: string
+        max?: string
+        onSuccess?: (value: string)=>void
+        onClose?: ()=>void
+    }
 }
 
 class Console extends PureComponent<any, IState> {
@@ -37,19 +57,39 @@ class Console extends PureComponent<any, IState> {
         this.state = {
             messages: [
                 <Fragment key='0'>
-                    {Message.info("Командная строка v1.0.\n- Введите 'help' для вывода списка команд.\n- Стрелки на клавиатуре для переключения предложенного варианта.\n- TAB для выбора варианта.\n- Сообщения можно скролить.")}
+                    {Message.info("Командная строка v1.1.")}
                 </Fragment>
-            ]
+            ],
+            confirm: {},
+            prompt: {}
         }
         this.listeners = this.getListeners()
     }
 
     render() {
         return (<>
-            <div id='messages'>
+            <div id='messages'
+                onClick={() => (document.querySelector('#input') as HTMLInputElement).focus()}
+            >
                 {this.state.messages}
             </div>
             <EditorConsole onError={this.pushMessage} listeners={this.listeners} />
+            <Confirm
+                open={this.state.confirm.open ?? false}
+                text={this.state.confirm.text ?? ''}
+                onClose={this.state.confirm.onClose?? (()=>{})}
+                onSuccess={this.state.confirm.onSuccess?? (()=>{})}
+            />
+            <Prompt
+                open={this.state.prompt.open ?? false}
+                text={this.state.prompt.text ?? ''}
+                onClose={this.state.prompt.onClose?? (()=>{})}
+                onSuccess={this.state.prompt.onSuccess?? (()=>{})}
+                default={this.state.prompt.default?? ''}
+                type={this.state.prompt.type?? 'text'}
+                min={this.state.prompt.min}
+                max={this.state.prompt.max}
+            />
         </>)
     }
 
@@ -57,7 +97,7 @@ class Console extends PureComponent<any, IState> {
         this.setState({
             messages: [...this.state.messages, <Fragment key={this.state.messages.length}>{message}</Fragment>]
         })
-        document.querySelector('html').scrollTop = 10000000
+        document.querySelector('#messages').scrollTop = 10000000
     }
 
     private getListeners() {
@@ -130,6 +170,7 @@ class Console extends PureComponent<any, IState> {
                 writeFileSync(join(paths.backupFolder, 'exported.json'), JSON.stringify(exported, null, '\t'))
                 Message.log('Все параметры были экпортированы в backups/exported.json')
             }),
+
             'devTools': addCheck(args => {
                 const { action } = args
                 if (action === 'enable') {
@@ -142,9 +183,23 @@ class Console extends PureComponent<any, IState> {
             }, {
                 action: ['enable', 'disable'] as unknown as 'enable' | 'disable'
             }),
+
+            'epf': addCheck(args => {
+                const { action } = args
+
+                if (action === 'see') {
+                    seeEPF()
+                } else {
+                    joinEPF()
+                }
+            }, {
+                action: ['see', 'join'] as unknown as 'see' | 'join'
+            }),
+
             'version': addCheck(() => {
                 this.pushMessage(Message.log(`Текущая версия программы: ${config.version}.`))
             }),
+
             'sset': addCheck(args => {
                 const { name, value } = args
 
@@ -156,6 +211,7 @@ class Console extends PureComponent<any, IState> {
                 name: Object.keys(config.settings) as unknown as keyof typeof config.settings,
                 value: ['true', 'false'] as unknown as 'true' | 'false'
             }),
+
             'lang': addCheck(args => {
                 const { lang } = args
 
@@ -164,6 +220,7 @@ class Console extends PureComponent<any, IState> {
             }, {
                 lang: Object.keys(Lang) as unknown as Lang
             }),
+
             'read': addCheck(() => {
                 const path = openXMLDialog()
                 const parser = new DOMParser()
@@ -183,6 +240,7 @@ class Console extends PureComponent<any, IState> {
                 this.fileDOM = fileDOM
                 this.filePath = path
             }),
+
             'set': addCheck(args => {
                 let { selector, attrName, value } = args
 
@@ -214,6 +272,7 @@ class Console extends PureComponent<any, IState> {
                 attrName: ANY,
                 value: ANY
             }),
+
             'backup': addCheck(args => {
                 const { action } = args
 
@@ -227,6 +286,7 @@ class Console extends PureComponent<any, IState> {
             }, {
                 action: ['save', 'restore'] as unknown as 'save' | 'restore'
             }),
+
             'addMod': addCheck(() => {
                 const result = getModPak()
                 if (!result) {
@@ -244,11 +304,13 @@ class Console extends PureComponent<any, IState> {
 
                 reload()
             }),
+
             'checkUpdate': addCheck(() => {
                 this.pushMessage(Message.log('Проверка обновления...'))
                 this.pushMessage(Message.log('В случае удачи выведется соответствующее окно.'))
                 checkUpdate()
             }),
+
             'delMod': addCheck(args => {
                 const { modId } = args
 
@@ -260,6 +322,7 @@ class Console extends PureComponent<any, IState> {
             }, {
                 modId: Object.keys(config.mods) as unknown as keyof typeof config.mods
             }),
+
             'help': addCheck(args => {
                 const { cmd } = args
 
@@ -275,10 +338,11 @@ class Console extends PureComponent<any, IState> {
             }, {
                 cmd: [OPTIONAL, cmds] as unknown as cmdsType
             }),
+
             'archive': addCheck(args => {
                 const { action } = args
 
-                if (action === 'save') {
+                if (action === 'saveChanges') {
                     updateFiles()
                     this.pushMessage(Message.log('Изменения в файлах initial.pak сохранены.'))
                 } else {
@@ -286,8 +350,9 @@ class Console extends PureComponent<any, IState> {
                     this.pushMessage(Message.log('initial.pak был распакован.'))
                 }
             }, {
-                action: ['save', 'unpack'] as unknown as 'save' | 'unpack'
+                action: ['saveChanges', 'unpack'] as unknown as 'saveChanges' | 'unpack'
             }),
+
             'config': addCheck(args => {
                 const { action } = args
 
@@ -305,10 +370,70 @@ class Console extends PureComponent<any, IState> {
             }, {
                 action: ['import', 'export'] as unknown as 'import' | 'export'
             }),
+
             'whatsNew': addCheck(() => {
                 openWhatsNew()
+            }),
+
+            'exec': addCheck(args => {
+                const executor = new Executor(this.confirm, this.prompt)
+                const { ignore } = args
+
+                executor.exec(ignore === '-force').then(messages => {
+                    if (messages.length) {
+                        for (const message of messages) {
+                            this.pushMessage(Message.create(message.text, message.type))
+                        }
+                    }
+                }, (error: Error) => {
+                    this.pushMessage(Message.error(`Ошибка: ${error.message}`))
+                })
+            }, {
+                ignore: [OPTIONAL, '-force'] as unknown as '-force'
             })
         }
+    }
+
+    private confirm = (text: string) => {
+        return new Promise<boolean>(resolve => {
+            this.setState({
+                confirm: {
+                    text,
+                    open: true,
+                    onClose: () => {
+                        this.setState({ confirm: {} })
+                        resolve(false)
+                    },
+                    onSuccess: () => {
+                        this.setState({ confirm: {} })
+                        resolve(true)
+                    }
+                }
+            })
+        })
+    }
+
+    private prompt = (text: string, type: string, defaultVal?: string, min?: string, max?: string) => {
+        return new Promise<string>(resolve => {
+            this.setState({
+                prompt: {
+                    text,
+                    default: defaultVal,
+                    open: true,
+                    onSuccess: value => {
+                        this.setState({ prompt: {} })
+                        resolve(value)
+                    },
+                    onClose: () => {
+                        this.setState({ prompt: {} })
+                        resolve(null)
+                    },
+                    type,
+                    min,
+                    max
+                }
+            })
+        })
     }
 }
 
@@ -415,9 +540,9 @@ function getDOM(filePath: string): [Document, ITemplateParams] {
     const tempDOM = $dom
     const templates = mainTemplates
     let name: string
-    for (let tmp in templates) {
-        let selector = `root > ${templates[tmp].selector}`
-        if (tempDOM.querySelector(selector)) {
+    for (const tmp in templates) {
+        const selector = `root > ${templates[tmp].selector}`
+        if (selector && tempDOM.querySelector(selector)) {
             name = tmp
             break
         }
@@ -425,7 +550,7 @@ function getDOM(filePath: string): [Document, ITemplateParams] {
     if (!name) return [undefined, undefined]
 
     const domString = new XMLSerializer().serializeToString(tempDOM)
-    const result = getParams(domString, name)
+    const result = getParams(domString, name, basename(filePath, '.xml'))
 
     return [parser.parseFromString(result.dom, 'text/xml'), result.params]
 }

@@ -74,6 +74,7 @@ export class Archiver {
         mkdirSync(paths.mainTemp)
 
         await this.unpack(this.config.initial, paths.mainTemp)
+        Windows.loading.hide()
         this.config.sizes.initial = Hasher.getSize(this.config.initial)
     }
 

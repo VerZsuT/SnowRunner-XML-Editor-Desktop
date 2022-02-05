@@ -18,15 +18,12 @@ interface IState {
 
 /** Класс консоли программы. */
 export class EditorConsole extends PureComponent<IProps, IState> {
-    private $input: RefObject<HTMLInputElement>
-
     constructor(props: IProps) {
         super(props)
 
         this.state = {
             cmd: ''
         }
-        this.$input = createRef<HTMLInputElement>()
     }
 
     componentDidMount() {
@@ -40,13 +37,11 @@ export class EditorConsole extends PureComponent<IProps, IState> {
                 <AutoComplete cmd={this.state.cmd} onInput={this.onAutoInput} />
                 <span>:/ </span>
                 <input
-                    autoFocus={true}
-                    type='text'
+                    autoFocus
                     id='input'
                     value={this.state.cmd}
                     onInput={this.onInput}
                     placeholder='cmd'
-                    ref={this.$input}
                 />
             </div>
         )
@@ -67,8 +62,8 @@ export class EditorConsole extends PureComponent<IProps, IState> {
             toggleDevTools()
         })
 
-        document.addEventListener('click', () => {
-            this.$input.current.focus()
+        document.querySelector('#messages').addEventListener('click', () => {
+            (document.querySelector('#input') as HTMLInputElement).focus()
         })
     }
 
@@ -88,8 +83,8 @@ export class EditorConsole extends PureComponent<IProps, IState> {
 
             this.setState({
                 cmd: ''
-            })
-            this.$input.current.focus()
+            });
+            (document.querySelector('#input') as HTMLInputElement).focus()
         })
     }
 
@@ -109,6 +104,6 @@ export class EditorConsole extends PureComponent<IProps, IState> {
                 cmd: params[0]
             })
         }
-        this.$input.current.focus()
+        (document.querySelector('#input') as HTMLInputElement).focus()
     }
 }

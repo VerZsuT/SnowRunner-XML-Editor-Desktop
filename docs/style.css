@@ -7,9 +7,8 @@ body {
 
 header {
     text-align: center;
-    background: #2c3c6b;
-    padding: 1px;
-    border-bottom: 1px solid lightgray;
+    background: #1c7dca;
+    padding: 7px 0 1px 0;
 }
 
 a:hover {
@@ -31,7 +30,7 @@ a:active {
 
 .release {
     text-align: center;
-    border: 1px solid gray;
+    border-top: 1px solid #dce1e6;
     background: white;
     padding: 20px;
 }

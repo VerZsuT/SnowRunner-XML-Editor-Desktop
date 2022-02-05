@@ -1,9 +1,9 @@
-@import 'styles/bootstrap/bootstrap.min.css';
 @import 'styles/main';
 
 body {
     margin-top: 10px;
     background-color: white;
+    padding: 0 20px;
 }
 
 .content {
@@ -13,10 +13,7 @@ body {
 .title {
     text-align: center;
     margin-bottom: 20px;
-
-    font: {
-        size: 25px;
-        weight: bold;
-        family: Arial, Helvetica, sans-serif;
-    }
+    font-size: 25px;
+    font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
 }

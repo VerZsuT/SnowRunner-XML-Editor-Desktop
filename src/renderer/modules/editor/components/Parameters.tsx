@@ -11,28 +11,43 @@ interface IProps {
     isShow?: boolean
 }
 
-export class Parameters extends PureComponent<IProps> {
+interface IState {
+    openedGroup: number
+}
+
+export class Parameters extends PureComponent<IProps, IState> {
     static contextType = MainContext
     declare context: IMainContext
+
+    constructor(props: IProps) {
+        super(props)
+        this.state = {
+            openedGroup: null
+        }
+    }
 
     render() {
         const { tableItems } = this.context
         const items = tableItems.map((item, index) => <Fragment key={index}>
             {item.paramType === 'group' && item.groupItems.length ?
                 <Group
-                    isExporting={this.props.isExporting}
-                    isParentExport={true}
                     item={item}
                     regReset={this.props.regReset}
+                    unregReset={this.props.unregReset}
+                    toggle={(expand: boolean) => this.setState({ openedGroup: expand? index : null })}
+                    isExporting={this.props.isExporting}
+                    isParentExport={true}
                     isShow={this.props.isShow}
+                    isOpen={this.state.openedGroup === index}
                 />
                 : null}
             {item.paramType !== 'group' ?
                 <Parameter
-                    isParentExport={true}
-                    isExporting={this.props.isExporting}
                     item={item}
                     regReset={this.props.regReset}
+                    unregReset={this.props.unregReset}
+                    isParentExport={true}
+                    isExporting={this.props.isExporting}
                     isShow={this.props.isShow}
                 />
             : null}

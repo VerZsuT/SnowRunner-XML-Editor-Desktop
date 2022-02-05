@@ -1,6 +1,6 @@
 import { PureComponent } from 'react'
 import { render } from 'react-dom'
-import 'styles/update/main'
+import 'styles/update'
 import { MAIN, mainProcess, t } from 'scripts'
 
 import {

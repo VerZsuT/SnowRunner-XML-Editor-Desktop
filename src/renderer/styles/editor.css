@@ -1,0 +1,14 @@
+@import 'styles/main';
+
+body {
+    background-color: #e7ebf0;
+}
+
+#main > div > .MuiPaper-root {
+    margin-bottom: 2px;
+    border-radius: 4px;
+}
+
+.MuiTable-root {
+    margin-bottom: -7px;
+}

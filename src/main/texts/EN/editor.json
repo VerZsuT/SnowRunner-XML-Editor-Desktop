@@ -29,5 +29,10 @@
 	"BY_DEFAULT": "Default",
 	"BACK_BUTTON": "Back",
 	"CRANES_NOT_SUPPORT": "On this car, changing taps is not supported",
-	"SUCCESS_RESET": "Parameters have been reset"
+	"SUCCESS_RESET": "Parameters have been reset",
+	"TRAILERS_ADDONS_POPUP_TAB": "trailers",
+	"SCOUT_TRAILERS": "Scout trailers",
+	"TRUCK_TRAILERS": "Conventional trailers",
+	"TRAILERS_NOT_SUPPORT": "Changing the towbar is not supported on this car.",
+	"DIALOG_ENTER": "Input"
 }

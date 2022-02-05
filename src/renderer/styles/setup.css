@@ -6,8 +6,6 @@ body {
 }
 
 .title {
-    margin: {
-        top: 31px;
-        bottom: 8px;
-    }
+    margin-top: 31px;
+    margin-bottom: 8px;
 }

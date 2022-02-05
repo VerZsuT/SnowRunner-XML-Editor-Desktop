@@ -3,18 +3,13 @@ import { getIngameText, mainProcess, prettify, t } from 'scripts'
 import { IListContext, ListContext } from '../FilterContext'
 import { ListType } from '../enums'
 
+import { Loading } from 'modules/components/Loading'
+
 import {
-    Menu,
-    MenuItem,
-    Card as MuiCard,
-    CardActionArea,
-    CardMedia,
-    CardContent,
-    Typography,
-    styled
+    Menu, MenuItem, Card as MuiCard, CardActionArea,
+    CardMedia, CardContent, Typography, styled
 } from '@mui/material'
 import { StarRounded as StarRoundedIcon } from '@mui/icons-material'
-import { Loading } from 'modules/components/Loading'
 
 const { exists } = window.listPreload
 const { config, local } = window.provider
@@ -34,6 +29,7 @@ const StarRounded = styled(StarRoundedIcon)({
 interface IProps {
     item: Item
     type: ListType
+    listId: string
 }
 
 interface IState {
@@ -98,7 +94,7 @@ export class InnerListItem extends PureComponent<IProps, IState> {
                                             {text.second}
                                         </span>
                                         {text.last}
-                                    </>
+                                      </>
                                 }
                             </Typography>
                         </CardContent>
@@ -129,12 +125,14 @@ export class InnerListItem extends PureComponent<IProps, IState> {
     }
 
     private openEditor = () => {
-        this.setState({
-            isLoading: true
-        })
         local.set('filePath', this.props.item.path)
         local.set('currentDLC', this.props.item.dlcName)
         local.set('currentMod', this.props.item.modId)
+        local.set('openedList', this.props.listId.replace('list-', ''))
+        local.set('listScroll', String(Math.round(document.querySelector(`#${this.props.listId}`).scrollTop)))
+        this.setState({
+            isLoading: true
+        })
         openEditor()
     }
 

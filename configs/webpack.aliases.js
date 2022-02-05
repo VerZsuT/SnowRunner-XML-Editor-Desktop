@@ -9,7 +9,6 @@ module.exports = {
     'scripts': resolve('../src/renderer/scripts'),
     'templates': resolve('../src/main/templates'),
     'texts': resolve('../src/main/texts'),
-    'bootstrap': resolve('../src/renderer/scripts/bootstrap.js'),
     'styles': resolve('../src/renderer/styles'),
     'images': resolve('../src/images'),
     'modules': resolve('../src/renderer/modules')

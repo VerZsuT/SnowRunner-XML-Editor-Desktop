@@ -9,7 +9,7 @@ for (const $downloadButton of document.querySelectorAll('.download')) {
 
     if (source === 'GitHub') {
         $a.href = `https://github.com/VerZsuT/SnowRunner-XML-Editor-Desktop/releases/download/${version}/SnowRunnerXMLEditor.${(type==='exe')?'exe':'rar'}`
-    } else if (source === 'GoogleDrive') {
+    } else {
         $a.href = $downloadButton.getAttribute('link')
     }
 

@@ -1,6 +1,6 @@
 import { PureComponent } from 'react'
 import { render } from 'react-dom'
-import 'styles/loading/main'
+import 'styles/loading'
 import { MAIN } from 'scripts'
 
 import {

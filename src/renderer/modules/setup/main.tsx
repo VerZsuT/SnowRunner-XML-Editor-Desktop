@@ -5,7 +5,7 @@ import { Language } from '../components/Language'
 import { GameFolder } from '../components/GameFolder'
 import { Save } from './components/Save'
 import { ProgramMenu } from 'menu'
-import 'styles/setup/main'
+import 'styles/setup'
 import { Confirm } from '../components/Confirm'
 import { ErrorHandler } from '../components/ErrorHandler'
 

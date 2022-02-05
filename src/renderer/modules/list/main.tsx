@@ -1,30 +1,21 @@
 import { PureComponent } from 'react'
 import { render } from 'react-dom'
 import { MAIN, mainProcess, setHotKey, t } from 'scripts'
-import { InnerList } from './components/InnerList'
-import { Search } from '../components/Search'
 import { ListContext } from './FilterContext'
 import { ListType, SrcType } from './enums'
 import { ProgramMenu } from 'menu'
-import 'styles/list/main'
+
+import { InnerList } from './components/InnerList'
+import { Search } from '../components/Search'
+import { ErrorHandler } from '../components/ErrorHandler'
 
 import {
-    Typography,
-    Tooltip,
-    IconButton,
-    Tabs,
-    Tab as MuiTab,
-    Backdrop,
-    CircularProgress,
-    TabProps,
-    styled
+    Typography, Tooltip, IconButton, Tabs, Tab as MuiTab,
+    Backdrop, CircularProgress, TabProps, styled
 } from '@mui/material'
-import { 
-    ArrowBack,
-    StarRounded
-} from '@mui/icons-material'
-import { ErrorHandler } from '../components/ErrorHandler'
+import {  ArrowBack, StarRounded } from '@mui/icons-material'
 import { boxShadow2, Container } from 'modules/components/styled'
+import 'styles/list'
 
 const { getList } = window.listPreload
 const { config, local } = window.provider
@@ -97,16 +88,39 @@ class List extends PureComponent<any, IState> {
         this.mods = this.getMods()
         this.main = this.getMain()
 
+        let activeTab = TabType.main
+        if (local.get('openedList')) {
+            switch (local.get('openedList')) {
+                case 'main':
+                    activeTab = TabType.main
+                break
+                case 'dlc':
+                    activeTab = TabType.dlc
+                break
+                case 'mods':
+                    activeTab = TabType.mods
+                break
+                case 'favorites':
+                    activeTab = TabType.favorites
+                break
+            }
+        }
+
         this.state = {
             filter: '',
             favorites: this.getFavorites(),
-            activeTab: TabType.main,
+            activeTab,
             isLoading: false
         }
     }
 
     componentDidMount(): void {
         this.setBackHotkey()
+        setTimeout(() => {
+            if (local.get('listScroll')) {
+                document.querySelector(`#list-${local.pop('openedList')}`).scrollTo(0, +local.pop('listScroll'))
+            }
+        }, 100)
     }
 
     render() {
@@ -197,6 +211,8 @@ class List extends PureComponent<any, IState> {
         this.setState({
             isLoading: true
         })
+        local.pop('openedList')
+        local.pop('listScroll')
         openCategories()
     }
 

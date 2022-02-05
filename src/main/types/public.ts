@@ -23,7 +23,7 @@ interface Properties {
 }
 
 interface Functions {
-    getParams(domString: string, templateName: string): {
+    getParams(domString: string, templateName: string, fileName: string): {
         params: ITemplateParams
         dom: string
     }

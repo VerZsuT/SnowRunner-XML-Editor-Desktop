@@ -5,3 +5,5 @@ export { trailer } from './trailer/template'
 export { truck } from './truck/template'
 export { wheels } from './wheels/template'
 export { winch } from './winch/template'
+
+export const extra = {}

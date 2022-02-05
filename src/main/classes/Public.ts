@@ -1,7 +1,7 @@
 import { app, BrowserWindow, ipcMain, shell } from 'electron'
 import { existsSync, readFileSync, writeFileSync, chmodSync } from 'fs'
 import { join } from 'path'
-import { exec } from 'child_process'
+import { execFile } from 'child_process'
 import $ from 'cheerio'
 import { Archiver } from './Archiver'
 import { Backup } from './Backup'
@@ -14,8 +14,8 @@ import { Texts } from './Texts'
 import { Updater } from './Updater'
 import { Windows } from './Windows'
 import { paths, findInDir } from '../service'
-import * as templates from '../templates'
 import { DialogAlertType } from '../enums'
+import * as templates from '../templates'
 import * as defaults from 'scripts/defaults.json'
 
 const info = {
@@ -55,7 +55,7 @@ export class Public {
             }
         }
     }
-    /** Делает переменные публичными, позволяя использовать/изменять из из `renderer-process`. */
+    /** Делает переменные публичными, позволяя использовать/изменять их из `renderer-process`. */
     static addProps = (object: any): void => {
         for (const name in object) {
             const value = object[name]
@@ -115,11 +115,18 @@ export class Public {
         })
 
         this.addMethods({
-            getParams: (domString: string, name: string) => {
+            getParams: (domString: string, name: string, fileName: string) => {
                 const fileDOM = $.load(domString, { xmlMode: true })
-                const params = templates[name].template.getParams({ fileDOM })
+                let params = templates[name].template.getParams({ fileDOM }) as ITemplateParams
+
+                if (templates.extra[fileName]) {
+                    params = [
+                        ...params,
+                        ...templates.extra[fileName].template.getParams({ fileDOM })
+                    ]
+                }
                 return {
-                    params: params,
+                    params: params, 
                     dom: fileDOM.html()
                 }
             },
@@ -220,7 +227,7 @@ export class Public {
             quit: () => { this.settings.isQuit = true; app.quit() },
             openLink: shell.openExternal,
             openPath: shell.openPath,
-            findInDir: findInDir,
+            findInDir,
 
             openEditor: Windows.openEditor,
             openCategories: Windows.openCategories,
@@ -255,9 +262,7 @@ export class Public {
                     })
                     return
                 } else {
-                    exec(`cmd /C "${paths.uninstall}"`, {
-                        windowsHide: true
-                    })
+                    execFile(paths.uninstall)
                     this.settings.isQuit = true
                     app.quit()
                 }

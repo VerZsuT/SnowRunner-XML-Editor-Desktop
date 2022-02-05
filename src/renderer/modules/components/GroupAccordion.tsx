@@ -97,6 +97,7 @@ export class GroupAccordion extends PureComponent<IProps> {
                 onContextMenu={this.props.onContextMenu ?? (() => {})}
                 expanded={this.props.expanded}
                 onChange={(_, expanded) => this.props.onChange(expanded)}
+                disableGutters
             >
                 <Summary>
                     <Title>{this.props.title}</Title>

@@ -30,7 +30,6 @@
       "texts": ["src/main/texts/index"],
       "texts/*": ["src/main/texts/*"],
       "images/*": ["src/images/*"],
-      "bootstrap": ["src/renderer/scripts/bootstrap.js"],
       "styles/*": ["src/renderer/styles/*"],
       "modules/*": ["src/renderer/modules/*"],
       "*": ["node_modules/*"]
