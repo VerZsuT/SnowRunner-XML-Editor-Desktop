@@ -1,14 +1,11 @@
+import type ITemplate from '../types/ITemplate'
+import NumberType from '../enums/NumberType'
+import FileType from '../enums/FileType'
+
 import {
-	Template,
-	Group,
-	Select,
-	Coordinates,
-	ForEach,
-	File,
-	Number,
-	Text
+	Template, Group, Select, Coordinates,
+	ForEach, File, Number, Text
 } from '../items'
-import { NumberType, FileType } from '../enums'
 import { getSelectors } from '../service'
 import { descs, texts } from './texts'
 
@@ -28,14 +25,22 @@ const selectors = getSelectors(function () {
 	const fuelTank = `${truckData}.FuelTank`
 	const physicsBody = 'Truck.PhysicsModel.Body'
 	const wheel = `${wheels}.Wheel${this.forEach}`
+	
 	return {
 		truckData, gameData, UIDesc, wheels, compatibleWheels, upgradableWinch, suspension, gearbox,
-		engine, fuelTank, physicsBody, wheel, staticWinch, extraWheel, extraWheels
+		engine, fuelTank, physicsBody, wheel, staticWinch, extraWheel
 	}
 })
 
-export const truck = <ITemplate>{
+export default <ITemplate>{
 	selector: 'Truck',
+	actions: [
+		'wheels',
+		'cranes',
+		'addonsContent',
+		'trailers',
+		'zikz_605r/banditCrane'
+	],
 	template: Template(selectors, [
 		Group({
 			name: texts.textGroupName,
@@ -84,7 +89,7 @@ export const truck = <ITemplate>{
 		]),
 		Group({
 			name: texts.winchGroupName,
-			icon: 'winch.png'
+			icon: 'winches.png'
 		}, [
 			Number({
 				attribute: 'Length',
@@ -106,68 +111,15 @@ export const truck = <ITemplate>{
 			File({
 				attribute: 'Type',
 				selector: selectors.upgradableWinch,
-				type: FileType.winches,
-				text: texts.winchesFile,
-				desc: descs.winchesFile
+				type: FileType.winches
 			})
 		]),
 		Group({
 			name: texts.wheelsGroupName,
 			defaultSelector: selectors.wheels,
-			icon: 'wheel.png'
+			icon: 'wheels.png'
 		}, [
 			Group(texts.physicsWheels, [
-				Group({
-					name: texts.extraWheels,
-					defaultSelector: selectors.extraWheels
-				}, [
-					Number({
-						attribute: 'Scale',
-						text: texts.wheelScale
-					}),
-					Text({
-						attribute: 'Tire',
-						text: texts.tireName
-					}),
-					ForEach(selectors.extraWheel, [
-						Group({
-							name: texts.wheel,
-							defaultSelector: selectors.extraWheel,
-							withCounter: true
-						}, [
-							Select({
-								attribute: 'Torque',
-								text: texts.torque,
-								desc: descs.torque,
-								options: {
-									default: texts.torqueDefault,
-									full: texts.torqueFull,
-									none: texts.torqueNone,
-									connectable: texts.torqueConnectable
-								},
-								default: 'none'
-							}),
-							Number({
-								attribute: 'SteeringAngle',
-								text: texts.steeringAngle,
-								desc: descs.steeringAngle,
-								max: 90,
-								min: -90,
-								step: 1,
-								default: 0
-							}),
-							Number({
-								attribute: 'SteeringCastor',
-								text: texts.steeringCastor,
-								desc: descs.steeringCastor,
-								max: 45,
-								min: 0,
-								step: 1,
-								default: 0
-							})
-						])
-					])
-				]),
 				ForEach(selectors.wheel, [
 					Group({
 						name: texts.wheel,
@@ -194,13 +146,33 @@ export const truck = <ITemplate>{
 							min: -90,
 							step: 1,
 							default: 0
+						})
+					])
+				]),
+				ForEach(selectors.extraWheel, [
+					Group({
+						name: texts.extraWheel,
+						defaultSelector: selectors.extraWheel,
+						withCounter: true
+					}, [
+						Select({
+							attribute: 'Torque',
+							text: texts.torque,
+							desc: descs.torque,
+							options: {
+								default: texts.torqueDefault,
+								full: texts.torqueFull,
+								none: texts.torqueNone,
+								connectable: texts.torqueConnectable
+							},
+							default: 'none'
 						}),
 						Number({
-							attribute: 'SteeringCastor',
-							text: texts.steeringCastor,
-							desc: descs.steeringCastor,
-							max: 45,
-							min: 0,
+							attribute: 'SteeringAngle',
+							text: texts.steeringAngle,
+							desc: descs.steeringAngle,
+							max: 90,
+							min: -90,
 							step: 1,
 							default: 0
 						})
@@ -223,15 +195,13 @@ export const truck = <ITemplate>{
 			]),
 			File({
 				attribute: 'DefaultWheelType',
-				type: FileType.wheels,
-				text: texts.defaultWheelType,
-				desc: descs.wheelType
+				type: FileType.wheels
 			})
 		]),
 		Group({
 			name: texts.suspensionGroupName,
 			defaultSelector: selectors.suspension,
-			icon: 'suspension.png'
+			icon: 'suspensions.png'
 		}, [
 			Coordinates({
 				attribute: 'CenterOfMassOffset',
@@ -253,27 +223,23 @@ export const truck = <ITemplate>{
 			}),
 			File({
 				attribute: 'Type',
-				type: FileType.suspensions,
-				text: texts.suspensionsFile,
-				desc: descs.suspensionsFile
+				type: FileType.suspensions
 			})
 		]),
 		Group({
 			name: texts.gearboxGroupName,
 			defaultSelector: selectors.gearbox,
-			icon: 'gearbox.png'
+			icon: 'gearboxes.png'
 		}, [
 			File({
 				attribute: 'Type',
-				type: FileType.gearboxes,
-				text: texts.gearboxesFile,
-				desc: descs.gearboxesFile
+				type: FileType.gearboxes
 			})
 		]),
 		Group({
 			name: texts.engineGroupName,
 			defaultSelector: selectors.engine,
-			icon: 'engine.png'
+			icon: 'engines.png'
 		}, [
 			Number({
 				attribute: 'EngineStartDelay',
@@ -292,9 +258,7 @@ export const truck = <ITemplate>{
 			}),
 			File({
 				attribute: 'Type',
-				type: FileType.engines,
-				text: texts.enginesFile,
-				desc: descs.enginesFile
+				type: FileType.engines
 			})
 		]),
 		Group({
