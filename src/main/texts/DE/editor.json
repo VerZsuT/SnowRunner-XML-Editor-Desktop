@@ -34,5 +34,8 @@
 	"SCOUT_TRAILERS": "Scout-Anhänger",
 	"TRUCK_TRAILERS": "Herkömmliche Anhänger",
 	"TRAILERS_NOT_SUPPORT": "Das Wechseln der Anhängerkupplung wird bei diesem Fahrzeug nicht unterstützt.",
-	"DIALOG_ENTER": "Eingang"
+	"DIALOG_ENTER": "Eingang",
+	"PROC_FILE_ERROR": "Datei konnte nicht gefunden werden. Höchstwahrscheinlich liegt ein Fehler in der Datei vor.",
+	"ACTIONS_MENU": "zusätzlich",
+	"DROP_TEXT": "Zum Importieren freigeben"
 }

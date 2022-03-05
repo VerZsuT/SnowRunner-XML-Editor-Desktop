@@ -6,5 +6,6 @@
 	"INITIAL_LABEL": "Путь к initial.pak",
 	"LANGUAGE_MENU_ITEM_LABEL": "Язык программы",
 	"MANUAL_INITIAL": "Ручной выбор initial.pak",
-	"OPEN_BUTTON": "Открыть"
+	"OPEN_BUTTON": "Открыть",
+	"ADVANCED_MODE_LABEL": "Продвинутый режим"
 }

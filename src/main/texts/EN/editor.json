@@ -12,8 +12,8 @@
 	"ADDONS_POPUP_TITLE": "Addons",
 	"ADDON_FILE_NAME": "File",
 	"ADDON_NAME": "Name",
-	"ADDON_WHEELS": "Spare wheels",
-	"ADDON_REPAIRS": "Spare parts",
+	"ADDON_WHEELS": "Wheels",
+	"ADDON_REPAIRS": "Repairs",
 	"ADDON_FUEL": "Fuel",
 	"ADDON_CHANGE_BUTTON": "Change",
 	"SUCCESS_SAVE_FILES": "Saved by",
@@ -34,5 +34,8 @@
 	"SCOUT_TRAILERS": "Scout trailers",
 	"TRUCK_TRAILERS": "Conventional trailers",
 	"TRAILERS_NOT_SUPPORT": "Changing the towbar is not supported on this car.",
-	"DIALOG_ENTER": "Input"
+	"DIALOG_ENTER": "Input",
+	"PROC_FILE_ERROR": "Failed to locate file. Most likely there is an error in the file.",
+	"ACTIONS_MENU": "Additionally",
+	"DROP_TEXT": "Release to Import"
 }
