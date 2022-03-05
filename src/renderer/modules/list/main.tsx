@@ -1,64 +1,35 @@
 import { PureComponent } from 'react'
 import { render } from 'react-dom'
-import { MAIN, mainProcess, setHotKey, t } from 'scripts'
+import $ from 'cheerio'
+import type { Cheerio, CheerioAPI, Node as CNode } from 'cheerio'
+import type IItem from './types/IItem'
+import ListType from './enums/ListType'
+import SrcType from './enums/SrcType'
+import { MAIN, setHotKey } from 'scripts/funcs'
+import localize from 'scripts/localize'
+import config from 'scripts/config'
+import local from 'scripts/storage'
+import main from 'scripts/main'
 import { ListContext } from './FilterContext'
-import { ListType, SrcType } from './enums'
-import { ProgramMenu } from 'menu'
+import Menu from 'menu'
 
-import { InnerList } from './components/InnerList'
-import { Search } from '../components/Search'
-import { ErrorHandler } from '../components/ErrorHandler'
+import InnerList from './components/InnerList'
+import Search from '../components/Search'
+import ErrorHandler from '../components/ErrorHandler'
+import DropArea from '../components/DropArea'
 
-import {
-    Typography, Tooltip, IconButton, Tabs, Tab as MuiTab,
-    Backdrop, CircularProgress, TabProps, styled
-} from '@mui/material'
-import {  ArrowBack, StarRounded } from '@mui/icons-material'
-import { boxShadow2, Container } from 'modules/components/styled'
+import { Typography, Tooltip, Tabs, Backdrop, CircularProgress } from '@mui/material'
+import { ArrowBack, StarRounded } from '@mui/icons-material'
+import Title from './styled/Title'
+import BackIconButton from './styled/BackIconButton'
+import TabsContainer from './styled/TabsContainer'
+import Tab from './styled/Tab'
+import TabIcon from './styled/TabIcon'
 import 'styles/list'
 
 const { getList } = window.listPreload
-const { config, local } = window.provider
-const { readFile, openCategories } = mainProcess
-
-const Title = styled(Container)({
-    position: 'fixed',
-    boxShadow: boxShadow2,
-    backgroundColor: '#1c7dca',
-    top: '31px',
-    color: '#fafafa',
-    padding: '8px 0',
-    textAlign: 'center',
-    zIndex: 20
-})
-
-const TabsContainer = styled(Container)({
-    position: 'fixed',
-    boxShadow: boxShadow2,
-    top: '78px',
-    zIndex: 20,
-    backgroundColor: 'white',
-    paddingLeft: '0',
-    paddingRight: '0'
-})
-
-const BackIconButton = styled(IconButton)({
-    position: 'absolute',
-    top: '0',
-    left: '0'
-})
-
-const Tab = styled((props: TabProps) =>
-    <MuiTab iconPosition='end' {...props}/>
-)({
-    fontSize: '0.92rem',
-    minHeight: '57px'
-})
-
-const TabIcon = styled('img')({
-    width: '20px',
-    marginLeft: '10px'
-})
+const { readFileSync } = window.service
+const { openCategories } = main
 
 enum TabType {
     main,
@@ -69,16 +40,16 @@ enum TabType {
 
 interface IState {
     filter: string
-    favorites: Item[]
+    favorites: IItem[]
     activeTab: TabType
     isLoading: boolean
 }
 
 class List extends PureComponent<any, IState> {
     private listType: ListType
-    private dlc: Item[]
-    private mods: Item[]
-    private main: Item[]
+    private dlc: IItem[]
+    private mods: IItem[]
+    private main: IItem[]
 
     constructor(props: any) {
         super(props)
@@ -120,27 +91,24 @@ class List extends PureComponent<any, IState> {
             if (local.get('listScroll')) {
                 document.querySelector(`#list-${local.pop('openedList')}`).scrollTo(0, +local.pop('listScroll'))
             }
-        }, 100)
+        }, 200)
     }
 
     render() {
         return (<>
-            <ProgramMenu />
+            <Menu />
             <ErrorHandler />
+            <DropArea onDrop={() => {}} />
             <ListContext.Provider value={{
                 filter: this.state.filter,
                 toggleFavorite: this.toggleFavorite
             }}>
-
                 <Title>
                     <Search value={this.state.filter} onChange={this.setFilter} />
                     <Typography variant='h5'>
-                        {this.listType === ListType.trucks ? t.TRUCKS_LIST_TITLE : t.TRAILERS_LIST_TITLE}
+                        {this.listType === ListType.trucks ? localize.TRUCKS_LIST_TITLE : localize.TRAILERS_LIST_TITLE}
                     </Typography>
-                    <Tooltip
-                        title={t.BACK_BUTTON}
-                        placement='right'
-                    >
+                    <Tooltip title={localize.BACK_BUTTON} placement='right'>
                         <BackIconButton color='inherit' onClick={this.back}>
                             <ArrowBack style={{ fontSize: '30px' }} />
                         </BackIconButton>
@@ -154,21 +122,21 @@ class List extends PureComponent<any, IState> {
                         variant='fullWidth'
                     >
                         <Tab
-                            label={t.MAIN_LIST_TITLE}
+                            label={localize.MAIN_LIST_TITLE}
                             icon={<TabIcon src={require('images/icons/list/main.png')}/>}
                         />
                         <Tab
-                            label={t.DLC_LIST_TITLE}
+                            label={localize.DLC_LIST_TITLE}
                             disabled={!config.settings.DLC}
                             icon={<TabIcon src={require('images/icons/list/dlc.png')}/>}
                         />
                         <Tab
-                            label={t.MODS_LIST_TITLE}
+                            label={localize.MODS_LIST_TITLE}
                             disabled={!config.settings.mods}
                             icon={<TabIcon src={require('images/icons/list/mods.png')}/>}
                         />
                         <Tab
-                            label={t.FAVORITES_LIST_TITLE}
+                            label={localize.FAVORITES_LIST_TITLE}
                             icon={<StarRounded style={{ fontSize: '27px' }} />}
                         />
                     </Tabs>
@@ -177,62 +145,56 @@ class List extends PureComponent<any, IState> {
                 <InnerList srcType={SrcType.main} items={this.main} opened={this.state.activeTab === TabType.main} />
                 {config.settings.DLC ?
                     <InnerList srcType={SrcType.dlc} items={this.dlc} opened={this.state.activeTab === TabType.dlc} />
-                    : null}
+                : null}
                 {config.settings.mods ?
                     <InnerList srcType={SrcType.mods} items={this.mods} opened={this.state.activeTab === TabType.mods} />
-                    : null}
+                : null}
                 <InnerList srcType={SrcType.favorites} items={this.state.favorites} opened={this.state.activeTab === TabType.favorites} />
             </ListContext.Provider>
             <Backdrop
                 style={{ color: '#fff', zIndex: 30 }}
                 open={this.state.isLoading}
             >
-                <CircularProgress color='inherit' />
+                <CircularProgress color='inherit'/>
             </Backdrop>
         </>)
     }
 
     private setFilter = (value: string) => {
-        this.setState({
-            filter: value
-        })
+        this.setState({ filter: value })
     }
 
     private setBackHotkey = () => {
         setHotKey({
             key: 'Escape',
             eventName: 'keydown'
-        }, () => {
-            this.back()
-        })
+        }, () => this.back())
     }
 
     private back = () => {
-        this.setState({
-            isLoading: true
-        })
+        this.setState({ isLoading: true })
         local.pop('openedList')
         local.pop('listScroll')
         openCategories()
     }
 
     private toggleFavorite = (name: string) => {
-        if (config.favorites.includes(name)) {
+        if (config.favorites.includes(name))
             config.favorites = config.favorites.filter(value => value !== name)
-        } else {
+        else
             config.favorites = [...config.favorites, name]
-        }
 
-        this.setState({
-            favorites: this.getFavorites()
-        })
+        this.setState({ favorites: this.getFavorites() })
     }
 
     private getMods() {
-        if (!config.settings.mods) return []
+        let newArray: IItem[] = []
+        let array: IItem[]
 
-        const array = getList(this.listType, SrcType.mods)
-        const newArray: Item[] = []
+        if (!config.settings.mods)
+            return []
+            
+        array = getList(this.listType, SrcType.mods)
 
         for (const mod of array) {
             for (const item of mod.items) {
@@ -243,24 +205,25 @@ class List extends PureComponent<any, IState> {
             }
         }
         return newArray.map(value => {
-            const fileData = readFile(value.path)
-            const $dom = new DOMParser().parseFromString(`<root>${fileData}</root>`, 'text/xml')
-            const $Truck = $dom.querySelector('Truck')
-            if (this.listType === ListType.trailers && $Truck && $Truck.getAttribute('Type') === 'Trailer') {
+            const fileData = readFileSync(value.path)
+            const $dom = $.load(fileData, { xmlMode: true })
+            const $Truck = $dom('Truck')
+
+            if (this.listType === ListType.trailers && $Truck.length && $Truck.attr('Type') === 'Trailer')
                 return value
-            } else if (this.listType === ListType.trucks && $Truck && $Truck.getAttribute('Type') !== 'Trailer') {
+            else if (this.listType === ListType.trucks && $Truck.length && $Truck.attr('Type') !== 'Trailer')
                 return value
-            }
-        }).filter(value => {
-            return Boolean(value)
-        })
+        }).filter(value => !!value)
     }
 
     private getDLC() {
-        if (!config.settings.DLC) return []
+        let array: IItem[]
+        let newArray: IItem[] = []
 
-        const array = getList(this.listType, SrcType.dlc)
-        const newArray: Item[] = []
+        if (!config.settings.DLC) {
+            return []
+        }
+        array = getList(this.listType, SrcType.dlc)
 
         for (const dlc of array) {
             for (const item of dlc.items) {
@@ -271,39 +234,48 @@ class List extends PureComponent<any, IState> {
             }
         }
         return newArray.map(value => {
-            const fileData = readFile(value.path)
-            const $dom = new DOMParser().parseFromString(`<root>${fileData}</root>`, 'text/xml')
-            const $Truck = $dom.querySelector('Truck')
-            if (this.listType === ListType.trailers && $Truck && $Truck.getAttribute('Type') === 'Trailer') {
-                return value
-            } else if (this.listType === ListType.trucks && $Truck && $Truck.getAttribute('Type') !== 'Trailer') {
+            const fileData = readFileSync(value.path)
+            const $dom = $.load(fileData, { xmlMode: true })
+            const $Truck = $dom('Truck')
+
+            if (this.listType === ListType.trailers && $Truck.length && $Truck.attr('Type') === 'Trailer') {
                 return value
             }
-        }).filter(value => Boolean(value))
+            else if (this.listType === ListType.trucks && $Truck.length && $Truck.attr('Type') !== 'Trailer') {
+                return value
+            }
+        }).filter(value => !!value)
     }
 
     private getMain() {
         const array = getList(this.listType, SrcType.main)
 
         return array.map(value => {
+            let fileData: string
+            let dom: CheerioAPI
+            let $Truck: Cheerio<CNode>
+
             if (this.listType !== ListType.trucks) {
                 return value
             }
-            const fileData = readFile(value.path)
-            const dom = new DOMParser().parseFromString(`<root>${fileData}</root>`, 'text/xml')
-            if (dom.querySelector('Truck').getAttribute('Type') !== 'Trailer') {
+
+            fileData = readFileSync(value.path)
+            dom = $.load(fileData, { xmlMode: true })
+            $Truck = dom('Truck')
+
+            if (!$Truck.length) {
                 return value
             }
-        }).filter(value => Boolean(value))
+            if ($Truck.attr('Type') !== 'Trailer') {
+                return value
+            }
+        }).filter(value => !!value)
     }
 
     private getFavorites() {
         const allItems = [...this.main, ...this.mods, ...this.dlc]
-
-        return allItems.filter(value => {
-            return config.favorites.includes(value.name)
-        })
+        return allItems.filter(value => config.favorites.includes(value.name))
     }
 }
 
-render(<List />, MAIN)
+render(<List/>, MAIN)
