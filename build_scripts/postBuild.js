@@ -8,12 +8,8 @@
     - Запускает InnoSetup и копирует .exe файл для загрузки на GoogleDrive
 */
 
-const {
-    execSync
-} = require('child_process')
-const {
-    join
-} = require('path')
+const { execSync } = require('child_process')
+const { join } = require('path')
 const {
     renameSync,
     rmSync,
@@ -66,7 +62,7 @@ Log.separator()
 
 Log.print('Creating a file map for auto-updating')
 checkPath(paths.sxmle_updater, () => {
-    const appPath = join(paths.renamed, 'resources', 'app')
+    const appPath = join(paths.renamed, 'resources/app')
     checkPath(appPath, () => {
         const map = generateMap(appPath)
         writeFile(join(paths.sxmle_updater, 'updateMap.json'), map, () => JSON.stringify(map))
@@ -80,7 +76,7 @@ checkPath(paths.sxmle_updater, () => {
         })
         checkPath(appPath, () => {
             renameSync(appPath, join(paths.sxmle_updater, 'files'))
-            renameSync(join(paths.sxmle_updater, 'files', '.webpack'), join(paths.sxmle_updater, 'files', 'webpack'))
+            renameSync(join(paths.sxmle_updater, 'files/.webpack'), join(paths.sxmle_updater, 'files/webpack'))
         })
     })
 
@@ -100,7 +96,7 @@ if (!existsSync(paths.renamed)) {
 }
 Log.print('Launching InnoSetup')
 execSync('installer.config.iss', {
-    cwd: join(__dirname, '..', 'innoSetup')
+    cwd: join(__dirname, '../innoSetup')
 })
 Log.print('Copying .exe file for Google Drive')
 if (existsSync(join(paths.out, 'SnowRunnerXMLEditor.exe'))) {

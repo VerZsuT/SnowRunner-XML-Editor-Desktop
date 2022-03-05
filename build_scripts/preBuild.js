@@ -8,10 +8,7 @@
     -- Меняет версию на указанную в config.json.
 */
 
-const {
-    rmSync,
-    mkdirSync,
-} = require('fs')
+const { rmSync, mkdirSync } = require('fs')
 const Log = require('./Log.js')
 const {
     preBuildPaths: paths,

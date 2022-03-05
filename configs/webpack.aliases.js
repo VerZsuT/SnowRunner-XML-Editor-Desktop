@@ -1,6 +1,4 @@
-const {
-    resolve: res
-} = require('path')
+const { resolve: res } = require('path')
 const resolve = (...paths) => res(__dirname, ...paths)
 
 module.exports = {

@@ -1,6 +1,4 @@
-const {
-    createHash
-} = require('crypto')
+const { createHash } = require('crypto')
 const {
     existsSync,
     readFileSync,
@@ -8,29 +6,26 @@ const {
     readdirSync,
     statSync
 } = require('fs')
-const {
-    join,
-    basename
-} = require('path')
+const { join, basename } = require('path')
 const Log = require('./Log.js')
 
 const postBuildPaths = {
-    out: join(__dirname, '..', 'out'),
-    original_x32: join(__dirname, '..', 'out', 'SnowRunner XML Editor-win32-ia32'),
-    original_x64: join(__dirname, '..', 'out', 'SnowRunner XML Editor-win32-x64'),
-    renamed: join(__dirname, '..', 'out', 'SnowRunnerXMLEditor'),
-    config: join(__dirname, '..', 'out', 'SnowRunnerXMLEditor', 'resources', 'app', '.webpack', 'main', 'config.json'),
-    winrar_x32: join(__dirname, '..', 'src', 'main', 'winrar'),
-    sxmle_updater: join(__dirname, '..', '..', 'sxmle_updater')
+    out: join(__dirname, '../out'),
+    original_x32: join(__dirname, '../out/SnowRunner XML Editor-win32-ia32'),
+    original_x64: join(__dirname, '../out/SnowRunner XML Editor-win32-x64'),
+    renamed: join(__dirname, '../out/SnowRunnerXMLEditor'),
+    config: join(__dirname, '../out/SnowRunnerXMLEditor/resources/app/.webpack/main/config.json'),
+    winrar_x32: join(__dirname, '../src/main/winrar'),
+    sxmle_updater: join(__dirname, '../../sxmle_updater')
 }
 
 const preBuildPaths = {
-    out: join(__dirname, '..', 'out'),
-    config: join(__dirname, '..', 'src', 'main', 'config.json'),
-    package: join(__dirname, '..', 'package.json'),
-    packageLock: join(__dirname, '..', 'package-lock.json'),
-    public: join(__dirname, '..', '..', 'sxmle_updater', 'public.json'),
-    issConfig: join(__dirname, '..', 'innoSetup', 'installer.config.iss')
+    out: join(__dirname, '../out'),
+    config: join(__dirname, '../src/main/config.json'),
+    package: join(__dirname, '../package.json'),
+    packageLock: join(__dirname, '../package-lock.json'),
+    public: join(__dirname, '../../sxmle_updater/public.json'),
+    issConfig: join(__dirname, '../innoSetup/installer.config.iss')
 }
 
 /**
@@ -49,7 +44,7 @@ function generateMap(rootPath) {
         } else {
             const shaHash = createHash('sha1')
             shaHash.update(readFileSync(path))
-            map[path.replace(join(postBuildPaths.renamed, 'resources', 'app', '/'), '')] = shaHash.digest('hex')
+            map[path.replace(join(postBuildPaths.renamed, 'resources/app/'), '')] = shaHash.digest('hex')
         }
     }
     return map

@@ -1,10 +1,6 @@
 const CopyPlugin = require('copy-webpack-plugin')
-const {
-    existsSync
-} = require('fs')
-const {
-    join
-} = require('path')
+const { existsSync } = require('fs')
+const { join } = require('path')
 
 module.exports = {
     mode: process.env.NODE_ENV || 'development',
