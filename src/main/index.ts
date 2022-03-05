@@ -1,23 +1,22 @@
 import { app } from 'electron'
 import { existsSync } from 'fs'
 import { join } from 'path'
-import { Checker } from './classes/Checker'
-import { Config } from './classes/Config'
-import { Public } from './classes/Public'
-import { Settings } from './classes/Settings'
-import { Texts } from './classes/Texts'
-import { Windows } from './classes/Windows'
-import { Hasher } from './classes/Hasher'
-import { Archiver } from './classes/Archiver'
-import { Dialog } from './classes/Dialog'
+
+import Checker from './classes/Checker'
+import Config from './classes/Config'
+import Public from './classes/Public'
+import Settings from './classes/Settings'
+import Texts from './classes/Texts'
+import Windows from './classes/Windows'
+import Hasher from './classes/Hasher'
+import Archiver from './classes/Archiver'
 import { findInDir, paths } from './service'
 
 const config = Config.obj
 const settings = Settings.set({
     appId: 'SnowRunner XML editor',
     saveWhenReload: true,
-    devTools: false,
-    invalidMods: []
+    devTools: false
 })
 
 Public.init()
@@ -38,21 +37,24 @@ app.on('before-quit', () => {
         Config.save()
     }
 })
-process.once('uncaughtExceptionMonitor', () => {
+process.once('uncaughtExceptionMonitor', () =>
     app.exit()
-})
+)
 
 /**
  * `Main`функция.
 */
 async function initProgram() {
-    if (!Checker.checkAdmin()) return
+    if (!Checker.checkAdmin()) {
+        return
+    }
 
     if (!config.initial) {
-        Windows.openSetup().then(() => {
+        Windows.openSetup().then(() =>
             Checker.checkUpdate()
-        })
-    } else {
+        )
+    }
+    else {
         await Checker.checkInitial()
 
         if (Checker.hasAllPaths()) {
@@ -61,12 +63,12 @@ async function initProgram() {
                 initDLC(),
                 initMods()
             ]).then(() => {
-                Windows.openCategories().then(() => {
+                Windows.openCategories().then(() =>
                     Checker.checkUpdate()
-                    showInvalidMods()
-                })
+                )
             })
-        } else {
+        }
+        else {
             Config.reset()
         }
     }
@@ -76,7 +78,9 @@ async function initProgram() {
  * Находит и инициализирует игровые DLC.
 */
 async function initDLC() {
-    if (!config.settings.DLC) return
+    if (!config.settings.DLC) {
+        return
+    }
     config.dlc = findInDir(paths.dlc, true)
 }
 
@@ -84,8 +88,10 @@ async function initDLC() {
  * Инициализирует модификации, указанные в `config.json`.
 */
 async function initMods() {
-    if (!config.settings.mods) return
-    if (config.mods.length === 0) return
+    if (!config.settings.mods)
+        return
+    if (config.mods.length === 0)
+        return
 
     let counter = config.mods.length
 
@@ -97,47 +103,36 @@ async function initMods() {
     }
     for (const modName in config.mods.items) {
         const mod = config.mods.items[modName]
+
         if (!existsSync(mod.path)) {
-            settings.invalidMods.push(config.mods.items[modName].name)
-            deleteFromList(config.mods.items[modName].name)
-            continue
-        } else if (!Checker.checkPermissions(mod.path)) {
-            settings.invalidMods.push(config.mods.items[modName].name)
             deleteFromList(config.mods.items[modName].name)
             continue
         }
+        else if (!Checker.checkPermissions(mod.path)) {
+            deleteFromList(config.mods.items[modName].name)
+            continue
+        }
+
         if (Hasher.getSize(mod.path) === config.sizes.mods[modName] && existsSync(paths.modsTemp[modName])) {
             counter--
             continue
-        } else {
+        }
+        else {
             await Archiver.unpackMod(mod.path)
 
-            if (!existsSync(join(paths.modsTemp, modName, 'classes'))) {
-                settings.invalidMods.push(config.mods.items[modName].name)
+            if (!existsSync(join(paths.modsTemp, modName, 'classes')))
                 deleteFromList(config.mods.items[modName].name)
-            } else {
+            else
                 counter--
-            }
+
             if (counter === 0) {
                 Texts.addFromMods()
                 return
             }
         }
     }
+    
     if (counter <= 0) {
         Texts.addFromMods()
-    }
-}
-
-function showInvalidMods() {
-    const invalidMods = settings.invalidMods
-    if (invalidMods.length !== 0) {
-        Dialog.alert({
-            message: `${Texts.get('INVALID_MODS_ALERT_MAIN')}: \n- ${invalidMods.join('\n- ')}`,
-            title: this.settings.appId
-        })
-    }
-    if (config.settings.showWhatsNew) {
-        Windows.openWhatsNew()
     }
 }
