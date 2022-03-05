@@ -1,8 +1,7 @@
-import { Config } from 'main/classes/Config'
+import Config from 'main/classes/Config'
 
 export const texts = {
 	RU: {
-		id: 'ID',
 		lowerManualGear: 'Точная регулировка',
 		awdConsumptionModifier: 'Модификатор потребления топлива при полном приводе',
 		criticalDamageThreshold: 'Порог критического повреждения',
@@ -21,7 +20,6 @@ export const texts = {
 		gears: 'Передачи'
 	},
 	EN: {
-		id: 'ID',
 		lowerManualGear: 'Precise adjustment',
 		awdConsumptionModifier: 'AWD consumption modifier',
 		criticalDamageThreshold: 'Critical damage threshold',
@@ -40,7 +38,6 @@ export const texts = {
 		gears: 'Gears'
 	},
 	DE: {
-		id: 'ID',
 		lowerManualGear: 'Feineinstellung',
 		awdConsumptionModifier: 'AWD-Verbrauchsmodifikator',
 		criticalDamageThreshold: 'Kritische Schadensschwelle',

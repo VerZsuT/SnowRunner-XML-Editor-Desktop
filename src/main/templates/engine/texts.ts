@@ -1,8 +1,7 @@
-import { Config } from 'main/classes/Config'
+import Config from 'main/classes/Config'
 
 export const texts = {
 	RU: {
-		id: 'ID',
 		criticalDamageThreshold: 'Порог критического повреждения',
 		damageCapacity: 'Прочность',
 		damagedConsumptionModifier: 'Множитель потребления топлива при повреждении',
@@ -15,7 +14,6 @@ export const texts = {
 		maxDeltaAngVel: 'Замедление ускорения'
 	},
 	EN: {
-		id: 'ID',
 		criticalDamageThreshold: 'Critical damage threshold',
 		damageCapacity: 'Damage capacity',
 		damagedConsumptionModifier: 'Damage consumption modifier',
@@ -28,7 +26,6 @@ export const texts = {
 		maxDeltaAngVel: 'Deceleration of acceleration'
 	},
 	DE: {
-		id: 'ID',
 		criticalDamageThreshold: 'Kritische Schadensschwelle',
 		damageCapacity: 'Schadenskapazität',
 		damagedConsumptionModifier: 'Schadensverbrauchsmodifikator',
@@ -44,7 +41,6 @@ export const texts = {
 
 export const descs = {
 	RU: {
-		name: 'ID данного двигателя',
 		criticalDamageTheshold: 'Порог повреждения (значение * 100 = процент), при котором двигатель будет вести себя как сломанный.',
 		damageCapacity: 'Запас прочности данного двигателя.',
 		damagedConsumptionModifier: 'Множитель потребления топлива в сломанном состоянии',
@@ -56,7 +52,6 @@ export const descs = {
 		maxDeltaAngVel: 'Ограничитель максимального углового ускорения колёс. Чем он меньше, тем медленнее разгоняется машина.'
 	},
 	EN: {
-		name: 'ID of this engine',
 		criticalDamageThreshold: 'The damage threshold (value * 100 = percentage) at which the engine will behave as broken.',
 		damageCapacity: 'The safety margin of this engine.',
 		damagedConsumptionModifier: 'Fuel consumption modifier in the damaged state',
@@ -68,7 +63,6 @@ export const descs = {
 		maxDeltaAngVel: 'Limiter of the maximum angular acceleration of the wheels. The smaller it is, the slower the car accelerates.'
 	},
 	DE: {
-		name: 'ID dieses Motors',
 		criticalDamageThreshold: 'Die Schadensschwelle (Wert * 100 = Prozent), bei der sich der Motor als defekt verhält.',
 		damageCapacity: 'Die Sicherheitsmarge dieses Motors.',
 		damagedConsumptionModifier: 'Modifikator des Kraftstoffverbrauchs in beschädigtem Zustand',
