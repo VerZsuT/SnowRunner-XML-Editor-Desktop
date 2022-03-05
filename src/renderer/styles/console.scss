@@ -1,9 +1,7 @@
 @import 'styles/main';
 
 %no-scrollbar {
-    &::-webkit-scrollbar {
-        width: 0;
-    }
+    &::-webkit-scrollbar { width: 0; }
 }
 
 body {
@@ -24,9 +22,7 @@ body {
     overflow: auto;
     @extend %no-scrollbar;
 
-    p {
-        margin: 5px 0;
-    }
+    p { margin: 5px 0; }
 }
 
 .line {
@@ -51,12 +47,10 @@ body {
 
     #input {
         border: none;
-
         font: {
             family: inherit;
             size: inherit;
         }
-
         background: none;
         outline: none;
         color: inherit;
