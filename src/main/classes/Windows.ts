@@ -1,125 +1,117 @@
-import { app, BrowserWindow, ipcMain } from 'electron'
-import { paths } from '../service'
-import { Settings } from './Settings'
-import { Config } from './Config'
-import { Texts } from './Texts'
+import { app, BrowserWindow } from 'electron'
+import type ICreateWindowAttributes from '../types/ICreateWindowAttributes'
+import type IDownloadWindow from '../types/IDownloadWindow'
+import entries from '../types/webpackEntries'
 
-ipcMain.on('get-windows-state', (e) => {
-    e.returnValue = {
-        categories: Boolean(Windows.categories) && !Windows.categories.isDestroyed(),
-        list: Boolean(Windows.list) && !Windows.list.isDestroyed(),
-        editor: Boolean(Windows.editor) && !Windows.editor.isDestroyed()
-    }
-})
+import { paths } from '../service'
+import Settings from './Settings'
+import Config from './Config'
 
 /** Отвечает за взаимодействие с окнами. */
-export class Windows {
-    static categories: BrowserWindow
-    static list: BrowserWindow
-    static editor: BrowserWindow
-    static loading: DownloadWindow
+export default class Windows {
+    public static categories: BrowserWindow
+    public static list: BrowserWindow
+    public static editor: BrowserWindow
+    public static loading: IDownloadWindow
 
     private static settings = Settings.obj
     private static config = Config.obj
     private static isOpening = false
 
-    /** Параметры создания. */
+    /** Параметры создания окон. */
     private static createArgs = {
         loading: {
-            path: LOADING_WEBPACK_ENTRY,
-            preload: LOADING_PRELOAD_WEBPACK_ENTRY,
-            minWidth: 280,
+            path: entries.loading,
+            preload: entries.loadingPreload,
             width: 280,
-            minHeight: 130,
+            minWidth: 280,
             height: 130,
+            minHeight: 150,
             frame: false
         },
         setup: {
-            path: SETUP_WEBPACK_ENTRY,
-            preload: SETUP_PRELOAD_WEBPACK_ENTRY,
-            minWidth: 540,
+            path: entries.setup,
+            preload: entries.setupPreload,
             width: 540,
-            minHeight: 320,
-            height: 320
+            minWidth: 540,
+            height: 320,
+            minHeight: 340
         },
         editor: {
-            path: EDITOR_WEBPACK_ENTRY,
-            preload: EDITOR_PRELOAD_WEBPACK_ENTRY,
-            minWidth: 800,
-            width: 800,
-            minHeight: 630,
-            height: 630
+            path: entries.editor,
+            preload: entries.editorPreload,
+            width: 780,
+            minWidth: 780,
+            height: 630,
+            minHeight: 650
         },
         updateWindow: {
-            path: UPDATE_WEBPACK_ENTRY,
-            preload: CATEGORIES_PRELOAD_WEBPACK_ENTRY,
-            minWidth: 400,
+            path: entries.update,
+            preload: entries.categoriesPreload,
             width: 400,
-            minHeight: 200,
+            minWidth: 400,
             height: 200,
+            minHeight: 220,
             frame: false,
             modal: true
         },
         settings: {
-            path: SETTINGS_WEBPACK_ENTRY,
-            preload: SETTINGS_PRELOAD_WEBPACK_ENTRY,
+            path: entries.settings,
+            preload: entries.settingsPreload,
             width: 400,
             minWidth: 400,
-            height: 430,
-            minHeight: 430,
+            height: 460,
+            minHeight: 480,
             modal: true
         },
         console: {
-            path: CONSOLE_WEBPACK_ENTRY,
-            preload: CONSOLE_PRELOAD_WEBPACK_ENTRY,
+            path: entries.console,
+            preload: entries.consolePreload,
             width: 700,
             minWidth: 500,
             height: 500,
-            minHeight: 500
+            minHeight: 520
         },
         categories: {
-            path: CATEGORIES_WEBPACK_ENTRY,
-            preload: CATEGORIES_PRELOAD_WEBPACK_ENTRY,
-            minWidth: 615,
+            path: entries.categories,
+            preload: entries.categoriesPreload,
             width: 615,
-            minHeight: 360,
-            height: 360
+            minWidth: 615,
+            height: 360,
+            minHeight: 380
         },
         list: {
-            path: LIST_WEBPACK_ENTRY,
-            preload: LIST_PRELOAD_WEBPACK_ENTRY,
+            path: entries.list,
+            preload: entries.listPreload,
             width: 1100,
             minWidth: 1100,
             height: 640,
-            minHeight: 640
+            minHeight: 660
         },
         whatsNew: {
-            path: WHATS_NEW_WEBPACK_ENTRY,
-            preload: CATEGORIES_PRELOAD_WEBPACK_ENTRY,
+            path: entries.whatsNew,
+            preload: entries.categoriesPreload,
             width: 600,
             minWidth: 600,
             height: 500,
-            minHeight: 500
+            minHeight: 520
         }
     }
 
-    /**
-     * Открывает окно редактора параметров.
-     * @param bridge создать между несколькими окнами редактора `bridge-channel` для передачи данных. 
-     */
-    static openEditor = async () => {
+    /** Открыть окно редактора параметров. */
+    public static openEditor = async () => {
         let wind: BrowserWindow
 
         this.isOpening = true
-        wind = this.createWindow(this.createArgs.editor)
+        wind = this.createWindow({...this.createArgs.editor})
+        this.editor = wind
+
         wind.once('show', () => {
             if (this.list && !this.list.isDestroyed()) {
                 this.list.close()
                 this.isOpening = false
             }
         })
-
-        this.editor = wind
         wind.once('close', () => {
             if (!this.isOpening) {
                 app.quit()
@@ -132,23 +124,22 @@ export class Windows {
     }
 
     /**
-     * Открывает окно-оповещение об обновлении программы.
+     * Открыть окно-оповещение об обновлении программы.
      * @param version отображаемая новая версия.
      */
-    static openUpdateWindow = (version: string) => {
+    public static openUpdateWindow = (version: string) => {
         const wind = this.createWindow({
             ...this.createArgs.updateWindow,
             modal: true,
             parent: BrowserWindow.getFocusedWindow()
         })
-        wind.once('show', () => {
-            wind.webContents.postMessage('content', version)
-        })
+
+        wind.once('show', () => wind.webContents.postMessage('content', version))
         return wind
     }
 
-    /** Открывает окно настроек. */
-    static openSettings = () => {
+    /** Открыть окно настроек. */
+    public static openSettings = () => {
         this.createWindow({
             ...this.createArgs.settings,
             modal: true,
@@ -156,8 +147,8 @@ export class Windows {
         })
     }
 
-    /** Открывает окно консоли. */
-    static openConsole = () => {
+    /** Открыть окно консоли. */
+    public static openConsole = () => {
         this.createWindow({
             ...this.createArgs.console,
             modal: true,
@@ -165,12 +156,9 @@ export class Windows {
         })
     }
 
-    /**
-     * Открывает окно загрузки.
-     * @param noLock не блокировать другие окна.
-     */
-    static openLoading = (): DownloadWindow => {
-        const loading = <DownloadWindow>this.createWindow(this.createArgs.loading)
+    /** Открыть окно загрузки. */
+    public static openLoading = (): IDownloadWindow => {
+        const loading = <IDownloadWindow>this.createWindow(this.createArgs.loading)
 
         loading.setText = (text: string) => this.loading.webContents.postMessage('fileName', text)
         loading.setCount = (count: number) => this.loading.webContents.postMessage('count', count)
@@ -181,12 +169,11 @@ export class Windows {
         return this.loading = loading
     }
 
-    /** Открывает окно первоначальной настройки. */
-    static openSetup = async () => {
+    /** Открыть окно первоначальной настройки. */
+    public static openSetup = async () => {
         const wind = this.createWindow(this.createArgs.setup)
-        wind.once('close', () => {
-            app.quit()
-        })
+
+        wind.once('close', () => app.quit())
         await new Promise<void>(resolve => {
             wind.once('show', () => {
                 resolve()
@@ -197,8 +184,8 @@ export class Windows {
         })
     }
 
-    /** Открывает окно выбора категории. */
-    static openCategories = async () => {
+    /** Открыть окно выбора категории. */
+    public static openCategories = async () => {
         this.isOpening = true
         this.categories = this.createWindow(this.createArgs.categories)
 
@@ -222,13 +209,17 @@ export class Windows {
         })
     }
 
-    /** Открывает окно списка авто/груза/прицепа. */
-    static openList = async () => {
+    /** Открыть окно списка авто/груза/прицепа. */
+    public static openList = async () => {
         this.isOpening = true
         this.list = this.createWindow(this.createArgs.list)
         this.list.once('show', () => {
-            if (this.categories) this.categories.close()
-            if (this.editor) this.editor.close()
+            if (this.categories) {
+                this.categories.close()
+            }
+            if (this.editor) {
+                this.editor.close()
+            }
             this.isOpening = false
         })
         this.list.once('close', () => {
@@ -241,19 +232,19 @@ export class Windows {
         })
     }
 
-    static openWhatsNew = () => {
+    /** Открыть сведения о версии. */
+    public static openWhatsNew = () => {
         const wind = this.createWindow({
             ...this.createArgs.whatsNew,
             modal: true,
             parent: BrowserWindow.getFocusedWindow()
         })
-        wind.once('close', () => {
-            this.config.settings.showWhatsNew = false
-        })
+
+        wind.once('close', () => this.config.settings.showWhatsNew = false)
     }
 
-    /** Создаёт окно с указанными атрибутами. */
-    private static createWindow(args: CreateWindowAttributes): BrowserWindow {
+    /** Создать окно с указанными атрибутами. */
+    private static createWindow(args: ICreateWindowAttributes): BrowserWindow {
         const wind = new BrowserWindow({
             width: args.width ?? 800,
             minWidth: args.minWidth ?? 0,
@@ -268,10 +259,10 @@ export class Windows {
             paintWhenInitiallyHidden: false,
             webPreferences: {
                 ...(() => (args.preload ? { preload: args.preload } : {}))(),
-                contextIsolation: false,
                 devTools: process.env.NODE_ENV === 'production' ? false : true
             }
         })
+
         wind.setMenu(null)
         wind.loadURL(args.path).then(() => {
             if (wind && !wind.isDestroyed()) {
@@ -281,7 +272,7 @@ export class Windows {
                     wind.webContents.toggleDevTools()
                 }
             }
-        })
+        }, () => {})
         return wind
     }
 }
