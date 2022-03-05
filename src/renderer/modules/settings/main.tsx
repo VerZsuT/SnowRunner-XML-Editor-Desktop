@@ -1,51 +1,26 @@
 import { PureComponent } from 'react'
 import { render } from 'react-dom'
-import { t, mainProcess, Lang, MAIN } from 'scripts'
+import type IConfigSettings from 'main/types/IConfigSettings'
+import Lang from 'main/enums/Lang'
+import { MAIN } from 'scripts/funcs'
+import main from 'scripts/main'
+import localize from 'scripts/localize'
+import config from 'scripts/config'
+
+import GameFolder from 'modules/components/GameFolder'
+import ErrorHandler from 'modules/components/ErrorHandler'
+
+import { Button, Checkbox, List, ListItemText, MenuItem, Select } from '@mui/material'
+import Container from 'modules/components/styled/Container'
+import Label from './styled/Label'
+import ListItem from './styled/ListItem'
+import ListItemButton from './styled/ListItemButton'
+import ListItemIcon from './styled/ListItemIcon'
 import 'styles/settings'
-import { GameFolder } from 'modules/components/GameFolder'
 
-import {
-    Button,
-    Checkbox,
-    InputLabel,
-    List,
-    ListItem as MuiListItem,
-    ListItemButton as MuiListItemButton,
-    ListItemIcon as MuiListItemIcon,
-    ListItemText,
-    MenuItem,
-    Select,
-    styled
-} from '@mui/material'
-import { ErrorHandler } from 'modules/components/ErrorHandler'
-import { Container } from 'modules/components/styled'
+const { saveBackup, reload } = main
 
-const { config } = window.provider
-const { saveBackup, reload } = mainProcess
-
-const ListItem = styled(MuiListItem)({
-    paddingTop: 0,
-    paddingBottom: 0
-})
-
-const ListItemButton = styled(MuiListItemButton)({
-    paddingTop: 0,
-    paddingBottom: 0
-})
-
-const ListItemIcon = styled(MuiListItemIcon)({
-    minWidth: '40px'
-})
-
-const Label = styled(InputLabel)({
-    color: 'black',
-    display: 'inline-block',
-    position: 'relative',
-    top: '8px',
-    marginRight: '15px'
-})
-
-interface IState {
+interface IState extends IConfigSettings {
     updates: boolean
     DLC: boolean
     mods: boolean
@@ -61,9 +36,7 @@ class Settings extends PureComponent<any, IState> {
         super(props)
 
         this.state = {
-            updates: config.settings.updates,
-            DLC: config.settings.DLC,
-            mods: config.settings.mods,
+            ...config.settings,
             lang: config.lang,
             saveBackup: false,
             pathToInitial: ''
@@ -77,15 +50,15 @@ class Settings extends PureComponent<any, IState> {
 
     render() {
         return (<>
-            <ErrorHandler preload={window.settingsPreload} />
+            <ErrorHandler/>
             <Container>
                 <Label id='language-label'>
-                    {t.LANGUAGE_MENU_ITEM_LABEL}
+                    {localize.LANGUAGE_MENU_ITEM_LABEL}
                 </Label>
                 <Select
                     labelId='language-label'
                     value={this.state.lang}
-                    onChange={e => this.onChangeSetting('lang', e.target.value)}
+                    onChange={this.onChangeSetting('lang', true)}
                     variant='standard'
                 >
                     {this.langOptions}
@@ -94,45 +67,10 @@ class Settings extends PureComponent<any, IState> {
             <GameFolder onChange={this.onChangePath} preload={window.settingsPreload} />
             <Container>
                 <List>
-                    <ListItem>
-                        <ListItemButton onClick={() => this.onChangeSetting('updates')}>
-                            <ListItemIcon>
-                                <Checkbox
-                                    edge='start'
-                                    checked={this.state.updates}
-                                    tabIndex={-1}
-                                    disableRipple
-                                />
-                            </ListItemIcon>
-                            <ListItemText primary={t.UPDATES_LABEL} />
-                        </ListItemButton>
-                    </ListItem>
-                    <ListItem>
-                        <ListItemButton onClick={() => this.onChangeSetting('DLC')}>
-                            <ListItemIcon>
-                                <Checkbox
-                                    edge='start'
-                                    checked={this.state.DLC}
-                                    tabIndex={-1}
-                                    disableRipple
-                                />
-                            </ListItemIcon>
-                            <ListItemText primary={t.DLC_LABEL} />
-                        </ListItemButton>
-                    </ListItem>
-                    <ListItem>
-                        <ListItemButton onClick={() => this.onChangeSetting('mods')}>
-                            <ListItemIcon>
-                                <Checkbox
-                                    edge='start'
-                                    checked={this.state.mods}
-                                    tabIndex={-1}
-                                    disableRipple
-                                />
-                            </ListItemIcon>
-                            <ListItemText primary={t.MODS_LABEL} />
-                        </ListItemButton>
-                    </ListItem>
+                    <this.CheckboxItem name='updates' text={localize.UPDATES_LABEL}/>
+                    <this.CheckboxItem name='DLC' text={localize.DLC_LABEL}/>
+                    <this.CheckboxItem name='mods' text={localize.MODS_LABEL}/>
+                    <this.CheckboxItem name='advancedMode' text={localize.ADVANCED_MODE_LABEL}/>
                 </List>
             </Container>
             <Button
@@ -140,15 +78,44 @@ class Settings extends PureComponent<any, IState> {
                 onClick={this.save}
                 variant='contained'
             >
-                {t.SAVE_BUTTON}
+                {localize.SAVE_BUTTON}
             </Button>
         </>)
     }
 
-    private onChangeSetting = (name: string, value?: string | boolean) => {
-        this.setState({
-            [name]: value ?? !this.state[name]
-        } as unknown as IState)
+    private onChangeSetting = (name: keyof IState, withValue?: boolean) => {
+        if (withValue) {
+            return (event: any) => {
+                this.setState({
+                    [name]: event.target.value
+                } as unknown as IState)    
+            }
+        }
+        else {
+            return () => {
+                this.setState({
+                    [name]: !this.state[name]
+                } as unknown as IState)    
+            }
+        }
+    }
+    
+    private CheckboxItem = (props: {name: keyof IState, text: string}) => {
+        return (
+            <ListItem>
+                <ListItemButton onClick={this.onChangeSetting(props.name)}>
+                    <ListItemIcon>
+                        <Checkbox
+                            edge='start'
+                            checked={!!this.state[props.name]}
+                            tabIndex={-1}
+                            disableRipple
+                        />
+                    </ListItemIcon>
+                    <ListItemText primary={props.text} />
+                </ListItemButton>
+            </ListItem>
+        )
     }
 
     private onChangePath = (newPath: string) => {
@@ -172,10 +139,11 @@ class Settings extends PureComponent<any, IState> {
 
         if (this.state.saveBackup) {
             saveBackup(true)
-        } else {
+        }
+        else {
             reload()
         }
     }
 }
 
-render(<Settings />, MAIN)
+render(<Settings/>, MAIN)

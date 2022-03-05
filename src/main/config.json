@@ -1,5 +1,5 @@
 {
-	"version": "0.6.7d",
+	"version": "0.6.8",
 	"lang": null,
 	"buildType": "dev",
 	"initial": null,
@@ -8,7 +8,8 @@
 		"limits": true,
 		"DLC": true,
 		"mods": true,
-		"showWhatsNew": false
+		"showWhatsNew": false,
+		"advancedMode": false
 	},
 	"sizes": {
 		"mods": {},
