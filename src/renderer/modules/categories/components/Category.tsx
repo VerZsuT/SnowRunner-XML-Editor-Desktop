@@ -1,44 +1,17 @@
 import { PureComponent } from 'react'
-import { mainProcess, t } from 'scripts'
-import { ListType } from 'modules/list/enums'
+import localize from 'scripts/localize'
+import main from 'scripts/main'
+import local from 'scripts/storage'
+import ListType from 'modules/list/enums/ListType'
+import Loading from 'modules/components/Loading'
 
-import {
-    Card as MuiCard,
-    CardActionArea,
-    CardMedia as MuiCardMedia,
-    CardContent as MuiCardContent,
-    Typography,
-    CardMediaProps,
-    TypographyProps,
-    styled
-} from '@mui/material'
-import { Loading } from 'modules/components/Loading'
+import { CardActionArea } from '@mui/material'
+import Card from '../styled/Card'
+import CardMedia from '../styled/CardMedia'
+import CardContent from '../styled/CardContent'
+import CardTitle from '../styled/CardTitle'
 
-const { local } = window.provider
-const { openList } = mainProcess
-
-const Card = styled(MuiCard)({
-    maxWidth: '50%'
-})
-
-const CardMedia = styled((props: CardMediaProps<'img'>) =>
-    <MuiCardMedia component='img' {...props}/>
-)({
-    height: '250px'
-})
-
-const CardContent = styled(MuiCardContent)({
-    padding: '5px'
-})
-
-const CardTitle = styled((props: TypographyProps<'div'>) =>
-    <Typography
-        component='div'
-        variant='h6'
-    {...props}/>
-)({
-    textAlign: 'center'
-})
+const { openList } = main
 
 interface IProps {
     name: ListType
@@ -48,11 +21,12 @@ interface IState {
     isLoading: boolean
 }
 
-export class Category extends PureComponent<IProps, IState> {
+export default class Category extends PureComponent<IProps, IState> {
     private imgSrc: string
 
     constructor(props: IProps) {
         super(props)
+
         this.imgSrc = require(`images/category/${this.props.name}_category.png`)
         this.state = {
             isLoading: false
@@ -66,7 +40,7 @@ export class Category extends PureComponent<IProps, IState> {
                     <CardMedia image={this.imgSrc}/>
                     <CardContent>
                         <CardTitle>
-                            {t[`${this.props.name.toUpperCase()}_CATEGORY_TITLE`]}
+                            {localize[`${this.props.name.toUpperCase()}_CATEGORY_TITLE`]}
                         </CardTitle>
                     </CardContent>
                 </CardActionArea>
@@ -76,9 +50,7 @@ export class Category extends PureComponent<IProps, IState> {
     }
 
     private openList = () => {
-        this.setState({
-            isLoading: true
-        })
+        this.setState({ isLoading: true })
         local.set('listType', this.props.name)
         openList()
     }

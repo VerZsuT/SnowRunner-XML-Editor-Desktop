@@ -1,22 +1,17 @@
 import { PureComponent } from 'react'
-import {
-    Backdrop,
-    CircularProgress,
-    styled
-} from '@mui/material'
 
-const StyledBackdrop = styled(Backdrop)({
-    color: '#fff',
-    zIndex: 30
-})
+import { CircularProgress } from '@mui/material'
+import StyledBackdrop from './styled/StyledBackdrop'
 
 interface IProps {
     open: boolean
 }
 
-export class Loading extends PureComponent<IProps> {
+export default class Loading extends PureComponent<IProps> {
     render() {
-        if (!this.props.open) return null
+        if (!this.props.open)
+            return null
+        
         return (
             <StyledBackdrop open={this.props.open}>
                 <CircularProgress color='inherit' />

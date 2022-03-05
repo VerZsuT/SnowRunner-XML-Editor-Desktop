@@ -1,14 +1,8 @@
 import { PureComponent } from 'react'
-import { t } from 'scripts'
+import localize from 'scripts/localize'
 
-import {
-    Dialog,
-    DialogContent,
-    DialogContentText as MuiDialogContentText,
-    DialogActions,
-    Button,
-    styled
-} from '@mui/material'
+import { Dialog, DialogContent, DialogActions, Button } from '@mui/material'
+import DialogContentText from './styled/DialogContentText'
 
 interface IProps {
     open: boolean
@@ -21,11 +15,7 @@ interface IProps {
     }[]
 }
 
-const DialogContentText = styled(MuiDialogContentText)({
-    color: 'black'
-})
-
-export class Confirm extends PureComponent<IProps> {
+export default class Confirm extends PureComponent<IProps> {
     render() {
         return (
             <div>
@@ -47,10 +37,10 @@ export class Confirm extends PureComponent<IProps> {
                             )
                             : <>
                                 <Button onClick={this.props.onSuccess} autoFocus>
-                                    {t.DIALOG_YES}
+                                    {localize.DIALOG_YES}
                                 </Button>
                                 <Button onClick={this.props.onClose}>
-                                    {t.DIALOG_NO}
+                                    {localize.DIALOG_NO}
                                 </Button>
                               </>
                         }

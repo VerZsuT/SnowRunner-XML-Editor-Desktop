@@ -1,26 +1,13 @@
 import { MouseEvent, PureComponent } from 'react'
+import type IInputParams from 'templates/types/IInputParams'
 import { IMainContext, MainContext } from '../MainContext'
-import { ResetMenu } from './ResetMenu'
+import ResetMenu from './ResetMenu'
 
-import {
-    TextField as MuiTextField,
-    Typography,
-    TextFieldProps,
-    styled
-} from '@mui/material'
-import { GridContainer } from 'modules/components/styled'
+import { Typography } from '@mui/material'
+import GridContainer from 'modules/components/styled/GridContainer'
+import CoordinateField from '../styled/CoordinateField'
 
-const { basename } = window.editorPreload
-
-const CoordinateField = styled((props: TextFieldProps) =>
-    <MuiTextField 
-        type='number'
-        size='small'
-    {...props}/>
-)({
-    width: '80px',
-    marginRight: '10px'
-})
+const { basename } = window.service
 
 interface IProps {
     item: IInputParams
@@ -46,7 +33,7 @@ interface IState {
     }
 }
 
-export class Coordinates extends PureComponent<IProps, IState> {
+export default class Coordinates extends PureComponent<IProps, IState> {
     static contextType = MainContext
     declare context: IMainContext
     private componentID = `coordinates-${Math.round(Math.random()*100)}`
@@ -73,7 +60,9 @@ export class Coordinates extends PureComponent<IProps, IState> {
     }
 
     render() {
-        if (this.props.isShow === false) return null
+        if (this.props.isShow === false) {
+            return null
+        }
         
         return (<>
             <ResetMenu
@@ -94,29 +83,23 @@ export class Coordinates extends PureComponent<IProps, IState> {
             >
                 <Typography>X: </Typography>
                 <CoordinateField
-                    inputProps={{
-                        step: this.props.item.step
-                    }}
+                    inputProps={{ step: this.props.item.step }}
                     value={this.state.x}
-                    onBlur={e => this.save({ x: Number(e.target.value) })}
+                    onBlur={e => this.save({ x: +e.target.value })}
                     onChange={e => this.setState({ x: e.target.value })}
                 />
                 <Typography>Y: </Typography>
                 <CoordinateField
-                    inputProps={{
-                        step: this.props.item.step
-                    }}
+                    inputProps={{ step: this.props.item.step }}
                     value={this.state.y}
-                    onBlur={e => this.save({ y: Number(e.target.value) })}
+                    onBlur={e => this.save({ y: +e.target.value })}
                     onChange={e => this.setState({ y: e.target.value })}
                 />
                 <Typography>Z: </Typography>
                 <CoordinateField
-                    inputProps={{
-                        step: this.props.item.step
-                    }}
+                    inputProps={{ step: this.props.item.step }}
                     value={this.state.z}
-                    onBlur={e => this.save({ z: Number(e.target.value) })}
+                    onBlur={e => this.save({ z: +e.target.value })}
                     onChange={e => this.setState({ z: e.target.value })}
                 />
             </GridContainer>
@@ -127,29 +110,34 @@ export class Coordinates extends PureComponent<IProps, IState> {
         const newValue = `(${x}; ${y}; ${z})`
         const { fileDOM } = this.context
 
-        if (!fileDOM.querySelector(this.props.item.selector)) {
+        if (!fileDOM(this.props.item.selector).length) {
             const array = this.props.item.selector.split('>').map(value => value.trim())
             const name = array.pop()
             const rootSelector = array.join(' > ')
-            fileDOM.querySelector(rootSelector).append(fileDOM.createElement(name))
+
+            fileDOM(rootSelector).eq(0).append(`<${name}></${name}>`)
         }
 
         this.props.setValue(this.props.item.selector, this.props.item.name, newValue)
-        this.setState({
-            ...this.parse(newValue)
-        })
+        this.setState({ ...this.parse(newValue) })
     }
 
     private parse(value: string) {
+        let array: string[]
+        let x: string
+        let y: string
+        let z: string
+
         if (!value) {
             return { x: 0, y: 0, z: 0 }
         }
-        let array = value.replace('(', '').replace(')', '').replaceAll(' ', '').split(';')
+
+        array = value.replace('(', '').replace(')', '').replaceAll(' ', '').split(';')
         if (array.length === 1) {
-            array = value.replace('(', '').replace(')', '').replaceAll(' ', '').split(',')
+            array = value.replace('(', '').replace(')', '').replaceAll(' ', '').split(',');
         }
-        const [x, y, z] = array
-        return { x: Number(x), y: Number(y), z: Number(z) }
+        [x, y, z] = array
+        return { x: +x, y: +y, z: +z }
     }
 
     private initImportExport() {
@@ -170,6 +158,7 @@ export class Coordinates extends PureComponent<IProps, IState> {
             forImport: {
                 setValue: (value: string) => {
                     const thisValue = `(${this.state.x}; ${this.state.y}; ${this.state.z})`
+
                     if (thisValue !== value) {
                         this.save(this.parse(value))
                     }
@@ -198,9 +187,8 @@ export class Coordinates extends PureComponent<IProps, IState> {
 
     private reset = () => {
         const defaultValue = this.props.getDefaultValue()
-        this.setState({
-            menu: {}
-        })
+
+        this.setState({ menu: {} })
         if (defaultValue !== undefined) {
             this.save(this.parse(defaultValue))
         }

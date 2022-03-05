@@ -1,22 +1,15 @@
 import { ChangeEvent, FocusEvent, MouseEvent, PureComponent } from 'react'
-import { InputType, NumberType } from 'scripts'
+import type IInputParams from 'templates/types/IInputParams'
+import InputType from 'templates/enums/InputType'
+import NumberType from 'templates/enums/NumberType'
+import config from 'scripts/config'
+
 import { IMainContext, MainContext } from '../MainContext'
-import { ResetMenu } from './ResetMenu'
+import ResetMenu from './ResetMenu'
 
-import {
-    TextField as MuiTextField,
-    TextFieldProps,
-    styled
-} from '@mui/material'
+import TextField from '../styled/TextField'
 
-const { config } = window.provider
-const { basename } = window.editorPreload
-
-const TextField = styled((props: TextFieldProps) =>
-    <MuiTextField size='small' {...props}/>
-)({
-    width: '100px'
-})
+const { basename } = window.service
 
 interface IProps {
     item: IInputParams
@@ -41,7 +34,7 @@ interface IState {
     }
 }
 
-export class Input extends PureComponent<IProps, IState> {
+export default class Input extends PureComponent<IProps, IState> {
     static contextType = MainContext
     declare context: IMainContext
     private componentID = `input-${Math.round(Math.random()*100)}`
@@ -80,9 +73,12 @@ export class Input extends PureComponent<IProps, IState> {
     }
 
     render() {
-        if (this.props.isShow === false) return null
-        
-        const placeholder = this.props.getDefaultValue()
+        let placeholder: string
+
+        if (this.props.isShow === false) {
+            return null
+        }
+        placeholder = this.props.getDefaultValue()
 
         return (<>
             <ResetMenu
@@ -98,9 +94,7 @@ export class Input extends PureComponent<IProps, IState> {
                     id={this.componentID}
                     value={this.state.value}
                     type='number'
-                    inputProps={{
-                        step: this.props.item.step
-                    }}
+                    inputProps={{ step: this.props.item.step }}
                     onBlur={this.saveValue}
                     onChange={this.onValueChange}
                     placeholder={placeholder}
@@ -139,29 +133,26 @@ export class Input extends PureComponent<IProps, IState> {
             newVal = this.defaultValue
         }
 
-        if (!fileDOM.querySelector(this.props.item.selector)) {
+        if (!fileDOM(this.props.item.selector).length) {
             const array = this.props.item.selector.split('>').map(value => value.trim())
             const name = array.pop().split('[')[0]
             const rootSelector = array.join(' > ')
-            fileDOM.querySelector(rootSelector).append(fileDOM.createElement(name))
+
+            fileDOM(rootSelector).eq(0).append(`<${name}></${name}>`)
         }
         this.props.setValue(this.props.item.selector, this.props.item.name, String(newVal))
-        this.setState({
-            value: newVal
-        })
+        this.setState({ value: newVal })
     }
 
     private onValueChange = (e: ChangeEvent<HTMLInputElement>) => {
         let newVal: string | number = e.target.value
 
         if (this.props.item.type !== InputType.text && newVal !== '') {
-            newVal = this.limit(Number(newVal))
+            newVal = this.limit(+newVal)
         }
 
-        this.changeColor(Number(newVal))
-        this.setState({
-            value: newVal
-        })
+        this.changeColor(+newVal)
+        this.setState({ value: newVal })
     }
 
     private limit(num: number) {
@@ -180,7 +171,9 @@ export class Input extends PureComponent<IProps, IState> {
     private changeColor = (value: number) => {
         let newVal: number = value
 
-        if (value === null || value === NaN) newVal = 0
+        if (value === null || value === NaN) {
+            newVal = 0
+        }
         if (this.props.item.areas) {
             let color = '#ced4da'
 
@@ -191,22 +184,25 @@ export class Input extends PureComponent<IProps, IState> {
                     if (newVal >= area[0] && newVal <= area[1]) {
                         if (areaName === 'red') {
                             color = `hsl(0deg, 100%, 50%)`
-                        } else if (areaName === 'green') {
+                        }
+                        else if (areaName === 'green') {
                             color = `hsl(120deg, 100%, 50%)`
-                        } else if (areaName === 'yellow') {
+                        }
+                        else if (areaName === 'yellow') {
                             color = `rgb(235 235 12)`
                         }
                     }
                 }
             }
-            this.setState({
-                borderColor: color
-            })
+            this.setState({ borderColor: color })
         }
     }
 
     private initIE() {
         const { addParam, filePath } = this.context
+
+        if (this.props.item.type === 'file')
+            return
 
         addParam({
             id: this.componentID,
@@ -241,9 +237,8 @@ export class Input extends PureComponent<IProps, IState> {
 
     private reset = () => {
         const defaultValue = this.props.getDefaultValue()
-        this.setState({
-            menu: {}
-        })
+
+        this.setState({ menu: {} })
         if (defaultValue !== undefined) {
             this.saveValue({ target: { value: defaultValue } } as FocusEvent<HTMLInputElement>)
         }

@@ -1,27 +1,16 @@
 import { PureComponent } from 'react'
-import { Lang, mainProcess, t } from 'scripts'
+import localize from 'scripts/localize'
+import Lang from 'main/enums/Lang'
+import config from 'scripts/config'
+import main from 'scripts/main'
 
-import {
-    MenuItem,
-    Select,
-    SelectChangeEvent,
-    InputLabel,
-    styled
-} from '@mui/material'
-import { Container } from './styled'
+import { MenuItem, Select, SelectChangeEvent } from '@mui/material'
+import Container from './styled/Container'
+import Label from './styled/Label'
 
-const { config } = window.provider
-const { reload } = mainProcess
+const { reload } = main
 
-const Label = styled(InputLabel)({
-    color: 'black',
-    display: 'inline-block',
-    position: 'relative',
-    top: '8px',
-    marginRight: '15px'
-})
-
-export class Language extends PureComponent {
+export default class Language extends PureComponent {
     private langOptions: JSX.Element[]
 
     constructor(props: any) {
@@ -38,7 +27,7 @@ export class Language extends PureComponent {
         return (
             <Container>
                 <Label id='lang-label'>
-                    {t.LANGUAGE_MENU_ITEM_LABEL}
+                    {localize.LANGUAGE_MENU_ITEM_LABEL}
                 </Label>
                 <Select
                     labelId='lang-label'

@@ -1,22 +1,14 @@
 import { PureComponent, MouseEvent } from 'react'
-import { InputType } from 'scripts'
+import type IGroupParams from 'templates/types/IGroupParams'
+import InputType from 'templates/enums/InputType'
+
 import { IMainContext, MainContext } from '../MainContext'
-import { Parameter } from './Parameter'
-import { ResetMenu } from './ResetMenu'
+import Parameter from './Parameter'
+import ResetMenu from './ResetMenu'
+import GroupAccordion from 'modules/components/GroupAccordion'
 
-import { GroupAccordion } from 'modules/components/GroupAccordion'
-
-import {
-    Table as MuiTable,
-    TableBody,
-    styled
-} from '@mui/material'
-
-const Table = styled(MuiTable)({
-    width: '100%',
-    position: 'relative',
-    bottom: '8px'
-})
+import { TableBody } from '@mui/material'
+import Table from '../styled/Table'
 
 interface IProps {
     item: IGroupParams
@@ -39,7 +31,7 @@ interface IState {
     openedGroup: number
 }
 
-export class Group extends PureComponent<IProps, IState> {
+export default class Group extends PureComponent<IProps, IState> {
     static contextType = MainContext
     declare context: IMainContext
 
@@ -118,11 +110,15 @@ export class Group extends PureComponent<IProps, IState> {
             />
         )
 
-        if (this.props.isShow === false) return <div style={{height: '47px'}}>
-            {defaultParams}
-            {filesParams}
-            {groups}
-        </div>
+        if (this.props.isShow === false) {
+            return (
+                <div style={{height: '47px'}}>
+                    {defaultParams}
+                    {filesParams}
+                    {groups}
+                </div>
+            )
+        }
 
         return <>
             <ResetMenu
@@ -152,7 +148,6 @@ export class Group extends PureComponent<IProps, IState> {
                     </Table>
                 : null}
                 {filesParams}
-
                 {groups}
             </GroupAccordion>
         </>
@@ -160,9 +155,7 @@ export class Group extends PureComponent<IProps, IState> {
 
     private toggleExporting = () => {
         if (this.props.isParentExport) {
-            this.setState({
-                isExport: !this.state.isExport
-            })
+            this.setState({ isExport: !this.state.isExport })
         }
     }
 
@@ -176,9 +169,7 @@ export class Group extends PureComponent<IProps, IState> {
         for (const itemID in this.toReset) {
             this.toReset[itemID]()
         }
-        this.setState({
-            menu: {}
-        })
+        this.setState({ menu: {} })
     }
 
     private regReset = (id: string, func: () => void) => {
@@ -195,13 +186,16 @@ export class Group extends PureComponent<IProps, IState> {
             files: [],
             default: []
         }
+
         for (const groupItem of this.props.item.groupItems) {
             if (groupItem.paramType === 'group') {
                 groups.push(groupItem)
-            } else {
+            }
+            else {
                 if (groupItem.type === InputType.file) {
                     params.files.push(groupItem)
-                } else {
+                }
+                else {
                     params.default.push(groupItem)
                 }
             }
@@ -218,6 +212,5 @@ export class Group extends PureComponent<IProps, IState> {
                 y: e.clientY
             }
         })
-
     }
 }

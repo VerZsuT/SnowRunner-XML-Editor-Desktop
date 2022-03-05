@@ -1,27 +1,15 @@
 import { PureComponent } from 'react'
-import {
-    Snackbar,
-    Alert as MuiAlert,
-    styled
-} from '@mui/material'
 
-const Alert = styled(MuiAlert)({
-    width: '100%'
-})
+import { Snackbar } from '@mui/material'
+import Alert from './styled/Alert'
 
 interface IState {
     isOpen: boolean
     message: string
 }
 
-interface IProps {
-    preload?: {
-        errorHandler(error: string): void
-    }
-}
-
-export class ErrorHandler extends PureComponent<IProps, IState> {
-    constructor(props: IProps) {
+export default class ErrorHandler extends PureComponent<any, IState> {
+    constructor(props: any) {
         super(props)
         this.state = {
             isOpen: false,
@@ -31,9 +19,6 @@ export class ErrorHandler extends PureComponent<IProps, IState> {
     
     componentDidMount(): void {
         window['errorHandler'] = this.errorHandler
-        if (this.props.preload) {
-            this.props.preload.errorHandler = this.errorHandler
-        }
     }
 
     render() {
@@ -43,10 +28,7 @@ export class ErrorHandler extends PureComponent<IProps, IState> {
                 autoHideDuration={6000}
                 onClose={this.onClose}
             >
-                <Alert
-                    onClose={this.onClose}
-                    severity='error'
-                >
+                <Alert onClose={this.onClose} severity='error'>
                     {this.state.message}
                 </Alert>
             </Snackbar>
@@ -61,8 +43,6 @@ export class ErrorHandler extends PureComponent<IProps, IState> {
     }
 
     private onClose = () => {
-        this.setState({
-            isOpen: false
-        })
+        this.setState({ isOpen: false })
     }
 }

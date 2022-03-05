@@ -1,10 +1,7 @@
 import { PureComponent } from 'react'
-import {
-    Snackbar,
-    Alert as AlertMUI,
-    AlertColor,
-    styled
-} from '@mui/material'
+
+import { Snackbar, AlertColor } from '@mui/material'
+import StyledAlert from './styled/StyledAlert'
 
 interface IProps {
     show: boolean
@@ -13,11 +10,7 @@ interface IProps {
     type: AlertColor
 }
 
-const StyledAlert = styled(AlertMUI)({
-    width: '100%'
-})
-
-export class Alert extends PureComponent<IProps> {
+export default class Alert extends PureComponent<IProps> {
     render() {
         return (
             <Snackbar

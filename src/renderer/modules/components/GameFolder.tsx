@@ -1,39 +1,19 @@
 import { PureComponent } from 'react'
-import { t } from 'scripts'
+import localize from 'scripts/localize'
+import config from 'scripts/config'
+import type IFolder from 'modules/settings/types/IFolder'
 
-import {
-    TextField,
-    IconButton as MuiIconButton,
-    FormControlLabel,
-    Checkbox,
-    styled
-} from '@mui/material'
-import {
-    FileOpen as FileOpenIcon,
-    FolderOpen as FolderOpenIcon
-} from '@mui/icons-material'
-import { Container } from './styled'
-
-const { config } = window.provider
-
-const TopContainer = styled(Container)({
-    marginTop: '15px'
-})
-
-const BottomContainer = styled(Container)({
-    marginBottom: '15px'
-})
-
-const IconButton = styled(MuiIconButton)({
-    position: 'relative',
-    top: '12px'
-})
+import { TextField, FormControlLabel, Checkbox } from '@mui/material'
+import { FileOpen as FileOpenIcon, FolderOpen as FolderOpenIcon } from '@mui/icons-material'
+import TopContainer from './styled/TopContainer'
+import IconButton from './styled/IconButton'
+import BottomContainer from './styled/BottomContainer'
 
 interface IProps {
     onChange(path: string): void
     preload: {
-        getInitial(): Folder
-        getGameFolder(): Folder
+        getInitial(): IFolder
+        getGameFolder(): IFolder
     }
 }
 
@@ -42,7 +22,7 @@ interface IState {
     gameFolder: string
 }
 
-export class GameFolder extends PureComponent<IProps, IState> {
+export default class GameFolder extends PureComponent<IProps, IState> {
     constructor(props: IProps) {
         super(props)
 
@@ -56,7 +36,7 @@ export class GameFolder extends PureComponent<IProps, IState> {
         return (<>
             <TopContainer>
                 <TextField
-                    label={this.state.manual ? t.INITIAL_LABEL : t.GAME_FOLDER_LABEL}
+                    label={this.state.manual ? localize.INITIAL_LABEL : localize.GAME_FOLDER_LABEL}
                     title={this.state.gameFolder}
                     value={this.state.gameFolder}
                     InputProps={{ readOnly: true }}
@@ -72,33 +52,35 @@ export class GameFolder extends PureComponent<IProps, IState> {
             <BottomContainer>
                 <FormControlLabel
                     control={
-                        <Checkbox
-                            checked={this.state.manual}
-                            onChange={this.toggleManual}
-                        />
+                        <Checkbox checked={this.state.manual} onChange={this.toggleManual}/>
                     }
-                    label={t.MANUAL_INITIAL}
-                    title={t.AUTO_INITIAL_TITLE}
+                    label={localize.MANUAL_INITIAL}
+                    title={localize.AUTO_INITIAL_TITLE}
                 />
             </BottomContainer>
         </>)
     }
 
     private getFolder = () => {
-        let data: Folder
+        let data: IFolder
+
         if (this.state.manual) {
             data = this.props.preload.getInitial()
-            if (!data) return
+
+            if (!data) {
+                return
+            }
             data.folder = data.initial
-        } else {
+        }
+        else {
             data = this.props.preload.getGameFolder()
         }
 
-        if (!data) return
+        if (!data) {
+            return
+        }
 
-        this.setState({
-            gameFolder: data.folder
-        })
+        this.setState({ gameFolder: data.folder })
         this.props.onChange(data.initial)
     }
 

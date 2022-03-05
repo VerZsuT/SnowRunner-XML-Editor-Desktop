@@ -1,27 +1,26 @@
 import { PureComponent } from 'react'
-import { mainProcess, t } from 'scripts'
-import { InnerListItem } from './InnerListItem'
+import type IItem from '../types/IItem'
+import ListType from '../enums/ListType'
+import SrcType from '../enums/SrcType'
+import localize from 'scripts/localize'
+import config from 'scripts/config'
+import local from 'scripts/storage'
+import main from 'scripts/main'
+
 import { IListContext, ListContext } from '../FilterContext'
-import { ListType, SrcType } from '../enums'
-import { ModsPopup } from './ModsPopup'
+import InnerListItem from './InnerListItem'
+import ModsPopup from './ModsPopup'
+import Confirm from 'modules/components/Confirm'
 
-import { Button, styled } from '@mui/material'
-import { Confirm } from 'modules/components/Confirm'
-import { Container, GridContainer } from 'modules/components/styled'
+import { Button } from '@mui/material'
+import Container from 'modules/components/styled/Container'
+import ListContainer from '../styled/ListContainer'
 
-const { reload } = mainProcess
-const { config, local } = window.provider
-
-const ListContainer = styled(GridContainer)({
-    marginTop: '145px',
-    justifyContent: 'space-evenly',
-    overflow: 'auto',
-    height: 'calc(100vh - 145px)'
-})
+const { reload } = main
 
 interface IProps {
     srcType: SrcType
-    items: Item[]
+    items: IItem[]
     opened?: boolean
 }
 
@@ -30,7 +29,7 @@ interface IState {
     showConfirm: boolean
 }
 
-export class InnerList extends PureComponent<IProps, IState> {
+export default class InnerList extends PureComponent<IProps, IState> {
     static contextType = ListContext
     declare context: IListContext
 
@@ -47,7 +46,9 @@ export class InnerList extends PureComponent<IProps, IState> {
     }
 
     render() {
-        if (this.props.opened === false) return null
+        if (this.props.opened === false) {
+            return null
+        }
         
         const listType = local.get('listType') as ListType
         const items = this.props.items.map(item =>
@@ -56,18 +57,20 @@ export class InnerList extends PureComponent<IProps, IState> {
                 type={listType}
                 key={item.path}
                 listId={this.id}
+                modId={item.modId}
+                dlc={item.dlcName}
             />
         )
 
-        if (this.props.srcType === SrcType.mods && !config.settings.mods) return null
-        if (this.props.srcType === SrcType.dlc && !config.settings.DLC) return null
+        if (this.props.srcType === SrcType.mods && !config.settings.mods)
+            return null
+        if (this.props.srcType === SrcType.dlc && !config.settings.DLC)
+            return null
 
         return (<>
             <ListContainer
                 id={this.id}
-                style={{
-                    display: this.props.opened ? 'flex' : 'none'
-                }}
+                style={{ display: this.props.opened ? 'flex' : 'none' }}
             >
                 {this.props.srcType === SrcType.mods ? <>
                     <Container style={{ textAlign: 'center' }}>
@@ -77,7 +80,7 @@ export class InnerList extends PureComponent<IProps, IState> {
                             onClick={this.showModsPopup}
                             style={{ marginBottom: '10px' }}
                         >
-                            {t.MODS_CHANGE_BUTTON}
+                            {localize.MODS_CHANGE_BUTTON}
                         </Button>
                     </Container>
                     <ModsPopup
@@ -85,7 +88,7 @@ export class InnerList extends PureComponent<IProps, IState> {
                         hidePopup={this.hideModsPopup}
                     />
                     <Confirm
-                        text={t.RELAUNCH_PROMPT}
+                        text={localize.RELAUNCH_PROMPT}
                         open={this.state.showConfirm}
                         onSuccess={() => reload()}
                         onClose={this.hideReloadConfirm}
@@ -97,9 +100,7 @@ export class InnerList extends PureComponent<IProps, IState> {
     }
 
     private hideModsPopup = (isReload?: boolean) => {
-        this.setState({
-            showModsPopup: false
-        })
+        this.setState({ showModsPopup: false })
         if (isReload) {
             setTimeout(() => {
                 this.showReloadConfirm()
@@ -108,20 +109,14 @@ export class InnerList extends PureComponent<IProps, IState> {
     }
 
     private showModsPopup = () => {
-        this.setState({
-            showModsPopup: true
-        })
+        this.setState({ showModsPopup: true })
     }
 
     private showReloadConfirm = () => {
-        this.setState({
-            showConfirm: true
-        })
+        this.setState({ showConfirm: true })
     }
 
     private hideReloadConfirm = () => {
-        this.setState({
-            showConfirm: false
-        })
+        this.setState({ showConfirm: false })
     }
 }

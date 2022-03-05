@@ -1,51 +1,54 @@
-import { PureComponent, ReactNode } from 'react'
-import {
-    Modal,
-    Box,
-    Typography,
-    BoxProps,
-    styled
-} from '@mui/material'
+import { PureComponent } from 'react'
+import type { ReactNode } from 'react'
 
-const PopupBox = styled((props: BoxProps) => 
-    <Box boxShadow={24} {...props} />
-)({
-    display: 'inline-block',
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    backgroundColor: 'white',
-    border: '1px solid gray',
-    borderRadius: '5px',
-    textAlign: 'center',
-    paddingTop: '10px',
-    paddingBottom: '15px',
-    paddingLeft: '10px',
-    paddingRight: '10px'
-})
+import { Modal, Typography } from '@mui/material'
+import PopupBox from './styled/PopupBox'
+import Container from './styled/Container'
 
 interface IProps {
     show: boolean
     title?: string
-    onClose(): void
+    onClose?(): void
     children: ReactNode
+    keepMounted?: boolean
+    minWidth?: number
+    minHeight?: number
 }
 
-export class Popup extends PureComponent<IProps> {
+export default class Popup extends PureComponent<IProps> {
     render() {
         return (
             <Modal
                 open={this.props.show}
-                onClose={this.props.onClose}
+                onClose={this.props.onClose ?? (()=>{})}
+                keepMounted={this.props.keepMounted ?? false}
             >
-                <PopupBox>
+                <PopupBox
+                    style={{
+                        minWidth: this.props.minWidth ?? 300,
+                        minHeight: this.props.minHeight ?? 400,
+                        padding: 0
+                    }}
+                >
                     {this.props.title?
-                        <Typography variant='h6' component='h2'>
+                        <Typography
+                            variant='h6'
+                            component='h2'
+                            style={{
+                                padding: 3,
+                                background: '#1c7dca',
+                                color: 'white',
+                                borderTopRightRadius: '4px',
+                                borderTopLeftRadius: '4px',
+                                border: 'none'
+                            }}
+                        >
                             {this.props.title}
                         </Typography>
                     : null}
-                    {this.props.children ?? null}
+                    <Container style={{ padding: 10 }}>
+                        {this.props.children ?? null}
+                    </Container>
                 </PopupBox>
             </Modal>
         )

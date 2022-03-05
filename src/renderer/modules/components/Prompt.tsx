@@ -1,15 +1,8 @@
 import { PureComponent } from 'react'
-import { t } from 'scripts'
+import localize from 'scripts/localize'
 
-import {
-    Dialog,
-    DialogContent,
-    DialogContentText as MuiDialogContentText,
-    DialogActions,
-    Button,
-    styled,
-    TextField
-} from '@mui/material'
+import { Dialog, DialogContent, DialogActions, Button, TextField } from '@mui/material'
+import DialogContentText from './styled/DialogContentText'
 
 interface IProps {
     open: boolean
@@ -26,13 +19,10 @@ interface IState {
     value: string
 }
 
-const DialogContentText = styled(MuiDialogContentText)({
-    color: 'black'
-})
-
-export class Prompt extends PureComponent<IProps, IState> {
+export default class Prompt extends PureComponent<IProps, IState> {
     constructor(props: IProps) {
         super(props)
+        
         this.state = {
             value: this.props.default
         }
@@ -63,7 +53,7 @@ export class Prompt extends PureComponent<IProps, IState> {
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={this.onSuccess} autoFocus>
-                            {t.DIALOG_ENTER}
+                            {localize.DIALOG_ENTER}
                         </Button>
                     </DialogActions>
                 </Dialog>
@@ -73,9 +63,7 @@ export class Prompt extends PureComponent<IProps, IState> {
 
     private onSuccess = () => {
         this.props.onSuccess(this.state.value? this.state.value : this.props.default)
-        this.setState({
-            value: ''
-        })
+        this.setState({ value: '' })
     }
 
     private onChange = (value: string) => {
