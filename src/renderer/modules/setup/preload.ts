@@ -1,37 +1,35 @@
-import { existsSync, readFileSync } from 'fs'
+import { contextBridge } from 'electron'
+import { existsSync } from 'fs'
 import { join, basename } from 'path'
-import 'scripts/provider'
-import { t, mainProcess } from 'scripts'
+import type ISetupPreload from './types/ISetupPreload'
+import 'scripts/mainPreload'
+import localize from 'scripts/localize'
+import main from 'scripts/main'
 
-const { alertSync, openDialog, openInitialDialog } = mainProcess
+const { openDialog, openInitialDialog } = main
 
-class SetupPreload implements ISetupPreload {
-    errorHandler = (text: string) => {
-        alertSync(text)
-    }
-
-    existsSync = existsSync
-    join = join
-    readFileSync = readFileSync
-
-    getGameFolder = () => {
+const setupPreload: ISetupPreload = {
+    getGameFolder: () => {
         const result = openDialog()
+        let folder: string
+        let paths: string[]
+        let existed = ''
+
         if (!result) {
-            this.errorHandler(t.EMPTY_FOLDER_ERROR)
+            window['errorHandler'](localize.EMPTY_FOLDER_ERROR)
             return
         }
-        const folder = result
-        const paths = [
-            join(folder, 'steamapps', 'common', 'SnowRunner', 'preload', 'paks', 'client', 'initial.pak'),
-            join(folder, 'common', 'SnowRunner', 'preload', 'paks', 'client', 'initial.pak'),
-            join(folder, 'SnowRunner', 'en_us', 'preload', 'paks', 'client', 'initial.pak'),
-            join(folder, 'en_us', 'preload', 'paks', 'client', 'initial.pak'),
-            join(folder, 'preload', 'paks', 'client', 'initial.pak'),
-            join(folder, 'paks', 'client', 'initial.pak'),
-            join(folder, 'client', 'initial.pak'),
+        folder = result
+        paths = [
+            join(folder, 'steamapps/common/SnowRunner/preload/paks/client/initial.pak'),
+            join(folder, 'common/SnowRunner/preload/paks/client/initial.pak'),
+            join(folder, 'SnowRunner/en_us/preload/paks/client/initial.pak'),
+            join(folder, 'en_us/preload/paks/client/initial.pak'),
+            join(folder, 'preload/paks/client/initial.pak'),
+            join(folder, 'paks/client/initial.pak'),
+            join(folder, 'client/initial.pak'),
             join(folder, 'initial.pak')
         ]
-        let existed = ''
         for (const path of paths) {
             if (existsSync(path)) {
                 existed = path
@@ -40,7 +38,7 @@ class SetupPreload implements ISetupPreload {
         }
 
         if (!existed) {
-            this.errorHandler(t.INVALID_FOLDER_ERROR)
+            window['errorHandler'](localize.INVALID_FOLDER_ERROR)
             return
         }
 
@@ -48,18 +46,16 @@ class SetupPreload implements ISetupPreload {
             folder: folder,
             initial: existed
         }
-    }
-
-    getInitial = () => {
+    },
+    getInitial: () => {
         const result = openInitialDialog()
+
         if (!result || basename(result) !== 'initial.pak' || !existsSync(result)) {
-            this.errorHandler(t.INVALID_INITIAL_ERROR)
+            window['errorHandler'](localize.INVALID_INITIAL_ERROR)
             return
         }
-        return {
-            initial: result
-        }
+        return { initial: result }
     }
 }
 
-window.setupPreload = new SetupPreload()
+contextBridge.exposeInMainWorld('setupPreload', setupPreload)
