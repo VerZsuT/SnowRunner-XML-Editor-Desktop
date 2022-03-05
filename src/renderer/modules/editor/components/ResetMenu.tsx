@@ -1,6 +1,7 @@
-import { Menu, MenuItem } from '@mui/material'
 import { PureComponent } from 'react'
-import { t } from 'scripts'
+import localize from 'scripts/localize'
+
+import { Menu, MenuItem } from '@mui/material'
 
 interface IProps {
     onReset(): void
@@ -11,7 +12,7 @@ interface IProps {
     text?: string
 }
 
-export class ResetMenu extends PureComponent<IProps> {
+export default class ResetMenu extends PureComponent<IProps> {
     render() {
         return (
             <Menu
@@ -24,7 +25,7 @@ export class ResetMenu extends PureComponent<IProps> {
                 }}
             >
                 <MenuItem onClick={this.props.onReset}>
-                    {t.RESET_MENU_ITEM_LABEL}{this.props.text ? ` "${this.props.text}"` : ''}
+                    {localize.RESET_MENU_ITEM_LABEL}{this.props.text ? ` "${this.props.text}"` : ''}
                 </MenuItem>
             </Menu>
         )

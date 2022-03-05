@@ -1,22 +1,26 @@
 import { app } from 'electron'
 import { existsSync, readFileSync, rmSync, writeFileSync } from 'fs'
 import { join } from 'path'
-import { DialogType, Lang } from '../enums'
+import type IConfig from '../types/IConfig'
+import DialogType from '../enums/DialogType'
+import Lang from '../enums/Lang'
+
 import { clearTemp, paths } from '../service'
-import { Dialog } from './Dialog'
-import { Settings } from './Settings'
+import Dialog from './Dialog'
+import Settings from './Settings'
 
 /** Отвечает за работу с `config.json` */
-export class Config {
-    static obj: ProgramConfig = this.getConfig()
-
+export default class Config {
     private static settings = Settings.obj
+    
+    public static obj: IConfig = this.getConfig()
 
     /** Сохранить изменения в `config.json` */
-    static save = () => {
+    public static save = () => {
         try {
             writeFileSync(paths.config, JSON.stringify(this.obj, null, '\t'))
-        } catch {
+        }
+        catch {
             throw new Error('SAVE_CONFIG_ERROR')
         }
     }
@@ -25,48 +29,60 @@ export class Config {
      * Сбросить `config.json` на "заводскую" версию.
      * @param noReload отмена перезагрузки после завершения.
      */
-    static reset = (noReload?: boolean): void => {
-        this.obj.initial = null
-        this.obj.dlc = []
-        this.obj.mods = {
-            length: 0,
-            items: {}
-        }
-        this.obj.settings = {
-            updates: true,
-            limits: true,
-            DLC: true,
-            mods: true,
-            showWhatsNew: true
-        }
-        this.obj.sizes = {
+    public static reset = (noReload?: boolean): void => {
+        this.obj = {
+            version: this.obj.version,
+            buildType: this.obj.buildType,
+            favorites: [],
             initial: null,
-            mods: {}
+            dlc: [],
+            mods: {
+                length: 0,
+                items: {}
+            },
+            settings: {
+                updates: true,
+                limits: true,
+                DLC: true,
+                mods: true,
+                showWhatsNew: true,
+                advancedMode: false
+            },
+            sizes: {
+                initial: null,
+                mods: {}
+            },
+            lang: null
         }
-        this.obj.lang = Lang.EN
 
         clearTemp()
         if (!noReload) {
             app.relaunch()
             app.quit()
-        } else {
+        }
+        else {
             this.save()
         }
     }
 
-    /** Экспортирует `config.json`. */
-    static export = (toBackups = true) => {
+    /** Экспортировать `config.json`. */
+    public static export = (toBackups = true) => {
         if (toBackups) {
-            if (!existsSync(paths.backupFolder)) return false
+            if (!existsSync(paths.backupFolder))
+                return false
+
             writeFileSync(`${paths.backupFolder}\\config.json`, JSON.stringify(this.obj))
             return true
-        } else {
+        }
+        else {
             const path = Dialog.openDialog({
                 extention: 'ecf',
                 type: DialogType.save,
                 defaultPath: 'config.ecf'
             }) as string
-            if (!path) return false
+
+            if (!path)
+                return false
 
             const copy = {
                 ...this.obj,
@@ -77,23 +93,25 @@ export class Config {
         }
     }
 
-    /** Импортирует `config.json`. */
-    static import = (fromBackups = true) => {
+    /** Импортировать `config.json`. */
+    public static import = (fromBackups = true) => {
         let exportedConfig: any
+
         if (fromBackups) {
-            if (!existsSync(join(paths.backupFolder, 'config.json'))) {
+            if (!existsSync(join(paths.backupFolder, 'config.json')))
                 return false
-            }
+
             exportedConfig = JSON.parse(readFileSync(`${paths.backupFolder}\\config.json`).toString())
-        } else {
-            const path = Dialog.openDialog({
-                extention: 'ecf'
-            }) as string
-            if (!path || !existsSync(path)) return false
-            exportedConfig = JSON.parse(readFileSync(path).toString())
-            if (exportedConfig.type !== 'SXMLE_CONFIGURATION') {
+        }
+        else {
+            const path = Dialog.openDialog({ extention: 'ecf' }) as string
+            if (!path || !existsSync(path))
                 return false
-            }
+
+            exportedConfig = JSON.parse(readFileSync(path).toString())
+            if (exportedConfig.type !== 'SXMLE_CONFIGURATION')
+                return false
+            
             delete exportedConfig.type
         }
 
@@ -102,23 +120,35 @@ export class Config {
 
         this.before066d(exportedConfig)
         this.before067(exportedConfig)
+        this.before068(exportedConfig)
 
         exportedConfig.version = this.obj.version
         writeFileSync(paths.config, JSON.stringify(exportedConfig))
-        if (fromBackups) rmSync(`${paths.backupFolder}\\config.json`, { force: true })
+        if (fromBackups) {
+            rmSync(`${paths.backupFolder}\\config.json`, { force: true })
+        }
         return true
     }
 
+    /** Преобразовать к версии 0.6.8. */
+    private static before068(exportedConfig: any) {
+        if (exportedConfig.version < '0.6.8') {
+            exportedConfig.settings.advancedMode = false
+        }
+    }
+
+    /** Преобразовать к версии 0.6.7. */
     private static before067(exportedConfig: any) {
         if (exportedConfig.version < '0.6.7') {
+            const mods: any = {}
+            let length = 0
+
             exportedConfig.initial = exportedConfig.paths.initial
             delete exportedConfig.paths
 
             exportedConfig.dlc = [...exportedConfig.dlcList]
             delete exportedConfig.dlcList
 
-            const mods: any = {}
-            let length = 0
             if (exportedConfig.modsList.length !== 0) {
                 for (const modName in exportedConfig.modsList) {
                     if (modName !== 'length') {
@@ -141,6 +171,7 @@ export class Config {
         }
     }
 
+    /** Преобразовать к версии 0.6.6d. */
     private static before066d(exportedConfig: any) {
         if (exportedConfig.version < '0.6.6d') {
             delete exportedConfig.sums
@@ -151,8 +182,10 @@ export class Config {
         }
     }
 
+    /** Получить текущую конфигурацию. */
     private static getConfig() {
-        const config: ProgramConfig = JSON.parse(readFileSync(paths.config).toString())
+        const config: IConfig = JSON.parse(readFileSync(paths.config).toString())
+        
         if (config.lang === null) {
             const locale = Intl.DateTimeFormat().resolvedOptions().locale.split('-')[1]
             config.lang = Object.keys(Lang).includes(locale)? locale as Lang : Lang.EN

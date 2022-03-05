@@ -1,39 +1,17 @@
 import { PureComponent } from 'react'
 import { render } from 'react-dom'
+import { MAIN } from 'scripts/funcs'
+import localize from 'scripts/localize'
+import config from 'scripts/config'
+import main from 'scripts/main'
+
+import VersionTitle from './styled/VersionTitle'
+import ButtonsGrid from './styled/ButtonsGrid'
+import Button from './styled/Button'
 import 'styles/update'
-import { MAIN, mainProcess, t } from 'scripts'
 
-import {
-    Button as MuiButton,
-    Typography,
-    ButtonProps,
-    TypographyProps,
-    styled
-} from '@mui/material'
-import { GridContainer } from 'modules/components/styled'
-
-const { config, ipcRenderer } = window.provider
-const { update } = mainProcess
-
-const VersionTitle = styled((props: TypographyProps) => 
-    <Typography variant='h6' {...props}/>
-)({
-    marginTop: '20px'
-})
-
-const ButtonsGrid = styled(GridContainer)({
-    position: 'absolute',
-    bottom: '20px',
-    justifyContent: 'center'
-})
-
-const Button = styled((props: ButtonProps) => 
-    <MuiButton variant='contained' {...props}/>
-)({
-    marginLeft: '5px',
-    marginRight: '5px',
-    textTransform: 'none'
-})
+const { on } = window.ipc
+const { update } = main
 
 interface IState {
     version: string
@@ -55,12 +33,12 @@ class UpdateWindow extends PureComponent<any, IState> {
     render() {
         return (<> 
             <VersionTitle>
-                {t.ALLOW_NEW_VERSION_AUTO} (v{this.state.version})
+                {localize.ALLOW_NEW_VERSION_AUTO} (v{this.state.version})
             </VersionTitle>
             <ButtonsGrid>
-                <Button color='success' onClick={this.update}>{t.UPDATE}</Button>
-                <Button color='error' onClick={this.ignore}>{t.IGNORE}</Button>
-                <Button color='primary' onClick={this.close}>{t.CLOSE}</Button>
+                <Button color='success' onClick={this.update}>{localize.UPDATE}</Button>
+                <Button color='error' onClick={this.ignore}>{localize.IGNORE}</Button>
+                <Button color='primary' onClick={this.close}>{localize.CLOSE}</Button>
             </ButtonsGrid>
         </>)
     }
@@ -79,12 +57,10 @@ class UpdateWindow extends PureComponent<any, IState> {
     }
 
     private listenIPC() {
-        ipcRenderer.on('content', (_event, data) => {
-            this.setState({
-                version: data
-            })
+        on('content', (_event, data) => {
+            this.setState({ version: data })
         })
     }
 }
 
-render(<UpdateWindow />, MAIN)
+render(<UpdateWindow/>, MAIN)

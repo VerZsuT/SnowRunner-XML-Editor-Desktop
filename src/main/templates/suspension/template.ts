@@ -1,25 +1,22 @@
-import {
-	Template,
-	Group,
-	Select,
-	ForEach,
-	Number,
-	Text
-} from '../items'
-import { NameType, NumberType } from '../enums'
+import type ITemplate from '../types/ITemplate'
+import NameType from '../enums/NameType'
+import NumberType from '../enums/NumberType'
+
+import { Template, Group, ForEach, Number } from '../items'
 import { getSelectors } from '../service'
 import { descs, texts } from './texts'
-import { unlockGroup } from '../presets'
+import unlockGroup from '../presets/unlockGroup'
 
 const selectors = getSelectors(function () {
 	const suspensionSet = `SuspensionSetVariants.SuspensionSet${this.forEach}`
 	const suspensionSetText = `${suspensionSet}.GameData.UiDesc`
 	const suspension = `${suspensionSet}.Suspension${this.forEachBy(2)}`
 	const gameData = `${suspensionSet}.GameData`
+	
 	return { suspensionSet, suspensionSetText, suspension, gameData }
 })
 
-export const suspension = <ITemplate>{
+export default <ITemplate>{
 	selector: 'SuspensionSetVariants',
 	template: Template(selectors, [
 		ForEach(selectors.suspensionSet, [

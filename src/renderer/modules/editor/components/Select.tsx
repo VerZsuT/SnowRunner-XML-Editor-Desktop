@@ -1,14 +1,12 @@
 import { MouseEvent, PureComponent } from 'react'
+import type ISelectParams from 'templates/types/ISelectParams'
+
 import { IMainContext, MainContext } from '../MainContext'
-import { ResetMenu } from './ResetMenu'
+import ResetMenu from './ResetMenu'
 
-import {
-    MenuItem,
-    Select as SelectMUI,
-    SelectChangeEvent
-} from '@mui/material'
+import { MenuItem, Select as SelectMUI, SelectChangeEvent } from '@mui/material'
 
-const { basename } = window.editorPreload
+const { basename } = window.service
 
 interface IProps {
     item: ISelectParams
@@ -32,7 +30,7 @@ interface IState {
     }
 }
 
-export class Select extends PureComponent<IProps, IState> {
+export default class Select extends PureComponent<IProps, IState> {
     static contextType = MainContext
     declare context: IMainContext
     private componentID = `select-${Math.round(Math.random()*100)}`
@@ -47,10 +45,7 @@ export class Select extends PureComponent<IProps, IState> {
             menu: {}
         }
         this.options = this.props.item.selectParams.map(option =>
-            <MenuItem
-                key={option.value}
-                value={option.value}
-            >
+            <MenuItem key={option.value} value={option.value}>
                 {option.text}
             </MenuItem>
         )
@@ -62,14 +57,15 @@ export class Select extends PureComponent<IProps, IState> {
     }
 
     componentWillUnmount() {
-        if (this.props.unregReset) {
+        if (this.props.unregReset)
             this.props.unregReset(this.componentID)
-        }
+
         this.context.removeParam(this.componentID)
     }
 
     render() {
-        if (this.props.isShow === false) return null
+        if (this.props.isShow === false)
+            return null
 
         return (<>
             <ResetMenu
@@ -80,7 +76,6 @@ export class Select extends PureComponent<IProps, IState> {
                 y={this.state.menu.y ?? 0}
                 text={this.props.item.text}
             />
-            
                 <SelectMUI
                     id={this.componentID}
                     value={this.state.value}
@@ -97,18 +92,16 @@ export class Select extends PureComponent<IProps, IState> {
         const newVal = e.target.value
         const { fileDOM } = this.context
 
-        if (!fileDOM.querySelector(this.props.item.selector)) {
+        if (!fileDOM(this.props.item.selector).length) {
             const array = this.props.item.selector.split('>').map(value => value.trim())
             const name = array.pop()
             const rootSelector = array.join(' > ')
-            const element = fileDOM.createElement(name)
-            fileDOM.querySelector(rootSelector).append(element)
+
+            fileDOM(rootSelector).eq(0).append(`<${name}></${name}>`)
         }
 
         this.props.setValue(this.props.item.selector, this.props.item.name, newVal)
-        this.setState({
-            value: newVal
-        })
+        this.setState({ value: newVal })
     }
 
     private initIE() {
@@ -149,18 +142,15 @@ export class Select extends PureComponent<IProps, IState> {
     }
 
     private initReset() {
-        if (this.props.regReset) {
+        if (this.props.regReset)
             this.props.regReset(this.componentID, this.reset)
-        }
     }
 
     private reset = () => {
         const defaultValue = this.props.getDefaultValue()
-        this.setState({
-            menu: {}
-        })
-        if (defaultValue !== undefined) {
+
+        this.setState({ menu: {} })
+        if (defaultValue !== undefined)
             this.setValue({ target: { value: defaultValue } } as SelectChangeEvent)
-        }
     }
 }

@@ -1,9 +1,8 @@
-import { FormEvent, PureComponent, createRef, RefObject } from 'react'
-import { setHotKey, mainProcess } from 'scripts'
+import { FormEvent, PureComponent } from 'react'
+import { setHotKey } from 'scripts/funcs'
+import main from 'scripts/main'
 import { Message } from '../service'
-import { AutoComplete } from './AutoComplete'
-
-const { toggleDevTools } = mainProcess
+import AutoComplete from './AutoComplete'
 
 interface IProps {
     listeners: {
@@ -17,7 +16,7 @@ interface IState {
 }
 
 /** Класс консоли программы. */
-export class EditorConsole extends PureComponent<IProps, IState> {
+export default class EditorConsole extends PureComponent<IProps, IState> {
     constructor(props: IProps) {
         super(props)
 
@@ -28,7 +27,6 @@ export class EditorConsole extends PureComponent<IProps, IState> {
 
     componentDidMount() {
         this.setEnterHotkey()
-        this.setDevtoolsHotkey()
     }
 
     render() {
@@ -48,23 +46,7 @@ export class EditorConsole extends PureComponent<IProps, IState> {
     }
 
     private onInput = (e: FormEvent<HTMLInputElement>) => {
-        this.setState({
-            cmd: e.currentTarget.value
-        })
-    }
-
-    private setDevtoolsHotkey() {
-        setHotKey({
-            key: 'KeyI',
-            ctrlKey: true,
-            shiftKey: true
-        }, () => {
-            toggleDevTools()
-        })
-
-        document.querySelector('#messages').addEventListener('click', () => {
-            (document.querySelector('#input') as HTMLInputElement).focus()
-        })
+        this.setState({ cmd: e.currentTarget.value })
     }
 
     private setEnterHotkey() {
@@ -76,34 +58,35 @@ export class EditorConsole extends PureComponent<IProps, IState> {
 
             if (this.props.listeners[cmd]) {
                 const error = this.props.listeners[cmd](params.slice(1))
-                if (error) this.props.onError(error)
-            } else {
+
+                if (error) {
+                    this.props.onError(error)
+                }
+            }
+            else {
                 this.props.onError(Message.warn(`Неверная команда '${cmd}'`))
             }
 
-            this.setState({
-                cmd: ''
-            });
+            this.setState({ cmd: '' });
             (document.querySelector('#input') as HTMLInputElement).focus()
         })
     }
 
     private onAutoInput = (value: string) => {
         const params = this.state.cmd.split(' ')
+
         if (value.startsWith(params.slice(-1)[0]) && params.slice(-1)[0] !== value) {
             params.pop()
         }
         params.push(value)
 
         if (params.length > 1) {
-            this.setState({
-                cmd: params.join(' ')
-            })
-        } else {
-            this.setState({
-                cmd: params[0]
-            })
+            this.setState({ cmd: params.join(' ') })
         }
+        else {
+            this.setState({ cmd: params[0] });
+        }
+
         (document.querySelector('#input') as HTMLInputElement).focus()
     }
 }

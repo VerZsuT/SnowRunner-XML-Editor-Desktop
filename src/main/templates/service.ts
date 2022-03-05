@@ -1,4 +1,4 @@
-import { Texts } from 'main/classes/Texts'
+import Texts from '../classes/Texts'
 
 const texts = Texts.obj
 

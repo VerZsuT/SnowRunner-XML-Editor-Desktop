@@ -1,8 +1,10 @@
 import { FormEvent, PureComponent } from 'react'
-import { setHotKey, Lang } from 'scripts'
+import type IACKeys from '../types/IACKeys'
+import type IACPresets from '../types/IACPresets'
+import Lang from 'main/enums/Lang'
+import { setHotKey } from 'scripts/funcs'
+import config from 'scripts/config'
 import { help } from '../service'
-
-const { config } = window.provider
 
 interface IProps {
     cmd: string
@@ -14,7 +16,7 @@ interface IState {
 }
 
 /** Подсказки для автоввода. */
-export class AutoComplete extends PureComponent<IProps, IState> {
+export default class AutoComplete extends PureComponent<IProps, IState> {
     private items: string[]
 
     constructor(props: IProps) {
@@ -31,6 +33,7 @@ export class AutoComplete extends PureComponent<IProps, IState> {
 
     render() {
         let value = this.state.value
+
         this.items = this.getItems(this.props.cmd.split(' ').filter(value => value !== ''))
         if (!this.items.includes(value)) {
             value = this.items[0]
@@ -59,15 +62,11 @@ export class AutoComplete extends PureComponent<IProps, IState> {
             eventName: 'keydown'
         }, () => {
             if (!this.items.includes(this.state.value)) {
-                this.setState({
-                    value: this.items[1]
-                })
+                this.setState({ value: this.items[1] })
                 return
             }
             if (this.items.indexOf(this.state.value) === this.items.length - 1) {
-                this.setState({
-                    value: this.items[0]
-                })
+                this.setState({ value: this.items[0] })
                 return
             }
             this.setState({
@@ -80,15 +79,11 @@ export class AutoComplete extends PureComponent<IProps, IState> {
             eventName: 'keydown'
         }, () => {
             if (!this.items.includes(this.state.value)) {
-                this.setState({
-                    value: this.items[this.items.length - 1]
-                })
+                this.setState({ value: this.items[this.items.length - 1] })
                 return
             }
             if (this.items.indexOf(this.state.value) === 0) {
-                this.setState({
-                    value: this.items[this.items.length - 1]
-                })
+                this.setState({ value: this.items[this.items.length - 1] })
                 return
             }
             this.setState({
@@ -102,7 +97,8 @@ export class AutoComplete extends PureComponent<IProps, IState> {
         }, () => {
             if (!this.items.includes(this.state.value)) {
                 this.props.onInput(this.items[0])
-            } else {
+            }
+            else {
                 this.props.onInput(this.state.value)
             }
         })
@@ -115,17 +111,20 @@ export class AutoComplete extends PureComponent<IProps, IState> {
     /** Возвращает список подсказок. */
     private getItems(params: string[], k = keys): string[] {
         const items: string[] = []
+
         if (params.length === 0 && k !== keys) {
             if (k instanceof Array) {
                 for (const key of k) {
                     items.push(key)
                 }
-            } else if (k !== undefined) {
+            }
+            else if (k !== undefined) {
                 for (const key in k) {
                     items.push(key)
                 }
             }
         }
+
         if (params.length === 1) {
             if (k instanceof Array) {
                 for (const key of k) {
@@ -133,19 +132,23 @@ export class AutoComplete extends PureComponent<IProps, IState> {
                         items.push(key)
                     }
                 }
-            } else if (k !== undefined) {
+            }
+            else if (k !== undefined) {
                 for (const key in k) {
                     if (key === params[0]) {
                         items.push(...this.getItems(params.slice(1), k[params[0]]))
-                    } else if (key.startsWith(params[0])) {
+                    }
+                    else if (key.startsWith(params[0])) {
                         items.push(key)
                     }
-
                 }
             }
-        } else {
+        }
+        else {
             if (params.length > 0) {
-                if (!k) return
+                if (!k) {
+                    return
+                }
                 items.push(...this.getItems(params.slice(1), k[params[0]]))
             }
         }
@@ -154,12 +157,12 @@ export class AutoComplete extends PureComponent<IProps, IState> {
 }
 
 /** Для каждого ключа в списке устанавливает переданное значение. */
-function setPreset(keys: string[], value: string | string[]): ACKeys {
+function setPreset(keys: string[], value: string | string[]): IACKeys {
     const object = {}
-
     for (const key of keys) {
         object[key] = value
     }
+
     return object
 }
 
@@ -167,7 +170,7 @@ function setPreset(keys: string[], value: string | string[]): ACKeys {
  * Объединяет переданные параметры в один объект.
  * Парметры-объекты добавляются неизменными, значение элемента массива становится ключом, а значение устанавливается `null`.
 */
-function combine(...params: (Object | string[])[]): ACKeys {
+function combine(...params: (Object | string[])[]): IACKeys {
     const object = {}
 
     for (const objOrArr of params) {
@@ -175,7 +178,8 @@ function combine(...params: (Object | string[])[]): ACKeys {
             for (const item of objOrArr) {
                 object[item] = null
             }
-        } else if (typeof objOrArr === 'object') {
+        }
+        else if (typeof objOrArr === 'object') {
             for (const name in objOrArr) {
                 object[name] = objOrArr[name]
             }
@@ -189,14 +193,16 @@ function getModsList(): string[] {
     const array = []
 
     for (const modId in config.mods.items) {
-        if (modId === 'length') continue
+        if (modId === 'length') {
+            continue
+        }
         array.push(modId)
     }
     return array
 }
 
 /** Набор пресетов. */
-const presets: ACPresets = {
+const presets: IACPresets = {
     bool: [
         'true',
         'false'
@@ -212,7 +218,7 @@ const presets: ACPresets = {
     ]
 }
 
-const keys: ACKeys = combine([
+const keys: IACKeys = combine([
     'exit',
     'quit',
     'version',

@@ -1,17 +1,18 @@
 import { PureComponent } from 'react'
-import { mainProcess, t } from 'scripts'
+import localize from 'scripts/localize'
+import config from 'scripts/config'
+import main from 'scripts/main'
 
 import { Button } from '@mui/material'
-import { Container } from 'modules/components/styled'
+import Container from 'modules/components/styled/Container'
 
-const { saveBackup } = mainProcess
-const { config } = window.provider
+const { saveBackup } = main
 
 interface IProps {
     pathToInitial: string
 }
 
-export class Save extends PureComponent<IProps> {
+export default class Save extends PureComponent<IProps> {
     render() {
         return (
             <Container>
@@ -20,7 +21,7 @@ export class Save extends PureComponent<IProps> {
                     variant='contained'
                     onClick={this.save}
                 >
-                    {t.SAVE_BUTTON}
+                    {localize.SAVE_BUTTON}
                 </Button>
             </Container>
         )
@@ -28,7 +29,7 @@ export class Save extends PureComponent<IProps> {
 
     private save = () => {
         if (!this.props.pathToInitial) {
-            window['errorHandler'](t.NO_GAME_FOLDER)
+            window['errorHandler'](localize.NO_GAME_FOLDER)
             return
         }
 

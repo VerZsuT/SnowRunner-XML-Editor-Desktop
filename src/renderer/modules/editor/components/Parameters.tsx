@@ -1,7 +1,8 @@
 import { Fragment, PureComponent } from 'react'
 import { IMainContext, MainContext } from '../MainContext'
-import { Parameter } from './Parameter'
-import { Group } from './Group'
+
+import Parameter from './Parameter'
+import Group from './Group'
 
 interface IProps {
     isExporting: boolean
@@ -15,12 +16,13 @@ interface IState {
     openedGroup: number
 }
 
-export class Parameters extends PureComponent<IProps, IState> {
+export default class Parameters extends PureComponent<IProps, IState> {
     static contextType = MainContext
     declare context: IMainContext
 
     constructor(props: IProps) {
         super(props)
+        
         this.state = {
             openedGroup: null
         }

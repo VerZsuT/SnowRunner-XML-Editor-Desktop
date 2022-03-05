@@ -1,22 +1,14 @@
 import { PureComponent } from 'react'
 import { render } from 'react-dom'
+import { MAIN } from 'scripts/funcs'
+
+import { Typography, CircularProgress } from '@mui/material'
+import Container from 'modules/components/styled/Container'
+import GridContainer from 'modules/components/styled/GridContainer'
+import LinearProgress from './styled/LinearProgress'
 import 'styles/loading'
-import { MAIN } from 'scripts'
 
-import {
-    Typography,
-    LinearProgress as MuiLinearProgress,
-    CircularProgress,
-    styled
-} from '@mui/material'
-import { Container, GridContainer } from 'modules/components/styled'
-
-const { ipcRenderer } = window.provider
-
-const LinearProgress = styled(MuiLinearProgress)({
-    marginTop: '17px',
-    marginBottom: '17px'
-})
+const { on } = window.ipc
 
 interface IState {
     allCount: number
@@ -74,33 +66,25 @@ class Loading extends PureComponent<any, IState> {
     }
 
     private listenIPC() {
-        ipcRenderer.once('count', (_e, msg) => {
-            this.setState({
-                allCount: +msg
-            })
-        })
-        ipcRenderer.once('download', () => {
-            this.setState({
-                isDownload: true
-            })
-        })
-        ipcRenderer.on('success', () => {
+        on('count', (_e, msg) =>
+            this.setState({ allCount: +msg })
+        )
+        on('download', () =>
+            this.setState({ isDownload: true })
+        )
+        on('success', () =>
             this.setState({
                 percent: 0,
                 loadedCount: this.state.loadedCount + 1
             })
-        })
-        ipcRenderer.on('fileName', (_e, msg) => {
-            this.setState({
-                name: msg
-            })
-        })
-        ipcRenderer.on('percent', (_event, msg) => {
-            this.setState({
-                percent: +msg
-            })
-        })
+        )
+        on('fileName', (_e, msg) =>
+            this.setState({ name: msg })
+        )
+        on('percent', (_event, msg) =>
+            this.setState({ percent: +msg })
+        )
     }
 }
 
-render(<Loading />, MAIN)
+render(<Loading/>, MAIN)

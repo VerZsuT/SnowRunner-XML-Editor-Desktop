@@ -1,6 +1,7 @@
-import { MessageType } from './enums'
-import { Typography } from '@mui/material'
 import { Fragment } from 'react'
+import MessageType from './enums/MessageType'
+
+import { Typography } from '@mui/material'
 
 /** Агрумент любого содержания (кроме пустого) */
 export const ANY = 'ANY_ARGUMENT'
@@ -42,6 +43,7 @@ export class Message {
     static create(text: string, type?: MessageType) {
         const items = text.split('\n')
         let color = 'white'
+
         switch (type) {
             case MessageType.warn:
                 color = 'yellow'
@@ -81,6 +83,7 @@ export function addCheck<T extends ArgsCheckObj>(listener: CmdListener<T>, argsC
     const checkArgs = (args: string[]) => {
         let checkedArgs: { [name: string]: string } = {}
         let counter = 0
+
         if (!argsCheckObj) {
             return { checkedArgs: checkedArgs as CheckedArgs<T> }
         }
@@ -88,16 +91,19 @@ export function addCheck<T extends ArgsCheckObj>(listener: CmdListener<T>, argsC
             let isOptional = false
             let checker = argsCheckObj[propName]
             const argument = args[counter]
+
             if (checker instanceof Array && checker[0] === OPTIONAL) {
                 checker = checker[1] as unknown as T[Extract<keyof T, string>]
                 isOptional = true
             }
 
             if (argument === undefined) {
+                let message: any
+
                 if (isOptional) {
                     continue
                 }
-                const message = checker instanceof Array ? `[${checker.join(' | ')}]` : checker
+                message = checker instanceof Array ? `[${checker.join(' | ')}]` : checker
                 return { error: Message.warn(`Недостаточно аргументов для выполнения команды. На позиции ${counter + 1} ожидалось ${message}`) }
 
             }
@@ -105,15 +111,18 @@ export function addCheck<T extends ArgsCheckObj>(listener: CmdListener<T>, argsC
             if (checker === ANY) {
                 continue
             }
+
             if (checker instanceof Array) {
                 if (!checker.includes(argument)) {
                     return { error: Message.warn(`Неверный аргумент на позиции ${counter + 1}. Ожидалось [${checker.join(' | ')}]`) }
                 }
-            } else {
+            }
+            else {
                 if (checker !== argument) {
                     return { error: Message.warn(`Неверный аргумент на позиции ${counter + 1}. Ожидалось ${checker}`) }
                 }
             }
+
             ++counter
             checkedArgs[propName] = argument
         }
@@ -122,9 +131,11 @@ export function addCheck<T extends ArgsCheckObj>(listener: CmdListener<T>, argsC
 
     return ((args: string[]) => {
         const { checkedArgs, error } = checkArgs(args)
+
         if (checkedArgs) {
             listener(checkedArgs)
-        } else if (error) {
+        }
+        else if (error) {
             return error
         }
     })
@@ -154,8 +165,11 @@ export const help = {
     exec: '- exec [-force] \nПозволяет использовать систему SXMLE_Execute.\nФлаг -force убирает предупреждения о DLC, модах и версии игры.',
     toString: () => {
         const array = []
+        
         for (const cmdName in help) {
-            if (cmdName === 'toString') continue
+            if (cmdName === 'toString') {
+                continue
+            }
             array.push(help[cmdName])
         }
         return array.join('\n\n')

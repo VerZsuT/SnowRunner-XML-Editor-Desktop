@@ -1,15 +1,12 @@
-import {
-	Template,
-	Group,
-	Select,
-	ForEach,
-	Number,
-	Text
-} from '../items'
-import { NameType, NumberType } from '../enums'
+import type ITemplate from '../types/ITemplate'
+import NameType from '../enums/NameType'
+import NumberType from '../enums/NumberType'
+
+import { Template, Group, Select, ForEach, Number } from '../items'
 import { getSelectors } from '../service'
 import { descs, texts } from './texts'
-import { gear, unlockGroup } from '../presets'
+import unlockGroup from '../presets/unlockGroup'
+import gear from '../presets/gear'
 
 const selectors = getSelectors(function () {
 	const gearbox = `GearboxVariants.Gearbox${this.forEach}`
@@ -19,10 +16,11 @@ const selectors = getSelectors(function () {
 	const gearItem = `${gearbox}.Gear${this.forEachBy(2)}`
 	const gameData = `${gearbox}.GameData`
 	const gearboxParams = `${gameData}.GearboxParams`
+	
 	return { gearbox, gearboxText, reverseGear, highGear, gearItem, gameData, gearboxParams }
 })
 
-export const gearbox = <ITemplate>{
+export default <ITemplate>{
 	selector: 'GearboxVariants',
 	template: Template(selectors, [
 		ForEach(selectors.gearbox, [

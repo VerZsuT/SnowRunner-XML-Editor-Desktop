@@ -1,12 +1,7 @@
-import {
-    Group,
-    Select,
-    Number
-} from '../items'
-import {
-    NumberType
-} from '../enums'
-import { Config } from 'main/classes/Config'
+import NumberType from '../enums/NumberType'
+
+import { Group, Select, Number } from '../items'
+import Config from 'main/classes/Config'
 
 const texts = {
     RU: {
@@ -53,7 +48,7 @@ const descs = {
     }
 }[Config.obj.lang]
 
-export const unlockGroup = (selector: string) => Group({
+export default (selector: string) => Group({
     name: texts.unlockGroupName,
     defaultSelector: selector
 }, [

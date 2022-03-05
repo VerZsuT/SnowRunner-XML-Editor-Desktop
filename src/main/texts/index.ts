@@ -3,6 +3,11 @@ export { EN } from './EN'
 export { DE } from './DE'
 
 export interface ITexts {
+	DROP_TEXT: string
+	ADVANCED_MODE_LABEL: string
+	ACTIONS_MENU: string
+	PROC_FILE_ERROR: string
+	ADMIN_REQUIRED_MESSAGE: string
 	DIALOG_ENTER: string
 	TRAILERS_NOT_SUPPORT: string
 	TRUCK_TRAILERS: string

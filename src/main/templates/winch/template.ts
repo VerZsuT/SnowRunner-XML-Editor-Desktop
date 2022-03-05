@@ -1,24 +1,21 @@
-import {
-	Template,
-	Group,
-	Select,
-	ForEach,
-	Number,
-	Text
-} from '../items'
-import { NameType, NumberType } from '../enums'
+import type ITemplate from '../types/ITemplate'
+import NameType from '../enums/NameType'
+import NumberType from '../enums/NumberType'
+
+import { Template, Group, Select, ForEach, Number } from '../items'
 import { getSelectors } from '../service'
 import { descs, texts } from './texts'
-import { unlockGroup } from '../presets'
+import unlockGroup from '../presets/unlockGroup'
 
 const selectors = getSelectors(function () {
 	const winch = `WinchVariants.Winch${this.forEach}`
 	const winchText = `${winch}.GameData.UiDesc`
 	const gameData = `${winch}.GameData`
+	
 	return { winch, winchText, gameData }
 })
 
-export const winch = <ITemplate>{
+export default <ITemplate>{
 	selector: 'WinchVariants',
 	template: Template(selectors, [
 		ForEach(selectors.winch, [

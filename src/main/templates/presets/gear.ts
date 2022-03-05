@@ -1,5 +1,5 @@
 import { Number } from '../items'
-import { Config } from 'main/classes/Config'
+import Config from 'main/classes/Config'
 
 const texts = {
     RU: {
@@ -31,7 +31,7 @@ const descs = {
     }
 }[Config.obj.lang]
 
-export const gear = [
+export default [
     Number({
         attribute: 'AngVel',
         text: texts.angelVelocity,

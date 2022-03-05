@@ -3,38 +3,36 @@ import dns from 'dns'
 import { writeFileSync, existsSync, lstatSync, readdirSync, accessSync, constants } from 'fs'
 import { join } from 'path'
 import { app, shell } from 'electron'
+import type IUpdateMap from '../types/IUpdateMap'
+
 import { paths } from '../service'
-import { Config } from './Config'
-import { Dialog } from './Dialog'
-import { Windows } from './Windows'
-import { Texts } from './Texts'
-import { Hasher } from './Hasher'
-import { Notification } from './Notification'
-import { Backup } from './Backup'
-import { Archiver } from './Archiver'
-import { Lang } from '../enums'
+import Config from './Config'
+import Dialog from './Dialog'
+import Windows from './Windows'
+import Texts from './Texts'
+import Hasher from './Hasher'
+import Notification from './Notification'
+import Backup from './Backup'
+import Archiver from './Archiver'
 
 /** Отвечает за различные проверки. */
-export class Checker {
+export default class Checker {
     private static config = Config.obj
-    private static texts = Texts.obj
 
     /**
-     * Проверяет наличие прав администратора у программы (требуется для чтения/записи файлов).
+     * Проверить наличие прав администратора у программы (требуется для чтения/записи файлов).
      * 
      * _Выводит уведомление и закрывает программу при неудаче._
      */
-    static checkAdmin = () => {
+    public static checkAdmin = () => {
         try {
             writeFileSync(paths.config, JSON.stringify(this.config, null, '\t'))
             return true
-        } catch {
-            const ru = this.texts[Lang.RU].ADMIN_REQUIRED_MESSAGE
-            const en = this.texts[Lang.EN].ADMIN_REQUIRED_MESSAGE
-            const de = this.texts[Lang.DE].ADMIN_REQUIRED_MESSAGE
+        }
+        catch {
             Windows.loading.setPercent(0)
             Dialog.alert({
-                message: `RU: ${ru}\n\nEN: ${en}\n\nDE: ${de}`,
+                message: Texts.get('ADMIN_REQUIRED_MESSAGE'),
                 type: 'warning',
                 buttons: ['Exit'],
                 title: 'Error'
@@ -45,30 +43,30 @@ export class Checker {
     }
 
     /**
-     * Проверяет на стороннее изменение `initial.pak`.
+     * Проверить на стороннее изменение `initial.pak`.
      * 
      * _Если изменения присутствуют, то обновляет файлы в программе._
      */
-    static checkInitial = async () => {
+    public static checkInitial = async () => {
         if (!existsSync(join(paths.mainTemp, '[media]')) || Hasher.getSize(this.config.initial) !== this.config.sizes.initial) {
             if (existsSync(this.config.initial)) {
-                if (!existsSync(paths.backupInitial)) {
+                if (!existsSync(paths.backupInitial))
                     await Backup.save()
-                } else {
+                else
                     await Archiver.unpackMain()
-                }
             }
         }
     }
 
     /**
-     * Находит по указанному пути все файлы, которые должны быть удалены в процессе обновления.
+     * Найти по указанному пути все файлы, которые должны быть удалены в процессе обновления.
      * @param path начальный путь (вложенные папки тоже проверяются).
      * @param map карта обновления.
      */
-    static checkPathToDelete = (path: string, map: UpdateMap) => {
+    public static checkPathToDelete = (path: string, map: IUpdateMap) => {
         const toRemove: string[] = []
         const items = readdirSync(path)
+        
         for (const item of items) {
             const path2 = join(path, item)
 
@@ -77,7 +75,8 @@ export class Checker {
                 if (array) {
                     toRemove.push(...array)
                 }
-            } else {
+            }
+            else {
                 const relativePath = path2.replace(join(paths.root, '/'), '')
                 if (!map[relativePath]) {
                     toRemove.push(path2)
@@ -89,11 +88,11 @@ export class Checker {
     }
 
     /**
-     * Обрабатывает карту обновления.
+     * Обработать карту обновления.
      * @param map карта обновления.
      * @returns `[пути_для_удаления, для_обновления]`
      */
-    static checkMap = (map: UpdateMap) => {
+    public static checkMap = (map: IUpdateMap) => {
         const toRemove = this.checkPathToDelete(paths.root, map)
         const toCreateOrChange = []
 
@@ -102,7 +101,8 @@ export class Checker {
 
             if (!existsSync(absolutePath)) {
                 toCreateOrChange.push(relativePath)
-            } else {
+            }
+            else {
                 if (lstatSync(absolutePath).isDirectory()) {
                     toRemove.push(absolutePath)
                     toCreateOrChange.push(relativePath)
@@ -118,32 +118,35 @@ export class Checker {
     }
 
     /**
-     * Проверяет наличие обновления. Выводит оповещение при наличии.
+     * Проверить наличие обновления.
+     * 
+     * Выводит оповещение при наличии.
      * @param whateverCheck игнорировать настройку `settings.updates` в `config.json`
      */
-    static checkUpdate = (whateverCheck?: boolean) => {
-        if (!this.config.settings.updates && !whateverCheck) return
+    public static checkUpdate = (whateverCheck?: boolean) => {
+        if (!this.config.settings.updates && !whateverCheck)
+            return
 
-        dns.resolve('github.com', error => {
+        dns.resolve('www.google.com', error => {
             if (!error) {
                 https.get(paths.publicInfo, res => {
-                    res.setEncoding('utf-8')
                     let rawData = ''
-
-                    res.on('data', (chunk) => {
-                        rawData += chunk
-                    })
+        
+                    res.setEncoding('utf-8')
+                    res.on('data', chunk => rawData += chunk)
                     res.on('end', () => {
                         const data = JSON.parse(rawData)
+        
                         if (this.config.version < data.latestVersion || (
                             this.config.version.includes('-beta') &&
                             this.config.version.split('-beta')[0] === data.latestVersion)) {
                             if (this.config.version >= data.minVersion) {
                                 Windows.openUpdateWindow(data.latestVersion)
-                            } else {
-                                Notification.show('NOTIFICATION', 'ALLOW_NEW_VERSION').then(() => {
+                            }
+                            else {
+                                Notification.show('NOTIFICATION', 'ALLOW_NEW_VERSION').then(() =>
                                     shell.openExternal(paths.downloadPage)
-                                })
+                                )
                             }
                         }
                     })
@@ -154,12 +157,13 @@ export class Checker {
 
 
     /**
-     * Проверяет наличие всех путей для работы программы. `config.paths`
+     * Проверить наличие всех путей для работы программы. `config.paths`
      * 
      * _В случае неудачи выводит уведомление._
      */
-    static hasAllPaths = () => {
+    public static hasAllPaths = () => {
         let success = true
+        
         if (!existsSync(this.config.initial)) {
             Dialog.alert({
                 type: 'warning',
@@ -167,14 +171,16 @@ export class Checker {
                 message: Texts.get('INITIAL_NOT_FOUND')
             })
             success = false
-        } else if (!existsSync(paths.classes)) {
+        }
+        else if (!existsSync(paths.classes)) {
             Dialog.alert({
                 type: 'warning',
                 title: Texts.get('ERROR'),
                 message: Texts.get('CLASSES_NOT_FOUND')
             })
             success = false
-        } else if (this.config.settings.DLC && !existsSync(paths.dlc)) {
+        }
+        else if (this.config.settings.DLC && !existsSync(paths.dlc)) {
             Dialog.alert({
                 type: 'warning',
                 title: Texts.get('ERROR'),
@@ -182,15 +188,17 @@ export class Checker {
             })
             this.config.settings.DLC = false
         }
+
         return success
     }
 
-    /** Проверяет наличие у программы прав на чтение/запись файла по переданному пути. */
+    /** Проверить наличие у программы прав на чтение/запись файла по переданному пути. */
     static checkPermissions = (path: string) => {
         try {
             accessSync(path, constants.W_OK)
             return true
-        } catch {
+        }
+        catch {
             return false
         }
     }
