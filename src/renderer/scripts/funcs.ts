@@ -1,19 +1,12 @@
-import { ITexts } from 'texts'
-const { config, texts } = window.provider
+import type ISetHotKeyParams from './types/ISetHotKeyParams'
+import main from './main'
 
-type Translation = {
-    [name in keyof ITexts]: string
-}
-
-export const t = texts[config.lang] as Translation
-
-const _tmp_: any = {}
-Object.defineProperty(_tmp_, 'MAIN', {
-    get: () => get('#main')
-})
+const { texts } = main
 
 /** Ссылка на `#main` элемент в `template.html` */
-export const MAIN = _tmp_['MAIN']
+export const MAIN = Object.defineProperty({}, 'MAIN', {
+    get: () => get('#main')
+})['MAIN']
 
 /** Устанавливает событие по нажатию кнопки. */
 export function setHotKey(params: ISetHotKeyParams, listener: (event: KeyboardEvent) => any): void {
@@ -21,7 +14,9 @@ export function setHotKey(params: ISetHotKeyParams, listener: (event: KeyboardEv
 
     document.addEventListener(eventName, event => {
         if (event.code === key && ((ctrlKey && event.ctrlKey) || !ctrlKey) && ((shiftKey && event.shiftKey) || !shiftKey)) {
-            if (prevent) event.preventDefault()
+            if (prevent) {
+                event.preventDefault()
+            }
             listener(event)
         }
     })
@@ -46,9 +41,11 @@ export function prettify(str: string): string {
 */
 export function getIngameText(key: string, modId?: string): string {
     let value: string
+    
     if (modId && texts.mods[modId] && texts.mods[modId][key]) {
         value = texts.mods[modId][key]
-    } else if (texts.ingame[key]) {
+    }
+    else if (texts.ingame[key]) {
         value = texts.ingame[key]
     }
 
