@@ -1,5 +1,5 @@
 const template = './src/renderer/template.html'
-const provider = './src/renderer/scripts/provider.ts'
+const mainPreload = './src/renderer/scripts/mainPreload.ts'
 
 /**
  * Возвращает путь к модулю
@@ -45,7 +45,7 @@ module.exports = {
                             html: template,
                             js: getModule('loading').main,
                             preload: {
-                                js: provider
+                                js: mainPreload
                             }
                         },
                         {
@@ -53,7 +53,7 @@ module.exports = {
                             html: template,
                             js: getModule('categories').main,
                             preload: {
-                                js: provider
+                                js: mainPreload
                             }
                         },
                         {
@@ -85,7 +85,7 @@ module.exports = {
                             html: template,
                             js: getModule('update').main,
                             preload: {
-                                js: provider
+                                js: mainPreload
                             }
                         },
                         {
@@ -101,7 +101,7 @@ module.exports = {
                             html: template,
                             js: getModule('whatsNew').main,
                             preload: {
-                                js: provider
+                                js: mainPreload
                             }
                         }
                     ]
