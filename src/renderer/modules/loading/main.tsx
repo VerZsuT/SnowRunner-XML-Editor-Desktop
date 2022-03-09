@@ -21,7 +21,6 @@ interface IState {
 class Loading extends PureComponent<any, IState> {
     constructor(props: any) {
         super(props)
-
         this.state = {
             allCount: 0,
             loadedCount: 0,

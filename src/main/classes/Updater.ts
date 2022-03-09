@@ -19,9 +19,8 @@ export default class Updater {
         if (params.array) {
             const { url, path } = params.array[0]
 
-            if (params.isRoot) {
+            if (params.isRoot)
                 params.loadingPage.setCount(params.array.length)
-            }
 
             params.loadingPage.setText(basename(path))
             this.download({
@@ -44,14 +43,11 @@ export default class Updater {
                 let chunks = ''
 
                 res.on('data', chunk => chunks += chunk)
-
                 res.on('end', () => {
-                    if (params.fromJSON) {
+                    if (params.fromJSON)
                         cb(JSON.parse(chunks))
-                    }
-                    else {
+                    else
                         cb(chunks)
-                    }
                 })
             }
             else {
@@ -93,12 +89,10 @@ export default class Updater {
             let [toRemove, toCreateOrChange] = Checker.checkMap(updateMap)
 
             for (const path of toRemove) {
-                if (lstatSync(path).isFile()) {
+                if (lstatSync(path).isFile())
                     rmSync(path)
-                }
-                else {
+                else
                     rmSync(path, { recursive: true })
-                }
             }
 
             if (toCreateOrChange.length === 0) {
@@ -113,9 +107,9 @@ export default class Updater {
                 const path = join(paths.root, relativePath)
                 const url = `${paths.updateFiles}/${relativePath.replaceAll('\\', '/').replace('.webpack', 'webpack')}`
 
-                if (!existsSync(dirname(path))) {
+                if (!existsSync(dirname(path)))
                     mkdirSync(path, { recursive: true })
-                }
+
                 toDownload.push({
                     url: url,
                     path: path

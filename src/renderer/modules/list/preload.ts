@@ -129,7 +129,6 @@ const listPreload: IListPreload = {
                     items: items
                 })
             }
-
             return array
         }
         else {

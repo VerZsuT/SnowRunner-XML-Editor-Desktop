@@ -15,7 +15,6 @@ export default class Language extends PureComponent {
 
     constructor(props: any) {
         super(props)
-
         this.langOptions = Object.keys(Lang).map(lang =>
             <MenuItem key={lang} value={lang}>
                 {lang}

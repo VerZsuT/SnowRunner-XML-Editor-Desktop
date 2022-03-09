@@ -33,9 +33,8 @@ app.whenReady().then(() => {
 
 app.on('before-quit', () => {
     settings.isQuit = true
-    if (settings.saveWhenReload) {
+    if (settings.saveWhenReload)
         Config.save()
-    }
 })
 process.once('uncaughtExceptionMonitor', () =>
     app.exit()
@@ -45,9 +44,8 @@ process.once('uncaughtExceptionMonitor', () =>
  * `Main`функция.
 */
 async function initProgram() {
-    if (!Checker.checkAdmin()) {
+    if (!Checker.checkAdmin())
         return
-    }
 
     if (!config.initial) {
         Windows.openSetup().then(() =>
@@ -78,9 +76,9 @@ async function initProgram() {
  * Находит и инициализирует игровые DLC.
 */
 async function initDLC() {
-    if (!config.settings.DLC) {
+    if (!config.settings.DLC)
         return
-    }
+
     config.dlc = findInDir(paths.dlc, true)
 }
 
@@ -132,7 +130,6 @@ async function initMods() {
         }
     }
     
-    if (counter <= 0) {
+    if (counter <= 0)
         Texts.addFromMods()
-    }
 }

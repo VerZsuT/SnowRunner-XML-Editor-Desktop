@@ -1,17 +1,14 @@
-module.exports = [{
+module.exports = [
+    {
         test: /native_modules\/.+\.node$/,
         use: 'node-loader'
     },
     {
         test: /\.(m?js|node)$/,
-        parser: {
-            amd: false
-        },
+        parser: { amd: false },
         use: {
             loader: '@vercel/webpack-asset-relocator-loader',
-            options: {
-                outputAssetBase: 'native_modules'
-            }
+            options: { outputAssetBase: 'native_modules' }
         }
     },
     {
@@ -28,15 +25,11 @@ module.exports = [{
         use: [
             {
                 loader: 'babel-loader',
-                options: {
-                    cacheDirectory: true
-                }
+                options: { cacheDirectory: true }
             },
             {
                 loader: 'ts-loader',
-                options: {
-                    transpileOnly: true
-                }
+                options: { transpileOnly: true }
             }
         ]
     },

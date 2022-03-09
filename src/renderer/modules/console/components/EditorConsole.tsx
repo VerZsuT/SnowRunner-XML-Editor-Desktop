@@ -19,7 +19,6 @@ interface IState {
 export default class EditorConsole extends PureComponent<IProps, IState> {
     constructor(props: IProps) {
         super(props)
-
         this.state = {
             cmd: ''
         }
@@ -58,10 +57,8 @@ export default class EditorConsole extends PureComponent<IProps, IState> {
 
             if (this.props.listeners[cmd]) {
                 const error = this.props.listeners[cmd](params.slice(1))
-
-                if (error) {
+                if (error)
                     this.props.onError(error)
-                }
             }
             else {
                 this.props.onError(Message.warn(`Неверная команда '${cmd}'`))
@@ -75,17 +72,14 @@ export default class EditorConsole extends PureComponent<IProps, IState> {
     private onAutoInput = (value: string) => {
         const params = this.state.cmd.split(' ')
 
-        if (value.startsWith(params.slice(-1)[0]) && params.slice(-1)[0] !== value) {
+        if (value.startsWith(params.slice(-1)[0]) && params.slice(-1)[0] !== value)
             params.pop()
-        }
         params.push(value)
 
-        if (params.length > 1) {
+        if (params.length > 1)
             this.setState({ cmd: params.join(' ') })
-        }
-        else {
+        else
             this.setState({ cmd: params[0] });
-        }
 
         (document.querySelector('#input') as HTMLInputElement).focus()
     }

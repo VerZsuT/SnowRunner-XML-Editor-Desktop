@@ -39,7 +39,6 @@ export default class Select extends PureComponent<IProps, IState> {
 
     constructor(props: IProps) {
         super(props)
-
         this.state = {
             value: props.getValue(),
             menu: {}

@@ -28,9 +28,8 @@ export default class Texts {
 
     /** Обработать файл с переводом из `initial.pak` (текущий выбранный язык в программе). */
     public static addIngame = async () => {
-        if (existsSync(paths.texts)) {
+        if (existsSync(paths.texts))
             this.obj.ingame = JSON.parse(readFileSync(paths.texts).toString())
-        }
 
         if (existsSync(paths.strings)) {
             const map = {
@@ -58,9 +57,8 @@ export default class Texts {
         for (const modId in this.config.mods.items) {
             if (existsSync(join(paths.modsTemp, modId, 'texts'))) {
                 const stringsFilePath = join(paths.modsTemp, modId, `texts/strings_${map[this.config.lang]}.str`)
-                if (existsSync(stringsFilePath)) {
+                if (existsSync(stringsFilePath))
                     mods[modId] = this.parse(readFileSync(stringsFilePath, { encoding: 'utf16le' }).toString())
-                }
             }
         }
         this.obj.mods = mods
@@ -69,9 +67,8 @@ export default class Texts {
     /** Получить текст перевода по ключу (в программе). */
     public static get = (key: TKeys, returnKey = true): string | undefined => {
         const translation = this.obj[this.config.lang]
-        if (translation) {
+        if (translation)
             return translation[key] || (returnKey ? key : undefined)
-        }
     }
 
     /** Сохранить игровой перевод в файл (для оптимизации). */
@@ -124,9 +121,8 @@ export default class Texts {
 
     private static startsWith(key: string, array: string[]) {
         for (const str of array) {
-            if (key.startsWith(str)) {
+            if (key.startsWith(str))
                 return true
-            }
         }
         return false
     }

@@ -8,7 +8,7 @@ import Menu from 'menu'
 import Language from '../components/Language'
 import GameFolder from '../components/GameFolder'
 import Save from './components/Save'
-import Confirm from '../components/Confirm'
+import Confirm, { IConfirmProps } from '../components/Confirm'
 import ErrorHandler from '../components/ErrorHandler'
 
 import { Typography } from '@mui/material'
@@ -20,18 +20,15 @@ const { existsSync, join, readFileSync } = window.service
 
 interface IState {
     pathToInitial: string
-    confirmIsOpened: boolean
-    confirmText: string
+    confirm: IConfirmProps
 }
 
 class Setup extends PureComponent<any, IState> {
     constructor(props: any) {
         super(props)
-
         this.state = {
             pathToInitial: '',
-            confirmText: '',
-            confirmIsOpened: false
+            confirm: null
         }
     }
 
@@ -45,10 +42,10 @@ class Setup extends PureComponent<any, IState> {
         return (<>
             <Menu />
             <Confirm
-                open={this.state.confirmIsOpened}
-                text={this.state.confirmText}
+                show={this.state.confirm?.show}
+                text={this.state.confirm?.text}
                 onSuccess={this.import}
-                onClose={() => this.setState({ confirmIsOpened: false })}
+                onClose={() => this.setState({ confirm: null })}
             />
             <ErrorHandler />
             <Title>
@@ -72,8 +69,10 @@ class Setup extends PureComponent<any, IState> {
             const exported = JSON.parse(readFileSync(join(paths.backupFolder, 'config.json')).toString())
             
             this.setState({
-                confirmIsOpened: true,
-                confirmText: texts[exported.lang].IMPORT_CONFIG_MESSAGE
+                confirm: {
+                    show: true,
+                    text: texts[exported.lang].IMPORT_CONFIG_MESSAGE
+                }
             })
         }
     }

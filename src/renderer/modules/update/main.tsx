@@ -20,7 +20,6 @@ interface IState {
 class UpdateWindow extends PureComponent<any, IState> {
     constructor(props: any) {
         super(props)
-
         this.state = {
             version: ''
         }

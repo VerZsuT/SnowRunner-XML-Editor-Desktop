@@ -39,7 +39,6 @@ interface IState {
 export default class ErrorHeader extends PureComponent<IProps, IState> {
     constructor(props: IProps) {
         super(props)
-
         this.state = {
             menuAnchor: null
         }

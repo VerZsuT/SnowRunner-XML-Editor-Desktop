@@ -3,13 +3,10 @@ import type IMainProcess from 'main/types/IMainProcess'
 import type IPC from './types/IPC'
 
 let sendSync: IPC['sendSync']
-
-if (window.ipc) {
+if (window.ipc)
     sendSync = window.ipc.sendSync
-}
-else {
+else
     sendSync = global['ipc'].sendSync
-}
 
 const info: IInfo = sendSync('getInfo')
 const errorHandler = (error: Error) => {

@@ -156,7 +156,6 @@ class MenuButton extends PureComponent<IMenuButtonProps, IMenuButtonState> {
 
     constructor(props: IMenuButtonProps) {
         super(props)
-
         this.state = {
             anchorEl: null
         }
@@ -166,9 +165,8 @@ class MenuButton extends PureComponent<IMenuButtonProps, IMenuButtonState> {
     render() {
         const isOpen = !!this.state.anchorEl
         
-        if (!this.show) {
+        if (!this.show)
             return null
-        }
 
         return (<>
             <Button
@@ -200,9 +198,9 @@ class MenuButton extends PureComponent<IMenuButtonProps, IMenuButtonState> {
                         text
                     } = item
 
-                    if (!show) {
+                    if (!show)
                         return null
-                    }
+
                     if (isDivider) {
                         return <Divider key={key} />
                     }

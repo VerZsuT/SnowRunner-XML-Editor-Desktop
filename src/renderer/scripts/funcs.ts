@@ -14,9 +14,8 @@ export function setHotKey(params: ISetHotKeyParams, listener: (event: KeyboardEv
 
     document.addEventListener(eventName, event => {
         if (event.code === key && ((ctrlKey && event.ctrlKey) || !ctrlKey) && ((shiftKey && event.shiftKey) || !shiftKey)) {
-            if (prevent) {
+            if (prevent)
                 event.preventDefault()
-            }
             listener(event)
         }
     })
@@ -42,14 +41,11 @@ export function prettify(str: string): string {
 export function getIngameText(key: string, modId?: string): string {
     let value: string
     
-    if (modId && texts.mods[modId] && texts.mods[modId][key]) {
+    if (modId && texts.mods[modId] && texts.mods[modId][key])
         value = texts.mods[modId][key]
-    }
-    else if (texts.ingame[key]) {
+    else if (texts.ingame[key])
         value = texts.ingame[key]
-    }
 
-    if (value) {
+    if (value)
         return value
-    }
 }

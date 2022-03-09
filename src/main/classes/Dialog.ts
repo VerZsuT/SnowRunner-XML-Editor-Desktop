@@ -35,12 +35,10 @@ export default class Dialog {
             type
         }
 
-        if (dialogType === DialogAlertType.sync) {
+        if (dialogType === DialogAlertType.sync)
             return elDialog.showMessageBoxSync(dialogParams)
-        }
-        else {
+        else
             return elDialog.showMessageBox(dialogParams)
-        }
     }
 
     /** Открыть окно выбора `.epf` файла. */

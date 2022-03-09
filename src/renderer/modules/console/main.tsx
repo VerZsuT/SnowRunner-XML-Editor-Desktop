@@ -1,6 +1,6 @@
 import { PureComponent, Fragment } from 'react'
 import { render } from 'react-dom'
-import $ from 'cheerio'
+import { load } from 'cheerio'
 import type { Cheerio, CheerioAPI, Node as CNode } from 'cheerio'
 import type IFindItem from 'modules/list/types/IFindItem'
 import type IConfigSettings from 'main/types/IConfigSettings'
@@ -13,8 +13,6 @@ import main from 'scripts/main'
 import { ANY, OPTIONAL, addCheck, help, Message } from './service'
 
 import EditorConsole from './components/EditorConsole'
-import Confirm from 'modules/components/Confirm'
-import Prompt from 'modules/components/Prompt'
 
 import 'styles/console'
 
@@ -31,22 +29,6 @@ const { readFileSync, existsSync, writeFileSync, join } = window.service
 
 interface IState {
     messages: JSX.Element[]
-    confirm: {
-        open?: boolean
-        text?: string
-        onSuccess?: ()=>void
-        onClose?: ()=>void
-    }
-    prompt: {
-        open?: boolean
-        text?: string
-        default?: string
-        type?: string
-        min?: string
-        max?: string
-        onSuccess?: (value: string)=>void
-        onClose?: ()=>void
-    }
 }
 
 class Console extends PureComponent<any, IState> {
@@ -58,15 +40,12 @@ class Console extends PureComponent<any, IState> {
 
     constructor(props: any) {
         super(props)
-
         this.state = {
             messages: [
                 <Fragment key='0'>
                     {Message.info("Командная строка v1.1.")}
                 </Fragment>
-            ],
-            confirm: {},
-            prompt: {}
+            ]
         }
         this.listeners = this.getListeners()
     }
@@ -77,22 +56,6 @@ class Console extends PureComponent<any, IState> {
                 {this.state.messages}
             </div>
             <EditorConsole onError={this.pushMessage} listeners={this.listeners} />
-            <Confirm
-                open={this.state.confirm.open ?? false}
-                text={this.state.confirm.text ?? ''}
-                onClose={this.state.confirm.onClose?? (()=>{})}
-                onSuccess={this.state.confirm.onSuccess?? (()=>{})}
-            />
-            <Prompt
-                open={this.state.prompt.open ?? false}
-                text={this.state.prompt.text ?? ''}
-                onClose={this.state.prompt.onClose?? (()=>{})}
-                onSuccess={this.state.prompt.onSuccess?? (()=>{})}
-                default={this.state.prompt.default?? ''}
-                type={this.state.prompt.type?? 'text'}
-                min={this.state.prompt.min}
-                max={this.state.prompt.max}
-            />
         </>)
     }
 
@@ -166,12 +129,10 @@ class Console extends PureComponent<any, IState> {
             'epf': addCheck(args => {
                 const { action } = args
 
-                if (action === 'see') {
+                if (action === 'see')
                     seeEPF()
-                }
-                else {
+                else
                     joinEPF()
-                }
             }, {
                 action: ['see', 'join'] as unknown as 'see' | 'join'
             }),
@@ -209,7 +170,7 @@ class Console extends PureComponent<any, IState> {
                     this.pushMessage(Message.warn('Вы не выбрали файл для считывания.'))
                     return
                 }
-                fileDOM = $.load(readFileSync(path), { xmlMode: true })
+                fileDOM = load(readFileSync(path), { xmlMode: true })
 
                 if (!fileDOM.length) {
                     this.pushMessage(Message.error('Ошибка парсинга файла.'))
@@ -256,12 +217,10 @@ class Console extends PureComponent<any, IState> {
             'backup': addCheck(args => {
                 const { action } = args
 
-                if (action === 'save') {
+                if (action === 'save')
                     saveBackup()
-                }
-                else {
+                else
                     recoverFromBackup()
-                }
 
                 this.pushMessage(Message.log('Операция проведена.'))
             }, {
@@ -276,9 +235,8 @@ class Console extends PureComponent<any, IState> {
                     return
                 }
 
-                if (!config.mods.items[result.id]) {
+                if (!config.mods.items[result.id])
                     config.mods.length++
-                }
 
                 config.mods.items[result.id] = {
                     name: result.name,

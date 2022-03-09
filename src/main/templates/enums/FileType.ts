@@ -10,7 +10,7 @@ enum FileType {
     wheels      = 'wheels',
     /** Файл содержит набор лебёдок. */
     winches     = 'winches',
-    truck       = 'truck'
+    trucks       = 'truck'
 }
 
 export default FileType

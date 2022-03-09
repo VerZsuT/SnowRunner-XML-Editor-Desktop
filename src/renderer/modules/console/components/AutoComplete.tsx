@@ -21,23 +21,21 @@ export default class AutoComplete extends PureComponent<IProps, IState> {
 
     constructor(props: IProps) {
         super(props)
-
         this.state = {
             value: ''
         }
     }
 
     componentDidMount() {
-        this.setEventListeners()
+        this.setControls()
     }
 
     render() {
         let value = this.state.value
 
         this.items = this.getItems(this.props.cmd.split(' ').filter(value => value !== ''))
-        if (!this.items.includes(value)) {
+        if (!this.items.includes(value))
             value = this.items[0]
-        }
 
         return (
             <select
@@ -55,7 +53,7 @@ export default class AutoComplete extends PureComponent<IProps, IState> {
     }
 
     /** Инициализирует события нажания на клавиши в поле ввода. */
-    private setEventListeners() {
+    private setControls() {
         setHotKey({
             key: 'ArrowDown',
             prevent: true,
@@ -128,27 +126,23 @@ export default class AutoComplete extends PureComponent<IProps, IState> {
         if (params.length === 1) {
             if (k instanceof Array) {
                 for (const key of k) {
-                    if (key.startsWith(params[0]) && key !== params[0]) {
+                    if (key.startsWith(params[0]) && key !== params[0])
                         items.push(key)
-                    }
                 }
             }
             else if (k !== undefined) {
                 for (const key in k) {
-                    if (key === params[0]) {
+                    if (key === params[0])
                         items.push(...this.getItems(params.slice(1), k[params[0]]))
-                    }
-                    else if (key.startsWith(params[0])) {
+                    else if (key.startsWith(params[0]))
                         items.push(key)
-                    }
                 }
             }
         }
         else {
             if (params.length > 0) {
-                if (!k) {
+                if (!k)
                     return
-                }
                 items.push(...this.getItems(params.slice(1), k[params[0]]))
             }
         }
@@ -162,7 +156,6 @@ function setPreset(keys: string[], value: string | string[]): IACKeys {
     for (const key of keys) {
         object[key] = value
     }
-
     return object
 }
 
@@ -193,9 +186,8 @@ function getModsList(): string[] {
     const array = []
 
     for (const modId in config.mods.items) {
-        if (modId === 'length') {
+        if (modId === 'length')
             continue
-        }
         array.push(modId)
     }
     return array
@@ -236,9 +228,6 @@ const keys: IACKeys = combine([
     devTools: [
         'enable',
         'disable'
-    ],
-    exec: [
-        '-force'
     ],
     epf: [
         'see',

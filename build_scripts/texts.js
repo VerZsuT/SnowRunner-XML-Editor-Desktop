@@ -1,9 +1,4 @@
-const {
-    existsSync,
-    writeFileSync,
-    readFileSync,
-    rmSync
-} = require('fs')
+const { existsSync, writeFileSync, readFileSync, rmSync } = require('fs')
 const { join } = require('path')
 const translate = require('translate')
 
@@ -33,11 +28,13 @@ function f() {
         if (!existsSync(RUFile)) {
             writeFiles('{}')
             console.log(`File '${fileName}' successfilly added.`)
-        } else {
+        }
+        else {
             console.log(`File '${fileName}' is already exists.`)
         }
         return
-    } else if (arg1 === 'remove') {
+    }
+    else if (arg1 === 'remove') {
         const fileName = `${arg2}.json`
 
         RUFile = join(pathToTexts, 'RU', fileName)
@@ -55,15 +52,9 @@ function f() {
             return
         }
 
-        rmSync(RUFile, {
-            force: true
-        })
-        rmSync(ENFile, {
-            force: true
-        })
-        rmSync(DEFile, {
-            force: true
-        })
+        rmSync(RUFile, { force: true })
+        rmSync(ENFile, { force: true })
+        rmSync(DEFile, { force: true })
 
         console.log(`File '${fileName}' successfilly removed.`)
         return
@@ -114,7 +105,8 @@ function f() {
             }
             console.log(`Property '${key}: "${value}"' successfully added to file '${fileName}'`)
         })
-    } else if (arg2 === 'remove') {
+    }
+    else if (arg2 === 'remove') {
         const key = arg3.toUpperCase().split(' ').join('_')
         const fileName = arg1
 

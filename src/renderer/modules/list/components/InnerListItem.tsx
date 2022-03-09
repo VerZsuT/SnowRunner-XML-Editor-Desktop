@@ -1,5 +1,5 @@
 import { PureComponent } from 'react'
-import $ from 'cheerio'
+import { load } from 'cheerio'
 import type { CheerioAPI } from 'cheerio'
 import type IItem from '../types/IItem'
 import ListType from '../enums/ListType'
@@ -51,7 +51,6 @@ export default class InnerListItem extends PureComponent<IProps, IState> {
 
     constructor(props: IProps) {
         super(props)
-
         this.state = {
             isDeleted: false,
             isLoading: false,
@@ -120,7 +119,7 @@ export default class InnerListItem extends PureComponent<IProps, IState> {
                         {localize.EXPORT}
                     </MenuItem>
                 </Menu>
-                <Loading open={this.state.isLoading} />
+                <Loading show={this.state.isLoading} />
             </>)
         }
         else {
@@ -196,7 +195,7 @@ export default class InnerListItem extends PureComponent<IProps, IState> {
     }
 
     private getDOM() {
-        return $.load(readFileSync(this.props.item.path), { xmlMode: true })
+        return load(readFileSync(this.props.item.path), { xmlMode: true })
     }
 
     private getText = () => {

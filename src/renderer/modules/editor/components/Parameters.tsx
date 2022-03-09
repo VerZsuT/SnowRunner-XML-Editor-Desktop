@@ -22,7 +22,6 @@ export default class Parameters extends PureComponent<IProps, IState> {
 
     constructor(props: IProps) {
         super(props)
-        
         this.state = {
             openedGroup: null
         }

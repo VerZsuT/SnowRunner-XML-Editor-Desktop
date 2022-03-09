@@ -72,15 +72,13 @@ export default class Checker {
 
             if (lstatSync(path2).isDirectory()) {
                 const array = this.checkPathToDelete(path2, map)
-                if (array) {
+                if (array)
                     toRemove.push(...array)
-                }
             }
             else {
                 const relativePath = path2.replace(join(paths.root, '/'), '')
-                if (!map[relativePath]) {
+                if (!map[relativePath])
                     toRemove.push(path2)
-                }
             }
         }
 
@@ -108,9 +106,8 @@ export default class Checker {
                     toCreateOrChange.push(relativePath)
                     continue
                 }
-                if (Hasher.getHash(absolutePath) !== map[relativePath]) {
+                if (Hasher.getHash(absolutePath) !== map[relativePath])
                     toCreateOrChange.push(relativePath)
-                }
             }
         }
 

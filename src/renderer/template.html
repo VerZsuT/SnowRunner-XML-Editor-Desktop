@@ -20,10 +20,12 @@
                     if (button)
                         button.click()
                 }
-                else if (event.ctrlKey && event.code === 'KeyQ')
+                else if (event.ctrlKey && event.code === 'KeyQ') {
                     quit()
-                else if (event.code === 'KeyI' && event.ctrlKey && event.shiftKey && config.buildType === 'dev')
+                }
+                else if (event.code === 'KeyI' && event.ctrlKey && event.shiftKey && config.buildType === 'dev') {
                     toggleDevTools()
+                }
             })
         </script>
     </body>

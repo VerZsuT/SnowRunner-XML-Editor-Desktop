@@ -29,7 +29,6 @@ interface IState {
 export default class ModsPopup extends PureComponent<IProps, IState> {
     constructor(props: IProps) {
         super(props)
-
         this.state = {
             items: null,
             selected: { ...config.mods.items }
@@ -134,12 +133,10 @@ export default class ModsPopup extends PureComponent<IProps, IState> {
     private remove(value: IConfigModsItems[string]) {
         const copy = { ...this.state.selected }
 
-        if (copy[basename(value.path, '.pak')]) {
+        if (copy[basename(value.path, '.pak')])
             delete copy[basename(value.path, '.pak')]
-        }
-        else {
+        else
             delete copy[value.name]
-        }
 
         this.setState({ selected: copy })
     }
@@ -159,23 +156,18 @@ export default class ModsPopup extends PureComponent<IProps, IState> {
             length,
             items: this.state.selected
         }
-
         this.props.hidePopup(true)
     }
 
     private addManual = () => {
         const result = getModPak()
-
-        if (!result) {
+        if (!result)
             return
-        }
 
         for (const stateItem of this.state.items) {
             const stateName = stateItem.name
-            
-            if (result.id === stateName) {
+            if (result.id === stateName)
                 return
-            }
         }
 
         this.setState({

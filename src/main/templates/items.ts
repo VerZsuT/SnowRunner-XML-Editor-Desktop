@@ -57,9 +57,8 @@ class InputElement {
         this.default = props.default
         this.canAddTag = props.canAddTag
         this.desc = props.desc ?? ''
-        if (props.selector) {
+        if (props.selector)
             this.selector = getSelectorName(props.selector)
-        }
     }
 }
 
@@ -93,9 +92,8 @@ class TemplateClass implements ITemplateClass {
         let params = []
         let newSelectors = {}
         for (const selector in selectors) {
-            if (selectors[selector].includes('||')) {
+            if (selectors[selector].includes('||'))
                 selectors[selector] = selectors[selector].split('||')[1]
-            }
         }
         if (multiply) {
             let itemSelector = selectors[this.itemSelector]
@@ -112,11 +110,11 @@ class TemplateClass implements ITemplateClass {
                 fileDOM(el).attr('SXMLE_ID', String(counter))
                 for (const selector in selectors) {
                     newSelectors[selector] = selectors[selector].replaceAll(`-${name}-`, String(counter))
-                    if (currentNum === 1) {
+                    if (currentNum === 1)
                         newSelectors[selector] = newSelectors[selector].replaceAll(`-F_${name}-`, String(counter))
-                    } else if (currentNum === items.length) {
+                    else if (currentNum === items.length)
                         newSelectors[selector] = newSelectors[selector].replaceAll(`-L_${name}-`, String(counter))
-                    }
+
                     newSelectors[selector] = newSelectors[selector].replaceAll(`-N${currentNum}_${name}-`, String(counter))
                 }
 
@@ -167,15 +165,15 @@ export class GroupClass implements IGroupClass {
         this.nameAttribute = props.nameAttribute
         this.resNameAttribute = props.resNameAttribute
         this.withCounter = props.withCounter ?? false
-        if (props.nameSelector) {
+        if (props.nameSelector)
             this.nameSelector = getSelectorName(props.nameSelector)
-        }
-        if (props.resNameSelector) {
+
+        if (props.resNameSelector)
             this.resNameSelector = getSelectorName(props.resNameSelector)
-        }
-        if (props.defaultSelector) {
+
+        if (props.defaultSelector)
             this.defaultSelector = getSelectorName(props.defaultSelector)
-        }
+
     }
 
     getParams(props: IGetParamsProps): [IGroupParams] | any[] {
@@ -187,16 +185,15 @@ export class GroupClass implements IGroupClass {
             const $nameElement = props.fileDOM(props.selectors[nameSelector])
             const $resNameElement = props.fileDOM(props.selectors[resNameSelector])
 
-            if ($nameElement.length === 0 && $resNameElement.length === 0) {
+            if ($nameElement.length === 0 && $resNameElement.length === 0)
                 return []
-            }
 
-            if (this.nameType === NameType.computed) {
+            if (this.nameType === NameType.computed)
                 groupName = getIngameText($nameElement.attr(this.nameAttribute)) || $resNameElement.attr(this.resNameAttribute)
-            } else if (this.nameType === NameType.tagName) {
+            else if (this.nameType === NameType.tagName)
                 groupName = $nameElement.html().split('<')[1].split(' ')[0]
-            }
-        } else {
+        }
+        else {
             groupName = this.name
         }
 
@@ -208,13 +205,15 @@ export class GroupClass implements IGroupClass {
                 fileDOM: props.fileDOM
             }))
         }
-        if (this.withCounter) {
+        if (this.withCounter)
             groupName += ` ${props.cycleNumber}`
-        }
-        if (this.name === '_ONLY_FOR_SELECTOR_') {
+
+        if (this.name === '_ONLY_FOR_SELECTOR_')
             return params
-        }
-        if (!params.length) return []
+
+        if (!params.length)
+            return []
+
         return [{
             paramType: ParamType.group,
             groupName: groupName,
@@ -254,7 +253,8 @@ export class InputClass extends InputElement implements IInputClass {
                     console.warn(`Missing parameter\n\tName: '${this.attribute}',\n\tText: '${this.text}',\n\tSelector: '${selector}'.`)
                 return []
             }
-        } else {
+        }
+        else {
             value = props.fileDOM(selector).attr(this.attribute)
         }
 
@@ -297,7 +297,8 @@ class SelectClass<T extends ISelectOptions> extends InputElement implements ISel
                     console.warn(`Missing parameter\n\tName: '${this.attribute}',\n\tText: '${this.text}',\n\tSelector: '${selector}'.`)
                 return []
             }
-        } else {
+        }
+        else {
             value = props.fileDOM(selector).attr(this.attribute)
         }
 
@@ -309,7 +310,8 @@ class SelectClass<T extends ISelectOptions> extends InputElement implements ISel
                     text: optionText,
                     value: ''
                 })
-            } else {
+            }
+            else {
                 options.push({
                     text: optionText,
                     value: optionValue
@@ -336,11 +338,10 @@ class SelectClass<T extends ISelectOptions> extends InputElement implements ISel
  * @param props объект селекторов или параметры шаблона.
 */
 export function Template(props: TSelectors | TemplateClassProps, children: TemplateChildren[]) {
-    if (props.type || props.itemSelector) {
+    if (props.type || props.itemSelector)
         return new TemplateClass(props, children)
-    } else {
+    else
         return new TemplateClass({ selectors: props as TSelectors }, children)
-    }
 }
 
 /** 
@@ -348,11 +349,10 @@ export function Template(props: TSelectors | TemplateClassProps, children: Templ
  * @param props имя или параметры группы.
 */
 export function Group(props: string | GroupClassProps, children: TemplateChildren[]) {
-    if (typeof props === 'string') {
+    if (typeof props === 'string')
         return new GroupClass({ name: props }, children)
-    } else {
+    else
         return new GroupClass(props, children)
-    }
 }
 
 /** Поле ввода. */

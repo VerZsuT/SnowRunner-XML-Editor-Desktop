@@ -124,17 +124,16 @@ export default class Config {
 
         exportedConfig.version = this.obj.version
         writeFileSync(paths.config, JSON.stringify(exportedConfig))
-        if (fromBackups) {
+        if (fromBackups)
             rmSync(`${paths.backupFolder}\\config.json`, { force: true })
-        }
+
         return true
     }
 
     /** Преобразовать к версии 0.6.8. */
     private static before068(exportedConfig: any) {
-        if (exportedConfig.version < '0.6.8') {
+        if (exportedConfig.version < '0.6.8')
             exportedConfig.settings.advancedMode = false
-        }
     }
 
     /** Преобразовать к версии 0.6.7. */

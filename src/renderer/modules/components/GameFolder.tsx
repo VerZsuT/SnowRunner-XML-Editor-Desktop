@@ -25,7 +25,6 @@ interface IState {
 export default class GameFolder extends PureComponent<IProps, IState> {
     constructor(props: IProps) {
         super(props)
-
         this.state = {
             manual: false,
             gameFolder: config.initial? config.initial.replace('\\initial.pak', '') : ''
@@ -66,19 +65,17 @@ export default class GameFolder extends PureComponent<IProps, IState> {
 
         if (this.state.manual) {
             data = this.props.preload.getInitial()
-
-            if (!data) {
+            if (!data)
                 return
-            }
+
             data.folder = data.initial
         }
         else {
             data = this.props.preload.getGameFolder()
         }
 
-        if (!data) {
+        if (!data)
             return
-        }
 
         this.setState({ gameFolder: data.folder })
         this.props.onChange(data.initial)

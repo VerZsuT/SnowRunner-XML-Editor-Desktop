@@ -51,12 +51,12 @@ export default class Input extends PureComponent<IProps, IState> {
             menu: {}
         }
 
-        if (props.item.min !== -Infinity && config.settings.limits) {
+        if (props.item.min !== -Infinity && config.settings.limits)
             this.min = props.item.min || 0
-        }
-        if (props.item.max && config.settings.limits) {
+
+        if (props.item.max && config.settings.limits)
             this.max = props.item.max
-        }
+
         this.defaultValue = this.props.getValue()
     }
 
@@ -66,18 +66,17 @@ export default class Input extends PureComponent<IProps, IState> {
     }
 
     componentWillUnmount() {
-        if (this.props.unregReset) {
+        if (this.props.unregReset)
             this.props.unregReset(this.componentID)
-        }
         this.context.removeParam(this.componentID)
     }
 
     render() {
         let placeholder: string
 
-        if (this.props.isShow === false) {
+        if (this.props.isShow === false)
             return null
-        }
+
         placeholder = this.props.getDefaultValue()
 
         return (<>
@@ -129,9 +128,8 @@ export default class Input extends PureComponent<IProps, IState> {
         let newVal: string | number = e.target.value
         const { fileDOM } = this.context
 
-        if (newVal === '') {
+        if (newVal === '')
             newVal = this.defaultValue
-        }
 
         if (!fileDOM(this.props.item.selector).length) {
             const array = this.props.item.selector.split('>').map(value => value.trim())
@@ -147,33 +145,32 @@ export default class Input extends PureComponent<IProps, IState> {
     private onValueChange = (e: ChangeEvent<HTMLInputElement>) => {
         let newVal: string | number = e.target.value
 
-        if (this.props.item.type !== InputType.text && newVal !== '') {
+        if (this.props.item.type !== InputType.text && newVal !== '')
             newVal = this.limit(+newVal)
-        }
 
         this.changeColor(+newVal)
         this.setState({ value: newVal })
     }
 
     private limit(num: number) {
-        if (this.props.item.numberType === NumberType.integer) {
+        if (this.props.item.numberType === NumberType.integer)
             num = Math.round(num)
-        }
-        if (this.min !== undefined && num < this.min) {
+
+        if (this.min !== undefined && num < this.min)
             return this.min
-        }
-        if (this.max !== undefined && num > this.max) {
+
+        if (this.max !== undefined && num > this.max)
             return this.max
-        }
+
         return num
     }
 
     private changeColor = (value: number) => {
         let newVal: number = value
 
-        if (value === null || value === NaN) {
+        if (value === null || value === NaN)
             newVal = 0
-        }
+
         if (this.props.item.areas) {
             let color = '#ced4da'
 
@@ -182,15 +179,12 @@ export default class Input extends PureComponent<IProps, IState> {
 
                 for (const area of value) {
                     if (newVal >= area[0] && newVal <= area[1]) {
-                        if (areaName === 'red') {
+                        if (areaName === 'red')
                             color = `hsl(0deg, 100%, 50%)`
-                        }
-                        else if (areaName === 'green') {
+                        else if (areaName === 'green')
                             color = `hsl(120deg, 100%, 50%)`
-                        }
-                        else if (areaName === 'yellow') {
+                        else if (areaName === 'yellow')
                             color = `rgb(235 235 12)`
-                        }
                     }
                 }
             }
@@ -218,9 +212,8 @@ export default class Input extends PureComponent<IProps, IState> {
             },
             forImport: {
                 setValue: (newValue: string) => {
-                    if (this.state.value !== newValue) {
+                    if (this.state.value !== newValue)
                         this.saveValue({ target: { value: newValue } } as FocusEvent<HTMLInputElement>)
-                    }
                 },
                 selector: this.props.item.selector,
                 name: this.props.item.name,
@@ -230,17 +223,15 @@ export default class Input extends PureComponent<IProps, IState> {
     }
 
     private initReset() {
-        if (this.props.regReset) {
+        if (this.props.regReset)
             this.props.regReset(this.componentID, this.reset)
-        }
     }
 
     private reset = () => {
         const defaultValue = this.props.getDefaultValue()
 
         this.setState({ menu: {} })
-        if (defaultValue !== undefined) {
+        if (defaultValue !== undefined)
             this.saveValue({ target: { value: defaultValue } } as FocusEvent<HTMLInputElement>)
-        }
     }
 }

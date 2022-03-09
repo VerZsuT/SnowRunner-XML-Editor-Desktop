@@ -85,13 +85,11 @@ export default class MainHeader extends PureComponent<IProps> {
                                 key={file.path}
                                 onClick={() => {
                                     openPath(file.path)
-                                    watchFile(file.path, () => {
+                                    watchFile(file.path, () =>
                                         window.location.reload()
-                                    })
+                                    )
                                 }}
-                                leftIcon={
-                                    <img src={require(`images/icons/editor/${file.fileType}.png`)}/>
-                                }
+                                leftIcon={ <img src={require(`images/icons/editor/${file.fileType}.png`)}/> }
                                 label={basename(file.path)}
                             />
                         )}

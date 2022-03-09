@@ -37,7 +37,6 @@ export default class InnerList extends PureComponent<IProps, IState> {
 
     constructor(props: IProps) {
         super(props)
-
         this.state = {
             showModsPopup: false,
             showConfirm: false
@@ -46,9 +45,8 @@ export default class InnerList extends PureComponent<IProps, IState> {
     }
 
     render() {
-        if (this.props.opened === false) {
+        if (this.props.opened === false)
             return null
-        }
         
         const listType = local.get('listType') as ListType
         const items = this.props.items.map(item =>
@@ -89,7 +87,7 @@ export default class InnerList extends PureComponent<IProps, IState> {
                     />
                     <Confirm
                         text={localize.RELAUNCH_PROMPT}
-                        open={this.state.showConfirm}
+                        show={this.state.showConfirm}
                         onSuccess={() => reload()}
                         onClose={this.hideReloadConfirm}
                     />

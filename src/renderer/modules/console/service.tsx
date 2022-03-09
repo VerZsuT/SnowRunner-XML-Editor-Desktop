@@ -47,13 +47,13 @@ export class Message {
         switch (type) {
             case MessageType.warn:
                 color = 'yellow'
-                break
+            break
             case MessageType.error:
                 color = 'red'
-                break
+            break
             case MessageType.info:
                 color = 'lightblue'
-                break
+            break
         }
 
         return <Typography style={{color}}>
@@ -84,9 +84,9 @@ export function addCheck<T extends ArgsCheckObj>(listener: CmdListener<T>, argsC
         let checkedArgs: { [name: string]: string } = {}
         let counter = 0
 
-        if (!argsCheckObj) {
+        if (!argsCheckObj)
             return { checkedArgs: checkedArgs as CheckedArgs<T> }
-        }
+
         for (const propName in argsCheckObj) {
             let isOptional = false
             let checker = argsCheckObj[propName]
@@ -100,28 +100,20 @@ export function addCheck<T extends ArgsCheckObj>(listener: CmdListener<T>, argsC
             if (argument === undefined) {
                 let message: any
 
-                if (isOptional) {
+                if (isOptional)
                     continue
-                }
                 message = checker instanceof Array ? `[${checker.join(' | ')}]` : checker
                 return { error: Message.warn(`Недостаточно аргументов для выполнения команды. На позиции ${counter + 1} ожидалось ${message}`) }
 
             }
 
-            if (checker === ANY) {
+            if (checker === ANY)
                 continue
-            }
 
-            if (checker instanceof Array) {
-                if (!checker.includes(argument)) {
-                    return { error: Message.warn(`Неверный аргумент на позиции ${counter + 1}. Ожидалось [${checker.join(' | ')}]`) }
-                }
-            }
-            else {
-                if (checker !== argument) {
-                    return { error: Message.warn(`Неверный аргумент на позиции ${counter + 1}. Ожидалось ${checker}`) }
-                }
-            }
+            if (checker instanceof Array && !checker.includes(argument))
+                return { error: Message.warn(`Неверный аргумент на позиции ${counter + 1}. Ожидалось [${checker.join(' | ')}]`) }
+            else if (checker !== argument)
+                return { error: Message.warn(`Неверный аргумент на позиции ${counter + 1}. Ожидалось ${checker}`) }
 
             ++counter
             checkedArgs[propName] = argument
@@ -132,12 +124,10 @@ export function addCheck<T extends ArgsCheckObj>(listener: CmdListener<T>, argsC
     return ((args: string[]) => {
         const { checkedArgs, error } = checkArgs(args)
 
-        if (checkedArgs) {
+        if (checkedArgs)
             listener(checkedArgs)
-        }
-        else if (error) {
+        else if (error)
             return error
-        }
     })
 }
 
@@ -162,14 +152,12 @@ export const help = {
     whatsNew: '- whatsNew \nОткрывает окно "Что нового".',
     exportAll: '- exportAll \nЭкспортирует все параметры всех авто и их зависимостей в файл в папке backups.',
     epf: '- epf see|join \nПозволяет работать с файлами .epf.',
-    exec: '- exec [-force] \nПозволяет использовать систему SXMLE_Execute.\nФлаг -force убирает предупреждения о DLC, модах и версии игры.',
     toString: () => {
         const array = []
         
         for (const cmdName in help) {
-            if (cmdName === 'toString') {
+            if (cmdName === 'toString')
                 continue
-            }
             array.push(help[cmdName])
         }
         return array.join('\n\n')

@@ -1,5 +1,5 @@
 import { ChangeEvent } from 'react'
-import $ from 'cheerio'
+import { load } from 'cheerio'
 import type { Cheerio, CheerioAPI, Element, Node } from 'cheerio'
 import type IFindItem from 'modules/list/types/IFindItem'
 import type IActionData from '../types/IActionData'
@@ -257,7 +257,7 @@ export default class AddonsContent extends ActionBase<IState> {
         if (!existsSync(path))
             return
 
-        return $.load(readFileSync(path), { xmlMode: true })
+        return load(readFileSync(path), { xmlMode: true })
     }
 
     private getAddons(truckName: string, modId?: string, filter?: (fileDOM: CheerioAPI) => boolean) {
@@ -318,7 +318,7 @@ export default class AddonsContent extends ActionBase<IState> {
                 if (!existsSync(item.path))
                     return false
 
-                if ($.load(readFileSync(item.path), {xmlMode: true})('TruckAddon').length)
+                if (load(readFileSync(item.path), {xmlMode: true})('TruckAddon').length)
                     return true
 
                 return false
@@ -327,7 +327,7 @@ export default class AddonsContent extends ActionBase<IState> {
 
         for (const addon of allAddons) {
             if (filter) {
-                if (filter($.load(readFileSync(addon.path), {xmlMode: true}))) {
+                if (filter(load(readFileSync(addon.path), {xmlMode: true}))) {
                     out.push(addon)
                 }
             }

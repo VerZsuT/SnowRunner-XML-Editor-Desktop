@@ -21,10 +21,19 @@ function getConfig(name) {
     return `./configs/${name}`
 }
 
+function entryPoint(name, preloadIsMain=false, moduleName=null) {
+    return {
+        name,
+        html: template,
+        js: getModule(moduleName ?? name).main,
+        preload: {
+            js: preloadIsMain ? mainPreload : getModule(moduleName ?? name).preload
+        }
+    }
+}
+
 module.exports = {
-    packagerConfig: {
-        icon: '.webpack/main/favicon.ico'
-    },
+    packagerConfig: { icon: '.webpack/main/favicon.ico' },
     plugins: [
         [
             '@electron-forge/plugin-webpack',
@@ -32,78 +41,16 @@ module.exports = {
                 mainConfig: getConfig('webpack.main.js'),
                 renderer: {
                     config: getConfig('webpack.renderer.js'),
-                    entryPoints: [{
-                            name: 'setup',
-                            html: template,
-                            js: getModule('setup').main,
-                            preload: {
-                                js: getModule('setup').preload
-                            }
-                        },
-                        {
-                            name: 'loading',
-                            html: template,
-                            js: getModule('loading').main,
-                            preload: {
-                                js: mainPreload
-                            }
-                        },
-                        {
-                            name: 'categories',
-                            html: template,
-                            js: getModule('categories').main,
-                            preload: {
-                                js: mainPreload
-                            }
-                        },
-                        {
-                            name: 'console',
-                            html: template,
-                            js: getModule('console').main,
-                            preload: {
-                                js: getModule('console').preload
-                            }
-                        },
-                        {
-                            name: 'list',
-                            html: template,
-                            js: getModule('list').main,
-                            preload: {
-                                js: getModule('list').preload
-                            }
-                        },
-                        {
-                            name: 'settings',
-                            html: template,
-                            js: getModule('settings').main,
-                            preload: {
-                                js: getModule('settings').preload
-                            }
-                        },
-                        {
-                            name: 'update',
-                            html: template,
-                            js: getModule('update').main,
-                            preload: {
-                                js: mainPreload
-                            }
-                        },
-                        {
-                            name: 'editor',
-                            html: template,
-                            js: getModule('editor').main,
-                            preload: {
-                                js: getModule('editor').preload
-                            }
-                        },
-                        {
-                            name: 'whats_new',
-                            html: template,
-                            js: getModule('whatsNew').main,
-                            preload: {
-                                js: mainPreload
-                            }
-                        }
+                    entryPoints: [
+                        entryPoint('setup'),
+                        entryPoint('loading', true),
+                        entryPoint('categories', true),
+                        entryPoint('console'),
+                        entryPoint('list'),
+                        entryPoint('settings'),
+                        entryPoint('update', true),
+                        entryPoint('editor'),
+                        entryPoint('whats_new', true, 'whatsNew')
                     ]
                 }
             }

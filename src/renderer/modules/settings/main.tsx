@@ -34,7 +34,6 @@ class Settings extends PureComponent<any, IState> {
 
     constructor(props: any) {
         super(props)
-
         this.state = {
             ...config.settings,
             lang: config.lang,
@@ -126,9 +125,9 @@ class Settings extends PureComponent<any, IState> {
     }
 
     private save = () => {
-        if (this.state.saveBackup) {
+        if (this.state.saveBackup)
             config.initial = this.state.pathToInitial
-        }
+
         config.lang = this.state.lang
         config.settings = {
             ...config.settings,
@@ -137,12 +136,10 @@ class Settings extends PureComponent<any, IState> {
             mods: this.state.mods
         }
 
-        if (this.state.saveBackup) {
+        if (this.state.saveBackup)
             saveBackup(true)
-        }
-        else {
+        else
             reload()
-        }
     }
 }
 

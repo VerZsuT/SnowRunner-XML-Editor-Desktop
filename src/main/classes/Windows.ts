@@ -103,8 +103,7 @@ export default class Windows {
         let wind: BrowserWindow
 
         this.isOpening = true
-        wind = this.createWindow({...this.createArgs.editor})
-        this.editor = wind
+        this.editor = wind = this.createWindow({...this.createArgs.editor})
 
         wind.once('show', () => {
             if (this.list && !this.list.isDestroyed()) {
@@ -177,9 +176,8 @@ export default class Windows {
         await new Promise<void>(resolve => {
             wind.once('show', () => {
                 resolve()
-                if (!this.loading.isDestroyed()) {
+                if (!this.loading.isDestroyed())
                     this.loading.hide()
-                }
             })
         })
     }
@@ -190,19 +188,17 @@ export default class Windows {
         this.categories = this.createWindow(this.createArgs.categories)
 
         this.categories.once('close', () => {
-            if (!this.isOpening) {
+            if (!this.isOpening)
                 app.quit()
-            }
-            else {
+            else
                 delete this.categories
-            }
         })
         await new Promise<void>(resolve => {
             this.categories.once('show', () => {
                 this.loading.hide()
-                if (this.list && !this.list.isDestroyed()) {
+                if (this.list && !this.list.isDestroyed())
                     this.list.close()
-                }
+
                 this.isOpening = false
                 resolve()
             })
@@ -214,21 +210,19 @@ export default class Windows {
         this.isOpening = true
         this.list = this.createWindow(this.createArgs.list)
         this.list.once('show', () => {
-            if (this.categories) {
+            if (this.categories)
                 this.categories.close()
-            }
-            if (this.editor) {
+
+            if (this.editor)
                 this.editor.close()
-            }
+
             this.isOpening = false
         })
         this.list.once('close', () => {
-            if (!this.isOpening) {
+            if (!this.isOpening)
                 app.quit()
-            }
-            else {
+            else
                 delete this.list
-            }
         })
     }
 
@@ -268,9 +262,8 @@ export default class Windows {
             if (wind && !wind.isDestroyed()) {
                 wind.show()
                 wind.focus()
-                if (this.settings.devTools) {
+                if (this.settings.devTools)
                     wind.webContents.toggleDevTools()
-                }
             }
         }, () => {})
         return wind

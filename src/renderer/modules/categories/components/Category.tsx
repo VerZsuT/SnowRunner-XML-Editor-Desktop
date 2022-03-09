@@ -26,7 +26,6 @@ export default class Category extends PureComponent<IProps, IState> {
 
     constructor(props: IProps) {
         super(props)
-
         this.imgSrc = require(`images/category/${this.props.name}_category.png`)
         this.state = {
             isLoading: false
@@ -35,7 +34,7 @@ export default class Category extends PureComponent<IProps, IState> {
 
     render() {
         return (<>
-            <Card>
+            <Card style={{ boxShadow: 'none', borderRadius: 0 }}>
                 <CardActionArea onClick={this.openList}>
                     <CardMedia image={this.imgSrc}/>
                     <CardContent>
@@ -45,7 +44,7 @@ export default class Category extends PureComponent<IProps, IState> {
                     </CardContent>
                 </CardActionArea>
             </Card>
-            <Loading open={this.state.isLoading} />
+            <Loading show={this.state.isLoading} />
         </>)
     }
 

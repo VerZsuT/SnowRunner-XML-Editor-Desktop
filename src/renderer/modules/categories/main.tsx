@@ -17,7 +17,6 @@ class Categories extends PureComponent {
 
     constructor(props: any) {
         super(props)
-
         const categories = this.getCategories()
         this.items = categories.map(category =>
             <Category key={category} name={category} />

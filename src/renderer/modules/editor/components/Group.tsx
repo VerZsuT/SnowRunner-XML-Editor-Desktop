@@ -50,7 +50,6 @@ export default class Group extends PureComponent<IProps, IState> {
 
     constructor(props: IProps) {
         super(props)
-
         this.state = {
             isExport: props.isParentExport,
             menu: {},
@@ -58,9 +57,8 @@ export default class Group extends PureComponent<IProps, IState> {
         }
         this.toReset = {}
         this.items = this.getItems()
-        if (props.item.icon) {
+        if (props.item.icon)
             this.iconSRC = require(`images/icons/editor/${props.item.icon}`)
-        }
     }
 
     componentDidMount() {
@@ -154,15 +152,13 @@ export default class Group extends PureComponent<IProps, IState> {
     }
 
     private toggleExporting = () => {
-        if (this.props.isParentExport) {
+        if (this.props.isParentExport)
             this.setState({ isExport: !this.state.isExport })
-        }
     }
 
     private initReset() {
-        if (this.props.regReset) {
+        if (this.props.regReset)
             this.props.regReset(this.componentID, this.reset)
-        }
     }
 
     private reset = () => {
@@ -192,12 +188,10 @@ export default class Group extends PureComponent<IProps, IState> {
                 groups.push(groupItem)
             }
             else {
-                if (groupItem.type === InputType.file) {
+                if (groupItem.type === InputType.file)
                     params.files.push(groupItem)
-                }
-                else {
+                else
                     params.default.push(groupItem)
-                }
             }
         }
         return { groups, params }

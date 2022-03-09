@@ -11,52 +11,36 @@ const mainURL = 'https://verzsut.github.io/SnowRunner-XML-Editor-Desktop'
 export const paths: IPaths = {
     /** URL json файла обновления. */
     publicInfo: `${updaterURL}/public.json`,
-
     /** URL страницы скачивании программы. */
     downloadPage: `${mainURL}/download.html`,
-
     /** URL папки с файлами обновления. */
     updateFiles: `${updaterURL}/files`,
-
     /** URL с hash-картой файлов обновления.*/
     updateMap: `${updaterURL}/updateMap.json`,
-
     /** Путь к папке src. */
     root: resolve('../../'),
-
     /** Путь к config. */
     config: resolve('config.json'),
-
     /** Путь к файлу с переводами игры */
     texts: resolve('ingame_texts.json'),
-
     /** Путь к папке с бэкапами. */
     backupFolder: resolve('backups'),
-
     /** Путь к иконке программы. */
     icon: resolve('favicon.ico'),
-
     /** Путь к бэкапу initial.pak. */
     backupInitial: resolve('backups/initial.pak'),
-
     /** Путь к папке WinRAR(x32) */
     winrar_x32: resolve('winrar'),
-
     /** Путь к временной папке для основных файлов. */
     mainTemp: resolve('mainTemp'),
-
     /** Путь к временной папке для файлов модификаций. */
     modsTemp: resolve('modsTemp'),
-
     /** Путь к временной папке [strings] */
     strings: resolve('mainTemp/[strings]'),
-
     /** Путь к временной папке _dlc */
     dlc: resolve('mainTemp/[media]/_dlc'),
-
     /** Путь к временной папке classes */
     classes: resolve('mainTemp/[media]/classes'),
-
     /** Путь к uninstall.exe */
     uninstall: resolve('../../../../unins000.exe')
 }

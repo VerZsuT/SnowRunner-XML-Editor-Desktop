@@ -34,9 +34,9 @@ export default class Backup {
             }
         }
 
-        if (this.config.buildType === BuildType.prod) {
+        if (this.config.buildType === BuildType.prod)
             this.copy()
-        }
+
         if (reloadAfter) {
             this.settings.isQuit = true
             app.relaunch()

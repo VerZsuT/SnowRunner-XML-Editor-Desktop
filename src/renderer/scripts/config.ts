@@ -2,12 +2,10 @@ import type IConfig from 'main/types/IConfig'
 import type IPC from './types/IPC'
 
 let sendSync: IPC['sendSync']
-
-if (window.ipc) {
+if (window.ipc)
     sendSync = window.ipc.sendSync
-} else if (global['ipc']) {
+else if (global['ipc'])
     sendSync = global['ipc'].sendSync
-}
 
 function getConfig() {
     return sendSync('property_config_get').value
@@ -28,7 +26,8 @@ const config = <IConfig>new Proxy({}, {
                     return true
                 }
             })
-        } else {
+        }
+        else {
             return value
         }
     },
@@ -38,11 +37,10 @@ const config = <IConfig>new Proxy({}, {
             key: name,
             value: value
         })
-        if (result.error) {
+        if (result.error)
             return false
-        } else {
+        else
             return true
-        }
     }
 })
 

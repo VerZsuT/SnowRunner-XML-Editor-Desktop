@@ -56,7 +56,6 @@ export default class Parameter extends PureComponent<IProps, IState> {
 
     constructor(props: IProps) {
         super(props)
-
         this.state = {
             isExport: props.isParentExport,
             innerItems: null
@@ -73,9 +72,8 @@ export default class Parameter extends PureComponent<IProps, IState> {
             if (propsItem.fileType === FileType.wheels && propsItem.name !== 'Type') {
                 this.context.fileDOM('Truck > TruckData > CompatibleWheels').map((_, el) => {
                     const type = this.context.fileDOM(el).attr('Type')
-                    if (!fileNames.includes(type)) {
+                    if (!fileNames.includes(type))
                         fileNames.push(type)
-                    }
                 })
             }
 
@@ -99,18 +97,16 @@ export default class Parameter extends PureComponent<IProps, IState> {
                 }
 
                 for (const path of pathsToFiles) {
-                    if (existsSync(path)) {
+                    if (existsSync(path))
                         mainPath = path
-                    }
                 }
 
                 if (!mainPath) {
                     mainPath = findFromDLC(fileName, propsItem.fileType)
                     currentMod = undefined
                 }
-                if (!mainPath) {
+                if (!mainPath)
                     continue
-                }
 
                 const [fileDOM, tableItems] = process(mainPath)
                 this.context.addToSave(currentMod, currentDLC, fileDOM, mainPath, propsItem.fileType)
@@ -175,23 +171,16 @@ export default class Parameter extends PureComponent<IProps, IState> {
             unregReset: this.props.unregReset,
             isShow: this.props.isShow ?? true
         }
-        let item = (
-            <Input {...defaultProps} item={this.props.item as IInputParams}/>
-        )
-        if (this.props.item.inputType === 'select') {
-            item = (
-                <Select {...defaultProps} item={this.props.item as ISelectParams}/>
-            )
-        }
-        if (this.props.item.type === 'coordinates') {
-            item = (
-                <Coordinates {...defaultProps} item={this.props.item as IInputParams}/>
-            )
-        }
+        let item = <Input {...defaultProps} item={this.props.item as IInputParams}/>
 
-        if (this.props.isShow === false) {
+        if (this.props.item.inputType === 'select')
+            item = <Select {...defaultProps} item={this.props.item as ISelectParams}/>
+
+        if (this.props.item.type === 'coordinates')
+            item = <Coordinates {...defaultProps} item={this.props.item as IInputParams}/>
+
+        if (this.props.isShow === false)
             return <div style={{height: '60px'}}>{item}</div>
-        }
 
         return (
             <TableRow>
@@ -214,9 +203,8 @@ export default class Parameter extends PureComponent<IProps, IState> {
     }
 
     private toggleExporting = () => {
-        if (this.props.isParentExport) {
+        if (this.props.isParentExport)
             this.setState({ isExport: !this.state.isExport })
-        }
     }
 
     private getValue = () => {
@@ -224,17 +212,16 @@ export default class Parameter extends PureComponent<IProps, IState> {
         let value = this.props.item.value
 
         if (fileDOM(this.props.item.selector).length) {
-            if (fileDOM(this.props.item.selector).attr(this.props.item.name)) {
+            if (fileDOM(this.props.item.selector).attr(this.props.item.name))
                 value = fileDOM(this.props.item.selector).attr(this.props.item.name)
-            }
         }
 
-        if (!value && value !== 0 && templates) {
+        if (!value && value !== 0 && templates)
             value = this.getFromTemplates()
-        }
-        if (value === null || value === undefined) {
+
+        if (value === null || value === undefined)
             value = this.props.item.default
-        }
+
 
         return value
     }
@@ -248,39 +235,34 @@ export default class Parameter extends PureComponent<IProps, IState> {
         const innerName = array.slice(array.length - 1)[0]
         const tagName = innerName.split('[')[0]
 
-        if (!el.length) {
+        if (!el.length)
             el = fileDOM(array.slice(0, array.length - 1).join(' > '))
-        }
+
         if (el.length) {
             let templateName = el.attr('_template')
-
-            if (!templateName) {
+            if (!templateName)
                 templateName = this.getParentTemplate(el)
-            }
+
             if (templateName) {
                 const template = templates.find(templateName).eq(0)
 
                 if (template.length) {
                     const templateValue = template.attr(this.props.item.name)
                     let el2: Cheerio<Element>
-
-                    if (templateValue) {
+                    if (templateValue)
                         return templateValue
-                    }
 
                     el2 = template.find(tagName).eq(0)
                     if (el2.length) {
                         const templateValue2 = el2.attr(this.props.item.name)
                         let templateName1: string
 
-                        if (templateValue2) {
+                        if (templateValue2)
                             return templateValue2
-                        }
 
                         templateName1 = el2.attr('_template')
-                        if (templateName1) {
+                        if (templateName1)
                             return this.getValueInGlobal(templateName1, tagName)
-                        }
                     }
                 }
                 else {
@@ -302,9 +284,8 @@ export default class Parameter extends PureComponent<IProps, IState> {
         const selector = this.props.item.selector
         const name = this.props.item.name
 
-        if (!defaults[selector] || defaults[selector][name] === undefined) {
+        if (!defaults[selector] || defaults[selector][name] === undefined)
             return undefined
-        }
 
         return String(defaults[selector][name])
     }
@@ -322,9 +303,8 @@ export default class Parameter extends PureComponent<IProps, IState> {
                 const el2 = template.find(tagName).eq(0)
                 if (el2.length) {
                     const templateValue2 = el2.attr(this.props.item.name)
-                    if (templateValue2) {
+                    if (templateValue2)
                         return templateValue2
-                    }
                 }
             }
         }
@@ -334,13 +314,10 @@ export default class Parameter extends PureComponent<IProps, IState> {
     private getParentTemplate = (el: Cheerio<any>) => {
         if (el.parent().length) {
             const template = el.parent().attr('_template')
-
-            if (template) {
+            if (template)
                 return template
-            }
-            else {
+            else
                 return this.getParentTemplate(el.parent())
-            }
         }
     }
 }

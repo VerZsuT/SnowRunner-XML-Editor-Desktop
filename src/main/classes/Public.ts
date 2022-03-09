@@ -2,7 +2,7 @@ import { app, BrowserWindow, ipcMain, shell } from 'electron'
 import { existsSync, chmodSync } from 'fs'
 import { join } from 'path'
 import { execFile } from 'child_process'
-import $ from 'cheerio'
+import { load } from 'cheerio'
 import type IFunctions from '../types/IFunctions'
 import type ITemplateParams from '../templates/types/ITemplateParams'
 
@@ -240,7 +240,7 @@ export default class Public {
     }
 
     public static getParams = (domString: string, name: keyof typeof templates, fileName: string) => {
-        const fileDOM = $.load(domString, { xmlMode: true })
+        const fileDOM = load(domString, { xmlMode: true })
         const mainActions = templates[name].actions
         const extraActions = extra[fileName]?.actions
         const extraTemplate = extra[fileName]?.template
@@ -250,21 +250,21 @@ export default class Public {
         let params = templates[name].template.getParams({ fileDOM }) as ITemplateParams
         
 
-        if (mainActions) {
+        if (mainActions)
             resultActions.push(...mainActions)
-        }
+
         if (extraTemplate) {
             params = [
                 ...params,
                 ...extraTemplate.getParams({ fileDOM })
             ]
         }
-        if (extraActions) {
+        
+        if (extraActions)
             resultActions.push(...extraActions)
-        }
-        if (extraExclude) {
+
+        if (extraExclude)
             resultActions = resultActions.filter(action => !extraExclude.includes(action))
-        }
 
         return {
             dom: fileDOM.html(),

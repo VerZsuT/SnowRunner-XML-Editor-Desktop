@@ -40,7 +40,6 @@ export default class Coordinates extends PureComponent<IProps, IState> {
 
     constructor(props: IProps) {
         super(props)
-
         this.state = {
             ...this.parse(props.getValue()),
             menu: {}
@@ -53,16 +52,14 @@ export default class Coordinates extends PureComponent<IProps, IState> {
     }
 
     componentWillUnmount() {
-        if (this.props.unregReset) {
+        if (this.props.unregReset)
             this.props.unregReset(this.componentID)
-        }
         this.context.removeParam(this.componentID)
     }
 
     render() {
-        if (this.props.isShow === false) {
+        if (this.props.isShow === false)
             return null
-        }
         
         return (<>
             <ResetMenu
@@ -128,14 +125,13 @@ export default class Coordinates extends PureComponent<IProps, IState> {
         let y: string
         let z: string
 
-        if (!value) {
+        if (!value)
             return { x: 0, y: 0, z: 0 }
-        }
 
         array = value.replace('(', '').replace(')', '').replaceAll(' ', '').split(';')
-        if (array.length === 1) {
+        if (array.length === 1)
             array = value.replace('(', '').replace(')', '').replaceAll(' ', '').split(',');
-        }
+
         [x, y, z] = array
         return { x: +x, y: +y, z: +z }
     }
@@ -158,10 +154,8 @@ export default class Coordinates extends PureComponent<IProps, IState> {
             forImport: {
                 setValue: (value: string) => {
                     const thisValue = `(${this.state.x}; ${this.state.y}; ${this.state.z})`
-
-                    if (thisValue !== value) {
+                    if (thisValue !== value)
                         this.save(this.parse(value))
-                    }
                 },
                 selector: this.props.item.selector,
                 name: this.props.item.name,
@@ -189,8 +183,7 @@ export default class Coordinates extends PureComponent<IProps, IState> {
         const defaultValue = this.props.getDefaultValue()
 
         this.setState({ menu: {} })
-        if (defaultValue !== undefined) {
+        if (defaultValue !== undefined)
             this.save(this.parse(defaultValue))
-        }
     }
 }
