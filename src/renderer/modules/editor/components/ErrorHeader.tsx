@@ -1,4 +1,5 @@
 import { PureComponent } from 'react'
+import type { MouseEvent } from 'react'
 import type { CheerioAPI } from 'cheerio'
 import main from 'scripts/main'
 import localize from 'scripts/localize'
@@ -37,6 +38,8 @@ interface IState {
 }
 
 export default class ErrorHeader extends PureComponent<IProps, IState> {
+    private iconStyle = { fontSize: '30px' }
+
     constructor(props: IProps) {
         super(props)
         this.state = {
@@ -45,35 +48,38 @@ export default class ErrorHeader extends PureComponent<IProps, IState> {
     }
 
     render() {
+        const { title, back, files } = this.props
+        const { menuAnchor } = this.state
+
         return (
             <Header>
                 <Typography variant='h5'>
-                    {this.props.title}
+                    {title}
                 </Typography>
                 <Tooltip title={localize.BACK_BUTTON}>
-                    <BackArrowButton onClick={this.props.back} color='inherit'>
-                        <ArrowBackIcon style={{ fontSize: '30px' }} />
+                    <BackArrowButton onClick={back} color='inherit'>
+                        <ArrowBackIcon style={this.iconStyle}/>
                     </BackArrowButton>
                 </Tooltip>
                 <Tooltip title={localize.SAVE_BUTTON}>
                     <SaveButton color='inherit' disabled>
-                        <SaveIcon style={{ fontSize: '30px' }} />
+                        <SaveIcon style={this.iconStyle}/>
                     </SaveButton>
                 </Tooltip>
-                <TasksButton onClick={e => this.openTasksMenu(e.currentTarget)} color='inherit'>
-                    <MenuIcon style={{ fontSize: '30px' }} />
+                <TasksButton onClick={this.openTasksMenu} color='inherit'>
+                    <MenuIcon style={this.iconStyle}/>
                 </TasksButton>
                 <Menu
-                    anchorEl={this.state.menuAnchor}
-                    open={!!this.state.menuAnchor}
+                    anchorEl={menuAnchor}
+                    open={!!menuAnchor}
                     onClose={this.closeTasksMenu}
                 >
                     <NestedMenuItem
                         label={localize.OPEN_BUTTON}
-                        parentMenuOpen={!!this.state.menuAnchor}
-                        leftIcon={<FilesListIcon />}
+                        parentMenuOpen={!!menuAnchor}
+                        leftIcon={<FilesListIcon/>}
                     >
-                        {this.props.files.map(file =>
+                        {files.map(file =>
                             <IconMenuItem
                                 key={file.path}
                                 onClick={() => {
@@ -82,7 +88,7 @@ export default class ErrorHeader extends PureComponent<IProps, IState> {
                                         window.location.reload()
                                     })
                                 }}
-                                leftIcon={<FileOpenIcon />}
+                                leftIcon={<FileOpenIcon/>}
                                 label={basename(file.path)}
                             />
                         )}
@@ -92,8 +98,8 @@ export default class ErrorHeader extends PureComponent<IProps, IState> {
         )
     }
 
-    private openTasksMenu = (element: Element) => {
-        this.setState({ menuAnchor: element })
+    private openTasksMenu = (e: MouseEvent<HTMLButtonElement>) => {
+        this.setState({ menuAnchor: e.currentTarget })
     }
 
     private closeTasksMenu = () => {

@@ -19,7 +19,7 @@ export default class Search extends PureComponent<IProps> {
             <SearchContainer>
                 <SearchMUI>
                     <SearchIconWrapper>
-                        <SearchIcon />
+                        <SearchIcon/>
                     </SearchIconWrapper>
                     <StyledInputBase
                         id='search'

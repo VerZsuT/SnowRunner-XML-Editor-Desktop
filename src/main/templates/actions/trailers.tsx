@@ -24,7 +24,12 @@ interface IState {
 }
 
 export const data: IActionData = {
-    name: localize.TRAILERS_ADDONS_POPUP_TAB,
+    name: {
+        RU: 'Прицепы',
+        EN: 'Trailers',
+        DE: 'Anhänger',
+        ZH: '拖车'
+    },
     id: 'trailers',
     minHeight: 100,
     imgSRC: require('images/icons/editor/trailer.png'),
@@ -61,8 +66,7 @@ export default class Trailers extends ActionBase<IState> {
     }
 
     public render() {
-        const hasScoutTrailer = this.state.hasScoutTrailer
-        const hasTruckTrailer = this.state.hasTruckTrailer
+        const { hasScoutTrailer, hasTruckTrailer } = this.state
 
         return <>
             <Container>
@@ -73,7 +77,7 @@ export default class Trailers extends ActionBase<IState> {
                             variant='contained'
                             color='primary'
                             disabled={!(hasTruckTrailer && !hasScoutTrailer)}
-                            onClick={() => this.addTrailer(Trailer.scout, Trailer.truck)}
+                            onClick={this.addScoutTrailers}
                         >
                             {localize.ADD}
                         </Button>
@@ -81,7 +85,7 @@ export default class Trailers extends ActionBase<IState> {
                             variant='contained'
                             color='error'
                             disabled={!(hasScoutTrailer && hasTruckTrailer)}
-                            onClick={() => this.removeTrailer(Trailer.scout)}
+                            onClick={this.removeScoutTrailers}
                         >
                             {localize.REMOVE}
                         </Button>
@@ -94,7 +98,7 @@ export default class Trailers extends ActionBase<IState> {
                             variant='contained'
                             color='primary'
                             disabled={!(hasScoutTrailer && !hasTruckTrailer)}
-                            onClick={() => this.addTrailer(Trailer.truck, Trailer.scout)}
+                            onClick={this.addTruckTrailers}
                         >
                             {localize.ADD}
                         </Button>
@@ -102,7 +106,7 @@ export default class Trailers extends ActionBase<IState> {
                             variant='contained'
                             color='error'
                             disabled={!(hasScoutTrailer && hasTruckTrailer)}
-                            onClick={() => this.removeTrailer(Trailer.truck)}
+                            onClick={this.removeTruckTrailers}
                         >
                             {localize.REMOVE}
                         </Button>
@@ -112,29 +116,36 @@ export default class Trailers extends ActionBase<IState> {
         </>
     }
 
+    private addTruckTrailers = () => this.addTrailer(Trailer.truck, Trailer.scout)
+    private addScoutTrailers = () => this.addTrailer(Trailer.scout, Trailer.truck)
+
+    private removeTruckTrailers = () => this.removeTrailer(Trailer.truck)
+    private removeScoutTrailers = () => this.removeTrailer(Trailer.scout)
+
     private addTrailer = (trailer: Trailer, to: Trailer) => {
-        const mainSocket = this.props.dom(`Socket[Names~="${to}"]`).length? this.props.dom(`Socket[Names~="${to}"]`) : this.props.dom(`Socket[Names~="${to},"]`)
+        const { dom, editor } = this.props
+        const mainSocket = dom(`Socket[Names~="${to}"]`).length? dom(`Socket[Names~="${to}"]`) : dom(`Socket[Names~="${to},"]`)
         const mainNames = mainSocket.attr('Names').split(',').map(value => value.trim())
 
         mainNames.push(trailer)
         mainSocket.attr('Names', mainNames.join(', '))
 
-        this.props.dom(`Socket[NamesBlock~="${to}"], Socket[NamesBlock~="${to},"]`).map((_, el) => {
-            const namesBlock = this.props.dom(el).attr('NamesBlock').split(',').map(value => value.trim())
+        dom(`Socket[NamesBlock~="${to}"], Socket[NamesBlock~="${to},"]`).map((_, el) => {
+            const namesBlock = dom(el).attr('NamesBlock').split(',').map(value => value.trim())
             namesBlock.push(trailer)
-            this.props.dom(el).attr('NamesBlock', namesBlock.join(', '))
+            dom(el).attr('NamesBlock', namesBlock.join(', '))
         })
-        this.props.dom(`AddonsShift[Types~="${to}"], AddonsShift[Types~="${to},"]`).map((_, el) => {
+        dom(`AddonsShift[Types~="${to}"], AddonsShift[Types~="${to},"]`).map((_, el) => {
             const newShift = el.cloneNode(true)
-            let types = this.props.dom(newShift).attr('Types').split(',').map(value => value.trim())
+            let types = dom(newShift).attr('Types').split(',').map(value => value.trim())
 
             types = types.filter(value => value !== to)
             types.push(trailer)
-            this.props.dom(newShift).attr('Types', types.join(', '))
-            this.props.dom(el).after(newShift)
+            dom(newShift).attr('Types', types.join(', '))
+            dom(el).after(newShift)
         })
 
-        if (this.props.editor) {
+        if (editor) {
             if (trailer === Trailer.scout)
                 this.setState({ hasScoutTrailer: true })
             else if (trailer === Trailer.truck)
@@ -143,22 +154,23 @@ export default class Trailers extends ActionBase<IState> {
     }
 
     private removeTrailer = (trailer: Trailer) => {
-        const mainSocket = this.props.dom(`Socket[Names~="${trailer}"]`).length? this.props.dom(`Socket[Names~="${trailer}"]`) : this.props.dom(`Socket[Names~="${trailer},"]`)
+        const { editor, dom } = this.props
+        const mainSocket = dom(`Socket[Names~="${trailer}"]`).length? dom(`Socket[Names~="${trailer}"]`) : dom(`Socket[Names~="${trailer},"]`)
         let mainNames = mainSocket.attr('Names').split(',').map(value => value.trim())
 
         mainNames = mainNames.filter(value => value !== trailer)
         mainSocket.attr('Names', mainNames.join(', '))
 
-        this.props.dom(`Socket[NamesBlock~="${trailer}"], Socket[NamesBlock~="${trailer},"]`).map((_, el) => {
-            let namesBlock = this.props.dom(el).attr('NamesBlock').split(',').map(value => value.trim())
+        dom(`Socket[NamesBlock~="${trailer}"], Socket[NamesBlock~="${trailer},"]`).map((_, el) => {
+            let namesBlock = dom(el).attr('NamesBlock').split(',').map(value => value.trim())
             namesBlock = namesBlock.filter(value => value !== trailer)
-            this.props.dom(el).attr('NamesBlock', namesBlock.join(', '))
+            dom(el).attr('NamesBlock', namesBlock.join(', '))
         })
-        this.props.dom(`AddonsShift[Types~="${trailer}"], AddonsShift[Types~="${trailer},"]`).map((_, el) =>
-            this.props.dom(el).remove()
+        dom(`AddonsShift[Types~="${trailer}"], AddonsShift[Types~="${trailer},"]`).map((_, el) =>
+            dom(el).remove()
         )
 
-        if (this.props.editor) {
+        if (editor) {
             if (trailer === Trailer.scout)
                 this.setState({ hasScoutTrailer: false })
             else if (trailer === Trailer.truck)

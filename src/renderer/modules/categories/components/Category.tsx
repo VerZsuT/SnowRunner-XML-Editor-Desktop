@@ -3,7 +3,7 @@ import localize from 'scripts/localize'
 import main from 'scripts/main'
 import local from 'scripts/storage'
 import ListType from 'modules/list/enums/ListType'
-import Loading from 'modules/components/Loading'
+import { showLoading } from 'modules/components/Loading'
 
 import { CardActionArea } from '@mui/material'
 import Card from '../styled/Card'
@@ -17,40 +17,40 @@ interface IProps {
     name: ListType
 }
 
-interface IState {
-    isLoading: boolean
-}
-
-export default class Category extends PureComponent<IProps, IState> {
+export default class Category extends PureComponent<IProps> {
     private imgSrc: string
+    private cardStyle = {
+        boxShadow: 'none',
+        borderRadius: 0
+    }
 
     constructor(props: IProps) {
         super(props)
         this.imgSrc = require(`images/category/${this.props.name}_category.png`)
-        this.state = {
-            isLoading: false
-        }
     }
 
     render() {
-        return (<>
-            <Card style={{ boxShadow: 'none', borderRadius: 0 }}>
+        const { name } = this.props
+
+        return (
+            <Card style={this.cardStyle}>
                 <CardActionArea onClick={this.openList}>
                     <CardMedia image={this.imgSrc}/>
                     <CardContent>
                         <CardTitle>
-                            {localize[`${this.props.name.toUpperCase()}_CATEGORY_TITLE`]}
+                            {localize[`${name.toUpperCase()}_CATEGORY_TITLE`]}
                         </CardTitle>
                     </CardContent>
                 </CardActionArea>
             </Card>
-            <Loading show={this.state.isLoading} />
-        </>)
+        )
     }
 
     private openList = () => {
-        this.setState({ isLoading: true })
-        local.set('listType', this.props.name)
+        const { name } = this.props
+
+        showLoading()
+        local.set('listType', name)
         openList()
     }
 }

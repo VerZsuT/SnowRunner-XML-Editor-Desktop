@@ -3,26 +3,54 @@ import { PureComponent } from 'react'
 import { Snackbar, AlertColor } from '@mui/material'
 import StyledAlert from './styled/StyledAlert'
 
-interface IProps {
-    show: boolean
-    onClose(): void
+interface IState {
     text: string
-    type: AlertColor
+    onClose?(): void
+    type?: AlertColor
+    show?: boolean
 }
 
-export default class Alert extends PureComponent<IProps> {
+export let showAlert: (props: IState) => void
+
+export default class Alert extends PureComponent<{}, IState> {
+    constructor(props: any) {
+        super(props)
+        this.state = { text: null }
+        showAlert = props => {
+            const { onClose } = props
+
+            this.setState({
+                show: true,
+                type: 'info',
+                ...props,
+                onClose: () => {
+                    this.setState({ show: false })
+                    if (onClose)
+                        onClose()
+                }
+            })
+        }
+    }
+
     render() {
+        const {
+            show=false,
+            onClose=()=>{},
+            type='info',
+            text=''
+        } = this.state
+
         return (
             <Snackbar
-                open={this.props.show}
+                open={show}
                 autoHideDuration={6000}
-                onClose={this.props.onClose}
+                onClose={onClose}
             >
                 <StyledAlert
-                    onClose={this.props.onClose}
-                    severity={this.props.type}
+                    onClose={onClose}
+                    severity={type}
                 >
-                    {this.props.text}
+                    {text}
                 </StyledAlert>
             </Snackbar>
         )

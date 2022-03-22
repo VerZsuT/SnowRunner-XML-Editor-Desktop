@@ -1,5 +1,6 @@
 import { PureComponent } from 'react'
 import { load } from 'cheerio'
+import type { CSSProperties } from 'react'
 import type { CheerioAPI } from 'cheerio'
 import type IItem from '../types/IItem'
 import ListType from '../enums/ListType'
@@ -10,7 +11,9 @@ import localize from 'scripts/localize'
 import config from 'scripts/config'
 import local from 'scripts/storage'
 import main from 'scripts/main'
-import Loading from 'modules/components/Loading'
+import { getExported } from 'scripts/dom'
+import { showLoading } from 'modules/components/Loading'
+import { showAlert } from 'modules/components/Alert'
 
 import {
     Menu, MenuItem, CardActionArea,
@@ -18,11 +21,9 @@ import {
 } from '@mui/material'
 import Card from '../styled/Card'
 import StarRounded from '../styled/StarRounded'
-import { getExported } from 'scripts/dom'
 
 const { existsSync, readFileSync, writeFileSync } = window.service
 const { openEditor, openSaveDialog } = main
-const { on } = window.ipc
 
 interface IProps {
     item: IItem
@@ -33,8 +34,6 @@ interface IProps {
 }
 
 interface IState {
-    isDeleted: boolean
-    isLoading: boolean
     contextMenu: {
         mouseX: number
         mouseY: number
@@ -45,117 +44,124 @@ export default class InnerListItem extends PureComponent<IProps, IState> {
     static contextType = ListContext
     declare context: IListContext
 
+    private styles = {
+        cardContent: { padding: '5px' },
+        text: {
+            textAlign: 'center',
+            fontSize: '1.1rem'
+        } as CSSProperties,
+        red: { color: 'red' }
+    }
     private fileDOM: CheerioAPI
     private name: string
     private imgSrc: string
 
     constructor(props: IProps) {
         super(props)
-        this.state = {
-            isDeleted: false,
-            isLoading: false,
-            contextMenu: null
-        }
+        this.state = { contextMenu: null }
         this.fileDOM = this.getDOM()
         this.name = this.getName()
         this.imgSrc = this.getImgSrc()
-
-        on('close-editor', () => this.setState({ isLoading: false }))
     }
 
     render() {
+        const { item } = this.props
+        const { contextMenu } = this.state
+
         const isShow = this.isShow()
-        const isFavorite = config.favorites.includes(this.props.item.name)
+        const isFavorite = config.favorites.includes(item.name)
         const text = this.getText()
 
-        if (isShow && !this.state.isDeleted) {
-            return (<>
-                <Card onContextMenu={this.onContextMenu}>
-                    <CardActionArea onClick={() => this.openEditor()}>
-                        <CardMedia
-                            component='img'
-                            height='350px'
-                            image={this.imgSrc}
-                        />
-                        {isFavorite ?
-                            <StarRounded htmlColor='yellow'/>
-                        : null}
-                        <CardContent style={{ padding: '5px' }}>
-                            <Typography
-                                component='div'
-                                style={{ textAlign: 'center', fontSize: '1.1rem' }}
-                            >
-                                {typeof text === 'string'
-                                    ? text
-                                    : <>
-                                        {text.first}
-                                        <span style={{ color: 'red' }}>
-                                            {text.second}
-                                        </span>
-                                        {text.last}
-                                      </>
-                                }
-                            </Typography>
-                        </CardContent>
-                    </CardActionArea>
-                </Card>
-                <Menu
-                    open={this.state.contextMenu !== null}
-                    onClose={this.onCloseContext}
-                    anchorReference='anchorPosition'
-                    anchorPosition={
-                    this.state.contextMenu !== null
-                        ? {
-                            top: this.state.contextMenu.mouseY,
-                            left: this.state.contextMenu.mouseX
-                        }
-                        : undefined
-                    }
-                >
-                    <MenuItem onClick={this.toggleFavorite}>
-                        {isFavorite? localize.REMOVE_FAVORITE : localize.ADD_FAVORITE}
-                    </MenuItem>
-                    <MenuItem onClick={this.export}>
-                        {localize.EXPORT}
-                    </MenuItem>
-                </Menu>
-                <Loading show={this.state.isLoading} />
-            </>)
-        }
-        else {
+        if (!isShow)
             return null
-        }
+
+        return <>
+            <Card onContextMenu={this.onContextMenu}>
+                <CardActionArea onClick={this.openEditor}>
+                    <CardMedia
+                        component='img'
+                        height='350px'
+                        image={this.imgSrc}
+                    />
+                    {isFavorite ?
+                        <StarRounded htmlColor='yellow'/>
+                    : null}
+                    <CardContent style={this.styles.cardContent}>
+                        <Typography
+                            component='div'
+                            style={this.styles.text}
+                        >
+                            {typeof text === 'string'
+                                ? text
+                                : <>
+                                    {text.first}
+                                    <span style={this.styles.red}>
+                                        {text.second}
+                                    </span>
+                                    {text.last}
+                                    </>
+                            }
+                        </Typography>
+                    </CardContent>
+                </CardActionArea>
+            </Card>
+            <Menu
+                open={contextMenu !== null}
+                onClose={this.onCloseContext}
+                anchorReference='anchorPosition'
+                anchorPosition={
+                contextMenu !== null
+                    ? {
+                        top: contextMenu.mouseY,
+                        left: contextMenu.mouseX
+                    }
+                    : undefined
+                }
+            >
+                <MenuItem onClick={this.toggleFavorite}>
+                    {isFavorite? localize.REMOVE_FAVORITE : localize.ADD_FAVORITE}
+                </MenuItem>
+                <MenuItem onClick={this.export}>
+                    {localize.EXPORT}
+                </MenuItem>
+            </Menu>
+        </>
     }
 
     private export = () => {
-        const exported = getExported(this.props.item.path, false, this.props.modId, this.props.dlc)
-        const path = openSaveDialog(this.props.item.name)
+        const { item, modId, dlc } = this.props
+
+        const exported = getExported(item.path, false, modId, dlc)
+        const path = openSaveDialog(item.name)
 
         this.onCloseContext()
         if (!path)
             return
 
         writeFileSync(path, JSON.stringify(exported, null, '\t'))
+        showAlert({ text: localize.SUCCESS_EXPORT_MESSAGE })
     }
 
     private openEditor = () => {
-        local.set('filePath', this.props.item.path)
-        local.set('currentDLC', this.props.item.dlcName)
-        local.set('currentMod', this.props.item.modId)
-        local.set('openedList', this.props.listId.replace('list-', ''))
-        local.set('listScroll', String(Math.round(document.querySelector(`#${this.props.listId}`).scrollTop)))
+        const { item, listId } = this.props
 
-        this.setState({
-            isLoading: true,
-            contextMenu: null
-        })
+        local.set('filePath', item.path)
+        local.set('currentDLC', item.dlcName)
+        local.set('currentMod', item.modId)
+        local.set('openedList', listId.replace('list-', ''))
+        local.set('listScroll', String(Math.round(document.querySelector(`#${listId}`).scrollTop)))
+
+        this.setState({ contextMenu: null })
+        showLoading()
         openEditor()
     }
 
     private onContextMenu = (event: React.MouseEvent) => {
+        const { contextMenu } = this.state
+
         event.preventDefault()
         this.setState({
-            contextMenu: this.state.contextMenu === null ? {
+            contextMenu: contextMenu === null ? {
                 mouseX: event.clientX - 2,
                 mouseY: event.clientY - 4,
             } : null
@@ -184,12 +190,14 @@ export default class InnerListItem extends PureComponent<IProps, IState> {
     }
 
     private getName() {
-        let name = prettify(this.props.item.name)
+        const { item } = this.props
+
+        let name = prettify(item.name)
 
         if (this.fileDOM('GameData > UiDesc').length) {
             const uiName = this.fileDOM('GameData > UiDesc').attr('UiName')
             if (uiName)
-                name = getIngameText(uiName, this.props.item.modId) || uiName
+                name = getIngameText(uiName, item.modId) || uiName
         }
         return name
     }
@@ -217,25 +225,27 @@ export default class InnerListItem extends PureComponent<IProps, IState> {
     }
 
     private getImgSrc() {
-        switch (this.props.type) {
+        const { type, item } = this.props
+
+        switch (type) {
             case ListType.trailers:
                 try {
-                    return require(`images/trailers/${this.props.item.name}.png`)
+                    return require(`images/trailers/${item.name}.png`)
                 }
                 catch {
                     return require('images/trailers/default.png')
                 }
             case ListType.trucks:
                 try {
-                    return require(`images/trucks/${this.props.item.name}.jpg`)
+                    return require(`images/trucks/${item.name}.jpg`)
                 }
                 catch {
                     const defaultImage = require('images/trucks/default.png')
                     // MARK: Картинки
                     // console.warn(`Не найдена картинка ${this.props.item.name}`)
-                    if (this.props.item.modId && this.fileDOM('GameData > UiDesc').length) {
+                    if (item.modId && this.fileDOM('GameData > UiDesc').length) {
                         const imgName = this.fileDOM('GameData > UiDesc').attr('UiIcon328x458')
-                        const truckPath = `../../main/modsTemp/${this.props.item.modId}/ui/textures/${imgName}.png`
+                        const truckPath = `../../main/modsTemp/${item.modId}/ui/textures/${imgName}.png`
 
                         if (!existsSync(truckPath))
                             return defaultImage

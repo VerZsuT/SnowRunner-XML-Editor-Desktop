@@ -1,10 +1,12 @@
-import { FormEvent, PureComponent } from 'react'
+import { PureComponent } from 'react'
+import type { FormEvent } from 'react'
 import type IACKeys from '../types/IACKeys'
 import type IACPresets from '../types/IACPresets'
 import Lang from 'main/enums/Lang'
 import { setHotKey } from 'scripts/funcs'
 import config from 'scripts/config'
 import { help } from '../service'
+import memoizee from 'memoizee'
 
 interface IProps {
     cmd: string
@@ -31,18 +33,21 @@ export default class AutoComplete extends PureComponent<IProps, IState> {
     }
 
     render() {
-        let value = this.state.value
+        const { cmd } = this.props
+        const { value } = this.state
 
-        this.items = this.getItems(this.props.cmd.split(' ').filter(value => value !== ''))
-        if (!this.items.includes(value))
-            value = this.items[0]
+        let val = value
+
+        this.items = this.getItems(cmd.split(' ').filter(value => value !== ''))
+        if (!this.items.includes(val))
+            val = this.items[0]
 
         return (
             <select
                 id='info'
-                value={[value]}
+                value={[val]}
                 onInput={this.onInput}
-                style={{ height: this.items.length * 20 }}
+                style={this.getHeight(this.items.length)}
                 multiple
             >
                 {this.items.map(value =>
@@ -52,53 +57,58 @@ export default class AutoComplete extends PureComponent<IProps, IState> {
         )
     }
 
+    private getHeight = memoizee((length: number) => ({
+        height: length * 20
+    }))
+
     /** Инициализирует события нажания на клавиши в поле ввода. */
     private setControls() {
+        const { onInput } = this.props
+        const { value } = this.state
+
         setHotKey({
             key: 'ArrowDown',
             prevent: true,
             eventName: 'keydown'
         }, () => {
-            if (!this.items.includes(this.state.value)) {
+            if (!this.items.includes(value)) {
                 this.setState({ value: this.items[1] })
                 return
             }
-            if (this.items.indexOf(this.state.value) === this.items.length - 1) {
+            if (this.items.indexOf(value) === this.items.length - 1) {
                 this.setState({ value: this.items[0] })
                 return
             }
-            this.setState({
-                value: this.items[this.items.indexOf(this.state.value) + 1]
-            })
+            this.setState(({ value }) => ({
+                value: this.items[this.items.indexOf(value) + 1]
+            }))
         })
         setHotKey({
             key: 'ArrowUp',
             prevent: true,
             eventName: 'keydown'
         }, () => {
-            if (!this.items.includes(this.state.value)) {
+            if (!this.items.includes(value)) {
                 this.setState({ value: this.items[this.items.length - 1] })
                 return
             }
-            if (this.items.indexOf(this.state.value) === 0) {
+            if (this.items.indexOf(value) === 0) {
                 this.setState({ value: this.items[this.items.length - 1] })
                 return
             }
-            this.setState({
-                value: this.items[this.items.indexOf(this.state.value) - 1]
-            })
+            this.setState(({ value }) => ({
+                value: this.items[this.items.indexOf(value) - 1]
+            }))
         })
 
         setHotKey({
             key: 'Tab',
             eventName: 'keyup'
         }, () => {
-            if (!this.items.includes(this.state.value)) {
-                this.props.onInput(this.items[0])
-            }
-            else {
-                this.props.onInput(this.state.value)
-            }
+            if (!this.items.includes(value))
+                onInput(this.items[0])
+            else
+                onInput(value)
         })
     }
 
@@ -217,14 +227,10 @@ const keys: IACKeys = combine([
     'reload',
     'reset',
     'checkUpdate',
-    'read',
-    'set',
-    'addMod',
     'whatsNew',
     'exportAll'
 ], {
     help: Object.keys(help).filter(value => value !== 'toString'),
-    delMod: getModsList(),
     devTools: [
         'enable',
         'disable'

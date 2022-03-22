@@ -1,6 +1,6 @@
-import { FormEvent, PureComponent } from 'react'
+import { PureComponent } from 'react'
+import type { FormEvent } from 'react'
 import { setHotKey } from 'scripts/funcs'
-import main from 'scripts/main'
 import { Message } from '../service'
 import AutoComplete from './AutoComplete'
 
@@ -29,14 +29,16 @@ export default class EditorConsole extends PureComponent<IProps, IState> {
     }
 
     render() {
+        const { cmd } = this.state
+
         return (
             <div className='line'>
-                <AutoComplete cmd={this.state.cmd} onInput={this.onAutoInput} />
+                <AutoComplete cmd={cmd} onInput={this.onAutoInput}/>
                 <span>:/ </span>
                 <input
                     autoFocus
                     id='input'
-                    value={this.state.cmd}
+                    value={cmd}
                     onInput={this.onInput}
                     placeholder='cmd'
                 />
@@ -49,19 +51,22 @@ export default class EditorConsole extends PureComponent<IProps, IState> {
     }
 
     private setEnterHotkey() {
+        const { listeners, onError } = this.props
+        const { cmd: stateCmd } = this.state
+
         setHotKey({
             key: 'Enter'
         }, () => {
-            const params = this.state.cmd.split(' ')
+            const params = stateCmd.split(' ')
             const cmd = params[0]
 
-            if (this.props.listeners[cmd]) {
-                const error = this.props.listeners[cmd](params.slice(1))
+            if (listeners[cmd]) {
+                const error = listeners[cmd](params.slice(1))
                 if (error)
-                    this.props.onError(error)
+                    onError(error)
             }
             else {
-                this.props.onError(Message.warn(`Неверная команда '${cmd}'`))
+                onError(Message.warn(`Неверная команда '${cmd}'`))
             }
 
             this.setState({ cmd: '' });
@@ -70,7 +75,8 @@ export default class EditorConsole extends PureComponent<IProps, IState> {
     }
 
     private onAutoInput = (value: string) => {
-        const params = this.state.cmd.split(' ')
+        const { cmd } = this.state
+        const params = cmd.split(' ')
 
         if (value.startsWith(params.slice(-1)[0]) && params.slice(-1)[0] !== value)
             params.pop()

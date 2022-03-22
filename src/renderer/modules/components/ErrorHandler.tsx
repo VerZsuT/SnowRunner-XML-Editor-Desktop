@@ -8,7 +8,7 @@ interface IState {
     message: string
 }
 
-export default class ErrorHandler extends PureComponent<any, IState> {
+export default class ErrorHandler extends PureComponent<{}, IState> {
     constructor(props: any) {
         super(props)
         this.state = {
@@ -22,14 +22,16 @@ export default class ErrorHandler extends PureComponent<any, IState> {
     }
 
     render() {
+        const { isOpen, message } = this.state
+
         return (
             <Snackbar
-                open={this.state.isOpen}
+                open={isOpen}
                 autoHideDuration={6000}
                 onClose={this.onClose}
             >
                 <Alert onClose={this.onClose} severity='error'>
-                    {this.state.message}
+                    {message}
                 </Alert>
             </Snackbar>
         )

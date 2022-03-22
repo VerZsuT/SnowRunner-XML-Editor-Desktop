@@ -1,4 +1,5 @@
 import { PureComponent } from 'react'
+import type { CSSProperties } from 'react'
 import { render } from 'react-dom'
 import { MAIN } from 'scripts/funcs'
 
@@ -19,6 +20,13 @@ interface IState {
 }
 
 class Loading extends PureComponent<any, IState> {
+    private styles = {
+        mainCont: { textAlign: 'center' } as CSSProperties,
+        gridCont: { justifyContent: 'center' },
+        percent: { marginLeft: '10px' },
+        progress: { marginTop: '15px' }
+    }
+
     constructor(props: any) {
         super(props)
         this.state = {
@@ -35,30 +43,32 @@ class Loading extends PureComponent<any, IState> {
     }
 
     render() {
+        const { name, isDownload, percent, allCount, loadedCount } = this.state
+
         return (
-            <Container style={{ textAlign: 'center' }}>
+            <Container style={this.styles.mainCont}>
                 <Container>
                     <Typography variant='h6'>
-                        {this.state.name}
+                        {name}
                     </Typography>
                 </Container>
 
-                {this.state.isDownload 
+                {isDownload 
                     ? <>
                         <LinearProgress
                             variant='determinate'
-                            value={this.state.percent}
+                            value={percent}
                         />
-                        <GridContainer style={{ justifyContent: 'center' }}>
+                        <GridContainer style={this.styles.gridCont}>
                             <Typography variant='body2'>
-                                {this.state.loadedCount}/{this.state.allCount}
+                                {loadedCount}/{allCount}
                             </Typography>
-                            <Typography variant='body2' style={{ marginLeft: '10px' }}>
-                                {Math.round(this.state.percent)}%
+                            <Typography variant='body2' style={this.styles.percent}>
+                                {Math.round(percent)}%
                             </Typography>
                         </GridContainer>
                     </>
-                    : <CircularProgress style={{ marginTop: '15px' }}/>
+                    : <CircularProgress style={this.styles.progress}/>
                 }
             </Container>
         )
@@ -72,10 +82,10 @@ class Loading extends PureComponent<any, IState> {
             this.setState({ isDownload: true })
         )
         on('success', () =>
-            this.setState({
+            this.setState(({ loadedCount }) => ({
                 percent: 0,
-                loadedCount: this.state.loadedCount + 1
-            })
+                loadedCount: loadedCount + 1
+            }))
         )
         on('fileName', (_e, msg) =>
             this.setState({ name: msg })

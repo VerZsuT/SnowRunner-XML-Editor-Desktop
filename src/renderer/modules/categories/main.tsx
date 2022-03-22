@@ -6,6 +6,7 @@ import Menu from 'menu'
 import { setHotKey, MAIN } from 'scripts/funcs'
 import main from 'scripts/main'
 import Category from './components/Category'
+import Loading from 'modules/components/Loading'
 
 import Grid from './styled/Grid'
 import 'styles/categories'
@@ -30,6 +31,7 @@ class Categories extends PureComponent {
 
     render() {
         return (<>
+            <Loading/>
             <Menu/>
             <Grid>
                 {this.items}

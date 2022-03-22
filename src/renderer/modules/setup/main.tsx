@@ -8,7 +8,7 @@ import Menu from 'menu'
 import Language from '../components/Language'
 import GameFolder from '../components/GameFolder'
 import Save from './components/Save'
-import Confirm, { IConfirmProps } from '../components/Confirm'
+import Confirm, { showConfirm } from '../components/Confirm'
 import ErrorHandler from '../components/ErrorHandler'
 
 import { Typography } from '@mui/material'
@@ -20,15 +20,13 @@ const { existsSync, join, readFileSync } = window.service
 
 interface IState {
     pathToInitial: string
-    confirm: IConfirmProps
 }
 
 class Setup extends PureComponent<any, IState> {
     constructor(props: any) {
         super(props)
         this.state = {
-            pathToInitial: '',
-            confirm: null
+            pathToInitial: ''
         }
     }
 
@@ -39,25 +37,22 @@ class Setup extends PureComponent<any, IState> {
     }
 
     render() {
-        return (<>
-            <Menu />
-            <Confirm
-                show={this.state.confirm?.show}
-                text={this.state.confirm?.text}
-                onSuccess={this.import}
-                onClose={() => this.setState({ confirm: null })}
-            />
-            <ErrorHandler />
+        const { pathToInitial } = this.state
+
+        return <>
+            <Menu/>
+            <Confirm/>
+            <ErrorHandler/>
             <Title>
                 <Typography variant='h5'>
                     {localize.FIRST_STEPS_DESCRIPTION}
                 </Typography>
             </Title>
 
-            <Language />
-            <GameFolder onChange={this.setPath} preload={window.setupPreload} />
-            <Save pathToInitial={this.state.pathToInitial} />
-        </>)
+            <Language/>
+            <GameFolder onChange={this.setPath} preload={window.setupPreload}/>
+            <Save pathToInitial={pathToInitial}/>
+        </>
     }
 
     private setPath = (path: string) => {
@@ -68,11 +63,9 @@ class Setup extends PureComponent<any, IState> {
         if (existsSync(join(paths.backupFolder, 'config.json'))) {
             const exported = JSON.parse(readFileSync(join(paths.backupFolder, 'config.json')).toString())
             
-            this.setState({
-                confirm: {
-                    show: true,
-                    text: texts[exported.lang].IMPORT_CONFIG_MESSAGE
-                }
+            showConfirm({
+                text: texts[exported.lang].IMPORT_CONFIG_MESSAGE,
+                onSuccess: this.import
             })
         }
     }

@@ -1,5 +1,6 @@
 import { ChangeEvent } from 'react'
 import { load } from 'cheerio'
+import memoizee from 'memoizee'
 import type { Cheerio, CheerioAPI, Element, Node } from 'cheerio'
 import type IFindItem from 'modules/list/types/IFindItem'
 import type IActionData from '../types/IActionData'
@@ -11,9 +12,9 @@ import ActionBase from './ActionBase'
 
 import { Button, MenuItem, Select, SelectChangeEvent, styled } from '@mui/material'
 import Container from 'modules/components/styled/Container'
+import MyGrid from 'modules/components/styled/Grid'
 import InputLabel from 'modules/editor/styled/InputLabel' 
 import TextField from 'modules/editor/styled/AddonTextField'
-import MyGrid from 'modules/components/styled/Grid'
 
 const { readFileSync, join, writeFileSync, existsSync, basename, readdirSync, isDirectory } = window.service
 const { paths, findInDir } = main
@@ -33,7 +34,12 @@ interface IState {
 }
 
 export const data: IActionData = {
-    name: localize.ADDON_CONTENT,
+    name: {
+        RU: 'Содержимое аддонов',
+        EN: 'Addons content',
+        DE: 'Addon-Inhalt',
+        ZH: '插件内容'
+    },
     id: 'addons-content',
     minHeight: 200,
     minWidth: 350,
@@ -43,6 +49,11 @@ export const data: IActionData = {
 
 export default class AddonsContent extends ActionBase<IState> {
     private options: JSX.Element[] = []
+    private styles = {
+        content: { justifyContent: 'space-around' },
+        mainCont: { marginBottom: '10px' },
+        input: { width: '80px' }
+    }
 
     constructor(props: IActionProps) {
         super(props, data, AddonsContent)
@@ -75,21 +86,23 @@ export default class AddonsContent extends ActionBase<IState> {
     }
 
     render() {
+        const { selectedAddon } = this.state
+
         return <>
-            <Container style={{ marginBottom: '10px' }}>
+            <Container style={this.styles.mainCont}>
                 <InputLabel id='addon-name-label'>
                     {localize.ADDON_NAME}
                 </InputLabel>
                 <Select
                     labelId='addon-name-label'
-                    value={this.state.selectedAddon}
+                    value={selectedAddon}
                     onChange={this.selectAddon}
                     size='small'
                 >
                     {this.options}
                 </Select>
             </Container>
-            <MyGrid style={{ justifyContent: 'space-around'}}>
+            <MyGrid style={this.styles.content}>
                 <this.ContentField text={localize.ADDON_WHEELS} name='wheels'/>
                 <this.ContentField text={localize.ADDON_REPAIRS} name='repairs'/>
                 <this.ContentField text={localize.ADDON_FUEL} name='fuel'/>
@@ -143,22 +156,23 @@ export default class AddonsContent extends ActionBase<IState> {
                     value={this.state[props.name]}
                     onChange={this.onChange(props.name)}
                     size='small'
-                    style={{ width: '80px' }}
+                    style={this.styles.input}
                 />
             </ContentGrid>
         )
     }
 
-    private onChange(name: keyof IState) {
+    private onChange = memoizee((name: keyof IState) => {
         return (event: ChangeEvent<HTMLInputElement>) => {
             this.setState({
                 [name]: event.target.value
             } as unknown as IState)
         }
-    }
+    })
 
     private saveChanges = () => {
-        const pathToAddon = this.getItem(this.state.selectedAddon).path
+        const { selectedAddon, fuel, wheels, repairs } = this.state
+        const pathToAddon = this.getItem(selectedAddon).path
         const DOM = this.getDOM(pathToAddon)
         let TruckData = DOM('TruckAddon TruckData')
 
@@ -167,22 +181,22 @@ export default class AddonsContent extends ActionBase<IState> {
             TruckData = DOM('TruckAddon TruckData').eq(0)
         }
 
-        if (this.state.fuel && this.state.fuel !== '0')
-            TruckData.attr('FuelCapacity', this.state.fuel)
+        if (fuel && fuel !== '0')
+            TruckData.attr('FuelCapacity', fuel)
         else if (TruckData.attr('FuelCapacity'))
             TruckData.removeAttr('FuelCapacity')
 
-        if (this.state.wheels && this.state.wheels !== '0')
-            TruckData.attr('WheelRepairsCapacity', this.state.wheels)
+        if (wheels && wheels !== '0')
+            TruckData.attr('WheelRepairsCapacity', wheels)
         else if (TruckData.attr('WheelRepairsCapacity'))
             TruckData.removeAttr('WheelRepairsCapacity')
 
-        if (this.state.repairs && this.state.repairs !== '0')
-            TruckData.attr('RepairsCapacity', this.state.repairs)
+        if (repairs && repairs !== '0')
+            TruckData.attr('RepairsCapacity', repairs)
         else if (TruckData.attr('RepairsCapacity'))
             TruckData.removeAttr('RepairsCapacity')
 
-        if ((!this.state.fuel || this.state.fuel === '0') && (!this.state.wheels || this.state.wheels === '0') && (!this.state.repairs || this.state.repairs === '0') && TruckData.attr()) {
+        if ((!fuel || fuel === '0') && (!wheels || wheels === '0') && (!repairs || repairs === '0') && TruckData.attr()) {
             TruckData.remove()
         }
 
@@ -204,18 +218,21 @@ export default class AddonsContent extends ActionBase<IState> {
     }
 
     private getAddonName(addon: IFindItem) {
+        const { editor } = this.props
         const dom = this.getDOM(addon.path)
         const uiDesc = dom('UiDesc')
         const key = uiDesc.length ? uiDesc.attr('UiName') : null
 
-        return getIngameText(key, this.props.editor.currentMod) || addon.name
+        return getIngameText(key, editor.currentMod) || addon.name
     }
 
     private getItem(name?: string) {
-        if (!name)
-            name = this.state.selectedAddon
+        const { selectedAddon, items } = this.state
 
-        return this.state.items.filter(item => item.name === name)[0]
+        if (!name)
+            name = selectedAddon
+
+        return items.filter(item => item.name === name)[0]
     }
 
     private getAddonData(path?: string) {
@@ -268,7 +285,7 @@ export default class AddonsContent extends ActionBase<IState> {
 
         if (existsSync(pathToTuning)) {
             allAddons.push(...readdirSync(pathToTuning).map(item => {
-                if (isDirectory(item))
+                if (isDirectory(join(pathToTuning, item)))
                     return null
 
                 return {
@@ -301,7 +318,7 @@ export default class AddonsContent extends ActionBase<IState> {
                     }))
                 }
                 for (const item of readdirSync(pathToDLCTrucks)) {
-                    if (isDirectory(item) && item.endsWith('_tuning')) {
+                    if (isDirectory(join(pathToDLCTrucks, item)) && item.endsWith('_tuning')) {
                         allAddons.push(...readdirSync(join(pathToDLCTrucks, item)).map(name => {
                             return {
                                 name,

@@ -147,7 +147,7 @@ export const help = {
     sset: '- sset <setting_name> true|false \nУстанавливает значение настройки.',
     backup: '- backup save|restore \nСохраняет/восстанавливает бэкап initial.pak',
     archive: '- archive saveChanges|unpack \nСохраняет изменения или распаковывает initial.pak',
-    lang: '- lang RU|EN|DE \nУстанавливает язык перевода программы.',
+    lang: '- lang RU|EN|DE|ZH \nУстанавливает язык перевода программы.',
     config: '- config import|export \nИмпорт/экспорт конфиг-файла.',
     whatsNew: '- whatsNew \nОткрывает окно "Что нового".',
     exportAll: '- exportAll \nЭкспортирует все параметры всех авто и их зависимостей в файл в папке backups.',

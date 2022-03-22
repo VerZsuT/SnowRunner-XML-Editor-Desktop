@@ -1,4 +1,5 @@
 import { PureComponent } from 'react'
+import type { CSSProperties } from 'react'
 import type IItem from '../types/IItem'
 import ListType from '../enums/ListType'
 import SrcType from '../enums/SrcType'
@@ -10,7 +11,7 @@ import main from 'scripts/main'
 import { IListContext, ListContext } from '../FilterContext'
 import InnerListItem from './InnerListItem'
 import ModsPopup from './ModsPopup'
-import Confirm from 'modules/components/Confirm'
+import Confirm, { showConfirm } from 'modules/components/Confirm'
 
 import { Button } from '@mui/material'
 import Container from 'modules/components/styled/Container'
@@ -26,30 +27,32 @@ interface IProps {
 
 interface IState {
     showModsPopup: boolean
-    showConfirm: boolean
 }
 
 export default class InnerList extends PureComponent<IProps, IState> {
     static contextType = ListContext
     declare context: IListContext
 
+    private styles = {
+        button: { marginBottom: '10px' },
+        cont: { textAlign: 'center' } as CSSProperties
+    }
     private id: string
 
     constructor(props: IProps) {
         super(props)
-        this.state = {
-            showModsPopup: false,
-            showConfirm: false
-        }
+        this.state = { showModsPopup: false }
         this.id = `list-${props.srcType}`
     }
 
     render() {
-        if (this.props.opened === false)
+        const { opened, items: propItems, srcType } = this.props
+
+        if (opened === false)
             return null
         
         const listType = local.get('listType') as ListType
-        const items = this.props.items.map(item =>
+        const items = propItems.map(item =>
             <InnerListItem
                 item={item}
                 type={listType}
@@ -60,23 +63,20 @@ export default class InnerList extends PureComponent<IProps, IState> {
             />
         )
 
-        if (this.props.srcType === SrcType.mods && !config.settings.mods)
+        if (srcType === SrcType.mods && !config.settings.mods)
             return null
-        if (this.props.srcType === SrcType.dlc && !config.settings.DLC)
+        if (srcType === SrcType.dlc && !config.settings.DLC)
             return null
 
-        return (<>
-            <ListContainer
-                id={this.id}
-                style={{ display: this.props.opened ? 'flex' : 'none' }}
-            >
+        return <>
+            <ListContainer id={this.id}>
                 {this.props.srcType === SrcType.mods ? <>
-                    <Container style={{ textAlign: 'center' }}>
+                    <Container style={this.styles.cont}>
                         <Button
                             className='not-upper'
                             variant='contained'
                             onClick={this.showModsPopup}
-                            style={{ marginBottom: '10px' }}
+                            style={this.styles.button}
                         >
                             {localize.MODS_CHANGE_BUTTON}
                         </Button>
@@ -85,36 +85,26 @@ export default class InnerList extends PureComponent<IProps, IState> {
                         show={this.state.showModsPopup}
                         hidePopup={this.hideModsPopup}
                     />
-                    <Confirm
-                        text={localize.RELAUNCH_PROMPT}
-                        show={this.state.showConfirm}
-                        onSuccess={() => reload()}
-                        onClose={this.hideReloadConfirm}
-                    />
+                    <Confirm/>
                 </> : null}
                 {items}
             </ListContainer>
-        </>)
+        </>
     }
 
     private hideModsPopup = (isReload?: boolean) => {
         this.setState({ showModsPopup: false })
         if (isReload) {
             setTimeout(() => {
-                this.showReloadConfirm()
+                showConfirm({
+                    text: localize.RELAUNCH_PROMPT,
+                    onSuccess: reload
+                })
             }, 500)
         }
     }
 
     private showModsPopup = () => {
         this.setState({ showModsPopup: true })
-    }
-
-    private showReloadConfirm = () => {
-        this.setState({ showConfirm: true })
-    }
-
-    private hideReloadConfirm = () => {
-        this.setState({ showConfirm: false })
     }
 }

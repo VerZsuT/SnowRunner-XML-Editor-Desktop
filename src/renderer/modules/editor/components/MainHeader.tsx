@@ -1,4 +1,5 @@
 import { PureComponent } from 'react'
+import type { MouseEvent } from 'react'
 import type { CheerioAPI } from 'cheerio'
 import type IEditorAction from '../types/IEditorAction'
 import type FileType from 'templates/enums/FileType'
@@ -50,46 +51,51 @@ interface IProps {
 }
 
 export default class MainHeader extends PureComponent<IProps> {
+    private iconStyle = { fontSize: '30px' }
+
     render() {
+        const {
+            title, back, menuAnchor, files, actions,
+            editor, reset, enableReset, exportFile, importFile
+        } = this.props
+
         return (
             <Header>
                 <Typography variant='h5'>
-                    {this.props.title}
+                    {title}
                 </Typography>
                 <Tooltip title={localize.BACK_BUTTON}>
-                    <BackArrowButton onClick={this.props.back} color='inherit'>
-                        <ArrowBackIcon style={{ fontSize: '30px' }} />
+                    <BackArrowButton onClick={back} color='inherit'>
+                        <ArrowBackIcon style={this.iconStyle}/>
                     </BackArrowButton>
                 </Tooltip>
                 <Tooltip title={localize.SAVE_BUTTON}>
-                    <SaveButton onClick={() => this.props.save()} color='inherit'>
-                        <SaveIcon style={{ fontSize: '30px' }} />
+                    <SaveButton onClick={this.save} color='inherit'>
+                        <SaveIcon style={this.iconStyle}/>
                     </SaveButton>
                 </Tooltip>
-                <TasksButton onClick={e => this.openTasksMenu(e.currentTarget)} color='inherit'>
-                    <MenuIcon style={{ fontSize: '30px' }} />
+                <TasksButton onClick={this.openTasksMenu} color='inherit'>
+                    <MenuIcon style={this.iconStyle}/>
                 </TasksButton>
                 <Menu
-                    anchorEl={this.props.menuAnchor}
-                    open={!!this.props.menuAnchor}
+                    anchorEl={menuAnchor}
+                    open={!!menuAnchor}
                     onClose={this.closeTasksMenu}
                 >
                 {config.settings.advancedMode?
                     <NestedMenuItem
                         label={localize.OPEN_BUTTON}
-                        parentMenuOpen={!!this.props.menuAnchor}
+                        parentMenuOpen={!!menuAnchor}
                         leftIcon={<FilesListIcon/>}
                     >
-                        {this.props.files.map(file =>
+                        {files.map(file =>
                             <IconMenuItem
                                 key={file.path}
                                 onClick={() => {
                                     openPath(file.path)
-                                    watchFile(file.path, () =>
-                                        window.location.reload()
-                                    )
+                                    watchFile(file.path, () => window.location.reload())
                                 }}
-                                leftIcon={ <img src={require(`images/icons/editor/${file.fileType}.png`)}/> }
+                                leftIcon={<img src={require(`images/icons/editor/${file.fileType}.png`)}/>}
                                 label={basename(file.path)}
                             />
                         )}
@@ -97,38 +103,38 @@ export default class MainHeader extends PureComponent<IProps> {
                 :null}
                     <NestedMenuItem
                         label={localize.ACTIONS_MENU}
-                        parentMenuOpen={!!this.props.menuAnchor}
+                        parentMenuOpen={!!menuAnchor}
                         leftIcon={<MoreHorizIcon />}
                     >
-                        {this.props.actions.map(action =>
+                        {actions.map(action =>
                             <IconMenuItem
                                 key={`action-${action.id}`}
                                 onClick={() => {
-                                    action.object.run(this.props.editor)
+                                    action.object.run(editor)
                                     this.closeTasksMenu()
                                 }}
-                                label={action.name}
+                                label={action.name[config.lang]}
                                 leftIcon={action.imgSRC
                                     ? <img src={action.imgSRC}/>
-                                    : <ArrowForwardIos />
+                                    : <ArrowForwardIos/>
                                 }
                             />
                         )}
                     </NestedMenuItem>
                     <IconMenuItem
-                        disabled={!this.props.enableReset}
-                        onClick={this.props.reset}
-                        leftIcon={<ResetIcon />}
+                        disabled={!enableReset}
+                        onClick={reset}
+                        leftIcon={<ResetIcon/>}
                         label={localize.RESET_MENU_ITEM_LABEL}
                     />
                     <IconMenuItem
-                        onClick={this.props.exportFile}
-                        leftIcon={<ExportIcon />}
+                        onClick={exportFile}
+                        leftIcon={<ExportIcon/>}
                         label={localize.EXPORT}
                     />
                     <IconMenuItem
-                        onClick={() => this.props.importFile()}
-                        leftIcon={<ImportIcon />}
+                        onClick={importFile}
+                        leftIcon={<ImportIcon/>}
                         label={localize.IMPORT}
                     />
                 </Menu>
@@ -136,8 +142,10 @@ export default class MainHeader extends PureComponent<IProps> {
         )
     }
 
-    private openTasksMenu = (element: Element) => {
-        this.props.editor.setState({ menuAnchor: element })
+    private save = () => this.props.save()
+
+    private openTasksMenu = (e: MouseEvent<HTMLButtonElement>) => {
+        this.props.editor.setState({ menuAnchor: e.currentTarget })
     }
 
     private closeTasksMenu = () => {

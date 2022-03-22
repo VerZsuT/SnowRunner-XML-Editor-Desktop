@@ -1,7 +1,6 @@
 import { PureComponent, Fragment } from 'react'
 import { render } from 'react-dom'
-import { load } from 'cheerio'
-import type { Cheerio, CheerioAPI, Node as CNode } from 'cheerio'
+import type { CheerioAPI } from 'cheerio'
 import type IFindItem from 'modules/list/types/IFindItem'
 import type IConfigSettings from 'main/types/IConfigSettings'
 import Lang from 'main/enums/Lang'
@@ -10,7 +9,7 @@ import { MAIN } from 'scripts/funcs'
 import { getExported } from 'scripts/dom'
 import config from 'scripts/config'
 import main from 'scripts/main'
-import { ANY, OPTIONAL, addCheck, help, Message } from './service'
+import { OPTIONAL, addCheck, help, Message } from './service'
 
 import EditorConsole from './components/EditorConsole'
 
@@ -18,14 +17,13 @@ import 'styles/console'
 
 const {
     quit, reload, resetConfig, enableDevTools,
-    disableDevTools, openXMLDialog, saveBackup,
+    disableDevTools, saveBackup,
     recoverFromBackup, checkUpdate, updateFiles,
     unpackFiles, importConfig, exportConfig,
     openWhatsNew, findInDir,
     seeEPF, joinEPF, paths
 } = main
-const { replacePars, getModPak, removeDir } = window.consolePreload
-const { readFileSync, existsSync, writeFileSync, join } = window.service
+const { existsSync, writeFileSync, join } = window.service
 
 interface IState {
     messages: JSX.Element[]
@@ -35,8 +33,6 @@ class Console extends PureComponent<any, IState> {
     private listeners: {
         [cmd: string]: (args: string[]) => JSX.Element
     }
-    private fileDOM: CheerioAPI
-    private filePath: string
 
     constructor(props: any) {
         super(props)
@@ -51,18 +47,22 @@ class Console extends PureComponent<any, IState> {
     }
 
     render() {
-        return (<>
-            <div id='messages' onClick={() => (document.querySelector('#input') as HTMLInputElement).focus()}>
-                {this.state.messages}
+        const { messages } = this.state
+        
+        return <>
+            <div id='messages' onClick={this.onMessagesClick}>
+                {messages}
             </div>
-            <EditorConsole onError={this.pushMessage} listeners={this.listeners} />
-        </>)
+            <EditorConsole onError={this.pushMessage} listeners={this.listeners}/>
+        </>
     }
 
+    private onMessagesClick = () => (document.querySelector('#input') as HTMLInputElement).focus()
+
     private pushMessage = (message: JSX.Element) => {
-        this.setState({
-            messages: [...this.state.messages, <Fragment key={this.state.messages.length}>{message}</Fragment>]
-        })
+        this.setState(({ messages }) => ({
+            messages: [...messages, <Fragment key={messages.length}>{message}</Fragment>]
+        }))
         document.querySelector('#messages').scrollTop = 10_000_000
     }
 
@@ -162,58 +162,6 @@ class Console extends PureComponent<any, IState> {
                 lang: Object.keys(Lang) as unknown as Lang
             }),
 
-            'read': addCheck(() => {
-                const path = openXMLDialog()
-                let fileDOM: CheerioAPI
-
-                if (!path) {
-                    this.pushMessage(Message.warn('Вы не выбрали файл для считывания.'))
-                    return
-                }
-                fileDOM = load(readFileSync(path), { xmlMode: true })
-
-                if (!fileDOM.length) {
-                    this.pushMessage(Message.error('Ошибка парсинга файла.'))
-                    return
-                }
-
-                this.pushMessage(Message.log(`Файл '${path}' успешно считан в память.`))
-                this.fileDOM = fileDOM
-                this.filePath = path
-            }),
-
-            'set': addCheck(args => {
-                let { selector, attrName, value } = args
-                let element: Cheerio<CNode>
-
-                selector = replacePars(selector)
-                value = replacePars(value)
-
-                if (!this.fileDOM) {
-                    this.pushMessage(Message.error('Сначала надо считать файл с помощью команды "read".'))
-                    return
-                }
-                if (!existsSync(this.filePath)) {
-                    this.pushMessage(Message.error(`Искомый файл '${this.filePath}' не обнаружен.`))
-                    return
-                }
-
-                element = this.fileDOM(selector)
-                if (!element) {
-                    this.pushMessage(Message.error(`Элемент с селектором '${selector}' не обнаружен.`))
-                    return
-                }
-
-                element.attr(attrName, value)
-                writeFileSync(this.filePath, this.fileDOM.html())
-
-                this.pushMessage(Message.log(`${attrName}='${value}'`))
-            }, {
-                selector: ANY,
-                attrName: ANY,
-                value: ANY
-            }),
-
             'backup': addCheck(args => {
                 const { action } = args
 
@@ -227,40 +175,10 @@ class Console extends PureComponent<any, IState> {
                 action: ['save', 'restore'] as unknown as 'save' | 'restore'
             }),
 
-            'addMod': addCheck(() => {
-                const result = getModPak()
-
-                if (!result) {
-                    this.pushMessage(Message.error('Не выбран .pak файл модификации.'))
-                    return
-                }
-
-                if (!config.mods.items[result.id])
-                    config.mods.length++
-
-                config.mods.items[result.id] = {
-                    name: result.name,
-                    path: result.path
-                }
-
-                reload()
-            }),
-
             'checkUpdate': addCheck(() => {
                 this.pushMessage(Message.log('Проверка обновления...'))
                 this.pushMessage(Message.log('В случае удачи выведется соответствующее окно.'))
                 checkUpdate()
-            }),
-
-            'delMod': addCheck(args => {
-                const { modId } = args
-
-                delete config.mods.items[modId]
-                removeDir(join(paths.modsTemp, modId))
-                config.mods.length--
-                this.pushMessage(Message.log(`Модификация '${modId}' удалена.`))
-            }, {
-                modId: Object.keys(config.mods) as unknown as keyof typeof config.mods
             }),
 
             'help': addCheck(args => {

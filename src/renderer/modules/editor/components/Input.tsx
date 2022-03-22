@@ -1,11 +1,13 @@
-import { ChangeEvent, FocusEvent, MouseEvent, PureComponent } from 'react'
+import { PureComponent } from 'react'
+import memoizee from 'memoizee'
+import type { ChangeEvent, FocusEvent, MouseEvent } from 'react'
 import type IInputParams from 'templates/types/IInputParams'
 import InputType from 'templates/enums/InputType'
 import NumberType from 'templates/enums/NumberType'
 import config from 'scripts/config'
 
 import { IMainContext, MainContext } from '../MainContext'
-import ResetMenu from './ResetMenu'
+import ResetMenu, { showResetMenu } from './ResetMenu'
 
 import TextField from '../styled/TextField'
 
@@ -24,20 +26,19 @@ interface IProps {
     isShow?: boolean
 }
 
+type BorderColor = 'primary' | 'warning' | 'error'
+
 interface IState {
-    borderColor: string
+    borderColor: BorderColor
     value: string | number
-    menu: {
-        show?: boolean
-        x?: number
-        y?: number
-    }
 }
 
 export default class Input extends PureComponent<IProps, IState> {
     static contextType = MainContext
     declare context: IMainContext
+
     private componentID = `input-${Math.round(Math.random()*100)}`
+    private textFieldStyle = { width: '150px' }
 
     private min: number
     private max: number
@@ -46,9 +47,8 @@ export default class Input extends PureComponent<IProps, IState> {
     constructor(props: IProps) {
         super(props)
         this.state = {
-            borderColor: '#ced4da',
-            value: props.getValue(),
-            menu: {}
+            borderColor: 'primary',
+            value: props.getValue()
         }
 
         if (props.item.min !== -Infinity && config.settings.limits)
@@ -72,73 +72,72 @@ export default class Input extends PureComponent<IProps, IState> {
     }
 
     render() {
+        const { getDefaultValue, item, isShow } = this.props
+        const { value, borderColor } = this.state
         let placeholder: string
 
-        if (this.props.isShow === false)
+        if (isShow === false)
             return null
 
-        placeholder = this.props.getDefaultValue()
+        placeholder = getDefaultValue()
 
-        return (<>
-            <ResetMenu
-                show={this.state.menu.show ?? false}
-                onReset={this.reset}
-                onClose={() => this.setState({ menu: {} })}
-                x={this.state.menu.x ?? 0}
-                y={this.state.menu.y ?? 0}
-                text={this.props.item.text}
-            />
-            {this.props.item.type === InputType.number
+        return <>
+            <ResetMenu/>
+            {item.type === InputType.number
                 ? <TextField
                     id={this.componentID}
-                    value={this.state.value}
+                    value={value}
                     type='number'
-                    inputProps={{ step: this.props.item.step }}
+                    inputProps={this.stepProps(item.step)}
                     onBlur={this.saveValue}
                     onChange={this.onValueChange}
                     placeholder={placeholder}
                     onContextMenu={this.onContextMenu}
+                    color={borderColor}
                 />
                 : <TextField
                     id={this.componentID}
                     type='text'
                     placeholder={placeholder}
-                    value={this.state.value}
+                    value={value}
                     onChange={this.onValueChange}
                     onBlur={this.saveValue}
                     onContextMenu={this.onContextMenu}
-                    style={{ width: '150px' }}
+                    style={this.textFieldStyle}
+                    color={borderColor}
                 />
             }
-        </>)
+        </>
     }
+
+    private stepProps = memoizee((step: number) => ({ step }))
 
     private onContextMenu = (e: MouseEvent<HTMLInputElement>) => {
         e.stopPropagation()
-        this.setState({
-            menu: {
-                show: true,
-                x: e.clientX,
-                y: e.clientY
-            }
+        showResetMenu({
+            x: e.clientX,
+            y: e.clientY,
+            text: this.props.item.text,
+            onReset: this.reset
         })
     }
 
     private saveValue = (e: FocusEvent<HTMLInputElement>) => {
+        const { item, setValue } = this.props
         let newVal: string | number = e.target.value
         const { fileDOM } = this.context
 
         if (newVal === '')
             newVal = this.defaultValue
 
-        if (!fileDOM(this.props.item.selector).length) {
-            const array = this.props.item.selector.split('>').map(value => value.trim())
+        if (!fileDOM(item.selector).length) {
+            const array = item.selector.split('>').map(value => value.trim())
             const name = array.pop().split('[')[0]
             const rootSelector = array.join(' > ')
 
             fileDOM(rootSelector).eq(0).append(`<${name}></${name}>`)
         }
-        this.props.setValue(this.props.item.selector, this.props.item.name, String(newVal))
+        setValue(item.selector, item.name, String(newVal))
         this.setState({ value: newVal })
     }
 
@@ -166,25 +165,26 @@ export default class Input extends PureComponent<IProps, IState> {
     }
 
     private changeColor = (value: number) => {
+        const { item } = this.props
         let newVal: number = value
 
         if (value === null || value === NaN)
             newVal = 0
 
-        if (this.props.item.areas) {
-            let color = '#ced4da'
+        if (item.areas) {
+            let color: BorderColor = 'primary'
 
-            for (const areaName in this.props.item.areas) {
-                const value = this.props.item.areas[areaName]
+            for (const areaName in item.areas) {
+                const value = item.areas[areaName]
 
                 for (const area of value) {
                     if (newVal >= area[0] && newVal <= area[1]) {
                         if (areaName === 'red')
-                            color = `hsl(0deg, 100%, 50%)`
+                            color = `error`
                         else if (areaName === 'green')
-                            color = `hsl(120deg, 100%, 50%)`
+                            color = `primary`
                         else if (areaName === 'yellow')
-                            color = `rgb(235 235 12)`
+                            color = `warning`
                     }
                 }
             }
@@ -193,30 +193,32 @@ export default class Input extends PureComponent<IProps, IState> {
     }
 
     private initIE() {
+        const { item, isExport, isParentExport } = this.props
+        const { value } = this.state
         const { addParam, filePath } = this.context
 
-        if (this.props.item.type === 'file')
+        if (item.type === 'file')
             return
 
         addParam({
             id: this.componentID,
             forExport: () => {
-                if (this.props.isExport && this.props.isParentExport) {
+                if (isExport && isParentExport) {
                     return {
-                        selector: this.props.item.selector,
-                        name: this.props.item.name,
-                        value: this.state.value,
-                        fileName: basename(filePath)
+                        selector: item.selector,
+                        name: item.name,
+                        fileName: basename(filePath),
+                        value
                     }
                 }
             },
             forImport: {
                 setValue: (newValue: string) => {
-                    if (this.state.value !== newValue)
+                    if (value !== newValue)
                         this.saveValue({ target: { value: newValue } } as FocusEvent<HTMLInputElement>)
                 },
-                selector: this.props.item.selector,
-                name: this.props.item.name,
+                selector: item.selector,
+                name: item.name,
                 fileName: basename(filePath)
             }
         })
@@ -230,7 +232,6 @@ export default class Input extends PureComponent<IProps, IState> {
     private reset = () => {
         const defaultValue = this.props.getDefaultValue()
 
-        this.setState({ menu: {} })
         if (defaultValue !== undefined)
             this.saveValue({ target: { value: defaultValue } } as FocusEvent<HTMLInputElement>)
     }

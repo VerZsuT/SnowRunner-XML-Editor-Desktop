@@ -1,7 +1,7 @@
 import { PureComponent } from 'react'
-import type { ReactNode } from 'react'
 import { render } from 'react-dom'
-import $ from 'cheerio'
+import { load } from 'cheerio'
+import type { CSSProperties } from 'react'
 import type { Cheerio, CheerioAPI, Node } from 'cheerio'
 import type IIEParam from './types/IIEParam'
 import type ITemplateParams from 'templates/types/ITemplateParams'
@@ -17,43 +17,42 @@ import localize from 'scripts/localize'
 import { process, getGlobalTemplates } from 'scripts/dom'
 import { IMainContext, MainContext } from './MainContext'
 
-import Parameters from './components/Parameters'
 import ErrorHandler from 'modules/components/ErrorHandler'
-import Alert from 'modules/components/Alert'
-import Confirm from 'modules/components/Confirm'
-import Loading from '../components/Loading'
+import Alert, { showAlert } from 'modules/components/Alert'
+import Confirm, { showConfirm } from 'modules/components/Confirm'
+import Loading, { showLoading } from 'modules/components/Loading'
+import DropArea from 'modules/components/DropArea'
+import Popup from 'modules/components/Popup'
+import Parameters from './components/Parameters'
 import ErrorHeader from './components/ErrorHeader'
 import MainHeader from './components/MainHeader'
 
-import { AlertColor, Typography } from '@mui/material'
+import { Typography } from '@mui/material'
 import Container from 'modules/components/styled/Container'
 import 'styles/editor'
-import DropArea from 'modules/components/DropArea'
 
 const { basename, readFileSync, writeFileSync } = window.service
 const { updateFiles, openEPFDialog, openSaveDialog, openList } = main
 
 interface IState {
     isExporting: boolean
-    isLoading: boolean
     title: string
     menuAnchor: Element
     enableReset: boolean
-    alert?: {
-        show: boolean
-        text: string
-        type: AlertColor
-    }
-    confirm?: {
-        show: boolean
-        text: string
-        onSuccess(): void
-        onClose(): void
-    }
-    custom: ReactNode
 }
 
 export default class Editor extends PureComponent<any, IState> {
+    private styles = {
+        errorCont: {
+            padding: '0 30px',
+            marginTop: '100px',
+            textAlign: 'center'
+        } as CSSProperties,
+        params: {
+            padding: '0 30px',
+            marginTop: '100px'
+        }
+    }
     private tableItems: ITemplateParams
     private mainTitle: string
     private hasError: boolean
@@ -92,11 +91,7 @@ export default class Editor extends PureComponent<any, IState> {
             isExporting: false,
             title: this.mainTitle,
             enableReset: !this.currentMod,
-            isLoading: false,
-            menuAnchor: null,
-            alert: null,
-            confirm: null,
-            custom: null
+            menuAnchor: null
         }
         this.files = [{
             path: this.filePath,
@@ -147,10 +142,10 @@ export default class Editor extends PureComponent<any, IState> {
         }
 
         if (this.hasError) {
-            return (<>
-                <Menu />
-                <ErrorHandler />
-                <Loading open={this.state.isLoading} />
+            return <>
+                <Menu/>
+                <ErrorHandler/>
+                <Loading/>
 
                 <ErrorHeader 
                     title={this.state.title}
@@ -158,37 +153,23 @@ export default class Editor extends PureComponent<any, IState> {
                     files={this.files}
                 />
                 <Container
-                    style={{
-                        padding: '0 30px',
-                        marginTop: '100px',
-                        textAlign: 'center'
-                    }}
+                    style={this.styles.errorCont}
                 >
                     <Typography>
                         {localize.PROC_FILE_ERROR}
                     </Typography>
                 </Container>
-            </>)
+            </>
         }
 
-        return (<>
-            <Menu />
-            <ErrorHandler />
-            <DropArea onDrop={files => this.importFile(files[0].path)} />
-            <Alert 
-                show={this.state.alert?.show ?? false}
-                onClose={() => this.setState({ alert: null })}
-                text={this.state.alert?.text ?? ''}
-                type={this.state.alert?.type ?? 'info'}
-            />
-            <Confirm
-                open={this.state.confirm?.show ?? false}
-                text={this.state.confirm?.text ?? ''}
-                onClose={this.state.confirm?.onClose ?? (() => this.setState({ confirm: null }))}
-                onSuccess={this.state.confirm?.onSuccess ?? (() => {})}
-            />
-            {this.state.custom}
-            <Loading open={this.state.isLoading}/>
+        return <>
+            <Menu/>
+            <ErrorHandler/>
+            <DropArea onDrop={this.onDropFile}/>
+            <Alert/>
+            <Confirm/>
+            <Loading/>
+            <Popup/>
             
             <MainHeader
                 editor={this}
@@ -204,7 +185,7 @@ export default class Editor extends PureComponent<any, IState> {
                 files={this.files}
             />
             <MainContext.Provider value={mainContext}>
-                <Container id='table' style={{ padding: '0 30px', marginTop: '100px' }}>
+                <Container id='table' style={this.styles.params}>
                     <Parameters
                         isExporting={this.state.isExporting}
                         regReset={this.regReset}
@@ -212,8 +193,10 @@ export default class Editor extends PureComponent<any, IState> {
                     />
                 </Container>
             </MainContext.Provider>
-        </>)
+        </>
     }
+
+    private onDropFile = (files: FileList) => this.importFile(files[0].path)
 
     private checkExporting() {
         if (local.pop('isExport') === 'true') {
@@ -244,16 +227,6 @@ export default class Editor extends PureComponent<any, IState> {
         this.params.filter(item => item.id !== id)
     }
 
-    private message(text: string, type: AlertColor='info') {
-        this.setState({
-            alert: {
-                show: true,
-                text,
-                type
-            }
-        })
-    }
-
     private setBackHotkey = () => {
         setHotKey({
             key: 'Escape',
@@ -282,20 +255,18 @@ export default class Editor extends PureComponent<any, IState> {
         await new Promise<void>(resolve => {
             setTimeout(() => {
                 for (const file of this.files) {
-                    const dom = $.load(file.dom.html(), { xmlMode: true })
+                    const dom = load(file.dom.html(), { xmlMode: true })
 
                     dom('[SXMLE_ID]').map((_, el) =>
-                        dom(el).removeAttr('SXMLE_ID')
-                    )
+                        dom(el).removeAttr('SXMLE_ID'))
                     writeFileSync(file.path, dom.html())
                 }
 
                 if (isUpdateFiles) {
-                    if (this.currentMod) {
+                    if (this.currentMod)
                         updateFiles(this.currentMod)
-                    }
                     updateFiles()
-                    this.message(localize.SUCCESS_SAVE_FILES, 'success')
+                    showAlert({ text: localize.SUCCESS_SAVE_FILES })
                 }
                 this.setState({ title: this.mainTitle })
                 resolve()
@@ -309,7 +280,7 @@ export default class Editor extends PureComponent<any, IState> {
         let data: IExportData | IExportData[]
 
         if (!filePath) {
-            this.message(localize.PARAMS_FILE_NOT_FOUND, 'error')
+            showAlert({ text: localize.PARAMS_FILE_NOT_FOUND, type: 'error' })
             return
         }
         data = JSON.parse(readFileSync(filePath))
@@ -320,21 +291,19 @@ export default class Editor extends PureComponent<any, IState> {
                     for (const attribute in item.data[fileName][selector]) {
                         for (const obj of this.params) {
                             const forImport = obj.forImport
-                            if (forImport.selector === selector && forImport.name === attribute && forImport.fileName === fileName) {
+                            if (forImport.selector === selector && forImport.name === attribute && forImport.fileName === fileName)
                                 forImport.setValue(String(item.data[fileName][selector][attribute]))
-                            }
                         }
                     }
                 }
             }
             for (const actionID in item.actionsData) {
                 for (const action of this.actions) {
-                    if (action.id === actionID) {
+                    if (action.id === actionID)
                         action.object.import(item.actionsData[actionID])
-                    }
                 }
             }
-            this.message(localize.WAS_IMPORTED, 'success')
+            showAlert({ text: localize.WAS_IMPORTED })
             return true
         }
 
@@ -343,15 +312,16 @@ export default class Editor extends PureComponent<any, IState> {
 
             for (const item of data) {
                 if (item.fileName === currentFileName) {
-                    if (importData(item)) {
+                    if (importData(item))
                         imported = true
-                    }
                 }
             }
 
-            if (!imported) {
-                this.message(localize.BREAK_IMPORT_INVALID_NAME.replace('%file', currentFileName), 'error')
-            }
+            if (!imported)
+                showAlert({ text: localize.BREAK_IMPORT_INVALID_NAME.replace('%file', currentFileName), type: 'error' })
+        }
+        else if (currentFileName !== data.fileName) {
+            showAlert({ text: localize.BREAK_IMPORT_INVALID_NAME.replace('%file', currentFileName), type: 'error' })
         }
         else {
             importData(data)
@@ -369,7 +339,7 @@ export default class Editor extends PureComponent<any, IState> {
 
         pathToSave = openSaveDialog(basename(this.filePath, '.xml'))
         if (!pathToSave) {
-            this.message(localize.PATH_TO_SAVE_NOT_FOUND, 'error')
+            showAlert({ text: localize.PATH_TO_SAVE_NOT_FOUND, type: 'error' })
             return
         }
 
@@ -403,7 +373,7 @@ export default class Editor extends PureComponent<any, IState> {
         }
 
         writeFileSync(pathToSave, JSON.stringify(out, null, '\t'))
-        this.message(localize.WAS_EXPORTED, 'success')
+        showAlert({ text: localize.WAS_EXPORTED })
         this.setState({
             isExporting: false,
             menuAnchor: null
@@ -411,31 +381,20 @@ export default class Editor extends PureComponent<any, IState> {
     }
 
     private back = () => {
-        this.setState({ isLoading: true })
+        showLoading()
         openList()
     }
 
-    private confirm(text: string, onSuccess: () => void, onClose?: () => void) {
-        this.setState({
-            confirm: {
-                show: true,
-                text,
-                onSuccess,
-                onClose
-            }
-        })
-    }
-
     private reset = () => {
-        this.confirm(localize.RESET_CONFIRM_MESSAGE, () => {
-            for (const itemID in this.toReset) {
-                this.toReset[itemID]()
+        showConfirm({
+            text: localize.RESET_CONFIRM_MESSAGE,
+            onSuccess: () => {
+                for (const itemID in this.toReset) {
+                    this.toReset[itemID]()
+                }
+                this.setState({ menuAnchor: null })
+                showAlert({ text: localize.SUCCESS_RESET })
             }
-            this.setState({
-                confirm: null,
-                menuAnchor: null
-            })
-            this.message(localize.SUCCESS_RESET, 'success')
         })
     }
 }

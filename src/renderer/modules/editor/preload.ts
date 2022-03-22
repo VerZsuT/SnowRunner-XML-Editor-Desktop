@@ -1,6 +1,6 @@
 import { contextBridge } from 'electron'
 import { existsSync, readdirSync, watchFile } from 'fs'
-import { join, extname } from 'path'
+import { join } from 'path'
 import type IEditorPreload from './types/IEditorPreload'
 import 'scripts/mainPreload'
 import main from 'scripts/main'

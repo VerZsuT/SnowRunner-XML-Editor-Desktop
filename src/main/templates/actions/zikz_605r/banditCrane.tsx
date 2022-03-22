@@ -1,12 +1,13 @@
-import localize from 'scripts/localize'
+import type { CSSProperties } from 'react'
 import type IActionData from 'templates/types/IActionData'
 import type IActionProps from 'templates/types/IActionProps'
+import localize from 'scripts/localize'
+import main from 'scripts/main'
 import ActionBase from '../ActionBase'
 
 import { Button, Typography } from '@mui/material'
 import Container from 'modules/components/styled/Container'
 import Warning from 'modules/editor/styled/Warning'
-import main from 'scripts/main'
 
 const texts = {
     RU: {
@@ -30,7 +31,12 @@ const texts = {
 }[main.config.lang]
 
 export const data: IActionData = {
-    name: 'Банан бандита',
+    name: {
+        RU: 'Банан бандита',
+        EN: 'Bandit banana',
+        DE: 'Bananen-Bandit',
+        ZH: '香蕉强盗'
+    },
     id: 'bandit-crane',
     minHeight: 200,
     minWidth: 350,
@@ -48,6 +54,14 @@ interface IState {
 
 /** Вкладка `Банан бандита`. */
 export default class BanditCrane extends ActionBase<IState> {
+    private styles = {
+        warn: {
+            textAlign: 'left',
+            padding: '0 10px'
+        } as CSSProperties,
+        buttons: { marginTop: '10px' }
+    }
+
     constructor(props: IActionProps) {
         super(props, data, BanditCrane)
         this.state = {
@@ -72,7 +86,7 @@ export default class BanditCrane extends ActionBase<IState> {
     public render() {
         return <>
             <Warning>{localize.CRANES_WARN_TITLE}</Warning>
-            <Container style={{ textAlign: 'left', padding: '0 10px' }}>
+            <Container style={this.styles.warn}>
                 <Typography>
                     {texts.craneWarn}
                 </Typography>
@@ -80,7 +94,7 @@ export default class BanditCrane extends ActionBase<IState> {
                     {texts.dlcWarn}
                 </Typography>
             </Container>
-            <Container style={{ marginTop: '10px' }}>
+            <Container style={this.styles.buttons}>
             {this.state.hasCrane
                 ? <Button variant='contained' color='warning' onClick={this.removeCrane}>
                     {texts.remove}

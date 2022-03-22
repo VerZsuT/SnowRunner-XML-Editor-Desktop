@@ -54,6 +54,9 @@ export default class Parameter extends PureComponent<IProps, IState> {
     static contextType = MainContext
     declare context: IMainContext
 
+    private emptyContStyle = { height: '60px' }
+    private cellStyle = { width: '20px' }
+
     constructor(props: IProps) {
         super(props)
         this.state = {
@@ -63,15 +66,18 @@ export default class Parameter extends PureComponent<IProps, IState> {
     }
 
     componentDidMount() {
-        if (this.props.item.type === 'file') {
+        const { item } = this.props
+        const { fileDOM, currentDLC: contextDLC, currentMod: contextMod, addToSave } = this.context
+
+        if (item.type === 'file') {
             const items: InnerItem[] = []
-            const propsItem: IInputParams = this.props.item
+            const propsItem: IInputParams = item
             const fileNames: string[] = (String(propsItem.value)).split(',').map((value) => value.trim())
             const defaults = main.defaults
 
             if (propsItem.fileType === FileType.wheels && propsItem.name !== 'Type') {
                 this.context.fileDOM('Truck > TruckData > CompatibleWheels').map((_, el) => {
-                    const type = this.context.fileDOM(el).attr('Type')
+                    const type = fileDOM(el).attr('Type')
                     if (!fileNames.includes(type))
                         fileNames.push(type)
                 })
@@ -79,8 +85,6 @@ export default class Parameter extends PureComponent<IProps, IState> {
 
             for (const fileName of fileNames) {
                 const pathsToFiles = [`${paths.classes}\\${propsItem.fileType}\\${fileName}.xml`]
-                const contextDLC = this.context.currentDLC
-                const contextMod = this.context.currentMod
                 let mainPath: string
                 let currentDLC: string
                 let currentMod: string
@@ -109,7 +113,7 @@ export default class Parameter extends PureComponent<IProps, IState> {
                     continue
 
                 const [fileDOM, tableItems] = process(mainPath)
-                this.context.addToSave(currentMod, currentDLC, fileDOM, mainPath, propsItem.fileType)
+                addToSave(currentMod, currentDLC, fileDOM, mainPath, propsItem.fileType)
 
                 items.push({
                     filePath: mainPath,
@@ -127,10 +131,13 @@ export default class Parameter extends PureComponent<IProps, IState> {
     }
 
     render() {
+        const { isExporting, regReset, unregReset, isShow, isParentExport, item } = this.props
+        const { innerItems, isExport } = this.state
+
         let items: JSX.Element[] = []
 
-        if (this.state.innerItems) {
-            for (const item of this.state.innerItems) {
+        if (innerItems) {
+            for (const item of innerItems) {
                 const mainContext: IMainContext = {
                     ...this.context,
                     fileDOM: item.fileDOM,
@@ -145,11 +152,11 @@ export default class Parameter extends PureComponent<IProps, IState> {
                 items.push(<Fragment key={item.filePath}>
                     <MainContext.Provider value={mainContext}>
                         <Parameters
-                            isExporting={this.props.isExporting}
+                            isExporting={isExporting}
                             postfix={item.fileName}
-                            regReset={this.props.regReset}
-                            unregReset={this.props.unregReset}
-                            isShow={this.props.isShow}
+                            regReset={regReset}
+                            unregReset={unregReset}
+                            isShow={isShow}
                         />
                     </MainContext.Provider>
                 </Fragment>)
@@ -161,39 +168,39 @@ export default class Parameter extends PureComponent<IProps, IState> {
         }
 
         const defaultProps = {
-            isExporting: this.props.isExporting,
-            isParentExport: this.props.isParentExport,
-            isExport: this.state.isExport,
+            isExporting,
+            isParentExport,
+            isExport,
             getValue: this.getValue,
             getDefaultValue: this.getDefaultValue,
             setValue: this.setValue,
-            regReset: this.props.regReset,
-            unregReset: this.props.unregReset,
-            isShow: this.props.isShow ?? true
+            regReset,
+            unregReset,
+            isShow: isShow ?? true
         }
-        let item = <Input {...defaultProps} item={this.props.item as IInputParams}/>
+        let element = <Input {...defaultProps} item={item as IInputParams}/>
 
-        if (this.props.item.inputType === 'select')
-            item = <Select {...defaultProps} item={this.props.item as ISelectParams}/>
+        if (item.inputType === 'select')
+            element = <Select {...defaultProps} item={item as ISelectParams}/>
 
-        if (this.props.item.type === 'coordinates')
-            item = <Coordinates {...defaultProps} item={this.props.item as IInputParams}/>
+        if (item.type === 'coordinates')
+            element = <Coordinates {...defaultProps} item={item as IInputParams}/>
 
-        if (this.props.isShow === false)
-            return <div style={{height: '60px'}}>{item}</div>
+        if (isShow === false)
+            return <div style={this.emptyContStyle}>{element}</div>
 
         return (
             <TableRow>
                 <ParamText>
                     <Typography>
-                        {this.props.item.text}
+                        {item.text}
                     </Typography>
                 </ParamText>
-                <ParamValue>{item}</ParamValue>
-                {this.props.isExporting && this.props.item.type !== 'file' ?
-                    <TableCell style={{ width: '20px' }}>
+                <ParamValue>{element}</ParamValue>
+                {isExporting && item.type !== 'file' ?
+                    <TableCell style={this.cellStyle}>
                         <Checkbox
-                            checked={this.state.isExport && this.props.isParentExport}
+                            checked={isExport && isParentExport}
                             onChange={this.toggleExporting}    
                         />
                     </TableCell>
@@ -209,18 +216,19 @@ export default class Parameter extends PureComponent<IProps, IState> {
 
     private getValue = () => {
         const { templates, fileDOM } = this.context
-        let value = this.props.item.value
+        const { item } = this.props
+        let value = item.value
 
-        if (fileDOM(this.props.item.selector).length) {
-            if (fileDOM(this.props.item.selector).attr(this.props.item.name))
-                value = fileDOM(this.props.item.selector).attr(this.props.item.name)
+        if (fileDOM(item.selector).length) {
+            if (fileDOM(item.selector).attr(item.name))
+                value = fileDOM(item.selector).attr(item.name)
         }
 
         if (!value && value !== 0 && templates)
             value = this.getFromTemplates()
 
         if (value === null || value === undefined)
-            value = this.props.item.default
+            value = item.default
 
 
         return value
@@ -228,8 +236,9 @@ export default class Parameter extends PureComponent<IProps, IState> {
 
     private getFromTemplates = () => {
         const { fileDOM, templates } = this.context
-        let el = fileDOM(this.props.item.selector)
-        const array = this.props.item.selector.split(' ')
+        const { item } = this.props
+        let el = fileDOM(item.selector)
+        const array = item.selector.split(' ')
             .map((value: string) => value.trim())
             .filter((value: string) => value !== '>')
         const innerName = array.slice(array.length - 1)[0]
@@ -247,14 +256,14 @@ export default class Parameter extends PureComponent<IProps, IState> {
                 const template = templates.find(templateName).eq(0)
 
                 if (template.length) {
-                    const templateValue = template.attr(this.props.item.name)
+                    const templateValue = template.attr(item.name)
                     let el2: Cheerio<Element>
                     if (templateValue)
                         return templateValue
 
                     el2 = template.find(tagName).eq(0)
                     if (el2.length) {
-                        const templateValue2 = el2.attr(this.props.item.name)
+                        const templateValue2 = el2.attr(item.name)
                         let templateName1: string
 
                         if (templateValue2)

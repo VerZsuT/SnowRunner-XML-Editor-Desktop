@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react'
 import type { CheerioAPI } from 'cheerio'
 import type IActionData from '../types/IActionData'
 import type IActionProps from '../types/IActionProps'
@@ -25,7 +26,12 @@ interface IState {
 }
 
 export const data: IActionData = {
-    name: localize.CRANES,
+    name: {
+        RU: 'Краны',
+        EN: 'Cranes',
+        DE: 'Kräne',
+        ZH: '起重机'
+    },
     id: 'cranes',
     minHeight: 180,
     imgSRC: require('images/icons/editor/crane.png'),
@@ -33,6 +39,14 @@ export const data: IActionData = {
 }
 
 export default class Cranes extends ActionBase<IState> {
+    private styles = {
+        warnCont: {
+            padding: '0 10px',
+            textAlign: 'left',
+            marginTop: 0
+        } as CSSProperties
+    }
+
     constructor(props: IActionProps) {
         super(props, data, Cranes)
         this.state = {
@@ -62,12 +76,11 @@ export default class Cranes extends ActionBase<IState> {
     }
 
     public render() {
-        const hasRUCrane = this.state.hasRUCrane
-        const hasUSCrane = this.state.hasUSCrane
+        const { hasRUCrane, hasUSCrane } = this.state
 
         return <>
             <Warning>{localize.CRANES_WARN_TITLE}</Warning>
-            <Container style={{ padding: '0 10px', textAlign: 'left', marginTop: 0 }}>
+            <Container style={this.styles.warnCont}>
                 <Typography>{localize.CRANES_WARN_MESSAGE}</Typography>
             </Container>
 
@@ -79,7 +92,7 @@ export default class Cranes extends ActionBase<IState> {
                             variant='contained'
                             color='primary'
                             disabled={!(hasRUCrane && !hasUSCrane)}
-                            onClick={() => this.addCrane(Crane.US, Crane.RU)}
+                            onClick={this.addUSCrane}
                         >
                             {localize.ADD}
                         </Button>
@@ -87,7 +100,7 @@ export default class Cranes extends ActionBase<IState> {
                             variant='contained'
                             color='error'
                             disabled={!(hasRUCrane && hasUSCrane)}
-                            onClick={() => this.removeCrane(Crane.US)}
+                            onClick={this.removeUSCrane}
                         >
                             {localize.REMOVE}
                         </Button>
@@ -100,7 +113,7 @@ export default class Cranes extends ActionBase<IState> {
                             variant='contained'
                             color='primary'
                             disabled={!(hasUSCrane && !hasRUCrane)}
-                            onClick={() => this.addCrane(Crane.RU, Crane.US)}
+                            onClick={this.addRUCrane}
                         >
                             {localize.ADD}
                         </Button>
@@ -108,7 +121,7 @@ export default class Cranes extends ActionBase<IState> {
                             variant='contained'
                             color='error'
                             disabled={!(hasRUCrane && hasUSCrane)}
-                            onClick={() => this.removeCrane(Crane.RU)}
+                            onClick={this.removeRUCrane}
                         >
                             {localize.REMOVE}
                         </Button>
@@ -118,8 +131,14 @@ export default class Cranes extends ActionBase<IState> {
         </>
     }
 
+    private addRUCrane = () => this.addCrane(Crane.RU, Crane.US)
+    private addUSCrane = () => this.addCrane(Crane.US, Crane.RU)
+
+    private removeRUCrane = () => this.removeCrane(Crane.RU)
+    private removeUSCrane = () => this.removeCrane(Crane.US)
+
     private addCrane = (crane: Crane, to: Crane) => {
-        const dom = this.props.dom
+        const { dom, editor } = this.props
         const mainSocket = dom(`Socket[Names*="${to}"]`)
         const mainNames = mainSocket.attr('Names').split(',').map(value => value.trim())
 
@@ -141,7 +160,7 @@ export default class Cranes extends ActionBase<IState> {
             dom(el).after(newShift)
         })
 
-        if (this.props.editor) {
+        if (editor) {
             if (crane === Crane.RU)
                 this.setState({ hasRUCrane: true })
             else if (crane === Crane.US)
@@ -150,7 +169,7 @@ export default class Cranes extends ActionBase<IState> {
     }
 
     private removeCrane = (crane: Crane) => {
-        const dom = this.props.dom
+        const { dom, editor } = this.props
         const mainSocket = dom(`Socket[Names*="${crane}"]`)
         let mainNames = mainSocket.attr('Names').split(',').map(value => value.trim())
 
@@ -166,7 +185,7 @@ export default class Cranes extends ActionBase<IState> {
             dom(el).remove()
         )
 
-        if (this.props.editor) {
+        if (editor) {
             if (crane === Crane.RU)
                 this.setState({ hasRUCrane: false })
             else if (crane === Crane.US)

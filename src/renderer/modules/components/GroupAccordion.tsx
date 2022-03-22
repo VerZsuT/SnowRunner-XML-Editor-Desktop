@@ -27,30 +27,40 @@ export default class GroupAccordion extends PureComponent<IProps> {
     declare context: IMainContext
 
     render() {
+        const {
+            onContextMenu=()=>{},
+            id, expanded, title,
+            iconSRC, showExport,
+            isExport, onChangeExport,
+            children
+        } = this.props
+
         return (
             <Accordion
-                id={this.props.id}
-                onContextMenu={this.props.onContextMenu ?? (() => {})}
-                expanded={this.props.expanded}
-                onChange={(_, expanded) => this.props.onChange(expanded)}
+                id={id}
+                onContextMenu={onContextMenu}
+                expanded={expanded}
+                onChange={this.onChange}
                 disableGutters
             >
                 <Summary>
-                    <Title>{this.props.title}</Title>
-                    {this.props.iconSRC ?
-                        <TitleIcon src={this.props.iconSRC} />
+                    <Title>{title}</Title>
+                    {iconSRC ?
+                        <TitleIcon src={iconSRC}/>
                     : null}
-                    {this.props.showExport ?
+                    {showExport ?
                         <ExportCheckbox
-                            checked={this.props.isExport}
-                            onChange={this.props.onChangeExport}
+                            checked={isExport}
+                            onChange={onChangeExport}
                         />
                     : null}
                 </Summary>
                 <Details>
-                    {this.props.children}
+                    {children}
                 </Details>
             </Accordion>
         )
     }
+
+    private onChange = (_: any, expanded: boolean) => this.props.onChange(expanded)
 }

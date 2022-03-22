@@ -4,18 +4,21 @@
     Для отключения название файла добавляется в свойство `exclude` шиблона. Используется для отключения "глобальных" доп. сценариев в шаблоне `truck`.
 */
 
-import { JSXElementConstructor, PureComponent } from 'react'
+import { PureComponent } from 'react'
+import type { JSXElementConstructor } from 'react'
 import type IActionProps from '../types/IActionProps'
 import type IActionData from '../types/IActionData'
 import type Editor from 'modules/editor/main'
 
-import Popup from 'modules/components/Popup'
+import { showPopup } from 'modules/components/Popup'
+import { showLoading } from 'modules/components/Loading'
+import config from 'scripts/config'
 
 type Component = JSXElementConstructor<IActionProps>
 
 /** Базовый класс доп. сценария в окне таблицы. */
 export default class ActionBase<S = any> extends PureComponent<IActionProps, S> {
-    private actionName: string
+    private actionName: object
     private Component: Component
     private minWidth: number
     private minHeight: number
@@ -40,38 +43,22 @@ export default class ActionBase<S = any> extends PureComponent<IActionProps, S> 
     /** Запустить сценарий. */
     public async run(editor: Editor): Promise<boolean> {
         this.editor = editor
-        editor.setState({
-            custom: (
-                <Popup
-                    show={true}
-                    onClose={() => this.closeCustom()}
-                    title={this.actionName}
-                    minHeight={this.minHeight}
-                    minWidth={this.minWidth}
-                >
-                    <this.Component dom={this.props.dom} editor={editor}/>
-                </Popup>
-            )
+        showPopup({
+            title: this.actionName[config.lang],
+            minHeight: this.minHeight,
+            minWidth: this.minWidth,
+            children: <this.Component dom={this.props.dom} editor={editor}/>
         })
 
         return true
-    }
-
-    /** Закрыть окно сценария. */
-    protected closeCustom() {
-        this.editor.setState({ custom: null })
     }
 
     /** Сохранить текущий открытый файл в таблице. */
     protected async save(reload?: boolean) {
         await this.editor.save(false)
         if (reload) {
-            this.editor.setState({
-                isLoading: true,
-                custom: null
-            }, () =>
-                window.location.reload()
-            )
+            showLoading()
+            window.location.reload()
         }
     }
 }

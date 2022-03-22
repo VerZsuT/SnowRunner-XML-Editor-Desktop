@@ -1,8 +1,9 @@
-import { MouseEvent, PureComponent } from 'react'
+import { PureComponent } from 'react'
+import type { MouseEvent } from 'react'
 import type ISelectParams from 'templates/types/ISelectParams'
 
 import { IMainContext, MainContext } from '../MainContext'
-import ResetMenu from './ResetMenu'
+import ResetMenu, { showResetMenu } from './ResetMenu'
 
 import { MenuItem, Select as SelectMUI, SelectChangeEvent } from '@mui/material'
 
@@ -23,11 +24,6 @@ interface IProps {
 
 interface IState {
     value: string
-    menu: {
-        show?: boolean
-        x?: number
-        y?: number
-    }
 }
 
 export default class Select extends PureComponent<IProps, IState> {
@@ -40,8 +36,7 @@ export default class Select extends PureComponent<IProps, IState> {
     constructor(props: IProps) {
         super(props)
         this.state = {
-            value: props.getValue(),
-            menu: {}
+            value: props.getValue()
         }
         this.options = this.props.item.selectParams.map(option =>
             <MenuItem key={option.value} value={option.value}>
@@ -63,57 +58,55 @@ export default class Select extends PureComponent<IProps, IState> {
     }
 
     render() {
-        if (this.props.isShow === false)
+        const { isShow } = this.props
+        const { value } = this.state
+
+        if (isShow === false)
             return null
 
-        return (<>
-            <ResetMenu
-                show={this.state.menu.show ?? false}
-                onReset={this.reset}
-                onClose={() => this.setState({ menu: {} })}
-                x={this.state.menu.x ?? 0}
-                y={this.state.menu.y ?? 0}
-                text={this.props.item.text}
-            />
+        return <>
+            <ResetMenu/>
                 <SelectMUI
                     id={this.componentID}
-                    value={this.state.value}
+                    value={value}
                     onChange={this.setValue}
                     onContextMenu={this.onContextMenu}
                     size='small'
                 >
                     {this.options}
                 </SelectMUI>
-        </>)
+        </>
     }
 
     private setValue = (e: SelectChangeEvent) => {
+        const { item, setValue } = this.props
         const newVal = e.target.value
         const { fileDOM } = this.context
 
-        if (!fileDOM(this.props.item.selector).length) {
-            const array = this.props.item.selector.split('>').map(value => value.trim())
+        if (!fileDOM(item.selector).length) {
+            const array = item.selector.split('>').map(value => value.trim())
             const name = array.pop()
             const rootSelector = array.join(' > ')
 
             fileDOM(rootSelector).eq(0).append(`<${name}></${name}>`)
         }
 
-        this.props.setValue(this.props.item.selector, this.props.item.name, newVal)
+        setValue(item.selector, item.name, newVal)
         this.setState({ value: newVal })
     }
 
     private initIE() {
         const { addParam, filePath } = this.context
+        const { isExport, isParentExport, item, getValue } = this.props
 
         addParam({
             id: this.componentID,
             forExport: () => {
-                if (this.props.isExport && this.props.isParentExport) {
+                if (isExport && isParentExport) {
                     return {
-                        selector: this.props.item.selector,
-                        name: this.props.item.name,
-                        value: this.props.getValue(),
+                        selector: item.selector,
+                        name: item.name,
+                        value: getValue(),
                         fileName: basename(filePath)
                     }
                 }
@@ -122,8 +115,8 @@ export default class Select extends PureComponent<IProps, IState> {
                 setValue: (newValue: string) => {
                     this.setValue({ target: { value: newValue } } as SelectChangeEvent)
                 },
-                selector: this.props.item.selector,
-                name: this.props.item.name,
+                selector: item.selector,
+                name: item.name,
                 fileName: basename(filePath)
             }
         })
@@ -131,12 +124,11 @@ export default class Select extends PureComponent<IProps, IState> {
 
     private onContextMenu = (e: MouseEvent<HTMLDivElement>) => {
         e.stopPropagation()
-        this.setState({
-            menu: {
-                show: true,
-                x: e.clientX,
-                y: e.clientY
-            }
+        showResetMenu({
+            x: e.clientX,
+            y: e.clientY,
+            text: this.props.item.text,
+            onReset: this.reset
         })
     }
 
@@ -148,7 +140,6 @@ export default class Select extends PureComponent<IProps, IState> {
     private reset = () => {
         const defaultValue = this.props.getDefaultValue()
 
-        this.setState({ menu: {} })
         if (defaultValue !== undefined)
             this.setValue({ target: { value: defaultValue } } as SelectChangeEvent)
     }
