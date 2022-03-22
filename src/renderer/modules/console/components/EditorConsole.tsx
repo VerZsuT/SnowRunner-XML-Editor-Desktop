@@ -1,9 +1,8 @@
-import { FormEvent, PureComponent, createRef, RefObject } from 'react'
-import { setHotKey, mainProcess } from 'scripts'
+import { PureComponent } from 'react'
+import type { FormEvent } from 'react'
+import { setHotKey } from 'scripts/funcs'
 import { Message } from '../service'
-import { AutoComplete } from './AutoComplete'
-
-const { toggleDevTools } = mainProcess
+import AutoComplete from './AutoComplete'
 
 interface IProps {
     listeners: {
@@ -17,10 +16,9 @@ interface IState {
 }
 
 /** Класс консоли программы. */
-export class EditorConsole extends PureComponent<IProps, IState> {
+export default class EditorConsole extends PureComponent<IProps, IState> {
     constructor(props: IProps) {
         super(props)
-
         this.state = {
             cmd: ''
         }
@@ -28,18 +26,19 @@ export class EditorConsole extends PureComponent<IProps, IState> {
 
     componentDidMount() {
         this.setEnterHotkey()
-        this.setDevtoolsHotkey()
     }
 
     render() {
+        const { cmd } = this.state
+
         return (
             <div className='line'>
-                <AutoComplete cmd={this.state.cmd} onInput={this.onAutoInput} />
+                <AutoComplete cmd={cmd} onInput={this.onAutoInput}/>
                 <span>:/ </span>
                 <input
                     autoFocus
                     id='input'
-                    value={this.state.cmd}
+                    value={cmd}
                     onInput={this.onInput}
                     placeholder='cmd'
                 />
@@ -48,62 +47,46 @@ export class EditorConsole extends PureComponent<IProps, IState> {
     }
 
     private onInput = (e: FormEvent<HTMLInputElement>) => {
-        this.setState({
-            cmd: e.currentTarget.value
-        })
-    }
-
-    private setDevtoolsHotkey() {
-        setHotKey({
-            key: 'KeyI',
-            ctrlKey: true,
-            shiftKey: true
-        }, () => {
-            toggleDevTools()
-        })
-
-        document.querySelector('#messages').addEventListener('click', () => {
-            (document.querySelector('#input') as HTMLInputElement).focus()
-        })
+        this.setState({ cmd: e.currentTarget.value })
     }
 
     private setEnterHotkey() {
+        const { listeners, onError } = this.props
+        const { cmd: stateCmd } = this.state
+
         setHotKey({
             key: 'Enter'
         }, () => {
-            const params = this.state.cmd.split(' ')
+            const params = stateCmd.split(' ')
             const cmd = params[0]
 
-            if (this.props.listeners[cmd]) {
-                const error = this.props.listeners[cmd](params.slice(1))
-                if (error) this.props.onError(error)
-            } else {
-                this.props.onError(Message.warn(`Неверная команда '${cmd}'`))
+            if (listeners[cmd]) {
+                const error = listeners[cmd](params.slice(1))
+                if (error)
+                    onError(error)
+            }
+            else {
+                onError(Message.warn(`Неверная команда '${cmd}'`))
             }
 
-            this.setState({
-                cmd: ''
-            });
+            this.setState({ cmd: '' });
             (document.querySelector('#input') as HTMLInputElement).focus()
         })
     }
 
     private onAutoInput = (value: string) => {
-        const params = this.state.cmd.split(' ')
-        if (value.startsWith(params.slice(-1)[0]) && params.slice(-1)[0] !== value) {
+        const { cmd } = this.state
+        const params = cmd.split(' ')
+
+        if (value.startsWith(params.slice(-1)[0]) && params.slice(-1)[0] !== value)
             params.pop()
-        }
         params.push(value)
 
-        if (params.length > 1) {
-            this.setState({
-                cmd: params.join(' ')
-            })
-        } else {
-            this.setState({
-                cmd: params[0]
-            })
-        }
+        if (params.length > 1)
+            this.setState({ cmd: params.join(' ') })
+        else
+            this.setState({ cmd: params[0] });
+
         (document.querySelector('#input') as HTMLInputElement).focus()
     }
 }

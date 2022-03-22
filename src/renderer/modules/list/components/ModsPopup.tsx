@@ -1,21 +1,17 @@
 import { PureComponent } from 'react'
-import { t } from 'scripts'
+import type IConfigModsItems from 'main/types/IConfigModsItems'
+import localize from 'scripts/localize'
+import config from 'scripts/config'
+import { showPopup } from 'modules/components/Popup'
 
 import {
-    Button,
-    Checkbox,
-    CircularProgress,
-    List,
-    ListItem,
-    ListItemButton,
-    ListItemIcon,
-    ListItemText
+    Button, Checkbox, CircularProgress, List,
+    ListItem, ListItemButton, ListItemIcon, ListItemText
 } from '@mui/material'
-import { Popup } from 'modules/components/Popup'
-import { Container } from 'modules/components/styled'
+import Container from 'modules/components/styled/Container'
 
-const { findMods, basename, getModPak } = window.listPreload
-const { config } = window.provider
+const { findMods, getModPak } = window.listPreload
+const { basename } = window.service
 
 interface IProps {
     hidePopup(reload?: boolean): void
@@ -27,13 +23,23 @@ interface IState {
         name: string
         path: string
     }[]
-    selected: ConfigModsItems
+    selected: IConfigModsItems
 }
 
-export class ModsPopup extends PureComponent<IProps, IState> {
+export default class ModsPopup extends PureComponent<IProps, IState> {
+    private styles = {
+        list: {
+            maxHeight: '250px',
+            overflow: 'auto'
+        },
+        addManual: {
+            marginTop: '10px',
+            marginBottom: '10px'
+        }
+    }
+
     constructor(props: IProps) {
         super(props)
-
         this.state = {
             items: null,
             selected: { ...config.mods.items }
@@ -42,19 +48,25 @@ export class ModsPopup extends PureComponent<IProps, IState> {
 
     componentDidUpdate(): void {
         setTimeout(() => {
-            if (this.state.items === null) {
-                findMods().then(items => {
+            if (this.state.items === null)
+                findMods().then(items =>
                     this.setState({ items })
-                })
-            }
+                )
         }, 500)
     }
 
     render() {
+        const { show } = this.props
+        const { items: stateItems, selected } = this.state
+
         let items = []
-        if (this.state.items !== null) {
-            items = this.state.items.map(value => {
-                const isExists = Boolean(this.state.selected[basename(value.path, '.pak')])
+
+        if (!show)
+            return null
+
+        if (stateItems !== null) {
+            items = stateItems.map(value => {
+                const isExists = !!selected[basename(value.path, '.pak')]
                 const onClick = isExists ? () => this.remove(value) : () => this.select(value)
 
                 return (
@@ -68,43 +80,39 @@ export class ModsPopup extends PureComponent<IProps, IState> {
                                     disableRipple
                                 />
                             </ListItemIcon>
-                            <ListItemText primary={value.name} />
+                            <ListItemText primary={value.name}/>
                         </ListItemButton>
                     </ListItem>
                 )
             })
         }
 
-        return (
-            <Popup
-                show={this.props.show}
-                onClose={() => this.hidePopup()}
-                title={this.state.items ? t.MODS_POPUP_TITLE : t.LOADING}
-            >
-                {!this.state.items ?
-                    <CircularProgress />
-                    : null}
+        showPopup({
+            onClose: this.hidePopup,
+            title: stateItems ? localize.MODS_POPUP_TITLE : localize.LOADING,
+            minHeight: 200,
+            children: <>
+                {!stateItems ?
+                    <CircularProgress/>
+                : null}
 
-                <List style={{ maxHeight: '250px', overflow: 'auto' }}>
+                <List style={this.styles.list}>
                     {items.length
                         ? items
-                        : this.state.items !== null
-                            ? <ListItemText primary={t.EMPTY_MODS_TITLE} />
+                        : stateItems !== null
+                            ? <ListItemText primary={localize.EMPTY_MODS_TITLE} />
                             : []
                     }
                 </List>
-                {this.state.items? <>
+                {stateItems? <>
                     <Container>
                         <Button
                             className='not-upper'
                             variant='contained'
                             onClick={this.addManual}
-                            style={{
-                                marginTop: '10px',
-                                marginBottom: '10px'
-                            }}
+                            style={this.styles.addManual}
                         >
-                            {t.MANUAL_MOD}
+                            {localize.MANUAL_MOD}
                         </Button>
                     </Container>
                     <Container>
@@ -114,75 +122,79 @@ export class ModsPopup extends PureComponent<IProps, IState> {
                             color='success'
                             onClick={this.applyChanges}
                         >
-                            {t.APPLY}
+                            {localize.APPLY}
                         </Button>
                     </Container>
                 </> : null}
-            </Popup>
-        )
+            </>
+        })        
+
+        return null
     }
 
-    private select(value: ConfigModsItems[string]) {
-        this.setState({
+    private select(value: IConfigModsItems[string]) {
+        this.setState(({ selected }) => ({
             selected: {
-                ...this.state.selected,
+                ...selected,
                 [basename(value.path, '.pak')]: {
                     name: basename(value.path),
                     path: value.path
                 }
             }
-        })
+        }))
     }
 
-    private remove(value: ConfigModsItems[string]) {
+    private remove(value: IConfigModsItems[string]) {
         const copy = { ...this.state.selected }
-        if (copy[basename(value.path, '.pak')]) {
-            delete copy[basename(value.path, '.pak')]
-        } else {
-            delete copy[value.name]
-        }
 
-        this.setState({
-            selected: copy
-        })
+        if (copy[basename(value.path, '.pak')])
+            delete copy[basename(value.path, '.pak')]
+        else
+            delete copy[value.name]
+
+        this.setState({ selected: copy })
     }
 
     private hidePopup = () => {
-        this.setState({
-            selected: { ...config.mods.items }
-        })
+        this.setState({ selected: { ...config.mods.items } })
         this.props.hidePopup()
     }
 
     private applyChanges = () => {
+        const { hidePopup } = this.props
+        const { selected } = this.state
+
         let length = 0
-        for (const _ in this.state.selected) {
+
+        for (const _ in selected) {
             length++
         }
         config.mods = {
             length,
-            items: this.state.selected
+            items: selected
         }
-        this.props.hidePopup(true)
+        hidePopup(true)
     }
 
     private addManual = () => {
         const result = getModPak()
-        if (!result) return
+        if (!result)
+            return
 
         for (const stateItem of this.state.items) {
             const stateName = stateItem.name
-            if (result.id === stateName) return
+            if (result.id === stateName)
+                return
         }
 
-        this.setState({
+        this.setState(({ items }) => ({
             items: [
-                ...this.state.items,
+                ...items,
                 {
                     name: result.id,
                     path: result.path
                 }
             ]
-        })
+        }))
     }
 }

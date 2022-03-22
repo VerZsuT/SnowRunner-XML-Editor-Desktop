@@ -1,8 +1,7 @@
-import { Config } from 'main/classes/Config'
+import Config from 'main/classes/Config'
 
 export const texts = {
 	RU: {
-		id: 'ID',
 		length: 'Длина',
 		strengthMult: 'Сила',
 		isEngineIgnitionRequired: 'Работает от',
@@ -10,7 +9,6 @@ export const texts = {
 		battery: 'Аккумулятора'
 	},
 	EN: {
-		id: 'ID',
 		length: 'Length',
 		strengthMult: 'Strength',
 		isEngineIgnitionRequired: 'Works from',
@@ -18,32 +16,40 @@ export const texts = {
 		battery: 'Battery'
 	},
 	DE: {
-		id: 'ID',
 		length: 'Länge',
 		strengthMult: 'Stärke',
 		isEngineIgnitionRequired: 'Arbeitet von',
 		engine: 'Motor',
 		battery: 'Batterie'
+	},
+	ZH: {
+		length: '长度',
+		strengthMult: '力量',
+		isEngineIgnitionRequired: '作品从',
+		engine: '引擎',
+		battery: '电池'
 	}
 }[Config.obj.lang]
 
 export const descs = {
 	RU: {
-		id: 'ID данной лебёдки',
 		length: 'Максимальная длина лебёдки',
 		strengthMult: 'Сила лебёдки',
 		isEngineIgnitionRequired: 'От чего работает (аккумулятор - автономная).'
 	},
 	EN: {
-		id: 'ID of this winch',
 		length: 'Maximum winch length',
 		strengthMult: 'Winch power',
 		isEngineIgnitionRequired: 'What it works on (battery-autonomous).'
 	},
 	DE: {
-		id: 'ID dieser Winde',
 		length: 'Maximale Länge der Winde',
 		strengthMult: 'Kraft der Winde',
 		isEngineIgnitionRequired: 'Was funktioniert (Batterie-autonom).'
+	},
+	ZH: {
+		length: '最大绞盘长度',
+		strengthMult: '绞盘力量',
+		isEngineIgnitionRequired: '它的工作原理（电池自主）。'
 	}
 }[Config.obj.lang]

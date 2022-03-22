@@ -1,13 +1,18 @@
 export { RU } from './RU'
 export { EN } from './EN'
 export { DE } from './DE'
+export { ZH } from './ZH'
 
 export interface ITexts {
+	DROP_TEXT: string
+	ADVANCED_MODE_LABEL: string
+	ACTIONS_MENU: string
+	PROC_FILE_ERROR: string
+	ADMIN_REQUIRED_MESSAGE: string
 	DIALOG_ENTER: string
 	TRAILERS_NOT_SUPPORT: string
 	TRUCK_TRAILERS: string
 	SCOUT_TRAILERS: string
-	TRAILERS_ADDONS_POPUP_TAB: string
 	SUCCESS_RESET: string
 	MODS_POPUP_TITLE: string
 	DIALOG_NO: string
@@ -24,8 +29,6 @@ export interface ITexts {
 	CRANES_WARN_MESSAGE: string
 	CRANES_WARN_TITLE: string
 	ADDON_CHANGED: string
-	ADDON_CONTENT: string
-	CRANES: string
 	REMOVE: string
 	ADD: string
 	CRANE: string

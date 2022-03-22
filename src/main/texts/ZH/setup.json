@@ -1,0 +1,11 @@
+{
+	"AUTO_INITIAL_TITLE": "自动选择initial.pak仅适用于Epic Games的版本。",
+	"FIRST_STEPS_DESCRIPTION": "初始设置",
+	"GAME_FOLDER_LABEL": "游戏文件夹",
+	"IMPORT_CONFIG_MESSAGE": "检测到以前版本的程序设置。 你想用它们吗？",
+	"INITIAL_LABEL": "initial.pak的路径",
+	"LANGUAGE_MENU_ITEM_LABEL": "程序语言",
+	"MANUAL_INITIAL": "手动选择initial.pak",
+	"OPEN_BUTTON": "打开",
+	"ADVANCED_MODE_LABEL": "高级模式"
+}

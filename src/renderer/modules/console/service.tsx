@@ -1,6 +1,7 @@
-import { MessageType } from './enums'
-import { Typography } from '@mui/material'
 import { Fragment } from 'react'
+import MessageType from './enums/MessageType'
+
+import { Typography } from '@mui/material'
 
 /** Агрумент любого содержания (кроме пустого) */
 export const ANY = 'ANY_ARGUMENT'
@@ -42,16 +43,17 @@ export class Message {
     static create(text: string, type?: MessageType) {
         const items = text.split('\n')
         let color = 'white'
+
         switch (type) {
             case MessageType.warn:
                 color = 'yellow'
-                break
+            break
             case MessageType.error:
                 color = 'red'
-                break
+            break
             case MessageType.info:
                 color = 'lightblue'
-                break
+            break
         }
 
         return <Typography style={{color}}>
@@ -81,39 +83,38 @@ export function addCheck<T extends ArgsCheckObj>(listener: CmdListener<T>, argsC
     const checkArgs = (args: string[]) => {
         let checkedArgs: { [name: string]: string } = {}
         let counter = 0
-        if (!argsCheckObj) {
+
+        if (!argsCheckObj)
             return { checkedArgs: checkedArgs as CheckedArgs<T> }
-        }
+
         for (const propName in argsCheckObj) {
             let isOptional = false
             let checker = argsCheckObj[propName]
             const argument = args[counter]
+
             if (checker instanceof Array && checker[0] === OPTIONAL) {
                 checker = checker[1] as unknown as T[Extract<keyof T, string>]
                 isOptional = true
             }
 
             if (argument === undefined) {
-                if (isOptional) {
+                let message: any
+
+                if (isOptional)
                     continue
-                }
-                const message = checker instanceof Array ? `[${checker.join(' | ')}]` : checker
+                message = checker instanceof Array ? `[${checker.join(' | ')}]` : checker
                 return { error: Message.warn(`Недостаточно аргументов для выполнения команды. На позиции ${counter + 1} ожидалось ${message}`) }
 
             }
 
-            if (checker === ANY) {
+            if (checker === ANY)
                 continue
-            }
-            if (checker instanceof Array) {
-                if (!checker.includes(argument)) {
-                    return { error: Message.warn(`Неверный аргумент на позиции ${counter + 1}. Ожидалось [${checker.join(' | ')}]`) }
-                }
-            } else {
-                if (checker !== argument) {
-                    return { error: Message.warn(`Неверный аргумент на позиции ${counter + 1}. Ожидалось ${checker}`) }
-                }
-            }
+
+            if (checker instanceof Array && !checker.includes(argument))
+                return { error: Message.warn(`Неверный аргумент на позиции ${counter + 1}. Ожидалось [${checker.join(' | ')}]`) }
+            else if (checker !== argument)
+                return { error: Message.warn(`Неверный аргумент на позиции ${counter + 1}. Ожидалось ${checker}`) }
+
             ++counter
             checkedArgs[propName] = argument
         }
@@ -122,11 +123,11 @@ export function addCheck<T extends ArgsCheckObj>(listener: CmdListener<T>, argsC
 
     return ((args: string[]) => {
         const { checkedArgs, error } = checkArgs(args)
-        if (checkedArgs) {
+
+        if (checkedArgs)
             listener(checkedArgs)
-        } else if (error) {
+        else if (error)
             return error
-        }
     })
 }
 
@@ -146,16 +147,17 @@ export const help = {
     sset: '- sset <setting_name> true|false \nУстанавливает значение настройки.',
     backup: '- backup save|restore \nСохраняет/восстанавливает бэкап initial.pak',
     archive: '- archive saveChanges|unpack \nСохраняет изменения или распаковывает initial.pak',
-    lang: '- lang RU|EN|DE \nУстанавливает язык перевода программы.',
+    lang: '- lang RU|EN|DE|ZH \nУстанавливает язык перевода программы.',
     config: '- config import|export \nИмпорт/экспорт конфиг-файла.',
     whatsNew: '- whatsNew \nОткрывает окно "Что нового".',
     exportAll: '- exportAll \nЭкспортирует все параметры всех авто и их зависимостей в файл в папке backups.',
     epf: '- epf see|join \nПозволяет работать с файлами .epf.',
-    exec: '- exec [-force] \nПозволяет использовать систему SXMLE_Execute.\nФлаг -force убирает предупреждения о DLC, модах и версии игры.',
     toString: () => {
         const array = []
+        
         for (const cmdName in help) {
-            if (cmdName === 'toString') continue
+            if (cmdName === 'toString')
+                continue
             array.push(help[cmdName])
         }
         return array.join('\n\n')

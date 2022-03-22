@@ -1,22 +1,17 @@
-import { ChangeEvent, FocusEvent, MouseEvent, PureComponent } from 'react'
-import { InputType, NumberType } from 'scripts'
+import { PureComponent } from 'react'
+import memoizee from 'memoizee'
+import type { ChangeEvent, FocusEvent, MouseEvent } from 'react'
+import type IInputParams from 'templates/types/IInputParams'
+import InputType from 'templates/enums/InputType'
+import NumberType from 'templates/enums/NumberType'
+import config from 'scripts/config'
+
 import { IMainContext, MainContext } from '../MainContext'
-import { ResetMenu } from './ResetMenu'
+import ResetMenu, { showResetMenu } from './ResetMenu'
 
-import {
-    TextField as MuiTextField,
-    TextFieldProps,
-    styled
-} from '@mui/material'
+import TextField from '../styled/TextField'
 
-const { config } = window.provider
-const { basename } = window.editorPreload
-
-const TextField = styled((props: TextFieldProps) =>
-    <MuiTextField size='small' {...props}/>
-)({
-    width: '100px'
-})
+const { basename } = window.service
 
 interface IProps {
     item: IInputParams
@@ -31,20 +26,19 @@ interface IProps {
     isShow?: boolean
 }
 
+type BorderColor = 'primary' | 'warning' | 'error'
+
 interface IState {
-    borderColor: string
+    borderColor: BorderColor
     value: string | number
-    menu: {
-        show?: boolean
-        x?: number
-        y?: number
-    }
 }
 
-export class Input extends PureComponent<IProps, IState> {
+export default class Input extends PureComponent<IProps, IState> {
     static contextType = MainContext
     declare context: IMainContext
+
     private componentID = `input-${Math.round(Math.random()*100)}`
+    private textFieldStyle = { width: '150px' }
 
     private min: number
     private max: number
@@ -53,17 +47,16 @@ export class Input extends PureComponent<IProps, IState> {
     constructor(props: IProps) {
         super(props)
         this.state = {
-            borderColor: '#ced4da',
-            value: props.getValue(),
-            menu: {}
+            borderColor: 'primary',
+            value: props.getValue()
         }
 
-        if (props.item.min !== -Infinity && config.settings.limits) {
+        if (props.item.min !== -Infinity && config.settings.limits)
             this.min = props.item.min || 0
-        }
-        if (props.item.max && config.settings.limits) {
+
+        if (props.item.max && config.settings.limits)
             this.max = props.item.max
-        }
+
         this.defaultValue = this.props.getValue()
     }
 
@@ -73,179 +66,173 @@ export class Input extends PureComponent<IProps, IState> {
     }
 
     componentWillUnmount() {
-        if (this.props.unregReset) {
+        if (this.props.unregReset)
             this.props.unregReset(this.componentID)
-        }
         this.context.removeParam(this.componentID)
     }
 
     render() {
-        if (this.props.isShow === false) return null
-        
-        const placeholder = this.props.getDefaultValue()
+        const { getDefaultValue, item, isShow } = this.props
+        const { value, borderColor } = this.state
+        let placeholder: string
 
-        return (<>
-            <ResetMenu
-                show={this.state.menu.show ?? false}
-                onReset={this.reset}
-                onClose={() => this.setState({ menu: {} })}
-                x={this.state.menu.x ?? 0}
-                y={this.state.menu.y ?? 0}
-                text={this.props.item.text}
-            />
-            {this.props.item.type === InputType.number
+        if (isShow === false)
+            return null
+
+        placeholder = getDefaultValue()
+
+        return <>
+            <ResetMenu/>
+            {item.type === InputType.number
                 ? <TextField
                     id={this.componentID}
-                    value={this.state.value}
+                    value={value}
                     type='number'
-                    inputProps={{
-                        step: this.props.item.step
-                    }}
+                    inputProps={this.stepProps(item.step)}
                     onBlur={this.saveValue}
                     onChange={this.onValueChange}
                     placeholder={placeholder}
                     onContextMenu={this.onContextMenu}
+                    color={borderColor}
                 />
                 : <TextField
                     id={this.componentID}
                     type='text'
                     placeholder={placeholder}
-                    value={this.state.value}
+                    value={value}
                     onChange={this.onValueChange}
                     onBlur={this.saveValue}
                     onContextMenu={this.onContextMenu}
-                    style={{ width: '150px' }}
+                    style={this.textFieldStyle}
+                    color={borderColor}
                 />
             }
-        </>)
+        </>
     }
+
+    private stepProps = memoizee((step: number) => ({ step }))
 
     private onContextMenu = (e: MouseEvent<HTMLInputElement>) => {
         e.stopPropagation()
-        this.setState({
-            menu: {
-                show: true,
-                x: e.clientX,
-                y: e.clientY
-            }
+        showResetMenu({
+            x: e.clientX,
+            y: e.clientY,
+            text: this.props.item.text,
+            onReset: this.reset
         })
     }
 
     private saveValue = (e: FocusEvent<HTMLInputElement>) => {
+        const { item, setValue } = this.props
         let newVal: string | number = e.target.value
         const { fileDOM } = this.context
 
-        if (newVal === '') {
+        if (newVal === '')
             newVal = this.defaultValue
-        }
 
-        if (!fileDOM.querySelector(this.props.item.selector)) {
-            const array = this.props.item.selector.split('>').map(value => value.trim())
+        if (!fileDOM(item.selector).length) {
+            const array = item.selector.split('>').map(value => value.trim())
             const name = array.pop().split('[')[0]
             const rootSelector = array.join(' > ')
-            fileDOM.querySelector(rootSelector).append(fileDOM.createElement(name))
+
+            fileDOM(rootSelector).eq(0).append(`<${name}></${name}>`)
         }
-        this.props.setValue(this.props.item.selector, this.props.item.name, String(newVal))
-        this.setState({
-            value: newVal
-        })
+        setValue(item.selector, item.name, String(newVal))
+        this.setState({ value: newVal })
     }
 
     private onValueChange = (e: ChangeEvent<HTMLInputElement>) => {
         let newVal: string | number = e.target.value
 
-        if (this.props.item.type !== InputType.text && newVal !== '') {
-            newVal = this.limit(Number(newVal))
-        }
+        if (this.props.item.type !== InputType.text && newVal !== '')
+            newVal = this.limit(+newVal)
 
-        this.changeColor(Number(newVal))
-        this.setState({
-            value: newVal
-        })
+        this.changeColor(+newVal)
+        this.setState({ value: newVal })
     }
 
     private limit(num: number) {
-        if (this.props.item.numberType === NumberType.integer) {
+        if (this.props.item.numberType === NumberType.integer)
             num = Math.round(num)
-        }
-        if (this.min !== undefined && num < this.min) {
+
+        if (this.min !== undefined && num < this.min)
             return this.min
-        }
-        if (this.max !== undefined && num > this.max) {
+
+        if (this.max !== undefined && num > this.max)
             return this.max
-        }
+
         return num
     }
 
     private changeColor = (value: number) => {
+        const { item } = this.props
         let newVal: number = value
 
-        if (value === null || value === NaN) newVal = 0
-        if (this.props.item.areas) {
-            let color = '#ced4da'
+        if (value === null || value === NaN)
+            newVal = 0
 
-            for (const areaName in this.props.item.areas) {
-                const value = this.props.item.areas[areaName]
+        if (item.areas) {
+            let color: BorderColor = 'primary'
+
+            for (const areaName in item.areas) {
+                const value = item.areas[areaName]
 
                 for (const area of value) {
                     if (newVal >= area[0] && newVal <= area[1]) {
-                        if (areaName === 'red') {
-                            color = `hsl(0deg, 100%, 50%)`
-                        } else if (areaName === 'green') {
-                            color = `hsl(120deg, 100%, 50%)`
-                        } else if (areaName === 'yellow') {
-                            color = `rgb(235 235 12)`
-                        }
+                        if (areaName === 'red')
+                            color = `error`
+                        else if (areaName === 'green')
+                            color = `primary`
+                        else if (areaName === 'yellow')
+                            color = `warning`
                     }
                 }
             }
-            this.setState({
-                borderColor: color
-            })
+            this.setState({ borderColor: color })
         }
     }
 
     private initIE() {
+        const { item, isExport, isParentExport } = this.props
+        const { value } = this.state
         const { addParam, filePath } = this.context
+
+        if (item.type === 'file')
+            return
 
         addParam({
             id: this.componentID,
             forExport: () => {
-                if (this.props.isExport && this.props.isParentExport) {
+                if (isExport && isParentExport) {
                     return {
-                        selector: this.props.item.selector,
-                        name: this.props.item.name,
-                        value: this.state.value,
-                        fileName: basename(filePath)
+                        selector: item.selector,
+                        name: item.name,
+                        fileName: basename(filePath),
+                        value
                     }
                 }
             },
             forImport: {
                 setValue: (newValue: string) => {
-                    if (this.state.value !== newValue) {
+                    if (value !== newValue)
                         this.saveValue({ target: { value: newValue } } as FocusEvent<HTMLInputElement>)
-                    }
                 },
-                selector: this.props.item.selector,
-                name: this.props.item.name,
+                selector: item.selector,
+                name: item.name,
                 fileName: basename(filePath)
             }
         })
     }
 
     private initReset() {
-        if (this.props.regReset) {
+        if (this.props.regReset)
             this.props.regReset(this.componentID, this.reset)
-        }
     }
 
     private reset = () => {
         const defaultValue = this.props.getDefaultValue()
-        this.setState({
-            menu: {}
-        })
-        if (defaultValue !== undefined) {
+
+        if (defaultValue !== undefined)
             this.saveValue({ target: { value: defaultValue } } as FocusEvent<HTMLInputElement>)
-        }
     }
 }

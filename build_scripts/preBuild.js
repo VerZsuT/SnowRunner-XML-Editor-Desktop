@@ -8,29 +8,18 @@
     -- Меняет версию на указанную в config.json.
 */
 
-const {
-    rmSync,
-    mkdirSync,
-} = require('fs')
+const { rmSync, mkdirSync } = require('fs')
 const Log = require('./Log.js')
-const {
-    preBuildPaths: paths,
-    checkPath,
-    readFileToVar,
-    checkVar,
-    writeFile
-} = require('./funcs.js')
+const { preBuildPaths: paths, checkPath, readFileToVar, checkVar, writeFile } = require('./funcs.js')
 
 Log.mainGroup()
 Log.print('Starting pre-build script', true)
 Log.stageGroup()
 
 Log.print('Cleaning out folder')
-checkPath(paths.out, () => {
-    rmSync(paths.out, {
-        recursive: true
-    })
-})
+checkPath(paths.out, () =>
+    rmSync(paths.out, { recursive: true })
+)
 mkdirSync(paths.out)
 
 Log.separator()

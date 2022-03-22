@@ -12,7 +12,7 @@
 	"ADDONS_POPUP_TITLE": "Аддоны",
 	"ADDON_FILE_NAME": "Файл",
 	"ADDON_NAME": "Название",
-	"ADDON_WHEELS": "Запасные колёса",
+	"ADDON_WHEELS": "Колёса",
 	"ADDON_REPAIRS": "Запчасти",
 	"ADDON_FUEL": "Топливо",
 	"ADDON_CHANGE_BUTTON": "Изменить",
@@ -20,8 +20,6 @@
 	"CRANE": "кран",
 	"ADD": "Добавить",
 	"REMOVE": "Удалить",
-	"CRANES": "Краны",
-	"ADDON_CONTENT": "Содержимое",
 	"ADDON_CHANGED": "Аддон изменён",
 	"CRANES_WARN_TITLE": "Внимание!",
 	"CRANES_WARN_MESSAGE": "Перед удалением крана требуется обязательно его снять с машины.",
@@ -30,9 +28,11 @@
 	"BACK_BUTTON": "Назад",
 	"CRANES_NOT_SUPPORT": "На данном авто изменение кранов не поддерживается",
 	"SUCCESS_RESET": "Параметры были сброшены",
-	"TRAILERS_ADDONS_POPUP_TAB": "Прицепы",
 	"SCOUT_TRAILERS": "Прицепы для скаута",
 	"TRUCK_TRAILERS": "Обычные прицепы",
 	"TRAILERS_NOT_SUPPORT": "Изменение фаркопа не поддерживается на данном авто.",
-	"DIALOG_ENTER": "Ввод"
+	"DIALOG_ENTER": "Ввод",
+	"PROC_FILE_ERROR": "Не удалось определить файл. Скорее всего в файле ошибка.",
+	"ACTIONS_MENU": "Дополнительно",
+	"DROP_TEXT": "Отпустите для импортирования"
 }

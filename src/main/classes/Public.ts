@@ -1,21 +1,23 @@
 import { app, BrowserWindow, ipcMain, shell } from 'electron'
-import { existsSync, readFileSync, writeFileSync, chmodSync } from 'fs'
+import { existsSync, chmodSync } from 'fs'
 import { join } from 'path'
 import { execFile } from 'child_process'
-import $ from 'cheerio'
-import { Archiver } from './Archiver'
-import { Backup } from './Backup'
-import { Checker } from './Checker'
-import { Config } from './Config'
-import { Dialog } from './Dialog'
-import { EPF } from './EPF'
-import { Settings } from './Settings'
-import { Texts } from './Texts'
-import { Updater } from './Updater'
-import { Windows } from './Windows'
+import { load } from 'cheerio'
+import type IFunctions from '../types/IFunctions'
+import type ITemplateParams from '../templates/types/ITemplateParams'
+
+import Archiver from './Archiver'
+import Backup from './Backup'
+import Checker from './Checker'
+import Config from './Config'
+import Dialog from './Dialog'
+import EPF from './EPF'
+import Settings from './Settings'
+import Texts from './Texts'
+import Updater from './Updater'
+import Windows from './Windows'
 import { paths, findInDir } from '../service'
-import { DialogAlertType } from '../enums'
-import * as templates from '../templates'
+import { templates, extra } from '../templates'
 import * as defaults from 'scripts/defaults.json'
 
 const info = {
@@ -29,12 +31,12 @@ ipcMain.on('getInfo', event => {
 })
 
 /** Отвечает за публичные переменные/функции для `renderer-process`. */
-export class Public {
+export default class Public {
     private static settings = Settings.obj
     private static config = Config.obj
 
-    /** Делает функции публичными, позволяя вызывать их из `renderer-process`. */
-    static addMethods = (object: Functions): void => {
+    /** Сделать функции публичными, позволяя вызывать их из `renderer-process`. */
+    public static addMethods = (object: IFunctions): void => {
         for (const name in object) {
             const value = object[name]
 
@@ -43,20 +45,20 @@ export class Public {
                 ipcMain.on(`function_${name}_call`, (event, ...args) => {
                     try {
                         const result = object[name](...args)
-                        if (!(result instanceof Promise)) {
+                        if (!(result instanceof Promise))
                             event.returnValue = { value: result }
-                        } else {
+                        else
                             event.returnValue = { value: undefined }
-                        }
-                    } catch (error) {
+                    }
+                    catch (error) {
                         event.returnValue = { error: error }
                     }
                 })
             }
         }
     }
-    /** Делает переменные публичными, позволяя использовать/изменять их из `renderer-process`. */
-    static addProps = (object: any): void => {
+    /** Сделать переменные публичными, позволяя использовать/изменять их из `renderer-process`. */
+    public static addProps = (object: any): void => {
         for (const name in object) {
             const value = object[name]
             info.properties.push(name)
@@ -70,7 +72,8 @@ export class Public {
                         try {
                             const result = getter()
                             event.returnValue = { value: result }
-                        } catch (error) {
+                        }
+                        catch (error) {
                             event.returnValue = { error: error }
                         }
                     })
@@ -80,17 +83,20 @@ export class Public {
                         try {
                             const result = setter(args[0])
                             event.returnValue = { value: result }
-                        } catch (error) {
+                        }
+                        catch (error) {
                             event.returnValue = { error: error }
                         }
                     })
                 }
-            } else if (typeof value === 'function') {
+            }
+            else if (typeof value === 'function') {
                 ipcMain.on(`property_${name}_get`, (event) => {
                     try {
                         const result = value()
                         event.returnValue = { value: result }
-                    } catch (error) {
+                    }
+                    catch (error) {
                         event.returnValue = { error: error }
                     }
                 })
@@ -99,11 +105,10 @@ export class Public {
     }
 
     /**
-     * Устанавливает публичные для `renderer-process` методы и свойства.
+     * Установить публичные для `renderer-process` методы и свойства.
     */
-    static init() {
+    public static init() {
         this.addProps({
-            invalidMods: () => this.settings.invalidMods,
             texts: () => Texts.obj,
             paths: () => paths,
             config: [
@@ -115,116 +120,14 @@ export class Public {
         })
 
         this.addMethods({
-            getParams: (domString: string, name: string, fileName: string) => {
-                const fileDOM = $.load(domString, { xmlMode: true })
-                let params = templates[name].template.getParams({ fileDOM }) as ITemplateParams
-
-                if (templates.extra[fileName]) {
-                    params = [
-                        ...params,
-                        ...templates.extra[fileName].template.getParams({ fileDOM })
-                    ]
-                }
-                return {
-                    params: params, 
-                    dom: fileDOM.html()
-                }
-            },
-            updateFiles: (modId?: string) => {
-                if (modId) {
-                    try {
-                        Archiver.update(join(paths.modsTemp, modId), this.config.mods.items[modId].path)
-                    } catch {
-                        try {
-                            chmodSync(this.config.mods.items[modId].path, 0o777)
-                            Archiver.update(join(paths.modsTemp, modId), this.config.mods.items[modId].path)
-                        } catch {
-                            Dialog.alert({
-                                title: Texts.get('ERROR'),
-                                message: Texts.get('SAVE_MOD_ERROR')
-                            })
-                        }
-                    }
-                } else {
-                    try {
-                        Archiver.update(paths.mainTemp, this.config.initial)
-                    } catch {
-                        try {
-                            chmodSync(this.config.initial, 0o777)
-                            Archiver.update(paths.mainTemp, this.config.initial)
-                        } catch {
-                            Dialog.alert({
-                                title: Texts.get('ERROR'),
-                                message: Texts.get('SAVE_ORIGINAL_ERROR')
-                            })
-                        }
-                    }
-                }
-            },
-            readFile: (filePath: string, resFilePath?: string) => {
-                if (existsSync(filePath)) {
-                    const data = readFileSync(filePath)
-                    return data.toString()
-                } else if (existsSync(resFilePath)) {
-                    const data = readFileSync(resFilePath)
-                    return data.toString()
-                } else {
-                    throw new Error('READ_FILE_ERROR')
-                }
-            },
-            writeFile: (filePath, data) => {
-                try {
-                    writeFileSync(filePath, data)
-                } catch {
-                    throw new Error('WRITE_FILE_ERROR')
-                }
-            },
-            alert: (message: string) => {
-                Dialog.alert({
-                    message: message,
-                    title: this.settings.appId,
-                    dialogType: DialogAlertType.async
-                })
-            },
-            alertSync: (message: string) => {
-                Dialog.alert({
-                    message: message,
-                    title: this.settings.appId
-                })
-            },
-            confirm: (message: string) => {
-                const index = Dialog.alert({
-                    message: message,
-                    title: this.settings.appId,
-                    buttons: ['OK', Texts.get('CLOSE')],
-                    noLink: true
-                })
-                return index === 0
-            },
-            joinEPF: EPF.join,
-            seeEPF: EPF.see,
-            importConfig: (fromBackups = true) => {
-                if (Config.import(fromBackups)) {
-                    this.settings.isQuit = true
-                    app.relaunch()
-                    app.quit()
-                } else {
-                    Dialog.alert({
-                        message: Texts.get('IMPORT_CONFIG_ERROR'),
-                        title: this.settings.appId
-                    })
-                }
-            },
-            exportConfig: (toBackups = true) => {
-                if (Config.export(toBackups)) {
-                    Dialog.alert({
-                        message: Texts.get('SUCCESS_EXPORT_MESSAGE'),
-                        title: this.settings.appId
-                    })
-                }
-            },
+            getParams: this.getParams,
+            updateFiles: this.updateFiles,
+            importConfig: this.importConfig,
+            exportConfig: this.exportConfig,
             reload: () => { this.settings.isQuit = true; app.relaunch(); app.quit() },
             quit: () => { this.settings.isQuit = true; app.quit() },
+            joinEPF: EPF.join,
+            seeEPF: EPF.see,
             openLink: shell.openExternal,
             openPath: shell.openPath,
             findInDir,
@@ -246,7 +149,6 @@ export class Public {
             copyBackup: Backup.copy,
             resetConfig: Config.reset,
             recoverFromBackup: Backup.recover,
-            saveConfig: Config.save,
             checkUpdate: Checker.checkUpdate,
             update: Updater.update,
             unpack: Archiver.unpackSync,
@@ -254,19 +156,119 @@ export class Public {
             enableDevTools: () => { this.settings.devTools = true },
             disableDevTools: () => { this.settings.devTools = false },
             toggleDevTools: () => { BrowserWindow.getFocusedWindow().webContents.toggleDevTools() },
-            runUninstall: () => {
-                if (!existsSync(paths.uninstall)) {
+            runUninstall: this.runUninstall
+        })
+    }
+
+    public static runUninstall = () => {
+        if (!existsSync(paths.uninstall)) {
+            Dialog.alert({
+                message: Texts.get('ONLY_MANUAL_UNINS'),
+                title: this.settings.appId
+            })
+            return
+        }
+        else {
+            execFile(paths.uninstall)
+            this.settings.isQuit = true
+            app.quit()
+        }
+    }
+
+    public static exportConfig = (toBackups = true) => {
+        if (Config.export(toBackups)) {
+            Dialog.alert({
+                message: Texts.get('SUCCESS_EXPORT_MESSAGE'),
+                title: this.settings.appId
+            })
+            return true
+        }
+        return false
+    }
+
+    public static importConfig = (fromBackups = true) => {
+        if (Config.import(fromBackups)) {
+            this.settings.isQuit = true
+            app.relaunch()
+            app.quit()
+            return true
+        }
+        else {
+            Dialog.alert({
+                message: Texts.get('IMPORT_CONFIG_ERROR'),
+                title: this.settings.appId
+            })
+            return false
+        }
+    }
+
+    public static updateFiles = (modId?: string) => {
+        if (modId) {
+            try {
+                Archiver.update(join(paths.modsTemp, modId), this.config.mods.items[modId].path)
+            }
+            catch {
+                try {
+                    chmodSync(this.config.mods.items[modId].path, 0o777)
+                    Archiver.update(join(paths.modsTemp, modId), this.config.mods.items[modId].path)
+                }
+                catch {
                     Dialog.alert({
-                        message: Texts.get('ONLY_MANUAL_UNINS'),
-                        title: this.settings.appId
+                        title: Texts.get('ERROR'),
+                        message: Texts.get('SAVE_MOD_ERROR')
                     })
-                    return
-                } else {
-                    execFile(paths.uninstall)
-                    this.settings.isQuit = true
-                    app.quit()
                 }
             }
-        })
+        }
+        else {
+            try {
+                Archiver.update(paths.mainTemp, this.config.initial)
+            }
+            catch {
+                try {
+                    chmodSync(this.config.initial, 0o777)
+                    Archiver.update(paths.mainTemp, this.config.initial)
+                }
+                catch {
+                    Dialog.alert({
+                        title: Texts.get('ERROR'),
+                        message: Texts.get('SAVE_ORIGINAL_ERROR')
+                    })
+                }
+            }
+        }
+    }
+
+    public static getParams = (domString: string, name: keyof typeof templates, fileName: string) => {
+        const fileDOM = load(domString, { xmlMode: true })
+        const mainActions = templates[name].actions
+        const extraActions = extra[fileName]?.actions
+        const extraTemplate = extra[fileName]?.template
+        const extraExclude = extra[fileName]?.exclude
+
+        let resultActions: string[] = []
+        let params = templates[name].template.getParams({ fileDOM }) as ITemplateParams
+
+        if (mainActions)
+            resultActions.push(...mainActions)
+
+        if (extraTemplate) {
+            params = [
+                ...params,
+                ...extraTemplate.getParams({ fileDOM })
+            ]
+        }
+        
+        if (extraActions)
+            resultActions.push(...extraActions)
+
+        if (extraExclude)
+            resultActions = resultActions.filter(action => !extraExclude.includes(action))
+
+        return {
+            dom: fileDOM.html(),
+            actions: resultActions,
+            params
+        }
     }
 }

@@ -1,7 +1,9 @@
 import { Fragment, PureComponent } from 'react'
+import memoizee from 'memoizee'
 import { IMainContext, MainContext } from '../MainContext'
-import { Parameter } from './Parameter'
-import { Group } from './Group'
+
+import Parameter from './Parameter'
+import Group from './Group'
 
 interface IProps {
     isExporting: boolean
@@ -15,7 +17,7 @@ interface IState {
     openedGroup: number
 }
 
-export class Parameters extends PureComponent<IProps, IState> {
+export default class Parameters extends PureComponent<IProps, IState> {
     static contextType = MainContext
     declare context: IMainContext
 
@@ -28,31 +30,36 @@ export class Parameters extends PureComponent<IProps, IState> {
 
     render() {
         const { tableItems } = this.context
+        const { regReset, unregReset, isExporting, isShow } = this.props
+        const { openedGroup } = this.state
+
         const items = tableItems.map((item, index) => <Fragment key={index}>
             {item.paramType === 'group' && item.groupItems.length ?
                 <Group
                     item={item}
-                    regReset={this.props.regReset}
-                    unregReset={this.props.unregReset}
-                    toggle={(expand: boolean) => this.setState({ openedGroup: expand? index : null })}
-                    isExporting={this.props.isExporting}
+                    regReset={regReset}
+                    unregReset={unregReset}
+                    toggle={this.toggleExpand(index)}
+                    isExporting={isExporting}
                     isParentExport={true}
-                    isShow={this.props.isShow}
-                    isOpen={this.state.openedGroup === index}
+                    isShow={isShow}
+                    isOpen={openedGroup === index}
                 />
                 : null}
             {item.paramType !== 'group' ?
                 <Parameter
                     item={item}
-                    regReset={this.props.regReset}
-                    unregReset={this.props.unregReset}
+                    regReset={regReset}
+                    unregReset={unregReset}
                     isParentExport={true}
-                    isExporting={this.props.isExporting}
-                    isShow={this.props.isShow}
+                    isExporting={isExporting}
+                    isShow={isShow}
                 />
             : null}
         </Fragment>)
 
         return items
     }
+
+    private toggleExpand = memoizee((index: number) => (expand: boolean) => this.setState({ openedGroup: expand? index : null }))
 }

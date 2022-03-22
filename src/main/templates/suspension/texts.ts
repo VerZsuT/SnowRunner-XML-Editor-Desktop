@@ -1,11 +1,7 @@
-import { Config } from 'main/classes/Config'
+import Config from 'main/classes/Config'
 
 export const texts = {
 	RU: {
-		id: 'ID',
-		front: 'Переднее',
-		rear: 'Заднее',
-		wheelType: 'Тип колеса',
 		height: 'Высота',
 		strength: 'Жёсткость',
 		damping: 'Затухание',
@@ -17,10 +13,6 @@ export const texts = {
 		damageCapacity: 'Прочность'
 	},
 	EN: {
-		id: 'ID',
-		wheelType: 'Wheel type',
-		front: 'Front',
-		rear: 'Rear',
 		height: 'Height',
 		strength: 'Strength',
 		damping: 'Damping',
@@ -32,10 +24,6 @@ export const texts = {
 		damageCapacity: 'Damage capacity'
 	},
 	DE: {
-		id: 'ID',
-		front: 'Front',
-		rear: 'Hinter',
-		wheelType: 'Rad-Typ',
 		height: 'Höhe',
 		strength: 'Stärke',
 		damping: 'Dämpfung',
@@ -45,35 +33,47 @@ export const texts = {
 		suspension: 'Aussetzung',
 		criticalDamageThreshold: 'Kritische Schadensschwelle',
 		damageCapacity: 'Schadenskapazität'
+	},
+	ZH: {
+		height: '身高',
+		strength: '刚度',
+		damping: '衰减',
+		suspensionMin: '最小悬挂高度',
+		suspensionMax: '最大悬挂高度',
+		brokenSuspensionMax: '最大悬挂高度(断裂时)',
+		suspension: '暂停',
+		criticalDamageThreshold: '临界伤害阈值',
+		damageCapacity: '耐久性'
 	}
 }[Config.obj.lang]
 
 export const descs = {
 	RU: {
-		wheelType: 'Тип колеса, к которому будет применены параметры',
 		suspensionMin: 'Минимальный ход подвески (позиция, которую колесо может принять при полной просадке подвески).',
 		suspensionMax: 'Максимальный ход подвески (позиция, которую может принять колесо, если подвеска в рабочем состоянии и ее жесткость равна нулю, когда колесо висит в воздухе).',
 		brokenSuspensionMax: 'Максимальный ход сломанной подвески.',
-		name: 'ID данной подвески',
 		criticalDamageThreshold: 'Процент повреждения (процент = значение * 100), при котором подвеска будет проявлять признаки поломки',
 		damageCapacity: 'Запас прочности данной подвески'
 	},
 	EN: {
-		wheelType: 'The type of wheel to which the parameters will be applied',
 		suspensionMin: 'The minimum suspension stroke (the position that the wheel can take when the suspension is completely sagged).',
 		suspensionMax: 'Maximum suspension travel (the position that the wheel can take if the suspension is in working condition and its stiffness is zero when the wheel is hanging in the air)',
 		brokenSuspensionMax: 'The maximum stroke of the broken suspension.',
-		name: 'ID of this suspension',
 		criticalDamageThreshold: 'The percentage of damage (percentage = value * 100) at which the suspension will show signs of failure',
 		damageCapacity: 'The safety margin of this suspension'
 	},
 	DE: {
-		wheelType: 'Der Radtyp, auf den die Parameter angewendet werden sollen',
 		suspensionMin: 'Minimaler Federweg (die Position, die das Rad nehmen kann, wenn die Federung vollständig Drawdown).',
 		suspensionMax: 'Maximaler Federweg (die Position, die das Rad nehmen kann, wenn die Federung in Betrieb ist und ihre Steifigkeit Null ist, wenn das Rad in der Luft hängt)',
 		brokenSuspensionMax: 'Maximaler Hub der gebrochenen Federung.',
-		name: 'ID dieser Aufhängung',
 		criticalDamageThreshold: 'Prozentsatz des Schadens (Prozent = Wert * 100), bei dem die Federung Anzeichen von Bruch zeigt',
 		damageCapacity: 'Sicherheitsmarge dieser Aufhängung'
+	},
+	ZH: {
+		suspensionMin: '最小悬架行程（当悬架完全下垂时车轮可以采取的位置）。',
+		suspensionMax: '最大悬架行程（如果悬架处于工作状态并且车轮悬在空中时其刚度为零，则车轮可以采取的位置）。',
+		brokenSuspensionMax: '破碎悬架的最大行程。',
+		criticalDamageThreshold: "悬浮液显示破损迹象的损坏百分比（百分比=值*100）",
+		damageCapacity: "此暂停的安全裕度"
 	}
 }[Config.obj.lang]

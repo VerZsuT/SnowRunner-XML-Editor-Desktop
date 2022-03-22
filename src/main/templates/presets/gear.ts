@@ -1,5 +1,5 @@
 import { Number } from '../items'
-import { Config } from 'main/classes/Config'
+import Config from 'main/classes/Config'
 
 const texts = {
     RU: {
@@ -13,6 +13,10 @@ const texts = {
     DE: {
         angelVelocity: 'Winkelgeschwindigkeit',
         fuelModifier: 'Kraftstoffmodifikator'
+    },
+    ZH: {
+        angelVelocity: '车轮的最大角速度',
+        fuelModifier: '油耗修改器'
     }
 }[Config.obj.lang]
 
@@ -28,10 +32,14 @@ const descs = {
     DE: {
         angelVelocity: 'Maximale Winkelgeschwindigkeit des Rades',
         fuelModifier: 'Multiplikator des Kraftstoffverbrauchs in diesem Getriebe'
+    },
+    ZH: {
+        angelVelocity: '车轮的最大角速度',
+        fuelModifier: '此变速箱上的油耗乘数'
     }
 }[Config.obj.lang]
 
-export const gear = [
+export default [
     Number({
         attribute: 'AngVel',
         text: texts.angelVelocity,

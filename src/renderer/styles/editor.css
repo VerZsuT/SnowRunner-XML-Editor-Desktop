@@ -2,6 +2,7 @@
 
 body {
     background-color: #e7ebf0;
+    overflow: overlay;
 }
 
 #main > div > .MuiPaper-root {
@@ -9,6 +10,20 @@ body {
     border-radius: 4px;
 }
 
-.MuiTable-root {
-    margin-bottom: -7px;
+#main .MuiAccordionSummary-root:hover {
+    background-color: #e7ebf0;
 }
+
+#main .MuiAccordionSummary-content {
+    align-items: center;
+}
+
+#main .MuiAccordionSummary-root.Mui-expanded {
+    background-color: #f7f7f7;
+}
+
+#main .MuiAccordion-root .MuiAccordion-root {
+    box-shadow: none;
+}
+
+.MuiTable-root { margin-bottom: -7px; }

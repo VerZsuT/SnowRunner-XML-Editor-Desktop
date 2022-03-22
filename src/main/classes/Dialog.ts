@@ -1,9 +1,15 @@
 import { dialog as elDialog, nativeImage } from 'electron'
+import type IDialogAlertParams from '../types/IDialogAlertParams'
+import type IDialogParams from '../types/IDialogParams'
+import type IOpenDialogParams from '../types/IOpenDialogParams'
+import DialogType from '../enums/DialogType'
+import DialogSourceType from '../enums/DialogSourceType'
+import DialogAlertType from '../enums/DialogAlertType'
+
 import { paths } from '../service'
-import { DialogType, DialogSourceType, DialogAlertType } from '../enums'
 
 /** Отвечает за показ диалоговых окон. */
-export class Dialog {
+export default class Dialog {
     private static extNames = {
         epf: 'Editor params file',
         ecf: 'Editor configuration file',
@@ -11,8 +17,8 @@ export class Dialog {
         xml: 'XML file'
     }
 
-    /** Открывает окно с сообщением. */
-    static alert = (params: DialogAlertParams) => {
+    /** Открыть окно с сообщением. */
+    public static alert = (params: IDialogAlertParams) => {
         const {
             dialogType = DialogAlertType.sync,
             title, message,
@@ -29,22 +35,19 @@ export class Dialog {
             type
         }
 
-        if (dialogType === DialogAlertType.sync) {
+        if (dialogType === DialogAlertType.sync)
             return elDialog.showMessageBoxSync(dialogParams)
-        } else {
+        else
             return elDialog.showMessageBox(dialogParams)
-        }
     }
 
-    /** Открывает окно выбора `.epf` файла. */
-    static getEPF = (): string => {
-        return <string>this.openDialog({
-            extention: 'epf'
-        })
+    /** Открыть окно выбора `.epf` файла. */
+    public static getEPF = (): string => {
+        return <string>this.openDialog({ extention: 'epf' })
     }
 
-    /** Открывает окно сохранения `.epf` файла. */
-    static saveEPF = (defaultName: string) => {
+    /** Открыть окно сохранения `.epf` файла. */
+    public static saveEPF = (defaultName: string) => {
         return <string>this.openDialog({
             type: DialogType.save,
             defaultPath: defaultName,
@@ -52,45 +55,38 @@ export class Dialog {
         })
     }
 
-    /** Открывает окно выбора `initial.pak` */
-    static getInitial = () => {
-        return <string>this.openDialog({
-            extention: 'pak'
-        })
+    /** Открыть окно выбора `initial.pak` */
+    public static getInitial = () => {
+        return <string>this.openDialog({ extention: 'pak' })
     }
 
-    /** Открывает окно выбора папки. */
-    static getDir = () => {
-        return <string>this.openDialog({
-            source: DialogSourceType.dir
-        })
+    /** Открыть окно выбора папки. */
+    public static getDir = () => {
+        return <string>this.openDialog({ source: DialogSourceType.dir })
     }
 
-    /** Открывает окно выбора нескольких `.epf` файлов. */
-    static getMultiEPF = () => {
+    /** Открыть окно выбора нескольких `.epf` файлов. */
+    public static getMultiEPF = () => {
         return <string[]>this.openDialog({
             properties: ['openFile', 'multiSelections'],
             extention: 'epf'
         })
     }
 
-    /** Открывает окно выбора `.xml` файла. */
-    static getXML = () => {
-        return <string>this.openDialog({
-            extention: 'xml'
-        })
+    /** Открыть окно выбора `.xml` файла. */
+    public static getXML = () => {
+        return <string>this.openDialog({ extention: 'xml' })
     }
 
-    static openDialog = (params: OpenDialogParams): string | string[] => {
+    /** Открыть диалоговое окно. */
+    public static openDialog = (params: IOpenDialogParams): string | string[] => {
         const {
             type = DialogType.open,
             source = DialogSourceType.file,
             defaultPath, extention,
             properties = (source === DialogSourceType.file ? ['openFile'] : ['openDirectory'])
         } = params
-        const dialogParams: DialogParams = {
-            properties
-        }
+        const dialogParams: IDialogParams = { properties }
 
         if (extention) {
             dialogParams.filters = [{
@@ -102,19 +98,21 @@ export class Dialog {
         if (type === DialogType.open) {
             const result = elDialog.showOpenDialogSync(dialogParams)
             if (result instanceof Array) {
-                if (!dialogParams.properties.includes('multiSelections')) {
+                if (!dialogParams.properties.includes('multiSelections'))
                     return result[0]
-                } else {
+                else
                     return result
-                }
             }
-        } else {
+        }
+        else {
             const saveDialogParams = {
                 ...(() => defaultPath ? { defaultPath } : {})(),
                 ...(() => dialogParams.filters ? { filters: dialogParams.filters } : {})()
             }
             const result = elDialog.showSaveDialogSync(saveDialogParams)
-            if (result) return result
+            
+            if (result)
+                return result
         }
     }
 }

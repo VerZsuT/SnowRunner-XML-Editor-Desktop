@@ -7,25 +7,8 @@ body {
 
 header {
     text-align: center;
-    background: #1c7dca;
-    padding: 7px 0 1px 0;
-}
-
-a:hover {
-    background: rgb(64 124 199);
-}
-
-a:active {
-    background: rgb(64 87 199);
-    box-shadow: 0 3px rgb(64 87 199) inset;
-}
-
-.red-text {
-    color: var(--bs-light);
-}
-
-.title {
-    margin-top: 0;
+    padding: 11px 0 0 0;
+    box-sizing: border-box;
 }
 
 .release {
@@ -39,8 +22,4 @@ a:active {
     width: 700px;
     text-align: left;
     margin: 0 auto;
-}
-
-.download {
-    color: white;
 }

@@ -1,9 +1,20 @@
-export { engine } from './engine/template'
-export { gearbox } from './gearbox/template'
-export { suspension } from './suspension/template'
-export { trailer } from './trailer/template'
-export { truck } from './truck/template'
-export { wheels } from './wheels/template'
-export { winch } from './winch/template'
+import type ITemplates from './types/ITemplates'
+import engine from './engine/template'
+import gearbox from './gearbox/template'
+import suspension from './suspension/template'
+import trailer from './trailer/template'
+import truck from './truck/template'
+import wheels from './wheels/template'
+import winch from './winch/template'
+
+export const templates: ITemplates = {
+    engine,
+    gearbox,
+    suspension,
+    trailer,
+    truck,
+    wheels,
+    winch
+}
 
 export const extra = {}

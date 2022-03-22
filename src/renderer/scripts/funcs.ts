@@ -1,30 +1,28 @@
-import { ITexts } from 'texts'
-const { config, texts } = window.provider
+import type ISetHotKeyParams from './types/ISetHotKeyParams'
+import main from './main'
 
-type Translation = {
-    [name in keyof ITexts]: string
-}
-
-export const t = texts[config.lang] as Translation
-
-const _tmp_: any = {}
-Object.defineProperty(_tmp_, 'MAIN', {
-    get: () => get('#main')
-})
+const { texts } = main
 
 /** Ссылка на `#main` элемент в `template.html` */
-export const MAIN = _tmp_['MAIN']
+export const MAIN = get('#main')
 
 /** Устанавливает событие по нажатию кнопки. */
-export function setHotKey(params: ISetHotKeyParams, listener: (event: KeyboardEvent) => any): void {
+export function setHotKey(params: ISetHotKeyParams, listener: (event: KeyboardEvent) => any): ()=>void {
     const { key, eventName = 'keypress', ctrlKey, shiftKey, prevent } = params
 
-    document.addEventListener(eventName, event => {
+    const handler = (event: KeyboardEvent) => {
         if (event.code === key && ((ctrlKey && event.ctrlKey) || !ctrlKey) && ((shiftKey && event.shiftKey) || !shiftKey)) {
-            if (prevent) event.preventDefault()
+            if (prevent)
+                event.preventDefault()
             listener(event)
         }
-    })
+    }
+
+    document.addEventListener(eventName, handler)
+
+    return () => {
+        document.removeEventListener(eventName, handler)
+    }
 }
 
 /** Находит элемент по указанному селектору. */
@@ -46,13 +44,12 @@ export function prettify(str: string): string {
 */
 export function getIngameText(key: string, modId?: string): string {
     let value: string
-    if (modId && texts.mods[modId] && texts.mods[modId][key]) {
+    
+    if (modId && texts.mods[modId] && texts.mods[modId][key])
         value = texts.mods[modId][key]
-    } else if (texts.ingame[key]) {
+    else if (texts.ingame[key])
         value = texts.ingame[key]
-    }
 
-    if (value) {
+    if (value)
         return value
-    }
 }

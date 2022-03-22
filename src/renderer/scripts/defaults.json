@@ -18,23 +18,19 @@
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"1\"]": {
 			"Torque": "connectable",
-			"SteeringAngle": "40",
-			"SteeringCastor": "0"
+			"SteeringAngle": "40"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"2\"]": {
 			"Torque": "connectable",
-			"SteeringAngle": "40",
-			"SteeringCastor": "0"
+			"SteeringAngle": "40"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"3\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"4\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > CompatibleWheels[SXMLE_ID=\"1\"]": {
 			"Scale": "0.47"
@@ -89,23 +85,19 @@
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"1\"]": {
 			"Torque": "full",
-			"SteeringAngle": "25",
-			"SteeringCastor": "3"
+			"SteeringAngle": "25"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"2\"]": {
 			"Torque": "full",
-			"SteeringAngle": "25",
-			"SteeringCastor": "3"
+			"SteeringAngle": "25"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"3\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"4\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > CompatibleWheels[SXMLE_ID=\"1\"]": {
 			"Scale": "0.5"
@@ -547,33 +539,27 @@
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"1\"]": {
 			"Torque": "default",
-			"SteeringAngle": "26",
-			"SteeringCastor": "8"
+			"SteeringAngle": "26"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"2\"]": {
 			"Torque": "default",
-			"SteeringAngle": "26",
-			"SteeringCastor": "8"
+			"SteeringAngle": "26"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"3\"]": {
 			"Torque": "full",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"4\"]": {
 			"Torque": "full",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"5\"]": {
 			"Torque": "full",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"6\"]": {
 			"Torque": "full",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > CompatibleWheels[SXMLE_ID=\"1\"]": {
 			"Scale": "0.56"
@@ -622,23 +608,19 @@
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"1\"]": {
 			"Torque": "full",
-			"SteeringAngle": "25",
-			"SteeringCastor": "8"
+			"SteeringAngle": "25"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"2\"]": {
 			"Torque": "full",
-			"SteeringAngle": "25",
-			"SteeringCastor": "8"
+			"SteeringAngle": "25"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"3\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"4\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > CompatibleWheels[SXMLE_ID=\"1\"]": {
 			"Scale": "0.5"
@@ -904,23 +886,19 @@
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"1\"]": {
 			"Torque": "none",
-			"SteeringAngle": "25",
-			"SteeringCastor": "8"
+			"SteeringAngle": "25"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"2\"]": {
 			"Torque": "none",
-			"SteeringAngle": "25",
-			"SteeringCastor": "8"
+			"SteeringAngle": "25"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"3\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"4\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > CompatibleWheels[SXMLE_ID=\"1\"]": {
 			"Scale": "0.94"
@@ -969,23 +947,19 @@
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"1\"]": {
 			"Torque": "default",
-			"SteeringAngle": "32",
-			"SteeringCastor": "5"
+			"SteeringAngle": "32"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"2\"]": {
 			"Torque": "default",
-			"SteeringAngle": "32",
-			"SteeringCastor": "5"
+			"SteeringAngle": "32"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"3\"]": {
 			"Torque": "default",
-			"SteeringAngle": "-32",
-			"SteeringCastor": "5"
+			"SteeringAngle": "-32"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"4\"]": {
 			"Torque": "default",
-			"SteeringAngle": "-32",
-			"SteeringCastor": "5"
+			"SteeringAngle": "-32"
 		},
 		"Truck > TruckData > CompatibleWheels[SXMLE_ID=\"1\"]": {
 			"Scale": "0.648"
@@ -1032,49 +1006,37 @@
 		"Truck > TruckData > WinchUpgradeSocket": {
 			"Type": "winches_heavy_trucks"
 		},
-		"Truck > TruckData > ExtraWheels": {
-			"Scale": "0.6",
-			"Tire": "highway_2"
-		},
-		"Truck > TruckData > ExtraWheels > Wheel[SXMLE_ID=\"1\"]": {
-			"Torque": "none",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
-		},
-		"Truck > TruckData > ExtraWheels > Wheel[SXMLE_ID=\"2\"]": {
-			"Torque": "none",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
-		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"1\"]": {
 			"Torque": "connectable",
-			"SteeringAngle": "36",
-			"SteeringCastor": "0"
+			"SteeringAngle": "36"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"2\"]": {
 			"Torque": "connectable",
-			"SteeringAngle": "36",
-			"SteeringCastor": "0"
+			"SteeringAngle": "36"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"3\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"4\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"5\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"6\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
+		},
+		"Truck > TruckData > ExtraWheels > Wheel[SXMLE_ID=\"1\"]": {
+			"Torque": "none",
+			"SteeringAngle": 0
+		},
+		"Truck > TruckData > ExtraWheels > Wheel[SXMLE_ID=\"2\"]": {
+			"Torque": "none",
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > CompatibleWheels[SXMLE_ID=\"1\"]": {
 			"Scale": "0.60"
@@ -1451,43 +1413,35 @@
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"1\"]": {
 			"Torque": "default",
-			"SteeringAngle": "30",
-			"SteeringCastor": "0"
+			"SteeringAngle": "30"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"2\"]": {
 			"Torque": "default",
-			"SteeringAngle": "30",
-			"SteeringCastor": "0"
+			"SteeringAngle": "30"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"3\"]": {
 			"Torque": "default",
-			"SteeringAngle": "24",
-			"SteeringCastor": "0"
+			"SteeringAngle": "24"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"4\"]": {
 			"Torque": "default",
-			"SteeringAngle": "24",
-			"SteeringCastor": "0"
+			"SteeringAngle": "24"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"5\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"6\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"7\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"8\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > CompatibleWheels[SXMLE_ID=\"1\"]": {
 			"Scale": "0.65"
@@ -1629,33 +1583,27 @@
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"1\"]": {
 			"Torque": "full",
-			"SteeringAngle": "37",
-			"SteeringCastor": "8"
+			"SteeringAngle": "37"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"2\"]": {
 			"Torque": "full",
-			"SteeringAngle": "37",
-			"SteeringCastor": "8"
+			"SteeringAngle": "37"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"3\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"4\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"5\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"6\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > CompatibleWheels[SXMLE_ID=\"1\"]": {
 			"Scale": "0.69"
@@ -1710,33 +1658,27 @@
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"1\"]": {
 			"Torque": "connectable",
-			"SteeringAngle": "36",
-			"SteeringCastor": "5"
+			"SteeringAngle": "36"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"2\"]": {
 			"Torque": "connectable",
-			"SteeringAngle": "36",
-			"SteeringCastor": "5"
+			"SteeringAngle": "36"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"3\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"4\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"5\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"6\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > CompatibleWheels[SXMLE_ID=\"1\"]": {
 			"Scale": "0.646"
@@ -1785,53 +1727,43 @@
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"1\"]": {
 			"Torque": "connectable",
-			"SteeringAngle": "35",
-			"SteeringCastor": "1"
+			"SteeringAngle": "35"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"2\"]": {
 			"Torque": "connectable",
-			"SteeringAngle": "35",
-			"SteeringCastor": "1"
+			"SteeringAngle": "35"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"3\"]": {
 			"Torque": "none",
-			"SteeringAngle": "28",
-			"SteeringCastor": "4"
+			"SteeringAngle": "28"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"4\"]": {
 			"Torque": "none",
-			"SteeringAngle": "28",
-			"SteeringCastor": "4"
+			"SteeringAngle": "28"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"5\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"6\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"7\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"8\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"9\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"10\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > CompatibleWheels[SXMLE_ID=\"1\"]": {
 			"Scale": "0.545"
@@ -2212,23 +2144,19 @@
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"1\"]": {
 			"Torque": "full",
-			"SteeringAngle": "32",
-			"SteeringCastor": "8"
+			"SteeringAngle": "32"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"2\"]": {
 			"Torque": "full",
-			"SteeringAngle": "32",
-			"SteeringCastor": "8"
+			"SteeringAngle": "32"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"3\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"4\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > CompatibleWheels[SXMLE_ID=\"1\"]": {
 			"Scale": "0.42"
@@ -2289,23 +2217,19 @@
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"1\"]": {
 			"Torque": "full",
-			"SteeringAngle": "30",
-			"SteeringCastor": "8"
+			"SteeringAngle": "30"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"2\"]": {
 			"Torque": "full",
-			"SteeringAngle": "30",
-			"SteeringCastor": "8"
+			"SteeringAngle": "30"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"3\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"4\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > CompatibleWheels[SXMLE_ID=\"1\"]": {
 			"Scale": "0.47"
@@ -2357,43 +2281,35 @@
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"1\"]": {
 			"Torque": "full",
-			"SteeringAngle": "24",
-			"SteeringCastor": "12"
+			"SteeringAngle": "24"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"2\"]": {
 			"Torque": "full",
-			"SteeringAngle": "24",
-			"SteeringCastor": "12"
+			"SteeringAngle": "24"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"3\"]": {
 			"Torque": "none",
-			"SteeringAngle": "18",
-			"SteeringCastor": "4"
+			"SteeringAngle": "18"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"4\"]": {
 			"Torque": "none",
-			"SteeringAngle": "18",
-			"SteeringCastor": "4"
+			"SteeringAngle": "18"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"5\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"6\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"7\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"8\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > CompatibleWheels[SXMLE_ID=\"1\"]": {
 			"Scale": "0.64"
@@ -2445,43 +2361,35 @@
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"1\"]": {
 			"Torque": "default",
-			"SteeringAngle": "36",
-			"SteeringCastor": "12"
+			"SteeringAngle": "36"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"2\"]": {
 			"Torque": "default",
-			"SteeringAngle": "36",
-			"SteeringCastor": "12"
+			"SteeringAngle": "36"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"3\"]": {
 			"Torque": "default",
-			"SteeringAngle": "24",
-			"SteeringCastor": "4"
+			"SteeringAngle": "24"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"4\"]": {
 			"Torque": "default",
-			"SteeringAngle": "24",
-			"SteeringCastor": "4"
+			"SteeringAngle": "24"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"5\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"6\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"7\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"8\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > CompatibleWheels[SXMLE_ID=\"1\"]": {
 			"Scale": "0.78"
@@ -2853,49 +2761,37 @@
 		"Truck > TruckData > WinchUpgradeSocket": {
 			"Type": "winches_medium_trucks"
 		},
-		"Truck > TruckData > ExtraWheels": {
-			"Scale": "0.55",
-			"Tire": "highway_2"
-		},
-		"Truck > TruckData > ExtraWheels > Wheel[SXMLE_ID=\"1\"]": {
-			"Torque": "none",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
-		},
-		"Truck > TruckData > ExtraWheels > Wheel[SXMLE_ID=\"2\"]": {
-			"Torque": "none",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
-		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"1\"]": {
 			"Torque": "connectable",
-			"SteeringAngle": "30",
-			"SteeringCastor": "8"
+			"SteeringAngle": "30"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"2\"]": {
 			"Torque": "connectable",
-			"SteeringAngle": "30",
-			"SteeringCastor": "8"
+			"SteeringAngle": "30"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"3\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"4\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"5\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"6\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
+		},
+		"Truck > TruckData > ExtraWheels > Wheel[SXMLE_ID=\"1\"]": {
+			"Torque": "none",
+			"SteeringAngle": 0
+		},
+		"Truck > TruckData > ExtraWheels > Wheel[SXMLE_ID=\"2\"]": {
+			"Torque": "none",
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > CompatibleWheels[SXMLE_ID=\"1\"]": {
 			"Scale": "0.55"
@@ -2945,33 +2841,27 @@
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"1\"]": {
 			"Torque": "connectable",
-			"SteeringAngle": "30",
-			"SteeringCastor": "8"
+			"SteeringAngle": "30"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"2\"]": {
 			"Torque": "connectable",
-			"SteeringAngle": "30",
-			"SteeringCastor": "8"
+			"SteeringAngle": "30"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"3\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"4\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"5\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"6\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > CompatibleWheels[SXMLE_ID=\"1\"]": {
 			"Scale": "0.55"
@@ -3102,23 +2992,19 @@
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"1\"]": {
 			"Torque": "full",
-			"SteeringAngle": "35",
-			"SteeringCastor": "8"
+			"SteeringAngle": "35"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"2\"]": {
 			"Torque": "full",
-			"SteeringAngle": "35",
-			"SteeringCastor": "8"
+			"SteeringAngle": "35"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"3\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"4\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > CompatibleWheels[SXMLE_ID=\"1\"]": {
 			"Scale": "0.35"
@@ -3176,23 +3062,19 @@
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"1\"]": {
 			"Torque": "full",
-			"SteeringAngle": "32",
-			"SteeringCastor": "8"
+			"SteeringAngle": "32"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"2\"]": {
 			"Torque": "full",
-			"SteeringAngle": "32",
-			"SteeringCastor": "8"
+			"SteeringAngle": "32"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"3\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"4\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > CompatibleWheels[SXMLE_ID=\"1\"]": {
 			"Scale": "0.41"
@@ -3250,43 +3132,35 @@
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"1\"]": {
 			"Torque": "full",
-			"SteeringAngle": "24",
-			"SteeringCastor": "12"
+			"SteeringAngle": "24"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"2\"]": {
 			"Torque": "full",
-			"SteeringAngle": "24",
-			"SteeringCastor": "12"
+			"SteeringAngle": "24"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"3\"]": {
 			"Torque": "none",
-			"SteeringAngle": "18",
-			"SteeringCastor": "4"
+			"SteeringAngle": "18"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"4\"]": {
 			"Torque": "none",
-			"SteeringAngle": "18",
-			"SteeringCastor": "4"
+			"SteeringAngle": "18"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"5\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"6\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"7\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"8\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > CompatibleWheels[SXMLE_ID=\"1\"]": {
 			"Scale": "0.64"
@@ -3338,43 +3212,35 @@
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"1\"]": {
 			"Torque": "full",
-			"SteeringAngle": "18",
-			"SteeringCastor": "4"
+			"SteeringAngle": "18"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"2\"]": {
 			"Torque": "full",
-			"SteeringAngle": "18",
-			"SteeringCastor": "4"
+			"SteeringAngle": "18"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"3\"]": {
 			"Torque": "none",
-			"SteeringAngle": "16",
-			"SteeringCastor": "4"
+			"SteeringAngle": "16"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"4\"]": {
 			"Torque": "none",
-			"SteeringAngle": "16",
-			"SteeringCastor": "4"
+			"SteeringAngle": "16"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"5\"]": {
 			"Torque": "default",
-			"SteeringAngle": "-8",
-			"SteeringCastor": "4"
+			"SteeringAngle": "-8"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"6\"]": {
 			"Torque": "default",
-			"SteeringAngle": "-8",
-			"SteeringCastor": "4"
+			"SteeringAngle": "-8"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"7\"]": {
 			"Torque": "none",
-			"SteeringAngle": "-14",
-			"SteeringCastor": "4"
+			"SteeringAngle": "-14"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"8\"]": {
 			"Torque": "none",
-			"SteeringAngle": "-14",
-			"SteeringCastor": "4"
+			"SteeringAngle": "-14"
 		},
 		"Truck > TruckData > CompatibleWheels[SXMLE_ID=\"1\"]": {
 			"Scale": "0.58"
@@ -3673,33 +3539,27 @@
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"1\"]": {
 			"Torque": "default",
-			"SteeringAngle": "30",
-			"SteeringCastor": "19"
+			"SteeringAngle": "30"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"2\"]": {
 			"Torque": "default",
-			"SteeringAngle": "30",
-			"SteeringCastor": "19"
+			"SteeringAngle": "30"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"3\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"4\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"5\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"6\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > CompatibleWheels[SXMLE_ID=\"1\"]": {
 			"Scale": "0.6"
@@ -3760,43 +3620,35 @@
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"1\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"2\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"3\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"4\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"5\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"6\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"7\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"8\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > CompatibleWheels[SXMLE_ID=\"1\"]": {
 			"Scale": ".66"
@@ -3826,6 +3678,75 @@
 			"UnlockByRank": "1"
 		}
 	},
+	"step_3364_crocodile.xml": {
+		"Truck > GameData > UiDesc": {
+			"UiName": "UI_VEHICLE_STEP_3364_CROCODILE_NAME",
+			"UiDesc": "UI_VEHICLE_STEP_3364_CROCODILE_DESC"
+		},
+		"Truck > TruckData": {
+			"Responsiveness": "0.15",
+			"BackSteerSpeed": "0.03",
+			"SteerSpeed": "0.03",
+			"DiffLockType": "Always",
+			"EngineStartDelay": "0.8",
+			"ExhaustStartTime": "0.9",
+			"FuelCapacity": "150"
+		},
+		"Truck > TruckData > WinchUpgradeSocket": {
+			"Type": "winches_medium_trucks"
+		},
+		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"1\"]": {
+			"Torque": "default",
+			"SteeringAngle": "30"
+		},
+		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"2\"]": {
+			"Torque": "default",
+			"SteeringAngle": "30"
+		},
+		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"3\"]": {
+			"Torque": "default",
+			"SteeringAngle": 0
+		},
+		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"4\"]": {
+			"Torque": "default",
+			"SteeringAngle": 0
+		},
+		"Truck > TruckData > CompatibleWheels[SXMLE_ID=\"1\"]": {
+			"Scale": "0.5"
+		},
+		"Truck > TruckData > CompatibleWheels[SXMLE_ID=\"2\"]": {
+			"Scale": "0.52"
+		},
+		"Truck > TruckData > CompatibleWheels[SXMLE_ID=\"3\"]": {
+			"Scale": "0.5"
+		},
+		"Truck > TruckData > CompatibleWheels[SXMLE_ID=\"4\"]": {
+			"Scale": "0.53"
+		},
+		"Truck > TruckData > Wheels": {
+			"DefaultWheelType": "wheels_step_3364_crocodile"
+		},
+		"Truck > PhysicsModel > Body": {
+			"CenterOfMassOffset": "(-0.2; 0; -0.2)"
+		},
+		"Truck > TruckData > SuspensionSocket": {
+			"Type": "s_step_3364_crocodile"
+		},
+		"Truck > TruckData > GearboxSocket": {
+			"Type": "gearboxes_trucks"
+		},
+		"Truck > TruckData > EngineSocket": {
+			"Type": "e_ru_truck_old"
+		},
+		"Truck > TruckData > FuelTank": {
+			"DamageCapacity": "50"
+		},
+		"Truck > GameData": {
+			"Country": "RU",
+			"Price": "1",
+			"UnlockByRank": "1"
+		}
+	},
 	"tayga_6455b.xml": {
 		"Truck > GameData > UiDesc": {
 			"UiName": "UI_VEHICLE_TAYGA_6455b_NAME",
@@ -3845,33 +3766,27 @@
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"1\"]": {
 			"Torque": "default",
-			"SteeringAngle": "30",
-			"SteeringCastor": "0"
+			"SteeringAngle": "30"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"2\"]": {
 			"Torque": "default",
-			"SteeringAngle": "30",
-			"SteeringCastor": "0"
+			"SteeringAngle": "30"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"3\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"4\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"5\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"6\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > CompatibleWheels[SXMLE_ID=\"1\"]": {
 			"Scale": "0.61"
@@ -4190,6 +4105,58 @@
 			"UnlockByRank": "1"
 		}
 	},
+	"s_step_3364_crocodile.xml": {
+		"SuspensionSetVariants > SuspensionSet[SXMLE_ID=\"1\"]": {
+			"CriticalDamageThreshold": "0.5",
+			"DamageCapacity": "200"
+		},
+		"SuspensionSetVariants > SuspensionSet[SXMLE_ID=\"1\"] > Suspension[SXMLE_ID=\"1\"]": {
+			"Height": "0.19",
+			"Strength": "0.04",
+			"Damping": "0.2",
+			"SuspensionMin": "-0.25",
+			"SuspensionMax": 1,
+			"BrokenSuspensionMax": "0.1"
+		},
+		"SuspensionSetVariants > SuspensionSet[SXMLE_ID=\"1\"] > Suspension[SXMLE_ID=\"2\"]": {
+			"Height": "0.19",
+			"Strength": "0.06",
+			"Damping": "0.3",
+			"SuspensionMin": "-0.25",
+			"SuspensionMax": 1,
+			"BrokenSuspensionMax": "0.1"
+		},
+		"SuspensionSetVariants > SuspensionSet[SXMLE_ID=\"1\"] > GameData": {
+			"Price": "4700",
+			"UnlockByExploration": "false",
+			"UnlockByRank": "1"
+		},
+		"SuspensionSetVariants > SuspensionSet[SXMLE_ID=\"2\"]": {
+			"CriticalDamageThreshold": "0.5",
+			"DamageCapacity": "200"
+		},
+		"SuspensionSetVariants > SuspensionSet[SXMLE_ID=\"2\"] > Suspension[SXMLE_ID=\"1\"]": {
+			"Height": "0.29",
+			"Strength": "0.03",
+			"Damping": "0.3",
+			"SuspensionMin": "-0.25",
+			"SuspensionMax": 1,
+			"BrokenSuspensionMax": "0.1"
+		},
+		"SuspensionSetVariants > SuspensionSet[SXMLE_ID=\"2\"] > Suspension[SXMLE_ID=\"2\"]": {
+			"Height": "0.29",
+			"Strength": "0.05",
+			"Damping": "0.4",
+			"SuspensionMin": "-0.25",
+			"SuspensionMax": 1,
+			"BrokenSuspensionMax": "0.1"
+		},
+		"SuspensionSetVariants > SuspensionSet[SXMLE_ID=\"2\"] > GameData": {
+			"Price": "4700",
+			"UnlockByExploration": "false",
+			"UnlockByRank": "1"
+		}
+	},
 	"s_tayga_6455b.xml": {
 		"SuspensionSetVariants > SuspensionSet[SXMLE_ID=\"1\"]": {
 			"CriticalDamageThreshold": "0.5",
@@ -4242,6 +4209,19 @@
 			"UnlockByRank": "1"
 		}
 	},
+	"wheels_step_3364_crocodile.xml": {
+		"TruckWheels > TruckTires > TruckTire[SXMLE_ID=\"1\"] > WheelFriction": {
+			"BodyFriction": "1.4",
+			"BodyFrictionAsphalt": "1.5",
+			"SubstanceFriction": "1.5",
+			"IsIgnoreIce": "false"
+		},
+		"TruckWheels > TruckTires > TruckTire[SXMLE_ID=\"1\"] > GameData": {
+			"Price": "4900",
+			"UnlockByExploration": "false",
+			"UnlockByRank": "1"
+		}
+	},
 	"gmc_8000.xml": {
 		"Truck > GameData > UiDesc": {
 			"UiName": "UI_VEHICLE_GMC_8000_NAME",
@@ -4261,33 +4241,27 @@
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"1\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"2\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"3\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"4\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"5\"]": {
 			"Torque": "connectable",
-			"SteeringAngle": "40",
-			"SteeringCastor": "8"
+			"SteeringAngle": "40"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"6\"]": {
 			"Torque": "connectable",
-			"SteeringAngle": "40",
-			"SteeringCastor": "8"
+			"SteeringAngle": "40"
 		},
 		"Truck > TruckData > CompatibleWheels[SXMLE_ID=\"1\"]": {
 			"Scale": "0.5"
@@ -4432,33 +4406,27 @@
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"1\"]": {
 			"Torque": "default",
-			"SteeringAngle": "40",
-			"SteeringCastor": "8"
+			"SteeringAngle": "40"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"2\"]": {
 			"Torque": "default",
-			"SteeringAngle": "40",
-			"SteeringCastor": "8"
+			"SteeringAngle": "40"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"3\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"4\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"5\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"6\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > CompatibleWheels[SXMLE_ID=\"1\"]": {
 			"Scale": "0.6"
@@ -4519,33 +4487,27 @@
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"1\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"2\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"3\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"4\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"5\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"6\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > CompatibleWheels[SXMLE_ID=\"1\"]": {
 			"Scale": ".9"
@@ -4594,43 +4556,35 @@
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"1\"]": {
 			"Torque": "default",
-			"SteeringAngle": "30",
-			"SteeringCastor": "0"
+			"SteeringAngle": "30"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"2\"]": {
 			"Torque": "default",
-			"SteeringAngle": "30",
-			"SteeringCastor": "0"
+			"SteeringAngle": "30"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"3\"]": {
 			"Torque": "default",
-			"SteeringAngle": "20",
-			"SteeringCastor": "0"
+			"SteeringAngle": "20"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"4\"]": {
 			"Torque": "default",
-			"SteeringAngle": "20",
-			"SteeringCastor": "0"
+			"SteeringAngle": "20"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"5\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"6\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"7\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"8\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > CompatibleWheels[SXMLE_ID=\"1\"]": {
 			"Scale": "0.63"
@@ -4679,43 +4633,35 @@
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"1\"]": {
 			"Torque": "default",
-			"SteeringAngle": "30",
-			"SteeringCastor": "0"
+			"SteeringAngle": "30"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"2\"]": {
 			"Torque": "default",
-			"SteeringAngle": "30",
-			"SteeringCastor": "0"
+			"SteeringAngle": "30"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"3\"]": {
 			"Torque": "default",
-			"SteeringAngle": "20",
-			"SteeringCastor": "0"
+			"SteeringAngle": "20"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"4\"]": {
 			"Torque": "default",
-			"SteeringAngle": "20",
-			"SteeringCastor": "0"
+			"SteeringAngle": "20"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"5\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"6\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"7\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"8\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > CompatibleWheels[SXMLE_ID=\"1\"]": {
 			"Scale": "0.6"
@@ -4764,53 +4710,43 @@
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"1\"]": {
 			"Torque": "default",
-			"SteeringAngle": "35",
-			"SteeringCastor": "0"
+			"SteeringAngle": "35"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"2\"]": {
 			"Torque": "default",
-			"SteeringAngle": "35",
-			"SteeringCastor": "0"
+			"SteeringAngle": "35"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"3\"]": {
 			"Torque": "default",
-			"SteeringAngle": "20",
-			"SteeringCastor": "0"
+			"SteeringAngle": "20"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"4\"]": {
 			"Torque": "default",
-			"SteeringAngle": "20",
-			"SteeringCastor": "0"
+			"SteeringAngle": "20"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"5\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"6\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"7\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"8\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"9\"]": {
 			"Torque": "default",
-			"SteeringAngle": "-20",
-			"SteeringCastor": 0
+			"SteeringAngle": "-20"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"10\"]": {
 			"Torque": "default",
-			"SteeringAngle": "-20",
-			"SteeringCastor": 0
+			"SteeringAngle": "-20"
 		},
 		"Truck > TruckData > CompatibleWheels[SXMLE_ID=\"1\"]": {
 			"Scale": "0.63"
@@ -4859,33 +4795,27 @@
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"1\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"2\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"3\"]": {
 			"Torque": "full",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"4\"]": {
 			"Torque": "full",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"5\"]": {
 			"Torque": "full",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"6\"]": {
 			"Torque": "full",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > CompatibleWheels[SXMLE_ID=\"1\"]": {
 			"Scale": "0.9"
@@ -4934,33 +4864,27 @@
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"1\"]": {
 			"Torque": "connectable",
-			"SteeringAngle": "40",
-			"SteeringCastor": "8"
+			"SteeringAngle": "40"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"2\"]": {
 			"Torque": "connectable",
-			"SteeringAngle": "40",
-			"SteeringCastor": "8"
+			"SteeringAngle": "40"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"3\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"4\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"5\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"6\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > CompatibleWheels[SXMLE_ID=\"1\"]": {
 			"Scale": "0.55"
@@ -5012,23 +4936,19 @@
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"1\"]": {
 			"Torque": "full",
-			"SteeringAngle": "36",
-			"SteeringCastor": "5"
+			"SteeringAngle": "36"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"2\"]": {
 			"Torque": "full",
-			"SteeringAngle": "36",
-			"SteeringCastor": "5"
+			"SteeringAngle": "36"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"3\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"4\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > CompatibleWheels[SXMLE_ID=\"1\"]": {
 			"Scale": "0.40"
@@ -5089,23 +5009,19 @@
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"1\"]": {
 			"Torque": "connectable",
-			"SteeringAngle": "40",
-			"SteeringCastor": "8"
+			"SteeringAngle": "40"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"2\"]": {
 			"Torque": "connectable",
-			"SteeringAngle": "40",
-			"SteeringCastor": "8"
+			"SteeringAngle": "40"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"3\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"4\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > CompatibleWheels[SXMLE_ID=\"1\"]": {
 			"Scale": "0.50"
@@ -5157,33 +5073,27 @@
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"1\"]": {
 			"Torque": "default",
-			"SteeringAngle": "28",
-			"SteeringCastor": "12"
+			"SteeringAngle": "28"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"2\"]": {
 			"Torque": "default",
-			"SteeringAngle": "28",
-			"SteeringCastor": "12"
+			"SteeringAngle": "28"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"3\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"4\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"5\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"6\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > CompatibleWheels[SXMLE_ID=\"1\"]": {
 			"Scale": "0.65"
@@ -5230,49 +5140,37 @@
 		"Truck > TruckData > WinchUpgradeSocket": {
 			"Type": "winches_heavy_trucks"
 		},
-		"Truck > TruckData > ExtraWheels": {
-			"Scale": "0.66",
-			"Tire": "highway_1"
-		},
-		"Truck > TruckData > ExtraWheels > Wheel[SXMLE_ID=\"1\"]": {
-			"Torque": "none",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
-		},
-		"Truck > TruckData > ExtraWheels > Wheel[SXMLE_ID=\"2\"]": {
-			"Torque": "none",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
-		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"1\"]": {
 			"Torque": "default",
-			"SteeringAngle": "24",
-			"SteeringCastor": "12"
+			"SteeringAngle": "24"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"2\"]": {
 			"Torque": "default",
-			"SteeringAngle": "24",
-			"SteeringCastor": "12"
+			"SteeringAngle": "24"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"3\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"4\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"5\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"6\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
+		},
+		"Truck > TruckData > ExtraWheels > Wheel[SXMLE_ID=\"1\"]": {
+			"Torque": "none",
+			"SteeringAngle": 0
+		},
+		"Truck > TruckData > ExtraWheels > Wheel[SXMLE_ID=\"2\"]": {
+			"Torque": "none",
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > CompatibleWheels[SXMLE_ID=\"1\"]": {
 			"Scale": "0.66"
@@ -5324,43 +5222,35 @@
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"1\"]": {
 			"Torque": "full",
-			"SteeringAngle": "36",
-			"SteeringCastor": "0"
+			"SteeringAngle": "36"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"2\"]": {
 			"Torque": "full",
-			"SteeringAngle": "36",
-			"SteeringCastor": "0"
+			"SteeringAngle": "36"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"3\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"4\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"5\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"6\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"7\"]": {
 			"Torque": "default",
-			"SteeringAngle": "-24",
-			"SteeringCastor": "4"
+			"SteeringAngle": "-24"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"8\"]": {
 			"Torque": "default",
-			"SteeringAngle": "-24",
-			"SteeringCastor": "4"
+			"SteeringAngle": "-24"
 		},
 		"Truck > TruckData > CompatibleWheels[SXMLE_ID=\"1\"]": {
 			"Scale": "0.64"
@@ -5415,23 +5305,19 @@
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"1\"]": {
 			"Torque": "full",
-			"SteeringAngle": "35",
-			"SteeringCastor": "10"
+			"SteeringAngle": "35"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"2\"]": {
 			"Torque": "full",
-			"SteeringAngle": "35",
-			"SteeringCastor": "10"
+			"SteeringAngle": "35"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"3\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"4\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > CompatibleWheels[SXMLE_ID=\"1\"]": {
 			"Scale": "0.35"
@@ -5495,33 +5381,27 @@
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"1\"]": {
 			"Torque": "none",
-			"SteeringAngle": "40",
-			"SteeringCastor": "8"
+			"SteeringAngle": "40"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"2\"]": {
 			"Torque": "none",
-			"SteeringAngle": "40",
-			"SteeringCastor": "8"
+			"SteeringAngle": "40"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"3\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"4\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"5\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"6\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > CompatibleWheels[SXMLE_ID=\"1\"]": {
 			"Scale": "0.50"
@@ -5573,33 +5453,27 @@
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"1\"]": {
 			"Torque": "connectable",
-			"SteeringAngle": "40",
-			"SteeringCastor": "8"
+			"SteeringAngle": "40"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"2\"]": {
 			"Torque": "connectable",
-			"SteeringAngle": "40",
-			"SteeringCastor": "8"
+			"SteeringAngle": "40"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"3\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"4\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"5\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"6\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > CompatibleWheels[SXMLE_ID=\"1\"]": {
 			"Scale": "0.55"
@@ -5651,33 +5525,27 @@
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"1\"]": {
 			"Torque": "full",
-			"SteeringAngle": "40",
-			"SteeringCastor": "8"
+			"SteeringAngle": "40"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"2\"]": {
 			"Torque": "full",
-			"SteeringAngle": "40",
-			"SteeringCastor": "8"
+			"SteeringAngle": "40"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"3\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"4\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"5\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"6\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > CompatibleWheels[SXMLE_ID=\"1\"]": {
 			"Scale": "0.55"
@@ -5729,33 +5597,27 @@
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"1\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"2\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"3\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"4\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"5\"]": {
 			"Torque": "connectable",
-			"SteeringAngle": "40",
-			"SteeringCastor": "8"
+			"SteeringAngle": "40"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"6\"]": {
 			"Torque": "connectable",
-			"SteeringAngle": "40",
-			"SteeringCastor": "8"
+			"SteeringAngle": "40"
 		},
 		"Truck > TruckData > CompatibleWheels[SXMLE_ID=\"1\"]": {
 			"Scale": "0.55"
@@ -5807,23 +5669,19 @@
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"1\"]": {
 			"Torque": "full",
-			"SteeringAngle": "40",
-			"SteeringCastor": "8"
+			"SteeringAngle": "40"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"2\"]": {
 			"Torque": "full",
-			"SteeringAngle": "40",
-			"SteeringCastor": "8"
+			"SteeringAngle": "40"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"3\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"4\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > CompatibleWheels[SXMLE_ID=\"1\"]": {
 			"Scale": "0.46"
@@ -5881,33 +5739,27 @@
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"1\"]": {
 			"Torque": "connectable",
-			"SteeringAngle": "40",
-			"SteeringCastor": "8"
+			"SteeringAngle": "40"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"2\"]": {
 			"Torque": "connectable",
-			"SteeringAngle": "40",
-			"SteeringCastor": "8"
+			"SteeringAngle": "40"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"3\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"4\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"5\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"6\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > CompatibleWheels[SXMLE_ID=\"1\"]": {
 			"Scale": "0.53"
@@ -5959,23 +5811,19 @@
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"1\"]": {
 			"Torque": "default",
-			"SteeringAngle": "40",
-			"SteeringCastor": "0"
+			"SteeringAngle": "40"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"2\"]": {
 			"Torque": "default",
-			"SteeringAngle": "40",
-			"SteeringCastor": "0"
+			"SteeringAngle": "40"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"3\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"4\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > CompatibleWheels[SXMLE_ID=\"1\"]": {
 			"Scale": "0.45"
@@ -6027,33 +5875,27 @@
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"1\"]": {
 			"Torque": "full",
-			"SteeringAngle": "40",
-			"SteeringCastor": "0"
+			"SteeringAngle": "40"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"2\"]": {
 			"Torque": "full",
-			"SteeringAngle": "40",
-			"SteeringCastor": "0"
+			"SteeringAngle": "40"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"3\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"4\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"5\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"6\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > CompatibleWheels[SXMLE_ID=\"1\"]": {
 			"Scale": "0.58"
@@ -6108,23 +5950,19 @@
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"1\"]": {
 			"Torque": "full",
-			"SteeringAngle": "28",
-			"SteeringCastor": "5"
+			"SteeringAngle": "28"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"2\"]": {
 			"Torque": "full",
-			"SteeringAngle": "28",
-			"SteeringCastor": "5"
+			"SteeringAngle": "28"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"3\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"4\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > CompatibleWheels[SXMLE_ID=\"1\"]": {
 			"Scale": "0.4"
@@ -6185,33 +6023,27 @@
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"1\"]": {
 			"Torque": "none",
-			"SteeringAngle": "40",
-			"SteeringCastor": "2"
+			"SteeringAngle": "40"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"2\"]": {
 			"Torque": "none",
-			"SteeringAngle": "40",
-			"SteeringCastor": "2"
+			"SteeringAngle": "40"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"3\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"4\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"5\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"6\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > CompatibleWheels[SXMLE_ID=\"1\"]": {
 			"Scale": "0.5"
@@ -6263,23 +6095,19 @@
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"1\"]": {
 			"Torque": "default",
-			"SteeringAngle": "28",
-			"SteeringCastor": "5"
+			"SteeringAngle": "28"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"2\"]": {
 			"Torque": "default",
-			"SteeringAngle": "28",
-			"SteeringCastor": "5"
+			"SteeringAngle": "28"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"3\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"4\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > CompatibleWheels[SXMLE_ID=\"1\"]": {
 			"Scale": "0.56"
@@ -6328,23 +6156,19 @@
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"1\"]": {
 			"Torque": "default",
-			"SteeringAngle": "40",
-			"SteeringCastor": "8"
+			"SteeringAngle": "40"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"2\"]": {
 			"Torque": "default",
-			"SteeringAngle": "40",
-			"SteeringCastor": "8"
+			"SteeringAngle": "40"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"3\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"4\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > CompatibleWheels[SXMLE_ID=\"1\"]": {
 			"Scale": "0.38"
@@ -6402,43 +6226,35 @@
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"1\"]": {
 			"Torque": "default",
-			"SteeringAngle": "36",
-			"SteeringCastor": "12"
+			"SteeringAngle": "36"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"2\"]": {
 			"Torque": "default",
-			"SteeringAngle": "36",
-			"SteeringCastor": "12"
+			"SteeringAngle": "36"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"3\"]": {
 			"Torque": "none",
-			"SteeringAngle": "24",
-			"SteeringCastor": "4"
+			"SteeringAngle": "24"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"4\"]": {
 			"Torque": "none",
-			"SteeringAngle": "24",
-			"SteeringCastor": "4"
+			"SteeringAngle": "24"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"5\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"6\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"7\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"8\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > CompatibleWheels[SXMLE_ID=\"1\"]": {
 			"Scale": "0.745"
@@ -6487,43 +6303,35 @@
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"1\"]": {
 			"Torque": "full",
-			"SteeringAngle": "36",
-			"SteeringCastor": "12"
+			"SteeringAngle": "36"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"2\"]": {
 			"Torque": "full",
-			"SteeringAngle": "36",
-			"SteeringCastor": "12"
+			"SteeringAngle": "36"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"3\"]": {
 			"Torque": "none",
-			"SteeringAngle": "24",
-			"SteeringCastor": "4"
+			"SteeringAngle": "24"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"4\"]": {
 			"Torque": "none",
-			"SteeringAngle": "24",
-			"SteeringCastor": "4"
+			"SteeringAngle": "24"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"5\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"6\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"7\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"8\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > CompatibleWheels[SXMLE_ID=\"1\"]": {
 			"Scale": "0.745"
@@ -6572,33 +6380,27 @@
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"1\"]": {
 			"Torque": "default",
-			"SteeringAngle": "28",
-			"SteeringCastor": "6"
+			"SteeringAngle": "28"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"2\"]": {
 			"Torque": "default",
-			"SteeringAngle": "28",
-			"SteeringCastor": "6"
+			"SteeringAngle": "28"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"3\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"4\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"5\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"6\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > CompatibleWheels[SXMLE_ID=\"1\"]": {
 			"Scale": "0.56"
@@ -6656,33 +6458,27 @@
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"1\"]": {
 			"Torque": "full",
-			"SteeringAngle": "40",
-			"SteeringCastor": "8"
+			"SteeringAngle": "40"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"2\"]": {
 			"Torque": "full",
-			"SteeringAngle": "40",
-			"SteeringCastor": "8"
+			"SteeringAngle": "40"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"3\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"4\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"5\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"6\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > CompatibleWheels[SXMLE_ID=\"1\"]": {
 			"Scale": "0.73"
@@ -6737,33 +6533,27 @@
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"1\"]": {
 			"Torque": "none",
-			"SteeringAngle": "30",
-			"SteeringCastor": "8"
+			"SteeringAngle": "30"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"2\"]": {
 			"Torque": "none",
-			"SteeringAngle": "30",
-			"SteeringCastor": "8"
+			"SteeringAngle": "30"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"3\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"4\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"5\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"6\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > CompatibleWheels[SXMLE_ID=\"1\"]": {
 			"Scale": "0.73"
@@ -6812,33 +6602,27 @@
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"1\"]": {
 			"Torque": "full",
-			"SteeringAngle": "37",
-			"SteeringCastor": "8"
+			"SteeringAngle": "37"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"2\"]": {
 			"Torque": "full",
-			"SteeringAngle": "37",
-			"SteeringCastor": "8"
+			"SteeringAngle": "37"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"3\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"4\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"5\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"6\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > CompatibleWheels[SXMLE_ID=\"1\"]": {
 			"Scale": "0.6"
@@ -6890,33 +6674,27 @@
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"1\"]": {
 			"Torque": "full",
-			"SteeringAngle": "40",
-			"SteeringCastor": "8"
+			"SteeringAngle": "40"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"2\"]": {
 			"Torque": "full",
-			"SteeringAngle": "40",
-			"SteeringCastor": "8"
+			"SteeringAngle": "40"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"3\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"4\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"5\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"6\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > CompatibleWheels[SXMLE_ID=\"1\"]": {
 			"Scale": "0.5"
@@ -6968,33 +6746,27 @@
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"1\"]": {
 			"Torque": "default",
-			"SteeringAngle": "40",
-			"SteeringCastor": "0"
+			"SteeringAngle": "40"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"2\"]": {
 			"Torque": "default",
-			"SteeringAngle": "40",
-			"SteeringCastor": "0"
+			"SteeringAngle": "40"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"3\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"4\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"5\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"6\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > CompatibleWheels[SXMLE_ID=\"1\"]": {
 			"Scale": "0.6"
@@ -7070,23 +6842,19 @@
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"1\"]": {
 			"Torque": "default",
-			"SteeringAngle": "40",
-			"SteeringCastor": "8"
+			"SteeringAngle": "40"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"2\"]": {
 			"Torque": "default",
-			"SteeringAngle": "40",
-			"SteeringCastor": "8"
+			"SteeringAngle": "40"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"3\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"4\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > CompatibleWheels[SXMLE_ID=\"1\"]": {
 			"Scale": "0.40"
@@ -7147,43 +6915,35 @@
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"1\"]": {
 			"Torque": "default",
-			"SteeringAngle": "32",
-			"SteeringCastor": "0"
+			"SteeringAngle": "32"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"2\"]": {
 			"Torque": "default",
-			"SteeringAngle": "32",
-			"SteeringCastor": "0"
+			"SteeringAngle": "32"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"3\"]": {
 			"Torque": "none",
-			"SteeringAngle": "24",
-			"SteeringCastor": "4"
+			"SteeringAngle": "24"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"4\"]": {
 			"Torque": "none",
-			"SteeringAngle": "24",
-			"SteeringCastor": "4"
+			"SteeringAngle": "24"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"5\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"6\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"7\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"8\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > CompatibleWheels[SXMLE_ID=\"1\"]": {
 			"Scale": "0.6"
@@ -7232,33 +6992,27 @@
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"1\"]": {
 			"Torque": "default",
-			"SteeringAngle": "30",
-			"SteeringCastor": "8"
+			"SteeringAngle": "30"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"2\"]": {
 			"Torque": "default",
-			"SteeringAngle": "30",
-			"SteeringCastor": "8"
+			"SteeringAngle": "30"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"3\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"4\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"5\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"6\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > CompatibleWheels[SXMLE_ID=\"1\"]": {
 			"Scale": "0.55"
@@ -7328,33 +7082,27 @@
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"1\"]": {
 			"Torque": "default",
-			"SteeringAngle": "35",
-			"SteeringCastor": "0"
+			"SteeringAngle": "35"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"2\"]": {
 			"Torque": "default",
-			"SteeringAngle": "35",
-			"SteeringCastor": "0"
+			"SteeringAngle": "35"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"3\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"4\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"5\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"6\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > CompatibleWheels[SXMLE_ID=\"1\"]": {
 			"Scale": "0.55"
@@ -7424,33 +7172,27 @@
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"1\"]": {
 			"Torque": "full",
-			"SteeringAngle": "32",
-			"SteeringCastor": "8"
+			"SteeringAngle": "32"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"2\"]": {
 			"Torque": "full",
-			"SteeringAngle": "32",
-			"SteeringCastor": "8"
+			"SteeringAngle": "32"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"3\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"4\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"5\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"6\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > CompatibleWheels[SXMLE_ID=\"1\"]": {
 			"Scale": "0.55"
@@ -7520,33 +7262,27 @@
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"1\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"2\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"3\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"4\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"5\"]": {
 			"Torque": "connectable",
-			"SteeringAngle": "40",
-			"SteeringCastor": "8"
+			"SteeringAngle": "40"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"6\"]": {
 			"Torque": "connectable",
-			"SteeringAngle": "40",
-			"SteeringCastor": "8"
+			"SteeringAngle": "40"
 		},
 		"Truck > TruckData > CompatibleWheels[SXMLE_ID=\"1\"]": {
 			"Scale": "0.55"
@@ -7598,43 +7334,35 @@
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"1\"]": {
 			"Torque": "connectable",
-			"SteeringAngle": "40",
-			"SteeringCastor": "10"
+			"SteeringAngle": "40"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"2\"]": {
 			"Torque": "connectable",
-			"SteeringAngle": "40",
-			"SteeringCastor": "10"
+			"SteeringAngle": "40"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"3\"]": {
 			"Torque": "none",
-			"SteeringAngle": "32",
-			"SteeringCastor": "6"
+			"SteeringAngle": "32"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"4\"]": {
 			"Torque": "none",
-			"SteeringAngle": "32",
-			"SteeringCastor": "6"
+			"SteeringAngle": "32"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"5\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"6\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"7\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"8\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > CompatibleWheels[SXMLE_ID=\"1\"]": {
 			"Scale": "0.7"
@@ -7692,33 +7420,27 @@
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"1\"]": {
 			"Torque": "default",
-			"SteeringAngle": "32",
-			"SteeringCastor": "8"
+			"SteeringAngle": "32"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"2\"]": {
 			"Torque": "default",
-			"SteeringAngle": "32",
-			"SteeringCastor": "8"
+			"SteeringAngle": "32"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"3\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"4\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"5\"]": {
 			"Torque": "full",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"6\"]": {
 			"Torque": "full",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > CompatibleWheels[SXMLE_ID=\"1\"]": {
 			"Scale": "0.62"
@@ -7770,23 +7492,19 @@
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"1\"]": {
 			"Torque": "full",
-			"SteeringAngle": "37",
-			"SteeringCastor": "8"
+			"SteeringAngle": "37"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"2\"]": {
 			"Torque": "full",
-			"SteeringAngle": "37",
-			"SteeringCastor": "8"
+			"SteeringAngle": "37"
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"3\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > Wheels > Wheel[SXMLE_ID=\"4\"]": {
 			"Torque": "default",
-			"SteeringAngle": 0,
-			"SteeringCastor": 0
+			"SteeringAngle": 0
 		},
 		"Truck > TruckData > CompatibleWheels[SXMLE_ID=\"1\"]": {
 			"Scale": "0.53"

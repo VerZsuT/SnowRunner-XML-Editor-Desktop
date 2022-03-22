@@ -1,4 +1,4 @@
-import { Texts } from 'main/classes/Texts'
+import Texts from '../classes/Texts'
 
 const texts = Texts.obj
 
@@ -8,15 +8,13 @@ const texts = Texts.obj
 */
 export function getIngameText(key: string, modId?: string): string {
     let value: string
-    if (modId && texts.mods[modId]) {
+    if (modId && texts.mods[modId])
         value = texts.mods[modId][key]
-    } else {
+    else
         value = texts.ingame[key]
-    }
 
-    if (value) {
+    if (value)
         return value
-    }
 }
 
 const forEach = '[SXMLE_ID="-CYCLE1-"]'
@@ -119,10 +117,10 @@ type ThisType = {
 export function getSelectors<T extends { [id: string]: string }>(func: (this: ThisType) => T): T {
     type ItemType = T[Extract<keyof T, string>]
 
-    const obj = func.apply({
+    const obj: T = func.apply({
         forEach, last, first,
         forEachBy, lastBy, firstBy, th
-    }) as T
+    })
     const newObj: T = { ...obj }
 
     for (const id in obj) {

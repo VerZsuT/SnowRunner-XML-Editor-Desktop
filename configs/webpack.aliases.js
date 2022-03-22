@@ -1,7 +1,5 @@
-const {
-    resolve: res
-} = require('path')
-const resolve = (...paths) => res(__dirname, ...paths)
+const { join } = require('path')
+const resolve = (...paths) => join(__dirname, ...paths)
 
 module.exports = {
     'main': resolve('../src/main'),

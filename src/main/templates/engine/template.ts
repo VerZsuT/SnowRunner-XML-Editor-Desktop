@@ -1,23 +1,21 @@
-import {
-	Template,
-	Group,
-	Text,
-	Number,
-	ForEach
-} from '../items'
-import { NameType, NumberType } from '../enums'
+import type ITemplate from '../types/ITemplate'
+import NameType from '../enums/NameType'
+import NumberType from '../enums/NumberType'
+
+import { Template, Group, Number, ForEach } from '../items'
 import { getSelectors } from '../service'
 import { descs, texts } from './texts'
-import { unlockGroup } from '../presets'
+import unlockGroup from '../presets/unlockGroup'
 
 const selectors = getSelectors(function () {
 	const engine = `EngineVariants.Engine${this.forEach}`
 	const engineText = `${engine}.GameData.UiDesc`
 	const engineGameData = `${engine}.GameData`
+	
 	return { engine, engineText, engineGameData }
 })
 
-export const engine = <ITemplate>{
+export default <ITemplate>{
 	selector: 'EngineVariants',
 	template: Template(selectors, [
 		ForEach(selectors.engine, [

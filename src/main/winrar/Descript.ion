@@ -8,8 +8,18 @@ Rar.exe              Консольная версия RAR
 Rar.txt              Руководство по консольной версии RAR
 RarExt.dll           Библиотека встраивания WinRAR в оболочку Windows
 RarExt64.dll         Библиотека встраивания WinRAR в оболочку Windows x64
+RarExtInstaller.exe  Программа установки и удаления расширения оболочки WinRAR
+RarExtInstaller.exe.manifest Дополнительный файл для расширения оболочки WinRAR
+RarExtLogo.altform-unplated_targetsize-32.png Графический файл для расширения оболочки WinRAR
+RarExtLogo.altform-unplated_targetsize-48.png Графический файл для расширения оболочки WinRAR
+RarExtLogo.altform-unplated_targetsize-64.png Графический файл для расширения оболочки WinRAR
+RarExtLogo_Default.altform-unplated_targetsize-32.png Графический файл для расширения оболочки WinRAR
+RarExtLogo_Default.altform-unplated_targetsize-48.png Графический файл для расширения оболочки WinRAR
+RarExtLogo_Default.altform-unplated_targetsize-64.png Графический файл для расширения оболочки WinRAR
+RarExtPackage.msix   Дополнительный пакет для расширения оболочки WinRAR
 RarFiles.lst         Порядок сортировки файлов для непрерывных архивов
 RarLng.dll           Языковые ресурсы
+RarNew.dat           Шаблон нового архива RAR
 ReadMe.rus.txt       Информация для пользователей русскоязычной версии WinRAR
 ReadMe.txt           Краткое описание WinRAR
 Uninstall.exe        Программа удаления
@@ -22,3 +32,4 @@ WinRAR.chm           Файл справки WinRAR
 WinRAR.exe           Версия RAR с графическим интерфейсом
 Zip.SFX              SFX-модуль ZIP с графическим интерфейсом для Windows (русскоязычный)
 ZipEn.SFX            SFX-модуль ZIP с графическим интерфейсом для Windows (англоязычный)
+ZipNew.dat           Шаблон нового архива ZIP

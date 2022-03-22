@@ -1,27 +1,23 @@
 import { PureComponent } from 'react'
 import { render } from 'react-dom'
-import { setHotKey, mainProcess, MAIN } from 'scripts'
-import { Category } from './components/Category'
-import { ListType } from 'modules/list/enums'
-import { ProgramMenu } from 'menu'
+import ListType from 'modules/list/enums/ListType'
+
+import Menu from 'menu'
+import { setHotKey, MAIN } from 'scripts/funcs'
+import main from 'scripts/main'
+import Category from './components/Category'
+import Loading from 'modules/components/Loading'
+
+import Grid from './styled/Grid'
 import 'styles/categories'
 
-import { styled } from '@mui/system'
-import { GridContainer } from 'modules/components/styled'
-
-const { openConsole, quit } = mainProcess
-
-const Grid = styled(GridContainer)({
-    justifyContent: 'space-evenly',
-    marginTop: '31px'
-})
+const { openConsole, quit } = main
 
 class Categories extends PureComponent {
     private items: JSX.Element[]
 
     constructor(props: any) {
         super(props)
-
         const categories = this.getCategories()
         this.items = categories.map(category =>
             <Category key={category} name={category} />
@@ -35,7 +31,8 @@ class Categories extends PureComponent {
 
     render() {
         return (<>
-            <ProgramMenu />
+            <Loading/>
+            <Menu/>
             <Grid>
                 {this.items}
             </Grid>
@@ -49,16 +46,12 @@ class Categories extends PureComponent {
     private setHotkeys() {
         setHotKey({
             key: 'Backquote'
-        }, () => {
-            openConsole()
-        })
+        }, () => openConsole())
         setHotKey({
             key: 'Escape',
             eventName: 'keydown'
-        }, () => {
-            quit()
-        })
+        }, () => quit())
     }
 }
 
-render(<Categories />, MAIN)
+render(<Categories/>, MAIN)

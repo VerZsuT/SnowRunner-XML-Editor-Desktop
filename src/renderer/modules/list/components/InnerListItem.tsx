@@ -1,145 +1,167 @@
 import { PureComponent } from 'react'
-import { getIngameText, mainProcess, prettify, t } from 'scripts'
-import { IListContext, ListContext } from '../FilterContext'
-import { ListType } from '../enums'
+import { load } from 'cheerio'
+import type { CSSProperties } from 'react'
+import type { CheerioAPI } from 'cheerio'
+import type IItem from '../types/IItem'
+import ListType from '../enums/ListType'
 
-import { Loading } from 'modules/components/Loading'
+import { getIngameText, prettify } from 'scripts/funcs'
+import { IListContext, ListContext } from '../FilterContext'
+import localize from 'scripts/localize'
+import config from 'scripts/config'
+import local from 'scripts/storage'
+import main from 'scripts/main'
+import { getExported } from 'scripts/dom'
+import { showLoading } from 'modules/components/Loading'
+import { showAlert } from 'modules/components/Alert'
 
 import {
-    Menu, MenuItem, Card as MuiCard, CardActionArea,
-    CardMedia, CardContent, Typography, styled
+    Menu, MenuItem, CardActionArea,
+    CardMedia, CardContent, Typography
 } from '@mui/material'
-import { StarRounded as StarRoundedIcon } from '@mui/icons-material'
+import Card from '../styled/Card'
+import StarRounded from '../styled/StarRounded'
 
-const { exists } = window.listPreload
-const { config, local } = window.provider
-const { openEditor, readFile } = mainProcess
-
-const Card = styled(MuiCard)({
-    maxWidth: '250px',
-    marginBottom: '10px'
-})
-
-const StarRounded = styled(StarRoundedIcon)({
-    position: 'absolute',
-    top: '5px',
-    left: '5px'
-})
+const { existsSync, readFileSync, writeFileSync } = window.service
+const { openEditor, openSaveDialog } = main
 
 interface IProps {
-    item: Item
+    item: IItem
     type: ListType
     listId: string
+    modId: string
+    dlc: string
 }
 
 interface IState {
-    isDeleted: boolean
-    isLoading: boolean
     contextMenu: {
         mouseX: number
         mouseY: number
     }
 }
 
-export class InnerListItem extends PureComponent<IProps, IState> {
+export default class InnerListItem extends PureComponent<IProps, IState> {
     static contextType = ListContext
     declare context: IListContext
 
-    private fileDOM: Document
+    private styles = {
+        cardContent: { padding: '5px' },
+        text: {
+            textAlign: 'center',
+            fontSize: '1.1rem'
+        } as CSSProperties,
+        red: { color: 'red' }
+    }
+    private fileDOM: CheerioAPI
     private name: string
-    private hasError: boolean
     private imgSrc: string
 
     constructor(props: IProps) {
         super(props)
-
-        this.state = {
-            isDeleted: false,
-            isLoading: false,
-            contextMenu: null
-        }
+        this.state = { contextMenu: null }
         this.fileDOM = this.getDOM()
         this.name = this.getName()
-        this.hasError = this.checkError()
         this.imgSrc = this.getImgSrc()
     }
 
     render() {
+        const { item } = this.props
+        const { contextMenu } = this.state
+
         const isShow = this.isShow()
-        const isFavorite = config.favorites.includes(this.props.item.name)
+        const isFavorite = config.favorites.includes(item.name)
         const text = this.getText()
 
-        if (!this.hasError && isShow && !this.state.isDeleted) {
-            return (<>
-                <Card onContextMenu={this.onContextMenu}>
-                    <CardActionArea onClick={this.openEditor}>
-                        <CardMedia
-                            component='img'
-                            height='350px'
-                            image={this.imgSrc}
-                        />
-                        {isFavorite ?
-                            <StarRounded htmlColor='yellow'/>
-                        : null}
-                        <CardContent style={{ padding: '5px' }}>
-                            <Typography
-                                component='div'
-                                style={{ textAlign: 'center', fontSize: '1.1rem' }}
-                            >
-                                {typeof text === 'string'
-                                    ? text
-                                    : <>
-                                        {text.first}
-                                        <span style={{ color: 'red' }}>
-                                            {text.second}
-                                        </span>
-                                        {text.last}
-                                      </>
-                                }
-                            </Typography>
-                        </CardContent>
-                    </CardActionArea>
-                </Card>
-                <Menu
-                    open={this.state.contextMenu !== null}
-                    onClose={this.onCloseContext}
-                    anchorReference='anchorPosition'
-                    anchorPosition={
-                    this.state.contextMenu !== null
-                        ? {
-                            top: this.state.contextMenu.mouseY,
-                            left: this.state.contextMenu.mouseX
-                        }
-                        : undefined
-                    }
-                >
-                    <MenuItem onClick={this.toggleFavorite}>
-                        {isFavorite? t.REMOVE_FAVORITE : t.ADD_FAVORITE}
-                    </MenuItem>
-                </Menu>
-                <Loading open={this.state.isLoading} />
-            </>)
-        } else {
+        if (!isShow)
             return null
-        }
+
+        return <>
+            <Card onContextMenu={this.onContextMenu}>
+                <CardActionArea onClick={this.openEditor}>
+                    <CardMedia
+                        component='img'
+                        height='350px'
+                        image={this.imgSrc}
+                    />
+                    {isFavorite ?
+                        <StarRounded htmlColor='yellow'/>
+                    : null}
+                    <CardContent style={this.styles.cardContent}>
+                        <Typography
+                            component='div'
+                            style={this.styles.text}
+                        >
+                            {typeof text === 'string'
+                                ? text
+                                : <>
+                                    {text.first}
+                                    <span style={this.styles.red}>
+                                        {text.second}
+                                    </span>
+                                    {text.last}
+                                    </>
+                            }
+                        </Typography>
+                    </CardContent>
+                </CardActionArea>
+            </Card>
+            <Menu
+                open={contextMenu !== null}
+                onClose={this.onCloseContext}
+                anchorReference='anchorPosition'
+                anchorPosition={
+                contextMenu !== null
+                    ? {
+                        top: contextMenu.mouseY,
+                        left: contextMenu.mouseX
+                    }
+                    : undefined
+                }
+            >
+                <MenuItem onClick={this.toggleFavorite}>
+                    {isFavorite? localize.REMOVE_FAVORITE : localize.ADD_FAVORITE}
+                </MenuItem>
+                <MenuItem onClick={this.export}>
+                    {localize.EXPORT}
+                </MenuItem>
+            </Menu>
+        </>
+    }
+
+    private export = () => {
+        const { item, modId, dlc } = this.props
+
+        const exported = getExported(item.path, false, modId, dlc)
+        const path = openSaveDialog(item.name)
+
+        this.onCloseContext()
+        if (!path)
+            return
+
+        writeFileSync(path, JSON.stringify(exported, null, '\t'))
+        showAlert({ text: localize.SUCCESS_EXPORT_MESSAGE })
     }
 
     private openEditor = () => {
-        local.set('filePath', this.props.item.path)
-        local.set('currentDLC', this.props.item.dlcName)
-        local.set('currentMod', this.props.item.modId)
-        local.set('openedList', this.props.listId.replace('list-', ''))
-        local.set('listScroll', String(Math.round(document.querySelector(`#${this.props.listId}`).scrollTop)))
-        this.setState({
-            isLoading: true
-        })
+        const { item, listId } = this.props
+
+        local.set('filePath', item.path)
+        local.set('currentDLC', item.dlcName)
+        local.set('currentMod', item.modId)
+        local.set('openedList', listId.replace('list-', ''))
+        local.set('listScroll', String(Math.round(document.querySelector(`#${listId}`).scrollTop)))
+
+        this.setState({ contextMenu: null })
+        showLoading()
         openEditor()
     }
 
     private onContextMenu = (event: React.MouseEvent) => {
+        const { contextMenu } = this.state
+
         event.preventDefault()
         this.setState({
-            contextMenu: this.state.contextMenu === null ? {
+            contextMenu: contextMenu === null ? {
                 mouseX: event.clientX - 2,
                 mouseY: event.clientY - 4,
             } : null
@@ -147,9 +169,7 @@ export class InnerListItem extends PureComponent<IProps, IState> {
     }
 
     private onCloseContext = () => {
-        this.setState({
-            contextMenu: null
-        })
+        this.setState({ contextMenu: null })
     }
 
     private toggleFavorite = () => {
@@ -159,39 +179,44 @@ export class InnerListItem extends PureComponent<IProps, IState> {
 
     private isShow = () => {
         const filter = this.context.filter
-        if (!filter) {
+
+        if (!filter)
             return true
-        }
-        if (this.name.toLowerCase().includes(filter.toLowerCase())) {
+
+        if (this.name.toLowerCase().includes(filter.toLowerCase()))
             return true
-        }
+        
         return false
     }
 
     private getName() {
-        let name = prettify(this.props.item.name)
+        const { item } = this.props
 
-        if (this.fileDOM.querySelector('GameData > UiDesc')) {
-            const uiName = this.fileDOM.querySelector('GameData > UiDesc').getAttribute('UiName')
-            if (uiName) {
-                name = getIngameText(uiName, this.props.item.modId) || uiName
-            }
+        let name = prettify(item.name)
+
+        if (this.fileDOM('GameData > UiDesc').length) {
+            const uiName = this.fileDOM('GameData > UiDesc').attr('UiName')
+            if (uiName)
+                name = getIngameText(uiName, item.modId) || uiName
         }
         return name
     }
 
     private getDOM() {
-        const data = `<root>${readFile(this.props.item.path)}</root>`
-        return new DOMParser().parseFromString(data, 'text/xml')
+        return load(readFileSync(this.props.item.path), { xmlMode: true })
     }
 
     private getText = () => {
         const filter = this.context.filter
-        if (!filter) {
+        let firstIndex: number
+        let lastIndex: number
+
+        if (!filter)
             return this.name
-        }
-        const firstIndex = this.name.toLowerCase().indexOf(filter.toLowerCase())
-        const lastIndex = firstIndex + filter.length
+        
+        firstIndex = this.name.toLowerCase().indexOf(filter.toLowerCase())
+        lastIndex = firstIndex + filter.length
+
         return {
             first: this.name.slice(0, firstIndex),
             second: this.name.slice(firstIndex, lastIndex),
@@ -199,41 +224,35 @@ export class InnerListItem extends PureComponent<IProps, IState> {
         }
     }
 
-    private checkError() {
-        return Boolean(
-            this.fileDOM.querySelector('parsererror') ||
-            (
-                this.props.type === ListType.trucks &&
-                this.fileDOM.querySelector('Truck') &&
-                this.fileDOM.querySelector('Truck').getAttribute('Type') === 'Trailer'
-            )
-        )
-    }
-
     private getImgSrc() {
-        switch (this.props.type) {
+        const { type, item } = this.props
+
+        switch (type) {
             case ListType.trailers:
                 try {
-                    return require(`images/trailers/${this.props.item.name}.png`)
-                } catch {
+                    return require(`images/trailers/${item.name}.png`)
+                }
+                catch {
                     return require('images/trailers/default.png')
                 }
             case ListType.trucks:
                 try {
-                    return require(`images/trucks/${this.props.item.name}.jpg`)
-                } catch {
-                    console.warn(`Не найдена картинка ${this.props.item.name}`)
+                    return require(`images/trucks/${item.name}.jpg`)
+                }
+                catch {
                     const defaultImage = require('images/trucks/default.png')
+                    // MARK: Картинки
+                    // console.warn(`Не найдена картинка ${this.props.item.name}`)
+                    if (item.modId && this.fileDOM('GameData > UiDesc').length) {
+                        const imgName = this.fileDOM('GameData > UiDesc').attr('UiIcon328x458')
+                        const truckPath = `../../main/modsTemp/${item.modId}/ui/textures/${imgName}.png`
 
-                    if (this.props.item.modId && this.fileDOM.querySelector('GameData > UiDesc')) {
-                        const imgName = this.fileDOM.querySelector('GameData > UiDesc').getAttribute('UiIcon328x458')
-                        const truckPath = `../../main/modsTemp/${this.props.item.modId}/ui/textures/${imgName}.png`
-                        if (!exists(truckPath)) {
+                        if (!existsSync(truckPath))
                             return defaultImage
-                        } else {
+                        else
                             return truckPath
-                        }
-                    } else {
+                    }
+                    else {
                         return defaultImage
                     }
                 }

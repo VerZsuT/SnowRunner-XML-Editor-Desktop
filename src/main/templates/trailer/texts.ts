@@ -1,4 +1,4 @@
-import { Config } from 'main/classes/Config'
+import Config from 'main/classes/Config'
 
 export const texts = {
 	RU: {
@@ -48,6 +48,22 @@ export const texts = {
 		wheel: 'Das Rad',
 		suspHeight: 'Höhe der Aufhängung',
 		suspStrength: 'Federungssteifigkeit'
+	},
+	ZH: {
+		quantity: '货物数量',
+		inner: '有用的内容',
+		mass: '质量',
+		other: '其他',
+		price: '价格',
+		fuelCapacity: '燃料量',
+		repairsCapacity: '备件数量',
+		wheelRepairsCapacity: '需要修理的车轮数量',
+		trailerMass: '拖车重量',
+		fuelMass: '燃料质量',
+		wheels: '轮子',
+		wheel: '轮子',
+		suspHeight: '悬挂高度',
+		suspStrength: '悬架刚度'
 	}
 }[Config.obj.lang]
 
@@ -78,5 +94,14 @@ export const descs = {
 		trailerMass: 'Gewicht des Anhängers',
 		fuelMass: 'Gewicht des Kraftstoffs',
 		quantity: 'Maximale Menge der Fracht'
+	},
+	ZH: {
+		price: '汽车本身的价格（不包括组件）',
+		fuelCapacity: '拖车内的燃料数量',
+		repairsCapacity: '拖车中的备件数量',
+		wheelRepairsCapacity: '拖车上的备用车轮数量',
+		trailerMass: '拖车重量',
+		fuelMass: '燃料质量',
+		quantity: '最大运输货物数量'
 	}
 }[Config.obj.lang]

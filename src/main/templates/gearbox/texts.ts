@@ -1,8 +1,7 @@
-import { Config } from 'main/classes/Config'
+import Config from 'main/classes/Config'
 
 export const texts = {
 	RU: {
-		id: 'ID',
 		lowerManualGear: 'Точная регулировка',
 		awdConsumptionModifier: 'Модификатор потребления топлива при полном приводе',
 		criticalDamageThreshold: 'Порог критического повреждения',
@@ -21,7 +20,6 @@ export const texts = {
 		gears: 'Передачи'
 	},
 	EN: {
-		id: 'ID',
 		lowerManualGear: 'Precise adjustment',
 		awdConsumptionModifier: 'AWD consumption modifier',
 		criticalDamageThreshold: 'Critical damage threshold',
@@ -40,7 +38,6 @@ export const texts = {
 		gears: 'Gears'
 	},
 	DE: {
-		id: 'ID',
 		lowerManualGear: 'Feineinstellung',
 		awdConsumptionModifier: 'AWD-Verbrauchsmodifikator',
 		criticalDamageThreshold: 'Kritische Schadensschwelle',
@@ -57,6 +54,24 @@ export const texts = {
 		lowerMinusGear: 'Unterer-',
 		reverceGear: 'Rückwärtsgang',
 		gears: 'Gangs'
+	},
+	ZH: {
+		lowerManualGear: '精细调整',
+		awdConsumptionModifier: '全轮驱动油耗修改器',
+		criticalDamageThreshold: '临界伤害阈值',
+		damageCapacity: '耐久性',
+		damagedConsumptionModifier: '损坏情况下的油耗乘数',
+		fuelConsumption: '燃料消耗量',
+		idleFuelConsumption: '怠速油耗乘数',
+		gearboxParams: '齿轮的可用性',
+		highGear: '高架',
+		allow: '可用',
+		notAllow: '不可用',
+		lowerGear: '降低',
+		lowerPlusGear: '降低+',
+		lowerMinusGear: '降低-',
+		reverceGear: '返回',
+		gears: '齿轮'
 	}
 }[Config.obj.lang]
 
@@ -99,5 +114,18 @@ export const descs = {
 		lowerGear: 'Gibt es ein reduziertes Getriebe im Getriebe',
 		lowerPlusGear: 'Gibt es ein reduziertes+ Getriebe im Getriebe',
 		lowerMinusGear: 'Gibt es ein erhöhte+s Getriebe im Getriebe'
+	},
+	ZH: {
+		lowerManualGear: '允许您更改降档和倒档的齿轮比。',
+		awdConsumptionModifier: '使用全轮驱动时油耗变化系数',
+		criticalDamageThreshold: '损坏百分比（值*100=百分比），之后盒子开始显示故障迹象-飞行齿轮和增加的燃料消耗',
+		damageCapacity: '这款变速箱的安全裕度',
+		damagedConsumptionModifier: '最大油耗乘数，当箱子完全破碎时消耗来到这个乘数。',
+		fuelConsumption: '变速箱的基本燃料消耗',
+		idleFuelConsumption: '当汽车静止且发动机运转时油耗的乘数。',
+		highGear: '变速箱中是否有增加的齿轮',
+		lowerGear: '变速箱有降档吗',
+		lowerPlusGear: '变速箱中是否有减少的+齿轮',
+		lowerMinusGear: '变速箱中是否有增加的+齿轮'
 	}
 }[Config.obj.lang]

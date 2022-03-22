@@ -1,284 +1,96 @@
 <!DOCTYPE html>
 <html>
+    <head>
+        <meta charset='UTF-8'>
+        <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+        <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+        <meta name='description' content='Скачать бесплатно последнюю версию SnowRunner XML Editor.'>
+        <meta name='keywords' content='SnowRunner XML Editor Desktop, SnowRunner XML Editor, SnowRunner, XML, Editor, Desktop, скачать, бесплатно, редактор, редактор файлов, редактор файлов SnowRunner'>
+        <link href='https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css' rel='stylesheet'>
+        <link href='https://cdn.muicss.com/mui-0.10.3/css/mui.min.css' rel='stylesheet'>
+        <link rel='stylesheet' href='./style.css'>
+        <script src='https://cdn.muicss.com/mui-0.10.3/js/mui.min.js'></script>
+        <script defer src='./script.js'></script>
+        <title>Скачать SnowRunner XML Editor</title>
+    </head>
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Скачать бесплатно последнюю версию SnowRunner XML Editor.">
-    <meta name="keywords"
-        content="SnowRunner XML Editor Desktop, SnowRunner XML Editor, SnowRunner, XML, Editor, Desktop, скачать, бесплатно, редактор, редактор файлов, редактор файлов SnowRunner">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
-    <link rel="stylesheet" href="./style.css">
-    <script defer src="./script.js"></script>
-    <title>Скачать SnowRunner XML Editor</title>
-</head>
+    <body>
+        <header class='mui-appbar mui--text-display1'>
+            SnowRunner XML Editor Desktop
+        </header>
 
-<body>
-    <header>
-        <h1 class="h1 red-text">SnowRunner XML Editor Desktop</h1>
-    </header>
-
-    <div class='release'>
-        <h2 class='title'>v0.6.7d (новейший)</h2>
-        <div class='description'>
-            <ul>
-                <li>Добавлено автозакрытие вкладки в таблице.</li>
-                <li>Улучшен вид консоли.</li>
-                <li>Изменены команды консоли.</li>
-                <li>Добавлена предварительная версия 'execute' системы (позволяет создавать пользовательские сценарии для использования в программе)</li>
-                <li>Исправлено бесконечное окно загрузки при восстановлении initial.pak.</li>
-                <li>Исправлена неправильная работа импорта/экспорта конфигурации программы.</li>
-                <li>Улучшена плавность открытия/закрытия вкладок таблицы.</li>
-                <li>Обновлен встроенный WinRAR.</li>
-                <li>Обновлены компоненты программы.</li>
-            </ul>
+        <div class='release'>
+            <h2 class='title'>v0.6.8 [LTS](новейший)</h2>
+            <div class='description'>
+                <ul>
+                    <li>Добавлен перевод на китайский язык.</li>
+                    <li>Исправлена ошибка при отсутствии интернет соединения.</li>
+                    <li>Изменён метод чтения XML файлов. Должно сильно увеличить процент доступных для редактирования модов.</li>
+                    <li>Немного изменён стиль таблицы.</li>
+                    <li>Добавлена возможность открыть xml файл для ручного редактирования (из интерфейса таблицы, не требуется WinRAR). Изменения вступают в силу после сохранения в программе.</li>
+                    <li>Добавлена настройка "Расширенный режим". Включает функции для продвинутых пользователей (на текущий момент - возможность открытия xml файла внешним редактором).</li>
+                    <li>Добавлена возможность добавить кран-банан большому зиксу (по просьбе).</li>
+                    <li>Добавлен импорт файла перетаскиванием в окно таблицы.</li>
+                    <li>Добавлена кнопка "Экспорт" в контекстном меню в списке.</li>
+                    <li>Добавлена картинка для Step 33-64 Crocodile.</li>
+                    <li>Доп. сценарии также экспортируются (изменения кранов, фаркопов и т.д.).</li>
+                    <li>Убран визуальный баг с "растягиванием" названия авто в списке при поиске и добавлении в избранное.</li>
+                    <li>Убрана полоса прокрутки в меню выбора категории.</li>
+                    <li>Убрана система 'execute'.</li>
+                    <li>Улучшена производительность.</li>
+                </ul>
+            </div>
+            <button
+                class='mui-btn mui-btn--raised mui-btn--primary'
+                version='v0.6.8'
+                source_type='exe'
+                source='GitHub'
+                download
+            >
+                Скачать [GitHub]
+            </button>
+            <button
+                class='mui-btn mui-btn--raised mui-btn--accent'
+                source='YandexDisk'
+                link='https://disk.yandex.ru/d/HJRqN6wW7Ewxcg'
+                download
+            >
+                Скачать [Yandex Disk]
+            </button>
         </div>
-        <button
-            class='download btn btn-primary'
-            version='v0.6.7d'
-            source_type='exe'
-            source='GitHub'
-        >
-            Скачать [GitHub]
-        </button>
-        <button
-            class='download btn btn-secondary'
-            source='YandexDisk'
-            link='https://disk.yandex.ru/d/-WCwQ96YIhLc4w'
-        >
-            Скачать [YandexDisk]
-        </button>
-    </div>    
 
-    <div class="release">
-        <h2 class="title">v0.6.6d</h2>
-        <div class="description">
-            <ul>
-                <li>
-                    v0.6.6d
-                    <ul>
-                        <li>Немного <i>изменён стиль</i> окон <b>Первая настройка</b> и <b>Настройки</b>.</li>
-                        <li><i>Ускорена загрузка программы</i> при множестве добавленных модификаций.</li>
-                        <li><i>Исправлена</i> работа числового поля ввода.</li>
-                        <li><i>Исправлена</i> работа поля ввода координат.</li>
-                        <li>При импорте конфига показывается сообщение на предыдущем языке.</li>
-                    </ul>
-                </li>
-                <li>
-                    v0.6.6c
-                    <ul>
-                        <li>Исправлен баг с заголовком файла.</li>
-                        <li>Вес картинок уменьшен примерно в 3 раза.</li>
-                        <li>Вес установщика уменьшен до ~70МБ.</li>
-                        <li>Потребление RAM уменьшено до 50-60МБ.</li>
-                        <li>Добавлены картинки для 3-х новых авто.</li>
-                    </ul>
-                </li>
-                <li>
-                    v0.6.6b
-                    <ul>
-                        <li>Исправлен баг с вводом в числовое поле.</li>
-                        <li>Исправлен баг с вводом в текстовое поле.</li>
-                        <li>Исправлен баг с вводом в поле ввода координат.</li>
-                    </ul>
-                </li>
-                <li>
-                    v0.6.6a
-                    <ul>
-                        <li>Исправлен баг с пустым окном при редактировании колёс.</li>
-                        <li>Исправлен баг с дублированием кнопок файлов колёс.</li>
-                        <li>Исправлен баг с пустым окном при редактировании авто на языках EN и DE.</li>
-                        <li>Исправлен баг с неправильным счётчиком файлов обновления.</li>
-                    </ul>
-                </li>
-                <li>
-                    v0.6.6
-                    <ul>
-                        <li>Добавлено окно <i>"Что нового"</i></li>
-                        <li>Переход с <i>Vue</i> на <i>React</i>.</li>
-                        <li>Убран показ окна консоли при сохранении файла.</li>
-                        <li>
-                            Изменения параметров <i>авто</i>:
-                            <ul>
-                                <li>Добавлена <i>чувствительность руля</i>.</li>
-                                <li>Добавлена <i>длина лебёдки</i>.</li>
-                                <li>Добавлена <i>сила лебёдки</i>.</li>
-                                <li><i>Угол поворота колеса</i> теперь дробное число. Изменены максимальное и
-                                    минимальное значение <i>[-90.0, 90.0]</i></li>
-                                <li>Добавлен <i>угол наклона колеса</i>.</li>
-                                <li>Добавлена возможность менять <i>размер колёс</i>.</li>
-                            </ul>
-                        </li>
-                        <li>
-                            Изменения параметров <i>двигателя</i>:
-                            <ul>
-                                <li>Добавлена <i>задержка торможения</i>.</li>
-                                <li>Добавлено <i>замедление ускорения</i>.</li>
-                            </ul>
-                        </li>
-                        <li>Разрешено изменять <i>способ разблокировки</i> частей авто.</li>
-                        <li>Добавлена поддержка <i>автоматического определения initial.pak для Steam</i> версии игры.
-                        </li>
-                        <li>
-                            Исправлена <i>работа поиска в редакторе</i> параметров:
-                            <ul>
-                                <li><i>Параметры</i> больше не исчезают.</li>
-                                <li><i>Пустые группы</i> больше не показываются.</li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
+        <div class='release'>
+            <h2 class='title'>v0.6.7d (стабильный)</h2>
+            <div class='description'>
+                <ul>
+                    <li>Добавлено автозакрытие вкладки в таблице.</li>
+                    <li>Улучшен вид консоли.</li>
+                    <li>Изменены команды консоли.</li>
+                    <li>Добавлена предварительная версия 'execute' системы (позволяет создавать пользовательские сценарии для использования в программе)</li>
+                    <li>Исправлено бесконечное окно загрузки при восстановлении initial.pak.</li>
+                    <li>Исправлена неправильная работа импорта/экспорта конфигурации программы.</li>
+                    <li>Улучшена плавность открытия/закрытия вкладок таблицы.</li>
+                    <li>Обновлен встроенный WinRAR.</li>
+                    <li>Обновлены компоненты программы.</li>
+                </ul>
+            </div>
+            <button
+                class='mui-btn mui-btn--raised mui-btn--primary'
+                version='v0.6.7d'
+                source_type='exe'
+                source='GitHub'
+                download
+            >
+                Скачать [GitHub]
+            </button>
+            <button
+                class='mui-btn mui-btn--raised mui-btn--accent'
+                source='YandexDisk'
+                link='https://disk.yandex.ru/d/-WCwQ96YIhLc4w'
+                download
+            >
+                Скачать [Yandex Disk]
+            </button>
         </div>
-        <button class="download btn btn-primary" version="v0.6.6d" source_type="exe" source='GitHub'>
-            Скачать [GitHub]
-        </button>
-        <button class="download btn btn-secondary" source='GoogleDrive'
-            link='https://drive.google.com/file/d/1xqFGect75fcpT4VeflQJjPhUXh976G2J/view?usp=sharing'>
-            Скачать [GoogleDrive]
-        </button>
-    </div>
-
-    <div class="release">
-        <h2 class="title">v0.6.5b</h2>
-        <div class="description">
-            <ul>
-                <li>
-                    v0.6.5b
-                    <ul>
-                        <li>Полное изменение кода программы (переход на TypeScript).</li>
-                        <li>Обновление компонентов программы.</li>
-                        <li>Уменьшение потребления RAM до 40МБ.</li>
-                        <li>Общая подготовка к будущим крупным обновлениям.</li>
-                        <li>Исправление малозаметных багов.</li>
-                    </ul>
-                </li>
-                <li>
-                    v0.6.5a
-                    <ul>
-                        <li>Возможность выбора что экспортировать а что нет. (галочки при первом нажатии на экспорт).
-                        </li>
-                        <li>Автообновление для версии 0.6.5a+.</li>
-                        <li>Импорт\экспорт всего авто (само авто и его составляющие: лебёдка, колёса и т.д.)</li>
-                        <li>
-                            Пункт меню EPF: работа с .epf файлами.
-                            <ul>
-                                <li>Объединение нескольких .epf файлов в один.</li>
-                                <li>Просмотр содержимого .epf файла.</li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-                <li>
-                    v0.6.5
-                    <ul>
-                        <li>Переход на новую версию Electron (с 12.0.0 на 15.0.0).</li>
-                        <li>Использование Webpack для компиляции Vue шаблонов.</li>
-                        <li>Использование Webpack для сборки Bootstrap.</li>
-                        <li>
-                            Использование Webpack для сборки исходного кода программы в бандлы.
-                            <ul>
-                                <li>Увеличение скорости загрузки программы (скорость распаковки не изменится).</li>
-                                <li>Снижение потребления RAM до 50-110МБ вместо 110-200МБ ранее.</li>
-                                <li>Фикс утечки, при которой потребление RAM после сохранения поднималось на 100МБ (в
-                                    сумме получалось 200-350МБ).</li>
-                                <li>Меньше файлов для обновления с помощью программы.</li>
-                            </ul>
-                        </li>
-                        <li>По просьбам убран ползунок.</li>
-                        <li>Убраны кнопки "Режим разработчика" и "Отключить ограничения" из настроек программы.</li>
-                        <li>Возможность редактирования размеров коллизии колёс и типа кручения колеса перенесена в
-                            "Режим разработчика".</li>
-                        <li>Возможность удаления мода из программы.</li>
-                        <li>Включить режим разработчика, а также отключить ограничения можно в консоли программы
-                            (команды "sset devMode" и "sset limits").</li>
-                        <li>Цветовые маркеры.</li>
-                        <li>Экспорт и импорт параметров.</li>
-                        <li>Возможность установить точную регулировку у коробки.</li>
-                        <li>
-                            Возможность сброса параметров до изначального состояния.
-                            <ul>
-                                <li>Изменение работы сброса параметров. Вместо записи в игровые файлы идёт запись в
-                                    программу.</li>
-                            </ul>
-                        </li>
-                        <li>Более подробные сообщения об ошибках записи файла, а также загрузки мода.</li>
-                        <li>Фикс бага с "бесконечной" загрузкой если файл мода по каким-либо причинам
-                            удалился/повредился/переместился/заблокировался(при флаге "только для чтения").</li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
-        <button class="download btn btn-primary" version="v0.6.5b" source_type="exe" source='GitHub'>
-            Скачать [GitHub]
-        </button>
-        <button class="download btn btn-secondary" source='GoogleDrive'
-            link='https://drive.google.com/file/d/1aE1m9xRu5P-y-FTQ8Xaert3ei2_7nVmh/view?usp=sharing'>
-            Скачать [GoogleDrive]
-        </button>
-    </div>
-
-    <div class="release">
-        <h2 class="title">v0.6.4e</h2>
-        <div class="description">
-            <ul>
-                <li>
-                    <b>v0.6.4</b>
-                    <ul>
-                        <li>Ползунок для более удобного выбора из диапазона между максимальным и минимальным значением.
-                        </li>
-                        <li>Картинки на новые авто.</li>
-                        <li>Картинки на трейлеры.</li>
-                        <li>Программная консоль.</li>
-                        <li>Исправление бага с невозможностью введения отрицательных значений в поле ввода.</li>
-                        <li>Добавление параметров DamageCapacity, Radius, Width в настройки колёс.</li>
-                        <li>Добавление параметров Height, Strength, Damping, SuspensionMin, SuspensionMax,
-                            BrokenSuspensionMax в настройки подвески.</li>
-                    </ul>
-                </li>
-                <li>
-                    <b>v0.6.4a</b>
-                    <ul>
-                        <li>Исправление бага с обновлением.</li>
-                        <li>Исправление бага с пустым экраном при редактировании подвески.</li>
-                    </ul>
-                </li>
-                <li>
-                    <b>v0.6.4b</b>
-                    <ul>
-                        <li>Исправление бага с добавлением модификаций.</li>
-                    </ul>
-                </li>
-                <li>
-                    <b>v0.6.4c</b>
-                    <ul>
-                        <li>Исправление бага с максимальным значением в поле при выборе ползунком.</li>
-                        <li>Исправление бага с неправильным определением значения если шаблон указан не в самом
-                            элементе, а в его родителе.</li>
-                    </ul>
-                </li>
-                <li>
-                    <b>v0.6.4d</b>
-                    <ul>
-                        <li>Обновление без сброса настроек.</li>
-                        <li>Фикс бага с пустым экраном если у авто не установлено смещение центра масс.</li>
-                        <li>Горячие клавиши: сохранение (Ctrl + S), назад (Esc), выход (Ctrl + Q).</li>
-                    </ul>
-                </li>
-                <li>
-                    <b>v0.6.4e</b>
-                    <ul>
-                        <li>Фикс бага с добавлением модификаций.</li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
-        <button class="download btn btn-primary" version="v0.6.4e" source_type="exe" source='GitHub'>
-            Скачать [GitHub]
-        </button>
-    </div>
-</body>
-
+    </body>
 </html>

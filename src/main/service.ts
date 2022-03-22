@@ -1,15 +1,14 @@
 import { join, resolve as res } from 'path'
 import { existsSync, lstatSync, readdirSync, mkdirSync, rmSync } from 'fs'
+import type IPaths from './types/IPaths'
+import type IFindItem from 'modules/list/types/IFindItem'
 
 const resolve = (...args: string[]) => res(__dirname, ...args)
 const updaterURL = 'https://verzsut.github.io/sxmle_updater'
 const mainURL = 'https://verzsut.github.io/SnowRunner-XML-Editor-Desktop'
 
-/**
- * Пути, используемые в программе.
-*/
-
-export const paths: Paths = {
+/** Пути, используемые в программе. */
+export const paths: IPaths = {
     /** URL json файла обновления. */
     publicInfo: `${updaterURL}/public.json`,
     /** URL страницы скачивании программы. */
@@ -47,25 +46,30 @@ export const paths: Paths = {
 }
 
 /**
- * Находит в папке все соответствия.
+ * Найти в папке все соответствия.
  * @param startPath - путь, с которого начинается поиск.
  * @param onlyDirs - искать только папки, игнорируя файлы.
  * @param extension - расширение, по которому ведётся поиск файлов.
  * @param inner - искать ли во внутренних папках (по умолчанию они игнорируются).
  * @returns массив путей
 */
-export const findInDir = (startPath: string, onlyDirs?: boolean, extension = '.xml', inner?: boolean): FindItem[] => {
-    if (!existsSync(startPath)) return []
+export const findInDir = (startPath: string, onlyDirs?: boolean, extension = '.xml', inner?: boolean): IFindItem[] => {
+    let array: IFindItem[] = []
+    let files: string[]
 
-    let array: FindItem[] = []
-    const files = readdirSync(startPath)
+    if (!existsSync(startPath))
+        return []
+
+    files = readdirSync(startPath)
     for (let i = 0; i < files.length; i++) {
         const filePath = join(startPath, files[i])
         const stat = lstatSync(filePath)
+
         if (onlyDirs) {
             if (!stat.isDirectory()) {
                 continue
-            } else {
+            }
+            else {
                 array.push({
                     name: files[i],
                     path: filePath
@@ -74,7 +78,8 @@ export const findInDir = (startPath: string, onlyDirs?: boolean, extension = '.x
         }
         if (stat.isDirectory() && inner) {
             array = [...array, ...findInDir(filePath, false, extension, true)]
-        } else if (files[i].indexOf(extension) >= 0) {
+        }
+        else if (files[i].indexOf(extension) >= 0) {
             array.push({
                 name: files[i].replace(extension, ''),
                 path: filePath
@@ -85,20 +90,12 @@ export const findInDir = (startPath: string, onlyDirs?: boolean, extension = '.x
 }
 
 /**
- * Очищает папку для временных файлов программы.
+ * Очистить папку для временных файлов программы.
 */
 export function clearTemp() {
     rmSync(paths.backupInitial, { force: true })
-
-    rmSync(paths.mainTemp, {
-        recursive: true,
-        force: true
-    })
+    rmSync(paths.mainTemp, { recursive: true, force: true })
     mkdirSync(paths.mainTemp)
-
-    rmSync(paths.modsTemp, {
-        recursive: true,
-        force: true
-    })
+    rmSync(paths.modsTemp, { recursive: true, force: true })
     mkdirSync(paths.modsTemp)
 }

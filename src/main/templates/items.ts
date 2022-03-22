@@ -1,17 +1,45 @@
 import { getIngameText } from './service'
-import {
-    FileType,
-    NameType,
-    NumberType,
-    InputType,
-    TemplateType,
-    ParamType
-} from './enums'
-import { Config } from 'main/classes/Config'
+
+import FileType from './enums/FileType'
+import NameType from './enums/NameType'
+import NumberType from './enums/NumberType'
+import InputType from './enums/InputType'
+import TemplateType from './enums/TemplateType'
+import ParamType from './enums/ParamType'
+
+import type GroupClassProps from './types/GroupClassProps'
+import type IGetParamsProps from './types/IGetParamsProps'
+import type IGroupClass from './types/IGroupClass'
+import type IGroupClassProps from './types/IGroupClassProps'
+import type IGroupParams from './types/IGroupParams'
+
+import type FileProps from './types/FileProps'
+import type NumberProps from './types/NumberProps'
+
+import type ISelectClass from './types/ISelectClass'
+import type ISelectClassProps from './types/ISelectClassProps'
+import type ISelectOptions from './types/ISelectOptions'
+import type ISelectParams from './types/ISelectParams'
+
+import type TSelectors from './types/TSelectors'
+import type ITemplateClass from './types/ITemplateClass'
+import type ITemplateParams from './types/ITemplateParams'
+import type TemplateClassProps from './types/TemplateClassProps'
+
+import type DefaultInputProps from './types/DefaultInputProps'
+import type IInputClass from './types/IInputClass'
+import type IInputClassProps from './types/IInputClassProps'
+import type IInputParams from './types/IInputParams'
+import type InputAreas from './types/InputAreas'
+import type InputClassProps from './types/InputClassProps'
+import type InputElementProps from './types/InputElementProps'
 
 function getSelectorName(selector: string): string {
     return selector.split('||')[0].split('SELECTOR_ID:')[1]
 }
+
+// MARK: Пропущенные параметры
+const showWarns = false
 
 type TemplateChildren = GroupClass | InputClass | SelectClass<null> | TemplateClass
 
@@ -29,9 +57,8 @@ class InputElement {
         this.default = props.default
         this.canAddTag = props.canAddTag
         this.desc = props.desc ?? ''
-        if (props.selector) {
+        if (props.selector)
             this.selector = getSelectorName(props.selector)
-        }
     }
 }
 
@@ -42,13 +69,12 @@ class TemplateClass implements ITemplateClass {
     private itemSelector: string
     private selectors: { [name: string]: string }
 
-    constructor(props: ITemplateClassProps, children: TemplateChildren[]) {
+    constructor(props: TemplateClassProps, children: TemplateChildren[]) {
         this.children = children
         this.type = props.type
         this.selectors = props.selectors
-        if (props.itemSelector) {
+        if (props.itemSelector)
             this.itemSelector = getSelectorName(props.itemSelector)
-        }
     }
 
     getParams(props: IGetParamsProps): ITemplateParams {
@@ -66,9 +92,8 @@ class TemplateClass implements ITemplateClass {
         let params = []
         let newSelectors = {}
         for (const selector in selectors) {
-            if (selectors[selector].includes('||')) {
+            if (selectors[selector].includes('||'))
                 selectors[selector] = selectors[selector].split('||')[1]
-            }
         }
         if (multiply) {
             let itemSelector = selectors[this.itemSelector]
@@ -85,11 +110,11 @@ class TemplateClass implements ITemplateClass {
                 fileDOM(el).attr('SXMLE_ID', String(counter))
                 for (const selector in selectors) {
                     newSelectors[selector] = selectors[selector].replaceAll(`-${name}-`, String(counter))
-                    if (currentNum === 1) {
+                    if (currentNum === 1)
                         newSelectors[selector] = newSelectors[selector].replaceAll(`-F_${name}-`, String(counter))
-                    } else if (currentNum === items.length) {
+                    else if (currentNum === items.length)
                         newSelectors[selector] = newSelectors[selector].replaceAll(`-L_${name}-`, String(counter))
-                    }
+
                     newSelectors[selector] = newSelectors[selector].replaceAll(`-N${currentNum}_${name}-`, String(counter))
                 }
 
@@ -120,7 +145,7 @@ class TemplateClass implements ITemplateClass {
     }
 }
 
-class GroupClass implements IGroupClass {
+export class GroupClass implements IGroupClass {
     private children: TemplateChildren[]
     private name: string
     private icon: string
@@ -140,15 +165,15 @@ class GroupClass implements IGroupClass {
         this.nameAttribute = props.nameAttribute
         this.resNameAttribute = props.resNameAttribute
         this.withCounter = props.withCounter ?? false
-        if (props.nameSelector) {
+        if (props.nameSelector)
             this.nameSelector = getSelectorName(props.nameSelector)
-        }
-        if (props.resNameSelector) {
+
+        if (props.resNameSelector)
             this.resNameSelector = getSelectorName(props.resNameSelector)
-        }
-        if (props.defaultSelector) {
+
+        if (props.defaultSelector)
             this.defaultSelector = getSelectorName(props.defaultSelector)
-        }
+
     }
 
     getParams(props: IGetParamsProps): [IGroupParams] | any[] {
@@ -160,16 +185,15 @@ class GroupClass implements IGroupClass {
             const $nameElement = props.fileDOM(props.selectors[nameSelector])
             const $resNameElement = props.fileDOM(props.selectors[resNameSelector])
 
-            if ($nameElement.length === 0 && $resNameElement.length === 0) {
+            if ($nameElement.length === 0 && $resNameElement.length === 0)
                 return []
-            }
 
-            if (this.nameType === NameType.computed) {
+            if (this.nameType === NameType.computed)
                 groupName = getIngameText($nameElement.attr(this.nameAttribute)) || $resNameElement.attr(this.resNameAttribute)
-            } else if (this.nameType === NameType.tagName) {
+            else if (this.nameType === NameType.tagName)
                 groupName = $nameElement.html().split('<')[1].split(' ')[0]
-            }
-        } else {
+        }
+        else {
             groupName = this.name
         }
 
@@ -181,13 +205,15 @@ class GroupClass implements IGroupClass {
                 fileDOM: props.fileDOM
             }))
         }
-        if (this.withCounter) {
+        if (this.withCounter)
             groupName += ` ${props.cycleNumber}`
-        }
-        if (this.name === '_ONLY_FOR_SELECTOR_') {
+
+        if (this.name === '_ONLY_FOR_SELECTOR_')
             return params
-        }
-        if (!params.length) return []
+
+        if (!params.length)
+            return []
+
         return [{
             paramType: ParamType.group,
             groupName: groupName,
@@ -197,7 +223,7 @@ class GroupClass implements IGroupClass {
     }
 }
 
-class InputClass extends InputElement implements IInputClass {
+export class InputClass extends InputElement implements IInputClass {
     private type: InputType
     private min: number
     private max: number
@@ -223,10 +249,12 @@ class InputClass extends InputElement implements IInputClass {
 
         if (props.fileDOM(selector).length === 0) {
             if (!this.canAddTag) {
-                //console.warn(`Missing parameter\n\tName: '${this.attribute}',\n\tText: '${this.text}',\n\tSelector: '${selector}'.`)
+                if (showWarns)
+                    console.warn(`Missing parameter\n\tName: '${this.attribute}',\n\tText: '${this.text}',\n\tSelector: '${selector}'.`)
                 return []
             }
-        } else {
+        }
+        else {
             value = props.fileDOM(selector).attr(this.attribute)
         }
 
@@ -265,10 +293,12 @@ class SelectClass<T extends ISelectOptions> extends InputElement implements ISel
 
         if (props.fileDOM(selector).length === 0) {
             if (!this.canAddTag) {
-                //console.warn(`Missing parameter\n\tName: '${this.attribute}',\n\tText: '${this.text}',\n\tSelector: '${selector}'.`)
+                if (showWarns)
+                    console.warn(`Missing parameter\n\tName: '${this.attribute}',\n\tText: '${this.text}',\n\tSelector: '${selector}'.`)
                 return []
             }
-        } else {
+        }
+        else {
             value = props.fileDOM(selector).attr(this.attribute)
         }
 
@@ -280,7 +310,8 @@ class SelectClass<T extends ISelectOptions> extends InputElement implements ISel
                     text: optionText,
                     value: ''
                 })
-            } else {
+            }
+            else {
                 options.push({
                     text: optionText,
                     value: optionValue
@@ -297,7 +328,7 @@ class SelectClass<T extends ISelectOptions> extends InputElement implements ISel
             paramType: ParamType.input,
             inputType: 'select',
             desc: this.desc,
-            default: <string>this.default
+            default: this.default as string
         }]
     }
 }
@@ -306,12 +337,11 @@ class SelectClass<T extends ISelectOptions> extends InputElement implements ISel
  * Шаблон таблицы параметров. Может иметь вложенные под-шаблоны.
  * @param props объект селекторов или параметры шаблона.
 */
-export function Template(props: ISelectors | TemplateClassProps, children: TemplateChildren[]) {
-    if (props.type || props.itemSelector) {
+export function Template(props: TSelectors | TemplateClassProps, children: TemplateChildren[]) {
+    if (props.type || props.itemSelector)
         return new TemplateClass(props, children)
-    } else {
-        return new TemplateClass({ selectors: <ISelectors>props }, children)
-    }
+    else
+        return new TemplateClass({ selectors: props as TSelectors }, children)
 }
 
 /** 
@@ -319,11 +349,10 @@ export function Template(props: ISelectors | TemplateClassProps, children: Templ
  * @param props имя или параметры группы.
 */
 export function Group(props: string | GroupClassProps, children: TemplateChildren[]) {
-    if (typeof props === 'string') {
+    if (typeof props === 'string')
         return new GroupClass({ name: props }, children)
-    } else {
+    else
         return new GroupClass(props, children)
-    }
 }
 
 /** Поле ввода. */
@@ -338,9 +367,9 @@ export function File(props: FileProps) {
         selector: props.selector,
         type: InputType.file,
         fileType: props.type,
-        text: props.text,
-        desc: props.desc,
-        canAddTag: props.canAddTag
+        text: '',
+        desc: '',
+        canAddTag: false
     })
 }
 

@@ -1,41 +1,39 @@
-import { readFileSync, existsSync, writeFileSync, rmSync } from 'fs'
-import { basename, join } from 'path'
-import 'scripts/provider'
-import { mainProcess } from 'scripts'
+import { contextBridge } from 'electron'
+import { rmSync } from 'fs'
+import { basename } from 'path'
+import type IConsolePreload from './types/IConsolePreload'
+import 'scripts/mainPreload'
+import main from 'scripts/main'
 
-const { openInitialDialog } = mainProcess
+const { openInitialDialog } = main
 
-class ConsolePreload implements IConsolePreload {
-    replacePars = (str: string) => {
-        if (!str) return str
-        if (str.startsWith('"')) str = str.slice(1)
-        if (str.endsWith('"')) str = str.slice(0, -1)
+const consolePreload: IConsolePreload = {
+    replacePars: (str: string) => {
+        if (!str)
+            return str
+
+        if (str.startsWith('"'))
+            str = str.slice(1)
+
+        if (str.endsWith('"'))
+            str = str.slice(0, -1)
 
         return str
-    }
-
-    writeFileSync = (path: string, data: string) => {
-        return writeFileSync(path, data)
-    }
-
-    getModPak = () => {
+    },
+    getModPak: () => {
         const path = openInitialDialog()
-        if (!path) return
+        if (!path)
+            return
+
         return {
             id: basename(path, '.pak'),
             path: path,
             name: basename(path)
         }
-    }
-
-    removeDir = (path: string) => {
+    },
+    removeDir: (path: string) => {
         rmSync(path, { recursive: true })
     }
-
-    existsSync = existsSync
-    join = join
-    readFileSync = readFileSync
-    basename = basename
 }
 
-window.consolePreload = new ConsolePreload()
+contextBridge.exposeInMainWorld('consolePreload', consolePreload)

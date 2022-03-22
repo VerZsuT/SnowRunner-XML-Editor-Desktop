@@ -1,25 +1,32 @@
 import { PureComponent } from 'react'
-import {
-    Backdrop,
-    CircularProgress,
-    styled
-} from '@mui/material'
 
-const StyledBackdrop = styled(Backdrop)({
-    color: '#fff',
-    zIndex: 30
-})
+import { CircularProgress } from '@mui/material'
+import StyledBackdrop from './styled/StyledBackdrop'
 
-interface IProps {
-    open: boolean
+interface IState {
+    show: boolean
 }
 
-export class Loading extends PureComponent<IProps> {
+export let showLoading: () => void
+
+export default class Loading extends PureComponent<{}, IState> {
+    constructor(props: any) {
+        super(props)
+        this.state = { show: false }
+        showLoading = () => {
+            this.setState({ show: true })
+        }
+    }
+
     render() {
-        if (!this.props.open) return null
+        const { show=false } = this.state
+
+        if (!show)
+            return null
+        
         return (
-            <StyledBackdrop open={this.props.open}>
-                <CircularProgress color='inherit' />
+            <StyledBackdrop open={show}>
+                <CircularProgress color='inherit'/>
             </StyledBackdrop>
         )
     }

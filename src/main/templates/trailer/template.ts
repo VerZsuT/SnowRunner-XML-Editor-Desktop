@@ -1,10 +1,7 @@
-import {
-	Template,
-	Group,
-	Number,
-	ForEach
-} from '../items'
-import { NumberType } from '../enums'
+import type ITemplate from '../types/ITemplate'
+import NumberType from '../enums/NumberType'
+
+import { Template, Group, Number, ForEach } from '../items'
 import { getSelectors } from '../service'
 import { descs, texts } from './texts'
 
@@ -16,10 +13,11 @@ const selectors = getSelectors(function () {
 	const fuelMass = 'Truck.FuelMass.Body'
 	const gameData = 'Truck.GameData'
 	const addonSlots = `${gameData}.AddonSlots`
+	
 	return { truckData, modelBody, fuelMass, gameData, addonSlots, wheel }
 })
 
-export const trailer = <ITemplate>{
+export default <ITemplate>{
 	selector: 'Truck[Type="Trailer"]',
 	template: Template(selectors, [
 		Group({

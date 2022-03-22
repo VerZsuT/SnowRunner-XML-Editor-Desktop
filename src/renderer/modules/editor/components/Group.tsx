@@ -1,22 +1,16 @@
-import { PureComponent, MouseEvent } from 'react'
-import { InputType } from 'scripts'
+import { PureComponent } from 'react'
+import memoizee from 'memoizee'
+import type { MouseEvent } from 'react'
+import type IGroupParams from 'templates/types/IGroupParams'
+import InputType from 'templates/enums/InputType'
+
 import { IMainContext, MainContext } from '../MainContext'
-import { Parameter } from './Parameter'
-import { ResetMenu } from './ResetMenu'
+import Parameter from './Parameter'
+import ResetMenu, { showResetMenu } from './ResetMenu'
+import GroupAccordion from 'modules/components/GroupAccordion'
 
-import { GroupAccordion } from 'modules/components/GroupAccordion'
-
-import {
-    Table as MuiTable,
-    TableBody,
-    styled
-} from '@mui/material'
-
-const Table = styled(MuiTable)({
-    width: '100%',
-    position: 'relative',
-    bottom: '8px'
-})
+import { TableBody } from '@mui/material'
+import Table from '../styled/Table'
 
 interface IProps {
     item: IGroupParams
@@ -31,18 +25,14 @@ interface IProps {
 
 interface IState {
     isExport: boolean
-    menu: {
-        show?: boolean
-        x?: number
-        y?: number
-    }
     openedGroup: number
 }
 
-export class Group extends PureComponent<IProps, IState> {
+export default class Group extends PureComponent<IProps, IState> {
     static contextType = MainContext
     declare context: IMainContext
 
+    private emptyContStyle = { height: '47px' }
     private componentID = `group-${Math.round(Math.random()*100)}`
     private iconSRC: string
     private items: {
@@ -58,17 +48,14 @@ export class Group extends PureComponent<IProps, IState> {
 
     constructor(props: IProps) {
         super(props)
-
         this.state = {
             isExport: props.isParentExport,
-            menu: {},
             openedGroup: null
         }
         this.toReset = {}
         this.items = this.getItems()
-        if (props.item.icon) {
+        if (props.item.icon)
             this.iconSRC = require(`images/icons/editor/${props.item.icon}`)
-        }
     }
 
     componentDidMount() {
@@ -82,15 +69,18 @@ export class Group extends PureComponent<IProps, IState> {
     }
 
     render() {
+        const { isParentExport, isExporting, isOpen, isShow, item, toggle } = this.props
+        const { isExport, openedGroup } = this.state
+
         const defaultParams = this.items.params.default.map((param, index) =>
             <Parameter
-                isParentExport={this.state.isExport && this.props.isParentExport}
-                isExporting={this.props.isExporting}
+                isParentExport={isExport && isParentExport}
+                isExporting={isExporting}
                 item={param}
                 regReset={this.regReset}
                 key={`${param.name}-${index}`}
                 unregReset={this.unregReset}
-                isShow={this.props.isOpen}
+                isShow={isOpen}
             />
         )
         const filesParams = this.items.params.files.map((param, index) =>
@@ -99,9 +89,9 @@ export class Group extends PureComponent<IProps, IState> {
                 key={`${param.name}-${index}`}
                 regReset={this.regReset}
                 unregReset={this.unregReset}
-                isParentExport={this.state.isExport && this.props.isParentExport}
-                isExporting={this.props.isExporting}
-                isShow={this.props.isOpen}
+                isParentExport={isExport && isParentExport}
+                isExporting={isExporting}
+                isShow={isOpen}
             />
         )
         const groups = this.items.groups.map((groupItem, index) =>
@@ -110,39 +100,36 @@ export class Group extends PureComponent<IProps, IState> {
                 key={`${groupItem.groupName}-${index}`}
                 regReset={this.regReset}
                 unregReset={this.unregReset}
-                isParentExport={this.state.isExport && this.props.isParentExport}
-                isExporting={this.props.isExporting}
-                isShow={this.props.isOpen}
-                isOpen={this.state.openedGroup === index}
-                toggle={(expand: boolean) => this.setState({ openedGroup: expand? index : null })}
+                isParentExport={isExport && isParentExport}
+                isExporting={isExporting}
+                isShow={isOpen}
+                isOpen={openedGroup === index}
+                toggle={this.toggleExpand(index)}
             />
         )
 
-        if (this.props.isShow === false) return <div style={{height: '47px'}}>
-            {defaultParams}
-            {filesParams}
-            {groups}
-        </div>
+        if (isShow === false) {
+            return (
+                <div style={this.emptyContStyle}>
+                    {defaultParams}
+                    {filesParams}
+                    {groups}
+                </div>
+            )
+        }
 
         return <>
-            <ResetMenu
-                show={this.state.menu.show ?? false}
-                onReset={this.reset}
-                onClose={() => this.setState({ menu: {} })}
-                text={this.props.item.groupName}
-                x={this.state.menu.x ?? 0}
-                y={this.state.menu.y ?? 0}
-            />
+            <ResetMenu/>
             <GroupAccordion
                 id={this.componentID}
-                title={this.props.item.groupName}
+                title={item.groupName}
                 iconSRC={this.iconSRC}
-                showExport={this.props.isExporting}
-                isExport={this.state.isExport && this.props.isParentExport}
+                showExport={isExporting}
+                isExport={isExport && isParentExport}
                 onChangeExport={this.toggleExporting}
                 onContextMenu={this.showContextMenu}
-                onChange={this.props.toggle}
-                expanded={this.props.isOpen}
+                onChange={toggle}
+                expanded={isOpen}
             >
                 {defaultParams.length ?
                     <Table>
@@ -152,33 +139,27 @@ export class Group extends PureComponent<IProps, IState> {
                     </Table>
                 : null}
                 {filesParams}
-
                 {groups}
             </GroupAccordion>
         </>
     }
 
+    private toggleExpand = memoizee((index: number) => (expand: boolean) => this.setState({ openedGroup: expand? index : null }))
+
     private toggleExporting = () => {
-        if (this.props.isParentExport) {
-            this.setState({
-                isExport: !this.state.isExport
-            })
-        }
+        if (this.props.isParentExport)
+            this.setState(({ isExport }) => ({ isExport: !isExport }))
     }
 
     private initReset() {
-        if (this.props.regReset) {
+        if (this.props.regReset)
             this.props.regReset(this.componentID, this.reset)
-        }
     }
 
     private reset = () => {
         for (const itemID in this.toReset) {
             this.toReset[itemID]()
         }
-        this.setState({
-            menu: {}
-        })
     }
 
     private regReset = (id: string, func: () => void) => {
@@ -195,15 +176,16 @@ export class Group extends PureComponent<IProps, IState> {
             files: [],
             default: []
         }
+
         for (const groupItem of this.props.item.groupItems) {
             if (groupItem.paramType === 'group') {
                 groups.push(groupItem)
-            } else {
-                if (groupItem.type === InputType.file) {
+            }
+            else {
+                if (groupItem.type === InputType.file)
                     params.files.push(groupItem)
-                } else {
+                else
                     params.default.push(groupItem)
-                }
             }
         }
         return { groups, params }
@@ -211,13 +193,11 @@ export class Group extends PureComponent<IProps, IState> {
 
     private showContextMenu = (e: MouseEvent<HTMLDivElement>) => {
         e.stopPropagation()
-        this.setState({
-            menu: {
-                show: true,
-                x: e.clientX,
-                y: e.clientY
-            }
+        showResetMenu({
+            x: e.clientX,
+            y: e.clientY,
+            text: this.props.item.groupName,
+            onReset: this.reset
         })
-
     }
 }

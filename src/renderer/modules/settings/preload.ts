@@ -1,30 +1,36 @@
+import { contextBridge } from 'electron'
 import { existsSync } from 'fs'
 import { join, basename } from 'path'
-import 'scripts/provider'
-import { mainProcess, t } from 'scripts'
+import type ISettingsPreload from './types/ISettingsPreload'
+import 'scripts/mainPreload'
+import localize from 'scripts/localize'
+import main from 'scripts/main'
 
-const { alertSync, openDialog, openInitialDialog } = mainProcess
+const { openDialog, openInitialDialog } = main
 
-class SettingsPreload implements ISettingsPreload {
-    errorHandler = (message: string) => {
-        alertSync(message)
-    }
-
-    getGameFolder = () => {
+const settingsPreload: ISettingsPreload = {
+    getGameFolder: () => {
         const result = openDialog()
+        let folder: string
+        let paths: string[]
+        let existed = null
+
         if (!result) {
-            this.errorHandler(t.EMPTY_FOLDER_ERROR)
+            window['errorHandler'](localize.EMPTY_FOLDER_ERROR)
             return
         }
-        const folder = result
-        const paths = [
-            join(folder, 'en_us', 'preload', 'paks', 'client', 'initial.pak'),
-            join(folder, 'preload', 'paks', 'client', 'initial.pak'),
-            join(folder, 'paks', 'client', 'initial.pak'),
-            join(folder, 'client', 'initial.pak'),
+        folder = result
+        paths = [
+            join(folder, 'steamapps/common/SnowRunner/preload/paks/client/initial.pak'),
+            join(folder, 'common/SnowRunner/preload/paks/client/initial.pak'),
+            join(folder, 'SnowRunner/en_us/preload/paks/client/initial.pak'),
+            join(folder, 'en_us/preload/paks/client/initial.pak'),
+            join(folder, 'preload/paks/client/initial.pak'),
+            join(folder, 'paks/client/initial.pak'),
+            join(folder, 'client/initial.pak'),
             join(folder, 'initial.pak')
         ]
-        let existed = null
+        
         for (const path of paths) {
             if (existsSync(path)) {
                 existed = path
@@ -33,7 +39,7 @@ class SettingsPreload implements ISettingsPreload {
         }
 
         if (!existed) {
-            this.errorHandler(t.INVALID_FOLDER_ERROR)
+            window['errorHandler'](localize.INVALID_FOLDER_ERROR)
             return
         }
 
@@ -41,18 +47,16 @@ class SettingsPreload implements ISettingsPreload {
             folder: folder,
             initial: existed
         }
-    }
-
-    getInitial = () => {
+    },
+    getInitial: () => {
         const result = openInitialDialog()
+
         if (!result || basename(result) !== 'initial.pak' || !existsSync(result)) {
-            this.errorHandler(t.INVALID_INITIAL_ERROR)
+            window['errorHandler'](localize.INVALID_INITIAL_ERROR)
             return
         }
-        return {
-            initial: result
-        }
+        return { initial: result }
     }
 }
 
-window.settingsPreload = new SettingsPreload()
+contextBridge.exposeInMainWorld('settingsPreload', settingsPreload)

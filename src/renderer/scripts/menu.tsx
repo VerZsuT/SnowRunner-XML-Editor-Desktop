@@ -1,17 +1,17 @@
 import { MouseEvent, PureComponent } from 'react'
-import { mainProcess } from './mainProcess'
-import { t } from 'scripts'
-import { BuildType } from './enums'
+import BuildType from 'main/enums/BuildType'
+import localize from './localize'
+import main from './main'
+import config from './config'
 
 import { Button, Menu, MenuItem, Divider, styled } from '@mui/material'
-import { GridContainer } from 'modules/components/styled'
+import GridContainer from 'modules/components/styled/GridContainer'
 
 const {
     quit, openLink, openPath, resetConfig, recoverFromBackup, copyBackup,
     joinEPF, seeEPF, runUninstall, importConfig, exportConfig, toggleDevTools,
-    openSettings, openWhatsNew
-} = mainProcess
-const { config, paths } = window.provider
+    openSettings, openWhatsNew, paths
+} = main
 
 const MenuGrid = styled(GridContainer)({
     position: 'fixed',
@@ -21,23 +21,23 @@ const MenuGrid = styled(GridContainer)({
     justifyContent: 'flex-start'
 })
 
-export class ProgramMenu extends PureComponent {
+export default class ProgramMenu extends PureComponent {
     render() {
         const isDevBuild = config.buildType === BuildType.dev
-        const hasInitial = Boolean(config.initial)
+        const hasInitial = !!config.initial
 
         return (
             <MenuGrid>
                 <MenuButton
-                    text={t.FILE_MENU_LABEL}
+                    text={localize.FILE_MENU_LABEL}
                     items={[
                         {
-                            text: t.JOIN_EXPORTED_FILES,
+                            text: localize.JOIN_EXPORTED_FILES,
                             show: isDevBuild,
                             onClick: joinEPF
                         },
                         {
-                            text: t.SEE_EXPORTED_FILES,
+                            text: localize.SEE_EXPORTED_FILES,
                             show: isDevBuild,
                             onClick: seeEPF
                         },
@@ -51,35 +51,35 @@ export class ProgramMenu extends PureComponent {
                             onClick: toggleDevTools
                         },
                         {
-                            text: t.EXIT_MENU_ITEM_LABEL,
+                            text: localize.EXIT_MENU_ITEM_LABEL,
                             onClick: quit
                         }
                     ]}
                 />
                 <MenuButton
-                    text={t.BACKUP_MENU_LABEL}
+                    text={localize.BACKUP_MENU_LABEL}
                     show={hasInitial}
                     items={[
                         {
-                            text: t.OPEN_BUTTON,
+                            text: localize.OPEN_BUTTON,
                             onClick: () => openPath(paths.backupFolder)
                         },
                         { isDivider: true },
                         {
-                            text: t.SAVE_BUTTON,
+                            text: localize.SAVE_BUTTON,
                             onClick: copyBackup
                         },
                         {
-                            text: t.RESTORE_MENU_ITEM_LABEL,
+                            text: localize.RESTORE_MENU_ITEM_LABEL,
                             onClick: recoverFromBackup
                         }
                     ]}
                 />
                 <MenuButton
-                    text={t.SETTINGS_MENU_LABEL}
+                    text={localize.SETTINGS_MENU_LABEL}
                     items={[
                         {
-                            text: t.SETTINGS_MENU_LABEL,
+                            text: localize.SETTINGS_MENU_LABEL,
                             show: hasInitial,
                             onClick: openSettings
                         },
@@ -88,35 +88,35 @@ export class ProgramMenu extends PureComponent {
                             show: hasInitial
                         },
                         {
-                            text: t.IMPORT_MENU_ITEM_LABEL,
+                            text: localize.IMPORT_MENU_ITEM_LABEL,
                             onClick: () => importConfig(false)
                         },
                         {
-                            text: t.EXPORT_MENU_ITEM_LABEL,
+                            text: localize.EXPORT_MENU_ITEM_LABEL,
                             show: hasInitial,
                             onClick: () => exportConfig(false)
                         },
                         {
-                            text: t.RESET_MENU_ITEM_LABEL,
+                            text: localize.RESET_MENU_ITEM_LABEL,
                             show: hasInitial,
                             onClick: resetConfig
                         },
                         { isDivider: true },
                         {
-                            text: t.UNINSTALL_MENU_ITEM_LABEL,
+                            text: localize.UNINSTALL_MENU_ITEM_LABEL,
                             onClick: runUninstall
                         }
                     ]}
                 />
                 <MenuButton
-                    text={t.HELP_MENU_LABEL}
+                    text={localize.HELP_MENU_LABEL}
                     items={[
                         {
-                            text: t.VERSION_MENU_ITEM_LABEL,
+                            text: localize.VERSION_MENU_ITEM_LABEL,
                             onClick: openWhatsNew
                         },
                         {
-                            text: t.HOW_TO_USE_TITLE,
+                            text: localize.HOW_TO_USE_TITLE,
                             onClick: () => openLink('https://snowrunner.mod.io/guides/snowrunner-xml-editor')
                         },
                         {
@@ -163,8 +163,10 @@ class MenuButton extends PureComponent<IMenuButtonProps, IMenuButtonState> {
     }
 
     render() {
-        if (!this.show) return null
-        const isOpen = Boolean(this.state.anchorEl)
+        const isOpen = !!this.state.anchorEl
+        
+        if (!this.show)
+            return null
 
         return (<>
             <Button
@@ -195,10 +197,14 @@ class MenuButton extends PureComponent<IMenuButtonProps, IMenuButtonState> {
                         onClick,
                         text
                     } = item
-                    if (!show) return null
+
+                    if (!show)
+                        return null
+
                     if (isDivider) {
                         return <Divider key={key} />
-                    } else {
+                    }
+                    else {
                         return (
                             <MenuItem
                                 key={key}
@@ -221,14 +227,10 @@ class MenuButton extends PureComponent<IMenuButtonProps, IMenuButtonState> {
     }
 
     private onClick = (e: MouseEvent<HTMLElement>) => {
-        this.setState({
-            anchorEl: e.currentTarget
-        })
+        this.setState({ anchorEl: e.currentTarget })
     }
 
     private onClose = () => {
-        this.setState({
-            anchorEl: null
-        })
+        this.setState({ anchorEl: null })
     }
 }

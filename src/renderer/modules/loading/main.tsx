@@ -1,22 +1,15 @@
 import { PureComponent } from 'react'
+import type { CSSProperties } from 'react'
 import { render } from 'react-dom'
+import { MAIN } from 'scripts/funcs'
+
+import { Typography, CircularProgress } from '@mui/material'
+import Container from 'modules/components/styled/Container'
+import GridContainer from 'modules/components/styled/GridContainer'
+import LinearProgress from './styled/LinearProgress'
 import 'styles/loading'
-import { MAIN } from 'scripts'
 
-import {
-    Typography,
-    LinearProgress as MuiLinearProgress,
-    CircularProgress,
-    styled
-} from '@mui/material'
-import { Container, GridContainer } from 'modules/components/styled'
-
-const { ipcRenderer } = window.provider
-
-const LinearProgress = styled(MuiLinearProgress)({
-    marginTop: '17px',
-    marginBottom: '17px'
-})
+const { on } = window.ipc
 
 interface IState {
     allCount: number
@@ -27,9 +20,15 @@ interface IState {
 }
 
 class Loading extends PureComponent<any, IState> {
+    private styles = {
+        mainCont: { textAlign: 'center' } as CSSProperties,
+        gridCont: { justifyContent: 'center' },
+        percent: { marginLeft: '10px' },
+        progress: { marginTop: '15px' }
+    }
+
     constructor(props: any) {
         super(props)
-
         this.state = {
             allCount: 0,
             loadedCount: 0,
@@ -44,63 +43,57 @@ class Loading extends PureComponent<any, IState> {
     }
 
     render() {
+        const { name, isDownload, percent, allCount, loadedCount } = this.state
+
         return (
-            <Container style={{ textAlign: 'center' }}>
+            <Container style={this.styles.mainCont}>
                 <Container>
                     <Typography variant='h6'>
-                        {this.state.name}
+                        {name}
                     </Typography>
                 </Container>
 
-                {this.state.isDownload 
+                {isDownload 
                     ? <>
                         <LinearProgress
                             variant='determinate'
-                            value={this.state.percent}
+                            value={percent}
                         />
-                        <GridContainer style={{ justifyContent: 'center' }}>
+                        <GridContainer style={this.styles.gridCont}>
                             <Typography variant='body2'>
-                                {this.state.loadedCount}/{this.state.allCount}
+                                {loadedCount}/{allCount}
                             </Typography>
-                            <Typography variant='body2' style={{ marginLeft: '10px' }}>
-                                {Math.round(this.state.percent)}%
+                            <Typography variant='body2' style={this.styles.percent}>
+                                {Math.round(percent)}%
                             </Typography>
                         </GridContainer>
                     </>
-                    : <CircularProgress style={{ marginTop: '15px' }}/>
+                    : <CircularProgress style={this.styles.progress}/>
                 }
             </Container>
         )
     }
 
     private listenIPC() {
-        ipcRenderer.once('count', (_e, msg) => {
-            this.setState({
-                allCount: +msg
-            })
-        })
-        ipcRenderer.once('download', () => {
-            this.setState({
-                isDownload: true
-            })
-        })
-        ipcRenderer.on('success', () => {
-            this.setState({
+        on('count', (_e, msg) =>
+            this.setState({ allCount: +msg })
+        )
+        on('download', () =>
+            this.setState({ isDownload: true })
+        )
+        on('success', () =>
+            this.setState(({ loadedCount }) => ({
                 percent: 0,
-                loadedCount: this.state.loadedCount + 1
-            })
-        })
-        ipcRenderer.on('fileName', (_e, msg) => {
-            this.setState({
-                name: msg
-            })
-        })
-        ipcRenderer.on('percent', (_event, msg) => {
-            this.setState({
-                percent: +msg
-            })
-        })
+                loadedCount: loadedCount + 1
+            }))
+        )
+        on('fileName', (_e, msg) =>
+            this.setState({ name: msg })
+        )
+        on('percent', (_event, msg) =>
+            this.setState({ percent: +msg })
+        )
     }
 }
 
-render(<Loading />, MAIN)
+render(<Loading/>, MAIN)

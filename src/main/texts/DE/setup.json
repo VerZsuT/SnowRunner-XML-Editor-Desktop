@@ -6,5 +6,6 @@
 	"INITIAL_LABEL": "Pfad zu initial.pak",
 	"LANGUAGE_MENU_ITEM_LABEL": "Programmsprache",
 	"MANUAL_INITIAL": "Manuelle Auswahl von initial.pak",
-	"OPEN_BUTTON": "Öffnen"
+	"OPEN_BUTTON": "Öffnen",
+	"ADVANCED_MODE_LABEL": "Fortgeschrittener Modus"
 }

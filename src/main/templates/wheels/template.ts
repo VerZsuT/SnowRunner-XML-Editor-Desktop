@@ -1,26 +1,22 @@
-import {
-	Template,
-	Group,
-	Select,
-	Text,
-	ForEach,
-	Number
-} from '../items'
-import { NameType } from '../enums'
+import type ITemplate from '../types/ITemplate'
+import NameType from '../enums/NameType'
+
+import { Template, Group, Select, ForEach, Number } from '../items'
 import { getSelectors } from '../service'
 import { descs, texts } from './texts'
-import { unlockGroup } from '../presets'
+import unlockGroup from '../presets/unlockGroup'
 
 const selectors = getSelectors(function () {
 	const truckWheels = 'TruckWheels'
-	const truckTire = `TruckWheels.TruckTires.TruckTire${this.forEach}`
+	const truckTire = `${truckWheels}.TruckTires.TruckTire${this.forEach}`
 	const truckTireText = `${truckTire}.GameData.UiDesc`
 	const wheelFriction = `${truckTire}.WheelFriction`
 	const gameData = `${truckTire}.GameData`
-	return { truckWheels, truckTire, truckTireText, wheelFriction, gameData }
+	
+	return { truckTire, truckTireText, wheelFriction, gameData }
 })
 
-export const wheels = <ITemplate>{
+export default <ITemplate>{
 	selector: 'TruckWheels',
 	template: Template(selectors, [
 		ForEach(selectors.truckTire, [

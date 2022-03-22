@@ -1,53 +1,94 @@
-import { PureComponent, ReactNode } from 'react'
-import {
-    Modal,
-    Box,
-    Typography,
-    BoxProps,
-    styled
-} from '@mui/material'
+import { PureComponent } from 'react'
+import type { ReactNode } from 'react'
+import memoize from 'memoizee'
 
-const PopupBox = styled((props: BoxProps) => 
-    <Box boxShadow={24} {...props} />
-)({
-    display: 'inline-block',
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    backgroundColor: 'white',
-    border: '1px solid gray',
-    borderRadius: '5px',
-    textAlign: 'center',
-    paddingTop: '10px',
-    paddingBottom: '15px',
-    paddingLeft: '10px',
-    paddingRight: '10px'
-})
+import { Modal, Typography } from '@mui/material'
+import PopupBox from './styled/PopupBox'
+import Container from './styled/Container'
 
-interface IProps {
-    show: boolean
+interface IState {
+    show?: boolean
     title?: string
-    onClose(): void
+    onClose?(): void
+    keepMounted?: boolean
+    minWidth?: number
+    minHeight?: number
     children: ReactNode
 }
 
-export class Popup extends PureComponent<IProps> {
+export let showPopup: (props: IState) => void
+
+export default class Popup extends PureComponent<{}, IState> {
+    private styles = {
+        title: {
+            padding: 3,
+            background: '#1c7dca',
+            color: 'white',
+            borderTopRightRadius: '4px',
+            borderTopLeftRadius: '4px',
+            border: 'none'
+        },
+        container: {
+            padding: 10
+        }
+    }
+
+    constructor(props: any) {
+        super(props)
+        this.state = { children: null }
+        showPopup = props => {
+            const { onClose } = props
+
+            this.setState({
+                show: true,
+                ...props,
+                onClose: () => {
+                    this.setState({ show: false })
+                    if (onClose) 
+                        onClose()
+                }
+            })
+        }
+    }
+
     render() {
+        const {
+            onClose=()=>{},
+            keepMounted=false,
+            minWidth=300,
+            minHeight=400,
+            show=false,
+            title=null,
+            children=null
+        } = this.state
+
         return (
             <Modal
-                open={this.props.show}
-                onClose={this.props.onClose}
+                open={show}
+                onClose={onClose}
+                keepMounted={keepMounted}
             >
-                <PopupBox>
-                    {this.props.title?
-                        <Typography variant='h6' component='h2'>
-                            {this.props.title}
+                <PopupBox style={this.getBoxStyle(minWidth, minHeight)}>
+                    {title?
+                        <Typography
+                            variant='h6'
+                            component='h2'
+                            style={this.styles.title}
+                        >
+                            {title}
                         </Typography>
                     : null}
-                    {this.props.children ?? null}
+                    <Container style={this.styles.container}>
+                        {children}
+                    </Container>
                 </PopupBox>
             </Modal>
         )
     }
+
+    private getBoxStyle = memoize((minWidth: number, minHeight: number) => ({
+        minWidth: minWidth,
+        minHeight: minHeight,
+        padding: 0
+    }))
 }

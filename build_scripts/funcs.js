@@ -1,36 +1,27 @@
-const {
-    createHash
-} = require('crypto')
-const {
-    existsSync,
-    readFileSync,
-    writeFileSync,
-    readdirSync,
-    statSync
-} = require('fs')
-const {
-    join,
-    basename
-} = require('path')
+const { createHash } = require('crypto')
+const { existsSync, readFileSync, writeFileSync, readdirSync, statSync } = require('fs')
+const { join, basename } = require('path')
 const Log = require('./Log.js')
 
+const resolve = (...paths) => join(__dirname, ...paths)
+
 const postBuildPaths = {
-    out: join(__dirname, '..', 'out'),
-    original_x32: join(__dirname, '..', 'out', 'SnowRunner XML Editor-win32-ia32'),
-    original_x64: join(__dirname, '..', 'out', 'SnowRunner XML Editor-win32-x64'),
-    renamed: join(__dirname, '..', 'out', 'SnowRunnerXMLEditor'),
-    config: join(__dirname, '..', 'out', 'SnowRunnerXMLEditor', 'resources', 'app', '.webpack', 'main', 'config.json'),
-    winrar_x32: join(__dirname, '..', 'src', 'main', 'winrar'),
-    sxmle_updater: join(__dirname, '..', '..', 'sxmle_updater')
+    out: resolve('../out'),
+    original_x32: resolve('../out/SnowRunner XML Editor-win32-ia32'),
+    original_x64: resolve('../out/SnowRunner XML Editor-win32-x64'),
+    renamed: resolve('../out/SnowRunnerXMLEditor'),
+    config: resolve('../out/SnowRunnerXMLEditor/resources/app/.webpack/main/config.json'),
+    winrar_x32: resolve('../src/main/winrar'),
+    sxmle_updater: resolve('../../sxmle_updater')
 }
 
 const preBuildPaths = {
-    out: join(__dirname, '..', 'out'),
-    config: join(__dirname, '..', 'src', 'main', 'config.json'),
-    package: join(__dirname, '..', 'package.json'),
-    packageLock: join(__dirname, '..', 'package-lock.json'),
-    public: join(__dirname, '..', '..', 'sxmle_updater', 'public.json'),
-    issConfig: join(__dirname, '..', 'innoSetup', 'installer.config.iss')
+    out: resolve('../out'),
+    config: resolve('../src/main/config.json'),
+    package: resolve('../package.json'),
+    packageLock: resolve('../package-lock.json'),
+    public: resolve('../../sxmle_updater/public.json'),
+    issConfig: resolve('../innoSetup/installer.config.iss')
 }
 
 /**
@@ -46,10 +37,11 @@ function generateMap(rootPath) {
 
         if (!stats.isFile()) {
             map = Object.assign(map, generateMap(path))
-        } else {
+        }
+        else {
             const shaHash = createHash('sha1')
             shaHash.update(readFileSync(path))
-            map[path.replace(join(postBuildPaths.renamed, 'resources', 'app', '/'), '')] = shaHash.digest('hex')
+            map[path.replace(join(postBuildPaths.renamed, 'resources/app/'), '')] = shaHash.digest('hex')
         }
     }
     return map
@@ -63,11 +55,10 @@ function generateMap(rootPath) {
  * @param {Function} callback 
  */
 function checkVar(variable, callback) {
-    if (variable !== null && variable !== undefined) {
+    if (variable !== null && variable !== undefined)
         callback()
-    } else {
+    else
         Log.error(`Variable ${variable} is not set.`)
-    }
 }
 
 /**
@@ -83,11 +74,11 @@ function checkVar(variable, callback) {
 function checkPath(path, callback, throwError = false) {
     if (existsSync(path)) {
         callback()
-    } else {
+    }
+    else {
         Log.error(`Path '${path}' not found.`)
-        if (throwError) {
+        if (throwError)
             throw new Error()
-        }
     }
 }
 
@@ -104,15 +95,16 @@ function readFileToVar(varName, path, fromJSON = true) {
 
     if (existsSync(path)) {
         try {
-            if (fromJSON) {
+            if (fromJSON)
                 global[varName] = JSON.parse(readFileSync(path).toString())
-            } else {
+            else
                 global[varName] = readFileSync(path).toString()
-            }
-        } catch {
+        }
+        catch {
             Log.error(`Error reading file ${fileName}`)
         }
-    } else {
+    }
+    else {
         Log.error(`${fileName} not found.`)
     }
 }
@@ -131,11 +123,13 @@ function writeFile(path, dependency, dataFunc) {
             const data = dataFunc()
             try {
                 writeFileSync(path, data)
-            } catch {
+            }
+            catch {
                 Log.error(`Error writing ${basename(path)}`)
             }
         })
-    } else {
+    }
+    else {
         Log.error(`${basename(path)} not found.`)
     }
 }

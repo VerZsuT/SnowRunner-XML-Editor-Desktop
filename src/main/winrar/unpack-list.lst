@@ -1,2 +1,12 @@
-[media]
-[strings]
+[media]\_dlc
+[media]\_templates\trucks.xml
+[media]\classes\engines
+[media]\classes\gearboxes
+[media]\classes\suspensions
+[media]\classes\trucks
+[media]\classes\wheels
+[media]\classes\winches
+[strings]\strings_english.str
+[strings]\strings_russian.str
+[strings]\strings_chinese_traditional.str
+[strings]\strings_german.str

@@ -15,11 +15,10 @@ class Log {
      * @param {boolean} isLog 
      */
     static print(message, isLog = false) {
-        if (isLog) {
+        if (isLog)
             console.log(`${this.FgGreen}${message}${this.Reset}`)
-        } else {
+        else
             console.log(`- ${message}`)
-        }
     }
 
     /**

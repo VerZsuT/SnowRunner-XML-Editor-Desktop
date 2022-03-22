@@ -1,98 +1,147 @@
 import { execFileSync, execFile } from 'child_process'
 import { existsSync, mkdirSync, rmSync } from 'fs'
 import { join, basename } from 'path'
+
 import { paths } from '../service'
-import { Config } from './Config'
-import { Hasher } from './Hasher'
-import { Texts } from './Texts'
-import { Windows } from './Windows'
+import Settings from './Settings'
+import Config from './Config'
+import Hasher from './Hasher'
+import Texts from './Texts'
+import Windows from './Windows'
 
 /** Предоставляет методы для работы с архивами. */
-export class Archiver {
-    static config = Config.obj
+export default class Archiver {
+    // MARK: сообщения WinRAR
+    private static config = Config.obj
+    private static get prodFlags() {return Settings.obj.showWinRAR? [] : ['-ibck', '-inul']}
+    private static mainUnpackList = '@unpack-list.lst'
+    private static modsUnpackList = '@unpack-mod-list.lst'
 
     /**
-     * Обновляет файлы в архиве.
+     * Обновить файлы в архиве.
      * @param source - путь до папки с файлами.
      * @param direction - путь до архива.
      */
-    static update = (source: string, direction: string) => {
-        const fileName = basename(direction, '.pak')
-        execFileSync('WinRAR.exe', ['f', '-ibck', '-inul', direction, source+'\\', '-r', '-ep1'], {
-            cwd: paths.winrar_x32
-        })
-        
-        if (fileName === 'initial') {
-            this.config.sizes.initial = Hasher.getSize(direction)
-        } else {
-            this.config.sizes.mods[fileName] = Hasher.getSize(direction)
-        }
+    public static update = (source: string, direction: string) => {
+        this.WinRAR(['f', ...this.prodFlags, direction, source+'\\', '-r', '-ep1'])
+        this.saveHash(direction, basename(direction) === 'initial.pak')
     }
 
     /**
-     * Распаковывает файлы в папку.
+     * Распаковать файлы из архива в папку.
      * @param source - путь до ахрива.
      * @param direction - путь до папки.
      */
-    static unpack = async (source: string, direction: string, fromMod?: boolean) => {
-        rmSync(direction, {
-            recursive: true,
-            force: true
-        })
-        await new Promise(resolve => {
-            execFile('WinRAR.exe', ['x', '-ibck', '-inul', source, `@${fromMod ? 'unpack-mod-list.lst' : 'unpack-list.lst'}`, direction+'\\'], {
-                cwd: paths.winrar_x32
-            }).once('close', resolve)
-        })
-    }
+    public static unpack = async (source: string, direction: string, fromMod?: boolean) => {
+        const list = fromMod ? this.modsUnpackList : this.mainUnpackList
 
-    static unpackSync = (source: string, direction: string, fromMod?: boolean) => {
-        rmSync(direction, {
-            recursive: true,
-            force: true
-        })
-        try {
-            execFileSync('WinRAR.exe', ['x', '-ibck', '-inul', source, `@${fromMod ? 'unpack-mod-list.lst' : 'unpack-list.lst'}`, direction+'\\'], {
-                cwd: paths.winrar_x32
-            })
-        } catch {}
+        this.rmDir(direction)
+        await this.WinRAR(['x', ...this.prodFlags, source, list, direction+'\\'], true)
     }
 
     /**
-     * Распаковывает основные XML файлы (+DLC) из `initial.pak`.
-     * @param noLock не блоковать другие окна во время распаковки.
+     * Синхронная версия `unpack`.
+     * 
+     * Распаковать файлы из архива в папку.
+     * @param source - путь до ахрива.
+     * @param direction - путь до папки.
      */
-    static unpackMain = async () => {
+    public static unpackSync = (source: string, direction: string, fromMod?: boolean) => {
+        const list = fromMod ? this.modsUnpackList : this.mainUnpackList
+
+        this.rmDir(direction)
+        try {
+            this.WinRAR(['x', ...this.prodFlags, source, list, direction+'\\'])
+        } catch {}
+    }
+
+    /** Распаковать основные XML файлы (+DLC) из `initial.pak`. */
+    public static unpackMain = async () => {
         Windows.loading.show()
         Windows.loading.setText(Texts.get('UNPACKING'))
 
-        rmSync(paths.mainTemp, {
-            recursive: true,
-            force: true
-        })
-        rmSync(paths.texts, { force: true })
-        mkdirSync(paths.mainTemp)
+        this.clearDir(paths.mainTemp)
+        this.rmFile(paths.texts)
 
         await this.unpack(this.config.initial, paths.mainTemp)
+        this.saveHash(this.config.initial)
         Windows.loading.hide()
-        this.config.sizes.initial = Hasher.getSize(this.config.initial)
     }
 
-    /** Распаковывает XML файлы модификации из файла по переданному пути. */
-    static unpackMod = async (pathToFile: string) => {
+    /**
+     * Распаковать XML файлы модификации из архива.
+     * @param pathToFile путь к архиву модификации.
+     */
+    public static unpackMod = async (pathToFile: string) => {
         const modId = basename(pathToFile, '.pak')
         const pathToDir = join(paths.modsTemp, modId)
-        if (!existsSync(paths.modsTemp)) {
-            mkdirSync(paths.modsTemp)
-        }
 
-        rmSync(pathToDir, {
-            recursive: true,
-            force: true
-        })
-        mkdirSync(pathToDir)
-
-        this.config.sizes.mods[modId] = Hasher.getSize(pathToFile)
+        this.mkDir(paths.modsTemp)
+        this.clearDir(pathToDir)
+        this.saveHash(pathToFile, true)
         await this.unpack(pathToFile, pathToDir, true)
+    }
+
+    /**
+     * Сохранить размер файлов для фиксации изменений извне.
+     * 
+     * `getSize` использовать более производительно чем вычислять хэш.
+     * @param path путь к файлу.
+     */
+    private static saveHash(path: string, isMod?: boolean) {
+        const fileName = basename(path, '.pak')
+
+        if (!isMod)
+            this.config.sizes.initial = Hasher.getSize(path)
+        else
+            this.config.sizes.mods[fileName] = Hasher.getSize(path)
+    }
+
+    /**
+     * Удалить папку с её содержимым.
+     * @param path путь к папке.
+     */
+    private static rmDir(path: string) {
+        rmSync(path, { recursive: true, force: true })
+    }
+
+    /**
+     * Удалить файл.
+     * @param path путь к файлу.
+     */
+    private static rmFile(path: string) {
+        rmSync(path, { force: true })
+    }
+
+    /**
+     * Создать папку (при её отсутствии).
+     * @param path путь создания.
+     */
+    private static mkDir(path: string) {
+        if (!existsSync(path))
+            mkdirSync(path)
+    }
+
+    /**
+     * Очистить содержимое папки (удаляет её и создаёт вновь).
+     * @param path путь к папке.
+     */
+    private static clearDir(path: string) {
+        this.rmDir(path)
+        this.mkDir(path)
+    }
+
+    /**
+     * Запустить WinRAR.
+     * @param attributes параметры вызова.
+     * @param async зпустить процесс асинхронно.
+     */
+    private static WinRAR(attributes: string[], async?: boolean) {
+        if (async) {
+            return new Promise<void>(resolve =>
+                execFile('WinRAR.exe', attributes, { cwd: paths.winrar_x32 }).once('close', resolve)
+            )
+        }
+        execFileSync('WinRAR.exe', attributes, { cwd: paths.winrar_x32 })
     }
 }

@@ -1,103 +1,69 @@
 import { PureComponent, Fragment } from 'react'
 import { render } from 'react-dom'
+import type { CheerioAPI } from 'cheerio'
+import type IFindItem from 'modules/list/types/IFindItem'
+import type IConfigSettings from 'main/types/IConfigSettings'
+import Lang from 'main/enums/Lang'
+
+import { MAIN } from 'scripts/funcs'
+import { getExported } from 'scripts/dom'
+import config from 'scripts/config'
+import main from 'scripts/main'
+import { OPTIONAL, addCheck, help, Message } from './service'
+
+import EditorConsole from './components/EditorConsole'
+
 import 'styles/console'
 
-import { Lang, MAIN, mainProcess, ParamType } from 'scripts'
-import { ANY, OPTIONAL, addCheck, help, Message } from './service'
-import { EditorConsole } from './components/EditorConsole'
-import { Executor } from 'scripts/exec/exec'
-import { Confirm } from 'modules/components/Confirm'
-import { Prompt } from 'modules/components/Prompt'
-
-const { config, paths } = window.provider
 const {
     quit, reload, resetConfig, enableDevTools,
-    disableDevTools, openXMLDialog, saveBackup,
+    disableDevTools, saveBackup,
     recoverFromBackup, checkUpdate, updateFiles,
     unpackFiles, importConfig, exportConfig,
-    openWhatsNew, findInDir, templates: mainTemplates,
-    getParams, seeEPF, joinEPF
-} = mainProcess
-const {
-    readFileSync, replacePars, existsSync,
-    writeFileSync, getModPak, removeDir, join,
-    basename
-} = window.consolePreload
+    openWhatsNew, findInDir,
+    seeEPF, joinEPF, paths
+} = main
+const { existsSync, writeFileSync, join } = window.service
 
 interface IState {
     messages: JSX.Element[]
-    confirm: {
-        open?: boolean
-        text?: string
-        onSuccess?: ()=>void
-        onClose?: ()=>void
-    }
-    prompt: {
-        open?: boolean
-        text?: string
-        default?: string
-        type?: string
-        min?: string
-        max?: string
-        onSuccess?: (value: string)=>void
-        onClose?: ()=>void
-    }
 }
 
 class Console extends PureComponent<any, IState> {
     private listeners: {
         [cmd: string]: (args: string[]) => JSX.Element
     }
-    private fileDOM: Document
-    private filePath: string
 
     constructor(props: any) {
         super(props)
-
         this.state = {
             messages: [
                 <Fragment key='0'>
                     {Message.info("Командная строка v1.1.")}
                 </Fragment>
-            ],
-            confirm: {},
-            prompt: {}
+            ]
         }
         this.listeners = this.getListeners()
     }
 
     render() {
-        return (<>
-            <div id='messages'
-                onClick={() => (document.querySelector('#input') as HTMLInputElement).focus()}
-            >
-                {this.state.messages}
+        const { messages } = this.state
+        
+        return <>
+            <div id='messages' onClick={this.onMessagesClick}>
+                {messages}
             </div>
-            <EditorConsole onError={this.pushMessage} listeners={this.listeners} />
-            <Confirm
-                open={this.state.confirm.open ?? false}
-                text={this.state.confirm.text ?? ''}
-                onClose={this.state.confirm.onClose?? (()=>{})}
-                onSuccess={this.state.confirm.onSuccess?? (()=>{})}
-            />
-            <Prompt
-                open={this.state.prompt.open ?? false}
-                text={this.state.prompt.text ?? ''}
-                onClose={this.state.prompt.onClose?? (()=>{})}
-                onSuccess={this.state.prompt.onSuccess?? (()=>{})}
-                default={this.state.prompt.default?? ''}
-                type={this.state.prompt.type?? 'text'}
-                min={this.state.prompt.min}
-                max={this.state.prompt.max}
-            />
-        </>)
+            <EditorConsole onError={this.pushMessage} listeners={this.listeners}/>
+        </>
     }
 
+    private onMessagesClick = () => (document.querySelector('#input') as HTMLInputElement).focus()
+
     private pushMessage = (message: JSX.Element) => {
-        this.setState({
-            messages: [...this.state.messages, <Fragment key={this.state.messages.length}>{message}</Fragment>]
-        })
-        document.querySelector('#messages').scrollTop = 10000000
+        this.setState(({ messages }) => ({
+            messages: [...messages, <Fragment key={messages.length}>{message}</Fragment>]
+        }))
+        document.querySelector('#messages').scrollTop = 10_000_000
     }
 
     private getListeners() {
@@ -110,9 +76,12 @@ class Console extends PureComponent<any, IState> {
             'reload': addCheck(() => reload()),
             'reset': addCheck(() => resetConfig(false)),
             'exportAll': addCheck(() => {
-                const items: FindItem[] = []
+                const items: IFindItem[] = []
+                const exported: any = {}
+
                 for (const dlcItem of config.dlc) {
                     const path = `${dlcItem.path}\\classes`
+
                     items.push(...findInDir(join(path, 'trucks')))
                     items.push(...findInDir(join(path, 'trucks/trailers')))
                     items.push(...findInDir(join(path, 'gearboxes')))
@@ -130,53 +99,26 @@ class Console extends PureComponent<any, IState> {
                 items.push(...findInDir(join(paths.classes, 'winches')))
                 items.push(...findInDir(join(paths.classes, 'wheels')))
 
-                const filePath = join(paths.mainTemp, '[media]/_templates/trucks.xml')
-                const fileData = readFileSync(filePath).toString()
-                const globalTemplates = new DOMParser().parseFromString(fileData, 'text/xml')
-
-                const exported: any = {}
                 for (const item of items) {
-                    const [fileDOM, tItems] = getDOM(item.path)
-                    if (!fileDOM) continue
-                    const templates = fileDOM.querySelector('_templates')
+                    const obj = getExported(item.path)
+                    if (!obj)
+                        continue
 
-                    for (let tItem of tItems) {
-                        if (!exported[item.name+'.xml']) {
-                            exported[item.name+'.xml'] = {}
-                        }
-                        function calcInput(i: any) {
-                            if (!exported[item.name+'.xml'][i.selector]) {
-                                exported[item.name+'.xml'][i.selector] = {}
-                            }
-                            exported[item.name+'.xml'][i.selector][i.name] = getValue(fileDOM, templates, globalTemplates, i)
-                        }
-                        function calcGroup(i: any) {
-                            for (const groupItem of i.groupItems) {
-                                if (groupItem.paramType === ParamType.group) {
-                                    calcGroup(groupItem)
-                                } else {
-                                    calcInput(groupItem)
-                                }
-                            }
-                        }
-                        if (tItem.paramType === ParamType.input) {
-                            calcInput(tItem)
-                        } else if (tItem.paramType === ParamType.group) {
-                            calcGroup(tItem)
-                        }
-                    }
+                    exported[`${item.name}.xml`] = obj
                 }
 
                 writeFileSync(join(paths.backupFolder, 'exported.json'), JSON.stringify(exported, null, '\t'))
-                Message.log('Все параметры были экпортированы в backups/exported.json')
+                this.pushMessage(Message.log('Все параметры были экпортированы в backups/exported.json'))
             }),
 
             'devTools': addCheck(args => {
                 const { action } = args
+
                 if (action === 'enable') {
                     enableDevTools()
                     this.pushMessage(Message.log('DevTools были включены для всех последующих окон.'))
-                } else {
+                }
+                else {
                     disableDevTools()
                     this.pushMessage(Message.log('DevTools были выключены для всех последующих окон.'))
                 }
@@ -187,11 +129,10 @@ class Console extends PureComponent<any, IState> {
             'epf': addCheck(args => {
                 const { action } = args
 
-                if (action === 'see') {
+                if (action === 'see')
                     seeEPF()
-                } else {
+                else
                     joinEPF()
-                }
             }, {
                 action: ['see', 'join'] as unknown as 'see' | 'join'
             }),
@@ -208,7 +149,7 @@ class Console extends PureComponent<any, IState> {
                     this.pushMessage(Message.log(`${name} = ${value}.`))
                 }
             }, {
-                name: Object.keys(config.settings) as unknown as keyof typeof config.settings,
+                name: Object.keys(config.settings) as unknown as keyof IConfigSettings,
                 value: ['true', 'false'] as unknown as 'true' | 'false'
             }),
 
@@ -221,106 +162,23 @@ class Console extends PureComponent<any, IState> {
                 lang: Object.keys(Lang) as unknown as Lang
             }),
 
-            'read': addCheck(() => {
-                const path = openXMLDialog()
-                const parser = new DOMParser()
-
-                if (!path) {
-                    this.pushMessage(Message.warn('Вы не выбрали файл для считывания.'))
-                    return
-                }
-                const fileDOM = parser.parseFromString(`<root>${readFileSync(path).toString()}</root>`, 'text/xml')
-
-                if (fileDOM.querySelector('parsererror')) {
-                    this.pushMessage(Message.error(`Ошибка парсинга файла.\n${fileDOM.querySelector<HTMLDivElement>('parsererror').innerText}`))
-                    return
-                }
-
-                this.pushMessage(Message.log(`Файл '${path}' успешно считан в память.`))
-                this.fileDOM = fileDOM
-                this.filePath = path
-            }),
-
-            'set': addCheck(args => {
-                let { selector, attrName, value } = args
-
-                selector = replacePars(selector)
-                value = replacePars(value)
-
-                if (!this.fileDOM) {
-                    this.pushMessage(Message.error('Сначала надо считать файл с помощью команды "read".'))
-                    return
-                }
-                if (!existsSync(this.filePath)) {
-                    this.pushMessage(Message.error(`Искомый файл '${this.filePath}' не обнаружен.`))
-                    return
-                }
-
-                const element = this.fileDOM.querySelector(selector)
-                if (!element) {
-                    this.pushMessage(Message.error(`Элемент с селектором '${selector}' не обнаружен.`))
-                    return
-                }
-
-                const serializer = new XMLSerializer()
-                element.setAttribute(attrName, value)
-                writeFileSync(this.filePath, serializer.serializeToString(this.fileDOM).replace('<root>', '').replace('</root>', ''))
-
-                this.pushMessage(Message.log(`${attrName}='${value}'`))
-            }, {
-                selector: ANY,
-                attrName: ANY,
-                value: ANY
-            }),
-
             'backup': addCheck(args => {
                 const { action } = args
 
-                if (action === 'save') {
+                if (action === 'save')
                     saveBackup()
-                } else {
+                else
                     recoverFromBackup()
-                }
 
                 this.pushMessage(Message.log('Операция проведена.'))
             }, {
                 action: ['save', 'restore'] as unknown as 'save' | 'restore'
             }),
 
-            'addMod': addCheck(() => {
-                const result = getModPak()
-                if (!result) {
-                    this.pushMessage(Message.error('Не выбран .pak файл модификации.'))
-                    return
-                }
-
-                if (!config.mods.items[result.id]) {
-                    config.mods.length++
-                }
-                config.mods.items[result.id] = {
-                    name: result.name,
-                    path: result.path
-                }
-
-                reload()
-            }),
-
             'checkUpdate': addCheck(() => {
                 this.pushMessage(Message.log('Проверка обновления...'))
                 this.pushMessage(Message.log('В случае удачи выведется соответствующее окно.'))
                 checkUpdate()
-            }),
-
-            'delMod': addCheck(args => {
-                const { modId } = args
-
-                delete config.mods.items[modId]
-                removeDir(join(paths.modsTemp, modId))
-
-                config.mods.length--
-                this.pushMessage(Message.log(`Модификация '${modId}' удалена.`))
-            }, {
-                modId: Object.keys(config.mods) as unknown as keyof typeof config.mods
             }),
 
             'help': addCheck(args => {
@@ -332,7 +190,8 @@ class Console extends PureComponent<any, IState> {
                         return
                     }
                     this.pushMessage(Message.log(`Справка по команде '${cmd}'\n${help[cmd]}`))
-                } else {
+                }
+                else {
                     this.pushMessage(Message.log(`Список команд:\n${help.toString()}`))
                 }
             }, {
@@ -345,7 +204,8 @@ class Console extends PureComponent<any, IState> {
                 if (action === 'saveChanges') {
                     updateFiles()
                     this.pushMessage(Message.log('Изменения в файлах initial.pak сохранены.'))
-                } else {
+                }
+                else {
                     unpackFiles()
                     this.pushMessage(Message.log('initial.pak был распакован.'))
                 }
@@ -363,7 +223,8 @@ class Console extends PureComponent<any, IState> {
                     }
                     importConfig()
                     this.pushMessage(Message.log('Конфиг был успешно импортирован.'))
-                } else {
+                }
+                else {
                     exportConfig()
                     this.pushMessage(Message.log('Конфиг был успешно экспортирован.'))
                 }
@@ -373,186 +234,9 @@ class Console extends PureComponent<any, IState> {
 
             'whatsNew': addCheck(() => {
                 openWhatsNew()
-            }),
-
-            'exec': addCheck(args => {
-                const executor = new Executor(this.confirm, this.prompt)
-                const { ignore } = args
-
-                executor.exec(ignore === '-force').then(messages => {
-                    if (messages.length) {
-                        for (const message of messages) {
-                            this.pushMessage(Message.create(message.text, message.type))
-                        }
-                    }
-                }, (error: Error) => {
-                    this.pushMessage(Message.error(`Ошибка: ${error.message}`))
-                })
-            }, {
-                ignore: [OPTIONAL, '-force'] as unknown as '-force'
             })
         }
     }
-
-    private confirm = (text: string) => {
-        return new Promise<boolean>(resolve => {
-            this.setState({
-                confirm: {
-                    text,
-                    open: true,
-                    onClose: () => {
-                        this.setState({ confirm: {} })
-                        resolve(false)
-                    },
-                    onSuccess: () => {
-                        this.setState({ confirm: {} })
-                        resolve(true)
-                    }
-                }
-            })
-        })
-    }
-
-    private prompt = (text: string, type: string, defaultVal?: string, min?: string, max?: string) => {
-        return new Promise<string>(resolve => {
-            this.setState({
-                prompt: {
-                    text,
-                    default: defaultVal,
-                    open: true,
-                    onSuccess: value => {
-                        this.setState({ prompt: {} })
-                        resolve(value)
-                    },
-                    onClose: () => {
-                        this.setState({ prompt: {} })
-                        resolve(null)
-                    },
-                    type,
-                    min,
-                    max
-                }
-            })
-        })
-    }
 }
 
-function getFromTemplates(fileDOM: Document, templates: Element, globalTemplates: Document, item: IInputParams | ISelectParams) {
-    let el = fileDOM.querySelector(item.selector)
-    const array = item.selector.split(' ')
-        .map(value => value.trim())
-        .filter(value => value !== '>')
-    const innerName = array.slice(array.length - 1)[0]
-    const tagName = innerName.split('[')[0]
-    if (!el) {
-        el = fileDOM.querySelector(array.slice(0, array.length - 1).join(' > '))
-    }
-    if (el) {
-        let templateName = el.getAttribute('_template')
-        if (!templateName) {
-            templateName = getParentTemplate(el)
-        }
-        if (templateName) {
-            const template = templates.querySelector(templateName)
-            if (template) {
-                const templateValue = template.getAttribute(item.name)
-                if (templateValue) {
-                    return templateValue
-                }
-
-                const el2 = template.querySelector(tagName)
-                if (el2) {
-                    const templateValue2 = el2.getAttribute(item.name)
-                    if (templateValue2) {
-                        return templateValue2
-                    }
-                    const templateName1 = el2.getAttribute('_template')
-                    if (templateName1) {
-                        return getValueInGlobal(templateName1, tagName, globalTemplates, item)
-                    }
-                }
-            } else {
-                return getValueInGlobal(templateName, tagName, globalTemplates, item)
-            }
-        }
-    }
-}
-
-function getParentTemplate(el: any) {
-    if (el.parentElement) {
-        const template = el.parentElement.getAttribute('_template')
-        if (template) {
-            return template
-        } else {
-            return getParentTemplate(el.parentElement)
-        }
-    }
-}
-
-function getValueInGlobal(templateName: string, tagName: string, globalTemplates: Document, item: IInputParams | ISelectParams) {
-    const template = globalTemplates.querySelector(`${tagName} > ${templateName}`)
-    if (template) {
-        const templateValue = template.getAttribute(item.name)
-        if (templateValue) {
-            return templateValue
-        } else {
-            const el2 = template.querySelector(tagName)
-            if (el2) {
-                const templateValue2 = el2.getAttribute(item.name)
-                if (templateValue2) {
-                    return templateValue2
-                }
-            }
-        }
-    }
-    return item.value
-}
-
-function getValue(fileDOM: Document, templates: Element, globalTemplates: Document, item: IInputParams | ISelectParams) {
-    let value = item.value
-    if (!value && value !== 0 && templates) {
-        value = getFromTemplates(fileDOM, templates, globalTemplates, item)
-    }
-    if (value === null || value === undefined) {
-        value = item.default
-    }
-
-    return value
-}
-
-function getDOM(filePath: string): [Document, ITemplateParams] {
-    const fileData = readFileSync(filePath).toString()
-    if (!fileData) return
-
-    const parser = new DOMParser()
-    const $dom = parser.parseFromString(`<root>${fileData}</root>`, 'text/xml')
-    const $root = $dom.querySelector('root')
-    $root.childNodes.forEach(child => {
-        if (child.nodeType === 8) {
-            child.remove()
-        }
-    })
-
-    if ($root.childNodes[0].nodeValue === '\n') {
-        $root.childNodes[0].remove()
-    }
-
-    const tempDOM = $dom
-    const templates = mainTemplates
-    let name: string
-    for (const tmp in templates) {
-        const selector = `root > ${templates[tmp].selector}`
-        if (selector && tempDOM.querySelector(selector)) {
-            name = tmp
-            break
-        }
-    }
-    if (!name) return [undefined, undefined]
-
-    const domString = new XMLSerializer().serializeToString(tempDOM)
-    const result = getParams(domString, name, basename(filePath, '.xml'))
-
-    return [parser.parseFromString(result.dom, 'text/xml'), result.params]
-}
-
-render(<Console />, MAIN)
+render(<Console/>, MAIN)
