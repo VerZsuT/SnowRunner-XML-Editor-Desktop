@@ -28,12 +28,14 @@ export default class Save extends PureComponent<IProps> {
     }
 
     private save = () => {
-        if (!this.props.pathToInitial) {
+        const { pathToInitial } = this.props
+
+        if (!pathToInitial) {
             window['errorHandler'](localize.NO_GAME_FOLDER)
             return
         }
 
-        config.initial = this.props.pathToInitial
+        config.initial = pathToInitial
         saveBackup(true)
     }
 }

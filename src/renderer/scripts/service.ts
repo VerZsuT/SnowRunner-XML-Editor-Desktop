@@ -1,6 +1,6 @@
 import { contextBridge } from 'electron'
-import { join, basename, extname } from 'path'
-import { existsSync, readFileSync, writeFileSync, readdirSync } from 'fs'
+import { join, basename } from 'path'
+import { existsSync, readFileSync, writeFileSync, readdirSync, lstatSync } from 'fs'
 import type IService from './types/IService'
 
 const service: IService = {
@@ -9,7 +9,7 @@ const service: IService = {
     existsSync,
     readFileSync: path => readFileSync(path).toString(),
     writeFileSync,
-    isDirectory: (name: string) => extname(name) === '',
+    isDirectory: (path: string) => lstatSync(path).isDirectory(),
     readdirSync
 }
 

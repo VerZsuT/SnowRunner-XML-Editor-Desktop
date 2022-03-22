@@ -16,7 +16,8 @@ const config = Config.obj
 const settings = Settings.set({
     appId: 'SnowRunner XML editor',
     saveWhenReload: true,
-    devTools: false
+    devTools: false,
+    showWinRAR: false
 })
 
 Public.init()

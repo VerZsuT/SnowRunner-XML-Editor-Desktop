@@ -1,5 +1,5 @@
 export default {
-    pop(name: string) {
+    pop<T>(name: string) {
         const val = localStorage.getItem(name)
 
         localStorage.removeItem(name)
@@ -9,9 +9,9 @@ export default {
         if (val === 'undefined')
             return undefined
 
-        return val
+        return val as unknown as T
     },
-    get(name: string) {
+    get<T>(name: string) {
         const val = localStorage.getItem(String(name))
 
         if (val === 'null')
@@ -20,7 +20,7 @@ export default {
         if (val === 'undefined')
             return undefined
 
-        return val
+        return val as unknown as T
     },
     set(name: string, value: string) {
         localStorage.setItem(String(name), value)

@@ -30,16 +30,18 @@ class UpdateWindow extends PureComponent<any, IState> {
     }
 
     render() {
-        return (<> 
+        const { version } = this.state
+
+        return <> 
             <VersionTitle>
-                {localize.ALLOW_NEW_VERSION_AUTO} (v{this.state.version})
+                {localize.ALLOW_NEW_VERSION_AUTO} (v{version})
             </VersionTitle>
             <ButtonsGrid>
                 <Button color='success' onClick={this.update}>{localize.UPDATE}</Button>
                 <Button color='error' onClick={this.ignore}>{localize.IGNORE}</Button>
                 <Button color='primary' onClick={this.close}>{localize.CLOSE}</Button>
             </ButtonsGrid>
-        </>)
+        </>
     }
 
     private close = () => {

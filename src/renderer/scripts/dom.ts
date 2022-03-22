@@ -1,4 +1,4 @@
-import $ from 'cheerio'
+import { load } from 'cheerio'
 import type { Cheerio, Node as CNode } from 'cheerio'
 import type { JSXElementConstructor } from 'react'
 import type { CheerioAPI } from 'cheerio'
@@ -134,7 +134,7 @@ export function getGlobalTemplates() {
     const filePath = join(paths.mainTemp, '[media]/_templates/trucks.xml')
     const fileData = readFileSync(filePath)
 
-    return $.load(fileData, { xmlMode: true })
+    return load(fileData, { xmlMode: true })
 }
 
 export function process(filePath: string): [CheerioAPI, ITemplateParams, IEditorAction[]] {
@@ -148,7 +148,7 @@ export function process(filePath: string): [CheerioAPI, ITemplateParams, IEditor
     if (!fileData)
         return
 
-    dom = $.load(fileData, { xmlMode: true })
+    dom = load(fileData, { xmlMode: true })
 
     for (const tmp in templates) {
         if (templates[tmp].selector && dom(templates[tmp].selector).length) {
@@ -157,10 +157,10 @@ export function process(filePath: string): [CheerioAPI, ITemplateParams, IEditor
         }
     }
     if (!name)
-        return [$.load('<error/>'), [], []]
+        return [load('<error/>'), [], []]
 
     result = getParams(dom.html(), name, fileName)
-    dom = $.load(result.dom, { xmlMode: true })
+    dom = load(result.dom, { xmlMode: true })
 
     if (result.actions.length) {
         for (const actionPath of result.actions) {

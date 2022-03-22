@@ -12,7 +12,6 @@ import Settings from './Settings'
 /** Отвечает за работу с `config.json` */
 export default class Config {
     private static settings = Settings.obj
-    
     public static obj: IConfig = this.getConfig()
 
     /** Сохранить изменения в `config.json` */

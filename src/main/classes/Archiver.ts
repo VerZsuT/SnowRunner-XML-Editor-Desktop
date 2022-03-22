@@ -3,6 +3,7 @@ import { existsSync, mkdirSync, rmSync } from 'fs'
 import { join, basename } from 'path'
 
 import { paths } from '../service'
+import Settings from './Settings'
 import Config from './Config'
 import Hasher from './Hasher'
 import Texts from './Texts'
@@ -10,7 +11,11 @@ import Windows from './Windows'
 
 /** Предоставляет методы для работы с архивами. */
 export default class Archiver {
+    // MARK: сообщения WinRAR
     private static config = Config.obj
+    private static get prodFlags() {return Settings.obj.showWinRAR? [] : ['-ibck', '-inul']}
+    private static mainUnpackList = '@unpack-list.lst'
+    private static modsUnpackList = '@unpack-mod-list.lst'
 
     /**
      * Обновить файлы в архиве.
@@ -18,7 +23,7 @@ export default class Archiver {
      * @param direction - путь до архива.
      */
     public static update = (source: string, direction: string) => {
-        this.WinRAR(['f', '-ibck', '-inul', direction, source+'\\', '-r', '-ep1'])
+        this.WinRAR(['f', ...this.prodFlags, direction, source+'\\', '-r', '-ep1'])
         this.saveHash(direction, basename(direction) === 'initial.pak')
     }
 
@@ -28,10 +33,10 @@ export default class Archiver {
      * @param direction - путь до папки.
      */
     public static unpack = async (source: string, direction: string, fromMod?: boolean) => {
-        const list = `@${fromMod ? 'unpack-mod-list.lst' : 'unpack-list.lst'}`
+        const list = fromMod ? this.modsUnpackList : this.mainUnpackList
 
         this.rmDir(direction)
-        await this.WinRAR(['x', '-ibck', '-inul', source, list, direction+'\\'], true)
+        await this.WinRAR(['x', ...this.prodFlags, source, list, direction+'\\'], true)
     }
 
     /**
@@ -42,18 +47,15 @@ export default class Archiver {
      * @param direction - путь до папки.
      */
     public static unpackSync = (source: string, direction: string, fromMod?: boolean) => {
-        const list = `@${fromMod ? 'unpack-mod-list.lst' : 'unpack-list.lst'}`
+        const list = fromMod ? this.modsUnpackList : this.mainUnpackList
 
         this.rmDir(direction)
         try {
-            this.WinRAR(['x', '-ibck', '-inul', source, list, direction+'\\'])
+            this.WinRAR(['x', ...this.prodFlags, source, list, direction+'\\'])
         } catch {}
     }
 
-    /**
-     * Распаковать основные XML файлы (+DLC) из `initial.pak`.
-     * @param noLock не блоковать другие окна во время распаковки.
-     */
+    /** Распаковать основные XML файлы (+DLC) из `initial.pak`. */
     public static unpackMain = async () => {
         Windows.loading.show()
         Windows.loading.setText(Texts.get('UNPACKING'))

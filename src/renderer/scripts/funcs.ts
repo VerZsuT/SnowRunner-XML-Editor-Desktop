@@ -4,21 +4,25 @@ import main from './main'
 const { texts } = main
 
 /** Ссылка на `#main` элемент в `template.html` */
-export const MAIN = Object.defineProperty({}, 'MAIN', {
-    get: () => get('#main')
-})['MAIN']
+export const MAIN = get('#main')
 
 /** Устанавливает событие по нажатию кнопки. */
-export function setHotKey(params: ISetHotKeyParams, listener: (event: KeyboardEvent) => any): void {
+export function setHotKey(params: ISetHotKeyParams, listener: (event: KeyboardEvent) => any): ()=>void {
     const { key, eventName = 'keypress', ctrlKey, shiftKey, prevent } = params
 
-    document.addEventListener(eventName, event => {
+    const handler = (event: KeyboardEvent) => {
         if (event.code === key && ((ctrlKey && event.ctrlKey) || !ctrlKey) && ((shiftKey && event.shiftKey) || !shiftKey)) {
             if (prevent)
                 event.preventDefault()
             listener(event)
         }
-    })
+    }
+
+    document.addEventListener(eventName, handler)
+
+    return () => {
+        document.removeEventListener(eventName, handler)
+    }
 }
 
 /** Находит элемент по указанному селектору. */

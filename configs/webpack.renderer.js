@@ -9,5 +9,8 @@ module.exports = {
     resolve: {
         alias: require('./webpack.aliases'),
         extensions: ['.js', '.ts', '.tsx', '.css', '.scss']
+    },
+    output: {
+        pathinfo: false
     }
 }

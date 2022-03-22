@@ -17,6 +17,7 @@ import ListItem from './styled/ListItem'
 import ListItemButton from './styled/ListItemButton'
 import ListItemIcon from './styled/ListItemIcon'
 import 'styles/settings'
+import memoizee from 'memoizee'
 
 const { saveBackup, reload } = main
 
@@ -24,6 +25,7 @@ interface IState extends IConfigSettings {
     updates: boolean
     DLC: boolean
     mods: boolean
+    advancedMode: boolean
     lang: Lang
     saveBackup: boolean
     pathToInitial: string
@@ -82,7 +84,7 @@ class Settings extends PureComponent<any, IState> {
         </>)
     }
 
-    private onChangeSetting = (name: keyof IState, withValue?: boolean) => {
+    private onChangeSetting = memoizee((name: keyof IState, withValue?: boolean) => {
         if (withValue) {
             return (event: any) => {
                 this.setState({
@@ -97,7 +99,7 @@ class Settings extends PureComponent<any, IState> {
                 } as unknown as IState)    
             }
         }
-    }
+    })
     
     private CheckboxItem = (props: {name: keyof IState, text: string}) => {
         return (
@@ -111,7 +113,7 @@ class Settings extends PureComponent<any, IState> {
                             disableRipple
                         />
                     </ListItemIcon>
-                    <ListItemText primary={props.text} />
+                    <ListItemText primary={props.text}/>
                 </ListItemButton>
             </ListItem>
         )
@@ -125,18 +127,21 @@ class Settings extends PureComponent<any, IState> {
     }
 
     private save = () => {
-        if (this.state.saveBackup)
-            config.initial = this.state.pathToInitial
+        const { pathToInitial, lang, updates, DLC, mods, advancedMode, saveBackup: sb } = this.state
 
-        config.lang = this.state.lang
+        if (sb)
+            config.initial = pathToInitial
+
+        config.lang = lang
         config.settings = {
             ...config.settings,
-            updates: this.state.updates,
-            DLC: this.state.DLC,
-            mods: this.state.mods
+            updates,
+            DLC,
+            mods,
+            advancedMode
         }
 
-        if (this.state.saveBackup)
+        if (sb)
             saveBackup(true)
         else
             reload()

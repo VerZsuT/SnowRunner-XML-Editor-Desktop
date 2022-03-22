@@ -248,7 +248,6 @@ export default class Public {
 
         let resultActions: string[] = []
         let params = templates[name].template.getParams({ fileDOM }) as ITemplateParams
-        
 
         if (mainActions)
             resultActions.push(...mainActions)
