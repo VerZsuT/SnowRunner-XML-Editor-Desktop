@@ -35,7 +35,6 @@ const selectors = getSelectors(function () {
 export default <ITemplate>{
 	selector: 'Truck',
 	actions: [
-		'wheels',
 		'cranes',
 		'addonsContent',
 		'trailers',
