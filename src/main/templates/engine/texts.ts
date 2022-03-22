@@ -36,6 +36,18 @@ export const texts = {
 		damagedMaxTorqueModifier: 'Beschädigte max Drehmoment-Modifikator',
 		breakesDelay: 'Verzögerung beim Bremsen',
 		maxDeltaAngVel: 'Verlangsamung der Beschleunigung'
+	},
+	ZH: {
+		criticalDamageThreshold:'临界伤害阈值',
+		damageCapacity: '耐久性',
+		damagedConsumptionModifier: '损坏情况下的油耗乘数',
+		responsiveness: '响应性',
+		fuelConsumption: '燃料消耗量',
+		torque: '扭矩',
+		damagedMinTorqueModifier: '最小伤害功率乘数',
+		damagedMaxTorqueModifier: '最大伤害功率乘数',
+		breakesDelay: '制动延迟',
+		maxDeltaAngVel: '加速减速'
 	}
 }[Config.obj.lang]
 
@@ -72,5 +84,16 @@ export const descs = {
 		damagedMinTorqueModifier: 'Leistungsmultiplikator, wenn der Motorschaden den CriticalDamageThresold-Schwellenwert erreicht hat',
 		damagedMaxTorqueModifier: 'Leistungsmultiplikator, wenn der Motor kurz vor einem Totalausfall steht',
 		maxDeltaAngVel: 'Begrenzer für maximale Winkelbeschleunigung der Räder. Je kleiner es ist, desto langsamer beschleunigt das Auto.'
+	},
+	ZH: {
+		criticalDamageTheshold:'损坏阈值（值*100=百分比），发动机将表现得像一个破碎的。',
+		damageCapacity: '这台发动机的安全裕度。',
+		damagedConsumptionModifier: '损坏状态下的油耗乘数',
+		responsiveness: '发动机转速',
+		fuelConsumption: '发动机油耗乘数。',
+		torque: '这台发动机的功率',
+		damagedMinTorqueModifier: '发动机损坏达到CriticalDamageThresold阈值时的功率倍增器',
+		damagedMaxTorqueModifier: '发动机接近完全故障时的功率倍增器',
+		maxDeltaAngVel: '车轮最大角加速度的限制器。 它越小，汽车加速越慢。'
 	}
 }[Config.obj.lang]

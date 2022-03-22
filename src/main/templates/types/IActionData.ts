@@ -1,11 +1,11 @@
 import type { CheerioAPI } from 'cheerio'
-import type { JSXElementConstructor } from 'react'
-import type IActionProps from './IActionProps'
 
 /** Параметры доп. сценария. */
 interface IActionData {
     /** Название в меню. */
-    name: string
+    name: {
+        [lang: string]: string
+    }
 
     /** Уникальный номер. */
     id: string | number

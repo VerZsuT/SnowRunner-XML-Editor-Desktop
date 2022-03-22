@@ -24,6 +24,14 @@ export const texts = {
 		ignoreIse: 'Fahrten auf Eis',
 		yes: 'Ja',
 		no: 'Nein'
+	},
+	ZH: {
+		bodyFriction: '越野抓地力',
+		bodyFrictionAsphalt: '沥青上的抓地力',
+		substanceFriction: '抓地力在泥',
+		ignoreIse: '骑在冰上',
+		yes: '是',
+		no: '不'
 	}
 }[Config.obj.lang]
 
@@ -45,5 +53,11 @@ export const descs = {
 		bodyFrictionAsphalt: 'Koeffizient der Haftung auf Asphalt (statische Steine)',
 		substanceFriction: 'Koeffizient der Kupplung im Schlamm',
 		ignoreIse: 'Wird das Rad wie eine Kette auf dem Eis fahren'
+	},
+	ZH: {
+		bodyFriction: '固体地面附着系数',
+		bodyFrictionAsphalt: '沥青上的粘附系数（静石）',
+		substanceFriction: '泥浆中的粘附系数',
+		ignoreIse: '轮子会像链子一样在冰上吗'
 	}
 }[Config.obj.lang]

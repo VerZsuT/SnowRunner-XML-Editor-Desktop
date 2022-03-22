@@ -1,0 +1,17 @@
+{
+	"ADD_FAVORITE": "添加到收藏夹",
+	"APPLY": "申请",
+	"DLC_LIST_TITLE": "来自DLC",
+	"FAVORITES_LIST_TITLE": "收藏夹",
+	"MAIN_LIST_TITLE": "基本",
+	"MANUAL_MOD": "手动选择",
+	"MODS_CHANGE_BUTTON": "编辑",
+	"MODS_LIST_TITLE": "来自Mods",
+	"REMOVE_FAVORITE": "从收藏夹中删除",
+	"REMOVE_MOD": "删除修改",
+	"RELAUNCH_PROMPT": "要下载mod需要重新启动程序。 重启？",
+	"EMPTY_MODS_TITLE": "未检测到",
+	"TRUCKS_LIST_TITLE": "自动列表",
+	"TRAILERS_LIST_TITLE": "预告片列表",
+	"MODS_POPUP_TITLE": "修改"
+}
