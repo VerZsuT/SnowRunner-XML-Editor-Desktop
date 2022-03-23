@@ -36,7 +36,7 @@ export default class Select extends PureComponent<IProps, IState> {
     constructor(props: IProps) {
         super(props)
         this.state = {
-            value: props.getValue()
+            value: props.getValue() ?? ''
         }
         this.options = this.props.item.selectParams.map(option =>
             <MenuItem key={option.value} value={option.value}>

@@ -299,6 +299,7 @@ export default <ITemplate>{
 				attribute: 'Country',
 				text: texts.country,
 				desc: descs.country,
+				default: '',
 				options: {
 					RU: texts.russia,
 					US: texts.us,
