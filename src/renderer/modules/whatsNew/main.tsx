@@ -11,6 +11,36 @@ import 'styles/whatsNew'
 class WhatsNew extends PureComponent {
     render() {
         return <>
+            <Typography variant='h5' className='title'>{localize.WHATS_NEW_TITLE} v0.6.8a</Typography>
+            {onLang(Lang.RU, <>
+                <Typography>- Исправлен баг с текстами модификаций.</Typography>
+                <Typography>- Исправлен баг с пустым экраном в "Продвинутом режиме".</Typography>
+                <Typography>- Исправлен баг с картинками модификаций.</Typography>
+                <Typography>- Исправлен баг при пустом атрибуте "Country" в модификациях.</Typography>
+                <Typography>- Возвращён автоматический показ окна "Что новое" после обновления.</Typography>
+            </>)}
+            {onLang(Lang.EN, <>
+                <Typography>- Fixed a bug with modification texts.</Typography>
+                <Typography>- Fixed a bug with a blank screen in "Advanced Mode".</Typography>
+                <Typography>- Fixed a bug with pictures of modifications.</Typography>
+                <Typography>- Fixed a bug with an empty "Country" attribute in the modifications.</Typography>
+                <Typography>- Returned automatic display of the "What's new" window after the update.</Typography>
+            </>)}
+            {onLang(Lang.DE, <>
+                <Typography>- Es wurde ein Fehler mit Änderungstexten behoben.</Typography>
+                <Typography>- Ein Fehler mit einem leeren Bildschirm im "Fortgeschrittenen Modus" wurde behoben.</Typography>
+                <Typography>- Ein Fehler mit Bildmodifikationen wurde behoben.</Typography>
+                <Typography>- Ein Fehler wurde behoben, wenn das Attribut "Country" in den Modifikationen leer war.</Typography>
+                <Typography>- Das Fenster "Was ist neu" wird nach der Aktualisierung automatisch angezeigt.</Typography>
+            </>)}
+            {onLang(Lang.ZH, <>
+                <Typography>- 修正了修改文本的错误。</Typography>
+                <Typography>- 修复了"高级模式"下空白屏幕的错误。</Typography>
+                <Typography>- 修正了修改图片的错误。</Typography>
+                <Typography>- 修正了修改中一个空的"Country"属性的错误。</Typography>
+                <Typography>- 返回更新后自动显示"新增功能"窗口。</Typography>
+            </>)}
+
             <Typography variant='h5' className='title'>{localize.WHATS_NEW_TITLE} v0.6.8</Typography>
             {onLang(Lang.RU, <>
                 <Typography>- Исправлена ошибка при отсутствии интернет соединения.</Typography>
