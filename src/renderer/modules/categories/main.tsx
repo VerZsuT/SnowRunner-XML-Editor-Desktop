@@ -10,8 +10,9 @@ import Loading from 'modules/components/Loading'
 
 import Grid from './styled/Grid'
 import 'styles/categories'
+import config from 'scripts/config'
 
-const { openConsole, quit } = main
+const { openConsole, openWhatsNew, quit } = main
 
 class Categories extends PureComponent {
     private items: JSX.Element[]
@@ -27,16 +28,24 @@ class Categories extends PureComponent {
 
     componentDidMount() {
         this.setHotkeys()
+        this.openWhatsNew()
     }
 
     render() {
-        return (<>
+        return <>
             <Loading/>
             <Menu/>
             <Grid>
                 {this.items}
             </Grid>
-        </>)
+        </>
+    }
+
+    private openWhatsNew() {
+        if (config.settings.showWhatsNew) {
+            openWhatsNew()
+            config.settings.showWhatsNew = false
+        }        
     }
 
     private getCategories() {
