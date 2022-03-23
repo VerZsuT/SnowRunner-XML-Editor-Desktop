@@ -23,7 +23,7 @@ import Card from '../styled/Card'
 import StarRounded from '../styled/StarRounded'
 
 const { existsSync, readFileSync, writeFileSync } = window.service
-const { openEditor, openSaveDialog } = main
+const { openEditor, openSaveDialog, paths } = main
 
 interface IProps {
     item: IItem
@@ -245,7 +245,7 @@ export default class InnerListItem extends PureComponent<IProps, IState> {
                     // console.warn(`Не найдена картинка ${this.props.item.name}`)
                     if (item.modId && this.fileDOM('GameData > UiDesc').length) {
                         const imgName = this.fileDOM('GameData > UiDesc').attr('UiIcon328x458')
-                        const truckPath = `../../main/modsTemp/${item.modId}/ui/textures/${imgName}.png`
+                        const truckPath = `${paths.modsTemp}/${item.modId}/ui/textures/${imgName}.png`
 
                         if (!existsSync(truckPath))
                             return defaultImage
