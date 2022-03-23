@@ -11,7 +11,6 @@ import Windows from './Windows'
 
 /** Предоставляет методы для работы с архивами. */
 export default class Archiver {
-    // MARK: сообщения WinRAR
     private static config = Config.obj
     private static get prodFlags() {return Settings.obj.showWinRAR? [] : ['-ibck', '-inul']}
     private static mainUnpackList = '@unpack-list.lst'
