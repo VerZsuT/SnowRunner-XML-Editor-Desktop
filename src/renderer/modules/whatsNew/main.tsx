@@ -11,6 +11,24 @@ import 'styles/whatsNew'
 class WhatsNew extends PureComponent {
     render() {
         return <>
+            <Typography variant='h5' className='title'>{localize.WHATS_NEW_TITLE} v0.6.8b</Typography>
+            {onLang(Lang.RU, <>
+                <Typography>- Исправлен баг с распаковкой initial.pak при изменениях в модификациях.</Typography>
+                <Typography>- Исправлены ошибки в CH переводе (спасибо 杨 新民).</Typography>
+            </>)}
+            {onLang(Lang.EN, <>
+                <Typography>- Fixed bug with unpacking initial.pak when changing modifications.</Typography>
+                <Typography>- Fixed errors in CH translation (thanks to 杨 新民).</Typography>
+            </>)}
+            {onLang(Lang.DE, <>
+                <Typography>- Fehler beim Entpacken von initial.pak behoben, wenn Änderungen vorgenommen wurden.</Typography>
+                <Typography>- Fehler in der CH-Übersetzung behoben (Dank an 杨 新民).</Typography>
+            </>)}
+            {onLang(Lang.CH, <>
+                <Typography>- 修正了修改时解压initial.pak的错误。</Typography>
+                <Typography>- 修正了CH翻译中的错误 (感谢杨新民) 。</Typography>
+            </>)}
+
             <Typography variant='h5' className='title'>{localize.WHATS_NEW_TITLE} v0.6.8a</Typography>
             {onLang(Lang.RU, <>
                 <Typography>- Исправлен баг с текстами модификаций.</Typography>
@@ -33,7 +51,7 @@ class WhatsNew extends PureComponent {
                 <Typography>- Ein Fehler wurde behoben, wenn das Attribut "Country" in den Modifikationen leer war.</Typography>
                 <Typography>- Das Fenster "Was ist neu" wird nach der Aktualisierung automatisch angezeigt.</Typography>
             </>)}
-            {onLang(Lang.ZH, <>
+            {onLang(Lang.CH, <>
                 <Typography>- 修正了修改文本的错误。</Typography>
                 <Typography>- 修复了"高级模式"下空白屏幕的错误。</Typography>
                 <Typography>- 修正了修改图片的错误。</Typography>
@@ -90,7 +108,7 @@ class WhatsNew extends PureComponent {
                 <Typography>- Das System 'execute' wurde entfernt.</Typography>
                 <Typography>- Verbesserte Leistung.</Typography>
             </>)}
-            {onLang(Lang.ZH, <>
+            {onLang(Lang.CH, <>
                 <Typography>- 增加了中文翻译（错误和遗漏是可能的，使用了翻译) 。</Typography>
                 <Typography>- 修正了没有互联网连接时的错误。</Typography>
                 <Typography>- 更改了读取XML文件的方法。 应该大大增加可供编辑的mods的百分比。</Typography>
