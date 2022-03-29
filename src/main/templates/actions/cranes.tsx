@@ -30,7 +30,7 @@ export const data: IActionData = {
         RU: 'Краны',
         EN: 'Cranes',
         DE: 'Kräne',
-        ZH: '起重机'
+        CH: '起重机'
     },
     id: 'cranes',
     minHeight: 180,

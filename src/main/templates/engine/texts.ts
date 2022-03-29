@@ -37,17 +37,17 @@ export const texts = {
 		breakesDelay: 'Verzögerung beim Bremsen',
 		maxDeltaAngVel: 'Verlangsamung der Beschleunigung'
 	},
-	ZH: {
-		criticalDamageThreshold:'临界伤害阈值',
-		damageCapacity: '耐久性',
-		damagedConsumptionModifier: '损坏情况下的油耗乘数',
+	CH: {
+		criticalDamageThreshold:'危急伤害阈值',
+		damageCapacity: '耐用性',
+		damagedConsumptionModifier: '损害的燃料消耗乘数',
 		responsiveness: '响应性',
-		fuelConsumption: '燃料消耗量',
+		fuelConsumption: '燃料消耗',
 		torque: '扭矩',
-		damagedMinTorqueModifier: '最小伤害功率乘数',
-		damagedMaxTorqueModifier: '最大伤害功率乘数',
+		damagedMinTorqueModifier: '伤害的最小功率乘数',
+		damagedMaxTorqueModifier: '伤害的最大功率乘数',
 		breakesDelay: '制动延迟',
-		maxDeltaAngVel: '加速减速'
+		maxDeltaAngVel: '加速的减速'
 	}
 }[Config.obj.lang]
 
@@ -85,15 +85,15 @@ export const descs = {
 		damagedMaxTorqueModifier: 'Leistungsmultiplikator, wenn der Motor kurz vor einem Totalausfall steht',
 		maxDeltaAngVel: 'Begrenzer für maximale Winkelbeschleunigung der Räder. Je kleiner es ist, desto langsamer beschleunigt das Auto.'
 	},
-	ZH: {
-		criticalDamageTheshold:'损坏阈值（值*100=百分比），发动机将表现得像一个破碎的。',
-		damageCapacity: '这台发动机的安全裕度。',
-		damagedConsumptionModifier: '损坏状态下的油耗乘数',
-		responsiveness: '发动机转速',
+	CH: {
+		criticalDamageTheshold:'损伤阈值（值*100=百分比），在此阈值下，发动机将表现得像坏了一样。',
+		damageCapacity: '这个发动机的安全系数。',
+		damagedConsumptionModifier: '破损状态下的油耗倍率',
+		responsiveness: '发动机转数的速度',
 		fuelConsumption: '发动机油耗乘数。',
-		torque: '这台发动机的功率',
-		damagedMinTorqueModifier: '发动机损坏达到CriticalDamageThresold阈值时的功率倍增器',
-		damagedMaxTorqueModifier: '发动机接近完全故障时的功率倍增器',
-		maxDeltaAngVel: '车轮最大角加速度的限制器。 它越小，汽车加速越慢。'
+		torque: '该电机的输出功率',
+		damagedMinTorqueModifier: '当发动机损坏达到CriticalDamageThresold阈值时的功率倍数',
+		damagedMaxTorqueModifier: '发动机接近完全失效时的功率倍增器',
+		maxDeltaAngVel: '车轮的最大角加速度限制器。它越小，汽车的加速就越慢。'
 	}
 }[Config.obj.lang]

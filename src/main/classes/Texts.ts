@@ -2,7 +2,7 @@ import { existsSync, readFileSync, writeFileSync } from 'fs'
 import { join } from 'path'
 import type ITranslation from '../types/ITranslation'
 
-import { RU, EN, DE, ZH, ITexts } from 'texts'
+import { RU, EN, DE, CH, ITexts } from 'texts'
 import { paths } from '../service'
 import Config from './Config'
 
@@ -21,7 +21,7 @@ export default class Texts {
         /** Немецкий перевод программы. */
         DE: DE,
         /** Китайский перевод программы. */
-        ZH: ZH,
+        CH: CH,
         /** Игровой перевод из файлов модификаций. */
         mods: {},
         /** Игровой перевод из `initial.pak.` */
@@ -38,7 +38,7 @@ export default class Texts {
                 RU: 'russian',
                 EN: 'english',
                 DE: 'german',
-                ZH: 'chinese_traditional'
+                CH: 'chinese_simplified'
             }
             const stringsFilePath = join(paths.strings, `strings_${map[this.config.lang]}.str`)
 
@@ -56,7 +56,7 @@ export default class Texts {
             RU: 'russian',
             EN: 'english',
             DE: 'german',
-            ZH: 'chinese_traditional'
+            CH: 'chinese_simplified'
         }
         for (const modId in this.config.mods.items) {
             if (existsSync(join(paths.modsTemp, modId, 'texts'))) {

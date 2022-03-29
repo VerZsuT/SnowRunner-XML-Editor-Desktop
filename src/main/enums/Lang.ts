@@ -3,7 +3,7 @@ enum Lang {
     RU = 'RU',
     EN = 'EN',
     DE = 'DE',
-    ZH = 'ZH'
+    CH = 'CH'
 }
 
 export default Lang

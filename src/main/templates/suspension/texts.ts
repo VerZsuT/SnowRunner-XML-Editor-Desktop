@@ -34,16 +34,16 @@ export const texts = {
 		criticalDamageThreshold: 'Kritische Schadensschwelle',
 		damageCapacity: 'Schadenskapazität'
 	},
-	ZH: {
-		height: '身高',
-		strength: '刚度',
+	CH: {
+		height: '高度',
+		strength: '刚性',
 		damping: '衰减',
 		suspensionMin: '最小悬挂高度',
 		suspensionMax: '最大悬挂高度',
-		brokenSuspensionMax: '最大悬挂高度(断裂时)',
-		suspension: '暂停',
-		criticalDamageThreshold: '临界伤害阈值',
-		damageCapacity: '耐久性'
+		brokenSuspensionMax: '最大悬挂高度（断裂时）',
+		suspension: '悬浮液',
+		criticalDamageThreshold: '危急伤害阈值',
+		damageCapacity: '耐用性'
 	}
 }[Config.obj.lang]
 
@@ -69,11 +69,11 @@ export const descs = {
 		criticalDamageThreshold: 'Prozentsatz des Schadens (Prozent = Wert * 100), bei dem die Federung Anzeichen von Bruch zeigt',
 		damageCapacity: 'Sicherheitsmarge dieser Aufhängung'
 	},
-	ZH: {
-		suspensionMin: '最小悬架行程（当悬架完全下垂时车轮可以采取的位置）。',
-		suspensionMax: '最大悬架行程（如果悬架处于工作状态并且车轮悬在空中时其刚度为零，则车轮可以采取的位置）。',
-		brokenSuspensionMax: '破碎悬架的最大行程。',
-		criticalDamageThreshold: "悬浮液显示破损迹象的损坏百分比（百分比=值*100）",
-		damageCapacity: "此暂停的安全裕度"
+	CH: {
+		suspensionMin: '悬架的最小行程（当悬架完全压下时，车轮可以采取的位置）。',
+		suspensionMax: '悬架的最大行程（当悬架处于工作状态时，车轮悬在空中时，其刚度为零，车轮可以采取的位置）。',
+		brokenSuspensionMax: '破损悬架的最大行程。',
+		criticalDamageThreshold: '损坏百分比（百分比=数值*100) , 在这个百分比上, 悬架会出现故障的迹象',
+		damageCapacity: '这种悬挂的安全系数'
 	}
 }[Config.obj.lang]

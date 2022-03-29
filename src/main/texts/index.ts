@@ -1,7 +1,7 @@
 export { RU } from './RU'
 export { EN } from './EN'
 export { DE } from './DE'
-export { ZH } from './ZH'
+export { CH } from './CH'
 
 export interface ITexts {
 	DROP_TEXT: string

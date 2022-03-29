@@ -14,9 +14,9 @@ const texts = {
         angelVelocity: 'Winkelgeschwindigkeit',
         fuelModifier: 'Kraftstoffmodifikator'
     },
-    ZH: {
-        angelVelocity: '车轮的最大角速度',
-        fuelModifier: '油耗修改器'
+    CH: {
+        angelVelocity: '最大车轮角速度',
+        fuelModifier: '燃油消耗改性剂'
     }
 }[Config.obj.lang]
 
@@ -33,9 +33,9 @@ const descs = {
         angelVelocity: 'Maximale Winkelgeschwindigkeit des Rades',
         fuelModifier: 'Multiplikator des Kraftstoffverbrauchs in diesem Getriebe'
     },
-    ZH: {
-        angelVelocity: '车轮的最大角速度',
-        fuelModifier: '此变速箱上的油耗乘数'
+    CH: {
+        angelVelocity: '轮子的最大角速度',
+        fuelModifier: '该档位的油耗倍率'
     }
 }[Config.obj.lang]
 

@@ -10,7 +10,7 @@ import setup from './setup.json'
 import update from './update.json'
 import other from './other.json'
 
-export const ZH = {
+export const CH = {
     ...categories,
     ...editor,
     ...errors,

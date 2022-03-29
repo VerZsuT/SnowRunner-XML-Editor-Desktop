@@ -9,7 +9,7 @@ const pathToTexts = join(__dirname, '../src/main/texts/')
 let RUFile = join(pathToTexts, `RU/${arg1}.json`)
 let ENFile = join(pathToTexts, `EN/${arg1}.json`)
 let DEFile = join(pathToTexts, `DE/${arg1}.json`)
-let ZHFile = join(pathToTexts, `ZH/${arg1}.json`)
+let CHFile = join(pathToTexts, `CH/${arg1}.json`)
 
 const pathToIndex = join(pathToTexts, 'index.ts')
 let indexData = readFileSync(pathToIndex).toString()
@@ -20,7 +20,7 @@ if (arg1 === 'add') {
     RUFile = join(pathToTexts, 'RU', fileName)
     ENFile = join(pathToTexts, 'EN', fileName)
     DEFile = join(pathToTexts, 'DE', fileName)
-    ZHFile = join(pathToTexts, 'ZH', fileName)
+    CHFile = join(pathToTexts, 'CH', fileName)
     if (!existsSync(RUFile)) {
         writeFiles('{}')
         console.log(`File '${fileName}' successfilly added.`)
@@ -36,7 +36,7 @@ else if (arg1 === 'remove') {
     RUFile = join(pathToTexts, 'RU', fileName)
     ENFile = join(pathToTexts, 'EN', fileName)
     DEFile = join(pathToTexts, 'DE', fileName)
-    DEFile = join(pathToTexts, 'ZH', fileName)
+    CHFile = join(pathToTexts, 'CH', fileName)
 
     const data = JSON.parse(readFileSync(RUFile).toString())
     for (const key in data) {
@@ -52,7 +52,7 @@ else if (arg1 === 'remove') {
     rmSync(RUFile, { force: true })
     rmSync(ENFile, { force: true })
     rmSync(DEFile, { force: true })
-    rmSync(ZHFile, { force: true })
+    rmSync(CHFile, { force: true })
 
     console.log(`File '${fileName}' successfilly removed.`)
     return
@@ -66,7 +66,7 @@ if (!existsSync(RUFile)) {
 const RUData = JSON.parse(readFileSync(RUFile).toString())
 const ENData = JSON.parse(readFileSync(ENFile).toString())
 const DEData = JSON.parse(readFileSync(DEFile).toString())
-const ZHData = JSON.parse(readFileSync(ZHFile).toString())
+const CHData = JSON.parse(readFileSync(CHFile).toString())
 
 if (arg2 === 'add') {
     const key = arg3.toUpperCase().split(' ').join('_')
@@ -90,7 +90,7 @@ else if (arg2 === 'remove') {
     delete RUData[key]
     delete ENData[key]
     delete DEData[key]
-    delete ZHData[key]
+    delete CHData[key]
     writeFiles()
 
     indexData = indexData.replace(`\t${key}: string\n`, '')
@@ -102,7 +102,7 @@ function writeFiles(data = null) {
     writeFileSync(RUFile, data || JSON.stringify(RUData, null, '\t'))
     writeFileSync(ENFile, data || JSON.stringify(ENData, null, '\t'))
     writeFileSync(DEFile, data || JSON.stringify(DEData, null, '\t'))
-    writeFileSync(ZHFile, data || JSON.stringify(ZHData, null, '\t'))
+    writeFileSync(CHFile, data || JSON.stringify(CHData, null, '\t'))
 }
 
 function writeIndex() {
@@ -111,7 +111,7 @@ function writeIndex() {
 
 async function addToData(key, value) {
     RUData[key] = value
-    ENData[key] = await translate(value, { from: 'ru', to: 'en' })
-    DEData[key] = await translate(value, { from: 'ru', to: 'de' })
-    ZHData[key] = await translate(value, { from: 'ru', to: 'zh' })
+    ENData[key] = await translate(value, { from: 'ru', to: 'en', engine: 'deepl' })
+    DEData[key] = await translate(value, { from: 'ru', to: 'de', engine: 'deepl' })
+    CHData[key] = await translate(value, { from: 'ru', to: 'zh', engine: 'deepl' })
 }

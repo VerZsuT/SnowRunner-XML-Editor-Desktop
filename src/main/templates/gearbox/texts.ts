@@ -55,23 +55,23 @@ export const texts = {
 		reverceGear: 'Rückwärtsgang',
 		gears: 'Gangs'
 	},
-	ZH: {
-		lowerManualGear: '精细调整',
-		awdConsumptionModifier: '全轮驱动油耗修改器',
-		criticalDamageThreshold: '临界伤害阈值',
-		damageCapacity: '耐久性',
-		damagedConsumptionModifier: '损坏情况下的油耗乘数',
-		fuelConsumption: '燃料消耗量',
-		idleFuelConsumption: '怠速油耗乘数',
+	CH: {
+		lowerManualGear: '微调',
+		awdConsumptionModifier: '全轮驱动的油耗修改器',
+		criticalDamageThreshold: '危急伤害阈值',
+		damageCapacity: '耐用性',
+		damagedConsumptionModifier: '损害的燃料消耗乘数',
+		fuelConsumption: '燃料消耗',
+		idleFuelConsumption: '怠速时的油耗倍率',
 		gearboxParams: '齿轮的可用性',
-		highGear: '高架',
-		allow: '可用',
-		notAllow: '不可用',
-		lowerGear: '降低',
-		lowerPlusGear: '降低+',
-		lowerMinusGear: '降低-',
-		reverceGear: '返回',
-		gears: '齿轮'
+		highGear: '增加',
+		allow: '可从',
+		notAllow: '不详',
+		lowerGear: '减少了',
+		lowerPlusGear: '减少+',
+		lowerMinusGear: '减少-',
+		reverceGear: '后部',
+		gears: '传动装置'
 	}
 }[Config.obj.lang]
 
@@ -87,7 +87,7 @@ export const descs = {
 		highGear: 'Есть ли повышенная передача в коробке передач',
 		lowerGear: 'Есть ли пониженная передача в коробке передач',
 		lowerPlusGear: 'Есть ли пониженная+ передача в коробке передач',
-		lowerMinusGear: 'Есть ли повышенная+ передача в коробке передач'
+		lowerMinusGear: 'Есть ли повышенная- передача в коробке передач'
 	},
 	EN: {
 		lowerManualGear: 'Allows you to change the gear ratio of downshift and reverse gear.',
@@ -115,17 +115,17 @@ export const descs = {
 		lowerPlusGear: 'Gibt es ein reduziertes+ Getriebe im Getriebe',
 		lowerMinusGear: 'Gibt es ein erhöhte+s Getriebe im Getriebe'
 	},
-	ZH: {
-		lowerManualGear: '允许您更改降档和倒档的齿轮比。',
-		awdConsumptionModifier: '使用全轮驱动时油耗变化系数',
-		criticalDamageThreshold: '损坏百分比（值*100=百分比），之后盒子开始显示故障迹象-飞行齿轮和增加的燃料消耗',
-		damageCapacity: '这款变速箱的安全裕度',
-		damagedConsumptionModifier: '最大油耗乘数，当箱子完全破碎时消耗来到这个乘数。',
-		fuelConsumption: '变速箱的基本燃料消耗',
-		idleFuelConsumption: '当汽车静止且发动机运转时油耗的乘数。',
-		highGear: '变速箱中是否有增加的齿轮',
-		lowerGear: '变速箱有降档吗',
-		lowerPlusGear: '变速箱中是否有减少的+齿轮',
-		lowerMinusGear: '变速箱中是否有增加的+齿轮'
+	CH: {
+		lowerManualGear: '允许你改变降档和倒档的比例。',
+		awdConsumptionModifier: '使用全轮驱动时的油耗变化系数',
+		criticalDamageThreshold: '损坏的百分比（值*100=百分比），在这之后箱子开始出现故障的迹象--掉档和油耗增加',
+		damageCapacity: '该齿轮箱的安全系数',
+		damagedConsumptionModifier: '最大油耗乘数，对这个乘数来说，当箱子完全分解时，油耗就会出现。',
+		fuelConsumption: '齿轮箱的基本油耗',
+		idleFuelConsumption: '汽车静止时发动机运转时的油耗乘数。',
+		highGear: '变速箱中是否有超速齿轮',
+		lowerGear: '齿轮箱中是否有一个较低的齿轮',
+		lowerPlusGear: '齿轮箱中是否有一个减速+齿轮',
+		lowerMinusGear: '变速箱中是否有超速-'
 	}
 }[Config.obj.lang]

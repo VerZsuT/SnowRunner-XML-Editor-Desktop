@@ -38,7 +38,7 @@ export const data: IActionData = {
         RU: 'Содержимое аддонов',
         EN: 'Addons content',
         DE: 'Addon-Inhalt',
-        ZH: '插件内容'
+        CH: '附加组件的内容'
     },
     id: 'addons-content',
     minHeight: 200,

@@ -22,11 +22,11 @@ export const texts = {
 		engine: 'Motor',
 		battery: 'Batterie'
 	},
-	ZH: {
+	CH: {
 		length: '长度',
-		strengthMult: '力量',
-		isEngineIgnitionRequired: '作品从',
-		engine: '引擎',
+		strengthMult: '的力量',
+		isEngineIgnitionRequired: '由以下单位提供',
+		engine: '发动机',
 		battery: '电池'
 	}
 }[Config.obj.lang]
@@ -47,9 +47,9 @@ export const descs = {
 		strengthMult: 'Kraft der Winde',
 		isEngineIgnitionRequired: 'Was funktioniert (Batterie-autonom).'
 	},
-	ZH: {
+	CH: {
 		length: '最大绞盘长度',
-		strengthMult: '绞盘力量',
-		isEngineIgnitionRequired: '它的工作原理（电池自主）。'
+		strengthMult: '绞车的动力',
+		isEngineIgnitionRequired: '在其上运行（电池驱动--自成一体）。'
 	}
 }[Config.obj.lang]

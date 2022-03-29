@@ -28,12 +28,12 @@ const texts = {
         byRank: 'Nach Rang',
         unlockByRank: 'Level freischalten'
     },
-    ZH: {
+    CH: {
         unlockGroupName: '解锁',
         price: '价格',
-        byExploration: '解锁方法',
+        byExploration: '解锁的方法',
         findOnMap: '在地图上查找',
-        byRank: '达到水平',
+        byRank: '当达到该水平时',
         unlockByRank: '解锁级别'
     }
 }[Config.obj.lang]
@@ -54,9 +54,9 @@ const descs = {
         byExploration: 'Methode zum Entsperren',
         unlockByRank: 'Entsperren Ebene'
     },
-    ZH: {
+    CH: {
         price: '价格',
-        byExploration: '解锁方法',
+        byExploration: '解锁的方法',
         unlockByRank: '解锁级别'
     }
 }[Config.obj.lang]

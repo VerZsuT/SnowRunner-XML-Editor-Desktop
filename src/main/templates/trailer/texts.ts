@@ -49,20 +49,20 @@ export const texts = {
 		suspHeight: 'Höhe der Aufhängung',
 		suspStrength: 'Federungssteifigkeit'
 	},
-	ZH: {
+	CH: {
 		quantity: '货物数量',
 		inner: '有用的内容',
-		mass: '质量',
+		mass: '重量',
 		other: '其他',
 		price: '价格',
-		fuelCapacity: '燃料量',
-		repairsCapacity: '备件数量',
-		wheelRepairsCapacity: '需要修理的车轮数量',
+		fuelCapacity: '燃油容量',
+		repairsCapacity: '零部件的数量',
+		wheelRepairsCapacity: '需要修复的车轮数量',
 		trailerMass: '拖车重量',
-		fuelMass: '燃料质量',
+		fuelMass: '燃料重量',
 		wheels: '轮子',
 		wheel: '轮子',
-		suspHeight: '悬挂高度',
+		suspHeight: '悬架高度',
 		suspStrength: '悬架刚度'
 	}
 }[Config.obj.lang]
@@ -95,13 +95,13 @@ export const descs = {
 		fuelMass: 'Gewicht des Kraftstoffs',
 		quantity: 'Maximale Menge der Fracht'
 	},
-	ZH: {
-		price: '汽车本身的价格（不包括组件）',
-		fuelCapacity: '拖车内的燃料数量',
-		repairsCapacity: '拖车中的备件数量',
-		wheelRepairsCapacity: '拖车上的备用车轮数量',
+	CH: {
+		price: '汽车本身的价格（不包括零部件）。',
+		fuelCapacity: '拖车的燃料容量',
+		repairsCapacity: '拖车上的备件数量',
+		wheelRepairsCapacity: '拖车上的备胎数量',
 		trailerMass: '拖车重量',
-		fuelMass: '燃料质量',
-		quantity: '最大运输货物数量'
+		fuelMass: '燃料重量',
+		quantity: '携带的最大负荷数'
 	}
 }[Config.obj.lang]

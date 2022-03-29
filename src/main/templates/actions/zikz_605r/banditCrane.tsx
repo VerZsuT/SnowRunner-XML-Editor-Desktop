@@ -35,7 +35,7 @@ export const data: IActionData = {
         RU: 'Банан бандита',
         EN: 'Bandit banana',
         DE: 'Bananen-Bandit',
-        ZH: '香蕉强盗'
+        CH: '香蕉大盗'
     },
     id: 'bandit-crane',
     minHeight: 200,

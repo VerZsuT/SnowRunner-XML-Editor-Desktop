@@ -1,0 +1,17 @@
+{
+	"ADD_FAVORITE": "添加到收藏夹",
+	"APPLY": "申请",
+	"DLC_LIST_TITLE": "来自于DLC",
+	"FAVORITES_LIST_TITLE": "收藏",
+	"MAIN_LIST_TITLE": "基本",
+	"MANUAL_MOD": "手动选择",
+	"MODS_CHANGE_BUTTON": "变化",
+	"MODS_LIST_TITLE": "来自修改者",
+	"REMOVE_FAVORITE": "从收藏夹中删除",
+	"REMOVE_MOD": "移除修改",
+	"RELAUNCH_PROMPT": "要下载mod, 你需要重新启动软件。进行重新启动?",
+	"EMPTY_MODS_TITLE": "未检测到",
+	"TRUCKS_LIST_TITLE": "汽车清单",
+	"TRAILERS_LIST_TITLE": "拖车清单",
+	"MODS_POPUP_TITLE": "修改"
+}

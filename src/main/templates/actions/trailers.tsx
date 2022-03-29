@@ -28,7 +28,7 @@ export const data: IActionData = {
         RU: 'Прицепы',
         EN: 'Trailers',
         DE: 'Anhänger',
-        ZH: '拖车'
+        CH: '拖车'
     },
     id: 'trailers',
     minHeight: 100,
