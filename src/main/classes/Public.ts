@@ -205,12 +205,12 @@ export default class Public {
     public static updateFiles = (modId?: string) => {
         if (modId) {
             try {
-                Archiver.update(join(paths.modsTemp, modId), this.config.mods.items[modId].path)
+                Archiver.update(join(paths.modsTemp, modId), this.config.mods.items[modId].path, true)
             }
             catch {
                 try {
                     chmodSync(this.config.mods.items[modId].path, 0o777)
-                    Archiver.update(join(paths.modsTemp, modId), this.config.mods.items[modId].path)
+                    Archiver.update(join(paths.modsTemp, modId), this.config.mods.items[modId].path, true)
                 }
                 catch {
                     Dialog.alert({

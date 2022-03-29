@@ -21,9 +21,9 @@ export default class Archiver {
      * @param source - путь до папки с файлами.
      * @param direction - путь до архива.
      */
-    public static update = (source: string, direction: string) => {
+    public static update = (source: string, direction: string, isMod?: boolean) => {
         this.WinRAR(['f', ...this.prodFlags, direction, source+'\\', '-r', '-ep1'])
-        this.saveHash(direction, basename(direction) === 'initial.pak')
+        this.saveHash(direction, isMod)
     }
 
     /**
