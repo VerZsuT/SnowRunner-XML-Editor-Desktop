@@ -1,17 +1,18 @@
-import { PureComponent, ReactNode } from 'react'
-import { render } from 'react-dom'
-import Lang from 'main/enums/Lang'
-import { MAIN } from 'scripts/funcs'
-import localize from 'scripts/localize'
-import config from 'scripts/config'
+import WindowRoot from "components/WindowRoot";
+import { ReactNode } from "react";
+import { createRoot } from "react-dom/client";
+import Lang from "main/enums/Lang";
+import { MAIN } from "scripts/helpers";
+import localize from "scripts/localize";
+import config from "scripts/config";
 
-import { Typography } from '@mui/material'
-import 'styles/whatsNew'
+import { Typography } from "@mui/material";
+import "styles/whatsNew";
 
-class WhatsNew extends PureComponent {
-    render() {
+class WhatsNew extends WindowRoot {
+    public render() {
         return <>
-            <Typography variant='h5' className='title'>{localize.WHATS_NEW_TITLE} v0.6.8b</Typography>
+            <Typography variant="h5" className="title">{localize.WHATS_NEW_TITLE} v0.6.8b</Typography>
             {onLang(Lang.RU, <>
                 <Typography>- Исправлен баг с распаковкой initial.pak при изменениях в модификациях.</Typography>
                 <Typography>- Исправлены ошибки в CH переводе (спасибо 杨 新民).</Typography>
@@ -29,7 +30,7 @@ class WhatsNew extends PureComponent {
                 <Typography>- 修正了CH翻译中的错误 (感谢杨新民) 。</Typography>
             </>)}
 
-            <Typography variant='h5' className='title'>{localize.WHATS_NEW_TITLE} v0.6.8a</Typography>
+            <Typography variant="h5" className="title">{localize.WHATS_NEW_TITLE} v0.6.8a</Typography>
             {onLang(Lang.RU, <>
                 <Typography>- Исправлен баг с текстами модификаций.</Typography>
                 <Typography>- Исправлен баг с пустым экраном в "Продвинутом режиме".</Typography>
@@ -42,7 +43,7 @@ class WhatsNew extends PureComponent {
                 <Typography>- Fixed a bug with a blank screen in "Advanced Mode".</Typography>
                 <Typography>- Fixed a bug with pictures of modifications.</Typography>
                 <Typography>- Fixed a bug with an empty "Country" attribute in the modifications.</Typography>
-                <Typography>- Returned automatic display of the "What's new" window after the update.</Typography>
+                <Typography>- Returned automatic display of the "What"s new" window after the update.</Typography>
             </>)}
             {onLang(Lang.DE, <>
                 <Typography>- Es wurde ein Fehler mit Änderungstexten behoben.</Typography>
@@ -59,7 +60,7 @@ class WhatsNew extends PureComponent {
                 <Typography>- 返回更新后自动显示"新增功能"窗口。</Typography>
             </>)}
 
-            <Typography variant='h5' className='title'>{localize.WHATS_NEW_TITLE} v0.6.8</Typography>
+            <Typography variant="h5" className="title">{localize.WHATS_NEW_TITLE} v0.6.8</Typography>
             {onLang(Lang.RU, <>
                 <Typography>- Исправлена ошибка при отсутствии интернет соединения.</Typography>
                 <Typography>- Изменён метод чтения XML файлов. Должно сильно увеличить процент доступных для редактирования модов.</Typography>
@@ -73,7 +74,7 @@ class WhatsNew extends PureComponent {
                 <Typography>- Доп. сценарии также экспортируются (изменения кранов, фаркопов и т.д.).</Typography>
                 <Typography>- Убран визуальный баг с "растягиванием" названия авто в списке при поиске и добавлении в избранное.</Typography>
                 <Typography>- Убрана полоса прокрутки в меню выбора категории.</Typography>
-                <Typography>- Убрана система 'execute'.</Typography>
+                <Typography>- Убрана система "execute".</Typography>
                 <Typography>- Улучшена производительность.</Typography>
             </>)}
             {onLang(Lang.EN, <>
@@ -89,7 +90,7 @@ class WhatsNew extends PureComponent {
                 <Typography>- Additional scripts are also exported (changes to cranes, towbars, etc.).</Typography>
                 <Typography>- Removed a visual bug with "stretching" the name of the car in the list when searching and adding to favorites.</Typography>
                 <Typography>- Removed the scroll bar in the category selection menu.</Typography>
-                <Typography>- Removed the 'execute' system.</Typography>
+                <Typography>- Removed the "execute" system.</Typography>
                 <Typography>- Improved performance.</Typography>
             </>)}
             {onLang(Lang.DE, <>
@@ -105,7 +106,7 @@ class WhatsNew extends PureComponent {
                 <Typography>- Weitere Szenarien werden ebenfalls exportiert (Änderungen an Kränen, Anhängern usw.).</Typography>
                 <Typography>- Entfernt einen visuellen Fehler mit dem "Strecken" des Autonamens in der Liste, wenn Sie suchen und zu Ihren Favoriten hinzufügen.</Typography>
                 <Typography>- Die Bildlaufleiste im Kategorieauswahlmenü wurde entfernt.</Typography>
-                <Typography>- Das System 'execute' wurde entfernt.</Typography>
+                <Typography>- Das System "execute" wurde entfernt.</Typography>
                 <Typography>- Verbesserte Leistung.</Typography>
             </>)}
             {onLang(Lang.CH, <>
@@ -125,15 +126,17 @@ class WhatsNew extends PureComponent {
                 <Typography>- 删除了"执行"系统。</Typography>
                 <Typography>- 提高性能。</Typography>
             </>)}
-        </>
+        </>;
     }
 }
 
 function onLang(lang: Lang, children: ReactNode) {
     if (config.lang === lang)
-        return children
+        return children;
     else
-        return null
+        return null;
 }
 
-render(<WhatsNew/>, MAIN)
+createRoot(MAIN).render(<WhatsNew />);
+
+export default WhatsNew;

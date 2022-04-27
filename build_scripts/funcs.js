@@ -1,50 +1,50 @@
-const { createHash } = require('crypto')
-const { existsSync, readFileSync, writeFileSync, readdirSync, statSync } = require('fs')
-const { join, basename } = require('path')
-const Log = require('./Log.js')
+const { createHash } = require("crypto");
+const { existsSync, readFileSync, writeFileSync, readdirSync, statSync } = require("fs");
+const { join, basename } = require("path");
+const Log = require("./Log.js");
 
-const resolve = (...paths) => join(__dirname, ...paths)
+const resolve = (...paths) => join(__dirname, ...paths);
 
 const postBuildPaths = {
-    out: resolve('../out'),
-    original_x32: resolve('../out/SnowRunner XML Editor-win32-ia32'),
-    original_x64: resolve('../out/SnowRunner XML Editor-win32-x64'),
-    renamed: resolve('../out/SnowRunnerXMLEditor'),
-    config: resolve('../out/SnowRunnerXMLEditor/resources/app/.webpack/main/config.json'),
-    winrar_x32: resolve('../src/main/winrar'),
-    sxmle_updater: resolve('../../sxmle_updater')
-}
+    out: resolve("../out"),
+    original_x32: resolve("../out/SnowRunner XML Editor-win32-ia32"),
+    original_x64: resolve("../out/SnowRunner XML Editor-win32-x64"),
+    renamed: resolve("../out/SnowRunnerXMLEditor"),
+    config: resolve("../out/SnowRunnerXMLEditor/resources/app/.webpack/main/config.json"),
+    winrar_x32: resolve("../src/main/winrar"),
+    sxmle_updater: resolve("../../sxmle_updater")
+};
 
 const preBuildPaths = {
-    out: resolve('../out'),
-    config: resolve('../src/main/config.json'),
-    package: resolve('../package.json'),
-    packageLock: resolve('../package-lock.json'),
-    public: resolve('../../sxmle_updater/public.json'),
-    issConfig: resolve('../innoSetup/installer.config.iss')
-}
+    out: resolve("../out"),
+    config: resolve("../src/main/config.json"),
+    package: resolve("../package.json"),
+    packageLock: resolve("../package-lock.json"),
+    public: resolve("../../sxmle_updater/public.json"),
+    issConfig: resolve("../innoSetup/installer.config.iss")
+};
 
 /**
  * Генерирует карту обновления.
  * @param {string} rootPath 
  */
 function generateMap(rootPath) {
-    let map = {}
-    const items = readdirSync(rootPath)
+    let map = {};
+    const items = readdirSync(rootPath);
     for (const item of items) {
-        const path = join(rootPath, item)
-        const stats = statSync(path)
+        const path = join(rootPath, item);
+        const stats = statSync(path);
 
         if (!stats.isFile()) {
-            map = Object.assign(map, generateMap(path))
+            map = Object.assign(map, generateMap(path));
         }
         else {
-            const shaHash = createHash('sha1')
-            shaHash.update(readFileSync(path))
-            map[path.replace(join(postBuildPaths.renamed, 'resources/app/'), '')] = shaHash.digest('hex')
+            const shaHash = createHash("sha1");
+            shaHash.update(readFileSync(path));
+            map[path.replace(join(postBuildPaths.renamed, "resources/app/"), "")] = shaHash.digest("hex");
         }
     }
-    return map
+    return map;
 }
 
 /**
@@ -56,9 +56,9 @@ function generateMap(rootPath) {
  */
 function checkVar(variable, callback) {
     if (variable !== null && variable !== undefined)
-        callback()
+        callback();
     else
-        Log.error(`Variable ${variable} is not set.`)
+        Log.error(`Variable ${variable} is not set.`);
 }
 
 /**
@@ -73,12 +73,12 @@ function checkVar(variable, callback) {
  */
 function checkPath(path, callback, throwError = false) {
     if (existsSync(path)) {
-        callback()
+        callback();
     }
     else {
-        Log.error(`Path '${path}' not found.`)
+        Log.error(`Path "${path}" not found.`);
         if (throwError)
-            throw new Error()
+            throw new Error();
     }
 }
 
@@ -91,21 +91,21 @@ function checkPath(path, callback, throwError = false) {
  * @param {boolean} fromJSON
  */
 function readFileToVar(varName, path, fromJSON = true) {
-    const fileName = basename(path)
+    const fileName = basename(path);
 
     if (existsSync(path)) {
         try {
             if (fromJSON)
-                global[varName] = JSON.parse(readFileSync(path).toString())
+                global[varName] = JSON.parse(readFileSync(path).toString());
             else
-                global[varName] = readFileSync(path).toString()
+                global[varName] = readFileSync(path).toString();
         }
         catch {
-            Log.error(`Error reading file ${fileName}`)
+            Log.error(`Error reading file ${fileName}`);
         }
     }
     else {
-        Log.error(`${fileName} not found.`)
+        Log.error(`${fileName} not found.`);
     }
 }
 
@@ -122,15 +122,15 @@ function writeFile(path, dependency, dataFunc) {
         checkVar(dependency, () => {
             const data = dataFunc()
             try {
-                writeFileSync(path, data)
+                writeFileSync(path, data);
             }
             catch {
-                Log.error(`Error writing ${basename(path)}`)
+                Log.error(`Error writing ${basename(path)}`);
             }
         })
     }
     else {
-        Log.error(`${basename(path)} not found.`)
+        Log.error(`${basename(path)} not found.`);
     }
 }
 
@@ -142,4 +142,4 @@ module.exports = {
     generateMap,
     postBuildPaths,
     preBuildPaths
-}
+};

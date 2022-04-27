@@ -1,6 +1,6 @@
 enum ParamType {
-    input = 'input',
-    group = 'group'
+    input = "input",
+    group = "group"
 }
 
-export default ParamType
+export default ParamType;

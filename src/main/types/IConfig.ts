@@ -1,8 +1,8 @@
-import type BuildType from '../enums/BuildType'
-import type Lang from '../enums/Lang'
-import type IConfigDLC from './IConfigDLC'
-import type IConfigMods from './IConfigMods'
-import type IConfigSettings from './IConfigSettings'
+import type BuildType from "../enums/BuildType";
+import type Lang from "../enums/Lang";
+import type IConfigDLC from "./IConfigDLC";
+import type IConfigMods from "./IConfigMods";
+import type IConfigSettings from "./IConfigSettings";
 
 interface IConfig {
     /** Версия программы. */
@@ -34,8 +34,8 @@ interface IConfig {
     /** Список DLC. */
     dlc: IConfigDLC[]
     
-    /** Список 'избранных' автомобилей */
+    /** Список "избранных" автомобилей */
     favorites: string[]
 }
 
-export default IConfig
+export default IConfig;

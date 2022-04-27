@@ -1,34 +1,34 @@
-import type ITemplate from '../types/ITemplate'
-import NameType from '../enums/NameType'
-import NumberType from '../enums/NumberType'
+import type ITemplate from "../types/ITemplate";
+import NameType from "../enums/NameType";
+import NumberType from "../enums/NumberType";
 
-import { Template, Group, Select, ForEach, Number } from '../items'
-import { getSelectors } from '../service'
-import { descs, texts } from './texts'
-import unlockGroup from '../presets/unlockGroup'
+import { Template, Group, Select, ForEach, Number } from "../items";
+import { getSelectors } from "../service";
+import { descs, texts } from "./texts";
+import unlockGroup from "../presets/unlockGroup";
 
 const selectors = getSelectors(function () {
-	const winch = `WinchVariants.Winch${this.forEach}`
-	const winchText = `${winch}.GameData.UiDesc`
-	const gameData = `${winch}.GameData`
+	const winch = `WinchVariants.Winch${this.forEach}`;
+	const winchText = `${winch}.GameData.UiDesc`;
+	const gameData = `${winch}.GameData`;
 	
-	return { winch, winchText, gameData }
-})
+	return { winch, winchText, gameData };
+});
 
-export default <ITemplate>{
-	selector: 'WinchVariants',
+export default <ITemplate> {
+	selector: "WinchVariants",
 	template: Template(selectors, [
 		ForEach(selectors.winch, [
 			Group({
 				nameType: NameType.computed,
-				nameAttribute: 'UiName',
-				resNameAttribute: 'Name',
+				nameAttribute: "UiName",
+				resNameAttribute: "Name",
 				nameSelector: selectors.winchText,
 				resNameSelector: selectors.winch,
 				defaultSelector: selectors.winch
 			}, [
 				Number({
-					attribute: 'Length',
+					attribute: "Length",
 					type: NumberType.integer,
 					text: texts.length,
 					desc: descs.length,
@@ -40,7 +40,7 @@ export default <ITemplate>{
 					}
 				}),
 				Number({
-					attribute: 'StrengthMult',
+					attribute: "StrengthMult",
 					text: texts.strengthMult,
 					desc: descs.strengthMult,
 					max: 10,
@@ -51,17 +51,17 @@ export default <ITemplate>{
 					}
 				}),
 				Select({
-					attribute: 'IsEngineIgnitionRequired',
+					attribute: "IsEngineIgnitionRequired",
 					text: texts.isEngineIgnitionRequired,
 					desc: descs.isEngineIgnitionRequired,
 					options: {
 						true: texts.engine,
 						false: texts.battery
 					},
-					default: 'true'
+					default: "true"
 				}),
 				unlockGroup(selectors.gameData)
 			])
 		])
 	])
-}
+};

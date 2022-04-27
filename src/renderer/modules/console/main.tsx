@@ -1,242 +1,246 @@
-import { PureComponent, Fragment } from 'react'
-import { render } from 'react-dom'
-import type { CheerioAPI } from 'cheerio'
-import type IFindItem from 'modules/list/types/IFindItem'
-import type IConfigSettings from 'main/types/IConfigSettings'
-import Lang from 'main/enums/Lang'
+import WindowRoot from "components/WindowRoot";
+import { Fragment } from "react";
+import { createRoot } from "react-dom/client";
+import type IFindItem from "modules/list/types/IFindItem";
+import type IConfigSettings from "main/types/IConfigSettings";
+import Lang from "main/enums/Lang";
 
-import { MAIN } from 'scripts/funcs'
-import { getExported } from 'scripts/dom'
-import config from 'scripts/config'
-import main from 'scripts/main'
-import { OPTIONAL, addCheck, help, Message } from './service'
+import { callback, MAIN } from "scripts/helpers";
+import { getExported } from "scripts/dom";
+import config from "scripts/config";
+import main from "scripts/main";
+import { OPTIONAL, addCheck, help, Message } from "./service";
 
-import EditorConsole from './components/EditorConsole'
+import EditorConsole from "./components/EditorConsole";
 
-import 'styles/console'
+import "styles/console";
 
 const {
     quit, reload, resetConfig, enableDevTools,
     disableDevTools, saveBackup,
     recoverFromBackup, checkUpdate, updateFiles,
     unpackFiles, importConfig, exportConfig,
-    openWhatsNew, findInDir,
+    openWindow, findInDir,
     seeEPF, joinEPF, paths
-} = main
-const { existsSync, writeFileSync, join } = window.service
+} = main;
+const { existsSync, writeFileSync, join } = window.service;
 
 interface IState {
     messages: JSX.Element[]
 }
 
-class Console extends PureComponent<any, IState> {
+class Console extends WindowRoot<any, IState> {
     private listeners: {
         [cmd: string]: (args: string[]) => JSX.Element
-    }
+    };
 
     constructor(props: any) {
-        super(props)
+        super(props);
         this.state = {
             messages: [
-                <Fragment key='0'>
+                <Fragment key="0">
                     {Message.info("Командная строка v1.1.")}
                 </Fragment>
             ]
-        }
-        this.listeners = this.getListeners()
+        };
+        this.listeners = this.getListeners();
     }
 
-    render() {
-        const { messages } = this.state
+    public render() {
+        const { messages } = this.state;
         
         return <>
-            <div id='messages' onClick={this.onMessagesClick}>
+            <div id="messages" onClick={this.onMessagesClick}>
                 {messages}
             </div>
             <EditorConsole onError={this.pushMessage} listeners={this.listeners}/>
-        </>
+        </>;
     }
 
-    private onMessagesClick = () => (document.querySelector('#input') as HTMLInputElement).focus()
+    @callback
+    private onMessagesClick() {
+        (document.querySelector("#input") as HTMLInputElement).focus();
+    }
 
-    private pushMessage = (message: JSX.Element) => {
+    @callback
+    private pushMessage(message: JSX.Element) {
         this.setState(({ messages }) => ({
             messages: [...messages, <Fragment key={messages.length}>{message}</Fragment>]
-        }))
-        document.querySelector('#messages').scrollTop = 10_000_000
+        }));
+        document.querySelector("#messages").scrollTop = 10_000_000;
     }
 
     private getListeners() {
-        const cmds = Object.keys(help).filter(value => value !== 'toString')
-        type cmdsType = Exclude<keyof typeof help, 'toString'>
+        const cmds = Object.keys(help).filter(value => value !== "toString");
+        type cmdsType = Exclude<keyof typeof help, "toString">;
 
         return {
-            'exit': addCheck(() => window.close()),
-            'quit': addCheck(() => quit()),
-            'reload': addCheck(() => reload()),
-            'reset': addCheck(() => resetConfig(false)),
-            'exportAll': addCheck(() => {
-                const items: IFindItem[] = []
-                const exported: any = {}
+            "exit": addCheck(() => window.close()),
+            "quit": addCheck(() => quit()),
+            "reload": addCheck(() => reload()),
+            "reset": addCheck(() => resetConfig(false)),
+            "exportAll": addCheck(() => {
+                const items: IFindItem[] = [];
+                const exported: any = {};
 
                 for (const dlcItem of config.dlc) {
-                    const path = `${dlcItem.path}\\classes`
+                    const path = `${dlcItem.path}\\classes`;
 
-                    items.push(...findInDir(join(path, 'trucks')))
-                    items.push(...findInDir(join(path, 'trucks/trailers')))
-                    items.push(...findInDir(join(path, 'gearboxes')))
-                    items.push(...findInDir(join(path, 'engines')))
-                    items.push(...findInDir(join(path, 'suspensions')))
-                    items.push(...findInDir(join(path, 'winches')))
-                    items.push(...findInDir(join(path, 'wheels')))
+                    items.push(...findInDir(join(path, "trucks"          )));
+                    items.push(...findInDir(join(path, "trucks/trailers" )));
+                    items.push(...findInDir(join(path, "gearboxes"       )));
+                    items.push(...findInDir(join(path, "engines"         )));
+                    items.push(...findInDir(join(path, "suspensions"     )));
+                    items.push(...findInDir(join(path, "winches"         )));
+                    items.push(...findInDir(join(path, "wheels"          )));
                 }
 
-                items.push(...findInDir(join(paths.classes, 'trucks')))
-                items.push(...findInDir(join(paths.classes, 'trucks/trailers')))
-                items.push(...findInDir(join(paths.classes, 'gearboxes')))
-                items.push(...findInDir(join(paths.classes, 'engines')))
-                items.push(...findInDir(join(paths.classes, 'suspensions')))
-                items.push(...findInDir(join(paths.classes, 'winches')))
-                items.push(...findInDir(join(paths.classes, 'wheels')))
+                items.push(...findInDir(join(paths.classes, "trucks"          )));
+                items.push(...findInDir(join(paths.classes, "trucks/trailers" )));
+                items.push(...findInDir(join(paths.classes, "gearboxes"       )));
+                items.push(...findInDir(join(paths.classes, "engines"         )));
+                items.push(...findInDir(join(paths.classes, "suspensions"     )));
+                items.push(...findInDir(join(paths.classes, "winches"         )));
+                items.push(...findInDir(join(paths.classes, "wheels"          )));
 
                 for (const item of items) {
-                    const obj = getExported(item.path)
+                    const obj = getExported(item.path);
                     if (!obj)
-                        continue
+                        continue;
 
-                    exported[`${item.name}.xml`] = obj
+                    exported[`${item.name}.xml`] = obj;
                 }
 
-                writeFileSync(join(paths.backupFolder, 'exported.json'), JSON.stringify(exported, null, '\t'))
-                this.pushMessage(Message.log('Все параметры были экпортированы в backups/exported.json'))
+                writeFileSync(join(paths.backupFolder, "exported.json"), JSON.stringify(exported, null, "\t"));
+                this.pushMessage(Message.log("Все параметры были экпортированы в backups/exported.json"));
             }),
 
-            'devTools': addCheck(args => {
-                const { action } = args
+            "devTools": addCheck(args => {
+                const { action } = args;
 
-                if (action === 'enable') {
-                    enableDevTools()
-                    this.pushMessage(Message.log('DevTools были включены для всех последующих окон.'))
+                if (action === "enable") {
+                    enableDevTools();
+                    this.pushMessage(Message.log("DevTools были включены для всех последующих окон."));
                 }
                 else {
-                    disableDevTools()
-                    this.pushMessage(Message.log('DevTools были выключены для всех последующих окон.'))
+                    disableDevTools();
+                    this.pushMessage(Message.log("DevTools были выключены для всех последующих окон."));
                 }
             }, {
-                action: ['enable', 'disable'] as unknown as 'enable' | 'disable'
+                action: ["enable", "disable"] as unknown as "enable" | "disable"
             }),
 
-            'epf': addCheck(args => {
-                const { action } = args
+            "epf": addCheck(args => {
+                const { action } = args;
 
-                if (action === 'see')
-                    seeEPF()
+                if (action === "see")
+                    seeEPF();
                 else
-                    joinEPF()
+                    joinEPF();
             }, {
-                action: ['see', 'join'] as unknown as 'see' | 'join'
+                action: ["see", "join"] as unknown as "see" | "join"
             }),
 
-            'version': addCheck(() => {
-                this.pushMessage(Message.log(`Текущая версия программы: ${config.version}.`))
+            "version": addCheck(() => {
+                this.pushMessage(Message.log(`Текущая версия программы: ${config.version}.`));
             }),
 
-            'sset': addCheck(args => {
-                const { name, value } = args
+            "sset": addCheck(args => {
+                const { name, value } = args;
 
                 if (config.settings[name] !== undefined) {
-                    config.settings[name] = value === 'true' || false
-                    this.pushMessage(Message.log(`${name} = ${value}.`))
+                    config.settings[name] = value === "true" || false;
+                    this.pushMessage(Message.log(`${name} = ${value}.`));
                 }
             }, {
                 name: Object.keys(config.settings) as unknown as keyof IConfigSettings,
-                value: ['true', 'false'] as unknown as 'true' | 'false'
+                value: ["true", "false"] as unknown as "true" | "false"
             }),
 
-            'lang': addCheck(args => {
-                const { lang } = args
+            "lang": addCheck(args => {
+                const { lang } = args;
 
-                config.lang = lang
-                reload()
+                config.lang = lang;
+                reload();
             }, {
                 lang: Object.keys(Lang) as unknown as Lang
             }),
 
-            'backup': addCheck(args => {
-                const { action } = args
+            "backup": addCheck(args => {
+                const { action } = args;
 
-                if (action === 'save')
-                    saveBackup()
+                if (action === "save")
+                    saveBackup();
                 else
-                    recoverFromBackup()
+                    recoverFromBackup();
 
-                this.pushMessage(Message.log('Операция проведена.'))
+                this.pushMessage(Message.log("Операция проведена."));
             }, {
-                action: ['save', 'restore'] as unknown as 'save' | 'restore'
+                action: ["save", "restore"] as unknown as "save" | "restore"
             }),
 
-            'checkUpdate': addCheck(() => {
-                this.pushMessage(Message.log('Проверка обновления...'))
-                this.pushMessage(Message.log('В случае удачи выведется соответствующее окно.'))
-                checkUpdate()
+            "checkUpdate": addCheck(() => {
+                this.pushMessage(Message.log("Проверка обновления..."));
+                this.pushMessage(Message.log("В случае удачи выведется соответствующее окно."));
+                checkUpdate();
             }),
 
-            'help': addCheck(args => {
-                const { cmd } = args
+            "help": addCheck(args => {
+                const { cmd } = args;
 
                 if (cmd) {
                     if (!help[cmd]) {
-                        this.pushMessage(Message.warn(`Неизвестная команда '${cmd}'.`))
-                        return
+                        this.pushMessage(Message.warn(`Неизвестная команда "${cmd}".`));
+                        return;
                     }
-                    this.pushMessage(Message.log(`Справка по команде '${cmd}'\n${help[cmd]}`))
+                    this.pushMessage(Message.log(`Справка по команде "${cmd}"\n${help[cmd]}`));
                 }
                 else {
-                    this.pushMessage(Message.log(`Список команд:\n${help.toString()}`))
+                    this.pushMessage(Message.log(`Список команд:\n${help.toString()}`));
                 }
             }, {
                 cmd: [OPTIONAL, cmds] as unknown as cmdsType
             }),
 
-            'archive': addCheck(args => {
-                const { action } = args
+            "archive": addCheck(args => {
+                const { action } = args;
 
-                if (action === 'saveChanges') {
-                    updateFiles()
-                    this.pushMessage(Message.log('Изменения в файлах initial.pak сохранены.'))
+                if (action === "saveChanges") {
+                    updateFiles();
+                    this.pushMessage(Message.log("Изменения в файлах initial.pak сохранены."));
                 }
                 else {
-                    unpackFiles()
-                    this.pushMessage(Message.log('initial.pak был распакован.'))
+                    unpackFiles();
+                    this.pushMessage(Message.log("initial.pak был распакован."));
                 }
             }, {
-                action: ['saveChanges', 'unpack'] as unknown as 'saveChanges' | 'unpack'
+                action: ["saveChanges", "unpack"] as unknown as "saveChanges" | "unpack"
             }),
 
-            'config': addCheck(args => {
-                const { action } = args
+            "config": addCheck(args => {
+                const { action } = args;
 
-                if (action === 'import') {
-                    if (!existsSync(join(paths.backupFolder, 'config.json'))) {
-                        this.pushMessage(Message.warn('Нет файла для импортирования.'))
-                        return
+                if (action === "import") {
+                    if (!existsSync(join(paths.backupFolder, "config.json"))) {
+                        this.pushMessage(Message.warn("Нет файла для импортирования."));
+                        return;
                     }
-                    importConfig()
-                    this.pushMessage(Message.log('Конфиг был успешно импортирован.'))
+                    importConfig();
+                    this.pushMessage(Message.log("Конфиг был успешно импортирован."));
                 }
                 else {
-                    exportConfig()
-                    this.pushMessage(Message.log('Конфиг был успешно экспортирован.'))
+                    exportConfig();
+                    this.pushMessage(Message.log("Конфиг был успешно экспортирован."));
                 }
             }, {
-                action: ['import', 'export'] as unknown as 'import' | 'export'
+                action: ["import", "export"] as unknown as "import" | "export"
             }),
 
-            'whatsNew': addCheck(() => {
-                openWhatsNew()
+            "whatsNew": addCheck(() => {
+                openWindow("WhatsNew");
             })
         }
     }
 }
 
-render(<Console/>, MAIN)
+createRoot(MAIN).render(<Console />);

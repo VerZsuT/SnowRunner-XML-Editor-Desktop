@@ -6,4 +6,4 @@ interface ISettings {
     showWinRAR?: boolean
 }
 
-export default ISettings
+export default ISettings;

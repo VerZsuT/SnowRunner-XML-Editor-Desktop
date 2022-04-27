@@ -1,7 +1,7 @@
-import { createContext } from 'react'
-import type { Cheerio, CheerioAPI, Node } from 'cheerio'
-import type IIEParam from './types/IIEParam'
-import type FileType from 'templates/enums/FileType'
+import { createContext } from "react";
+import type { Cheerio, CheerioAPI, Node } from "cheerio";
+import type IIEParam from "./types/IIEParam";
+import type FileType from "templates/enums/FileType";
 
 export interface IMainContext {
     addToSave(mod: string, dlc: string, dom: CheerioAPI, path: string, fileType: FileType): void
@@ -21,4 +21,4 @@ export interface IMainContext {
     }
 }
 
-export const MainContext = createContext<IMainContext>(null)
+export const MainContext = createContext<IMainContext>(null);

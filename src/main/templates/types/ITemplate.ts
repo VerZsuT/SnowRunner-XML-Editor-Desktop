@@ -1,4 +1,4 @@
-import type ITemplateClass from './ITemplateClass'
+import type ITemplateClass from "./ITemplateClass";
 
 interface ITemplate {
     template: ITemplateClass
@@ -7,4 +7,4 @@ interface ITemplate {
     exclude?: string[]
 }
 
-export default ITemplate
+export default ITemplate;

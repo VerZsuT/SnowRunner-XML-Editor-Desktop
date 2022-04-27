@@ -1,35 +1,35 @@
-import type ITemplate from '../types/ITemplate'
-import NameType from '../enums/NameType'
-import NumberType from '../enums/NumberType'
+import type ITemplate from "../types/ITemplate";
+import NameType from "../enums/NameType";
+import NumberType from "../enums/NumberType";
 
-import { Template, Group, ForEach, Number } from '../items'
-import { getSelectors } from '../service'
-import { descs, texts } from './texts'
-import unlockGroup from '../presets/unlockGroup'
+import { Template, Group, ForEach, Number } from "../items";
+import { getSelectors } from "../service";
+import { descs, texts } from "./texts";
+import unlockGroup from "../presets/unlockGroup";
 
 const selectors = getSelectors(function () {
-	const suspensionSet = `SuspensionSetVariants.SuspensionSet${this.forEach}`
-	const suspensionSetText = `${suspensionSet}.GameData.UiDesc`
-	const suspension = `${suspensionSet}.Suspension${this.forEachBy(2)}`
-	const gameData = `${suspensionSet}.GameData`
+	const suspensionSet = `SuspensionSetVariants.SuspensionSet${this.forEach}`;
+	const suspensionSetText = `${suspensionSet}.GameData.UiDesc`;
+	const suspension = `${suspensionSet}.Suspension${this.forEachBy(2)}`;
+	const gameData = `${suspensionSet}.GameData`;
 	
-	return { suspensionSet, suspensionSetText, suspension, gameData }
-})
+	return { suspensionSet, suspensionSetText, suspension, gameData };
+});
 
-export default <ITemplate>{
-	selector: 'SuspensionSetVariants',
+export default <ITemplate> {
+	selector: "SuspensionSetVariants",
 	template: Template(selectors, [
 		ForEach(selectors.suspensionSet, [
 			Group({
 				nameType: NameType.computed,
-				nameAttribute: 'UiName',
-				resNameAttribute: 'Name',
+				nameAttribute: "UiName",
+				resNameAttribute: "Name",
 				nameSelector: selectors.suspensionSetText,
 				resNameSelector: selectors.suspensionSet,
 				defaultSelector: selectors.suspensionSet
 			}, [
 				Number({
-					attribute: 'CriticalDamageThreshold',
+					attribute: "CriticalDamageThreshold",
 					text: texts.criticalDamageThreshold,
 					desc: descs.criticalDamageThreshold,
 					max: 0.999,
@@ -38,7 +38,7 @@ export default <ITemplate>{
 					default: 0.7
 				}),
 				Number({
-					attribute: 'DamageCapacity',
+					attribute: "DamageCapacity",
 					type: NumberType.integer,
 					text: texts.damageCapacity,
 					desc: descs.damageCapacity,
@@ -57,7 +57,7 @@ export default <ITemplate>{
 						withCounter: true
 					}, [
 						Number({
-							attribute: 'Height',
+							attribute: "Height",
 							text: texts.height,
 							max: 1000,
 							min: -1000,
@@ -67,7 +67,7 @@ export default <ITemplate>{
 							}
 						}),
 						Number({
-							attribute: 'Strength',
+							attribute: "Strength",
 							text: texts.strength,
 							step: 0.01,
 							areas: {
@@ -76,7 +76,7 @@ export default <ITemplate>{
 							}
 						}),
 						Number({
-							attribute: 'Damping',
+							attribute: "Damping",
 							text: texts.damping,
 							max: 1000,
 							areas: {
@@ -85,7 +85,7 @@ export default <ITemplate>{
 							}
 						}),
 						Number({
-							attribute: 'SuspensionMin',
+							attribute: "SuspensionMin",
 							text: texts.suspensionMin,
 							desc: descs.suspensionMin,
 							max: 1000,
@@ -97,7 +97,7 @@ export default <ITemplate>{
 							}
 						}),
 						Number({
-							attribute: 'SuspensionMax',
+							attribute: "SuspensionMax",
 							text: texts.suspensionMax,
 							desc: descs.suspensionMax,
 							max: 1000,
@@ -110,7 +110,7 @@ export default <ITemplate>{
 							}
 						}),
 						Number({
-							attribute: 'BrokenSuspensionMax',
+							attribute: "BrokenSuspensionMax",
 							text: texts.brokenSuspensionMax,
 							desc: descs.brokenSuspensionMax,
 							max: 1000,
@@ -127,4 +127,4 @@ export default <ITemplate>{
 			])
 		])
 	])
-}
+};

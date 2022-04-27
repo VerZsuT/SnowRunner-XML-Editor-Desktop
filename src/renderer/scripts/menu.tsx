@@ -1,30 +1,31 @@
-import { MouseEvent, PureComponent } from 'react'
-import BuildType from 'main/enums/BuildType'
-import localize from './localize'
-import main from './main'
-import config from './config'
+import { PureComponent } from "react";
+import type { MouseEvent } from "react";
+import BuildType from "main/enums/BuildType";
+import localize from "./localize";
+import main from "./main";
+import config from "./config";
 
-import { Button, Menu, MenuItem, Divider, styled } from '@mui/material'
-import GridContainer from 'modules/components/styled/GridContainer'
+import { Button, Menu, MenuItem, Divider, styled } from "@mui/material";
+import GridContainer from "components/styled/GridContainer";
 
 const {
     quit, openLink, openPath, resetConfig, recoverFromBackup, copyBackup,
     joinEPF, seeEPF, runUninstall, importConfig, exportConfig, toggleDevTools,
-    openSettings, openWhatsNew, paths
-} = main
+    openWindow, paths
+} = main;
 
 const MenuGrid = styled(GridContainer)({
-    position: 'fixed',
+    position: "fixed",
     top: 0,
     zIndex: 20,
-    backgroundColor: '#f9f9f9',
-    justifyContent: 'flex-start'
-})
+    backgroundColor: "#f9f9f9",
+    justifyContent: "flex-start"
+});
 
 export default class ProgramMenu extends PureComponent {
     render() {
-        const isDevBuild = config.buildType === BuildType.dev
-        const hasInitial = !!config.initial
+        const isDevBuild = config.buildType === BuildType.dev;
+        const hasInitial = !!config.initial;
 
         return (
             <MenuGrid>
@@ -46,7 +47,7 @@ export default class ProgramMenu extends PureComponent {
                             show: isDevBuild
                         },
                         {
-                            text: 'DevTools',
+                            text: "DevTools",
                             show: isDevBuild,
                             onClick: toggleDevTools
                         },
@@ -81,7 +82,7 @@ export default class ProgramMenu extends PureComponent {
                         {
                             text: localize.SETTINGS_MENU_LABEL,
                             show: hasInitial,
-                            onClick: openSettings
+                            onClick: () => openWindow("Settings")
                         },
                         {
                             isDivider: true,
@@ -113,24 +114,24 @@ export default class ProgramMenu extends PureComponent {
                     items={[
                         {
                             text: localize.VERSION_MENU_ITEM_LABEL,
-                            onClick: openWhatsNew
+                            onClick: () => openWindow("WhatsNew")
                         },
                         {
                             text: localize.HOW_TO_USE_TITLE,
-                            onClick: () => openLink('https://snowrunner.mod.io/guides/snowrunner-xml-editor')
+                            onClick: () => openLink("https://snowrunner.mod.io/guides/snowrunner-xml-editor")
                         },
                         {
-                            text: 'GitHub',
-                            onClick: () => openLink('https://github.com/VerZsuT/SnowRunner-XML-Editor-Desktop')
+                            text: "GitHub",
+                            onClick: () => openLink("https://github.com/VerZsuT/SnowRunner-XML-Editor-Desktop")
                         },
                         {
-                            text: 'YouTube(RU)',
-                            onClick: () => openLink('https://youtube.com/playlist?list=PLDwd4yUwzS2VtWCpC9X6MXm47Kv_s_mq2')
+                            text: "YouTube(RU)",
+                            onClick: () => openLink("https://youtube.com/playlist?list=PLDwd4yUwzS2VtWCpC9X6MXm47Kv_s_mq2")
                         }
                     ]}
                 />
             </MenuGrid>
-        )
+        );
     }
 }
 
@@ -150,33 +151,33 @@ interface IMenuButtonState {
 }
 
 class MenuButton extends PureComponent<IMenuButtonProps, IMenuButtonState> {
-    private buttonID = `menu-button${Math.random()}`
-    private containerID = `menu-container${Math.random()}`
-    private show: boolean
+    private buttonID = `menu-button${Math.random()}`;
+    private containerID = `menu-container${Math.random()}`;
+    private show: boolean;
 
     constructor(props: IMenuButtonProps) {
-        super(props)
+        super(props);
         this.state = {
             anchorEl: null
-        }
-        this.show = props.show?? true
+        };
+        this.show = props.show ?? true;
     }
 
     render() {
-        const isOpen = !!this.state.anchorEl
+        const isOpen = !!this.state.anchorEl;
         
         if (!this.show)
-            return null
+            return null;
 
-        return (<>
+        return <>
             <Button
-                className='not-upper font-black'
+                className="not-upper font-black"
                 id={this.buttonID}
                 aria-controls={isOpen ? this.containerID : undefined}
                 aria-haspopup={true}
-                aria-expanded={isOpen ? 'true' : undefined}
+                aria-expanded={isOpen ? "true" : undefined}
                 onClick={this.onClick}
-                size='small'
+                size="small"
             >
                 {this.props.text}
             </Button>
@@ -186,7 +187,7 @@ class MenuButton extends PureComponent<IMenuButtonProps, IMenuButtonState> {
                 open={isOpen}
                 onClose={this.onClose}
                 MenuListProps={{
-                    'aria-labelledby': this.buttonID,
+                    "aria-labelledby": this.buttonID,
                     dense: true
                 }}
             >
@@ -196,13 +197,13 @@ class MenuButton extends PureComponent<IMenuButtonProps, IMenuButtonState> {
                         isDivider=false,
                         onClick,
                         text
-                    } = item
+                    } = item;
 
                     if (!show)
-                        return null
+                        return null;
 
                     if (isDivider) {
-                        return <Divider key={key} />
+                        return <Divider key={key} />;
                     }
                     else {
                         return (
@@ -213,24 +214,24 @@ class MenuButton extends PureComponent<IMenuButtonProps, IMenuButtonState> {
                                     this.onClose()
                                 }}
                                 style={{
-                                    fontSize: '0.9rem',
-                                    color: 'black'
+                                    fontSize: "0.9rem",
+                                    color: "black"
                                 }}
                             >
                                 {text}
                             </MenuItem>
-                        )
+                        );
                     }
                 })}
             </Menu>
-        </>)
+        </>;
     }
 
     private onClick = (e: MouseEvent<HTMLElement>) => {
-        this.setState({ anchorEl: e.currentTarget })
+        this.setState({ anchorEl: e.currentTarget });
     }
 
     private onClose = () => {
-        this.setState({ anchorEl: null })
+        this.setState({ anchorEl: null });
     }
 }

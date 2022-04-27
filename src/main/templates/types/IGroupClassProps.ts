@@ -1,4 +1,4 @@
-import type NameType from '../enums/NameType'
+import type NameType from "../enums/NameType";
 
 type IGroupClassProps = {
     /** __Название группы__, отображаемое в таблице. */
@@ -44,4 +44,4 @@ type IGroupClassProps = {
     icon?: string
 }
 
-export default IGroupClassProps
+export default IGroupClassProps;

@@ -1,4 +1,4 @@
-import type FileType from '../enums/FileType'
+import type FileType from "../enums/FileType";
 
 /** Параметры включаемого файла. */
 type FileProps = {
@@ -8,4 +8,4 @@ type FileProps = {
     type: FileType
 }
 
-export default FileProps
+export default FileProps;

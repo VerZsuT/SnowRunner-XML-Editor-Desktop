@@ -1,39 +1,39 @@
-import type ITemplate from '../types/ITemplate'
-import NameType from '../enums/NameType'
-import NumberType from '../enums/NumberType'
+import type ITemplate from "../types/ITemplate";
+import NameType from "../enums/NameType";
+import NumberType from "../enums/NumberType";
 
-import { Template, Group, Select, ForEach, Number } from '../items'
-import { getSelectors } from '../service'
-import { descs, texts } from './texts'
-import unlockGroup from '../presets/unlockGroup'
-import gear from '../presets/gear'
+import { Template, Group, Select, ForEach, Number } from "../items";
+import { getSelectors } from "../service";
+import { descs, texts } from "./texts";
+import unlockGroup from "../presets/unlockGroup";
+import gear from "../presets/gear";
 
 const selectors = getSelectors(function () {
-	const gearbox = `GearboxVariants.Gearbox${this.forEach}`
-	const gearboxText = `${gearbox}.GameData.UiDesc`
-	const reverseGear = `${gearbox}.ReverseGear`
-	const highGear = `${gearbox}.HighGear`
-	const gearItem = `${gearbox}.Gear${this.forEachBy(2)}`
-	const gameData = `${gearbox}.GameData`
-	const gearboxParams = `${gameData}.GearboxParams`
+	const gearbox = `GearboxVariants.Gearbox${this.forEach}`;
+	const gearboxText = `${gearbox}.GameData.UiDesc`;
+	const reverseGear = `${gearbox}.ReverseGear`;
+	const highGear = `${gearbox}.HighGear`;
+	const gearItem = `${gearbox}.Gear${this.forEachBy(2)}`;
+	const gameData = `${gearbox}.GameData`;
+	const gearboxParams = `${gameData}.GearboxParams`;
 	
-	return { gearbox, gearboxText, reverseGear, highGear, gearItem, gameData, gearboxParams }
-})
+	return { gearbox, gearboxText, reverseGear, highGear, gearItem, gameData, gearboxParams };
+});
 
-export default <ITemplate>{
-	selector: 'GearboxVariants',
+export default <ITemplate> {
+	selector: "GearboxVariants",
 	template: Template(selectors, [
 		ForEach(selectors.gearbox, [
 			Group({
 				nameType: NameType.computed,
-				nameAttribute: 'UiName',
-				resNameAttribute: 'Name',
+				nameAttribute: "UiName",
+				resNameAttribute: "Name",
 				nameSelector: selectors.gearboxText,
 				resNameSelector: selectors.gearbox,
 				defaultSelector: selectors.gearbox
 			}, [
 				Number({
-					attribute: 'AWDConsumptionModifier',
+					attribute: "AWDConsumptionModifier",
 					text: texts.awdConsumptionModifier,
 					desc: descs.awdConsumptionModifier,
 					max: 32,
@@ -41,7 +41,7 @@ export default <ITemplate>{
 					default: 1
 				}),
 				Number({
-					attribute: 'CriticalDamageThreshold',
+					attribute: "CriticalDamageThreshold",
 					text: texts.criticalDamageThreshold,
 					desc: descs.criticalDamageThreshold,
 					max: 0.999,
@@ -50,7 +50,7 @@ export default <ITemplate>{
 					default: 0.7
 				}),
 				Number({
-					attribute: 'DamageCapacity',
+					attribute: "DamageCapacity",
 					type: NumberType.integer,
 					text: texts.damageCapacity,
 					desc: descs.damageCapacity,
@@ -63,7 +63,7 @@ export default <ITemplate>{
 					}
 				}),
 				Number({
-					attribute: 'DamagedConsumptionModifier',
+					attribute: "DamagedConsumptionModifier",
 					text: texts.damagedConsumptionModifier,
 					desc: descs.damagedConsumptionModifier,
 					max: 32,
@@ -72,7 +72,7 @@ export default <ITemplate>{
 					default: 1
 				}),
 				Number({
-					attribute: 'FuelConsumption',
+					attribute: "FuelConsumption",
 					text: texts.fuelConsumption,
 					desc: descs.fuelConsumption,
 					max: 10,
@@ -80,7 +80,7 @@ export default <ITemplate>{
 					default: 0.1
 				}),
 				Number({
-					attribute: 'IdleFuelModifier',
+					attribute: "IdleFuelModifier",
 					text: texts.idleFuelConsumption,
 					desc: descs.idleFuelConsumption,
 					max: 10,
@@ -88,7 +88,7 @@ export default <ITemplate>{
 					default: 0.3
 				}),
 				Select({
-					attribute: 'IsManualLowGear',
+					attribute: "IsManualLowGear",
 					selector: selectors.gearboxParams,
 					text: texts.lowerManualGear,
 					desc: descs.lowerManualGear,
@@ -96,51 +96,51 @@ export default <ITemplate>{
 						true: texts.allow,
 						false: texts.notAllow
 					},
-					default: 'false'
+					default: "false"
 				}),
 				Group({
 					name: texts.gearboxParams,
 					defaultSelector: selectors.gearboxParams
 				}, [
 					Select({
-						attribute: 'IsHighGearExists',
+						attribute: "IsHighGearExists",
 						text: texts.highGear,
 						desc: descs.highGear,
 						options: {
 							true: texts.allow,
 							false: texts.notAllow
 						},
-						default: 'true'
+						default: "true"
 					}),
 					Select({
-						attribute: 'IsLowerGearExists',
+						attribute: "IsLowerGearExists",
 						text: texts.lowerGear,
 						desc: descs.lowerGear,
 						options: {
 							true: texts.allow,
 							false: texts.notAllow
 						},
-						default: 'true'
+						default: "true"
 					}),
 					Select({
-						attribute: 'IsLowerPlusGearExists',
+						attribute: "IsLowerPlusGearExists",
 						text: texts.lowerPlusGear,
 						desc: descs.lowerPlusGear,
 						options: {
 							true: texts.allow,
 							false: texts.notAllow
 						},
-						default: 'true'
+						default: "true"
 					}),
 					Select({
-						attribute: 'IsLowerMinusGearExists',
+						attribute: "IsLowerMinusGearExists",
 						text: texts.lowerMinusGear,
 						desc: descs.lowerMinusGear,
 						options: {
 							true: texts.allow,
 							false: texts.notAllow
 						},
-						default: 'true'
+						default: "true"
 					})
 				]),
 				Group(texts.gears, [
@@ -154,7 +154,7 @@ export default <ITemplate>{
 					}, gear),
 					ForEach(selectors.gearItem, [
 						Group({
-							name: '',
+							name: "",
 							defaultSelector: selectors.gearItem,
 							withCounter: true
 						}, gear)
@@ -164,4 +164,4 @@ export default <ITemplate>{
 			])
 		])
 	])
-}
+};

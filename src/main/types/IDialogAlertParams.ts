@@ -1,4 +1,4 @@
-import type DialogAlertType from '../enums/DialogAlertType'
+import type DialogAlertType from "../enums/DialogAlertType";
 
 interface IDialogAlertParams {
     title: string
@@ -9,4 +9,4 @@ interface IDialogAlertParams {
     buttons?: string[]
 }
 
-export default IDialogAlertParams
+export default IDialogAlertParams;

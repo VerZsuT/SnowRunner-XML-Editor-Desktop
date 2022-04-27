@@ -1,8 +1,8 @@
-import type FileType from '../enums/FileType'
-import type InputType from '../enums/InputType'
-import type NumberType from '../enums/NumberType'
-import type ParamType from '../enums/ParamType'
-import type InputAreas from './InputAreas'
+import type FileType from "../enums/FileType";
+import type InputType from "../enums/InputType";
+import type NumberType from "../enums/NumberType";
+import type ParamType from "../enums/ParamType";
+import type InputAreas from "./InputAreas";
 
 interface IInputParams {
     name: string
@@ -22,4 +22,4 @@ interface IInputParams {
     areas: InputAreas
 }
 
-export default IInputParams
+export default IInputParams;

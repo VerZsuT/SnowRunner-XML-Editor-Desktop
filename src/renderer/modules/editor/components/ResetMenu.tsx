@@ -1,8 +1,8 @@
-import { PureComponent } from 'react'
-import localize from 'scripts/localize'
-import memoizee from 'memoizee'
+import { PureComponent } from "react";
+import localize from "scripts/localize";
+import memoizee from "memoizee";
 
-import { Menu, MenuItem } from '@mui/material'
+import { Menu, MenuItem } from "@mui/material";
 
 interface IState {
     onReset?(): void
@@ -13,55 +13,60 @@ interface IState {
     text?: string
 }
 
-export let showResetMenu: (props: IState) => void
+export let showResetMenu: (props: IState) => void;
 
-export default class ResetMenu extends PureComponent<{}, IState> {
+class ResetMenu extends PureComponent<{}, IState> {
     constructor(props: any) {
-        super(props)
-        this.state = {}
+        super(props);
+        this.state = {};
+
         showResetMenu = props => {
-            const { onClose, onReset } = props
+            const { onClose, onReset } = props;
 
             this.setState({
                 show: true,
                 ...props,
                 onClose: () => {
-                    this.setState({ show: false })
+                    this.setState({ show: false });
                     if (onClose)
-                        onClose()
+                        onClose();
                 },
                 onReset: () => {
-                    this.setState({ show: false })
+                    this.setState({ show: false });
                     if (onReset)
-                        onReset()
+                        onReset();
                 }
-            })
-        }
+            });
+        };
     }
 
-    render() {
+    public render() {
         const {
-            show=false,
-            onClose=()=>{},
-            onReset=()=>{},
-            x=0,
-            y=0,
-            text=''
-        } = this.state
+            show    = false,
+            onClose = () => {},
+            onReset = () => {},
+            x       = 0,
+            y       = 0,
+            text    = ""
+        } = this.state;
 
         return (
             <Menu
                 open={show}
                 onClose={onClose}
-                anchorReference='anchorPosition'
+                anchorReference="anchorPosition"
                 anchorPosition={this.position(y, x)}
             >
                 <MenuItem onClick={onReset}>
-                    {localize.RESET_MENU_ITEM_LABEL}{text ? ` "${text}"` : ''}
+                    {localize.RESET_MENU_ITEM_LABEL}{text ? ` "${text}"` : ""}
                 </MenuItem>
             </Menu>
-        )
+        );
     }
 
-    private position = memoizee((top: number, left: number) => ({ top, left }))
+    private position = memoizee(
+        (top: number, left: number) => ({ top, left })
+    );
 }
+
+export default ResetMenu;

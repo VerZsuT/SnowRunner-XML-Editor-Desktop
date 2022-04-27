@@ -1,7 +1,7 @@
-import { IconButton, styled } from '@mui/material'
+import { IconButton, styled } from "@mui/material";
 
 export default styled(IconButton)({
-    position: 'absolute',
-    top: '0',
-    left: '0'
-})
+    position: "absolute",
+    top: "0",
+    left: "0"
+});

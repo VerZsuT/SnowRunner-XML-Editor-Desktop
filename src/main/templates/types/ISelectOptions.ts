@@ -7,4 +7,4 @@ interface ISelectOptions {
     [value: string]: string
 }
 
-export default ISelectOptions
+export default ISelectOptions;

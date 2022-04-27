@@ -1,5 +1,5 @@
-import type TemplateType from '../enums/TemplateType'
-import type TSelectors from './TSelectors'
+import type TemplateType from "../enums/TemplateType";
+import type TSelectors from "./TSelectors";
 
 type TTemplateClassProps = {
     /**
@@ -22,4 +22,4 @@ type TTemplateClassProps = {
     selectors?: TSelectors
 }
 
-export default TTemplateClassProps
+export default TTemplateClassProps;

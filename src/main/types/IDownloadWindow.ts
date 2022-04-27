@@ -1,4 +1,4 @@
-import type { BrowserWindow } from 'electron'
+import type { BrowserWindow } from "electron";
 
 interface IDownloadWindow extends BrowserWindow {
     setText(text: string): void
@@ -8,4 +8,4 @@ interface IDownloadWindow extends BrowserWindow {
     download(): void
 }
 
-export default IDownloadWindow
+export default IDownloadWindow;

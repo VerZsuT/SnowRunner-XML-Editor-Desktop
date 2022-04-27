@@ -1,7 +1,7 @@
-import { contextBridge } from 'electron'
-import { join, basename } from 'path'
-import { existsSync, readFileSync, writeFileSync, readdirSync, lstatSync } from 'fs'
-import type IService from './types/IService'
+import { contextBridge } from "electron";
+import { join, basename } from "path";
+import { existsSync, readFileSync, writeFileSync, readdirSync, lstatSync } from "fs";
+import type IService from "./types/IService";
 
 const service: IService = {
     join,
@@ -11,9 +11,9 @@ const service: IService = {
     writeFileSync,
     isDirectory: (path: string) => lstatSync(path).isDirectory(),
     readdirSync
-}
+};
 
-contextBridge.exposeInMainWorld('service', service)
-global['service'] = service
+contextBridge.exposeInMainWorld("service", service);
+global["service"] = service;
 
-export default service
+export default service;

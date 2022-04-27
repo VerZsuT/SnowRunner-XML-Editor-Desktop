@@ -1,4 +1,4 @@
-import type { BrowserWindow } from 'electron'
+import type { BrowserWindow } from "electron";
 
 interface ICreateWindowAttributes {
     path: string
@@ -14,4 +14,4 @@ interface ICreateWindowAttributes {
     preload?: string
 }
 
-export default ICreateWindowAttributes
+export default ICreateWindowAttributes;

@@ -7,4 +7,4 @@ enum DialogAlertType {
     async
 }
 
-export default DialogAlertType
+export default DialogAlertType;

@@ -1,4 +1,4 @@
 interface Window {
-    consolePreload: import('./types/IConsolePreload').default
+    consolePreload: import("./types/IConsolePreload").default
 }
 

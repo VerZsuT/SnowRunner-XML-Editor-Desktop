@@ -1,6 +1,6 @@
-import type ListType from '../enums/ListType'
-import type SrcType from '../enums/SrcType'
-import type IItem from './IItem'
+import type ListType from "../enums/ListType";
+import type SrcType from "../enums/SrcType";
+import type IItem from "./IItem";
 
 interface IListPreload {
     removeDir(path: string): void
@@ -16,4 +16,4 @@ interface IListPreload {
     getList(listType: ListType, from?: SrcType): IItem[]
 }
 
-export default IListPreload
+export default IListPreload;

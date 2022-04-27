@@ -4,4 +4,4 @@ enum MessageType {
     error
 }
 
-export default MessageType
+export default MessageType;

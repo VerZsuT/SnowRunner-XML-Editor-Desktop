@@ -3,4 +3,4 @@ interface IEditorPreload {
     findFromDLC(fileName: string, type: string): string
 }
 
-export default IEditorPreload
+export default IEditorPreload;

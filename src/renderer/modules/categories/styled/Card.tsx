@@ -1,3 +1,3 @@
-import { Card as MuiCard, styled } from '@mui/material'
+import { Card as MuiCard, styled } from "@mui/material";
 
-export default styled(MuiCard)({ maxWidth: '50%' })
+export default styled(MuiCard)({ maxWidth: "50%" });

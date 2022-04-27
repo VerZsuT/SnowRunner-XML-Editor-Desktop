@@ -1,16 +1,17 @@
-import { PureComponent } from 'react'
-import memoizee from 'memoizee'
-import type { MouseEvent } from 'react'
-import type IGroupParams from 'templates/types/IGroupParams'
-import InputType from 'templates/enums/InputType'
+import { PureComponent } from "react";
+import memoizee from "memoizee";
+import type { MouseEvent } from "react";
+import type IGroupParams from "templates/types/IGroupParams";
+import InputType from "templates/enums/InputType";
+import { callback } from "scripts/helpers";
 
-import { IMainContext, MainContext } from '../MainContext'
-import Parameter from './Parameter'
-import ResetMenu, { showResetMenu } from './ResetMenu'
-import GroupAccordion from 'modules/components/GroupAccordion'
+import { IMainContext, MainContext } from "../MainContext";
+import Parameter from "./Parameter";
+import ResetMenu, { showResetMenu } from "./ResetMenu";
+import GroupAccordion from "components/GroupAccordion";
 
-import { TableBody } from '@mui/material'
-import Table from '../styled/Table'
+import { TableBody } from "@mui/material";
+import Table from "../styled/Table";
 
 interface IProps {
     item: IGroupParams
@@ -28,49 +29,49 @@ interface IState {
     openedGroup: number
 }
 
-export default class Group extends PureComponent<IProps, IState> {
-    static contextType = MainContext
-    declare context: IMainContext
+class Group extends PureComponent<IProps, IState> {
+    static contextType = MainContext;
+    declare context: IMainContext;
 
-    private emptyContStyle = { height: '47px' }
-    private componentID = `group-${Math.round(Math.random()*100)}`
-    private iconSRC: string
+    private emptyContStyle = { height: "47px" };
+    private componentID = `group-${Math.round(Math.random()*100)}`;
+    private iconSRC: string;
     private items: {
         groups: any[]
         params: {
             files: any[]
             default: any[]
         }
-    }
+    };
     private toReset: {
         [id: string]: () => void
-    }
+    };
 
     constructor(props: IProps) {
-        super(props)
+        super(props);
         this.state = {
             isExport: props.isParentExport,
             openedGroup: null
-        }
-        this.toReset = {}
-        this.items = this.getItems()
+        };
+
+        this.toReset = {};
+        this.items = this.getItems();
         if (props.item.icon)
-            this.iconSRC = require(`images/icons/editor/${props.item.icon}`)
+            this.iconSRC = require(`images/icons/editor/${props.item.icon}`);
     }
 
-    componentDidMount() {
-        this.initReset()
+    public componentDidMount() {
+        this.initReset();
     }
 
-    componentWillUnmount() {
-        if (this.props.unregReset) {
-            this.props.unregReset(this.componentID)
-        }
+    public componentWillUnmount() {
+        if (this.props.unregReset)
+            this.props.unregReset(this.componentID);
     }
 
-    render() {
-        const { isParentExport, isExporting, isOpen, isShow, item, toggle } = this.props
-        const { isExport, openedGroup } = this.state
+    public render() {
+        const { isParentExport, isExporting, isOpen, isShow, item, toggle } = this.props;
+        const { isExport, openedGroup } = this.state;
 
         const defaultParams = this.items.params.default.map((param, index) =>
             <Parameter
@@ -82,7 +83,7 @@ export default class Group extends PureComponent<IProps, IState> {
                 unregReset={this.unregReset}
                 isShow={isOpen}
             />
-        )
+        );
         const filesParams = this.items.params.files.map((param, index) =>
             <Parameter
                 item={param}
@@ -93,7 +94,7 @@ export default class Group extends PureComponent<IProps, IState> {
                 isExporting={isExporting}
                 isShow={isOpen}
             />
-        )
+        );
         const groups = this.items.groups.map((groupItem, index) =>
             <Group
                 item={groupItem}
@@ -106,7 +107,7 @@ export default class Group extends PureComponent<IProps, IState> {
                 isOpen={openedGroup === index}
                 toggle={this.toggleExpand(index)}
             />
-        )
+        );
 
         if (isShow === false) {
             return (
@@ -115,11 +116,11 @@ export default class Group extends PureComponent<IProps, IState> {
                     {filesParams}
                     {groups}
                 </div>
-            )
+            );
         }
 
         return <>
-            <ResetMenu/>
+            <ResetMenu />
             <GroupAccordion
                 id={this.componentID}
                 title={item.groupName}
@@ -141,63 +142,72 @@ export default class Group extends PureComponent<IProps, IState> {
                 {filesParams}
                 {groups}
             </GroupAccordion>
-        </>
+        </>;
     }
 
-    private toggleExpand = memoizee((index: number) => (expand: boolean) => this.setState({ openedGroup: expand? index : null }))
+    private toggleExpand = memoizee(
+        (index: number) => (expand: boolean) => this.setState({ openedGroup: expand? index : null })
+    );
 
-    private toggleExporting = () => {
+    @callback
+    private toggleExporting() {
         if (this.props.isParentExport)
-            this.setState(({ isExport }) => ({ isExport: !isExport }))
+            this.setState(({ isExport }) => ({ isExport: !isExport }));
     }
 
     private initReset() {
         if (this.props.regReset)
-            this.props.regReset(this.componentID, this.reset)
+            this.props.regReset(this.componentID, this.reset);
     }
 
-    private reset = () => {
+    @callback
+    private reset() {
         for (const itemID in this.toReset) {
-            this.toReset[itemID]()
+            this.toReset[itemID]();
         }
     }
 
-    private regReset = (id: string, func: () => void) => {
-        this.toReset[id] = func
+    @callback
+    private regReset(id: string, func: () => void) {
+        this.toReset[id] = func;
     }
 
-    private unregReset = (id: string) => {
-        delete this.toReset[id]
+    @callback
+    private unregReset(id: string) {
+        delete this.toReset[id];
     }
 
     private getItems() {
-        const groups = []
+        const groups = [];
         const params = {
             files: [],
             default: []
-        }
+        };
 
         for (const groupItem of this.props.item.groupItems) {
-            if (groupItem.paramType === 'group') {
-                groups.push(groupItem)
+            if (groupItem.paramType === "group") {
+                groups.push(groupItem);
             }
             else {
                 if (groupItem.type === InputType.file)
-                    params.files.push(groupItem)
+                    params.files.push(groupItem);
                 else
-                    params.default.push(groupItem)
+                    params.default.push(groupItem);
             }
         }
-        return { groups, params }
+        return { groups, params };
     }
 
-    private showContextMenu = (e: MouseEvent<HTMLDivElement>) => {
-        e.stopPropagation()
+    @callback
+    private showContextMenu(e: MouseEvent<HTMLDivElement>) {
+        e.stopPropagation();
         showResetMenu({
             x: e.clientX,
             y: e.clientY,
             text: this.props.item.groupName,
             onReset: this.reset
-        })
+        });
     }
 }
+
+export default Group;

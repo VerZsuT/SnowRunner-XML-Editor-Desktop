@@ -6,4 +6,4 @@ interface IDefaults {
     }
 }
 
-export default IDefaults
+export default IDefaults;

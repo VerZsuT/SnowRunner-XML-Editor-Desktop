@@ -1,3 +1,3 @@
-import { styled, Typography } from '@mui/material'
+import { styled, Typography } from "@mui/material";
 
-export default styled(Typography)({ color: 'red' })
+export default styled(Typography)({ color: "red" });

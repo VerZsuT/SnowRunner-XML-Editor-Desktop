@@ -16,4 +16,4 @@ type DefaultInputProps = {
     canAddTag?: boolean
 }
 
-export default DefaultInputProps
+export default DefaultInputProps;

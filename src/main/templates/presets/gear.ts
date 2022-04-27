@@ -1,58 +1,58 @@
-import { Number } from '../items'
-import Config from 'main/classes/Config'
+import { Number } from "../items";
+import { config } from "main/classes/Config";
 
 const texts = {
     RU: {
-        angelVelocity: 'Макс. угловая скорость колеса',
-        fuelModifier: 'Модификатор потребления топлива'
+        angelVelocity: "Макс. угловая скорость колеса",
+        fuelModifier: "Модификатор потребления топлива"
     },
     EN: {
-        angelVelocity: 'Max wheel angular velocity',
-        fuelModifier: 'Fuel modifier'
+        angelVelocity: "Max wheel angular velocity",
+        fuelModifier: "Fuel modifier"
     },
     DE: {
-        angelVelocity: 'Winkelgeschwindigkeit',
-        fuelModifier: 'Kraftstoffmodifikator'
+        angelVelocity: "Winkelgeschwindigkeit",
+        fuelModifier: "Kraftstoffmodifikator"
     },
     CH: {
-        angelVelocity: '最大车轮角速度',
-        fuelModifier: '燃油消耗改性剂'
+        angelVelocity: "最大车轮角速度",
+        fuelModifier: "燃油消耗改性剂"
     }
-}[Config.obj.lang]
+}[config.lang];
 
 const descs = {
     RU: {
-        angelVelocity: 'Максимальная угловая скорость колеса',
-        fuelModifier: 'Множитель потребления топлива на данной передаче'
+        angelVelocity: "Максимальная угловая скорость колеса",
+        fuelModifier: "Множитель потребления топлива на данной передаче"
     },
     EN: {
-        angelVelocity: 'Maximum angular velocity of the wheel',
-        fuelModifier: 'Fuel consumption multiplier in this gear'
+        angelVelocity: "Maximum angular velocity of the wheel",
+        fuelModifier: "Fuel consumption multiplier in this gear"
     },
     DE: {
-        angelVelocity: 'Maximale Winkelgeschwindigkeit des Rades',
-        fuelModifier: 'Multiplikator des Kraftstoffverbrauchs in diesem Getriebe'
+        angelVelocity: "Maximale Winkelgeschwindigkeit des Rades",
+        fuelModifier: "Multiplikator des Kraftstoffverbrauchs in diesem Getriebe"
     },
     CH: {
-        angelVelocity: '轮子的最大角速度',
-        fuelModifier: '该档位的油耗倍率'
+        angelVelocity: "轮子的最大角速度",
+        fuelModifier: "该档位的油耗倍率"
     }
-}[Config.obj.lang]
+}[config.lang];
 
 export default [
     Number({
-        attribute: 'AngVel',
+        attribute: "AngVel",
         text: texts.angelVelocity,
         desc: descs.angelVelocity,
         max: 32,
         default: 0
     }),
     Number({
-        attribute: 'FuelModifier',
+        attribute: "FuelModifier",
         text: texts.fuelModifier,
         desc: descs.fuelModifier,
         max: 10,
         min: 0,
         default: 1
     })
-]
+];

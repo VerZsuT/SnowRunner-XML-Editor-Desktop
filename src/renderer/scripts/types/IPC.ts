@@ -4,4 +4,4 @@ interface IPC {
     send(channel: string, ...args: any[]): any
 }
 
-export default IPC
+export default IPC;

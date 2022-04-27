@@ -1,38 +1,38 @@
-import { PureComponent } from 'react'
-import { render } from 'react-dom'
-import { load } from 'cheerio'
-import type { CSSProperties } from 'react'
-import type { Cheerio, CheerioAPI, Node } from 'cheerio'
-import type IIEParam from './types/IIEParam'
-import type ITemplateParams from 'templates/types/ITemplateParams'
-import type IExportData from './types/IExportData'
-import type IEditorAction from './types/IEditorAction'
-import Menu from 'menu'
-import FileType from 'templates/enums/FileType'
+import WindowRoot from "components/WindowRoot";
+import { createRoot } from "react-dom/client";
+import { load } from "cheerio";
+import type { CSSProperties } from "react";
+import type { Cheerio, CheerioAPI, Node } from "cheerio";
+import type IIEParam from "./types/IIEParam";
+import type ITemplateParams from "templates/types/ITemplateParams";
+import type IExportData from "./types/IExportData";
+import type IEditorAction from "./types/IEditorAction";
+import Menu from "menu";
+import FileType from "templates/enums/FileType";
 
-import { getIngameText, MAIN, prettify, setHotKey } from 'scripts/funcs'
-import main from 'scripts/main'
-import local from 'scripts/storage'
-import localize from 'scripts/localize'
-import { process, getGlobalTemplates } from 'scripts/dom'
-import { IMainContext, MainContext } from './MainContext'
+import { callback, getIngameText, MAIN, prettify, setHotKey } from "scripts/helpers";
+import main from "scripts/main";
+import local from "scripts/storage";
+import localize from "scripts/localize";
+import { process, getGlobalTemplates } from "scripts/dom";
+import { IMainContext, MainContext } from "./MainContext";
 
-import ErrorHandler from 'modules/components/ErrorHandler'
-import Alert, { showAlert } from 'modules/components/Alert'
-import Confirm, { showConfirm } from 'modules/components/Confirm'
-import Loading, { showLoading } from 'modules/components/Loading'
-import DropArea from 'modules/components/DropArea'
-import Popup from 'modules/components/Popup'
-import Parameters from './components/Parameters'
-import ErrorHeader from './components/ErrorHeader'
-import MainHeader from './components/MainHeader'
+import ErrorHandler from "components/ErrorHandler";
+import Alert, { showAlert } from "components/Alert";
+import Confirm, { showConfirm } from "components/Confirm";
+import Loading, { showLoading } from "components/Loading";
+import DropArea from "components/DropArea";
+import Popup from "components/Popup";
+import Parameters from "./components/Parameters";
+import ErrorHeader from "./components/ErrorHeader";
+import MainHeader from "./components/MainHeader";
 
-import { Typography } from '@mui/material'
-import Container from 'modules/components/styled/Container'
-import 'styles/editor'
+import { Typography } from "@mui/material";
+import Container from "components/styled/Container";
+import "styles/editor";
 
-const { basename, readFileSync, writeFileSync } = window.service
-const { updateFiles, openEPFDialog, openSaveDialog, openList } = main
+const { basename, readFileSync, writeFileSync } = window.service;
+const { updateFiles, openEPFDialog, openSaveDialog, openWindow } = main;
 
 interface IState {
     isExporting: boolean
@@ -41,89 +41,89 @@ interface IState {
     enableReset: boolean
 }
 
-export default class Editor extends PureComponent<any, IState> {
+class Editor extends WindowRoot<any, IState> {
     private styles = {
         errorCont: {
-            padding: '0 30px',
-            marginTop: '100px',
-            textAlign: 'center'
+            padding: "0 30px",
+            marginTop: "100px",
+            textAlign: "center"
         } as CSSProperties,
         params: {
-            padding: '0 30px',
-            marginTop: '100px'
+            padding: "0 30px",
+            marginTop: "100px"
         }
-    }
-    private tableItems: ITemplateParams
-    private mainTitle: string
-    private hasError: boolean
-    private templates: Cheerio<Node>
-    private globalTemplates: CheerioAPI
+    };
+    private tableItems: ITemplateParams;
+    private mainTitle: string;
+    private hasError: boolean;
+    private templates: Cheerio<Node>;
+    private globalTemplates: CheerioAPI;
     private toReset: {
         [id: string]: () => void
-    }
+    };
     private defaults: {
         [selector: string]: {
             [attribute: string]: string | number
         }
-    }
-    private EXPORT_FILE_VERSION = '2.0'
-    private params: IIEParam[] = []
+    };
+    private EXPORT_FILE_VERSION = "2.0";
+    private params: IIEParam[] = [];
 
-    private fileDOM: CheerioAPI
-    private actions: IEditorAction[]
+    private fileDOM: CheerioAPI;
+    private actions: IEditorAction[];
     private files: {
         dom: CheerioAPI
         path: string
         mod: string
         dlc: string
         fileType: FileType
-    }[]
+    }[];
     
-    public currentMod: string
-    public currentDLC: string
-    public filePath: string
+    public currentMod: string;
+    public currentDLC: string;
+    public filePath: string;
 
     constructor(props: any) {
-        super(props)
+        super(props);
 
-        this.init()
+        this.init();
         this.state = {
             isExporting: false,
             title: this.mainTitle,
             enableReset: !this.currentMod,
             menuAnchor: null
-        }
+        };
         this.files = [{
             path: this.filePath,
             dom: this.fileDOM,
             mod: this.currentMod,
             dlc: this.currentDLC,
             fileType: FileType.truck
-        }]
+        }];
 
-        if (this.fileDOM('error').length) {
-            this.hasError = true
-        }
+        if (this.fileDOM("error").length)
+            this.hasError = true;
     }
 
     public init() {
-        this.toReset = {}
-        this.filePath = local.get('filePath')
-        const [fileDOM, tableItems, actions] = process(this.filePath)
-        this.fileDOM = fileDOM
-        this.actions = actions
-        this.tableItems = tableItems
-        this.currentMod = local.get('currentMod')
-        this.currentDLC = local.get('currentDLC')
-        this.mainTitle = this.getMainTitle()
-        this.templates = this.fileDOM('_templates')
-        this.globalTemplates = getGlobalTemplates()
-        this.defaults = main.defaults[basename(this.filePath)] ?? {}
+        this.toReset = {};
+        this.filePath = local.get("filePath");
+        const [fileDOM, tableItems, actions] = process(this.filePath);
+        this.fileDOM = fileDOM;
+        this.actions = actions;
+        this.tableItems = tableItems;
+        this.currentMod = local.get("currentMod");
+        this.currentDLC = local.get("currentDLC");
+        this.mainTitle = this.getMainTitle();
+        this.templates = this.fileDOM("_templates");
+        this.globalTemplates = getGlobalTemplates();
+        this.defaults = main.defaults[basename(this.filePath)] ?? {};
     }
 
-    public componentDidMount(): void {
-        this.setBackHotkey()
-        this.checkExporting()
+    public override componentDidMount() {
+        super.componentDidMount();
+        this.setBackHotkey();
+        this.checkExporting();
     }
 
     public render() {
@@ -139,13 +139,13 @@ export default class Editor extends PureComponent<any, IState> {
             globalTemplates: this.globalTemplates,
             tableItems: this.tableItems,
             defaults: this.defaults
-        }
+        };
 
         if (this.hasError) {
             return <>
-                <Menu/>
-                <ErrorHandler/>
-                <Loading/>
+                <Menu />
+                <ErrorHandler />
+                <Loading />
 
                 <ErrorHeader 
                     title={this.state.title}
@@ -159,17 +159,17 @@ export default class Editor extends PureComponent<any, IState> {
                         {localize.PROC_FILE_ERROR}
                     </Typography>
                 </Container>
-            </>
+            </>;
         }
 
         return <>
-            <Menu/>
-            <ErrorHandler/>
+            <Menu />
+            <ErrorHandler />
             <DropArea onDrop={this.onDropFile}/>
-            <Alert/>
-            <Confirm/>
-            <Loading/>
-            <Popup/>
+            <Alert />
+            <Confirm />
+            <Loading />
+            <Popup />
             
             <MainHeader
                 editor={this}
@@ -185,7 +185,7 @@ export default class Editor extends PureComponent<any, IState> {
                 files={this.files}
             />
             <MainContext.Provider value={mainContext}>
-                <Container id='table' style={this.styles.params}>
+                <Container id="table" style={this.styles.params}>
                     <Parameters
                         isExporting={this.state.isExporting}
                         regReset={this.regReset}
@@ -193,106 +193,117 @@ export default class Editor extends PureComponent<any, IState> {
                     />
                 </Container>
             </MainContext.Provider>
-        </>
+        </>;
     }
 
-    private onDropFile = (files: FileList) => this.importFile(files[0].path)
+    @callback
+    private onDropFile(files: FileList) {
+        this.importFile(files[0].path);
+    }
 
     private checkExporting() {
-        if (local.pop('isExport') === 'true') {
+        if (local.pop("isExport") === "true") {
             this.setState({ isExporting: true }, () => {
-                this.exportFile()
-                window.close()
-            })
+                this.exportFile();
+                window.close();;
+            });
         }
     }
 
-    private addFile = (mod: string, dlc: string, dom: CheerioAPI, path: string, fileType: FileType) => {
-        this.files.push({ dom, path, mod, dlc, fileType })
+    @callback
+    private addFile(mod: string, dlc: string, dom: CheerioAPI, path: string, fileType: FileType) {
+        this.files.push({ dom, path, mod, dlc, fileType });
     }
 
-    private addParam = (param: IIEParam) => {
-        this.params.push(param)
+    @callback
+    private addParam(param: IIEParam) {
+        this.params.push(param);
     }
 
-    private regReset = (id: string, func: () => void) => {
-        this.toReset[id] = func
+    @callback
+    private regReset(id: string, func: () => void) {
+        this.toReset[id] = func;
     }
 
-    private unregReset = (id: string) => {
-        delete this.toReset[id]
+    @callback
+    private unregReset(id: string) {
+        delete this.toReset[id];
     }
 
-    private removeParam = (id: string) => {
-        this.params.filter(item => item.id !== id)
+    @callback
+    private removeParam(id: string) {
+        this.params.filter(item => item.id !== id);
     }
 
-    private setBackHotkey = () => {
+    @callback
+    private setBackHotkey() {
         setHotKey({
-            key: 'Escape',
-            eventName: 'keydown'
-        }, () => this.back())
+            key: "Escape",
+            eventName: "keydown"
+        }, () => this.back());
     }
 
     private getMainTitle() {
-        if (this.fileDOM('GameData UiDesc').length === 1) {
-            const text = this.fileDOM('GameData UiDesc').attr('UiName')
-            return getIngameText(text, this.currentMod) || text
+        if (this.fileDOM("GameData UiDesc").length === 1) {
+            const text = this.fileDOM("GameData UiDesc").attr("UiName");
+            return getIngameText(text, this.currentMod) || text;
         }
 
-        if (this.filePath.split('/').length !== 1) {
-            let a = this.filePath.split('/')
-            return prettify(a[a.length - 1].replace('.xml', '')).toUpperCase()
+        if (this.filePath.split("/").length !== 1) {
+            let a = this.filePath.split("/");
+            return prettify(a[a.length - 1].replace(".xml", "")).toUpperCase();
         }
         else {
-            let a = this.filePath.split('\\')
-            return prettify(a[a.length - 1].replace('.xml', '')).toUpperCase()
+            let a = this.filePath.split("\\");
+            return prettify(a[a.length - 1].replace(".xml", "")).toUpperCase();
         }
     }
 
-    public save = async (isUpdateFiles = true) => {
-        this.setState({ title: localize.SAVING_MESSAGE })
+    @callback
+    public async save(isUpdateFiles = true) {
+        this.setState({ title: localize.SAVING_MESSAGE });
         await new Promise<void>(resolve => {
             setTimeout(() => {
                 for (const file of this.files) {
-                    const dom = load(file.dom.html(), { xmlMode: true })
+                    const dom = load(file.dom.html(), { xmlMode: true });
 
-                    dom('[SXMLE_ID]').map((_, el) =>
-                        dom(el).removeAttr('SXMLE_ID'))
-                    writeFileSync(file.path, dom.html())
+                    dom("[SXMLE_ID]").map((_, el) =>
+                        dom(el).removeAttr("SXMLE_ID"));
+                    writeFileSync(file.path, dom.html());
                 }
 
                 if (isUpdateFiles) {
                     if (this.currentMod)
-                        updateFiles(this.currentMod)
-                    updateFiles()
-                    showAlert({ text: localize.SUCCESS_SAVE_FILES })
+                        updateFiles(this.currentMod);
+                    updateFiles();
+                    showAlert({ text: localize.SUCCESS_SAVE_FILES });
                 }
-                this.setState({ title: this.mainTitle })
-                resolve()
-            }, 100)
-        })
+                this.setState({ title: this.mainTitle });
+                resolve();
+            }, 100);
+        });
     }
 
-    private importFile = (path?: string) => {
-        const currentFileName = basename(this.filePath)
-        const filePath = path ?? openEPFDialog()
-        let data: IExportData | IExportData[]
+    @callback
+    private importFile(path?: string) {
+        const currentFileName = basename(this.filePath);
+        const filePath = path ?? openEPFDialog();
+        let data: IExportData | IExportData[];
 
         if (!filePath) {
-            showAlert({ text: localize.PARAMS_FILE_NOT_FOUND, type: 'error' })
-            return
+            showAlert({ text: localize.PARAMS_FILE_NOT_FOUND, type: "error" });
+            return;
         }
-        data = JSON.parse(readFileSync(filePath))
+        data = JSON.parse(readFileSync(filePath));
 
         const importData = (item: IExportData) => {
             for (const fileName in item.data) {
                 for (const selector in item.data[fileName]) {
                     for (const attribute in item.data[fileName][selector]) {
                         for (const obj of this.params) {
-                            const forImport = obj.forImport
+                            const forImport = obj.forImport;
                             if (forImport.selector === selector && forImport.name === attribute && forImport.fileName === fileName)
-                                forImport.setValue(String(item.data[fileName][selector][attribute]))
+                                forImport.setValue(String(item.data[fileName][selector][attribute]));
                         }
                     }
                 }
@@ -300,47 +311,48 @@ export default class Editor extends PureComponent<any, IState> {
             for (const actionID in item.actionsData) {
                 for (const action of this.actions) {
                     if (action.id === actionID)
-                        action.object.import(item.actionsData[actionID])
+                        action.object.import(item.actionsData[actionID]);
                 }
             }
-            showAlert({ text: localize.WAS_IMPORTED })
-            return true
-        }
+            showAlert({ text: localize.WAS_IMPORTED });
+            return true;
+        };
 
         if (data instanceof Array) {
-            let imported = false
+            let imported = false;
 
             for (const item of data) {
                 if (item.fileName === currentFileName) {
                     if (importData(item))
-                        imported = true
+                        imported = true;
                 }
             }
 
             if (!imported)
-                showAlert({ text: localize.BREAK_IMPORT_INVALID_NAME.replace('%file', currentFileName), type: 'error' })
+                showAlert({ text: localize.BREAK_IMPORT_INVALID_NAME.replace("%file", currentFileName), type: "error" });
         }
         else if (currentFileName !== data.fileName) {
-            showAlert({ text: localize.BREAK_IMPORT_INVALID_NAME.replace('%file', currentFileName), type: 'error' })
+            showAlert({ text: localize.BREAK_IMPORT_INVALID_NAME.replace("%file", currentFileName), type: "error" });
         }
         else {
-            importData(data)
+            importData(data);
         }
     }
 
-    private exportFile = () => {
-        let out: IExportData
-        let pathToSave: string
+    @callback
+    private exportFile() {
+        let out: IExportData;
+        let pathToSave: string;
 
         if (!this.state.isExporting) {
-            this.setState({ isExporting: true })
-            return
+            this.setState({ isExporting: true });
+            return;
         }
 
-        pathToSave = openSaveDialog(basename(this.filePath, '.xml'))
+        pathToSave = openSaveDialog(basename(this.filePath, ".xml"));
         if (!pathToSave) {
-            showAlert({ text: localize.PATH_TO_SAVE_NOT_FOUND, type: 'error' })
-            return
+            showAlert({ text: localize.PATH_TO_SAVE_NOT_FOUND, type: "error" });
+            return;
         }
 
         out = {
@@ -348,55 +360,59 @@ export default class Editor extends PureComponent<any, IState> {
             data: {},
             actionsData: {},
             version: this.EXPORT_FILE_VERSION
-        }
+        };
 
         for (const param of this.params) {
-            const expObj = param.forExport()
+            const expObj = param.forExport();
             if (!expObj)
-                continue
+                continue;
 
-            const { fileName, name, selector, value } = expObj
+            const { fileName, name, selector, value } = expObj;
 
             if (!out.data[fileName]) {
-                out.data[fileName] = {}
+                out.data[fileName] = {};
             }
             if (!out.data[fileName][selector]) {
-                out.data[fileName][selector] = {}
+                out.data[fileName][selector] = {};
             }
-            out.data[fileName][selector][name] = value
+            out.data[fileName][selector][name] = value;
         }
 
         for (const action of this.actions) {
-            const exported = action.object.export()
+            const exported = action.object.export();
             if (exported)
-                out.actionsData[action.id] = exported
+                out.actionsData[action.id] = exported;
         }
 
-        writeFileSync(pathToSave, JSON.stringify(out, null, '\t'))
-        showAlert({ text: localize.WAS_EXPORTED })
+        writeFileSync(pathToSave, JSON.stringify(out, null, "\t"));
+        showAlert({ text: localize.WAS_EXPORTED });
         this.setState({
             isExporting: false,
             menuAnchor: null
-        })
+        });
     }
 
-    private back = () => {
-        showLoading()
-        openList()
+    @callback
+    private back() {
+        showLoading();
+        openWindow("List");
     }
 
-    private reset = () => {
+    @callback
+    private reset() {
         showConfirm({
             text: localize.RESET_CONFIRM_MESSAGE,
             onSuccess: () => {
-                for (const itemID in this.toReset) {
-                    this.toReset[itemID]()
-                }
-                this.setState({ menuAnchor: null })
-                showAlert({ text: localize.SUCCESS_RESET })
+                for (const itemID in this.toReset)
+                    this.toReset[itemID]();
+
+                this.setState({ menuAnchor: null });
+                showAlert({ text: localize.SUCCESS_RESET });
             }
-        })
+        });
     }
 }
 
-render(<Editor/>, MAIN)
+createRoot(MAIN).render(<Editor />);
+
+export default Editor;

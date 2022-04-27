@@ -2,4 +2,4 @@ interface IUpdateMap {
     [relativePath: string]: string
 }
 
-export default IUpdateMap
+export default IUpdateMap;

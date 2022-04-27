@@ -1,15 +1,16 @@
-import { PureComponent } from 'react'
-import type { CSSProperties } from 'react'
-import { render } from 'react-dom'
-import { MAIN } from 'scripts/funcs'
+import WindowRoot from "components/WindowRoot";
+import type { CSSProperties } from "react";
+import { createRoot } from "react-dom/client";
+import { MAIN } from "scripts/helpers";
+import ToTest from "components/ToTest";
 
-import { Typography, CircularProgress } from '@mui/material'
-import Container from 'modules/components/styled/Container'
-import GridContainer from 'modules/components/styled/GridContainer'
-import LinearProgress from './styled/LinearProgress'
-import 'styles/loading'
+import { Typography, CircularProgress } from "@mui/material";
+import Container from "components/styled/Container";
+import GridContainer from "components/styled/GridContainer";
+import LinearProgress from "./styled/LinearProgress";
+import "styles/loading";
 
-const { on } = window.ipc
+const { on } = window.ipc;
 
 interface IState {
     allCount: number
@@ -19,36 +20,46 @@ interface IState {
     name: string
 }
 
-class Loading extends PureComponent<any, IState> {
+class Loading extends WindowRoot<any, IState> {
     private styles = {
-        mainCont: { textAlign: 'center' } as CSSProperties,
-        gridCont: { justifyContent: 'center' },
-        percent: { marginLeft: '10px' },
-        progress: { marginTop: '15px' }
-    }
+        mainCont: {
+            textAlign: "center"
+        } as CSSProperties,
+        gridCont: {
+            justifyContent: "center"
+        },
+        percent: {
+            marginLeft: "10px"
+        },
+        progress: {
+            marginTop: "15px"
+        }
+    };
 
     constructor(props: any) {
-        super(props)
+        super(props);
         this.state = {
             allCount: 0,
             loadedCount: 0,
             percent: 0,
             isDownload: false,
-            name: ''
-        }
+            name: ""
+        };
     }
 
-    componentDidMount() {
-        this.listenIPC()
+    public override componentDidMount() {
+        super.componentDidMount();
+        this.listenIPC();
     }
 
-    render() {
-        const { name, isDownload, percent, allCount, loadedCount } = this.state
+    public render() {
+        const { name, isDownload, percent, allCount, loadedCount } = this.state;
 
         return (
             <Container style={this.styles.mainCont}>
+                <ToTest text="loading-page"/>
                 <Container>
-                    <Typography variant='h6'>
+                    <Typography variant="h6">
                         {name}
                     </Typography>
                 </Container>
@@ -56,14 +67,14 @@ class Loading extends PureComponent<any, IState> {
                 {isDownload 
                     ? <>
                         <LinearProgress
-                            variant='determinate'
+                            variant="determinate"
                             value={percent}
                         />
                         <GridContainer style={this.styles.gridCont}>
-                            <Typography variant='body2'>
+                            <Typography variant="body2">
                                 {loadedCount}/{allCount}
                             </Typography>
-                            <Typography variant='body2' style={this.styles.percent}>
+                            <Typography variant="body2" style={this.styles.percent}>
                                 {Math.round(percent)}%
                             </Typography>
                         </GridContainer>
@@ -71,29 +82,29 @@ class Loading extends PureComponent<any, IState> {
                     : <CircularProgress style={this.styles.progress}/>
                 }
             </Container>
-        )
+        );
     }
 
     private listenIPC() {
-        on('count', (_e, msg) =>
+        on("count", (_e, msg) => {
             this.setState({ allCount: +msg })
-        )
-        on('download', () =>
+        });
+        on("download", () => {
             this.setState({ isDownload: true })
-        )
-        on('success', () =>
+        });
+        on("success", () => {
             this.setState(({ loadedCount }) => ({
                 percent: 0,
                 loadedCount: loadedCount + 1
-            }))
-        )
-        on('fileName', (_e, msg) =>
-            this.setState({ name: msg })
-        )
-        on('percent', (_event, msg) =>
-            this.setState({ percent: +msg })
-        )
+            }));
+        });
+        on("fileName", (_e, msg) => {
+            this.setState({ name: msg });
+        });
+        on("percent", (_event, msg) => {
+            this.setState({ percent: +msg });
+        });
     }
 }
 
-render(<Loading/>, MAIN)
+createRoot(MAIN).render(<Loading />);

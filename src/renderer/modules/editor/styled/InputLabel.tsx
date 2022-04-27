@@ -1,3 +1,3 @@
-import { styled, InputLabel as MuiInputLabel } from '@mui/material'
+import { styled, InputLabel as MuiInputLabel } from "@mui/material";
 
-export default styled(MuiInputLabel)({ color: 'black' })
+export default styled(MuiInputLabel)({ color: "black" });

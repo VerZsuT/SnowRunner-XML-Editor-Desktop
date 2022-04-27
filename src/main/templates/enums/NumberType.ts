@@ -1,9 +1,9 @@
 /** Тип числового значение поля ввода. */
 enum NumberType {
     /** Целочисленное */
-    integer = 'int',
+    integer = "int",
     /** С плавающей точкой */
-    float = 'float'
+    float   = "float"
 }
 
-export default NumberType
+export default NumberType;

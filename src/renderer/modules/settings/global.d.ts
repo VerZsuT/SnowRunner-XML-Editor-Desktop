@@ -1,3 +1,3 @@
 interface Window {
-    settingsPreload: import('./types/ISettingsPreload').default
+    settingsPreload: import("./types/ISettingsPreload").default
 }

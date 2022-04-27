@@ -1,14 +1,14 @@
-import categories from './categories.json'
-import editor from './editor.json'
-import errors from './errors.json'
-import list from './list.json'
-import loading from './loading.json'
-import menu from './menu.json'
-import notifications from './notifications.json'
-import settings from './settings.json'
-import setup from './setup.json'
-import update from './update.json'
-import other from './other.json'
+import categories from "./categories.json";
+import editor from "./editor.json";
+import errors from "./errors.json";
+import list from "./list.json";
+import loading from "./loading.json";
+import menu from "./menu.json";
+import notifications from "./notifications.json";
+import settings from "./settings.json";
+import setup from "./setup.json";
+import update from "./update.json";
+import other from "./other.json";
 
 export const DE = {
     ...categories,
@@ -22,4 +22,4 @@ export const DE = {
     ...setup,
     ...update,
     ...other
-}
+};

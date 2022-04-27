@@ -1,4 +1,4 @@
-import type { CheerioAPI } from 'cheerio'
+import type { CheerioAPI } from "cheerio"
 
 /** Параметры доп. сценария. */
 interface IActionData {
@@ -22,4 +22,4 @@ interface IActionData {
     imgSRC?: string
 }
 
-export default IActionData
+export default IActionData;

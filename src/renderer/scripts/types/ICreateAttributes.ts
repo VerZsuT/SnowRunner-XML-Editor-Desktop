@@ -9,4 +9,4 @@ interface ICreateAttributes {
     [attrName: string]: any
 }
 
-export default ICreateAttributes
+export default ICreateAttributes;

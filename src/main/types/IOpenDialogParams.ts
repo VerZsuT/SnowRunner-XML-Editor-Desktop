@@ -1,6 +1,6 @@
-import type DialogSourceType from 'main/enums/DialogSourceType'
-import type DialogType from 'main/enums/DialogType'
-import type DialogProperties from './DialogProperties'
+import type DialogSourceType from "../enums/DialogSourceType";
+import type DialogType from "../enums/DialogType";
+import type DialogProperties from "./DialogProperties";
 
 interface IOpenDialogParams {
     type?: DialogType
@@ -10,4 +10,4 @@ interface IOpenDialogParams {
     properties?: DialogProperties
 }
 
-export default IOpenDialogParams
+export default IOpenDialogParams;

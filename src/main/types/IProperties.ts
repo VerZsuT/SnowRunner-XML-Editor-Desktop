@@ -1,8 +1,8 @@
-import type IPaths from './IPaths'
-import type IDefaults from './IDefaults'
-import type IConfig from './IConfig'
-import type Texts from './Texts'
-import type ITemplates from '../templates/types/ITemplates'
+import type IPaths from "./IPaths";
+import type IDefaults from "./IDefaults";
+import type IConfig from "./IConfig";
+import type Texts from "./Texts";
+import type ITemplates from "../templates/types/ITemplates";
 
 interface IProperties {
     texts: Texts
@@ -12,4 +12,4 @@ interface IProperties {
     defaults: IDefaults
 }
 
-export default IProperties
+export default IProperties;

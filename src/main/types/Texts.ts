@@ -5,6 +5,6 @@ type Texts = {
     CH: { [key: string]: string }
     mods: { [key: string]: string }
     ingame: { [key: string]: string }
-}
+};
 
-export default Texts
+export default Texts;

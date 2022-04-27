@@ -1,31 +1,31 @@
-import type ITemplate from '../types/ITemplate'
-import NumberType from '../enums/NumberType'
+import type ITemplate from "../types/ITemplate";
+import NumberType from "../enums/NumberType";
 
-import { Template, Group, Number, ForEach } from '../items'
-import { getSelectors } from '../service'
-import { descs, texts } from './texts'
+import { Template, Group, Number, ForEach } from "../items";
+import { getSelectors } from "../service";
+import { descs, texts } from "./texts";
 
 const selectors = getSelectors(function () {
-	const truckData = 'Truck.TruckData'
-	const wheels = `${truckData}.Wheels`
-	const wheel = `${wheels}.Wheel${this.forEach}`
-	const modelBody = 'Truck.PhysicsModel.Body'
-	const fuelMass = 'Truck.FuelMass.Body'
-	const gameData = 'Truck.GameData'
-	const addonSlots = `${gameData}.AddonSlots`
+	const truckData = "Truck.TruckData";
+	const wheels = `${truckData}.Wheels`;
+	const wheel = `${wheels}.Wheel${this.forEach}`;
+	const modelBody = "Truck.PhysicsModel.Body";
+	const fuelMass = "Truck.FuelMass.Body";
+	const gameData = "Truck.GameData";
+	const addonSlots = `${gameData}.AddonSlots`;
 	
-	return { truckData, modelBody, fuelMass, gameData, addonSlots, wheel }
-})
+	return { truckData, modelBody, fuelMass, gameData, addonSlots, wheel };
+});
 
-export default <ITemplate>{
-	selector: 'Truck[Type="Trailer"]',
+export default <ITemplate> {
+	selector: "Truck[Type=\"Trailer\"]",
 	template: Template(selectors, [
 		Group({
 			name: texts.inner,
 			defaultSelector: selectors.truckData
 		}, [
 			Number({
-				attribute: 'FuelCapacity',
+				attribute: "FuelCapacity",
 				type: NumberType.integer,
 				text: texts.fuelCapacity,
 				desc: descs.fuelCapacity,
@@ -38,7 +38,7 @@ export default <ITemplate>{
 				}
 			}),
 			Number({
-				attribute: 'RepairsCapacity',
+				attribute: "RepairsCapacity",
 				type: NumberType.integer,
 				text: texts.repairsCapacity,
 				desc: descs.repairsCapacity,
@@ -49,7 +49,7 @@ export default <ITemplate>{
 				}
 			}),
 			Number({
-				attribute: 'WheelRepairsCapacity',
+				attribute: "WheelRepairsCapacity",
 				type: NumberType.integer,
 				text: texts.wheelRepairsCapacity,
 				desc: descs.wheelRepairsCapacity,
@@ -60,7 +60,7 @@ export default <ITemplate>{
 				}
 			}),
 			Number({
-				attribute: 'Quantity',
+				attribute: "Quantity",
 				type: NumberType.integer,
 				selector: selectors.addonSlots,
 				text: texts.quantity,
@@ -69,14 +69,14 @@ export default <ITemplate>{
 		]),
 		Group(texts.mass, [
 			Number({
-				attribute: 'Mass',
+				attribute: "Mass",
 				type: NumberType.integer,
 				selector: selectors.modelBody,
 				text: texts.trailerMass,
 				desc: descs.trailerMass
 			}),
 			Number({
-				attribute: 'Mass',
+				attribute: "Mass",
 				type: NumberType.integer,
 				selector: selectors.fuelMass,
 				text: texts.fuelMass,
@@ -93,11 +93,11 @@ export default <ITemplate>{
 					withCounter: true
 				}, [
 					Number({
-						attribute: 'SuspensionHeight',
+						attribute: "SuspensionHeight",
 						text: texts.suspHeight
 					}),
 					Number({
-						attribute: 'SuspensionStrength',
+						attribute: "SuspensionStrength",
 						text: texts.suspStrength
 					})
 				])
@@ -108,11 +108,11 @@ export default <ITemplate>{
 			defaultSelector: selectors.gameData
 		}, [
 			Number({
-				attribute: 'Price',
+				attribute: "Price",
 				type: NumberType.integer,
 				text: texts.price,
 				desc: descs.price
 			})
 		])
 	])
-}
+};

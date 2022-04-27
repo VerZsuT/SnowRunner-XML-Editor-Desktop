@@ -1,23 +1,24 @@
-import { PureComponent } from 'react'
-import type { CSSProperties } from 'react'
-import type IItem from '../types/IItem'
-import ListType from '../enums/ListType'
-import SrcType from '../enums/SrcType'
-import localize from 'scripts/localize'
-import config from 'scripts/config'
-import local from 'scripts/storage'
-import main from 'scripts/main'
+import { PureComponent } from "react";
+import type { CSSProperties } from "react";
+import type IItem from "../types/IItem";
+import ListType from "../enums/ListType";
+import SrcType from "../enums/SrcType";
+import { callback } from "scripts/helpers";
+import localize from "scripts/localize";
+import config from "scripts/config";
+import local from "scripts/storage";
+import main from "scripts/main";
 
-import { IListContext, ListContext } from '../FilterContext'
-import InnerListItem from './InnerListItem'
-import ModsPopup from './ModsPopup'
-import Confirm, { showConfirm } from 'modules/components/Confirm'
+import { IListContext, ListContext } from "../FilterContext";
+import InnerListItem from "./InnerListItem";
+import ModsPopup from "./ModsPopup";
+import Confirm, { showConfirm } from "components/Confirm";
 
-import { Button } from '@mui/material'
-import Container from 'modules/components/styled/Container'
-import ListContainer from '../styled/ListContainer'
+import { Button } from "@mui/material";
+import Container from "components/styled/Container";
+import ListContainer from "../styled/ListContainer";
 
-const { reload } = main
+const { reload } = main;
 
 interface IProps {
     srcType: SrcType
@@ -29,29 +30,29 @@ interface IState {
     showModsPopup: boolean
 }
 
-export default class InnerList extends PureComponent<IProps, IState> {
-    static contextType = ListContext
-    declare context: IListContext
+class InnerList extends PureComponent<IProps, IState> {
+    static contextType = ListContext;
+    declare context: IListContext;
 
     private styles = {
-        button: { marginBottom: '10px' },
-        cont: { textAlign: 'center' } as CSSProperties
-    }
-    private id: string
+        button: { marginBottom: "10px" },
+        cont: { textAlign: "center" } as CSSProperties
+    };
+    private id: string;
 
     constructor(props: IProps) {
-        super(props)
-        this.state = { showModsPopup: false }
-        this.id = `list-${props.srcType}`
+        super(props);
+        this.state = { showModsPopup: false };
+        this.id = `list-${props.srcType}`;
     }
 
-    render() {
-        const { opened, items: propItems, srcType } = this.props
+    public render() {
+        const { opened, items: propItems, srcType } = this.props;
 
         if (opened === false)
-            return null
+            return null;
         
-        const listType = local.get('listType') as ListType
+        const listType = local.get("listType") as ListType;
         const items = propItems.map(item =>
             <InnerListItem
                 item={item}
@@ -61,20 +62,20 @@ export default class InnerList extends PureComponent<IProps, IState> {
                 modId={item.modId}
                 dlc={item.dlcName}
             />
-        )
+        );
 
         if (srcType === SrcType.mods && !config.settings.mods)
-            return null
+            return null;
         if (srcType === SrcType.dlc && !config.settings.DLC)
-            return null
+            return null;
 
         return <>
             <ListContainer id={this.id}>
                 {this.props.srcType === SrcType.mods ? <>
                     <Container style={this.styles.cont}>
                         <Button
-                            className='not-upper'
-                            variant='contained'
+                            className="not-upper"
+                            variant="contained"
                             onClick={this.showModsPopup}
                             style={this.styles.button}
                         >
@@ -89,22 +90,26 @@ export default class InnerList extends PureComponent<IProps, IState> {
                 </> : null}
                 {items}
             </ListContainer>
-        </>
+        </>;
     }
 
-    private hideModsPopup = (isReload?: boolean) => {
-        this.setState({ showModsPopup: false })
+    @callback
+    private hideModsPopup(isReload?: boolean) {
+        this.setState({ showModsPopup: false });
         if (isReload) {
             setTimeout(() => {
                 showConfirm({
                     text: localize.RELAUNCH_PROMPT,
                     onSuccess: reload
-                })
-            }, 500)
+                });
+            }, 500);
         }
     }
 
-    private showModsPopup = () => {
-        this.setState({ showModsPopup: true })
+    @callback
+    private showModsPopup() {
+        this.setState({ showModsPopup: true });
     }
 }
+
+export default InnerList;

@@ -3,4 +3,4 @@ interface IInfo {
     functions: string[]
 }
 
-export default IInfo
+export default IInfo;

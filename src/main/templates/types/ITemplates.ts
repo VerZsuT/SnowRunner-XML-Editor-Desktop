@@ -1,4 +1,4 @@
-import type ITemplate from './ITemplate'
+import type ITemplate from "./ITemplate";
 
 interface ITemplates {
     engine: ITemplate
@@ -10,4 +10,4 @@ interface ITemplates {
     winch: ITemplate
 }
 
-export default ITemplates
+export default ITemplates;

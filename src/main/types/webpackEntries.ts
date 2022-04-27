@@ -1,20 +1,20 @@
-declare const LIST_WEBPACK_ENTRY: string
-declare const CATEGORIES_WEBPACK_ENTRY: string
-declare const SETUP_WEBPACK_ENTRY: string
-declare const CONSOLE_WEBPACK_ENTRY: string
-declare const LOADING_WEBPACK_ENTRY: string
-declare const SETTINGS_WEBPACK_ENTRY: string
-declare const EDITOR_WEBPACK_ENTRY: string
-declare const UPDATE_WEBPACK_ENTRY: string
-declare const WHATS_NEW_WEBPACK_ENTRY: string
+declare const LIST_WEBPACK_ENTRY: string;
+declare const CATEGORIES_WEBPACK_ENTRY: string;
+declare const SETUP_WEBPACK_ENTRY: string;
+declare const CONSOLE_WEBPACK_ENTRY: string;
+declare const LOADING_WEBPACK_ENTRY: string;
+declare const SETTINGS_WEBPACK_ENTRY: string;
+declare const EDITOR_WEBPACK_ENTRY: string;
+declare const UPDATE_WEBPACK_ENTRY: string;
+declare const WHATS_NEW_WEBPACK_ENTRY: string;
 
-declare const LIST_PRELOAD_WEBPACK_ENTRY: string
-declare const CATEGORIES_PRELOAD_WEBPACK_ENTRY: string
-declare const SETUP_PRELOAD_WEBPACK_ENTRY: string
-declare const CONSOLE_PRELOAD_WEBPACK_ENTRY: string
-declare const LOADING_PRELOAD_WEBPACK_ENTRY: string
-declare const SETTINGS_PRELOAD_WEBPACK_ENTRY: string
-declare const EDITOR_PRELOAD_WEBPACK_ENTRY: string
+declare const LIST_PRELOAD_WEBPACK_ENTRY: string;
+declare const CATEGORIES_PRELOAD_WEBPACK_ENTRY: string;
+declare const SETUP_PRELOAD_WEBPACK_ENTRY: string;
+declare const CONSOLE_PRELOAD_WEBPACK_ENTRY: string;
+declare const LOADING_PRELOAD_WEBPACK_ENTRY: string;
+declare const SETTINGS_PRELOAD_WEBPACK_ENTRY: string;
+declare const EDITOR_PRELOAD_WEBPACK_ENTRY: string;
 
 export default {
     list: LIST_WEBPACK_ENTRY,
@@ -34,4 +34,4 @@ export default {
     loadingPreload: LOADING_PRELOAD_WEBPACK_ENTRY,
     settingsPreload: SETTINGS_PRELOAD_WEBPACK_ENTRY,
     editorPreload: EDITOR_PRELOAD_WEBPACK_ENTRY
-}
+};

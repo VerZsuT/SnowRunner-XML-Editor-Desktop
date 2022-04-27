@@ -1,6 +1,6 @@
 enum ListType {
-    trucks   = 'trucks',
-    trailers = 'trailers'
+    trucks   = "trucks",
+    trailers = "trailers"
 }
 
-export default ListType
+export default ListType;

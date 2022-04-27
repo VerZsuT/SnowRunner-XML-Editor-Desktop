@@ -1,3 +1,3 @@
-type DialogProperties = ('openFile' | 'openDirectory' | 'multiSelections')[]
+type DialogProperties = ("openFile" | "openDirectory" | "multiSelections")[];
 
-export default DialogProperties
+export default DialogProperties;

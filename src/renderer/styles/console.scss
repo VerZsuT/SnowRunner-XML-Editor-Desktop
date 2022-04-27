@@ -1,4 +1,4 @@
-@import 'styles/main';
+@import "styles/main";
 
 %no-scrollbar {
     &::-webkit-scrollbar { width: 0; }
@@ -6,7 +6,7 @@
 
 body {
     font: {
-        family: 'Andale Mono';
+        family: "Andale Mono";
         size: 17px;
     }
     overflow: hidden;

@@ -7,4 +7,4 @@ interface IConfigSettings {
     advancedMode: boolean
 }
 
-export default IConfigSettings
+export default IConfigSettings;

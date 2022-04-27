@@ -1,53 +1,54 @@
-import { readFileSync, writeFileSync } from 'fs'
-import { basename } from 'path'
+import { readFileSync, writeFileSync } from "fs";
+import { basename } from "path";
 
-import Dialog from './Dialog'
-import Settings from './Settings'
-import Texts from './Texts'
+import { settings } from "./Settings";
+import dialog from "./Dialog";
+import texts from "./Texts";
+import { linkWithRenderAs } from "../renderChannel";
+import HasLinked from "../types/HasLinked";
 
 /** Отвечает за работу с `.epf` файлами. */
-export default class EPF {
-    private static settings = Settings.obj
-
+class EPF extends HasLinked {
     /**
      * Открыть окно выбора `.epf` файлов.
      * 
      * _После выбора объединяет их и сохраняет по выбранному пользователем пути._
      */
-    public static join = () => {
-        const files = Dialog.getMultiEPF()
+    @linkWithRenderAs("joinEPF")
+    public join() {
+        const files = dialog.getMultiEPF();
 
         if (files && files.length > 1) {
-            const result = []
-            const names = []
-            let pathToSave: string
+            const result = [];
+            const names = [];
+            let pathToSave: string;
 
             for (const filePath of files) {
-                const object = JSON.parse(readFileSync(filePath).toString())
+                const object = JSON.parse(readFileSync(filePath).toString());
 
                 if (object instanceof Array) {
                     for (const obj of object) {
                         if (!names.includes(obj.fileName)) {
-                            result.push(obj)
-                            names.push(obj.fileName)
+                            result.push(obj);
+                            names.push(obj.fileName);
                         }
                     }
                 }
                 else {
                     if (!names.includes(object.fileName)) {
-                        result.push(object)
-                        names.push(object.fileName)
+                        result.push(object);
+                        names.push(object.fileName);
                     }
                 }
             }
 
-            pathToSave = Dialog.saveEPF('joined')
+            pathToSave = dialog.saveEPF("joined");
             if (pathToSave) {
-                writeFileSync(pathToSave, JSON.stringify(result, null, '\t'))
-                Dialog.alert({
-                    title: this.settings.appId,
-                    message: `${Texts.get('SUCCESS_JOIN')}\n- ${files.map((value) => basename(value)).join('\n- ')}`
-                })
+                writeFileSync(pathToSave, JSON.stringify(result, null, "\t"));
+                dialog.alert({
+                    title: settings.appId,
+                    message: `${texts.get("SUCCESS_JOIN")}\n- ${files.map((value) => basename(value)).join("\n- ")}`
+                });
             }
         }
     }
@@ -57,29 +58,32 @@ export default class EPF {
      * 
      * _Анализирует выбранный .epf файл и выводит окно с его содержимым в более удобном формате._
      */
-    public static see = () => {
-        const path = Dialog.getEPF()
-        let object: any
-        let result: string[]
+    @linkWithRenderAs("seeEPF")
+    public see() {
+        const path = dialog.getEPF();
+        let object: any;
+        let result: string[];
 
         if (!path)
-            return
+            return;
 
-        object = JSON.parse(readFileSync(path).toString())
-        result = []
+        object = JSON.parse(readFileSync(path).toString());
+        result = [];
 
         if (object instanceof Array) {
             for (const item of object) {
-                result.push(item.fileName)
+                result.push(item.fileName);
             }
         }
         else {
-            result.push(object.fileName)
+            result.push(object.fileName);
         }
 
-        Dialog.alert({
-            title: this.settings.appId,
-            message: `${Texts.get('SEE_EXPORTED_MESSAGE')}\n\n${result.join('\n')}`
-        })
+        dialog.alert({
+            title: settings.appId,
+            message: `${texts.get("SEE_EXPORTED_MESSAGE")}\n\n${result.join("\n")}`
+        });
     }
 }
+
+export default new EPF();

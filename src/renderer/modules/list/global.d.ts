@@ -1,3 +1,3 @@
 interface Window {
-    listPreload: import('./types/IListPreload').default
+    listPreload: import("./types/IListPreload").default
 }

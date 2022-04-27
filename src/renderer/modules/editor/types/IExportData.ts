@@ -13,4 +13,4 @@ interface IExportData {
     }
 }
 
-export default IExportData
+export default IExportData;

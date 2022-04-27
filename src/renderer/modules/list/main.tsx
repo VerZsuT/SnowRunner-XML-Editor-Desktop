@@ -1,39 +1,38 @@
-import { PureComponent } from 'react'
-import { render } from 'react-dom'
-import { load } from 'cheerio'
-import memoizee from 'memoizee'
-import type { Cheerio, CheerioAPI, Node as CNode } from 'cheerio'
-import type IItem from './types/IItem'
-import ListType from './enums/ListType'
-import SrcType from './enums/SrcType'
-import { MAIN, setHotKey } from 'scripts/funcs'
-import localize from 'scripts/localize'
-import config from 'scripts/config'
-import local from 'scripts/storage'
-import main from 'scripts/main'
-import { ListContext } from './FilterContext'
-import Menu from 'menu'
+import WindowRoot from "components/WindowRoot";
+import { createRoot } from "react-dom/client";
+import { load } from "cheerio";
+import memoizee from "memoizee";
+import type { Cheerio, CheerioAPI, Node as CNode } from "cheerio";
+import type IItem from "./types/IItem";
+import ListType from "./enums/ListType";
+import SrcType from "./enums/SrcType";
+import { callback, MAIN, setHotKey } from "scripts/helpers";
+import localize from "scripts/localize";
+import config from "scripts/config";
+import local from "scripts/storage";
+import main from "scripts/main";
+import { ListContext } from "./FilterContext";
+import Menu from "menu";
 
-import InnerList from './components/InnerList'
-import Search from 'modules/components/Search'
-import ErrorHandler from 'modules/components/ErrorHandler'
-//import DropArea from 'modules/components/DropArea'
-import Loading, { showLoading } from 'modules/components/Loading'
-import Popup from 'modules/components/Popup'
-import Alert from 'modules/components/Alert'
+import InnerList from "./components/InnerList";
+import Search from "components/Search";
+import ErrorHandler from "components/ErrorHandler";
+import Loading, { showLoading } from "components/Loading";
+import Popup from "components/Popup";
+import Alert from "components/Alert";
 
-import { Typography, Tooltip, Tabs } from '@mui/material'
-import { ArrowBack, StarRounded } from '@mui/icons-material'
-import Title from './styled/Title'
-import BackIconButton from './styled/BackIconButton'
-import TabsContainer from './styled/TabsContainer'
-import Tab from './styled/Tab'
-import TabIcon from './styled/TabIcon'
-import 'styles/list'
+import { Typography, Tooltip, Tabs } from "@mui/material";
+import { ArrowBack, StarRounded } from "@mui/icons-material";
+import Title from "./styled/Title";
+import BackIconButton from "./styled/BackIconButton";
+import TabsContainer from "./styled/TabsContainer";
+import Tab from "./styled/Tab";
+import TabIcon from "./styled/TabIcon";
+import "styles/list";
 
-const { getList } = window.listPreload
-const { readFileSync } = window.service
-const { openCategories } = main
+const { getList } = window.listPreload;
+const { readFileSync } = window.service;
+const { openWindow } = main;
 
 enum TabType {
     main,
@@ -48,76 +47,76 @@ interface IState {
     activeTab: TabType
 }
 
-class List extends PureComponent<any, IState> {
+class List extends WindowRoot<any, IState> {
     private styles = {
-        backIcon: { fontSize: '30px' },
-        favIcon: { fontSize: '27px' }
-    }
-    private listType: ListType
-    private dlc: IItem[]
-    private mods: IItem[]
-    private main: IItem[]
+        backIcon: { fontSize: "30px" },
+        favIcon: { fontSize: "27px" }
+    };
+    private listType: ListType;
+    private dlc: IItem[];
+    private mods: IItem[];
+    private main: IItem[];
 
     constructor(props: any) {
-        super(props)
+        super(props);
 
-        this.listType = local.get('listType') as ListType
-        this.dlc = this.getDLC()
-        this.mods = this.getMods()
-        this.main = this.getMain()
+        this.listType = local.get("listType") as ListType;
+        this.dlc = this.getDLC();
+        this.mods = this.getMods();
+        this.main = this.getMain();
 
-        let activeTab = TabType.main
-        if (local.get('openedList')) {
-            switch (local.get('openedList')) {
-                case 'main':
-                    activeTab = TabType.main
-                break
-                case 'dlc':
-                    activeTab = TabType.dlc
-                break
-                case 'mods':
-                    activeTab = TabType.mods
-                break
-                case 'favorites':
-                    activeTab = TabType.favorites
-                break
+        let activeTab = TabType.main;
+        if (local.get("openedList")) {
+            switch (local.get("openedList")) {
+                case "main":
+                    activeTab = TabType.main;
+                break;
+                case "dlc":
+                    activeTab = TabType.dlc;
+                break;
+                case "mods":
+                    activeTab = TabType.mods;
+                break;
+                case "favorites":
+                    activeTab = TabType.favorites;
+                break;
             }
         }
 
         this.state = {
-            filter: '',
+            filter: "",
             favorites: this.getFavorites(),
             activeTab
-        }
+        };
     }
 
-    componentDidMount(): void {
-        this.setBackHotkey()
+    public override componentDidMount() {
+        super.componentDidMount();
+        this.setBackHotkey();
         setTimeout(() => {
-            if (local.get('listScroll'))
-                document.querySelector(`#list-${local.pop('openedList')}`).scrollTo(0, +local.pop('listScroll'))
-        }, 200)
+            if (local.get("listScroll"))
+                document.querySelector(`#list-${local.pop("openedList")}`).scrollTo(0, +local.pop("listScroll"));
+        }, 200);
     }
 
-    render() {
-        const { filter, activeTab, favorites } = this.state
+    public render() {
+        const { filter, activeTab, favorites } = this.state;
 
         return <>
-            <Menu/>
-            <ErrorHandler/>
-            {/* <DropArea onDrop={()=>{}}/> */}
-            <Loading/>
-            <Popup/>
-            <Alert/>
+            <Menu />
+            <ErrorHandler />
+            <Loading />
+            <Popup />
+            <Alert />
 
             <ListContext.Provider value={this.getContext(filter)}>
                 <Title>
                     <Search value={filter} onChange={this.setFilter}/>
-                    <Typography variant='h5'>
+                    <Typography variant="h5">
                         {this.listType === ListType.trucks ? localize.TRUCKS_LIST_TITLE : localize.TRAILERS_LIST_TITLE}
                     </Typography>
-                    <Tooltip title={localize.BACK_BUTTON} placement='right'>
-                        <BackIconButton color='inherit' onClick={this.back}>
+                    <Tooltip title={localize.BACK_BUTTON} placement="right">
+                        <BackIconButton color="inherit" onClick={this.back}>
                             <ArrowBack style={this.styles.backIcon}/>
                         </BackIconButton>
                     </Tooltip>
@@ -126,8 +125,8 @@ class List extends PureComponent<any, IState> {
                     <Tabs
                         value={activeTab}
                         onChange={this.onTabChange}
-                        textColor='inherit'
-                        variant='fullWidth'
+                        textColor="inherit"
+                        variant="fullWidth"
                     >
                         <Tab
                             label={localize.MAIN_LIST_TITLE}
@@ -159,139 +158,146 @@ class List extends PureComponent<any, IState> {
                 : null}
                 <InnerList srcType={SrcType.favorites} items={favorites} opened={activeTab === TabType.favorites}/>
             </ListContext.Provider>
-        </>
+        </>;
     }
 
     private icons = {
-        main: <TabIcon src={require('images/icons/list/main.png')}/>,
-        dlc: <TabIcon src={require('images/icons/list/dlc.png')}/>,
-        mods: <TabIcon src={require('images/icons/list/mods.png')}/>,
+        main: <TabIcon src={require("images/icons/list/main.png")}/>,
+        dlc: <TabIcon src={require("images/icons/list/dlc.png")}/>,
+        mods: <TabIcon src={require("images/icons/list/mods.png")}/>,
         favs: <StarRounded style={this.styles.favIcon}/>
-    }
+    };
 
-    private onTabChange = (_: any, value: any) => this.setState({ activeTab: +value as TabType })
+    @callback
+    private onTabChange(_: any, value: any) {
+        this.setState({ activeTab: +value as TabType });
+    }
 
     private getContext = memoizee((filter: string) => ({
         filter,
         toggleFavorite: this.toggleFavorite
     }))
 
-    private setFilter = (value: string) => {
-        this.setState({ filter: value })
+    @callback
+    private setFilter(value: string) {
+        this.setState({ filter: value });
     }
 
-    private setBackHotkey = () => {
+    @callback
+    private setBackHotkey() {
         setHotKey({
-            key: 'Escape',
-            eventName: 'keydown'
-        }, () => this.back())
+            key: "Escape",
+            eventName: "keydown"
+        }, () => this.back());
     }
 
-    private back = () => {
-        showLoading()
-        local.pop('openedList')
-        local.pop('listScroll')
-        openCategories()
+    @callback
+    private back() {
+        showLoading();
+        local.pop("openedList");
+        local.pop("listScroll");
+        openWindow("Categories");;
     }
 
-    private toggleFavorite = (name: string) => {
+    @callback
+    private toggleFavorite(name: string) {
         if (config.favorites.includes(name))
-            config.favorites = config.favorites.filter(value => value !== name)
+            config.favorites = config.favorites.filter(value => value !== name);
         else
-            config.favorites = [...config.favorites, name]
+            config.favorites = [...config.favorites, name];
 
-        this.setState({ favorites: this.getFavorites() })
+        this.setState({ favorites: this.getFavorites() });
     }
 
     private getMods() {
-        let newArray: IItem[] = []
-        let array: IItem[]
+        let newArray: IItem[] = [];
+        let array: IItem[];
 
         if (!config.settings.mods)
-            return []
+            return [];
             
-        array = getList(this.listType, SrcType.mods)
+        array = getList(this.listType, SrcType.mods);
 
         for (const mod of array) {
             for (const item of mod.items) {
                 newArray.push({
                     ...item,
                     modId: mod.id
-                })
+                });
             }
         }
         return newArray.map(value => {
             const fileData = readFileSync(value.path)
             const $dom = load(fileData, { xmlMode: true })
-            const $Truck = $dom('Truck')
+            const $Truck = $dom("Truck")
 
-            if (this.listType === ListType.trailers && $Truck.length && $Truck.attr('Type') === 'Trailer')
-                return value
-            else if (this.listType === ListType.trucks && $Truck.length && $Truck.attr('Type') !== 'Trailer')
-                return value
-        }).filter(value => !!value)
+            if (this.listType === ListType.trailers && $Truck.length && $Truck.attr("Type") === "Trailer")
+                return value;
+            else if (this.listType === ListType.trucks && $Truck.length && $Truck.attr("Type") !== "Trailer")
+                return value;
+        }).filter(value => !!value);
     }
 
     private getDLC() {
-        let array: IItem[]
-        let newArray: IItem[] = []
+        let array: IItem[];
+        let newArray: IItem[] = [];
 
         if (!config.settings.DLC) {
-            return []
+            return [];
         }
-        array = getList(this.listType, SrcType.dlc)
+        array = getList(this.listType, SrcType.dlc);
 
         for (const dlc of array) {
             for (const item of dlc.items) {
                 newArray.push({
                     ...item,
                     dlcName: dlc.dlcName
-                })
+                });
             }
         }
         return newArray.map(value => {
-            const fileData = readFileSync(value.path)
-            const $dom = load(fileData, { xmlMode: true })
-            const $Truck = $dom('Truck')
+            const fileData = readFileSync(value.path);
+            const $dom = load(fileData, { xmlMode: true });
+            const $Truck = $dom("Truck");
 
-            if (this.listType === ListType.trailers && $Truck.length && $Truck.attr('Type') === 'Trailer') {
-                return value
+            if (this.listType === ListType.trailers && $Truck.length && $Truck.attr("Type") === "Trailer") {
+                return value;
             }
-            else if (this.listType === ListType.trucks && $Truck.length && $Truck.attr('Type') !== 'Trailer') {
-                return value
+            else if (this.listType === ListType.trucks && $Truck.length && $Truck.attr("Type") !== "Trailer") {
+                return value;
             }
-        }).filter(value => !!value)
+        }).filter(value => !!value);
     }
 
     private getMain() {
-        const array = getList(this.listType, SrcType.main)
+        const array = getList(this.listType, SrcType.main);
 
         return array.map(value => {
-            let fileData: string
-            let dom: CheerioAPI
-            let $Truck: Cheerio<CNode>
+            let fileData: string;
+            let dom: CheerioAPI;
+            let $Truck: Cheerio<CNode>;
 
-            if (this.listType !== ListType.trucks) {
-                return value
-            }
+            if (this.listType !== ListType.trucks)
+                return value;
 
-            fileData = readFileSync(value.path)
-            dom = load(fileData, { xmlMode: true })
-            $Truck = dom('Truck')
+            fileData = readFileSync(value.path);
+            dom = load(fileData, { xmlMode: true });
+            $Truck = dom("Truck");
 
-            if (!$Truck.length) {
-                return value
-            }
-            if ($Truck.attr('Type') !== 'Trailer') {
-                return value
-            }
-        }).filter(value => !!value)
+            if (!$Truck.length)
+                return value;
+
+            if ($Truck.attr("Type") !== "Trailer")
+                return value;
+        }).filter(value => !!value);
     }
 
     private getFavorites() {
-        const allItems = [...this.main, ...this.mods, ...this.dlc]
-        return allItems.filter(value => config.favorites.includes(value.name))
+        const allItems = [...this.main, ...this.mods, ...this.dlc];
+        return allItems.filter(value => config.favorites.includes(value.name));
     }
 }
 
-render(<List/>, MAIN)
+createRoot(MAIN).render(<List/>);
+
+export default List;

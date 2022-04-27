@@ -1,4 +1,4 @@
-import type DialogProperties from './DialogProperties'
+import type DialogProperties from "./DialogProperties";
 
 interface IDialogParams {
     properties?: DialogProperties
@@ -8,4 +8,4 @@ interface IDialogParams {
     }[]
 }
 
-export default IDialogParams
+export default IDialogParams;

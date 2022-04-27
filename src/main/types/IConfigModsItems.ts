@@ -5,4 +5,4 @@ interface IConfigModsItems {
     }
 }
 
-export default IConfigModsItems
+export default IConfigModsItems;

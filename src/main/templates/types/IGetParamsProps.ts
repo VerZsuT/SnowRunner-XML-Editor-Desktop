@@ -1,5 +1,5 @@
-import type { CheerioAPI } from 'cheerio'
-import type TSelectors from './TSelectors'
+import type { CheerioAPI } from "cheerio";
+import type TSelectors from "./TSelectors";
 
 interface IGetParamsProps {
     selectors?: TSelectors
@@ -12,4 +12,4 @@ interface IGetParamsProps {
     counter?: number
 }
 
-export default IGetParamsProps
+export default IGetParamsProps;

@@ -1,8 +1,8 @@
-import type FileType from '../enums/FileType'
-import type InputType from '../enums/InputType'
-import type NumberType from '../enums/NumberType'
-import type InputAreas from './InputAreas'
-import type InputElementProps from './InputElementProps'
+import type FileType from "../enums/FileType";
+import type InputType from "../enums/InputType";
+import type NumberType from "../enums/NumberType";
+import type InputAreas from "./InputAreas";
+import type InputElementProps from "./InputElementProps";
 
 type IInputClassProps = InputElementProps & {
     /**
@@ -61,4 +61,4 @@ type IInputClassProps = InputElementProps & {
     areas?: InputAreas
 }
 
-export default IInputClassProps
+export default IInputClassProps;

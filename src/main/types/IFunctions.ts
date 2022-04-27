@@ -1,14 +1,14 @@
-import type { app, shell } from 'electron'
-import type Archiver from 'main/classes/Archiver'
-import type Backup from 'main/classes/Backup'
-import type Checker from 'main/classes/Checker'
-import type Config from 'main/classes/Config'
-import type Dialog from 'main/classes/Dialog'
-import type EPF from 'main/classes/EPF'
-import type Public from 'main/classes/Public'
-import type Updater from 'main/classes/Updater'
-import type Windows from 'main/classes/Windows'
-import type { findInDir } from 'main/service'
+import type { app, shell } from "electron";
+import type Archiver from "../classes/Archiver";
+import type Backup from "../classes/Backup";
+import type Checker from "../classes/Checker";
+import type Config from "../classes/Config";
+import type Dialog from "../classes/Dialog";
+import type EPF from "../classes/EPF";
+import type Public from "../classes/Public";
+import type Updater from "../classes/Updater";
+import type Windows from "../classes/Windows";
+import type { findInDir } from "../service";
 
 interface IFunctions {
     getParams: typeof Public.getParams
@@ -26,13 +26,7 @@ interface IFunctions {
     openPath: typeof shell.openPath
     openLink: typeof shell.openExternal
 
-    openWhatsNew: typeof Windows.openWhatsNew
-    openEditor: typeof Windows.openEditor
-    openList: typeof Windows.openList
-    openLoading: typeof Windows.openLoading
-    openCategories: typeof Windows.openCategories
-    openSettings: typeof Windows.openSettings
-    openConsole: typeof Windows.openConsole
+    openWindow: typeof Windows.open
     openDialog: typeof Dialog.getDir
     openXMLDialog: typeof Dialog.getXML
     openInitialDialog: typeof Dialog.getInitial
@@ -51,4 +45,4 @@ interface IFunctions {
     disableDevTools(): void
 }
 
-export default IFunctions
+export default IFunctions;

@@ -14,4 +14,4 @@ interface IIEParam {
     }
 }
 
-export default IIEParam
+export default IIEParam;

@@ -10,4 +10,4 @@ type InputAreas = {
     green?: [number, number][]
 }
 
-export default InputAreas
+export default InputAreas;

@@ -3,4 +3,4 @@ interface IConfigDLC {
     path: string
 }
 
-export default IConfigDLC
+export default IConfigDLC;

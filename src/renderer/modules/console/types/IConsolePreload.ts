@@ -8,4 +8,4 @@ interface IConsolePreload {
     }
 }
 
-export default IConsolePreload
+export default IConsolePreload;

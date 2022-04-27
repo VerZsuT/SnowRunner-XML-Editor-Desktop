@@ -7,4 +7,4 @@ enum DialogSourceType {
     dir
 }
 
-export default DialogSourceType
+export default DialogSourceType;

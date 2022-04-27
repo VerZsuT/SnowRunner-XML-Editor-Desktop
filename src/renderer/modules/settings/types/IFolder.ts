@@ -3,4 +3,4 @@ interface IFolder {
     initial: string
 }
 
-export default IFolder
+export default IFolder;

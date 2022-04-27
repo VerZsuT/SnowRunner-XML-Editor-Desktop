@@ -5,4 +5,4 @@ interface IConfigPaths {
     mods: string
 }
 
-export default IConfigPaths
+export default IConfigPaths;

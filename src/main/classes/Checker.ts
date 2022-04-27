@@ -1,44 +1,44 @@
-import https from 'https'
-import dns from 'dns'
-import { writeFileSync, existsSync, lstatSync, readdirSync, accessSync, constants } from 'fs'
-import { join } from 'path'
-import { app, shell } from 'electron'
-import type IUpdateMap from '../types/IUpdateMap'
+import https from "https";
+import dns from "dns";
+import { writeFileSync, existsSync, lstatSync, readdirSync, accessSync, constants } from "fs";
+import { join } from "path";
+import { app, shell } from "electron";
+import type IUpdateMap from "../types/IUpdateMap";
 
-import { paths } from '../service'
-import Config from './Config'
-import Dialog from './Dialog'
-import Windows from './Windows'
-import Texts from './Texts'
-import Hasher from './Hasher'
-import Notification from './Notification'
-import Backup from './Backup'
-import Archiver from './Archiver'
+import { paths } from "../service";
+import { config } from "./Config";
+import dialog from "./Dialog";
+import windows from "./Windows";
+import texts from "./Texts";
+import hasher from "./Hasher";
+import notification from "./Notification";
+import backup from "./Backup";
+import archiver from "./Archiver";
+import { linkWithRender } from "../renderChannel";
+import HasLinked from "../types/HasLinked";
 
 /** Отвечает за различные проверки. */
-export default class Checker {
-    private static config = Config.obj
-
+class Checker extends HasLinked {
     /**
      * Проверить наличие прав администратора у программы (требуется для чтения/записи файлов).
      * 
      * _Выводит уведомление и закрывает программу при неудаче._
      */
-    public static checkAdmin = () => {
+    public checkAdmin() {
         try {
-            writeFileSync(paths.config, JSON.stringify(this.config, null, '\t'))
-            return true
+            writeFileSync(paths.config, JSON.stringify(config, null, "\t"));
+            return true;
         }
         catch {
-            Windows.loading.setPercent(0)
-            Dialog.alert({
-                message: Texts.get('ADMIN_REQUIRED_MESSAGE'),
-                type: 'warning',
-                buttons: ['Exit'],
-                title: 'Error'
-            })
-            setTimeout(app.quit, 2000)
-            return false
+            windows.loading.setPercent(0);
+            dialog.alert({
+                message: texts.get("ADMIN_REQUIRED_MESSAGE"),
+                type: "warning",
+                buttons: ["Exit"],
+                title: "Error"
+            });
+            setTimeout(app.quit, 2000);
+            return false;
         }
     }
 
@@ -47,13 +47,13 @@ export default class Checker {
      * 
      * _Если изменения присутствуют, то обновляет файлы в программе._
      */
-    public static checkInitial = async () => {
-        if (!existsSync(join(paths.mainTemp, '[media]')) || Hasher.getSize(this.config.initial) !== this.config.sizes.initial) {
-            if (existsSync(this.config.initial)) {
+    public async checkInitial() {
+        if (!existsSync(join(paths.mainTemp, "[media]")) || hasher.getSize(config.initial) !== config.sizes.initial) {
+            if (existsSync(config.initial)) {
                 if (!existsSync(paths.backupInitial))
-                    await Backup.save()
+                    await backup.save();
                 else
-                    await Archiver.unpackMain()
+                    await archiver.unpackMain();
             }
         }
     }
@@ -63,26 +63,26 @@ export default class Checker {
      * @param path начальный путь (вложенные папки тоже проверяются).
      * @param map карта обновления.
      */
-    public static checkPathToDelete = (path: string, map: IUpdateMap) => {
-        const toRemove: string[] = []
-        const items = readdirSync(path)
+    public checkPathToDelete(path: string, map: IUpdateMap) {
+        const toRemove: string[] = [];
+        const items = readdirSync(path);
         
         for (const item of items) {
-            const path2 = join(path, item)
+            const path2 = join(path, item);
 
             if (lstatSync(path2).isDirectory()) {
-                const array = this.checkPathToDelete(path2, map)
+                const array = this.checkPathToDelete(path2, map);
                 if (array)
-                    toRemove.push(...array)
+                    toRemove.push(...array);
             }
             else {
-                const relativePath = path2.replace(join(paths.root, '/'), '')
+                const relativePath = path2.replace(join(paths.root, "/"), "");
                 if (!map[relativePath])
-                    toRemove.push(path2)
+                    toRemove.push(path2);
             }
         }
 
-        return toRemove
+        return toRemove;
     }
 
     /**
@@ -90,28 +90,28 @@ export default class Checker {
      * @param map карта обновления.
      * @returns `[пути_для_удаления, для_обновления]`
      */
-    public static checkMap = (map: IUpdateMap) => {
-        const toRemove = this.checkPathToDelete(paths.root, map)
-        const toCreateOrChange = []
+    public checkMap(map: IUpdateMap) {
+        const toRemove = this.checkPathToDelete(paths.root, map);
+        const toCreateOrChange = [];
 
         for (const relativePath in map) {
-            const absolutePath = join(paths.root, relativePath)
+            const absolutePath = join(paths.root, relativePath);
 
             if (!existsSync(absolutePath)) {
-                toCreateOrChange.push(relativePath)
+                toCreateOrChange.push(relativePath);
             }
             else {
                 if (lstatSync(absolutePath).isDirectory()) {
-                    toRemove.push(absolutePath)
-                    toCreateOrChange.push(relativePath)
-                    continue
+                    toRemove.push(absolutePath);
+                    toCreateOrChange.push(relativePath);
+                    continue;
                 }
-                if (Hasher.getHash(absolutePath) !== map[relativePath])
-                    toCreateOrChange.push(relativePath)
+                if (hasher.getHash(absolutePath) !== map[relativePath])
+                    toCreateOrChange.push(relativePath);
             }
         }
 
-        return [toRemove, toCreateOrChange]
+        return [toRemove, toCreateOrChange];
     }
 
     /**
@@ -120,30 +120,32 @@ export default class Checker {
      * Выводит оповещение при наличии.
      * @param whateverCheck игнорировать настройку `settings.updates` в `config.json`
      */
-    public static checkUpdate = (whateverCheck?: boolean) => {
-        if (!this.config.settings.updates && !whateverCheck)
-            return
+    @linkWithRender
+    public checkUpdate(whateverCheck?: boolean) {
+        if (!config.settings.updates && !whateverCheck)
+            return;
 
-        dns.resolve('www.google.com', error => {
+        dns.resolve("www.google.com", error => {
             if (!error) {
                 https.get(paths.publicInfo, res => {
-                    let rawData = ''
+                    let rawData = "";
         
-                    res.setEncoding('utf-8')
-                    res.on('data', chunk => rawData += chunk)
-                    res.on('end', () => {
-                        const data = JSON.parse(rawData)
+                    res.setEncoding("utf-8");
+                    res.on("data", chunk => rawData += chunk);
+                    res.on("end", () => {
+                        const data = JSON.parse(rawData);
         
-                        if (this.config.version < data.latestVersion || (
-                            this.config.version.includes('-beta') &&
-                            this.config.version.split('-beta')[0] === data.latestVersion)) {
-                            if (this.config.version >= data.minVersion) {
-                                Windows.openUpdateWindow(data.latestVersion)
+                        if (config.version < data.latestVersion || (
+                            config.version.includes("-beta") &&
+                            config.version.split("-beta")[0] === data.latestVersion)
+                        ) {
+                            if (config.version >= data.minVersion) {
+                                windows.open("Update", data.latestVersion);
                             }
                             else {
-                                Notification.show('NOTIFICATION', 'ALLOW_NEW_VERSION').then(() =>
-                                    shell.openExternal(paths.downloadPage)
-                                )
+                                notification.show("NOTIFICATION", "ALLOW_NEW_VERSION").then(() => {
+                                    shell.openExternal(paths.downloadPage);
+                                });
                             }
                         }
                     })
@@ -158,45 +160,47 @@ export default class Checker {
      * 
      * _В случае неудачи выводит уведомление._
      */
-    public static hasAllPaths = () => {
-        let success = true
+    public hasAllPaths() {
+        let success = true;
         
-        if (!existsSync(this.config.initial)) {
-            Dialog.alert({
-                type: 'warning',
-                title: Texts.get('ERROR'),
-                message: Texts.get('INITIAL_NOT_FOUND')
-            })
-            success = false
+        if (!existsSync(config.initial)) {
+            dialog.alert({
+                type: "warning",
+                title: texts.get("ERROR"),
+                message: texts.get("INITIAL_NOT_FOUND")
+            });
+            success = false;
         }
         else if (!existsSync(paths.classes)) {
-            Dialog.alert({
-                type: 'warning',
-                title: Texts.get('ERROR'),
-                message: Texts.get('CLASSES_NOT_FOUND')
-            })
-            success = false
+            dialog.alert({
+                type: "warning",
+                title: texts.get("ERROR"),
+                message: texts.get("CLASSES_NOT_FOUND")
+            });
+            success = false;
         }
-        else if (this.config.settings.DLC && !existsSync(paths.dlc)) {
-            Dialog.alert({
-                type: 'warning',
-                title: Texts.get('ERROR'),
-                message: Texts.get('DLC_FOLDER_NOT_FOUND')
-            })
-            this.config.settings.DLC = false
+        else if (config.settings.DLC && !existsSync(paths.dlc)) {
+            dialog.alert({
+                type: "warning",
+                title: texts.get("ERROR"),
+                message: texts.get("DLC_FOLDER_NOT_FOUND")
+            });
+            config.settings.DLC = false;
         }
 
         return success
     }
 
     /** Проверить наличие у программы прав на чтение/запись файла по переданному пути. */
-    static checkPermissions = (path: string) => {
+    public checkPermissions(path: string) {
         try {
-            accessSync(path, constants.W_OK)
-            return true
+            accessSync(path, constants.W_OK);
+            return true;
         }
         catch {
-            return false
+            return false;
         }
     }
 }
+
+export default new Checker();

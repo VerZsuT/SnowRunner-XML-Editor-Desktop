@@ -1,5 +1,5 @@
-import type { CheerioAPI } from 'cheerio'
-import type Editor from 'modules/editor/main'
+import type { CheerioAPI } from "cheerio";
+import type Editor from "modules/editor/main";
 
 /** Параметры сценария. */
 interface IActionProps {
@@ -10,4 +10,4 @@ interface IActionProps {
     editor?: Editor
 }
 
-export default IActionProps
+export default IActionProps;

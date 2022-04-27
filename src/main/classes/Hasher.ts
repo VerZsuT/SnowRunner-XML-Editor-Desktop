@@ -1,18 +1,20 @@
-import { existsSync, readFileSync, lstatSync } from 'fs'
-import { createHash } from 'crypto'
+import { existsSync, readFileSync, lstatSync } from "fs";
+import { createHash } from "crypto";
 
 /** Отвечает за хэши файлов. */
-export default class Hasher {
+class Hasher {
     /** Вычислить `SHA1-хэш` файла. */
-    public static getHash = (path: string) => {
+    public getHash(path: string) {
         if (!existsSync(path))
-            return ''
+            return "";
 
-        return createHash('sha1').update(readFileSync(path)).digest('hex')
+        return createHash("sha1").update(readFileSync(path)).digest("hex");
     }
 
     /** Получить размер файла. */
-    public static getSize = (path: string) => {
-        return lstatSync(path).size
+    public getSize(path: string) {
+        return lstatSync(path).size;
     }
 }
+
+export default new Hasher();

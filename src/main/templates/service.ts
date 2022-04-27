@@ -1,30 +1,30 @@
-import Texts from '../classes/Texts'
+import Texts from "../classes/Texts";
 
-const texts = Texts.obj
+const texts = Texts.obj;
 
 /**
  * Возвращает игровой перевод по ключу.
  * @param modId - id модификации.
 */
 export function getIngameText(key: string, modId?: string): string {
-    let value: string
+    let value: string;
     if (modId && texts.mods[modId])
-        value = texts.mods[modId][key]
+        value = texts.mods[modId][key];
     else
-        value = texts.ingame[key]
+        value = texts.ingame[key];
 
     if (value)
-        return value
+        return value;
 }
 
-const forEach = '[SXMLE_ID="-CYCLE1-"]'
-const first = '[SXMLE_ID="-F_CYCLE1-"]'
-const last = '[SXMLE_ID="-L_CYCLE1-"]'
+const forEach = "[SXMLE_ID=\"-CYCLE1-\"]";
+const first = "[SXMLE_ID=\"-F_CYCLE1-\"]";
+const last = "[SXMLE_ID=\"-L_CYCLE1-\"]";
 
-const forEachBy = (cycleNum: number) => `[SXMLE_ID="-CYCLE${cycleNum}-"]`
-const firstBy = (cycleNum: number) => `[SXMLE_ID="-F_CYCLE${cycleNum}-"]`
-const lastBy = (cycleNum: number) => `[SXMLE_ID="-L_CYCLE${cycleNum}-"]`
-const th = (pos: number, cycleNum: number = 1) => `[SXMLE_ID="-N${pos}_CYCLE${cycleNum}-"]`
+const forEachBy = (cycleNum: number) => `[SXMLE_ID="-CYCLE${cycleNum}-"]`;
+const firstBy = (cycleNum: number) => `[SXMLE_ID="-F_CYCLE${cycleNum}-"]`;
+const lastBy = (cycleNum: number) => `[SXMLE_ID="-L_CYCLE${cycleNum}-"]`;
+const th = (pos: number, cycleNum: number = 1) => `[SXMLE_ID="-N${pos}_CYCLE${cycleNum}-"]`;
 
 type ThisType = {
     /** По каждому элементу с перед-стоящим селектором. */
@@ -57,7 +57,7 @@ type ThisType = {
      * __Цикл__ - номер по порядку шаблона с итерацией `Template[type=TemplateType.multiply]`
     */
     th: typeof th
-}
+};
 
 /** 
  * Создаёт объект селекторов на основе возвращаемого результата переданной функции `func`.
@@ -98,9 +98,9 @@ type ThisType = {
  * ```xml
  * <Truck>
  *     <Wheels>
- *          <Wheel number='1'/>
+ *          <Wheel number="1"/>
  *          ...
- *          <Wheel number='30'/>
+ *          <Wheel number="30"/>
  *     </Wheels>
  * </Truck>
  * ```
@@ -115,22 +115,22 @@ type ThisType = {
  * ```
 */
 export function getSelectors<T extends { [id: string]: string }>(func: (this: ThisType) => T): T {
-    type ItemType = T[Extract<keyof T, string>]
+    type ItemType = T[Extract<keyof T, string>];
 
     const obj: T = func.apply({
         forEach, last, first,
         forEachBy, lastBy, firstBy, th
-    })
-    const newObj: T = { ...obj }
+    });
+    const newObj: T = { ...obj };
 
     for (const id in obj) {
-        newObj[id] = `SELECTOR_ID:${id}||${newObj[id]}` as ItemType
-        newObj[id] = newObj[id]
-            .replaceAll('.', '>')
-            .replaceAll('>', ' > ')
-            .replaceAll(' ', '!')
-            .replaceAll('!!', '!')
-            .replaceAll('!', ' ') as ItemType
+        newObj[id] = <ItemType>`SELECTOR_ID:${id}||${newObj[id]}`;
+        newObj[id] = <ItemType>newObj[id]
+            .replaceAll(".", ">")
+            .replaceAll(">", " > ")
+            .replaceAll(" ", "!")
+            .replaceAll("!!", "!")
+            .replaceAll("!", " ");
     }
-    return newObj
+    return newObj;
 }

@@ -4,4 +4,4 @@ interface ILocal {
     set(name: string, value: string): void
 }
 
-export default ILocal
+export default ILocal;

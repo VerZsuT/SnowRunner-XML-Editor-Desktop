@@ -1,4 +1,4 @@
-import type ParamType from '../enums/ParamType'
+import type ParamType from "../enums/ParamType";
 
 interface IGroupParams {
     paramType: ParamType
@@ -7,4 +7,4 @@ interface IGroupParams {
     icon: string
 }
 
-export default IGroupParams
+export default IGroupParams;

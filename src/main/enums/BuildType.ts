@@ -1,10 +1,10 @@
 /** Тип билда. */
 enum BuildType {
     /** Для разработки. */
-    dev  = 'dev',
+    dev  = "dev",
 
     /** Для конечного пользователя. */
-    prod = 'prod'
+    prod = "prod"
 }
 
-export default BuildType
+export default BuildType;

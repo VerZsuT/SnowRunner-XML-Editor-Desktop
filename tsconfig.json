@@ -31,6 +31,7 @@
       "images/*": ["src/images/*"],
       "styles/*": ["src/renderer/styles/*"],
       "modules/*": ["src/renderer/modules/*"],
+      "components/*": ["src/renderer/components/*"],
       "*": ["node_modules/*"]
     }
   },

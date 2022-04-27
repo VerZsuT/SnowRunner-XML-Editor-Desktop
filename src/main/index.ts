@@ -1,136 +1,128 @@
-import { app } from 'electron'
-import { existsSync } from 'fs'
-import { join } from 'path'
+import { app } from "electron";
+import { existsSync } from "fs";
+import { join } from "path";
 
-import Checker from './classes/Checker'
-import Config from './classes/Config'
-import Public from './classes/Public'
-import Settings from './classes/Settings'
-import Texts from './classes/Texts'
-import Windows from './classes/Windows'
-import Hasher from './classes/Hasher'
-import Archiver from './classes/Archiver'
-import { findInDir, paths } from './service'
+import Config, { config } from "./classes/Config";
+import Settings, { settings } from "./classes/Settings";
+import checker from "./classes/Checker";
+import texts from "./classes/Texts";
+import windows from "./classes/Windows";
+import hasher from "./classes/Hasher";
+import archiver from "./classes/Archiver";
+import Public from "./classes/Public";
+import { findInDir, paths } from "./service";
 
-const config = Config.obj
-const settings = Settings.set({
-    appId: 'SnowRunner XML editor',
+Settings.set({
+    appId: "SnowRunner XML editor",
     saveWhenReload: true,
     devTools: false,
     showWinRAR: false
-})
+});
 
-Public.init()
+Public.init();
 
-app.disableHardwareAcceleration()
-app.setAppUserModelId(settings.appId)
+app.disableHardwareAcceleration();
+app.setAppUserModelId(settings.appId);
 app.whenReady().then(() => {
-    Windows.openLoading()
-    Windows.loading.once('show', () => {
-        Windows.loading.setText(Texts.get('LOADING'))
-        initProgram()
-    })
-})
+    windows.open("Loading");
+    windows.loading.once("show", () => {
+        windows.loading.setText(texts.get("LOADING"));
+        initProgram();
+    });
+});
 
-app.on('before-quit', () => {
-    settings.isQuit = true
+app.on("before-quit", () => {
+    settings.isQuit = true;
     if (settings.saveWhenReload)
-        Config.save()
-})
-process.once('uncaughtExceptionMonitor', () =>
+        Config.save();
+});
+process.once("uncaughtExceptionMonitor", () => {
     app.exit()
-)
+});
 
-/**
- * `Main`функция.
-*/
+/** `Main`функция */
 async function initProgram() {
-    if (!Checker.checkAdmin())
-        return
+    if (!checker.checkAdmin())
+        return;
 
     if (!config.initial) {
-        Windows.openSetup().then(() =>
-            Checker.checkUpdate()
-        )
+        windows.open("Setup").then(() => {
+            checker.checkUpdate();
+        });
     }
     else {
-        await Checker.checkInitial()
+        await checker.checkInitial();
 
-        if (Checker.hasAllPaths()) {
-            Promise.all([
-                Texts.addIngame(),
+        if (checker.hasAllPaths()) {
+            await Promise.all([
+                texts.addIngame(),
                 initDLC(),
                 initMods()
-            ]).then(() => {
-                Windows.openCategories().then(() =>
-                    Checker.checkUpdate()
-                )
-            })
+            ]);
+            windows.open("Categories").then(() => {
+                checker.checkUpdate();
+            });
         }
         else {
-            Config.reset()
+            Config.reset();
         }
     }
 }
 
-/**
- * Находит и инициализирует игровые DLC.
-*/
+/** Находит и инициализирует игровые DLC */
 async function initDLC() {
     if (!config.settings.DLC)
-        return
+        return;
 
-    config.dlc = findInDir(paths.dlc, true)
+    config.dlc = findInDir(paths.dlc, true);
 }
 
-/**
- * Инициализирует модификации, указанные в `config.json`.
-*/
+/** Инициализирует модификации, указанные в `config.json` */
 async function initMods() {
     if (!config.settings.mods)
-        return
+        return;
     if (config.mods.length === 0)
-        return
+        return;
 
-    let counter = config.mods.length
+    let counter = config.mods.length;
 
     function deleteFromList(name: string) {
-        name = name.replace('.pak', '')
-        delete config.mods.items[name]
-        config.mods.length--
-        counter--
+        name = name.replace(".pak", "");
+        delete config.mods.items[name];
+        --config.mods.length;
+        --counter;
     }
     for (const modName in config.mods.items) {
-        const mod = config.mods.items[modName]
+        const mod = config.mods.items[modName];
 
         if (!existsSync(mod.path)) {
-            deleteFromList(config.mods.items[modName].name)
-            continue
+            deleteFromList(config.mods.items[modName].name);
+            continue;
         }
-        else if (!Checker.checkPermissions(mod.path)) {
-            deleteFromList(config.mods.items[modName].name)
-            continue
+        else if (!checker.checkPermissions(mod.path)) {
+            deleteFromList(config.mods.items[modName].name);
+            continue;
         }
 
-        if (Hasher.getSize(mod.path) === config.sizes.mods[modName] && existsSync(paths.modsTemp[modName])) {
-            counter--
-            continue
+        if (hasher.getSize(mod.path) === config.sizes.mods[modName] && existsSync(paths.modsTemp[modName])) {
+            --counter;
+            continue;
         }
         else {
-            await Archiver.unpackMod(mod.path)
+            await archiver.unpackMod(mod.path);
 
-            if (!existsSync(join(paths.modsTemp, modName, 'classes')))
-                deleteFromList(config.mods.items[modName].name)
+            if (!existsSync(join(paths.modsTemp, modName, "classes")))
+                deleteFromList(config.mods.items[modName].name);
             else
-                counter--
+                --counter;
 
             if (counter === 0) {
-                Texts.addFromMods()
-                return
+                texts.addFromMods();
+                return;
             }
         }
     }
     
     if (counter <= 0)
-        Texts.addFromMods()
+        texts.addFromMods();
 }

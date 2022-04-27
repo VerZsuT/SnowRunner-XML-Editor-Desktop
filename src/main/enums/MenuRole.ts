@@ -33,4 +33,4 @@ enum MenuRole {
     exportConfig
 }
 
-export default MenuRole
+export default MenuRole;

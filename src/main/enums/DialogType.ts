@@ -7,4 +7,4 @@ enum DialogType {
     save
 }
 
-export default DialogType
+export default DialogType;

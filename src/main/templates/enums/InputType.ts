@@ -1,13 +1,13 @@
 /** Тип поля ввода. */
 enum InputType {
     /** Значение поля - `текст` */
-    text = 'text',
+    text        = "text",
     /** Значение поля - `число` */
-    number = 'number',
+    number      = "number",
     /** Значение поля - `координата` */
-    coordinates = 'coordinates',
+    coordinates = "coordinates",
     /** Значение поля - `кнопки открытия XML файла(ов)` */
-    file = 'file'
+    file        = "file"
 }
 
-export default InputType
+export default InputType;

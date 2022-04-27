@@ -18,4 +18,4 @@ interface IPaths {
     uninstall: string
 }
 
-export default IPaths
+export default IPaths;

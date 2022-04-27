@@ -1,5 +1,5 @@
-import type { basename, join } from 'path'
-import type { writeFileSync, existsSync, readdirSync } from 'fs'
+import type { basename, join } from "path";
+import type { writeFileSync, existsSync, readdirSync } from "fs";
 
 interface IService {
     join: typeof join
@@ -11,4 +11,4 @@ interface IService {
     isDirectory(path: string): boolean
 }
 
-export default IService
+export default IService;

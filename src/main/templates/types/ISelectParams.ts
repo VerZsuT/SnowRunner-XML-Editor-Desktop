@@ -1,4 +1,4 @@
-import type ParamType from '../enums/ParamType'
+import type ParamType from "../enums/ParamType";
 
 interface ISelectParams {
     name: string
@@ -15,4 +15,4 @@ interface ISelectParams {
     default: string
 }
 
-export default ISelectParams
+export default ISelectParams;

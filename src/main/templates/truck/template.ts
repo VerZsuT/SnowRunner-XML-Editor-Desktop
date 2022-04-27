@@ -1,58 +1,58 @@
-import type ITemplate from '../types/ITemplate'
-import NumberType from '../enums/NumberType'
-import FileType from '../enums/FileType'
+import type ITemplate from "../types/ITemplate";
+import NumberType from "../enums/NumberType";
+import FileType from "../enums/FileType";
 
 import {
 	Template, Group, Select, Coordinates,
 	ForEach, File, Number, Text
-} from '../items'
-import { getSelectors } from '../service'
-import { descs, texts } from './texts'
+} from "../items";
+import { getSelectors } from "../service";
+import { descs, texts } from "./texts";
 
 const selectors = getSelectors(function () {
-	const truckData = 'Truck.TruckData'
-	const gameData = 'Truck.GameData'
-	const UIDesc = `${gameData}.UiDesc`
-	const wheels = `${truckData}.Wheels`
-	const extraWheels = `${truckData}.ExtraWheels`
-	const extraWheel = `${extraWheels}.Wheel${this.forEach}`
-	const compatibleWheels = `${truckData}.CompatibleWheels${this.forEach}`
-	const upgradableWinch = `${truckData}.WinchUpgradeSocket`
-	const staticWinch = `${truckData}.Winch`
-	const suspension = `${truckData}.SuspensionSocket`
-	const gearbox = `${truckData}.GearboxSocket`
-	const engine = `${truckData}.EngineSocket`
-	const fuelTank = `${truckData}.FuelTank`
-	const physicsBody = 'Truck.PhysicsModel.Body'
-	const wheel = `${wheels}.Wheel${this.forEach}`
+	const truckData = "Truck.TruckData";
+	const gameData = "Truck.GameData";
+	const UIDesc = `${gameData}.UiDesc`;
+	const wheels = `${truckData}.Wheels`;
+	const extraWheels = `${truckData}.ExtraWheels`;
+	const extraWheel = `${extraWheels}.Wheel${this.forEach}`;
+	const compatibleWheels = `${truckData}.CompatibleWheels${this.forEach}`;
+	const upgradableWinch = `${truckData}.WinchUpgradeSocket`;
+	const staticWinch = `${truckData}.Winch`;
+	const suspension = `${truckData}.SuspensionSocket`;
+	const gearbox = `${truckData}.GearboxSocket`;
+	const engine = `${truckData}.EngineSocket`;
+	const fuelTank = `${truckData}.FuelTank`;
+	const physicsBody = "Truck.PhysicsModel.Body";
+	const wheel = `${wheels}.Wheel${this.forEach}`;
 	
 	return {
 		truckData, gameData, UIDesc, wheels, compatibleWheels, upgradableWinch, suspension, gearbox,
 		engine, fuelTank, physicsBody, wheel, staticWinch, extraWheel
-	}
-})
+	};
+});
 
-export default <ITemplate>{
-	selector: 'Truck',
+export default <ITemplate> {
+	selector: "Truck",
 	actions: [
-		'cranes',
-		'addonsContent',
-		'trailers',
-		'zikz_605r/banditCrane'
+		"cranes",
+		"addonsContent",
+		"trailers",
+		"zikz_605r/banditCrane"
 	],
 	template: Template(selectors, [
 		Group({
 			name: texts.textGroupName,
 			defaultSelector: selectors.UIDesc,
-			icon: 'texts.png'
+			icon: "texts.png"
 		}, [
 			Text({
-				attribute: 'UiName',
+				attribute: "UiName",
 				text: texts.UIName,
 				desc: descs.UIName
 			}),
 			Text({
-				attribute: 'UiDesc',
+				attribute: "UiDesc",
 				text: texts.UIDesc,
 				desc: descs.UIDesc
 			})
@@ -60,17 +60,17 @@ export default <ITemplate>{
 		Group({
 			name: texts.controlGroupName,
 			defaultSelector: selectors.truckData,
-			icon: 'steering-wheel.png'
+			icon: "steering-wheel.png"
 		}, [
 			Number({
-				attribute: 'Responsiveness',
+				attribute: "Responsiveness",
 				text: texts.responsiveness,
 				max: 1.0,
 				min: 0.0,
 				step: 0.01
 			}),
 			Number({
-				attribute: 'BackSteerSpeed',
+				attribute: "BackSteerSpeed",
 				text: texts.backSteerSpeed,
 				desc: descs.backSteerSpeed,
 				max: 1.0,
@@ -78,7 +78,7 @@ export default <ITemplate>{
 				step: 0.01
 			}),
 			Number({
-				attribute: 'SteerSpeed',
+				attribute: "SteerSpeed",
 				text: texts.steerSpeed,
 				desc: descs.steerSpeed,
 				max: 1.0,
@@ -88,10 +88,10 @@ export default <ITemplate>{
 		]),
 		Group({
 			name: texts.winchGroupName,
-			icon: 'winches.png'
+			icon: "winches.png"
 		}, [
 			Number({
-				attribute: 'Length',
+				attribute: "Length",
 				selector: selectors.staticWinch,
 				text: texts.winchLength,
 				max: 100,
@@ -100,7 +100,7 @@ export default <ITemplate>{
 				default: 14
 			}),
 			Number({
-				attribute: 'StrengthMult',
+				attribute: "StrengthMult",
 				selector: selectors.staticWinch,
 				text: texts.winchStrength,
 				max: 10,
@@ -108,7 +108,7 @@ export default <ITemplate>{
 				default: 1
 			}),
 			File({
-				attribute: 'Type',
+				attribute: "Type",
 				selector: selectors.upgradableWinch,
 				type: FileType.winches
 			})
@@ -116,7 +116,7 @@ export default <ITemplate>{
 		Group({
 			name: texts.wheelsGroupName,
 			defaultSelector: selectors.wheels,
-			icon: 'wheels.png'
+			icon: "wheels.png"
 		}, [
 			Group(texts.physicsWheels, [
 				ForEach(selectors.wheel, [
@@ -126,7 +126,7 @@ export default <ITemplate>{
 						withCounter: true
 					}, [
 						Select({
-							attribute: 'Torque',
+							attribute: "Torque",
 							text: texts.torque,
 							desc: descs.torque,
 							options: {
@@ -135,10 +135,10 @@ export default <ITemplate>{
 								none: texts.torqueNone,
 								connectable: texts.torqueConnectable
 							},
-							default: 'none'
+							default: "none"
 						}),
 						Number({
-							attribute: 'SteeringAngle',
+							attribute: "SteeringAngle",
 							text: texts.steeringAngle,
 							desc: descs.steeringAngle,
 							max: 90,
@@ -155,7 +155,7 @@ export default <ITemplate>{
 						withCounter: true
 					}, [
 						Select({
-							attribute: 'Torque',
+							attribute: "Torque",
 							text: texts.torque,
 							desc: descs.torque,
 							options: {
@@ -164,10 +164,10 @@ export default <ITemplate>{
 								none: texts.torqueNone,
 								connectable: texts.torqueConnectable
 							},
-							default: 'none'
+							default: "none"
 						}),
 						Number({
-							attribute: 'SteeringAngle',
+							attribute: "SteeringAngle",
 							text: texts.steeringAngle,
 							desc: descs.steeringAngle,
 							max: 90,
@@ -186,30 +186,30 @@ export default <ITemplate>{
 						withCounter: true
 					}, [
 						Number({
-							attribute: 'Scale',
+							attribute: "Scale",
 							text: texts.wheelScale
 						})
 					])
 				])
 			]),
 			File({
-				attribute: 'DefaultWheelType',
+				attribute: "DefaultWheelType",
 				type: FileType.wheels
 			})
 		]),
 		Group({
 			name: texts.suspensionGroupName,
 			defaultSelector: selectors.suspension,
-			icon: 'suspensions.png'
+			icon: "suspensions.png"
 		}, [
 			Coordinates({
-				attribute: 'CenterOfMassOffset',
+				attribute: "CenterOfMassOffset",
 				selector: selectors.physicsBody,
 				text: texts.centerOfMass,
 				desc: descs.centerOfMass
 			}),
 			Select({
-				attribute: 'DiffLockType',
+				attribute: "DiffLockType",
 				selector: selectors.truckData,
 				text: texts.diffLock,
 				desc: descs.diffLock,
@@ -221,27 +221,27 @@ export default <ITemplate>{
 				}
 			}),
 			File({
-				attribute: 'Type',
+				attribute: "Type",
 				type: FileType.suspensions
 			})
 		]),
 		Group({
 			name: texts.gearboxGroupName,
 			defaultSelector: selectors.gearbox,
-			icon: 'gearboxes.png'
+			icon: "gearboxes.png"
 		}, [
 			File({
-				attribute: 'Type',
+				attribute: "Type",
 				type: FileType.gearboxes
 			})
 		]),
 		Group({
 			name: texts.engineGroupName,
 			defaultSelector: selectors.engine,
-			icon: 'engines.png'
+			icon: "engines.png"
 		}, [
 			Number({
-				attribute: 'EngineStartDelay',
+				attribute: "EngineStartDelay",
 				selector: selectors.truckData,
 				text: texts.engineStartDelay,
 				desc: descs.engineStartDelay,
@@ -249,24 +249,24 @@ export default <ITemplate>{
 				min: 0
 			}),
 			Number({
-				attribute: 'ExhaustStartTime',
+				attribute: "ExhaustStartTime",
 				selector: selectors.truckData,
 				text: texts.exhaustStartTime,
 				desc: descs.exhaustStartTime,
 				min: 0
 			}),
 			File({
-				attribute: 'Type',
+				attribute: "Type",
 				type: FileType.engines
 			})
 		]),
 		Group({
 			name: texts.fuelGroupName,
 			defaultSelector: selectors.fuelTank,
-			icon: 'fuel.png'
+			icon: "fuel.png"
 		}, [
 			Number({
-				attribute: 'DamageCapacity',
+				attribute: "DamageCapacity",
 				type: NumberType.integer,
 				text: texts.damageCapacity,
 				desc: descs.damageCapacity,
@@ -278,7 +278,7 @@ export default <ITemplate>{
 				}
 			}),
 			Number({
-				attribute: 'FuelCapacity',
+				attribute: "FuelCapacity",
 				type: NumberType.integer,
 				selector: selectors.truckData,
 				desc: descs.fuelCapacity,
@@ -293,13 +293,13 @@ export default <ITemplate>{
 		Group({
 			name: texts.unlockGroupName,
 			defaultSelector: selectors.gameData,
-			icon: 'unlock.png'
+			icon: "unlock.png"
 		}, [
 			Select({
-				attribute: 'Country',
+				attribute: "Country",
 				text: texts.country,
 				desc: descs.country,
-				default: '',
+				default: "",
 				options: {
 					RU: texts.russia,
 					US: texts.us,
@@ -307,13 +307,13 @@ export default <ITemplate>{
 				}
 			}),
 			Number({
-				attribute: 'Price',
+				attribute: "Price",
 				type: NumberType.integer,
 				text: texts.price,
 				desc: descs.price
 			}),
 			Select({
-				attribute: 'UnlockByExploration',
+				attribute: "UnlockByExploration",
 				text: texts.byExploration,
 				desc: descs.byExploration,
 				options: {
@@ -322,7 +322,7 @@ export default <ITemplate>{
 				}
 			}),
 			Number({
-				attribute: 'UnlockByRank',
+				attribute: "UnlockByRank",
 				type: NumberType.integer,
 				text: texts.unlockByRank,
 				desc: descs.unlockByRank,
@@ -331,4 +331,4 @@ export default <ITemplate>{
 			})
 		])
 	])
-}
+};

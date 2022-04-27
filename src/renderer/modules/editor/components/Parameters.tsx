@@ -1,9 +1,9 @@
-import { Fragment, PureComponent } from 'react'
-import memoizee from 'memoizee'
-import { IMainContext, MainContext } from '../MainContext'
+import { Fragment, PureComponent } from "react";
+import memoizee from "memoizee";
+import { IMainContext, MainContext } from "../MainContext";
 
-import Parameter from './Parameter'
-import Group from './Group'
+import Parameter from "./Parameter";
+import Group from "./Group";
 
 interface IProps {
     isExporting: boolean
@@ -17,24 +17,22 @@ interface IState {
     openedGroup: number
 }
 
-export default class Parameters extends PureComponent<IProps, IState> {
-    static contextType = MainContext
-    declare context: IMainContext
+class Parameters extends PureComponent<IProps, IState> {
+    static contextType = MainContext;
+    declare context: IMainContext;
 
     constructor(props: IProps) {
-        super(props)
-        this.state = {
-            openedGroup: null
-        }
+        super(props);
+        this.state = { openedGroup: null };
     }
 
-    render() {
-        const { tableItems } = this.context
-        const { regReset, unregReset, isExporting, isShow } = this.props
-        const { openedGroup } = this.state
+    public render() {
+        const { tableItems } = this.context;
+        const { regReset, unregReset, isExporting, isShow } = this.props;
+        const { openedGroup } = this.state;
 
         const items = tableItems.map((item, index) => <Fragment key={index}>
-            {item.paramType === 'group' && item.groupItems.length ?
+            {item.paramType === "group" && item.groupItems.length ?
                 <Group
                     item={item}
                     regReset={regReset}
@@ -46,7 +44,7 @@ export default class Parameters extends PureComponent<IProps, IState> {
                     isOpen={openedGroup === index}
                 />
                 : null}
-            {item.paramType !== 'group' ?
+            {item.paramType !== "group" ?
                 <Parameter
                     item={item}
                     regReset={regReset}
@@ -56,10 +54,14 @@ export default class Parameters extends PureComponent<IProps, IState> {
                     isShow={isShow}
                 />
             : null}
-        </Fragment>)
+        </Fragment>);
 
-        return items
+        return items;
     }
 
-    private toggleExpand = memoizee((index: number) => (expand: boolean) => this.setState({ openedGroup: expand? index : null }))
+    private toggleExpand = memoizee(
+        (index: number) => (expand: boolean) => this.setState({ openedGroup: expand? index : null })
+    );
 }
+
+export default Parameters;

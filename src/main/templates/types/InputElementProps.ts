@@ -25,6 +25,6 @@ type InputElementProps = {
     canAddTag?: boolean
     /** __Текст при наведении на знак вопроса__ возле параметра в таблице. */
     desc?: string
-}
+};
 
-export default InputElementProps
+export default InputElementProps;

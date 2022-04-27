@@ -1,4 +1,4 @@
-import type IFindItem from './IFindItem'
+import type IFindItem from "./IFindItem";
 
 interface IItem {
     dlcName?: string
@@ -9,4 +9,4 @@ interface IItem {
     items?: IFindItem[]
 }
 
-export default IItem
+export default IItem;

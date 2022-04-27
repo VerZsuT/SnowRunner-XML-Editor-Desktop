@@ -1,3 +1,3 @@
 interface Window {
-    editorPreload: import('./types/IEditorPreload').default
+    editorPreload: import("./types/IEditorPreload").default
 }

@@ -2,4 +2,4 @@ interface ITranslation {
     [key: string]: string
 }
 
-export default ITranslation
+export default ITranslation;

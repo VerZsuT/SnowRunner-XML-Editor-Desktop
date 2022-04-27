@@ -3,4 +3,4 @@ interface IFindItem {
     path: string
 }
 
-export default IFindItem
+export default IFindItem;

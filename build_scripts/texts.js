@@ -1,117 +1,117 @@
-const { existsSync, writeFileSync, readFileSync, rmSync } = require('fs')
-const { join } = require('path')
-const translate = require('translate')
+const { existsSync, writeFileSync, readFileSync, rmSync } = require("fs");
+const { join } = require("path");
+const translate = require("translate");
 
-const [_, __, arg1, arg2, arg3, arg4]
+const [_, __, arg1, arg2, arg3, arg4];
 
-const pathToTexts = join(__dirname, '../src/main/texts/')
+const pathToTexts = join(__dirname, "../src/main/texts/");
 
-let RUFile = join(pathToTexts, `RU/${arg1}.json`)
-let ENFile = join(pathToTexts, `EN/${arg1}.json`)
-let DEFile = join(pathToTexts, `DE/${arg1}.json`)
-let CHFile = join(pathToTexts, `CH/${arg1}.json`)
+let RUFile = join(pathToTexts, `RU/${arg1}.json`);
+let ENFile = join(pathToTexts, `EN/${arg1}.json`);
+let DEFile = join(pathToTexts, `DE/${arg1}.json`);
+let CHFile = join(pathToTexts, `CH/${arg1}.json`);
 
-const pathToIndex = join(pathToTexts, 'index.ts')
-let indexData = readFileSync(pathToIndex).toString()
+const pathToIndex = join(pathToTexts, "index.ts");
+let indexData = readFileSync(pathToIndex).toString();
 
-if (arg1 === 'add') {
-    const fileName = `${arg2}.json`
+if (arg1 === "add") {
+    const fileName = `${arg2}.json`;
 
-    RUFile = join(pathToTexts, 'RU', fileName)
-    ENFile = join(pathToTexts, 'EN', fileName)
-    DEFile = join(pathToTexts, 'DE', fileName)
-    CHFile = join(pathToTexts, 'CH', fileName)
+    RUFile = join(pathToTexts, "RU", fileName);
+    ENFile = join(pathToTexts, "EN", fileName);
+    DEFile = join(pathToTexts, "DE", fileName);
+    CHFile = join(pathToTexts, "CH", fileName);
     if (!existsSync(RUFile)) {
-        writeFiles('{}')
-        console.log(`File '${fileName}' successfilly added.`)
+        writeFiles("{}");
+        console.log(`File "${fileName}" successfilly added.`);
     }
     else {
-        console.log(`File '${fileName}' is already exists.`)
+        console.log(`File "${fileName}" is already exists.`);
     }
-    return
+    return;
 }
-else if (arg1 === 'remove') {
-    const fileName = `${arg2}.json`
+else if (arg1 === "remove") {
+    const fileName = `${arg2}.json`;
 
-    RUFile = join(pathToTexts, 'RU', fileName)
-    ENFile = join(pathToTexts, 'EN', fileName)
-    DEFile = join(pathToTexts, 'DE', fileName)
-    CHFile = join(pathToTexts, 'CH', fileName)
+    RUFile = join(pathToTexts, "RU", fileName);
+    ENFile = join(pathToTexts, "EN", fileName);
+    DEFile = join(pathToTexts, "DE", fileName);
+    CHFile = join(pathToTexts, "CH", fileName);
 
-    const data = JSON.parse(readFileSync(RUFile).toString())
+    const data = JSON.parse(readFileSync(RUFile).toString());
     for (const key in data) {
-        indexData = indexData.replace(`\t${key}: string\n`, '')
+        indexData = indexData.replace(`\t${key}: string\n`, "");
     }
-    writeIndex()
+    writeIndex();
 
     if (!existsSync(RUFile)) {
-        console.log(`File '${fileName}' not found.`)
-        return
+        console.log(`File "${fileName}" not found.`);
+        return;
     }
 
-    rmSync(RUFile, { force: true })
-    rmSync(ENFile, { force: true })
-    rmSync(DEFile, { force: true })
-    rmSync(CHFile, { force: true })
+    rmSync(RUFile, { force: true });
+    rmSync(ENFile, { force: true });
+    rmSync(DEFile, { force: true });
+    rmSync(CHFile, { force: true });
 
-    console.log(`File '${fileName}' successfilly removed.`)
-    return
+    console.log(`File "${fileName}" successfilly removed.`);
+    return;
 }
 
 if (!existsSync(RUFile)) {
-    console.log(`File '${arg1}.json' no found.`)
-    return
+    console.log(`File "${arg1}.json" no found.`);
+    return;
 }
 
-const RUData = JSON.parse(readFileSync(RUFile).toString())
-const ENData = JSON.parse(readFileSync(ENFile).toString())
-const DEData = JSON.parse(readFileSync(DEFile).toString())
-const CHData = JSON.parse(readFileSync(CHFile).toString())
+const RUData = JSON.parse(readFileSync(RUFile).toString());
+const ENData = JSON.parse(readFileSync(ENFile).toString());
+const DEData = JSON.parse(readFileSync(DEFile).toString());
+const CHData = JSON.parse(readFileSync(CHFile).toString());
 
-if (arg2 === 'add') {
-    const key = arg3.toUpperCase().split(' ').join('_')
-    const value = arg4
-    const fileName = `${arg1}.json`
+if (arg2 === "add") {
+    const key = arg3.toUpperCase().split(" ").join("_");
+    const value = arg4;
+    const fileName = `${arg1}.json`;
 
     addToData(key, value).then(() => {
-        writeFiles()
+        writeFiles();
 
         if (!indexData.includes(`${key}: string`)) {
-            indexData = indexData.replace('export interface ITexts {\n', `export interface ITexts {\n\t${key}: string\n`)
-            writeIndex()
+            indexData = indexData.replace("export interface ITexts {\n", `export interface ITexts {\n\t${key}: string\n`);
+            writeIndex();
         }
-        console.log(`Property '${key}: "${value}"' successfully added to file '${fileName}'`)
+        console.log(`Property "${key}: "${value}"" successfully added to file "${fileName}"`);
     })
 }
-else if (arg2 === 'remove') {
-    const key = arg3.toUpperCase().split(' ').join('_')
-    const fileName = arg1
+else if (arg2 === "remove") {
+    const key = arg3.toUpperCase().split(" ").join("_");
+    const fileName = arg1;
 
-    delete RUData[key]
-    delete ENData[key]
-    delete DEData[key]
-    delete CHData[key]
-    writeFiles()
+    delete RUData[key];
+    delete ENData[key];
+    delete DEData[key];
+    delete CHData[key];
+    writeFiles();
 
-    indexData = indexData.replace(`\t${key}: string\n`, '')
-    writeIndex()
-    console.log(`Key '${key}' successfully removed from file '${fileName}'`)
+    indexData = indexData.replace(`\t${key}: string\n`, "");
+    writeIndex();
+    console.log(`Key "${key}" successfully removed from file "${fileName}"`);
 }
 
 function writeFiles(data = null) {
-    writeFileSync(RUFile, data || JSON.stringify(RUData, null, '\t'))
-    writeFileSync(ENFile, data || JSON.stringify(ENData, null, '\t'))
-    writeFileSync(DEFile, data || JSON.stringify(DEData, null, '\t'))
-    writeFileSync(CHFile, data || JSON.stringify(CHData, null, '\t'))
+    writeFileSync(RUFile, data || JSON.stringify(RUData, null, "\t"));
+    writeFileSync(ENFile, data || JSON.stringify(ENData, null, "\t"));
+    writeFileSync(DEFile, data || JSON.stringify(DEData, null, "\t"));
+    writeFileSync(CHFile, data || JSON.stringify(CHData, null, "\t"));
 }
 
 function writeIndex() {
-    writeFileSync(pathToIndex, indexData)
+    writeFileSync(pathToIndex, indexData);
 }
 
 async function addToData(key, value) {
-    RUData[key] = value
-    ENData[key] = await translate(value, { from: 'ru', to: 'en', engine: 'deepl' })
-    DEData[key] = await translate(value, { from: 'ru', to: 'de', engine: 'deepl' })
-    CHData[key] = await translate(value, { from: 'ru', to: 'zh', engine: 'deepl' })
+    RUData[key] = value;
+    ENData[key] = await translate(value, { from: "ru", to: "en", engine: "deepl" });
+    DEData[key] = await translate(value, { from: "ru", to: "de", engine: "deepl" });
+    CHData[key] = await translate(value, { from: "ru", to: "zh", engine: "deepl" });
 }

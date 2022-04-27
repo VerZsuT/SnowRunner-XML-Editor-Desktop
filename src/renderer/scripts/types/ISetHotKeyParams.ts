@@ -1,4 +1,4 @@
-import type KeyEventName from './KeyEventName'
+import type KeyEventName from "./KeyEventName";
 
 interface ISetHotKeyParams {
     key: string
@@ -8,4 +8,4 @@ interface ISetHotKeyParams {
     prevent?: boolean
 }
 
-export default ISetHotKeyParams
+export default ISetHotKeyParams;

@@ -1,7 +1,7 @@
-export { RU } from './RU'
-export { EN } from './EN'
-export { DE } from './DE'
-export { CH } from './CH'
+export { RU } from "./RU";
+export { EN } from "./EN";
+export { DE } from "./DE";
+export { CH } from "./CH";
 
 export interface ITexts {
 	DROP_TEXT: string
@@ -138,5 +138,4 @@ export interface ITexts {
 	WAS_IMPORTED: string
 	WRITE_FILE_ERROR: string
 	WHATS_NEW_TITLE: string
-}
-
+};

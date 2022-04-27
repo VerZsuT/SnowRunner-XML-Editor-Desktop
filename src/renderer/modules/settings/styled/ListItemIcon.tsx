@@ -1,3 +1,3 @@
-import { styled, ListItemIcon as MuiListItemIcon } from '@mui/material'
+import { styled, ListItemIcon as MuiListItemIcon } from "@mui/material";
 
-export default styled(MuiListItemIcon)({ minWidth: '40px' })
+export default styled(MuiListItemIcon)({ minWidth: "40px" });

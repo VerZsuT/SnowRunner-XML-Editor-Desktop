@@ -1,5 +1,5 @@
-import main from './main'
-import config from './config'
-import type { ITexts } from 'texts'
+import main from "./main";
+import config from "./config";
+import type { ITexts } from "texts";
 
-export default main.texts[config.lang] as unknown as ITexts
+export default <ITexts><unknown>main.texts[config.lang];
