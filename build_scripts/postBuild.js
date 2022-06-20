@@ -8,25 +8,25 @@
     - Запускает InnoSetup и копирует .exe файл для загрузки на GoogleDrive
 */
 
+const { checkPath, readFileToVar, checkVar, writeFile, generateMap, postBuildPaths: paths } = require("./funcs.js");
+const { renameSync, rmSync, existsSync, copyFileSync } = require("fs");
 const { execSync } = require("child_process");
 const { join } = require("path");
-const { renameSync, rmSync, existsSync, copyFileSync } = require("fs");
-const { checkPath, readFileToVar, checkVar, writeFile, generateMap, postBuildPaths: paths } = require("./funcs.js");
-const Log = require("./Log.js");
+const { mainGroup, print, stageGroup, separator, error } = require("./log.js");
 
-const winrarPath = paths.winrar_x32;
-const originalPath = process.argv[2] === "x32" ? paths.original_x32 : paths.original_x64;
+const winrarPath = paths.winrar;
+const originalPath = process.argv[2] === "x32" ? paths.original32 : paths.original64;
 
-Log.mainGroup();
-Log.print("Starting post-build script", true);
-Log.stageGroup();
+mainGroup();
+print("Starting post-build script", true);
+stageGroup();
 
-Log.print("Renaming the build");
+print("Renaming the build");
 checkPath(originalPath, () => renameSync(originalPath, paths.renamed), true);
 
-Log.separator();
+separator();
 
-Log.print("Changing config.json");
+print("Changing config.json");
 readFileToVar("config", paths.config);
 checkVar(global.config, () => {
     global.config.buildType = "prod";
@@ -34,50 +34,50 @@ checkVar(global.config, () => {
     writeFile(paths.config, global.config, () => JSON.stringify(global.config));
 });
 
-Log.separator();
+separator();
 
-Log.print("Archiving the build");
-checkPath(winrarPath, () =>
+print("Archiving the build");
+checkPath(winrarPath, () => {
     execSync(`WinRAR a -ibck -ep1 -m5 "${join(paths.out, "SnowRunnerXMLEditor.rar")}" "${paths.renamed}"`, { cwd: winrarPath });
-);
+});
 
-Log.separator();
+separator();
 
-Log.print("Creating a file map for auto-updating");
-checkPath(paths.sxmle_updater, () => {
+print("Creating a file map for auto-updating");
+checkPath(paths.sxmleUpdater, () => {
     const appPath = join(paths.renamed, "resources/app");
     checkPath(appPath, () => {
         const map = generateMap(appPath);
-        writeFile(join(paths.sxmle_updater, "updateMap.json"), map, () => JSON.stringify(map));
+        writeFile(join(paths.sxmleUpdater, "updateMap.json"), map, () => JSON.stringify(map));
     });
 
-    Log.print("Adding files for auto-update");
-    const updateFilesPath = join(paths.sxmle_updater, "files");
+    print("Adding files for auto-update");
+    const updateFilesPath = join(paths.sxmleUpdater, "files");
     checkPath(updateFilesPath, () => {
-        rmSync(join(paths.sxmle_updater, "files"), { recursive: true });
+        rmSync(join(paths.sxmleUpdater, "files"), { recursive: true });
         checkPath(appPath, () => {
-            renameSync(appPath, join(paths.sxmle_updater, "files"));
-            renameSync(join(paths.sxmle_updater, "files/.webpack"), join(paths.sxmle_updater, "files/webpack"));
+            renameSync(appPath, join(paths.sxmleUpdater, "files"));
+            renameSync(join(paths.sxmleUpdater, "files/.webpack"), join(paths.sxmleUpdater, "files/webpack"));
         });
     });
 
     rmSync(join(paths.renamed), { recursive: true });
 });
 
-Log.separator();
+separator();
 
-Log.print("Creating an installation file");
+print("Creating an installation file");
 if (!existsSync(paths.renamed)) {
-    Log.print("Unpacking files for installation");
+    print("Unpacking files for installation");
     execSync(`WinRAR x -ibck -inul "${join(paths.out, "SnowRunnerXMLEditor.rar")}" "${paths.out}\\"`, { cwd: winrarPath });
 }
-Log.print("Launching InnoSetup");
+print("Launching InnoSetup");
 execSync("installer.config.iss", { cwd: join(__dirname, "../innoSetup") });
-Log.print("Copying .exe file for Google Drive");
+print("Copying .exe file for Google Drive");
 
 if (existsSync(join(paths.out, "SnowRunnerXMLEditor.exe")))
     copyFileSync(join(paths.out, "SnowRunnerXMLEditor.exe"), join(paths.out, `SnowRunnerXMLEditor_v${global.config.version}.exe`));
 else
-    Log.error(""SnowRunnerXMLEditor.exe" not found.");
+    error("\"SnowRunnerXMLEditor.exe\" not found.");
 
-Log.separator();
+separator();

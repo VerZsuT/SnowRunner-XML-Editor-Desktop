@@ -1,21 +1,19 @@
-import type IWindow from "../types/IWindow";
-import type windows from "../classes/Windows";
+import Window from "enums/Window";
+import type ICreateWindowAttributes from "types/ICreateWindowAttributes";
 
-import entries from "../types/webpackEntries";
+import entries from "../scripts/webpackEntries";
+import { openModal } from "../scripts/windows";
 
-class Settings implements IWindow {
-    private createArgs = {
-        path: entries.settings,
-        preload: entries.settingsPreload,
-        width: 400,
-        minWidth: 400,
-        height: 460,
-        minHeight: 480
-    };
+const createArgs: ICreateWindowAttributes = {
+    path: entries.settings,
+    preload: entries.settingsPreload,
+    width: 400,
+    minWidth: 400,
+    height: 330,
+    minHeight: 350,
+    window: Window.Settings
+};
 
-    public async create(wins: typeof windows) {
-        return wins.createModal(this.createArgs);
-    }
-}
-
-export default new Settings();
+export default async () => {
+    return openModal(createArgs);
+};

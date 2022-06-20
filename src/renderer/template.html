@@ -10,11 +10,16 @@
         <script type="module">
             const { sendSync } = window.ipc;
             const config = sendSync("property_config_get").value;
-            const quit = () => sendSync("function_quit_call");
-            const toggleDevTools = () => sendSync("function_toggleDevTools_call");
+
+            function quit() {
+                sendSync("function_quit_call");
+            }
+            function devTools() {
+                sendSync("function_devTools_call");
+            }
 
             document.title = document.title.replace("{--VERSION--}", `v${config.version}`);
-            document.addEventListener("keydown", event => {
+            document.addEventListener("keydown", (event) => {
                 if (event.ctrlKey && event.code === "KeyS") {
                     const button = document.querySelector("#save");
                     if (button)
@@ -24,7 +29,7 @@
                     quit();
                 }
                 else if (event.code === "KeyI" && event.ctrlKey && event.shiftKey && config.buildType === "dev") {
-                    toggleDevTools();
+                    devTools();
                 }
             });
         </script>

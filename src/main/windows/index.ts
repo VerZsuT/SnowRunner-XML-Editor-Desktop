@@ -1,9 +1,31 @@
-export { default as Categories } from "./Categories";
-export { default as Console } from "./Console";
-export { default as Editor } from "./Editor";
-export { default as List } from "./List";
-export { default as Loading } from "./Loading";
-export { default as Settings } from "./Settings";
-export { default as Setup } from "./Setup";
-export { default as Update } from "./Update";
-export { default as WhatsNew } from "./WhatsNew";
+import Window from "enums/Window";
+
+import { publicFunction } from "../scripts/renderChannel";
+import openApp from "./App";
+import openConsole from "./Console";
+import openLoading from "./Loading";
+import openSettings from "./Settings";
+import openSetup from "./Setup";
+import openUpdate from "./Update";
+import openWhatsNew from "./WhatsNew";
+
+publicFunction("openWindow", openWindow);
+
+const windows = {
+    [Window.App]: openApp,
+    [Window.Loading]: openLoading,
+    [Window.Console]: openConsole,
+    [Window.Update]: openUpdate,
+    [Window.Settings]: openSettings,
+    [Window.WhatsNew]: openWhatsNew,
+    [Window.Setup]: openSetup
+};
+
+async function openWindow(window: Window, ...args: any[]) {
+    const wind = await windows[window](...args);
+    await new Promise(resolve => {
+        wind.once("show", resolve);
+    });
+}
+
+export default openWindow;

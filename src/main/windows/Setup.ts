@@ -1,33 +1,28 @@
 import { app } from "electron";
-import type IWindow from "../types/IWindow";
-import type windows from "../classes/Windows";
 
-import entries from "../types/webpackEntries";
+import Window from "enums/Window";
+import entries from "main/scripts/webpackEntries";
+import { createWindow, wins } from "main/scripts/windows";
+import type ICreateWindowAttributes from "types/ICreateWindowAttributes";
 
-class Setup implements IWindow {
-    private createArgs = {
-        path: entries.setup,
-        preload: entries.setupPreload,
-        width: 540,
-        minWidth: 540,
-        height: 320,
-        minHeight: 340
-    };
+const createArgs: ICreateWindowAttributes = {
+    path: entries.setup,
+    preload: entries.setupPreload,
+    width: 590,
+    minWidth: 590,
+    height: 290,
+    minHeight: 310,
+    window: Window.Setup
+};
 
-    public async create(wins: typeof windows) {
-        const wind = wins.createWindow(this.createArgs);
+export default async () => {
+    const wind = createWindow(createArgs);
 
-        wind.once("close", () => app.quit());
-        await new Promise<void>(resolve => {
-            wind.once("show", () => {
-                resolve();
-                if (!wins.loading.isDestroyed())
-                    wins.loading.hide();
-            });
-        });
+    wind.once("focus", () => {
+        wins.loading.hide();
+    });
 
-        return wind;
-    }
-}
-
-export default new Setup();
+    wind.once("close", app.quit);
+    
+    return wind;
+};

@@ -1,57 +1,46 @@
-import { PureComponent } from "react";
-import localize from "scripts/localize";
+import { memo, useEffect, useState } from "react";
+import type { CSSProperties } from "react";
 
 import { Typography } from "@mui/material";
+import useOnMount from "hooks/useOnMount";
+
 import Popup, { showPopup } from "./Popup";
 import Grid from "./styled/Grid";
+import texts from "./texts";
+
+const { DROP_TEXT } = texts;
 
 interface IProps {
-    onDrop(files: FileList): void
+    onDrop(files: FileList): void;
 }
 
-interface IState {
-    show: boolean
-}
+const gridStyle: CSSProperties = {
+    justifyContent: "center",
+    alignItems: "center",
+    width: "200px",
+    height: "100px"
+};
 
-class DropArea extends PureComponent<IProps, IState> {
-    private gridStyle = {
-        justifyContent: "center",
-        alignItems: "center",
-        width: "200px",
-        height: "100px"
-    };
+export default memo((props: IProps) => {
+    const { onDrop } = props;
+    const [isShow, setIsShow] = useState(false);
 
-    constructor(props: IProps) {
-        super(props);
-        this.state = { show: null };
-    }
+    useOnMount(handleDrop);
 
-    public componentDidMount() {
-        this.handleDrop();
-    }
-
-    public componentDidUpdate() {
-        const { show } = this.state;
-
+    useEffect(() => {
         showPopup({
-            show,
+            show: isShow,
             minHeight: 100,
             minWidth: 200,
-            children: <>
-                <Grid style={this.gridStyle}>
-                    <Typography>{localize.DROP_TEXT}</Typography>
-                </Grid>
-            </>
+            children: <Grid style={gridStyle}>
+                <Typography>{DROP_TEXT}</Typography>
+            </Grid>
         });
-    }
+    });
 
-    public render() {
-        return <Popup />;
-    }
+    return <Popup />;
 
-    private handleDrop() {
-        const { onDrop } = this.props;
-
+    function handleDrop() {
         let counter = 0;
 
         document.addEventListener("drop", event => {
@@ -59,7 +48,7 @@ class DropArea extends PureComponent<IProps, IState> {
             event.stopPropagation();
 
             onDrop(event.dataTransfer.files);
-            this.setState({ show: false });
+            setIsShow(false);
             counter = 0;
         });
         document.addEventListener("dragover", event => {
@@ -68,14 +57,12 @@ class DropArea extends PureComponent<IProps, IState> {
         document.addEventListener("dragenter", () => {
             ++counter;
             if (counter === 1)
-                this.setState({ show: true });
+                setIsShow(true);
         });
         document.addEventListener("dragleave", () => {
             --counter;
             if (counter === 0)
-                this.setState({ show: false });
+                setIsShow(false);
         });
     }
-}
-
-export default DropArea;
+});

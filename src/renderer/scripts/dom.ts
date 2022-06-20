@@ -1,31 +1,30 @@
-import { load } from "cheerio";
-import type { Cheerio, Node as CNode } from "cheerio";
 import type { JSXElementConstructor } from "react";
-import type { CheerioAPI } from "cheerio";
-import type ITemplateParams from "templates/types/ITemplateParams";
-import type ActionBase from "templates/actions/ActionBase";
-import type IActionModule from "templates/types/IActionModule";
-import type IActionProps from "templates/types/IActionProps";
-import type IEditorAction from "modules/editor/types/IEditorAction";
-import type IInputParams from "templates/types/IInputParams";
-import type IGroupParams from "templates/types/IGroupParams";
-import type ISelectParams from "main/templates/types/ISelectParams";
-import ParamType from "templates/enums/ParamType";
 
-import main from "scripts/main"
-import IExportData from "modules/editor/types/IExportData"
-import FileType from "main/templates/enums/FileType"
+import type { Cheerio, CheerioAPI } from "cheerio";
+import { load } from "cheerio";
+import FileType from "enums/FileType";
+import ParamType from "enums/ParamType";
+import main from "scripts/main";
+import { templates, extra } from "templates";
+import type Action from "templates/actions/Action";
+import type IActionModule from "types/IActionModule";
+import type IActionProps from "types/IActionProps";
+import type IEditorAction from "types/IEditorAction";
+import type IExportable from "types/IExportable";
+import type IExportData from "types/IExportData";
+import type IGroupParams from "types/IGroupParams";
+import type IInputParams from "types/IInputParams";
+import type ISelectParams from "types/ISelectParams";
+import type ITemplateParams from "types/ITemplateParams";
 
 const { join, basename, readFileSync, existsSync, readdirSync } = window.service;
-const { templates, getParams, paths } = main;
+const { paths } = main;
 
-export function getExported(filePath: string, shortMode=true, modId?: string, dlc?: string) {
+export function getExported(filePath: string, shortMode = true, modId?: string, dlc?: string) {
     const [fileDOM, tItems, actions] = process(filePath);
     const fileName = basename(filePath);
     const version = "2.0";
-
     const globalTemplates = getGlobalTemplates();
-    let templates: Cheerio<CNode>;
 
     const extraFiles: any = {};
     const main: any = {};
@@ -34,7 +33,7 @@ export function getExported(filePath: string, shortMode=true, modId?: string, dl
     if (!fileDOM || !tItems.length)
         return;
 
-    templates = fileDOM("_templates").eq(0);
+    const templates = fileDOM("_templates").eq(0);
 
     function calcInput(item: IInputParams) {
         if (!main[item.selector])
@@ -49,21 +48,20 @@ export function getExported(filePath: string, shortMode=true, modId?: string, dl
                 calcGroup(groupItem);
             else if (groupItem.type === "file" && !shortMode)
                 calcFile(groupItem);
-            else 
+            else
                 calcInput(groupItem);
         }
     }
 
-    const calcFile = (item: IInputParams) => {
-        const fileNames: string[] = (String(item.value)).split(",").map((value) => value.trim());
+    function calcFile(item: IInputParams) {
+        const fileNames: string[] = (String(item.value)).split(",").map(value => value.trim());
 
         if (item.fileType === FileType.wheels && item.name !== "Type") {
             fileDOM("Truck > TruckData > CompatibleWheels").map((_, el) => {
                 const type = fileDOM(el).attr("Type");
-                if (!fileNames.includes(type)) {
+                if (!fileNames.includes(type))
                     fileNames.push(type);
-                }
-            })
+            });
         }
 
         for (const fileName of fileNames) {
@@ -77,9 +75,8 @@ export function getExported(filePath: string, shortMode=true, modId?: string, dl
                 pathsToFiles.push(`${paths.modsTemp}/${modId}/classes/${item.fileType}/${fileName}.xml`);
 
             for (const path of pathsToFiles) {
-                if (existsSync(path)) {
+                if (existsSync(path))
                     mainPath = path;
-                }
             }
 
             if (!mainPath) {
@@ -95,21 +92,22 @@ export function getExported(filePath: string, shortMode=true, modId?: string, dl
 
     for (const tItem of tItems) {
         switch (tItem.paramType) {
-            case ParamType.input:
-                if ((<IInputParams>tItem).type === "file" && !shortMode)
-                    calcFile(tItem as IInputParams);
-                else
-                    calcInput(tItem as IInputParams);
+        case ParamType.input:
+            if ((<IInputParams>tItem).type === "file" && !shortMode)
+                calcFile(tItem as IInputParams);
+            else
+                calcInput(tItem as IInputParams);
             break;
-            case ParamType.group:
-                calcGroup(tItem as IGroupParams);
+        case ParamType.group:
+            calcGroup(tItem as IGroupParams);
             break;
         }
     }
 
     if (!shortMode) {
         for (const action of actions) {
-            const obj = action.object.export();
+            const object = <IExportable<any>><unknown>action.object;
+            const obj = object.export();
             if (!obj)
                 continue;
 
@@ -143,7 +141,6 @@ export function process(filePath: string): [CheerioAPI, ITemplateParams, IEditor
     const actions: IEditorAction[] = [];
     let dom: CheerioAPI;
     let name: keyof typeof templates;
-    let result: any;
 
     if (!fileData)
         return;
@@ -156,22 +153,23 @@ export function process(filePath: string): [CheerioAPI, ITemplateParams, IEditor
             break;
         }
     }
+  
     if (!name)
         return [load("<error/>"), [], []];
 
-    result = getParams(dom.html(), name, fileName);
+    const result = getParams(dom.html(), name, fileName);
     dom = load(result.dom, { xmlMode: true });
 
     if (result.actions.length) {
         for (const actionPath of result.actions) {
             const module = <IActionModule>require(`templates/actions/${actionPath}`);
-            let object: ActionBase;
+            let object: Action;
             if (module.data.isActive(dom, fileName)) {
                 object = new module.default({ dom }, null, null);
                 actions.push({
                     ...module.data,
                     component: module.default as unknown as JSXElementConstructor<IActionProps>,
-                    object: object
+                    object
                 });
             }
         }
@@ -188,20 +186,19 @@ function findFromDLC(fileName: string, type: string) {
     }
 }
 
-function getValue(fileDOM: CheerioAPI, templates: Cheerio<CNode>, globalTemplates: CheerioAPI, item: IInputParams | ISelectParams) {
-    let value = item.value;
+function getValue(fileDOM: CheerioAPI, templates: Cheerio<"_templates">, globalTemplates: CheerioAPI, item: IInputParams | ISelectParams) {
+    let { value } = item;
 
-    if (!value && value !== 0 && templates.length) {
+    if (!value && value !== 0 && templates.length)
         value = getFromTemplates(fileDOM, templates, globalTemplates, item);
-    }
-    if (value === null || value === undefined) {
+
+    if (value === null || value === undefined)
         value = item.default;
-    }
 
     return value;
 }
 
-function getFromTemplates(fileDOM: CheerioAPI, templates: Cheerio<CNode>, globalTemplates: CheerioAPI, item: IInputParams | ISelectParams) {
+function getFromTemplates(fileDOM: CheerioAPI, templates: Cheerio<"_templates">, globalTemplates: CheerioAPI, item: IInputParams | ISelectParams) {
     let el = fileDOM(item.selector);
     const array = item.selector.split(" ")
         .map(value => value.trim())
@@ -209,9 +206,9 @@ function getFromTemplates(fileDOM: CheerioAPI, templates: Cheerio<CNode>, global
     const innerName = array.slice(array.length - 1)[0];
     const tagName = innerName.split("[")[0];
 
-    if (!el.length) {
+    if (!el.length)
         el = fileDOM(array.slice(0, array.length - 1).join(" > "));
-    }
+  
     if (el.length) {
         let templateName = el.attr("_template");
         if (!templateName)
@@ -221,20 +218,18 @@ function getFromTemplates(fileDOM: CheerioAPI, templates: Cheerio<CNode>, global
             const template = templates.find(templateName).eq(0);
             if (template.length) {
                 const templateValue = template.attr(item.name);
-                let el2: Cheerio<CNode>;
 
                 if (templateValue)
                     return templateValue;
 
-                el2 = template.find(tagName).eq(0);
+                const el2 = template.find(tagName).eq(0);
                 if (el2.length) {
                     const templateValue2 = el2.attr(item.name);
-                    let templateName1: string;
 
                     if (templateValue2)
                         return templateValue2;
 
-                    templateName1 = el2.attr("_template");
+                    const templateName1 = el2.attr("_template");
                     if (templateName1)
                         return getValueInGlobal(templateName1, tagName, globalTemplates, item);
                 }
@@ -251,8 +246,7 @@ function getParentTemplate(el: any) {
         const template = el.parentElement.getAttribute("_template");
         if (template)
             return template;
-        else
-            return getParentTemplate(el.parentElement);
+        return getParentTemplate(el.parentElement);
     }
 }
 
@@ -261,17 +255,48 @@ function getValueInGlobal(templateName: string, tagName: string, globalTemplates
 
     if (template.length) {
         const templateValue = template.attr(item.name);
-        if (templateValue) {
+        if (templateValue)
             return templateValue;
-        }
-        else {
-            const el2 = template.find(tagName).eq(0);
-            if (el2.length) {
-                const templateValue2 = el2.attr(item.name);
-                if (templateValue2)
-                    return templateValue2;
-            }
+
+        const el2 = template.find(tagName).eq(0);
+        if (el2.length) {
+            const templateValue2 = el2.attr(item.name);
+            if (templateValue2)
+                return templateValue2;
         }
     }
     return item.value;
+}
+
+export function getParams(domString: string, name: keyof typeof templates, fileName: string) {
+    const fileDOM = load(domString, { xmlMode: true });
+    const mainActions = templates[name].actions;
+    const extraActions = extra[fileName]?.actions;
+    const extraTemplate = extra[fileName]?.template;
+    const extraExclude = extra[fileName]?.exclude;
+
+    let resultActions: string[] = [];
+    let params = <ITemplateParams>templates[name].template({ fileDOM });
+
+    if (mainActions)
+        resultActions.push(...mainActions);
+
+    if (extraTemplate) {
+        params = [
+            ...params,
+            ...extraTemplate({ fileDOM })
+        ];
+    }
+
+    if (extraActions)
+        resultActions.push(...extraActions);
+
+    if (extraExclude)
+        resultActions = resultActions.filter(action => !extraExclude.includes(action));
+
+    return {
+        dom: fileDOM.html(),
+        actions: resultActions,
+        params
+    };
 }

@@ -1,8 +1,8 @@
 import { Box, BoxProps, styled } from "@mui/material";
 
-export default styled((props: BoxProps) => 
-    <Box boxShadow={24} {...props} />
-)({
+export default styled((props: BoxProps) => {
+    return <Box boxShadow={24} {...props} />;
+})({
     display: "inline-block",
     position: "absolute",
     top: "50%",

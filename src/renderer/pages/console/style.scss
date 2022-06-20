@@ -1,0 +1,82 @@
+@import "renderer/style";
+
+%no-scrollbar {
+    &::-webkit-scrollbar {
+        width: 0;
+    }
+}
+
+body {
+    font: {
+        family: "Andale Mono";
+        size: 17px;
+    }
+    overflow: hidden;
+    background: black;
+    color: white;
+    @extend %no-scrollbar;
+}
+
+#messages {
+    height: 100vh;
+    padding: 0 10px 50px 10px;
+    box-sizing: border-box;
+    overflow: auto;
+    @extend %no-scrollbar;
+
+    p {
+        margin: 5px 0;
+    }
+}
+
+.pargf {
+    margin-bottom: 0 !important;
+}
+
+.color {
+    &-lightblue span { color: lightblue; }
+    &-yellow span { color: yellow; }
+    &-white span { color: white; }
+    &-red span { color: red; }
+}
+
+.sharp {
+    color: white !important;
+}
+
+.break-all {
+    word-break: break-all;
+}
+
+.line {
+    color: cyan;
+    position: fixed;
+    padding: 10px;
+    background: black;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+
+    #info {
+        color: limegreen;
+        border: none;
+        background: black;
+        overflow: hidden;
+        position: absolute;
+        bottom: 50px;
+        outline: none;
+        font-size: 15px;
+    }
+
+    #input {
+        border: none;
+        font: {
+            family: inherit;
+            size: inherit;
+        }
+        background: none;
+        outline: none;
+        color: inherit;
+        width: 90%;
+    }
+}

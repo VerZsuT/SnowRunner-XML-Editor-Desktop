@@ -1,10 +1,15 @@
 const CopyPlugin = require("copy-webpack-plugin");
 const { existsSync } = require("fs");
 const { join } = require("path");
+const rules = require("./webpack.rules");
+const alias = require("./webpack.aliases");
+
+const mode = process.env.NODE_ENV || "development";
+const devtool = process.env.NODE_ENV === "production" ? false : "inline-source-map";
 
 module.exports = {
-    mode: process.env.NODE_ENV || "development",
-    devtool: process.env.NODE_ENV === "production" ? false : "inline-source-map",
+    mode,
+    devtool,
     plugins: [
         new CopyPlugin({
             patterns: [
@@ -33,11 +38,12 @@ module.exports = {
         })
     ],
     entry: "./src/main/index.ts",
-    module: {
-        rules: require("./webpack.rules"),
-    },
+    module: { rules },
     resolve: {
-        alias: require("./webpack.aliases"),
+        alias,
         extensions: [".js", ".ts", ".tsx", ".css", ".scss"]
+    },
+    optimization: {
+        sideEffects: true
     }
 };

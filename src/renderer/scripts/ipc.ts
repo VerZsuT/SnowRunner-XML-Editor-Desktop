@@ -1,11 +1,11 @@
-import { ipcRenderer, contextBridge } from "electron";
-import type IPC from "./types/IPC";
+import { ipcRenderer } from "electron";
+
+import type IPC from "types/IPC";
 
 const ipc: IPC = {
-    on: (channel, listener) => ipcRenderer.on(channel, listener),
-    send: (channel, ...args) => ipcRenderer.send(channel, ...args),
     sendSync: (channel, ...args) => ipcRenderer.sendSync(channel, ...args),
+    send: (channel, ...args) => ipcRenderer.send(channel, ...args),
+    on: (channel, listener) => ipcRenderer.on(channel, listener)
 };
 
-contextBridge.exposeInMainWorld("ipc", ipc);
-global["ipc"] = ipc;
+window.ipc = ipc;

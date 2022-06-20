@@ -1,11 +1,10 @@
 {
-	"version": "0.6.8b",
+	"version": "0.7.0",
 	"lang": null,
 	"buildType": "dev",
 	"initial": null,
 	"settings": {
 		"updates": true,
-		"limits": true,
 		"DLC": true,
 		"mods": true,
 		"showWhatsNew": true,

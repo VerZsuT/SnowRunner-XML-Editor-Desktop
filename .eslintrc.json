@@ -1,16 +1,124 @@
 {
-  "env": {
-    "browser": true,
-    "es6": true,
-    "node": true
-  },
-  "extends": [
-    "eslint:recommended",
-    "plugin:@typescript-eslint/eslint-recommended",
-    "plugin:@typescript-eslint/recommended",
-    "plugin:import/recommended",
-    "plugin:import/electron",
-    "plugin:import/typescript"
-  ],
-  "parser": "@typescript-eslint/parser"
+    "env": {
+        "browser": true,
+        "es2021": true,
+        "node": true
+    },
+    "extends": [
+        "eslint:recommended",
+        "plugin:@typescript-eslint/eslint-recommended",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:import/recommended",
+        "plugin:import/electron",
+        "plugin:import/typescript",
+        "plugin:react/recommended",
+        "plugin:react-hooks/recommended"
+    ],
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+        "ecmaFeatures": {
+            "jsx": true
+        },
+        "ecmaVersion": "latest",
+        "sourceType": "module"
+    },
+    "plugins": [
+        "react",
+        "react-hooks",
+        "import",
+        "@typescript-eslint"
+    ],
+    "rules": {
+        "quotes": ["warn", "double"],
+        "semi": ["warn", "always"],
+        "curly": ["warn", "multi-or-nest", "consistent"],
+        "eqeqeq": ["warn", "always"],
+        "camelcase": ["warn", { "properties": "always" }],
+        "jsx-quotes": ["error", "prefer-double"],
+        "indent": ["error", 4],
+        "no-empty-function": "warn",
+        "no-extra-bind": "warn",
+        "no-extra-label": "warn",
+        "no-invalid-this": "warn",
+        "no-lone-blocks": "warn",
+        "no-lonely-if": "warn",
+        "no-param-reassign": "warn",
+        "no-sequences": "warn",
+        "no-useless-call": "warn",
+        "operator-assignment": "warn",
+        "prefer-const": "warn",
+        "prefer-template": "warn",
+        "arrow-parens": ["warn", "as-needed"],
+        "arrow-spacing": "warn",
+        "block-spacing": "warn",
+        "comma-spacing": "warn",
+        "comma-style": "warn",
+        "eol-last": "warn",
+        "func-call-spacing": "warn",
+        "key-spacing": "warn",
+        "no-multi-spaces": "warn",
+        "no-tabs": "error",
+        "no-whitespace-before-property": "error",
+        "keyword-spacing": "error",
+        "implicit-arrow-linebreak": "error",
+        "computed-property-spacing": "error",
+        "brace-style": ["error", "stroustrup", { "allowSingleLine": true }],
+        "comma-dangle": ["error", "never"],
+        "quote-props": ["error", "as-needed"],
+        "prefer-rest-params": "error",
+        "one-var": ["error", "never"],
+        "no-useless-rename": "error",
+        "no-useless-return": "error",
+        "no-var": "error",
+        "no-void": "error",
+        "no-undef-init": "error",
+        "no-unneeded-ternary": "error",
+        "no-proto": "error",
+        "no-eval": "error",
+        "no-extend-native": "error",
+        "no-alert": "error",
+        "no-bitwise": "error",
+        "no-caller": "error",
+        "no-empty": "off",
+        "import/order": [
+            "warn",
+            {
+                "groups": ["builtin", "external", "internal", ["parent", "sibling"]],
+                "pathGroups": [
+                    {
+                        "pattern": "react",
+                        "group": "external",
+                        "position": "before"
+                    }
+                ],
+                "pathGroupsExcludedImportTypes": ["react"],
+                "newlines-between": "always",
+                "alphabetize": {
+                    "order": "asc",
+                    "caseInsensitive": true
+                }
+            }
+        ],
+        "import/namespace": "off",
+        "import/no-unresolved": "off",
+        "react/react-in-jsx-scope": "off",
+        "react/display-name": "off",
+        "react/no-unescaped-entities": "off",
+        "no-unused-expressions": "off",
+        "no-unused-vars": "off",
+        "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/no-var-requires": "off",
+        "@typescript-eslint/no-unused-vars": ["warn", { "vars": "all", "args": "after-used", "varsIgnorePattern": "_+" }],
+        "@typescript-eslint/member-delimiter-style": "warn"
+    },
+    "ignorePatterns": [
+        "winrar",
+        "images",
+        "*.sass",
+        "*.scss",
+        "*.css",
+        "*.json",
+        "*.js",
+        "*.html"
+    ]
 }

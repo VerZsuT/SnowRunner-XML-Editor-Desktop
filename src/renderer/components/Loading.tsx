@@ -1,35 +1,30 @@
-import { PureComponent } from "react";
+import { memo, useEffect, useState } from "react";
 
 import { CircularProgress } from "@mui/material";
-import StyledBackdrop from "./styled/StyledBackdrop";
 
-interface IState {
-    show: boolean
-}
+import StyledBackdrop from "./styled/StyledBackdrop";
 
 export let showLoading: () => void;
 
-class Loading extends PureComponent<{}, IState> {
-    constructor(props: any) {
-        super(props);
-        this.state = { show: false };
+export default memo(() => {
+    const [isShow, setIsShow] = useState(false);
+
+    useEffect(() => {
+        initController();
+    }, []);
+
+    if (!isShow)
+        return;
+
+    return (
+        <StyledBackdrop open={isShow}>
+            <CircularProgress color="inherit" />
+        </StyledBackdrop>
+    );
+
+    function initController() {
         showLoading = () => {
-            this.setState({ show: true });
+            setIsShow(true);
         };
     }
-
-    public render() {
-        const { show=false } = this.state;
-
-        if (!show)
-            return null;
-        
-        return (
-            <StyledBackdrop open={show}>
-                <CircularProgress color="inherit"/>
-            </StyledBackdrop>
-        );
-    }
-}
-
-export default Loading;
+});

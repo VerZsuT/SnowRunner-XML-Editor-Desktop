@@ -1,6 +1,6 @@
-import type IInfo from "main/types/IInfo";
-import type IMainProcess from "main/types/IMainProcess";
-import type IPC from "./types/IPC";
+import type IInfo from "types/IInfo";
+import type IMainProcess from "types/IMainProcess";
+import type IPC from "types/IPC";
 
 const isRender = !!window.ipc;
 
@@ -8,50 +8,51 @@ let sendSync: IPC["sendSync"];
 if (isRender)
     sendSync = window.ipc.sendSync;
 else
-    sendSync = global["ipc"].sendSync;
+    sendSync = global.ipc.sendSync;
 
 const info: IInfo = sendSync("getInfo");
-const errorHandler = (error: Error) => {
-    if (window["errorHandler"])
-        window["errorHandler"](error.message);
+function errorHandler(error: Error, channel: string) {
+    if (window.ipcErrorHandler)
+        window.ipcErrorHandler(error.message, channel);
     else if (isRender)
-        alert(`${error}`.replace("Error: ", ""));
+        console.error(`Error on ${channel}.\n${error}`.replace("Error: ", ""));
 }
 
 /** Предоставляет доступ ко всем публичным методам и функциям, установленным в `index.ts`. */
-export default <IMainProcess>new Proxy({}, {
-    get: (_, name: string) => {
+export default <IMainProcess> new Proxy({}, {
+    get(_, name: string) {
         if (info.properties.includes(name)) {
-            const propResult = sendSync(`property_${name}_get`);
+            const channel = `property_${name}_get`;
+            const propResult = sendSync(channel);
 
             if (propResult.error) {
-                errorHandler(propResult.error);
+                errorHandler(propResult.error, channel);
                 return null;
             }
-            else {
-                return propResult.value;
-            }
+
+            return propResult.value;
         }
-        else if (info.functions.includes(name)) {
+        if (info.functions.includes(name)) {
             return (...args: any[]) => {
-                const result = sendSync(`function_${name}_call`, ...args);
+                const channel = `function_${name}_call`;
+                const result = sendSync(channel, ...args);
 
                 if (result.error) {
-                    errorHandler(result.error);
+                    errorHandler(result.error, channel);
                     return null;
                 }
-                else {
-                    return result.value;
-                }
-            }
+
+                return result.value;
+            };
         }
     },
-    set: (_, name: string, value: any) => {
+    set(_, name: string, value: any) {
         if (info.properties.includes(name)) {
-            const result = sendSync(`property_${name}_set`, value);
-            
+            const channel = `property_${name}_set`;
+            const result = sendSync(channel, value);
+
             if (result.error) {
-                errorHandler(result.error);
+                errorHandler(result.error, channel);
                 return false;
             }
             return true;

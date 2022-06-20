@@ -1,20 +1,29 @@
-const template = "./src/renderer/template.html";
 const mainPreload = "./src/renderer/scripts/mainPreload.ts";
+const template = "./src/renderer/template.html";
+
+const appEntry = {
+    name: "app",
+    html: template,
+    js: "./src/renderer/App.tsx",
+    preload: {
+        js: "./src/renderer/preload.ts"
+    }
+};
 
 /**
  * Возвращает путь к модулю
  * @param {string} name
  */
-function getModule(name) {
-    const modules = "./src/renderer/modules";
+function getPage(name) {
+    const pages = "./src/renderer/pages";
     return {
-        main: `${modules}/${name}/main.tsx`,
-        preload: `${modules}/${name}/preload.ts`
+        main: `${pages}/${name}/index.tsx`,
+        preload: `${pages}/${name}/preload.ts`
     };
 }
 
 /**
- * Позвращает путь к конфигу
+ * Возвращает путь к конфигу
  * @param {string} name
  */
 function getConfig(name) {
@@ -22,14 +31,16 @@ function getConfig(name) {
 }
 
 function entryPoint(name, preloadIsMain=false, moduleName=null) {
-    return {
+    const entry = {
         name,
         html: template,
-        js: getModule(moduleName ?? name).main,
+        js: getPage(moduleName ?? name).main,
         preload: {
-            js: preloadIsMain ? mainPreload : getModule(moduleName ?? name).preload
+            js: preloadIsMain? mainPreload : getPage(moduleName ?? name).preload
         }
-    };
+    }
+
+    return entry;
 }
 
 module.exports = {
@@ -42,15 +53,13 @@ module.exports = {
                 renderer: {
                     config: getConfig("webpack.renderer.js"),
                     entryPoints: [
-                        entryPoint("setup"),
+                        appEntry,
                         entryPoint("loading", true),
-                        entryPoint("categories", true),
-                        entryPoint("console"),
-                        entryPoint("list"),
-                        entryPoint("settings"),
                         entryPoint("update", true),
-                        entryPoint("editor"),
-                        entryPoint("whats_new", true, "whatsNew")
+                        entryPoint("settings", true),
+                        entryPoint("console", true),
+                        entryPoint("whats_new", true, "whatsNew"),
+                        entryPoint("setup")
                     ]
                 }
             }

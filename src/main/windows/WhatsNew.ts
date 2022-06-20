@@ -1,25 +1,23 @@
-import type IWindow from "../types/IWindow";
-import type windows from "../classes/Windows";
+import Window from "enums/Window";
+import type ICreateWindowAttributes from "types/ICreateWindowAttributes";
 
-import entries from "../types/webpackEntries";
-import { config } from "../classes/Config";
+import config from "../scripts/config";
+import entries from "../scripts/webpackEntries";
+import { openModal } from "../scripts/windows";
 
-class WhatsNew implements IWindow {
-    private createArgs = {
-        path: entries.whatsNew,
-        preload: entries.categoriesPreload,
-        width: 600,
-        minWidth: 600,
-        height: 500,
-        minHeight: 520
-    };
+const createArgs: ICreateWindowAttributes = {
+    path: entries.whatsNew,
+    preload: entries.whatsNewPreload,
+    width: 600,
+    minWidth: 600,
+    height: 500,
+    minHeight: 520,
+    window: Window.WhatsNew
+};
 
-    public async create(wins: typeof windows) {
-        const wind = wins.createModal(this.createArgs);
+export default async () => {
+    const wind = openModal(createArgs);
 
-        wind.once("close", () => config.settings.showWhatsNew = false);
-        return wind;
-    }
-}
-
-export default new WhatsNew();
+    wind.once("close", () => config.settings.showWhatsNew = false);
+    return wind;
+};

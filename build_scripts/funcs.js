@@ -1,18 +1,18 @@
-const { createHash } = require("crypto");
 const { existsSync, readFileSync, writeFileSync, readdirSync, statSync } = require("fs");
+const { createHash } = require("crypto");
 const { join, basename } = require("path");
-const Log = require("./Log.js");
+const { error } = require("./log.js");
 
 const resolve = (...paths) => join(__dirname, ...paths);
 
 const postBuildPaths = {
     out: resolve("../out"),
-    original_x32: resolve("../out/SnowRunner XML Editor-win32-ia32"),
-    original_x64: resolve("../out/SnowRunner XML Editor-win32-x64"),
+    original32: resolve("../out/SnowRunner XML Editor-win32-ia32"),
+    original64: resolve("../out/SnowRunner XML Editor-win32-x64"),
     renamed: resolve("../out/SnowRunnerXMLEditor"),
     config: resolve("../out/SnowRunnerXMLEditor/resources/app/.webpack/main/config.json"),
-    winrar_x32: resolve("../src/main/winrar"),
-    sxmle_updater: resolve("../../sxmle_updater")
+    winrar: resolve("../src/main/winrar"),
+    sxmleUpdater: resolve("../../sxmle_updater")
 };
 
 const preBuildPaths = {
@@ -58,7 +58,7 @@ function checkVar(variable, callback) {
     if (variable !== null && variable !== undefined)
         callback();
     else
-        Log.error(`Variable ${variable} is not set.`);
+        error(`Variable ${variable} is not set.`);
 }
 
 /**
@@ -76,7 +76,7 @@ function checkPath(path, callback, throwError = false) {
         callback();
     }
     else {
-        Log.error(`Path "${path}" not found.`);
+        error(`Path "${path}" not found.`);
         if (throwError)
             throw new Error();
     }
@@ -93,7 +93,7 @@ function checkPath(path, callback, throwError = false) {
 function readFileToVar(varName, path, fromJSON = true) {
     const fileName = basename(path);
 
-    if (existsSync(path)) {
+    if (existsSync(path)) 
         try {
             if (fromJSON)
                 global[varName] = JSON.parse(readFileSync(path).toString());
@@ -101,12 +101,10 @@ function readFileToVar(varName, path, fromJSON = true) {
                 global[varName] = readFileSync(path).toString();
         }
         catch {
-            Log.error(`Error reading file ${fileName}`);
+            error(`Error reading file ${fileName}`);
         }
-    }
-    else {
-        Log.error(`${fileName} not found.`);
-    }
+    else 
+        error(`${fileName} not found.`);
 }
 
 /**
@@ -118,20 +116,18 @@ function readFileToVar(varName, path, fromJSON = true) {
  * @param {Function} dataFunc 
  */
 function writeFile(path, dependency, dataFunc) {
-    if (existsSync(path)) {
+    if (existsSync(path)) 
         checkVar(dependency, () => {
-            const data = dataFunc()
+            const data = dataFunc();
             try {
                 writeFileSync(path, data);
             }
             catch {
-                Log.error(`Error writing ${basename(path)}`);
+                error(`Error writing ${basename(path)}`);
             }
-        })
-    }
-    else {
-        Log.error(`${basename(path)} not found.`);
-    }
+        });
+    else 
+        error(`${basename(path)} not found.`);
 }
 
 module.exports = {

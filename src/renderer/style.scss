@@ -1,0 +1,106 @@
+@import 'antd/dist/antd.css';
+
+body {
+    height: auto;
+    width: auto;
+    margin: 0;
+    padding: 0;
+}
+
+.header {
+    border: 1px solid rgb(235, 237, 240);
+    padding: 4px 0;
+    background-color: #1c7dca;
+
+    &-title {
+        width: 100vw;
+        text-align: center;
+        color: #fafafa;
+        padding: 0;
+        margin: 0;
+    }
+}
+
+.menu {
+    height: 35px;
+    margin-top: -8px;
+
+    li {
+        padding: 0 10px !important;
+
+        &:hover span,
+        &.ant-menu-submenu-active span {
+            color: black;
+        }
+
+        &:hover::after,
+        &.ant-menu-submenu-active::after {
+            border-bottom: 2px solid black !important;
+        }
+    }
+}
+
+.lang-label {
+    color: black;
+    display: inline-block;
+    margin-right: 15px;
+    font-size: 1rem;
+}
+
+::-webkit-resizer {
+    width: 4px;
+    height: 0;
+}
+
+::-webkit-scrollbar {
+    width: 4px;
+
+    &-thumb {
+        border-radius: 0;
+        background-color: #808080;
+
+        &:hover {
+            background-color: #c7cfc1;
+        }
+    }
+
+    &-track {
+        background-color: #535151;
+    }
+
+    &-button {
+        width: 5px;
+        height: 0;
+    }
+}
+
+.context {
+    height: 100vh;
+    width: 100vw;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 30;
+
+    &-menu {
+        position: absolute;
+        border-radius: 5px;
+    }
+}
+
+.ant-menu {
+    border: none;
+}
+
+li[role="menuitem"] {
+    margin: 0 !important;
+    color: #5c5c5c;
+
+    &:hover {
+        background-color: #e9f5ff;
+
+        span {
+            color: black;
+        }
+    }
+}

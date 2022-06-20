@@ -1,49 +1,59 @@
-import { PureComponent } from "react";
-import localize from "scripts/localize";
-import Lang from "main/enums/Lang";
+import { memo } from "react";
+
+import { Select, Radio, RadioChangeEvent } from "antd";
+import Lang from "enums/Lang";
 import config from "scripts/config";
 import main from "scripts/main";
 
-import { MenuItem, Select, SelectChangeEvent } from "@mui/material";
-import Container from "./styled/Container";
-import Label from "./styled/Label";
+import texts from "./texts";
 
 const { reload } = main;
+const { LANGUAGE_MENU_ITEM_LABEL } = texts;
 
-class Language extends PureComponent {
-    private langOptions: JSX.Element[];
-
-    constructor(props: any) {
-        super(props);
-        this.langOptions = Object.keys(Lang).map(lang =>
-            <MenuItem key={lang} value={lang}>
-                {lang}
-            </MenuItem>
-        );
-    }
-
-    public render() {
-        return (
-            <Container>
-                <Label id="lang-label">
-                    {localize.LANGUAGE_MENU_ITEM_LABEL}
-                </Label>
-                <Select
-                    labelId="lang-label"
-                    onChange={this.changeLang}
-                    value={config.lang}
-                    variant="standard"
-                >
-                    {this.langOptions}
-                </Select>
-            </Container>
-        );
-    }
-
-    private changeLang = (event: SelectChangeEvent) => {
-        config.lang = event.target.value as Lang;
-        reload();
-    };
+interface IProps {
+    isSetup?: boolean;
 }
 
-export default Language;
+const langOptions = Object.keys(Lang).map(lang => ({
+    label: lang,
+    value: lang
+}));
+
+/** Выбор язка программы */
+export default memo((props: IProps) => (
+    <div>
+        {props.isSetup 
+            ? (
+                <Radio.Group
+                    defaultValue={config.lang}
+                    onChange={onChangeRadio}
+                    optionType="button"
+                    buttonStyle="solid"
+                    options={langOptions}
+                />
+            )
+            : <>
+                <label htmlFor="lang-select" className="lang-label">
+                    {LANGUAGE_MENU_ITEM_LABEL}
+                </label>
+                <Select
+                    id="lang-select"
+                    onChange={changeLang}
+                    value={config.lang}
+                    size="large"
+                    options={langOptions}
+                />
+            </>
+        }
+    </div>
+));
+
+function onChangeRadio(event: RadioChangeEvent) {
+    config.lang = event.target.value;
+    reload();
+}
+
+function changeLang(value: Lang) {
+    config.lang = value;
+    reload();
+}

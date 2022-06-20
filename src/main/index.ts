@@ -2,69 +2,74 @@ import { app } from "electron";
 import { existsSync } from "fs";
 import { join } from "path";
 
-import Config, { config } from "./classes/Config";
-import Settings, { settings } from "./classes/Settings";
-import checker from "./classes/Checker";
-import texts from "./classes/Texts";
-import windows from "./classes/Windows";
-import hasher from "./classes/Hasher";
-import archiver from "./classes/Archiver";
-import Public from "./classes/Public";
-import { findInDir, paths } from "./service";
+import Window from "enums/Window";
+import globalTexts from "globalTexts/main";
 
-Settings.set({
+import { unpackMod} from "./scripts/archive";
+import { checkInitialChanges, checkUpdate, hasAdminPrivileges, hasAllPaths, hasPermissions } from "./scripts/checks";
+import config from "./scripts/config";
+import { resetConfig, saveConfig } from "./scripts/configMethods";
+import { getSize } from "./scripts/hash";
+import paths from "./scripts/paths";
+import { initPublic } from "./scripts/public";
+import { findInDir } from "./scripts/service";
+import settings, { setSettings } from "./scripts/settings";
+import { getGameTexts, getModsTexts } from "./scripts/texts";
+import { wins } from "./scripts/windows";
+import openWindow from "./windows";
+
+const { LOADING } = globalTexts;
+
+setSettings({
     appId: "SnowRunner XML editor",
     saveWhenReload: true,
     devTools: false,
-    showWinRAR: false
+    debugWinRAR: false
 });
 
-Public.init();
+initPublic();
 
 app.disableHardwareAcceleration();
 app.setAppUserModelId(settings.appId);
-app.whenReady().then(() => {
-    windows.open("Loading");
-    windows.loading.once("show", () => {
-        windows.loading.setText(texts.get("LOADING"));
-        initProgram();
-    });
+app.whenReady().then(async () => {
+    await openWindow(Window.Loading);
+    await wins.loading.showAndWait();
+    wins.loading.setText(LOADING);
+    initProgram();
 });
 
 app.on("before-quit", () => {
     settings.isQuit = true;
     if (settings.saveWhenReload)
-        Config.save();
+        saveConfig();
 });
 process.once("uncaughtExceptionMonitor", () => {
-    app.exit()
+    app.exit();
 });
 
-/** `Main`функция */
+/** `Main` функция */
 async function initProgram() {
-    if (!checker.checkAdmin())
+    if (!hasAdminPrivileges())
         return;
 
     if (!config.initial) {
-        windows.open("Setup").then(() => {
-            checker.checkUpdate();
-        });
+        await openWindow(Window.Setup);
+        checkUpdate();
     }
     else {
-        await checker.checkInitial();
+        await checkInitialChanges();
 
-        if (checker.hasAllPaths()) {
+        if (hasAllPaths()) {
             await Promise.all([
-                texts.addIngame(),
+                getGameTexts(),
                 initDLC(),
                 initMods()
             ]);
-            windows.open("Categories").then(() => {
-                checker.checkUpdate();
-            });
+            await openWindow(Window.App);
+            checkUpdate();
         }
         else {
-            Config.reset();
+            resetConfig();
         }
     }
 }
@@ -81,14 +86,15 @@ async function initDLC() {
 async function initMods() {
     if (!config.settings.mods)
         return;
+
     if (config.mods.length === 0)
         return;
 
     let counter = config.mods.length;
 
     function deleteFromList(name: string) {
-        name = name.replace(".pak", "");
-        delete config.mods.items[name];
+        const modName = name.replace(".pak", "");
+        delete config.mods.items[modName];
         --config.mods.length;
         --counter;
     }
@@ -99,17 +105,16 @@ async function initMods() {
             deleteFromList(config.mods.items[modName].name);
             continue;
         }
-        else if (!checker.checkPermissions(mod.path)) {
+        else if (!hasPermissions(mod.path)) {
             deleteFromList(config.mods.items[modName].name);
             continue;
         }
 
-        if (hasher.getSize(mod.path) === config.sizes.mods[modName] && existsSync(paths.modsTemp[modName])) {
+        if (getSize(mod.path) === config.sizes.mods[modName] && existsSync(paths.modsTemp[modName])) {
             --counter;
-            continue;
         }
         else {
-            await archiver.unpackMod(mod.path);
+            await unpackMod(mod.path);
 
             if (!existsSync(join(paths.modsTemp, modName, "classes")))
                 deleteFromList(config.mods.items[modName].name);
@@ -117,12 +122,12 @@ async function initMods() {
                 --counter;
 
             if (counter === 0) {
-                texts.addFromMods();
+                getModsTexts();
                 return;
             }
         }
     }
-    
+
     if (counter <= 0)
-        texts.addFromMods();
+        getModsTexts();
 }

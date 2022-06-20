@@ -1,21 +1,19 @@
-import type IWindow from "../types/IWindow";
-import type windows from "../classes/Windows";
+import Window from "enums/Window";
+import type ICreateWindowAttributes from "types/ICreateWindowAttributes";
 
-import entries from "../types/webpackEntries";
+import entries from "../scripts/webpackEntries";
+import { openModal } from "../scripts/windows";
 
-class Console implements IWindow {
-    private createArgs = {
-        path: entries.console,
-        preload: entries.consolePreload,
-        width: 700,
-        minWidth: 500,
-        height: 500,
-        minHeight: 520
-    };
+const createArgs: ICreateWindowAttributes = {
+    path: entries.console,
+    preload: entries.consolePreload,
+    width: 700,
+    minWidth: 500,
+    height: 500,
+    minHeight: 520,
+    window: Window.Console
+};
 
-    public async create(wins: typeof windows) {
-        return wins.createModal(this.createArgs);
-    }
-}
-
-export default new Console();
+export default async () => {
+    return openModal(createArgs);
+};

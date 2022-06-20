@@ -1,25 +1,23 @@
-import type IWindow from "../types/IWindow";
-import type windows from "../classes/Windows";
+import Window from "enums/Window";
+import type ICreateWindowAttributes from "types/ICreateWindowAttributes";
 
-import entries from "../types/webpackEntries";
+import entries from "../scripts/webpackEntries";
+import { openModal } from "../scripts/windows";
 
-class Update implements IWindow {
-    private createArgs = {
-        path: entries.update,
-        preload: entries.categoriesPreload,
-        width: 400,
-        minWidth: 400,
-        height: 200,
-        minHeight: 220,
-        frame: false
-    };
+const createArgs: ICreateWindowAttributes = {
+    path: entries.update,
+    preload: entries.updatePreload,
+    width: 400,
+    minWidth: 400,
+    height: 160,
+    minHeight: 180,
+    frame: false,
+    window: Window.Update
+};
 
-    public async create(wins: typeof windows, ...args: any[]) {
-        const wind = wins.createModal(this.createArgs);
+export default async (...args: any[]) => {
+    const wind = openModal(createArgs);
 
-        wind.once("show", () => wind.webContents.postMessage("content", args[0]));
-        return wind;
-    }
-}
-
-export default new Update();
+    wind.once("show", () => wind.webContents.postMessage("content", args[0]));
+    return wind;
+};
