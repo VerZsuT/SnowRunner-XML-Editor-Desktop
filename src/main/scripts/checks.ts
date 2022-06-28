@@ -9,12 +9,12 @@ import Window from "enums/Window";
 import openWindow from "../windows";
 import { unpackMain } from "./archive";
 import { saveBackup } from "./backup";
+import { regFunctions } from "./bridge";
 import config from "./config";
 import { alert, error } from "./dialogs";
 import { getSize } from "./hash";
 import { showNotification } from "./notifications";
 import paths from "./paths";
-import { publicFunction } from "./renderChannel";
 import texts from "./texts";
 import { wins } from "./windows";
 
@@ -30,7 +30,7 @@ const {
 const MEDIA_FOLDER = "[media]";
 const DNS_TO_RESOLVE = "www.google.com";
 
-publicFunction("checkUpdate", checkUpdate);
+regFunctions([checkUpdate]);
 
 /**
  * Проверить наличие прав администратора у программы (требуется для чтения/записи файлов).

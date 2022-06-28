@@ -11,7 +11,7 @@ import "./style.scss";
 import texts from "./texts";
 
 const { Title } = Typography;
-const { update } = main;
+const { updateApp: update } = main;
 const { on } = window.ipc;
 const { settings } = config;
 

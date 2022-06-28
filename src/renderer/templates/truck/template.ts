@@ -4,7 +4,7 @@ import type ITemplate from "types/ITemplate";
 
 import { Coordinates, File, ForEach, Group, Number, Select, Template, Text } from "../items";
 import { getSelectors } from "../service";
-import { descs, texts } from "./texts";
+import texts from "./texts";
 
 const selectors = getSelectors(({ forEach }) => {
     const truckData = "Truck.TruckData";
@@ -51,58 +51,54 @@ export default <ITemplate> {
     ],
     template: Template(selectors, [
         Group({
-            name: texts.textGroupName,
-            defaultSelector: selectors.UIDesc,
-            icon: "texts.png"
+            label: texts.textGroupName,
+            providedSelector: selectors.UIDesc,
+            iconName: "texts.png"
         }, [
             Text({
                 attribute: "UiName",
-                text: texts.UIName,
-                desc: descs.UIName
+                label: texts.UIName
             }),
             Text({
                 attribute: "UiDesc",
-                text: texts.UIDesc,
-                desc: descs.UIDesc
+                label: texts.UIDesc
             })
         ]),
         Group({
-            name: texts.controlGroupName,
-            defaultSelector: selectors.truckData,
-            icon: "steering-wheel.png"
+            label: texts.controlGroupName,
+            providedSelector: selectors.truckData,
+            iconName: "steering-wheel.png"
         }, [
             Number({
                 attribute: "Responsiveness",
-                text: texts.responsiveness,
+                label: texts.responsiveness,
                 max: 1.0,
                 min: 0.0,
                 step: 0.01
             }),
             Number({
                 attribute: "BackSteerSpeed",
-                text: texts.backSteerSpeed,
-                desc: descs.backSteerSpeed,
+                label: texts.backSteerSpeed,
                 max: 1.0,
                 min: 0.0,
                 step: 0.01
             }),
             Number({
                 attribute: "SteerSpeed",
-                text: texts.steerSpeed,
-                desc: descs.steerSpeed,
+                label: texts.steerSpeed,
                 max: 1.0,
                 min: 0.0,
                 step: 0.01
             })
         ]),
         Group({
-            name: texts.winchGroupName,
-            icon: "winches.png"
+            label: texts.winchGroupName,
+            iconName: "winches.png"
         }, [
             Number({
                 attribute: "Length",
                 selector: selectors.staticWinch,
-                text: texts.winchLength,
+                label: texts.winchLength,
                 max: 100,
                 min: 0,
                 step: 1,
@@ -111,7 +107,7 @@ export default <ITemplate> {
             Number({
                 attribute: "StrengthMult",
                 selector: selectors.staticWinch,
-                text: texts.winchStrength,
+                label: texts.winchStrength,
                 max: 10,
                 min: 0,
                 default: 1
@@ -123,21 +119,20 @@ export default <ITemplate> {
             })
         ]),
         Group({
-            name: texts.wheelsGroupName,
-            defaultSelector: selectors.wheels,
-            icon: "wheels.png"
+            label: texts.wheelsGroupName,
+            providedSelector: selectors.wheels,
+            iconName: "wheels.png"
         }, [
             Group(texts.physicsWheels, [
                 ForEach(selectors.wheel, [
                     Group({
-                        name: texts.wheel,
-                        defaultSelector: selectors.wheel,
-                        withCounter: true
+                        label: texts.wheel,
+                        providedSelector: selectors.wheel,
+                        addCounter: true
                     }, [
                         Select({
                             attribute: "Torque",
-                            text: texts.torque,
-                            desc: descs.torque,
+                            label: texts.torque,
                             options: {
                                 default: texts.torqueDefault,
                                 full: texts.torqueFull,
@@ -148,8 +143,7 @@ export default <ITemplate> {
                         }),
                         Number({
                             attribute: "SteeringAngle",
-                            text: texts.steeringAngle,
-                            desc: descs.steeringAngle,
+                            label: texts.steeringAngle,
                             max: 90,
                             min: -90,
                             step: 1,
@@ -159,14 +153,13 @@ export default <ITemplate> {
                 ]),
                 ForEach(selectors.extraWheel, [
                     Group({
-                        name: texts.extraWheel,
-                        defaultSelector: selectors.extraWheel,
-                        withCounter: true
+                        label: texts.extraWheel,
+                        providedSelector: selectors.extraWheel,
+                        addCounter: true
                     }, [
                         Select({
                             attribute: "Torque",
-                            text: texts.torque,
-                            desc: descs.torque,
+                            label: texts.torque,
                             options: {
                                 default: texts.torqueDefault,
                                 full: texts.torqueFull,
@@ -177,8 +170,7 @@ export default <ITemplate> {
                         }),
                         Number({
                             attribute: "SteeringAngle",
-                            text: texts.steeringAngle,
-                            desc: descs.steeringAngle,
+                            label: texts.steeringAngle,
                             max: 90,
                             min: -90,
                             step: 1,
@@ -190,13 +182,13 @@ export default <ITemplate> {
             Group(texts.wheelsSizes, [
                 ForEach(selectors.compatibleWheels, [
                     Group({
-                        name: texts.wheelsSet,
-                        defaultSelector: selectors.compatibleWheels,
-                        withCounter: true
+                        label: texts.wheelsSet,
+                        providedSelector: selectors.compatibleWheels,
+                        addCounter: true
                     }, [
                         Number({
                             attribute: "Scale",
-                            text: texts.wheelScale
+                            label: texts.wheelScale
                         })
                     ])
                 ])
@@ -207,21 +199,19 @@ export default <ITemplate> {
             })
         ]),
         Group({
-            name: texts.suspensionGroupName,
-            defaultSelector: selectors.suspension,
-            icon: "suspensions.png"
+            label: texts.suspensionGroupName,
+            providedSelector: selectors.suspension,
+            iconName: "suspensions.png"
         }, [
             Coordinates({
                 attribute: "CenterOfMassOffset",
                 selector: selectors.physicsBody,
-                text: texts.centerOfMass,
-                desc: descs.centerOfMass
+                label: texts.centerOfMass
             }),
             Select({
                 attribute: "DiffLockType",
                 selector: selectors.truckData,
-                text: texts.diffLock,
-                desc: descs.diffLock,
+                label: texts.diffLock,
                 options: {
                     None: texts.none,
                     Installed: texts.installed,
@@ -235,9 +225,9 @@ export default <ITemplate> {
             })
         ]),
         Group({
-            name: texts.gearboxGroupName,
-            defaultSelector: selectors.gearbox,
-            icon: "gearboxes.png"
+            label: texts.gearboxGroupName,
+            providedSelector: selectors.gearbox,
+            iconName: "gearboxes.png"
         }, [
             File({
                 attribute: "Type",
@@ -245,23 +235,21 @@ export default <ITemplate> {
             })
         ]),
         Group({
-            name: texts.engineGroupName,
-            defaultSelector: selectors.engine,
-            icon: "engines.png"
+            label: texts.engineGroupName,
+            providedSelector: selectors.engine,
+            iconName: "engines.png"
         }, [
             Number({
                 attribute: "EngineStartDelay",
                 selector: selectors.truckData,
-                text: texts.engineStartDelay,
-                desc: descs.engineStartDelay,
+                label: texts.engineStartDelay,
                 max: 8,
                 min: 0
             }),
             Number({
                 attribute: "ExhaustStartTime",
                 selector: selectors.truckData,
-                text: texts.exhaustStartTime,
-                desc: descs.exhaustStartTime,
+                label: texts.exhaustStartTime,
                 min: 0
             }),
             File({
@@ -270,15 +258,14 @@ export default <ITemplate> {
             })
         ]),
         Group({
-            name: texts.fuelGroupName,
-            defaultSelector: selectors.fuelTank,
-            icon: "fuel.png"
+            label: texts.fuelGroupName,
+            providedSelector: selectors.fuelTank,
+            iconName: "fuel.png"
         }, [
             Number({
                 attribute: "DamageCapacity",
                 type: NumberType.integer,
-                text: texts.damageCapacity,
-                desc: descs.damageCapacity,
+                label: texts.damageCapacity,
                 step: 10,
                 default: 0,
                 areas: {
@@ -290,8 +277,7 @@ export default <ITemplate> {
                 attribute: "FuelCapacity",
                 type: NumberType.integer,
                 selector: selectors.truckData,
-                desc: descs.fuelCapacity,
-                text: texts.fuelCapacity,
+                label: texts.fuelCapacity,
                 step: 10,
                 areas: {
                     yellow: [[1000, 5000]],
@@ -300,14 +286,13 @@ export default <ITemplate> {
             })
         ]),
         Group({
-            name: texts.unlockGroupName,
-            defaultSelector: selectors.gameData,
-            icon: "unlock.png"
+            label: texts.unlockGroupName,
+            providedSelector: selectors.gameData,
+            iconName: "unlock.png"
         }, [
             Select({
                 attribute: "Country",
-                text: texts.country,
-                desc: descs.country,
+                label: texts.country,
                 default: "",
                 options: {
                     RU: texts.russia,
@@ -318,13 +303,11 @@ export default <ITemplate> {
             Number({
                 attribute: "Price",
                 type: NumberType.integer,
-                text: texts.price,
-                desc: descs.price
+                label: texts.price
             }),
             Select({
                 attribute: "UnlockByExploration",
-                text: texts.byExploration,
-                desc: descs.byExploration,
+                label: texts.byExploration,
                 options: {
                     true: texts.findOnMap,
                     false: texts.byRank
@@ -333,8 +316,7 @@ export default <ITemplate> {
             Number({
                 attribute: "UnlockByRank",
                 type: NumberType.integer,
-                text: texts.unlockByRank,
-                desc: descs.unlockByRank,
+                label: texts.unlockByRank,
                 max: 30,
                 min: 1
             })

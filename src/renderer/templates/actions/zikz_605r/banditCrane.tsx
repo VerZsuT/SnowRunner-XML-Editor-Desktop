@@ -2,7 +2,7 @@ import type { CSSProperties } from "react";
 
 import { Button, Typography } from "@mui/material";
 import Container from "components/styled/Container";
-import Warning from "pages/editor/styled/Warning";
+import Warning from "pages/main/editor/styled/Warning";
 import { callback } from "scripts/helpers";
 import localize from "scripts/localize";
 import type IActionData from "types/IActionData";

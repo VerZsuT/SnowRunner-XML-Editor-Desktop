@@ -5,13 +5,14 @@ import { join } from "path";
 
 import globalTexts from "globalTexts/main";
 import * as defaults from "scripts/defaults.json";
+import type IDefaults from "types/IDefaults";
 
 import { updateArchive } from "./archive";
+import { info, regFunctions, regProperties } from "./bridge";
 import config from "./config";
 import { exportConfig, importConfig } from "./configMethods";
 import { alert, error } from "./dialogs";
 import paths from "./paths";
-import { info, publicFunction, publicProperty } from "./renderChannel";
 import { findInDir } from "./service";
 import settings from "./settings";
 import texts, { gameTexts } from "./texts";
@@ -28,33 +29,32 @@ const {
 } = texts;
 const { SUCCESS_EXPORT_MESSAGE } = globalTexts;
 
-publicFunction("reload", reload);
-publicFunction("quit", quit);
-publicFunction("devTools", devTools);
-publicFunction("runUninstall", uninstall);
-publicFunction("exportConfig", publicExportConfig);
-publicFunction("importConfig", publicImportConfig);
-publicFunction("updateFiles", updateFiles);
+ipcMain.on("getInfo", event => {
+    event.returnValue = info;
+});
 
-/** Установить публичные для `renderer-process` методы и свойства */
-export function initPublic() {
-    // Данный метод вызывается из renderer-процесса для инициализации mainProcess
-    ipcMain.on("getInfo", event => {
-        event.returnValue = info;
-    });
-
-    publicProperty("defaults", () => defaults);
-    publicProperty("texts", () => gameTexts);
-    publicProperty("paths", () => paths);
-    publicProperty("config", [
+regProperties({
+    defaults: () => <IDefaults><unknown>defaults,
+    texts: () => gameTexts,
+    paths: () => paths,
+    config: [
         () => config,
         (value: any) => config[value.key] = value.value
-    ]);
+    ]
+});
 
-    publicFunction("findInDir", findInDir);
-    publicFunction("openLink", shell.openExternal);
-    publicFunction("openPath", shell.openPath);
-}
+regFunctions([
+    devTools,
+    findInDir,
+    updateFiles,
+    [publicExportConfig, "exportConfig"],
+    [publicImportConfig, "importConfig"],
+    [shell.openExternal, "openLink"],
+    [shell.openPath, "openPath"],
+    [uninstall, "runUninstall"],
+    [reload, "relaunchApp"],
+    [quit, "quitApp"]
+]);
 
 /** Перезапустить программу */
 export function reload() {

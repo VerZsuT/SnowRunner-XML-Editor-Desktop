@@ -11,7 +11,7 @@ import texts from "./texts";
 type MenuItem = Required<MenuProps>["items"][number];
 
 const {
-    quit, openLink, openPath, resetConfig, recoverFromBackup, copyBackup,
+    quitApp: quit, openLink, openPath, resetConfig, recoverFromBackup, copyBackup,
     runUninstall, importConfig, exportConfig, openWindow, paths
 } = main;
 const {

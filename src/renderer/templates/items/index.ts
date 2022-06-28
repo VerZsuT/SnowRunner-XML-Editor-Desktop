@@ -20,9 +20,8 @@ export function File(props: FileProps) {
         selector: props.selector,
         type: InputType.file,
         fileType: props.type,
-        text: "",
-        desc: "",
-        canAddTag: false
+        label: "",
+        addMissedTag: false
     });
 }
 
@@ -32,15 +31,14 @@ export function Number(props: NumberProps) {
         attribute: props.attribute,
         selector: props.selector,
         type: InputType.number,
-        text: props.text,
+        label: props.label,
         numberType: props.type,
-        desc: props.desc,
         min: props.min,
         max: props.max,
         step: props.step,
         default: props.default,
         areas: props.areas,
-        canAddTag: props.canAddTag
+        addMissedTag: props.addMissedTag
     });
 }
 

@@ -1,14 +1,5 @@
-const mainPreload = "./src/renderer/scripts/mainPreload.ts";
+const rootPreload = "./src/renderer/scripts/rootPreload.ts";
 const template = "./src/renderer/template.html";
-
-const appEntry = {
-    name: "app",
-    html: template,
-    js: "./src/renderer/App.tsx",
-    preload: {
-        js: "./src/renderer/preload.ts"
-    }
-};
 
 /**
  * Возвращает путь к модулю
@@ -36,7 +27,7 @@ function entryPoint(name, preloadIsMain=false, moduleName=null) {
         html: template,
         js: getPage(moduleName ?? name).main,
         preload: {
-            js: preloadIsMain? mainPreload : getPage(moduleName ?? name).preload
+            js: preloadIsMain? rootPreload : getPage(moduleName ?? name).preload
         }
     }
 
@@ -53,12 +44,11 @@ module.exports = {
                 renderer: {
                     config: getConfig("webpack.renderer.js"),
                     entryPoints: [
-                        appEntry,
                         entryPoint("loading", true),
                         entryPoint("update", true),
                         entryPoint("settings", true),
-                        entryPoint("console", true),
                         entryPoint("whats_new", true, "whatsNew"),
+                        entryPoint("main"),
                         entryPoint("setup")
                     ]
                 }

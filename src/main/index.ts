@@ -5,18 +5,19 @@ import { join } from "path";
 import Window from "enums/Window";
 import globalTexts from "globalTexts/main";
 
-import { unpackMod} from "./scripts/archive";
+import { unpackMod } from "./scripts/archive";
 import { checkInitialChanges, checkUpdate, hasAdminPrivileges, hasAllPaths, hasPermissions } from "./scripts/checks";
 import config from "./scripts/config";
 import { resetConfig, saveConfig } from "./scripts/configMethods";
 import { getSize } from "./scripts/hash";
 import paths from "./scripts/paths";
-import { initPublic } from "./scripts/public";
 import { findInDir } from "./scripts/service";
 import settings, { setSettings } from "./scripts/settings";
 import { getGameTexts, getModsTexts } from "./scripts/texts";
 import { wins } from "./scripts/windows";
 import openWindow from "./windows";
+
+import "./scripts/public";
 
 const { LOADING } = globalTexts;
 
@@ -27,14 +28,14 @@ setSettings({
     debugWinRAR: false
 });
 
-initPublic();
-
 app.disableHardwareAcceleration();
 app.setAppUserModelId(settings.appId);
 app.whenReady().then(async () => {
     await openWindow(Window.Loading);
-    await wins.loading.showAndWait();
-    wins.loading.setText(LOADING);
+    const loading = wins.loading;
+    
+    await loading.showAndWait();
+    loading.setText(LOADING);
     initProgram();
 });
 
@@ -44,7 +45,7 @@ app.on("before-quit", () => {
         saveConfig();
 });
 process.once("uncaughtExceptionMonitor", () => {
-    app.exit();
+    app.once("window-all-closed", () => app.exit());
 });
 
 /** `Main` функция */
@@ -55,22 +56,22 @@ async function initProgram() {
     if (!config.initial) {
         await openWindow(Window.Setup);
         checkUpdate();
+        return;
+    }
+    
+    await checkInitialChanges();
+
+    if (hasAllPaths()) {
+        await Promise.all([
+            getGameTexts(),
+            initDLC(),
+            initMods()
+        ]);
+        await openWindow(Window.Main);
+        checkUpdate();
     }
     else {
-        await checkInitialChanges();
-
-        if (hasAllPaths()) {
-            await Promise.all([
-                getGameTexts(),
-                initDLC(),
-                initMods()
-            ]);
-            await openWindow(Window.App);
-            checkUpdate();
-        }
-        else {
-            resetConfig();
-        }
+        resetConfig();
     }
 }
 

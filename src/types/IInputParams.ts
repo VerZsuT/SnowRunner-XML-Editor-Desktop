@@ -6,8 +6,8 @@ import type ParamType from "enums/ParamType";
 import type InputAreas from "./InputAreas";
 
 interface IInputParams {
-    name: string;
-    text: string;
+    attribute: string;
+    label: string;
     value: string | number;
     selector: string;
     paramType: ParamType;
@@ -18,7 +18,6 @@ interface IInputParams {
     step: number;
     numberType: NumberType;
     fileType: FileType;
-    desc: string;
     default: string | number;
     areas: InputAreas;
 }

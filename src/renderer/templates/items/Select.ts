@@ -1,3 +1,4 @@
+import InputType from "enums/InputType";
 import ParamType from "enums/ParamType";
 import { DEBUG_EDITOR_PARAMS } from "src/consts";
 import type IItemGetterProps from "types/IItemGetterProps";
@@ -8,33 +9,30 @@ import type SelectGetter from "types/SelectGetter";
 
 import { getInputBaseProps } from "./helpers";
 
-export default Select;
-
-function Select<O extends ISelectOptions>(props: ISelectProps<O>): SelectGetter {
+export default <O extends ISelectOptions>(props: ISelectProps<O>): SelectGetter => {
     const {
         attribute,
-        canAddTag,
-        desc,
+        addMissedTag,
         selector,
-        text
+        label
     } = getInputBaseProps(props);
     const { options, default: defaultValue } = props;
 
     return (props: IItemGetterProps): [ISelectParams] | [] => {
         const {
-            selectors,
-            defaultSelector,
+            formattedSelectors,
+            providedSelector,
             fileDOM
         } = props;
 
         const selectorType = selector ? selector : undefined;
-        const sel = selectors[selectorType] || selectorType || selectors[defaultSelector];
+        const sel = formattedSelectors[selectorType] || selectorType || formattedSelectors[providedSelector];
         let value: string;
 
         if (fileDOM(sel).length === 0) {
-            if (!canAddTag) {
+            if (!addMissedTag) {
                 if (DEBUG_EDITOR_PARAMS)
-                    console.warn(`Missing parameter\n\tName: "${attribute}",\n\tText: "${text}",\n\tSelector: "${sel}".`);
+                    console.warn(`Missing parameter\n\tName: "${attribute}",\n\tText: "${label}",\n\tSelector: "${sel}".`);
                 return [];
             }
         }
@@ -42,33 +40,23 @@ function Select<O extends ISelectOptions>(props: ISelectProps<O>): SelectGetter 
             value = fileDOM(sel).attr(attribute);
         }
 
-        const selectParams = [];
-        for (const optionValue in options) {
-            const optionText = options[optionValue];
-            if (optionValue === "EMPTY") {
-                selectParams.push({
-                    text: optionText,
-                    value: ""
-                });
-            }
-            else {
-                selectParams.push({
-                    text: optionText,
-                    value: optionValue
-                });
-            }
-        }
+        const selectParams: ISelectParams["selectParams"] = [];
+        Object.entries(options).forEach(([value, label]) => {
+            if (value === "EMPTY")
+                selectParams.push({ label, value: "" });
+            else
+                selectParams.push({ label, value });
+        });
 
         return [{
-            name: attribute,
+            attribute: attribute,
             paramType: ParamType.input,
-            inputType: "select",
+            inputType: InputType.select,
             default: <string>defaultValue,
             selector: sel,
             selectParams,
-            text,
-            value,
-            desc
+            label,
+            value
         }];
     };
-}
+};

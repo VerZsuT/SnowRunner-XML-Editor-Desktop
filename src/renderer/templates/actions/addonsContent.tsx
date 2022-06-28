@@ -6,8 +6,8 @@ import { load } from "cheerio";
 import Container from "components/styled/Container";
 import MyGrid from "components/styled/Grid";
 import memoizee from "memoizee";
-import TextField from "pages/editor/styled/AddonTextField";
-import InputLabel from "pages/editor/styled/InputLabel";
+import TextField from "pages/main/editor/styled/AddonTextField";
+import InputLabel from "pages/main/editor/styled/InputLabel";
 import { callback, getGameText } from "scripts/helpers";
 import localize from "scripts/localize";
 import main from "scripts/main";
@@ -160,7 +160,6 @@ class AddonsContent extends Action<IState> {
 
         if (!installSocket.length)  
             return false;
-         
 
         const type = installSocket.attr("Type");
         const el = this.props.dom(`Socket[Names*="${type}"]`);
@@ -270,7 +269,6 @@ class AddonsContent extends Action<IState> {
                 fuel: ""
             }; 
         }
-      
 
         TruckData = DOM("TruckAddon TruckData");
         if (!TruckData.length) {
@@ -294,8 +292,7 @@ class AddonsContent extends Action<IState> {
 
         if (!existsSync(filePath))  
             return;
-         
-
+        
         return load(readFileSync(filePath), { xmlMode: true });
     }
 
@@ -315,7 +312,6 @@ class AddonsContent extends Action<IState> {
                 };
             })); 
         }
-      
 
         const pathToBasic = join(paths.classes, "trucks/addons");
         if (existsSync(pathToBasic)) {
@@ -324,7 +320,6 @@ class AddonsContent extends Action<IState> {
                 path: join(pathToBasic, name)
             }))); 
         }
-      
 
         for (const dlcFolder of readdirSync(paths.dlc)) {
             const pathToDLCTrucks = join(paths.dlc, dlcFolder, "classes/trucks");
@@ -354,8 +349,6 @@ class AddonsContent extends Action<IState> {
                     return false;
 
                 return !!load(readFileSync(item.path), {xmlMode: true})("TruckAddon").length;
-
-
             })); 
         }
       
@@ -363,7 +356,6 @@ class AddonsContent extends Action<IState> {
             if (filter) {
                 if (filter(load(readFileSync(addon.path), { xmlMode: true })))  
                     out.push(addon);
-                 
             }
             else {
                 out.push(addon);

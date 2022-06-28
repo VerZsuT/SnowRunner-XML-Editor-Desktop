@@ -3,7 +3,7 @@ import type ITemplate from "types/ITemplate";
 
 import { ForEach, Group, Number, Template } from "../items";
 import { getSelectors } from "../service";
-import { descs, texts } from "./texts";
+import texts from "./texts";
 
 const selectors = getSelectors(({ forEach }) => {
     const truckData = "Truck.TruckData";
@@ -14,23 +14,20 @@ const selectors = getSelectors(({ forEach }) => {
     const gameData = "Truck.GameData";
     const addonSlots = `${gameData}.AddonSlots`;
 
-    return {
-        truckData, modelBody, fuelMass, gameData, addonSlots, wheel
-    };
+    return { truckData, modelBody, fuelMass, gameData, addonSlots, wheel };
 });
 
 export default <ITemplate> {
     selector: "Truck[Type=\"Trailer\"]",
     template: Template(selectors, [
         Group({
-            name: texts.inner,
-            defaultSelector: selectors.truckData
+            label: texts.inner,
+            providedSelector: selectors.truckData
         }, [
             Number({
                 attribute: "FuelCapacity",
                 type: NumberType.integer,
-                text: texts.fuelCapacity,
-                desc: descs.fuelCapacity,
+                label: texts.fuelCapacity,
                 max: 64000,
                 step: 10,
                 default: 0,
@@ -42,8 +39,7 @@ export default <ITemplate> {
             Number({
                 attribute: "RepairsCapacity",
                 type: NumberType.integer,
-                text: texts.repairsCapacity,
-                desc: descs.repairsCapacity,
+                label: texts.repairsCapacity,
                 default: 0,
                 areas: {
                     yellow: [[1000, 5000]],
@@ -53,8 +49,7 @@ export default <ITemplate> {
             Number({
                 attribute: "WheelRepairsCapacity",
                 type: NumberType.integer,
-                text: texts.wheelRepairsCapacity,
-                desc: descs.wheelRepairsCapacity,
+                label: texts.wheelRepairsCapacity,
                 default: 0,
                 areas: {
                     yellow: [[100, 500]],
@@ -65,8 +60,7 @@ export default <ITemplate> {
                 attribute: "Quantity",
                 type: NumberType.integer,
                 selector: selectors.addonSlots,
-                text: texts.quantity,
-                desc: descs.quantity
+                label: texts.quantity
             })
         ]),
         Group(texts.mass, [
@@ -74,46 +68,43 @@ export default <ITemplate> {
                 attribute: "Mass",
                 type: NumberType.integer,
                 selector: selectors.modelBody,
-                text: texts.trailerMass,
-                desc: descs.trailerMass
+                label: texts.trailerMass
             }),
             Number({
                 attribute: "Mass",
                 type: NumberType.integer,
                 selector: selectors.fuelMass,
-                text: texts.fuelMass,
-                desc: descs.fuelMass
+                label: texts.fuelMass
             })
         ]),
         Group({
-            name: texts.wheels
+            label: texts.wheels
         }, [
             ForEach(selectors.wheel, [
                 Group({
-                    name: texts.wheel,
-                    defaultSelector: selectors.wheel,
-                    withCounter: true
+                    label: texts.wheel,
+                    providedSelector: selectors.wheel,
+                    addCounter: true
                 }, [
                     Number({
                         attribute: "SuspensionHeight",
-                        text: texts.suspHeight
+                        label: texts.suspHeight
                     }),
                     Number({
                         attribute: "SuspensionStrength",
-                        text: texts.suspStrength
+                        label: texts.suspStrength
                     })
                 ])
             ])
         ]),
         Group({
-            name: texts.other,
-            defaultSelector: selectors.gameData
+            label: texts.other,
+            providedSelector: selectors.gameData
         }, [
             Number({
                 attribute: "Price",
                 type: NumberType.integer,
-                text: texts.price,
-                desc: descs.price
+                label: texts.price
             })
         ])
     ])

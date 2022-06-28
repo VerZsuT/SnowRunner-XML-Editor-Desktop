@@ -4,6 +4,7 @@ import { Button, Steps, Modal } from "antd";
 import Header from "components/Header";
 import Menu from "components/Menu";
 import Window from "enums/Window";
+import globalTexts from "globalTexts/renderer";
 import useIPCMessage from "hooks/useIPCMessage";
 import useWindowReady from "hooks/useWindowReady";
 import config from "scripts/config";
@@ -21,7 +22,13 @@ const { confirm } = Modal;
 
 const { importConfig, paths, saveBackup } = main;
 const { existsSync, join } = window.service;
-const { FIRST_STEPS_DESCRIPTION, IMPORT_CONFIG_MESSAGE } = texts;
+const {
+    FIRST_STEPS_DESCRIPTION,
+    IMPORT_CONFIG_MESSAGE,
+    GAME_DATA_STEP,
+    NEXT
+} = texts;
+const { LANGUAGE_LABEL } = globalTexts;
 
 const Setup = () => {
     useIPCMessage();
@@ -48,14 +55,14 @@ const Setup = () => {
         <Header text={FIRST_STEPS_DESCRIPTION} />
 
         <Steps className="steps" current={current}>
-            <Step title="Язык программы" />
-            <Step title="Игровые данные" />
+            <Step title={LANGUAGE_LABEL} />
+            <Step title={GAME_DATA_STEP} />
         </Steps>
         <div className="steps-content">{stepsContent[current]}</div>
         <div className="steps-actions">
             {current < stepsContent.length - 1 && (
                 <Button type="primary" onClick={() => setCurrent(current + 1)}>
-                    Дальше
+                    {NEXT}
                 </Button>
             )}
         </div>

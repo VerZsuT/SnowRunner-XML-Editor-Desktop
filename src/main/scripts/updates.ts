@@ -7,18 +7,18 @@ import { getHash } from "main/scripts/hash";
 import type IDownloadParams from "types/IDownloadParams";
 import IUpdateMap from "types/IUpdateMap";
 
+import { regFunctions } from "./bridge";
 import { exportConfig } from "./configMethods";
 import paths from "./paths";
-import { publicFunction } from "./renderChannel";
 import { clearTemp } from "./service";
 import settings from "./settings";
 import { wins } from "./windows";
 
-publicFunction("update", update);
+regFunctions([[update, "updateApp"]]);
 
 /** Загрузить файл(ы) из сети */
 export function download(params: IDownloadParams, callback: (data?: any) => any) {
-    const {array, isRoot, inMemory, loadingPage, path, url, fromJSON} = params;
+    const { array, isRoot, inMemory, loadingPage, path, url, fromJSON } = params;
 
     if (array) {
         const { url, path } = array[0];

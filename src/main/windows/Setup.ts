@@ -8,8 +8,8 @@ import type ICreateWindowAttributes from "types/ICreateWindowAttributes";
 const createArgs: ICreateWindowAttributes = {
     path: entries.setup,
     preload: entries.setupPreload,
-    width: 590,
-    minWidth: 590,
+    width: 620,
+    minWidth: 620,
     height: 290,
     minHeight: 310,
     window: Window.Setup

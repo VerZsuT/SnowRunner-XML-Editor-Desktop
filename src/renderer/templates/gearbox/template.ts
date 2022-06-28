@@ -6,7 +6,7 @@ import { ForEach, Group, Number, Select, Template } from "../items";
 import gear from "../presets/gear";
 import unlockGroup from "../presets/unlockGroup";
 import { getSelectors } from "../service";
-import { descs, texts } from "./texts";
+import texts from "./texts";
 
 const selectors = getSelectors(({ forEach, forEachBy }) => {
     const gearbox = `GearboxVariants.Gearbox${forEach}`;
@@ -25,25 +25,25 @@ export default <ITemplate> {
     template: Template(selectors, [
         ForEach(selectors.gearbox, [
             Group({
-                nameType: NameType.computed,
-                nameAttribute: "UiName",
-                resNameAttribute: "Name",
-                nameSelector: selectors.gearboxText,
-                resNameSelector: selectors.gearbox,
-                defaultSelector: selectors.gearbox
+                label: {
+                    type: NameType.computed,
+                    attribute: "UiName",
+                    extraAttribute: "Name",
+                    selector: selectors.gearboxText,
+                    extraSelector: selectors.gearbox
+                },
+                providedSelector: selectors.gearbox
             }, [
                 Number({
                     attribute: "AWDConsumptionModifier",
-                    text: texts.awdConsumptionModifier,
-                    desc: descs.awdConsumptionModifier,
+                    label: texts.awdConsumptionModifier,
                     max: 32,
                     min: 0,
                     default: 1
                 }),
                 Number({
                     attribute: "CriticalDamageThreshold",
-                    text: texts.criticalDamageThreshold,
-                    desc: descs.criticalDamageThreshold,
+                    label: texts.criticalDamageThreshold,
                     max: 0.999,
                     min: 0,
                     step: 0.01,
@@ -52,8 +52,7 @@ export default <ITemplate> {
                 Number({
                     attribute: "DamageCapacity",
                     type: NumberType.integer,
-                    text: texts.damageCapacity,
-                    desc: descs.damageCapacity,
+                    label: texts.damageCapacity,
                     max: 64000,
                     step: 10,
                     default: 0,
@@ -64,8 +63,7 @@ export default <ITemplate> {
                 }),
                 Number({
                     attribute: "DamagedConsumptionModifier",
-                    text: texts.damagedConsumptionModifier,
-                    desc: descs.damagedConsumptionModifier,
+                    label: texts.damagedConsumptionModifier,
                     max: 32,
                     min: 0,
                     step: 0.01,
@@ -73,16 +71,14 @@ export default <ITemplate> {
                 }),
                 Number({
                     attribute: "FuelConsumption",
-                    text: texts.fuelConsumption,
-                    desc: descs.fuelConsumption,
+                    label: texts.fuelConsumption,
                     max: 10,
                     min: 0,
                     default: 0.1
                 }),
                 Number({
                     attribute: "IdleFuelModifier",
-                    text: texts.idleFuelConsumption,
-                    desc: descs.idleFuelConsumption,
+                    label: texts.idleFuelConsumption,
                     max: 10,
                     min: 0,
                     default: 0.3
@@ -90,8 +86,7 @@ export default <ITemplate> {
                 Select({
                     attribute: "IsManualLowGear",
                     selector: selectors.gearboxParams,
-                    text: texts.lowerManualGear,
-                    desc: descs.lowerManualGear,
+                    label: texts.lowerManualGear,
                     options: {
                         true: texts.allow,
                         false: texts.notAllow
@@ -99,13 +94,12 @@ export default <ITemplate> {
                     default: "false"
                 }),
                 Group({
-                    name: texts.gearboxParams,
-                    defaultSelector: selectors.gearboxParams
+                    label: texts.gearboxParams,
+                    providedSelector: selectors.gearboxParams
                 }, [
                     Select({
                         attribute: "IsHighGearExists",
-                        text: texts.highGear,
-                        desc: descs.highGear,
+                        label: texts.highGear,
                         options: {
                             true: texts.allow,
                             false: texts.notAllow
@@ -114,8 +108,7 @@ export default <ITemplate> {
                     }),
                     Select({
                         attribute: "IsLowerGearExists",
-                        text: texts.lowerGear,
-                        desc: descs.lowerGear,
+                        label: texts.lowerGear,
                         options: {
                             true: texts.allow,
                             false: texts.notAllow
@@ -124,8 +117,7 @@ export default <ITemplate> {
                     }),
                     Select({
                         attribute: "IsLowerPlusGearExists",
-                        text: texts.lowerPlusGear,
-                        desc: descs.lowerPlusGear,
+                        label: texts.lowerPlusGear,
                         options: {
                             true: texts.allow,
                             false: texts.notAllow
@@ -134,8 +126,7 @@ export default <ITemplate> {
                     }),
                     Select({
                         attribute: "IsLowerMinusGearExists",
-                        text: texts.lowerMinusGear,
-                        desc: descs.lowerMinusGear,
+                        label: texts.lowerMinusGear,
                         options: {
                             true: texts.allow,
                             false: texts.notAllow
@@ -145,18 +136,18 @@ export default <ITemplate> {
                 ]),
                 Group(texts.gears, [
                     Group({
-                        name: texts.reverseGear,
-                        defaultSelector: selectors.reverseGear
+                        label: texts.reverseGear,
+                        providedSelector: selectors.reverseGear
                     }, gear),
                     Group({
-                        name: texts.highGear,
-                        defaultSelector: selectors.highGear
+                        label: texts.highGear,
+                        providedSelector: selectors.highGear
                     }, gear),
                     ForEach(selectors.gearItem, [
                         Group({
-                            name: "",
-                            defaultSelector: selectors.gearItem,
-                            withCounter: true
+                            label: "",
+                            providedSelector: selectors.gearItem,
+                            addCounter: true
                         }, gear)
                     ])
                 ]),

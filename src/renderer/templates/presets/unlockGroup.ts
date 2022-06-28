@@ -38,43 +38,18 @@ const texts = localize({
     }
 });
 
-const descs = localize({
-    RU: {
-        price: "Цена",
-        byExploration: "Способ разблокировки",
-        unlockByRank: "Уровень разблокировки"
-    },
-    EN: {
-        price: "Der Preis",
-        byExploration: "How to unlock",
-        unlockByRank: "Unlock Level"
-    },
-    DE: {
-        price: "The price",
-        byExploration: "Methode zum Entsperren",
-        unlockByRank: "Entsperren Ebene"
-    },
-    CH: {
-        price: "价格",
-        byExploration: "解锁的方法",
-        unlockByRank: "解锁级别"
-    }
-});
-
 export default (selector: string) => Group({
-    name: texts.unlockGroupName,
-    defaultSelector: selector
+    label: texts.unlockGroupName,
+    providedSelector: selector
 }, [
     Number({
         attribute: "Price",
         type: NumberType.integer,
-        text: texts.price,
-        desc: descs.price
+        label: texts.price
     }),
     Select({
         attribute: "UnlockByExploration",
-        text: texts.byExploration,
-        desc: descs.byExploration,
+        label: texts.byExploration,
         options: {
             true: texts.findOnMap,
             false: texts.byRank
@@ -83,8 +58,7 @@ export default (selector: string) => Group({
     Number({
         attribute: "UnlockByRank",
         type: NumberType.integer,
-        text: texts.unlockByRank,
-        desc: descs.unlockByRank,
+        label: texts.unlockByRank,
         max: 30,
         min: 1
     })

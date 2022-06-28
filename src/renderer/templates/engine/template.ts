@@ -5,7 +5,7 @@ import type ITemplate from "types/ITemplate";
 import { ForEach, Group, Number, Template } from "../items";
 import unlockGroup from "../presets/unlockGroup";
 import { getSelectors } from "../service";
-import { descs, texts } from "./texts";
+import texts from "./texts";
 
 const selectors = getSelectors(({ forEach }) => {
     const engine = `EngineVariants.Engine${forEach}`;
@@ -20,17 +20,18 @@ export default <ITemplate> {
     template: Template(selectors, [
         ForEach(selectors.engine, [
             Group({
-                nameType: NameType.computed,
-                nameAttribute: "UiName",
-                resNameAttribute: "Name",
-                nameSelector: selectors.engineText,
-                resNameSelector: selectors.engine,
-                defaultSelector: selectors.engine
+                label: {
+                    type: NameType.computed,
+                    attribute: "UiName",
+                    extraAttribute: "Name",
+                    selector: selectors.engineText,
+                    extraSelector: selectors.engine
+                },
+                providedSelector: selectors.engine
             }, [
                 Number({
                     attribute: "CriticalDamageThreshold",
-                    text: texts.criticalDamageThreshold,
-                    desc: descs.criticalDamageThreshold,
+                    label: texts.criticalDamageThreshold,
                     max: 0.990,
                     min: 0,
                     step: 0.01,
@@ -39,8 +40,7 @@ export default <ITemplate> {
                 Number({
                     attribute: "DamageCapacity",
                     type: NumberType.integer,
-                    text: texts.damageCapacity,
-                    desc: descs.damageCapacity,
+                    label: texts.damageCapacity,
                     max: 64000,
                     step: 10,
                     default: 0,
@@ -51,15 +51,13 @@ export default <ITemplate> {
                 }),
                 Number({
                     attribute: "DamagedConsumptionModifier",
-                    text: texts.damagedConsumptionModifier,
-                    desc: descs.damagedConsumptionModifier,
+                    label: texts.damagedConsumptionModifier,
                     max: 32,
                     default: 1
                 }),
                 Number({
                     attribute: "EngineResponsiveness",
-                    text: texts.responsiveness,
-                    desc: descs.responsiveness,
+                    label: texts.responsiveness,
                     max: 1,
                     min: 0.01,
                     step: 0.01,
@@ -71,28 +69,25 @@ export default <ITemplate> {
                 }),
                 Number({
                     attribute: "FuelConsumption",
-                    text: texts.fuelConsumption,
-                    desc: descs.fuelConsumption,
+                    label: texts.fuelConsumption,
                     max: 100.0,
                     default: 0.5
                 }),
                 Number({
                     attribute: "Torque",
                     type: NumberType.integer,
-                    text: texts.torque,
-                    desc: descs.torque,
+                    label: texts.torque,
                     max: 1000000,
                     step: 100,
                     default: 0,
                     areas: {
-                        yellow: [[700000, 80000]],
+                        yellow: [[700000, 800000]],
                         red: [[800001, Infinity]]
                     }
                 }),
                 Number({
                     attribute: "DamagedMinTorqueMultiplier",
-                    text: texts.damagedMinTorqueModifier,
-                    desc: descs.damagedMinTorqueModifier,
+                    label: texts.damagedMinTorqueModifier,
                     max: 1,
                     min: 0,
                     step: 0.01,
@@ -100,8 +95,7 @@ export default <ITemplate> {
                 }),
                 Number({
                     attribute: "DamagedMaxTorqueMultiplier",
-                    text: texts.damagedMaxTorqueModifier,
-                    desc: descs.damagedMaxTorqueModifier,
+                    label: texts.damagedMaxTorqueModifier,
                     max: 1,
                     min: 0,
                     step: 0.01,
@@ -109,15 +103,14 @@ export default <ITemplate> {
                 }),
                 Number({
                     attribute: "BrakesDelay",
-                    text: texts.breakesDelay,
+                    label: texts.breakesDelay,
                     max: 1,
                     min: 0,
                     default: 0
                 }),
                 Number({
                     attribute: "MaxDeltaAngVel",
-                    text: texts.maxDeltaAngVel,
-                    desc: descs.maxDeltaAngVel,
+                    label: texts.maxDeltaAngVel,
                     max: 1000000,
                     min: 0,
                     default: 0

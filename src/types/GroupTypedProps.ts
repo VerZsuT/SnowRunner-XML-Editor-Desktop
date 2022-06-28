@@ -1,22 +1,25 @@
 import type NameType from "enums/NameType";
 
 import type IGroupProps from "./IGroupProps";
+import type { GroupLabel } from "./IGroupProps";
+
+type TagNameLabel = {
+    type: NameType.tagName;
+    selector: GroupLabel["selector"];
+    extraSelector?: GroupLabel["extraSelector"];
+}
+
+type ComputedLabel = {
+    type: NameType.computed;
+    attribute: GroupLabel["attribute"];
+    extraAttribute?: GroupLabel["extraAttribute"];
+    selector: GroupLabel["selector"];
+    extraSelector?: GroupLabel["extraSelector"];
+}
 
 /** Параметры группы. */
-type GroupTypedProps = IGroupProps & ({
-    nameType?: NameType.static;
-    name: IGroupProps["name"];
-} | {
-    nameType: NameType.tagName;
-    nameSelector: IGroupProps["nameSelector"];
-    resNameSelector?: IGroupProps["resNameSelector"];
-} | {
-    nameType: NameType.computed;
-    nameAttribute: IGroupProps["nameAttribute"];
-    resNameAttribute?: IGroupProps["resNameAttribute"];
-    nameSelector: IGroupProps["nameSelector"];
-    resNameSelector?: IGroupProps["resNameSelector"];
-    icon?: IGroupProps["icon"];
-});
+type GroupTypedProps = IGroupProps & {
+    label?: string | TagNameLabel | ComputedLabel;
+}
 
 export default GroupTypedProps;

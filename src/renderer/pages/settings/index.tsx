@@ -15,7 +15,7 @@ import "./style.scss";
 
 const { Text } = Typography;
 const { settings } = config;
-const { reload } = main;
+const { relaunchApp: reload } = main;
 
 const {
     UPDATES_LABEL,

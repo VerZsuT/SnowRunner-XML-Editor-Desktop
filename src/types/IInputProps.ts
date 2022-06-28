@@ -15,15 +15,15 @@ type IInputProps = IInputBaseProps & {
     /**
      * Тип числового значения.
      *
-     * _Только при {@link type}=`InputType.number`_
+     * _Только при `type`=`InputType.number`_
      *
      * @default NumberType.float
     */
     numberType?: NumberType;
     /**
-     * __Минимальное__ числовое значение.
+     * Минимальное числовое значение
      *
-     * _Только при {@link type}=`InputType.number`_
+     * _Только при `type`=`InputType.number`_
      *
      * @default
      * 0 при (numberType === NumberType.integer)
@@ -31,17 +31,17 @@ type IInputProps = IInputBaseProps & {
     */
     min?: number;
     /**
-     * __Максимальное__ числовое значение.
+     * Максимальное числовое значение
      *
-     * _Только при {@link type}=`InputType.number`_
+     * _Только при `type`=`InputType.number`_
      *
      * @default Infinity
     */
     max?: number;
     /**
-     * __Шаг изменения значения__ с помощью стрелочек.
+     * Шаг изменения значения с помощью стрелочек
      *
-     * _Только при {@link type}=`InputType.number`_
+     * _Только при `type`=`InputType.number`_
      *
      * @default
      * 0.1 при (numberType === NumberType.float)
@@ -49,15 +49,15 @@ type IInputProps = IInputBaseProps & {
     */
     step?: number;
     /**
-     * __Тип XML файла__, который будет открываться по нажатию кнопки.
+     * Тип XML файла, который будет открываться по нажатию кнопки
      *
-     * _Только при {@link type}=`InputType.file`_
+     * _Только при `type`=`InputType.file`_
     */
     fileType?: FileType;
     /**
-     * __Шаблон цветовых зон__ значений.
+     * Шаблон цветовых зон значений
      *
-     * _Только при {@link type}=`InputType.number`_
+     * _Только при `type`=`InputType.number`_
     */
     areas?: InputAreas;
 }

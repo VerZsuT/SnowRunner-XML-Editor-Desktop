@@ -1,6 +1,6 @@
 import localize from "scripts/localize";
 
-export const texts = localize({
+export default localize({
     RU: {
         lowerManualGear: "Точная регулировка",
         awdConsumptionModifier: "Модификатор потребления топлива при полном приводе",
@@ -72,60 +72,5 @@ export const texts = localize({
         lowerMinusGear: "减少-",
         reverseGear: "后部",
         gears: "传动装置"
-    }
-});
-
-export const descs = localize({
-    RU: {
-        lowerManualGear: "Позволяет менять передаточное число пониженной и задней передачи.",
-        awdConsumptionModifier: "Коэффициент изменения расхода топлива при использовании полного привода",
-        criticalDamageThreshold: "Процент повреждений (значение * 100 = процент), после которого коробка начинает проявлять признаки поломки - вылетающие передачи и увеличение расхода топлива",
-        damageCapacity: "Запас прочности данной коробки передач",
-        damagedConsumptionModifier: "Максимальный множитель расхода топлива, к этому множителю расход приходит, когда коробка полностью сломана.",
-        fuelConsumption: "Базовое потребление топлива коробкой передач",
-        idleFuelConsumption: "Множитель потребления топлива, когда автомобиль стоит на месте с заведенным двигателем.",
-        highGear: "Есть ли повышенная передача в коробке передач",
-        lowerGear: "Есть ли пониженная передача в коробке передач",
-        lowerPlusGear: "Есть ли пониженная+ передача в коробке передач",
-        lowerMinusGear: "Есть ли повышенная- передача в коробке передач"
-    },
-    EN: {
-        lowerManualGear: "Allows you to change the gear ratio of downshift and reverse gear.",
-        awdConsumptionModifier: "Coefficient of change in fuel consumption when using all-wheel drive",
-        criticalDamageThreshold: "The percentage of damage (value * 100 = percentage), after which the box begins to show signs of failure - flying gears and increased fuel consumption",
-        damageCapacity: "The safety margin of this gearbox",
-        damagedConsumptionModifier: "The maximum fuel consumption multiplier, to this multiplier the fuel consumption comes when the box is completely broken.",
-        fuelConsumption: "Basic fuel consumption of the gearbox",
-        idleFuelConsumption: "The fuel consumption multiplier when the car is stationary with the engine running.",
-        highGear: "Is there an upshift in the gearbox",
-        lowerGear: "Is there a downshift in the gearbox",
-        lowerPlusGear: "Is there a downshift+ in the gearbox",
-        lowerMinusGear: "Is there an upshift+ in the gearbox"
-    },
-    DE: {
-        lowerManualGear: "Ermöglicht das Ändern des Übersetzungsverhältnisses von Herunter-und Rückwärtsgang.",
-        awdConsumptionModifier: "Der Faktor der Veränderung des Kraftstoffverbrauchs bei der Nutzung des Allradantriebs",
-        criticalDamageThreshold: "Prozentsatz des Schadens (Wert * 100 = Prozent), nach dem die Box beginnt, Anzeichen von Bruch zu zeigen-fliegende Getriebe und erhöhter Kraftstoffverbrauch",
-        damageCapacity: "Sicherheitsfaktor dieses Getriebes",
-        damagedConsumptionModifier: "Der maximale Kraftstoffverbrauch Multiplikator, zu diesem Verbrauch Multiplikator kommt, wenn die Box vollständig gebrochen ist.",
-        fuelConsumption: "Der standardverbrauch von Kraftstoff Getriebe",
-        idleFuelConsumption: "Multiplikator des Kraftstoffverbrauchs, wenn das Auto stillsteht mit dem laufenden Motor.",
-        highGear: "Gibt es ein erhöhtes Getriebe im Getriebe",
-        lowerGear: "Gibt es ein reduziertes Getriebe im Getriebe",
-        lowerPlusGear: "Gibt es ein reduziertes+ Getriebe im Getriebe",
-        lowerMinusGear: "Gibt es ein erhöhte+s Getriebe im Getriebe"
-    },
-    CH: {
-        lowerManualGear: "允许你改变降档和倒档的比例。",
-        awdConsumptionModifier: "使用全轮驱动时的油耗变化系数",
-        criticalDamageThreshold: "损坏的百分比（值*100=百分比），在这之后箱子开始出现故障的迹象--掉档和油耗增加",
-        damageCapacity: "该齿轮箱的安全系数",
-        damagedConsumptionModifier: "最大油耗乘数，对这个乘数来说，当箱子完全分解时，油耗就会出现。",
-        fuelConsumption: "齿轮箱的基本油耗",
-        idleFuelConsumption: "汽车静止时发动机运转时的油耗乘数。",
-        highGear: "变速箱中是否有超速齿轮",
-        lowerGear: "齿轮箱中是否有一个较低的齿轮",
-        lowerPlusGear: "齿轮箱中是否有一个减速+齿轮",
-        lowerMinusGear: "变速箱中是否有超速-"
     }
 });

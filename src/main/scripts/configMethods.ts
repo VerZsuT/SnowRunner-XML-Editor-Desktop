@@ -8,14 +8,14 @@ import type IConfig from "types/IConfig";
 import config from "./config";
 import { openDialog } from "./dialogs";
 import paths from "./paths";
-import { publicFunction } from "./renderChannel";
+import { regFunctions } from "./bridge";
 import { clearTemp } from "./service";
 import settings from "./settings";
 import texts from "./texts";
 
 const { SAVE_CONFIG_ERROR } = texts;
 
-publicFunction("resetConfig", resetConfig);
+regFunctions([resetConfig]);
 
 /** Сохранить изменения в `config.json` */
 export function saveConfig() {

@@ -1,47 +1,51 @@
 import type NameType from "enums/NameType";
 
-type IGroupProps = {
-    /** __Название группы__, отображаемое в таблице. */
-    name?: string;
+export type GroupLabel = {
     /**
      * Тип названия группы.
      *
      * @default NameType.static
     */
-    nameType?: NameType;
+    type?: NameType;
     /**
-     * __Селектор элемента__, у которого будет взято название группы.
+     * Селектор элемента, у которого будет взято название группы
      *
-     * Используется вместе с {@link nameAttribute}.
+     * Используется вместе с `nameAttribute`
      *
-     * _Только при {@link nameType}=`NameType.computed` | `NameType.tagName`_
+     * _Только при `nameType`=`NameType.computed` | `NameType.tagName`_
     */
-    nameSelector?: string;
+    selector?: string;
     /**
-     * __Дополнительный селектор элемента__ названия.
+     * Дополнительный селектор названия
      *
-     * Используется если элемент по селектору {@link nameSelector} не найден.
+     * _Используется если элемент по селектору `nameSelector` не найден_
     */
-    resNameSelector?: string;
+    extraSelector?: string;
     /**
-     * __Имя атрибута__, который будет взят у элемента названия.
+     * Имя атрибута, который будет взят у элемента названия
      *
-     * Используется вместе с {@link nameSelector} или {@link resNameSelector}
+     * Используется вместе с `nameSelector` или `resNameSelector`
      *
-     * _Только при {@link nameType}=`NameType.computed`_
+     * _Только при `nameType`=`NameType.computed`_
     */
-    nameAttribute?: string;
+    attribute?: string;
     /**
-     * __Дополнительное имя атрибута.__
+     * Дополнительное имя атрибута
      *
-     * Используется если атрибут {@link nameAttribute} не найден.
+     * Используется если атрибут `nameAttribute` не найден
     */
-    resNameAttribute?: string;
-    /** __Селектор по умолчанию__ у всех элементов группы. */
-    defaultSelector?: string;
-    /** __Добавлять ли номер__ текущей итерации к названию группы. */
-    withCounter?: boolean;
-    icon?: string;
+    extraAttribute?: string;
+}
+
+type IGroupProps = {
+    /** Параметры подписи группы */
+    label?: GroupLabel;
+    /** Селектор, наследующийся всеми элементы группы */
+    providedSelector?: string;
+    /** Добавлять ли номер текущей итерации к названию группы */
+    addCounter?: boolean;
+    /** Путь к иконке группы */
+    iconName?: string;
 }
 
 export default IGroupProps;

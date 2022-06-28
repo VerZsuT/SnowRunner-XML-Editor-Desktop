@@ -4,7 +4,7 @@ import type ITemplate from "types/ITemplate";
 import { ForEach, Group, Number, Select, Template } from "../items";
 import unlockGroup from "../presets/unlockGroup";
 import { getSelectors } from "../service";
-import { descs, texts } from "./texts";
+import texts from "./texts";
 
 const selectors = getSelectors(({ forEach }) => {
     const truckWheels = "TruckWheels";
@@ -13,9 +13,7 @@ const selectors = getSelectors(({ forEach }) => {
     const wheelFriction = `${truckTire}.WheelFriction`;
     const gameData = `${truckTire}.GameData`;
 
-    return {
-        truckTire, truckTireText, wheelFriction, gameData
-    };
+    return { truckTire, truckTireText, wheelFriction, gameData };
 });
 
 export default <ITemplate> {
@@ -23,54 +21,52 @@ export default <ITemplate> {
     template: Template(selectors, [
         ForEach(selectors.truckTire, [
             Group({
-                nameType: NameType.computed,
-                nameAttribute: "UiName",
-                resNameAttribute: "Name",
-                nameSelector: selectors.truckTireText,
-                resNameSelector: selectors.truckTire,
-                defaultSelector: selectors.wheelFriction
+                label: {
+                    type: NameType.computed,
+                    attribute: "UiName",
+                    extraAttribute: "Name",
+                    selector: selectors.truckTireText,
+                    extraSelector: selectors.truckTire
+                },
+                providedSelector: selectors.wheelFriction
             }, [
                 Number({
                     attribute: "BodyFriction",
-                    text: texts.bodyFriction,
-                    desc: descs.bodyFriction,
+                    label: texts.bodyFriction,
                     max: 10,
                     default: 1,
                     areas: {
                         yellow: [[7, 8]],
                         red: [[8.1, 10]]
                     },
-                    canAddTag: true
+                    addMissedTag: true
                 }),
                 Number({
                     attribute: "BodyFrictionAsphalt",
-                    text: texts.bodyFrictionAsphalt,
-                    desc: descs.bodyFrictionAsphalt,
+                    label: texts.bodyFrictionAsphalt,
                     max: 10,
                     default: 1,
                     areas: {
                         yellow: [[7, 8]],
                         red: [[8.1, 10]]
                     },
-                    canAddTag: true
+                    addMissedTag: true
                 }),
                 Number({
                     attribute: "SubstanceFriction",
-                    text: texts.substanceFriction,
-                    desc: descs.substanceFriction,
+                    label: texts.substanceFriction,
                     max: 10,
                     default: 1,
                     areas: {
                         yellow: [[7, 8]],
                         red: [[8.1, 10]]
                     },
-                    canAddTag: true
+                    addMissedTag: true
                 }),
                 Select({
                     attribute: "IsIgnoreIce",
-                    text: texts.ignoreIse,
-                    desc: descs.ignoreIse,
-                    canAddTag: true,
+                    label: texts.ignoreIse,
+                    addMissedTag: true,
                     options: {
                         true: texts.yes,
                         false: texts.no

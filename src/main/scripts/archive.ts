@@ -4,10 +4,10 @@ import { basename, join } from "path";
 
 import { DEBUG_WINRAR_ERRORS } from "src/consts";
 
+import { regFunctions } from "./bridge";
 import config from "./config";
 import { getSize } from "./hash";
 import paths from "./paths";
-import { publicFunction } from "./renderChannel";
 import settings from "./settings";
 import texts from "./texts";
 import { wins } from "./windows";
@@ -28,8 +28,10 @@ const IN_BACKGROUND = "-ibck";
 
 const silence = () => settings.debugWinRAR ? [] : [IN_BACKGROUND, NO_ERRORS];
 
-publicFunction("unpackFiles", unpackMain);
-publicFunction("unpack", syncUnpackArchive);
+regFunctions([
+    unpackMain,
+    [syncUnpackArchive, "unpack"]
+]);
 
 /**
  * Обновить файлы в архиве

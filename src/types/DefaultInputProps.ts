@@ -7,13 +7,10 @@ type DefaultInputProps = {
     selector?: string;
 
     /** Текст в таблице. */
-    text: string;
-
-    /** Описание в таблице. */
-    desc?: string;
+    label: string;
 
     /** Можно ли добавить родительский элемент при его отсутствии. */
-    canAddTag?: boolean;
+    addMissedTag?: boolean;
 }
 
 export default DefaultInputProps;

@@ -2,14 +2,13 @@ import { readFileSync, writeFileSync } from "fs";
 import { basename } from "path";
 
 import { alert, getEPF, getMultiEPF, saveEPF } from "./dialogs";
-import { publicFunction } from "./renderChannel";
+import { regFunctions } from "./bridge";
 import settings from "./settings";
 import texts from "./texts";
 
 const { SEE_EXPORTED_MESSAGE, SUCCESS_JOIN } = texts;
 
-publicFunction("seeEPF", saveEPF);
-publicFunction("joinEPF", joinEPF);
+regFunctions([seeEPF, joinEPF]);
 
 const DEFAULT_NAME = "joined";
 

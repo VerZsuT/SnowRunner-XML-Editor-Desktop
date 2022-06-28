@@ -9,21 +9,18 @@ import type InputTypedProps from "types/InputTypedProps";
 
 import { getInputBaseProps } from "./helpers";
 
-export default Input;
-
-function Input(props: InputTypedProps): InputGetter {
+export default (props: InputTypedProps): InputGetter => {
     const {
         attribute,
-        canAddTag,
-        desc,
+        addMissedTag,
         selector,
-        text
+        label
     } = getInputBaseProps(props);
     const {
         type = InputType.number,
         numberType = NumberType.float,
-        min = numberType === NumberType.float ? 0.01 : 0,
-        step = numberType === NumberType.float ? 0.1 : 1,
+        min = (numberType === NumberType.float) ? 0.01 : 0,
+        step = (numberType === NumberType.float) ? 0.1 : 1,
         fileType,
         areas,
         max,
@@ -32,18 +29,18 @@ function Input(props: InputTypedProps): InputGetter {
 
     return (props: IItemGetterProps): [IInputParams] | [] => {
         const {
-            selectors,
-            defaultSelector,
+            formattedSelectors,
+            providedSelector,
             fileDOM
         } = props;
 
-        const sel = selector ? (selectors[selector] || selector) : selectors[defaultSelector];
+        const sel = selector ? (formattedSelectors[selector] || selector) : formattedSelectors[providedSelector];
         let value: string;
 
         if (fileDOM(sel).length === 0) {
-            if (!canAddTag) {
+            if (!addMissedTag) {
                 if (DEBUG_EDITOR_PARAMS)
-                    console.warn(`Missing parameter\n\tName: "${attribute}",\n\tText: "${text}",\n\tSelector: "${sel}".`);
+                    console.warn(`Missing parameter\n\tName: "${attribute}",\n\tText: "${label}",\n\tSelector: "${sel}".`);
                 return [];
             }
         }
@@ -52,12 +49,12 @@ function Input(props: InputTypedProps): InputGetter {
         }
 
         return [{
-            name: attribute,
             default: defaultValue,
             selector: sel,
             paramType: ParamType.input,
-            inputType: "text",
-            text,
+            inputType: InputType.text,
+            attribute,
+            label,
             value,
             type,
             min,
@@ -65,8 +62,7 @@ function Input(props: InputTypedProps): InputGetter {
             step,
             numberType,
             fileType,
-            desc,
             areas
         }];
     };
-}
+};

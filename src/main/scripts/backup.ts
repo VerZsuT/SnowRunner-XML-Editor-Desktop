@@ -8,7 +8,7 @@ import config from "./config";
 import { error } from "./dialogs";
 import { showNotification } from "./notifications";
 import paths from "./paths";
-import { publicFunction } from "./renderChannel";
+import { regFunctions } from "./bridge";
 import settings from "./settings";
 import texts from "./texts";
 
@@ -21,9 +21,11 @@ const {
     SUCCESS
 } = texts;
 
-publicFunction("saveBackup", saveBackup);
-publicFunction("copyBackup", copyBackup);
-publicFunction("recoverFromBackup", recoverBackup);
+regFunctions([
+    saveBackup,
+    copyBackup,
+    recoverFromBackup
+]);
 
 /**
  * Сохранить бэкап `initial.pak` и распаковать файлы
@@ -68,7 +70,7 @@ export function copyBackup() {
 }
 
 /** Заменить оригинальный `initial.pak` на сохранённый. */
-export async function recoverBackup() {
+export async function recoverFromBackup() {
     if (!existsSync(paths.backupInitial)) 
         return;
 

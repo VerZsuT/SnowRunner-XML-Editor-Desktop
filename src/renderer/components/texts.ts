@@ -3,7 +3,6 @@ import localize from "scripts/localize";
 export default localize({
     RU: {
         DROP_TEXT: "Отпустите для импортирования",
-        LANGUAGE_MENU_ITEM_LABEL: "Язык программы",
         EXIT_MENU_ITEM_LABEL: "Выход",
         SETTINGS_MENU_LABEL: "Настройки",
         UNINSTALL_MENU_ITEM_LABEL: "Удалить программу",
@@ -18,7 +17,6 @@ export default localize({
     },
     EN: {
         DROP_TEXT: "Release to Import",
-        LANGUAGE_MENU_ITEM_LABEL: "Program language",
         EXIT_MENU_ITEM_LABEL: "Exit",
         SETTINGS_MENU_LABEL: "Settings",
         RESTORE_MENU_ITEM_LABEL: "Restore",
@@ -33,7 +31,6 @@ export default localize({
     },
     DE: {
         DROP_TEXT: "Zum Importieren freigeben",
-        LANGUAGE_MENU_ITEM_LABEL: "Programmsprache",
         EXIT_MENU_ITEM_LABEL: "Exit",
         SETTINGS_MENU_LABEL: "Einstellungen",
         RESTORE_MENU_ITEM_LABEL: "Standard Wiederherstellen",
@@ -48,7 +45,6 @@ export default localize({
     },
     CH: {
         DROP_TEXT: "释放进口",
-        LANGUAGE_MENU_ITEM_LABEL: "方案语言",
         EXIT_MENU_ITEM_LABEL: "输出",
         SETTINGS_MENU_LABEL: "设置",
         RESTORE_MENU_ITEM_LABEL: "还原",

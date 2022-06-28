@@ -1,6 +1,6 @@
-import { useEffect } from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useCallback, useEffect } from "react";
 
-import makeCallback from "hooks/makeCallback";
 import type ISetHotKeyConfiguration from "types/ISetHotKeyParams";
 
 import useConstFunc from "./useConstFunc";
@@ -13,7 +13,7 @@ type Handler = (event: KeyboardEvent) => void;
  * @param handler - обработчик события
  * @param deps - зависимости как в `useEffect`
  */
-export default (config: ISetHotKeyConfiguration, handler: Handler, deps?: any[]) => {
+export default (config: ISetHotKeyConfiguration, handler: Handler, deps: any[] = [handler]) => {
     const {
         key,
         ctrlKey,
@@ -21,7 +21,7 @@ export default (config: ISetHotKeyConfiguration, handler: Handler, deps?: any[])
         prevent,
         eventName = (key === "Escape")? "keydown" : "keypress"
     } = config;
-    const listener = makeCallback([handler, deps ?? []]);
+    const listener = useCallback(handler, deps);
 
     const eventHandler = useConstFunc((event: KeyboardEvent) => {
         // Работает - не трогай!
@@ -37,5 +37,5 @@ export default (config: ISetHotKeyConfiguration, handler: Handler, deps?: any[])
         return () => {
             document.removeEventListener(eventName, eventHandler);
         };
-    }, [eventHandler, eventName, listener]);
+    }, [eventHandler, eventName, listener, ...deps]);
 };

@@ -34,25 +34,24 @@ function Template(props: TemplateProps, children: TemplateItems[]): TemplateGett
 
     const getParams = (props: IItemGetterProps): ITemplateParams => {
         const {
-            defaultSelector = null,
-            tCycleNumber = 1,
+            providedSelector = null,
+            cycleNumber = 1,
             tNumber = 1,
-            selectors: sels = selectors,
+            formattedSelectors = selectors,
             multiply = (type === TemplateType.multiply),
             fileDOM
         } = props;
 
         let { counter = 1 } = props;
-
         let params = [];
         const newSelectors = {};
-        for (const selector in sels) {
-            if (sels[selector].includes("||"))
-                sels[selector] = sels[selector].split("||")[1];
+        for (const selector in formattedSelectors) {
+            if (formattedSelectors[selector].includes("||"))
+                formattedSelectors[selector] = formattedSelectors[selector].split("||")[1];
         }
 
         if (multiply) {
-            let itemSelector = sels[itemSelectorID];
+            let itemSelector = formattedSelectors[itemSelectorID];
             if (itemSelector.endsWith("\"]")) {
                 const temp1 = itemSelector.split(" ");
                 const temp2 = temp1[temp1.length - 1].split("[SXMLE_ID");
@@ -61,42 +60,42 @@ function Template(props: TemplateProps, children: TemplateItems[]): TemplateGett
 
             const items = fileDOM(itemSelector);
             const name = replaceName + tNumber;
-            let currentNum = 1;
+            let cycleNumber = 1;
             items.each((_, el) => {
                 fileDOM(el).attr("SXMLE_ID", String(counter));
-                for (const selector in sels) {
-                    newSelectors[selector] = sels[selector].replaceAll(`-${name}-`, String(counter));
-                    if (currentNum === 1)
+                for (const selector in formattedSelectors) {
+                    newSelectors[selector] = formattedSelectors[selector].replaceAll(`-${name}-`, String(counter));
+                    if (cycleNumber === 1)
                         newSelectors[selector] = newSelectors[selector].replaceAll(`-F_${name}-`, String(counter));
-                    else if (currentNum === items.length)
+                    else if (cycleNumber === items.length)
                         newSelectors[selector] = newSelectors[selector].replaceAll(`-L_${name}-`, String(counter));
 
-                    newSelectors[selector] = newSelectors[selector].replaceAll(`-N${currentNum}_${name}-`, String(counter));
+                    newSelectors[selector] = newSelectors[selector].replaceAll(`-N${cycleNumber}_${name}-`, String(counter));
                 }
 
                 ++counter;
                 params = params.concat(getParams({
-                    selectors: newSelectors,
-                    defaultSelector,
-                    multiply: false,
-                    tCycleNumber: currentNum,
-                    fileDOM,
+                    formattedSelectors: newSelectors,
                     tNumber: multiply ? tNumber + 1 : tNumber,
+                    multiply: false,
+                    providedSelector,
+                    cycleNumber,
+                    fileDOM,
                     counter
                 }));
-                ++currentNum;
+                ++cycleNumber;
             });
         }
         else {
-            for (const childGetter of children) {
+            children.forEach(childGetter => {
                 params = params.concat(childGetter({
-                    selectors: sels,
-                    defaultSelector,
-                    cycleNumber: tCycleNumber,
                     tNumber: multiply ? tNumber + 1 : tNumber,
+                    formattedSelectors,
+                    providedSelector,
+                    cycleNumber,
                     fileDOM
                 }));
-            }
+            });
         }
         return params;
     };

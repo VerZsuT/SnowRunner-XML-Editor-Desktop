@@ -1,20 +1,18 @@
 import Window from "enums/Window";
 
-import { publicFunction } from "../scripts/renderChannel";
-import openApp from "./App";
-import openConsole from "./Console";
+import { regFunctions } from "../scripts/bridge";
 import openLoading from "./Loading";
+import openApp from "./Main";
 import openSettings from "./Settings";
 import openSetup from "./Setup";
 import openUpdate from "./Update";
 import openWhatsNew from "./WhatsNew";
 
-publicFunction("openWindow", openWindow);
+regFunctions([openWindow]);
 
 const windows = {
-    [Window.App]: openApp,
+    [Window.Main]: openApp,
     [Window.Loading]: openLoading,
-    [Window.Console]: openConsole,
     [Window.Update]: openUpdate,
     [Window.Settings]: openSettings,
     [Window.WhatsNew]: openWhatsNew,

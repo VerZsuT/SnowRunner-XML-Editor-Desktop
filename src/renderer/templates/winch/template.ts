@@ -5,7 +5,7 @@ import type ITemplate from "types/ITemplate";
 import { ForEach, Group, Number, Select, Template } from "../items";
 import unlockGroup from "../presets/unlockGroup";
 import { getSelectors } from "../service";
-import { descs, texts } from "./texts";
+import texts from "./texts";
 
 const selectors = getSelectors(({ forEach }) => {
     const winch = `WinchVariants.Winch${forEach}`;
@@ -20,18 +20,19 @@ export default <ITemplate> {
     template: Template(selectors, [
         ForEach(selectors.winch, [
             Group({
-                nameType: NameType.computed,
-                nameAttribute: "UiName",
-                resNameAttribute: "Name",
-                nameSelector: selectors.winchText,
-                resNameSelector: selectors.winch,
-                defaultSelector: selectors.winch
+                label: {
+                    type: NameType.computed,
+                    attribute: "UiName",
+                    extraAttribute: "Name",
+                    selector: selectors.winchText,
+                    extraSelector: selectors.winch
+                },
+                providedSelector: selectors.winch
             }, [
                 Number({
                     attribute: "Length",
                     type: NumberType.integer,
-                    text: texts.length,
-                    desc: descs.length,
+                    label: texts.length,
                     max: 100,
                     default: 14,
                     areas: {
@@ -41,8 +42,7 @@ export default <ITemplate> {
                 }),
                 Number({
                     attribute: "StrengthMult",
-                    text: texts.strengthMult,
-                    desc: descs.strengthMult,
+                    label: texts.strengthMult,
                     max: 10,
                     default: 1,
                     areas: {
@@ -52,8 +52,7 @@ export default <ITemplate> {
                 }),
                 Select({
                     attribute: "IsEngineIgnitionRequired",
-                    text: texts.isEngineIgnitionRequired,
-                    desc: descs.isEngineIgnitionRequired,
+                    label: texts.isEngineIgnitionRequired,
                     options: {
                         true: texts.engine,
                         false: texts.battery

@@ -39,7 +39,7 @@ export function getExported(filePath: string, shortMode = true, modId?: string, 
         if (!main[item.selector])
             main[item.selector] = {};
 
-        main[item.selector][item.name] = getValue(fileDOM, templates, globalTemplates, item);
+        main[item.selector][item.attribute] = getValue(fileDOM, templates, globalTemplates, item);
     }
 
     function calcGroup(item: IGroupParams) {
@@ -56,7 +56,7 @@ export function getExported(filePath: string, shortMode = true, modId?: string, 
     function calcFile(item: IInputParams) {
         const fileNames: string[] = (String(item.value)).split(",").map(value => value.trim());
 
-        if (item.fileType === FileType.wheels && item.name !== "Type") {
+        if (item.fileType === FileType.wheels && item.attribute !== "Type") {
             fileDOM("Truck > TruckData > CompatibleWheels").map((_, el) => {
                 const type = fileDOM(el).attr("Type");
                 if (!fileNames.includes(type))
@@ -217,14 +217,14 @@ function getFromTemplates(fileDOM: CheerioAPI, templates: Cheerio<"_templates">,
         if (templateName) {
             const template = templates.find(templateName).eq(0);
             if (template.length) {
-                const templateValue = template.attr(item.name);
+                const templateValue = template.attr(item.attribute);
 
                 if (templateValue)
                     return templateValue;
 
                 const el2 = template.find(tagName).eq(0);
                 if (el2.length) {
-                    const templateValue2 = el2.attr(item.name);
+                    const templateValue2 = el2.attr(item.attribute);
 
                     if (templateValue2)
                         return templateValue2;
@@ -254,13 +254,13 @@ function getValueInGlobal(templateName: string, tagName: string, globalTemplates
     const template = globalTemplates(`${tagName} > ${templateName}`);
 
     if (template.length) {
-        const templateValue = template.attr(item.name);
+        const templateValue = template.attr(item.attribute);
         if (templateValue)
             return templateValue;
 
         const el2 = template.find(tagName).eq(0);
         if (el2.length) {
-            const templateValue2 = el2.attr(item.name);
+            const templateValue2 = el2.attr(item.attribute);
             if (templateValue2)
                 return templateValue2;
         }

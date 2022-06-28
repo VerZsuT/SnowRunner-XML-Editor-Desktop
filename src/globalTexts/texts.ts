@@ -5,7 +5,8 @@ export default {
         OPEN_BUTTON: "Открыть",
         SAVE_BUTTON: "Сохранить",
         RESET_MENU_ITEM_LABEL: "Сбросить",
-        EXPORT: "Экспорт"
+        EXPORT: "Экспорт",
+        LANGUAGE_LABEL: "Язык программы"
     },
     EN: {
         SUCCESS_EXPORT_MESSAGE: "Configuration exported successfully",
@@ -13,7 +14,8 @@ export default {
         OPEN_BUTTON: "Open",
         SAVE_BUTTON: "Save",
         RESET_MENU_ITEM_LABEL: "Reset",
-        EXPORT: "Export"
+        EXPORT: "Export",
+        LANGUAGE_LABEL: "Program language"
     },
     DE: {
         SUCCESS_EXPORT_MESSAGE: "Konfiguration erfolgreich exportiert",
@@ -21,7 +23,8 @@ export default {
         OPEN_BUTTON: "Öffnen",
         SAVE_BUTTON: "Datei",
         RESET_MENU_ITEM_LABEL: "Zurücksetzen",
-        EXPORT: "Export"
+        EXPORT: "Export",
+        LANGUAGE_LABEL: "Programmsprache"
     },
     CH: {
         SUCCESS_EXPORT_MESSAGE: "配置已成功导出",
@@ -29,6 +32,7 @@ export default {
         OPEN_BUTTON: "打开",
         SAVE_BUTTON: "保存",
         RESET_MENU_ITEM_LABEL: "重置",
-        EXPORT: "出口"
+        EXPORT: "出口",
+        LANGUAGE_LABEL: "方案语言"
     }
 };

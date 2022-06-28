@@ -7,7 +7,6 @@
 import type { JSXElementConstructor } from "react";
 import { PureComponent } from "react";
 
-import { showLoading } from "components/Loading";
 import { showPopup } from "components/Popup";
 import type IActionData from "types/IActionData";
 import type IActionProps from "types/IActionProps";
@@ -56,11 +55,8 @@ class ActionBase<S = any> extends PureComponent<IActionProps, S> implements IExp
 
     /** Сохранить текущий открытый файл в таблице. */
     protected async save(reload?: boolean) {
-        //await this.editor.save(false);
-        if (reload) {
-            showLoading();
+        if (reload)
             window.location.reload();
-        }
     }
 }
 

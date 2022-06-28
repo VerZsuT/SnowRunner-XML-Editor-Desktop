@@ -5,7 +5,7 @@ import type IWindowSize from "types/IWindowBounds";
 import type IWindows from "types/IWindows";
 
 import paths from "./paths";
-import { publicFunction } from "./renderChannel";
+import { regFunctions } from "./bridge";
 import { Stack } from "./service";
 import settings from "./settings";
 
@@ -15,7 +15,7 @@ export const wins: IWindows = {
 
 const stack = new Stack<BrowserWindow>();
 
-publicFunction("setWindowSize", setWindowSize);
+regFunctions([setWindowSize]);
 
 /** Установить размер окна */
 export function setWindowSize(size: IWindowSize) {

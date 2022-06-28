@@ -2,13 +2,12 @@ import { memo } from "react";
 
 import { Select, Radio, RadioChangeEvent } from "antd";
 import Lang from "enums/Lang";
+import globalTexts from "globalTexts/renderer";
 import config from "scripts/config";
 import main from "scripts/main";
 
-import texts from "./texts";
-
-const { reload } = main;
-const { LANGUAGE_MENU_ITEM_LABEL } = texts;
+const { relaunchApp: reload } = main;
+const { LANGUAGE_LABEL } = globalTexts;
 
 interface IProps {
     isSetup?: boolean;
@@ -34,7 +33,7 @@ export default memo((props: IProps) => (
             )
             : <>
                 <label htmlFor="lang-select" className="lang-label">
-                    {LANGUAGE_MENU_ITEM_LABEL}
+                    {LANGUAGE_LABEL}
                 </label>
                 <Select
                     id="lang-select"

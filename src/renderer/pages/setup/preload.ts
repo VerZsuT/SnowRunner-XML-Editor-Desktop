@@ -1,13 +1,13 @@
 import { existsSync } from "fs";
 import { basename, join } from "path";
 
-import "scripts/mainPreload";
+import "scripts/rootPreload";
 import main from "scripts/main";
 import type ISetupPreload from "types/ISetupPreload";
 
 import texts from "./texts";
 
-const { openDialog, openInitialDialog } = main;
+const { getDir: openDialog, getInitial: openInitialDialog } = main;
 
 const {
     EMPTY_FOLDER_ERROR,

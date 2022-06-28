@@ -13,7 +13,7 @@ export default <F extends FuncType>(arg?: F | [F, DependencyList]): F => {
     if (!arg)
         return useConstFunc(<F>(() => null));
 
-    if (arg instanceof Array)
+    if (Array.isArray(arg))
         return useCallback<F>(arg[0], arg[1]);
     else
         return useConstFunc(arg);

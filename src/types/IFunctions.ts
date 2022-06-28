@@ -1,7 +1,7 @@
 import type { app, shell } from "electron";
 
 import type { syncUnpackArchive, unpackMain } from "main/scripts/archive";
-import type { copyBackup, recoverBackup, saveBackup } from "main/scripts/backup";
+import type { copyBackup, recoverFromBackup, saveBackup } from "main/scripts/backup";
 import type { checkUpdate } from "main/scripts/checks";
 import type { exportConfig, importConfig, resetConfig } from "main/scripts/configMethods";
 import type { getDir, getEPF, getInitial, getXML, saveEPF } from "main/scripts/dialogs";
@@ -20,8 +20,8 @@ interface IFunctions {
     findInDir: typeof findInDir;
     joinEPF: typeof joinEPF;
     seeEPF: typeof seeEPF;
-    reload: typeof app.relaunch;
-    quit: typeof app.quit;
+    relaunchApp: typeof app.relaunch;
+    quitApp: typeof app.quit;
     importConfig: typeof importConfig;
     exportConfig: typeof exportConfig;
     openPath: typeof shell.openPath;
@@ -29,19 +29,19 @@ interface IFunctions {
 
     setWindowSize: typeof setWindowSize;
     openWindow: typeof openWindow;
-    openDialog: typeof getDir;
-    openXMLDialog: typeof getXML;
-    openInitialDialog: typeof getInitial;
-    openEPFDialog: typeof getEPF;
-    openSaveDialog: typeof saveEPF;
+    getDir: typeof getDir;
+    getXML: typeof getXML;
+    getInitial: typeof getInitial;
+    getEPF: typeof getEPF;
+    saveEPF: typeof saveEPF;
 
     saveBackup: typeof saveBackup;
     copyBackup: typeof copyBackup;
-    recoverFromBackup: typeof recoverBackup;
+    recoverFromBackup: typeof recoverFromBackup;
     resetConfig: typeof resetConfig;
     checkUpdate: typeof checkUpdate;
-    update: typeof update;
-    unpackFiles: typeof unpackMain;
+    updateApp: typeof update;
+    unpackMain: typeof unpackMain;
     devTools: typeof devTools;
 }
 

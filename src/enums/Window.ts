@@ -1,9 +1,8 @@
 enum Window {
-    App,
+    Main,
     Settings,
     Update,
     WhatsNew,
-    Console,
     Loading,
     Setup
 }

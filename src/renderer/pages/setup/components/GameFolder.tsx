@@ -22,39 +22,41 @@ interface IProps {
 export default memo((props: IProps) => {
     const { onChange } = props;
 
-    function getPak() {
-        const data = preload.getInitial();
-        if (!data) return;
-
-        data.folder = data.initial;
-
-        onChange(data.initial);
-    }
-
-    function getFolder() {
-        const data = preload.getGameFolder();
-        if (!data) return;
-
-        onChange(data.initial);
-    }
-
-    return <div className="game-folder">
-        <Button
-            type="primary"
-            icon={<FolderFilled />}
-            size="large"
-            onClick={getFolder}
-            style={{ marginRight: "30px" }}
-        >
-            {GAME_FOLDER_LABEL}
-        </Button>
-        <Button
-            type="primary"
-            icon={<FileFilled />}
-            size="large"
-            onClick={getPak}
-        >
-            initial.pak
-        </Button>
-    </div>;
+    return (
+        <div className="game-folder">
+            <Button
+                className="folder-button"
+                type="primary"
+                icon={<FolderFilled />}
+                size="large"
+                onClick={() => getFolder(onChange)}
+            >
+                {GAME_FOLDER_LABEL}
+            </Button>
+            <Button
+                type="primary"
+                icon={<FileFilled />}
+                size="large"
+                onClick={() => getPak(onChange)}
+            >
+                initial.pak
+            </Button>
+        </div>
+    );
 });
+
+function getPak(onChange: IProps["onChange"]) {
+    const data = preload.getInitial();
+    if (!data) return;
+
+    data.folder = data.initial;
+
+    onChange(data.initial);
+}
+
+function getFolder(onChange: IProps["onChange"]) {
+    const data = preload.getGameFolder();
+    if (!data) return;
+
+    onChange(data.initial);
+}

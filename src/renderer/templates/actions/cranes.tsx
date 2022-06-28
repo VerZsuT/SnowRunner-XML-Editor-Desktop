@@ -2,9 +2,9 @@ import type { CSSProperties } from "react";
 
 import { Button, Typography } from "@mui/material";
 import type { CheerioAPI } from "cheerio";
-import ButtonBox from "pages/editor/styled/ButtonBox";
-import Container from "pages/editor/styled/CranesContainer";
-import Warning from "pages/editor/styled/Warning";
+import ButtonBox from "pages/main/editor/styled/ButtonBox";
+import Container from "pages/main/editor/styled/CranesContainer";
+import Warning from "pages/main/editor/styled/Warning";
 import { callback } from "scripts/helpers";
 import localize from "scripts/localize";
 import type IActionData from "types/IActionData";

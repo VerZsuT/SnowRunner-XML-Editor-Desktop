@@ -1,7 +1,7 @@
 import { Button, Typography } from "@mui/material";
 import type { CheerioAPI } from "cheerio";
-import ButtonBox from "pages/editor/styled/ButtonBox";
-import Container from "pages/editor/styled/CranesContainer";
+import ButtonBox from "pages/main/editor/styled/ButtonBox";
+import Container from "pages/main/editor/styled/CranesContainer";
 import { callback } from "scripts/helpers";
 import localize from "scripts/localize";
 import type IActionData from "types/IActionData";

@@ -11,9 +11,8 @@ export function getSelectorID(selector: string): string | null {
 export function getInputBaseProps(props: IInputBaseProps) {
     return {
         attribute: props.attribute,
-        text: props.text,
-        desc: props.desc || "",
-        canAddTag: props.canAddTag,
+        label: props.label,
+        addMissedTag: props.addMissedTag,
         selector: getSelectorID(props.selector)
     };
 }

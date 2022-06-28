@@ -8,7 +8,7 @@ import type IDialogParams from "types/IDialogParams";
 import type IOpenDialogParams from "types/IOpenDialogParams";
 
 import paths from "./paths";
-import { publicFunction } from "./renderChannel";
+import { regFunctions } from "./bridge";
 import texts from "./texts";
 
 const { ERROR } = texts;
@@ -20,11 +20,13 @@ const extNames = {
     xml: "XML file"
 };
 
-publicFunction("openXMLDialog", getXML);
-publicFunction("openEPFDialog", getEPF);
-publicFunction("openSaveDialog", saveEPF);
-publicFunction("openInitialDialog", getInitial);
-publicFunction("openDialog", getDir);
+regFunctions([
+    getXML,
+    getEPF,
+    saveEPF,
+    getInitial,
+    getDir
+]);
 
 /** Выводит ошибку на экран */
 export function error(message: string) {

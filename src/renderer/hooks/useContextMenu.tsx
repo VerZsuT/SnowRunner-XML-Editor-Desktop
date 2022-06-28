@@ -5,7 +5,7 @@ import { Menu } from "antd";
 import type { MenuProps } from "antd";
 
 import useConstFunc from "./useConstFunc";
-import useMemo from "./useMemo";
+import useStaticMemo from "./useStaticMemo";
 
 interface IReturns {
     hideContextMenu(): void;
@@ -25,7 +25,7 @@ export default (): IReturns => {
     const [x, setX] = useState(0);
     const [y, setY] = useState(0);
 
-    const position = useMemo(() => ({
+    const position = useStaticMemo(() => ({
         top: y,
         left: x
     }), [x, y]);
