@@ -1,22 +1,22 @@
-import dns from "dns";
-import { app, shell } from "electron";
-import { accessSync, constants, existsSync, writeFileSync } from "fs";
-import https from "https";
-import { join } from "path";
+import {resolve} from 'dns'
+import {app, shell} from 'electron'
+import {accessSync, constants, existsSync, writeFileSync} from 'fs'
+import {get} from 'https'
+import {join} from 'path'
 
-import Window from "enums/Window";
+import {Window} from 'enums'
 
-import openWindow from "../windows";
-import { unpackMain } from "./archive";
-import { saveBackup } from "./backup";
-import { regFunctions } from "./bridge";
-import config from "./config";
-import { alert, error } from "./dialogs";
-import { getSize } from "./hash";
-import { showNotification } from "./notifications";
-import paths from "./paths";
-import texts from "./texts";
-import { wins } from "./windows";
+import {openWindow} from '../windows'
+import {unpackMain} from './archive'
+import {saveBackup} from './backup'
+import {regFunctions} from './bridge'
+import {config} from './config'
+import {alert, error} from './dialogs'
+import {getSize} from './hash'
+import {showNotification} from './notifications'
+import {paths} from './paths'
+import {mainTexts} from './texts'
+import {wins} from './windows'
 
 const {
     ADMIN_REQUIRED_MESSAGE,
@@ -25,12 +25,12 @@ const {
     INITIAL_NOT_FOUND,
     CLASSES_NOT_FOUND,
     DLC_FOLDER_NOT_FOUND
-} = texts;
+} = mainTexts
 
-const MEDIA_FOLDER = "[media]";
-const DNS_TO_RESOLVE = "www.google.com";
+const MEDIA_FOLDER = '[media]'
+const DNS_TO_RESOLVE = 'www.google.com'
 
-regFunctions([checkUpdate]);
+regFunctions([[checkUpdate, 'checkUpdate']])
 
 /**
  * Проверить наличие прав администратора у программы (требуется для чтения/записи файлов).
@@ -39,19 +39,19 @@ regFunctions([checkUpdate]);
  */
 export function hasAdminPrivileges() {
     try {
-        writeFileSync(paths.config, JSON.stringify(config, null, "\t"));
-        return true;
+        writeFileSync(paths.config, JSON.stringify(config, null, '\t'))
+        return true
     }
     catch {
-        wins.loading.setPercent(0);
+        wins.loading.setPercent(0)
         alert({
             message: ADMIN_REQUIRED_MESSAGE,
-            type: "warning",
-            buttons: ["Exit"],
-            title: "Error"
-        });
-        setTimeout(app.quit, 2000);
-        return false;
+            type: 'warning',
+            buttons: ['Exit'],
+            title: 'Error'
+        })
+        setTimeout(app.quit, 2000)
+        return false
     }
 }
 
@@ -64,9 +64,9 @@ export async function checkInitialChanges() {
     if (!existsSync(join(paths.mainTemp, MEDIA_FOLDER)) || getSize(config.initial) !== config.sizes.initial) {
         if (existsSync(config.initial)) {
             if (!existsSync(paths.backupInitial))
-                await saveBackup();
+                await saveBackup()
             else
-                await unpackMain(false);
+                await unpackMain(false)
         }
     }
 }
@@ -79,37 +79,37 @@ export async function checkInitialChanges() {
  */
 export function checkUpdate(whateverCheck?: boolean) {
     if (!config.settings.updates && !whateverCheck)
-        return;
+        return
 
-    dns.resolve(DNS_TO_RESOLVE, error => {
+    resolve(DNS_TO_RESOLVE, error => {
         if (error)
-            return;
+            return
 
-        https.get(paths.publicInfo, res => {
-            let rawData = "";
+        get(paths.publicInfo, res => {
+            let rawData = ''
 
-            res.setEncoding("utf-8");
-            res.on("data", chunk => rawData += chunk);
-            res.on("end", () => {
-                const data = JSON.parse(rawData);
+            res.setEncoding('utf-8')
+            res.on('data', chunk => rawData += chunk)
+            res.on('end', () => {
+                const data = JSON.parse(rawData)
 
                 if (config.version < data.latestVersion || (
-                    config.version.includes("-beta")
-                    && config.version.split("-beta")[0] === data.latestVersion)
+                    config.version.includes('-beta')
+                    && config.version.split('-beta')[0] === data.latestVersion)
                 ) {
                     if (config.version >= data.minVersion) {
-                        openWindow(Window.Update, data.latestVersion);
+                        openWindow(Window.Update, data.latestVersion)
                     }
                     else {
                         showNotification(NOTIFICATION, ALLOW_NEW_VERSION)
                             .then(() => {
-                                shell.openExternal(paths.downloadPage);
-                            });
+                                shell.openExternal(paths.downloadPage)
+                            })
                     }
                 }
-            });
-        });
-    });
+            })
+        })
+    })
 }
 
 /**
@@ -119,30 +119,30 @@ export function checkUpdate(whateverCheck?: boolean) {
  */
 export function hasAllPaths() {
     if (!existsSync(config.initial)) {
-        error(INITIAL_NOT_FOUND);
-        return false;
+        error(INITIAL_NOT_FOUND)
+        return false
     }
 
     if (!existsSync(paths.classes)) {
-        error(CLASSES_NOT_FOUND);
-        return false;
+        error(CLASSES_NOT_FOUND)
+        return false
     }
 
     if (config.settings.DLC && !existsSync(paths.dlc)) {
-        error(DLC_FOLDER_NOT_FOUND);
-        config.settings.DLC = false;
+        error(DLC_FOLDER_NOT_FOUND)
+        config.settings.DLC = false
     }
 
-    return true;
+    return true
 }
 
 /** Проверить наличие у программы прав на чтение/запись файла по переданному пути */
 export function hasPermissions(path: string) {
     try {
-        accessSync(path, constants.W_OK);
-        return true;
+        accessSync(path, constants.W_OK)
+        return true
     }
     catch {
-        return false;
+        return false
     }
 }

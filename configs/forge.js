@@ -1,28 +1,27 @@
-const rootPreload = "./src/renderer/scripts/rootPreload.ts";
-const template = "./src/renderer/template.html";
+const renderer = './src/renderer'
+const webpackConfigs = './configs/webpack'
+
+const rootPreload = `${renderer}/scripts/rootPreload.ts`
+const template = `${renderer}/template.html`
+const pages = `${renderer}/pages`
+const favicon = '.webpack/main/favicon.ico'
+
+const mainConfig = `${webpackConfigs}/main.js`
+const rendererConfig = `${webpackConfigs}/renderer.js`
 
 /**
  * Возвращает путь к модулю
  * @param {string} name
  */
 function getPage(name) {
-    const pages = "./src/renderer/pages";
     return {
         main: `${pages}/${name}/index.tsx`,
         preload: `${pages}/${name}/preload.ts`
-    };
-}
-
-/**
- * Возвращает путь к конфигу
- * @param {string} name
- */
-function getConfig(name) {
-    return `./configs/${name}`;
+    }
 }
 
 function entryPoint(name, preloadIsMain=false, moduleName=null) {
-    const entry = {
+    return {
         name,
         html: template,
         js: getPage(moduleName ?? name).main,
@@ -30,29 +29,27 @@ function entryPoint(name, preloadIsMain=false, moduleName=null) {
             js: preloadIsMain? rootPreload : getPage(moduleName ?? name).preload
         }
     }
-
-    return entry;
 }
 
 module.exports = {
-    packagerConfig: { icon: ".webpack/main/favicon.ico" },
+    packagerConfig: { icon: favicon },
     plugins: [
         [
-            "@electron-forge/plugin-webpack",
+            '@electron-forge/plugin-webpack',
             {
-                mainConfig: getConfig("webpack.main.js"),
+                mainConfig,
                 renderer: {
-                    config: getConfig("webpack.renderer.js"),
+                    config: rendererConfig,
                     entryPoints: [
-                        entryPoint("loading", true),
-                        entryPoint("update", true),
-                        entryPoint("settings", true),
-                        entryPoint("whats_new", true, "whatsNew"),
-                        entryPoint("main"),
-                        entryPoint("setup")
+                        entryPoint('loading', true),
+                        entryPoint('update', true),
+                        entryPoint('settings', true),
+                        entryPoint('whatsNew', true),
+                        entryPoint('main'),
+                        entryPoint('setup')
                     ]
                 }
             }
         ]
     ]
-};
+}

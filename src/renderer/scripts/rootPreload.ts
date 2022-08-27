@@ -1,2 +1,2 @@
-import "./ipc";
-import "./service";
+import './ipc'
+import './service'

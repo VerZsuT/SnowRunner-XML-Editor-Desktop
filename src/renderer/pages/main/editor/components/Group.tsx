@@ -1,195 +1,114 @@
-import { memo, useCallback, useState } from "react";
+import {Collapse} from 'antd'
+import {InputType} from 'enums'
+import {globalTexts} from 'globalTexts/renderer'
+import {createContextMenu} from 'helpers/createContextMenu'
+import {FileInfoContext} from 'pages/main/editor/helpers/getFileInfo'
+import {afcMemo, handleContext} from 'react-afc'
+import {getGameText} from 'scripts/helpers'
+import type {GroupParams, InputParams, SelectParams, TemplateParams} from 'types'
 
-import { TableBody } from "@mui/material";
-import GroupAccordion from "components/GroupAccordion";
-import InputType from "enums/InputType";
-import useConst from "hooks/useConst";
-import useConstFunc from "hooks/useConstFunc";
-import memoizee from "memoizee";
-import type IGroupParams from "types/IGroupParams";
-import type IInputParams from "types/IInputParams";
-import type ISelectParams from "types/ISelectParams";
-import type ITemplateParams from "types/ITemplateParams";
+import {getFileParser} from '../helpers/getFileParser'
+import {getResetProvider, ResetContext} from '../helpers/getResetProvider'
+import {handleReset} from '../helpers/handleReset'
+import {Parameter} from './Parameter'
 
-import Parameter from "../components/Parameter";
-import useId from "../hooks/useId";
-import useReset from "../hooks/useReset";
-import useResetMenu from "../hooks/useResetMenu";
-import Table from "../styled/Table";
+const { Panel } = Collapse
 
+const { RESET_MENU_ITEM_LABEL } = globalTexts
 
-interface IProps {
-    item: IGroupParams;
-    registerReset?(id: string, func: () => void): void;
-    unregisterReset?(id: string): void;
-    toggle(expand: boolean): void;
-    parentExportEnabled: boolean;
-    isExportMode: boolean;
-    show: boolean;
-    open: boolean;
+interface Props {
+    key: string | number
+    item: GroupParams
 }
 
-interface IGroupItems {
-    groups: ITemplateParams;
-    params: {
-        files: IInputParams[];
-        default: (IInputParams & ISelectParams)[];
-    };
-}
+export const Group = afcMemo((props: Props) => {
+    const { item } = props
+    const iconSRC = item.iconName? require(`images/icons/${item.iconName}`) : null
+    const items = getItems(item)
+    const { mod } = handleContext(FileInfoContext)()
 
-interface IResetList {
-    [id: string]: () => void;
-}
-
-const emptyContStyle = {
-    height: "47px"
-};
-
-const Group = memo((props: IProps) => {
+    const {resetList, resetContext} = getResetProvider()
     const {
-        item,
-        open,
-        show,
-        toggle,
-        registerReset,
-        unregisterReset,
-        parentExportEnabled,
-        isExportMode
-    } = props;
-    const id = useId();
+        ContextMenu,
+        onContextMenu,
+        hideContextMenu,
+        contextIsShow
+    } = createContextMenu()
+    const contextMenuItems = [{
+        key: 'reset-group',
+        label: `${RESET_MENU_ITEM_LABEL} ${item.groupName}`,
+        onClick: onReset
+    }]
+    handleReset(onReset)
 
-    const iconSRC = useConst<string>(() => item.iconName? require(`images/icons/editor/${item.iconName}`) : null);
-    const items = useConst<IGroupItems>(() => getItems(item));
-    const resetList = useConst<IResetList>({});
+    const parseFile = getFileParser()
 
-    const [exportEnabled, setExportEnabled] = useState(parentExportEnabled);
-    const [openedGroup, setOpenedGroup] = useState<number>(null);
-
-    const toggleExpand = memoizee(
-        (index: number) => (expand: boolean) => setOpenedGroup(expand ? index : null)
-    );
-
-    const [onContextMenu, ResetMenu] = useResetMenu({
-        text: item.groupName,
-        onReset: reset
-    });
-
-    useReset({
-        id,
-        register: registerReset,
-        unregister: unregisterReset,
-        callback: reset
-    });
-
-    const registerResetC = useConstFunc((id: string, func: () => void) => {
-        resetList[id] = func;
-    });
-    const unregisterResetC = useConstFunc((id: string) => {
-        delete resetList[id];
-    });
-
-    const toggleExport = useCallback(() => {
-        if (parentExportEnabled)
-            setExportEnabled(prev => !prev);
-    }, [parentExportEnabled]);
-
-    const defaultParams = items.params.default.map((param, index) => (
+    const params = items.params.default.map((param, index) => (
         <Parameter
-            parentExportEnabled={exportEnabled && parentExportEnabled}
-            exportMode={isExportMode}
             item={param}
-            registerReset={registerResetC}
             key={`${param.selector}-${index}`}
-            unregisterReset={unregisterResetC}
-            show={open}
         />
-    ));
-    const filesParams = items.params.files.map((param, index) => (
-        <Parameter
-            item={param as unknown as IInputParams & ISelectParams}
-            key={`${param.selector}-${index}`}
-            registerReset={registerResetC}
-            unregisterReset={unregisterResetC}
-            parentExportEnabled={exportEnabled && parentExportEnabled}
-            exportMode={isExportMode}
-            show={open}
-        />
-    ));
+    ))
+    const files = items.params.files.map(param => parseFile(param))
     const groups = items.groups.map((groupItem, index) => (
         <Group
             item={groupItem}
             key={`${groupItem.groupName}-${index}`}
-            registerReset={registerResetC}
-            unregisterReset={unregisterResetC}
-            parentExportEnabled={exportEnabled && parentExportEnabled}
-            isExportMode={isExportMode}
-            show={open}
-            open={openedGroup === index}
-            toggle={toggleExpand(index)}
         />
-    ));
+    ))
+    let label = item.groupName
+    if (mod)
+        label = getGameText(item.groupName, mod) ?? item.resGroupName ?? item.groupName
 
-    if (show === false) {
-        return (
-            <div style={emptyContStyle}>
-                {defaultParams}
-                {filesParams}
-                {groups}
-            </div>
-        );
+    function onReset() {
+        resetList.forEach(onReset => onReset())
+        hideContextMenu()
     }
 
-    return <>
-        {ResetMenu}
-        <GroupAccordion
-            id={id}
-            title={item.groupName}
-            iconSRC={iconSRC}
-            showExport={isExportMode}
-            isExport={exportEnabled && parentExportEnabled}
-            onChangeExport={toggleExport}
-            onContextMenu={onContextMenu}
-            onChange={toggle}
-            expanded={open}
-        >
-            {!!defaultParams.length &&
-                <Table>
-                    <TableBody>
-                        {defaultParams}
-                    </TableBody>
-                </Table>
+    return () => <>
+        <ContextMenu items={contextMenuItems} isShow={contextIsShow()}/>
+        <Panel
+            {...props}
+            header={
+                <div onContextMenu={onContextMenu}>
+                    {label}
+                </div>
             }
-            {filesParams}
-            {groups}
-        </GroupAccordion>
-    </>;
+            extra={iconSRC ? <img src={iconSRC} /> : null}
+        >
+            <ResetContext.Provider value={resetContext}>
+                {params.length > 0 &&
+                    <div>{params}</div>
+                }
+                {files}
+                {groups.length > 0 &&
+                    <Collapse accordion>
+                        {groups}
+                    </Collapse>
+                }
+            </ResetContext.Provider>
+        </Panel>
+    </>
+})
 
-    function reset() {
-        for (const itemID in resetList)
-            resetList[itemID]();
-    }
-});
-
-function getItems(item: IGroupParams) {
-    const groups: ITemplateParams = [];
-    const files: (IInputParams)[] = [];
-    const defaultItems: (IInputParams & ISelectParams)[] = [];
+function getItems(item: GroupParams) {
+    const groups: TemplateParams = []
+    const files: (InputParams)[] = []
+    const defaultItems: (InputParams & SelectParams)[] = []
 
     const params = {
         default: defaultItems,
         files
-    };
-
-    for (const groupItem of item.groupItems) {
-        if (groupItem.paramType === "group")
-            groups.push(groupItem);
-        else if (groupItem.type === InputType.file)
-            params.files.push(groupItem);
-        else
-            params.default.push(groupItem);
     }
 
-    return { groups, params };
-}
+    item.groupItems.forEach(groupItem => {
+        if (groupItem.paramType === 'group')
+            groups.push(groupItem)
+        else if (groupItem.type === InputType.file)
+            params.files.push(groupItem)
+        else
+            params.default.push(groupItem)
+    })
 
-export default Group;
+    return { groups, params }
+}

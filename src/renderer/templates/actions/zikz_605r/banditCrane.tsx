@@ -1,135 +1,110 @@
-import type { CSSProperties } from "react";
+import {Button, Typography} from 'antd'
+import type {CheerioAPI} from 'cheerio'
+import {afcMemo, createState} from 'react-afc'
+import {localize} from 'scripts/localize'
+import type {ActionProps} from 'types'
 
-import { Button, Typography } from "@mui/material";
-import Container from "components/styled/Container";
-import Warning from "pages/main/editor/styled/Warning";
-import { callback } from "scripts/helpers";
-import localize from "scripts/localize";
-import type IActionData from "types/IActionData";
-import type IActionProps from "types/IActionProps";
-import type IIEAllow from "types/IIEAllow";
+import {createAction} from '../createAction'
+import {actionTexts} from '../texts'
 
-import Action from "../Action";
-import texts from "../texts";
+const { Paragraph } = Typography
 
 const {
     CRANES_WARN_TITLE,
     BANDIT_WARN_MESSAGE,
     ADD,
     REMOVE
-} = texts;
+} = actionTexts
 
-export const data: IActionData = {
-    name: localize({
-        RU: "Банан бандита",
-        EN: "Bandit banana",
-        DE: "Bananen-Bandit",
-        CH: "香蕉大盗"
-    }),
-    id: "bandit-crane",
-    minHeight: 200,
-    minWidth: 350,
-    imgSRC: require("images/icons/editor/banana.png"),
-    isActive(_, fileName) { return fileName === "zikz_605r"; }
-};
-
-interface IExportData {
-    hasCrane: boolean;
-}
-
-interface IState {
-    hasCrane: boolean;
+interface ExportData {
+    hasCrane: boolean
 }
 
 /** Вкладка `Банан бандита`. */
-class BanditCrane extends Action<IState> implements IIEAllow<IExportData> {
-    private styles = {
-        warn: {
-            textAlign: "left",
-            padding: "0 10px"
-        } as CSSProperties,
-        buttons: {
-            marginTop: "10px"
-        }
-    };
+export const BanditCrane = createAction({
+    name: localize({
+        RU: 'Банан бандита',
+        EN: 'Bandit banana',
+        DE: 'Bananen-Bandit',
+        CH: '香蕉大盗'
+    }),
+    id: 'bandit-crane',
+    minHeight: 200,
+    minWidth: 350,
+    imgSRC: require('images/icons/banana.png'),
+    isActive(_, fileName) {
+        return fileName === 'zikz_605r'
+    },
+    export(dom) {
+        return { hasCrane: isHasCrane(dom) }
+    },
+    import(dom, data: ExportData) {
+        if (data.hasCrane && !isHasCrane(dom))
+            addCrane(dom)
+    }
+}, afcMemo((props: ActionProps) => {
+    const [state, setState] = createState({
+        hasCrane: isHasCrane(props.dom)
+    })
 
-    constructor(props: IActionProps) {
-        super(props, data, BanditCrane);
-        this.state = { hasCrane: false };
+    function onAdd() {
+        addCrane(props.dom)
+        setState({ hasCrane: true })
     }
 
-    public export(): IExportData {
-        return { hasCrane: this.hasCrane() };
+    function onRemove() {
+        removeCrane(props.dom)
+        setState({ hasCrane: false })
     }
 
-    public import(data: IExportData) {
-        if (data.hasCrane && !this.hasCrane())
-            this.addCrane();
-    }
+    return () => <>
+        <div className='warn-title'>
+            <Paragraph>{CRANES_WARN_TITLE}</Paragraph>
+        </div>
+        <Paragraph>{BANDIT_WARN_MESSAGE}</Paragraph>
+        <div className='bc-buttons'>
+            {state.hasCrane
+                ? <Button
+                    type='primary'
+                    onClick={onRemove}
+                    danger
+                >
+                    {REMOVE}
+                </Button>
+                : <Button
+                    onClick={onAdd}
+                    type='primary'
+                >
+                    {ADD}
+                </Button>
+            }
+        </div>
+    </>
+}))
 
-    public componentDidMount() {
-        this.setState({ hasCrane: this.hasCrane() });
-    }
+function addCrane(dom: CheerioAPI) {
+    const AddonSockets = dom('AddonSockets').eq(0)
+    const Trunk = dom('Socket[Names="zikz605rTrunk"]').eq(0)
+    const FrameAddon = dom('Socket[Names="ZikzFrameAddon"]').eq(0)
 
-    public render() {
-        return <>
-            <Warning>{CRANES_WARN_TITLE}</Warning>
-            <Container style={this.styles.warn}>
-                <Typography>
-                    {CRANES_WARN_TITLE}
-                </Typography>
-                <Typography>
-                    {BANDIT_WARN_MESSAGE}
-                </Typography>
-            </Container>
-            <Container style={this.styles.buttons}>
-                {this.state.hasCrane
-                    ? (
-                        <Button variant="contained" color="warning" onClick={this.removeCrane}>
-                            {REMOVE}
-                        </Button>
-                    )
-                    : (
-                        <Button variant="contained" onClick={this.addCrane}>
-                            {ADD}
-                        </Button>
-                    )}
-            </Container>
-        </>;
-    }
-
-    @callback
-    private addCrane() {
-        const AddonSockets = this.props.dom("AddonSockets").eq(0);
-        const Trunk = this.props.dom("Socket[Names=\"zikz605rTrunk\"]").eq(0);
-        const FrameAddon = this.props.dom("Socket[Names=\"ZikzFrameAddon\"]").eq(0);
-
-        AddonSockets.after(`
-        <AddonSockets>
-            <Socket Names="CraneKrs58Bandit" Offset="(-1.25; 0; 0)" NamesBlock="ZikzLogLift, ZikzBigCrane, FrameAddonKungZikz, FrameAddonSeismicVibratorZikz, FrameAddonTankZikz, FrameAddonLogShortZikz" ParentFrame="BoneAddonAttachment_cdt"/>
-        </AddonSockets>`);
-        Trunk.attr("NamesBlock", `CraneKrs58Bandit, ${Trunk.attr("NamesBlock")}`);
-        FrameAddon.append("<AddonsShift Offset=\"(-0.5; 0; 0)\" Types=\"CraneKrs58Bandit\"/>");
-
-        this.setState({ hasCrane: true });
-    }
-
-    @callback
-    private removeCrane() {
-        const Socket = this.props.dom("Socket[Names=\"CraneKrs58Bandit\"]").eq(0);
-        const Trunk = this.props.dom("Socket[Names=\"zikz605rTrunk\"]").eq(0);
-        const FrameAddon = this.props.dom("Socket[Names=\"ZikzFrameAddon\"]").eq(0);
-
-        Socket.parent().remove();
-        Trunk.attr("NamesBlock", Trunk.attr("NamesBlock").replace("CraneKrs58Bandit, ", ""));
-        FrameAddon.find("AddonsShift[Types=\"CraneKrs58Bandit\"]").eq(0).remove();
-
-        this.setState({ hasCrane: false });
-    }
-
-    private hasCrane() {
-        return !!this.props.dom("Socket[Names=\"CraneKrs58Bandit\"]").length;
-    }
+    AddonSockets.after(`
+    <AddonSockets>
+        <Socket Names="CraneKrs58Bandit" Offset="(-1.25; 0; 0)" NamesBlock="ZikzLogLift, ZikzBigCrane, FrameAddonKungZikz, FrameAddonSeismicVibratorZikz, FrameAddonTankZikz, FrameAddonLogShortZikz" ParentFrame="BoneAddonAttachment_cdt"/>
+    </AddonSockets>`)
+    Trunk.attr('NamesBlock', `CraneKrs58Bandit, ${Trunk.attr('NamesBlock')}`)
+    FrameAddon.append('<AddonsShift Offset="(-0.5; 0; 0)" Types="CraneKrs58Bandit"/>')
 }
 
-export default BanditCrane;
+function removeCrane(dom: CheerioAPI) {
+    const Socket = dom('Socket[Names="CraneKrs58Bandit"]').eq(0)
+    const Trunk = dom('Socket[Names="zikz605rTrunk"]').eq(0)
+    const FrameAddon = dom('Socket[Names="ZikzFrameAddon"]').eq(0)
+
+    Socket.parent().remove()
+    Trunk.attr('NamesBlock', Trunk.attr('NamesBlock').replace('CraneKrs58Bandit, ', ''))
+    FrameAddon.find('AddonsShift[Types="CraneKrs58Bandit"]').eq(0).remove()
+}
+
+function isHasCrane(dom: CheerioAPI) {
+    return !!dom('Socket[Names="CraneKrs58Bandit"]').length
+}

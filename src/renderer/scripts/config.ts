@@ -1,39 +1,35 @@
-import type IConfig from "types/IConfig";
+import type {Config} from 'types'
 
-const sendSync = window.ipc.sendSync;
+const { sendSync } = window.ipc
 
 function getConfig() {
-    return sendSync("property_config_get").value;
+    return sendSync('property_config_get').value
 }
 
 /** Конфигурация программы */
-const config = <IConfig> new Proxy({}, {
+export const config = new Proxy({}, {
     get(_target, name) {
-        const value = getConfig()[name];
+        const value = getConfig()[name]
 
-        if (!Array.isArray(value) && typeof value === "object" && value !== null) {
+        if (!Array.isArray(value) && typeof value === 'object' && value !== null) {
             return new Proxy(value, {
-                get(_target, name) { return value[name]; },
+                get: (_target, name) => value[name],
                 set(_target, name1, v) {
-                    value[name1] = v;
-                    config[name] = value;
-                    return true;
+                    value[name1] = v
+                    config[name] = value
+                    return true
                 }
-            });
+            })
         }
 
-        return value;
+        return value
     },
     set(target, name, value) {
-        target[name] = value;
-        const result = sendSync("property_config_set", {
+        target[name] = value
+        const result = sendSync('property_config_set', {
             key: name,
             value
-        });
-        return !result.error;
-         
-
+        })
+        return !result.error
     }
-});
-
-export default config;
+}) as Config

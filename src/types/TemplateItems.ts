@@ -1,8 +1,6 @@
-import type GroupGetter from "types/GroupGetter";
-import type InputGetter from "types/InputGetter";
-import type SelectGetter from "types/SelectGetter";
-import type TemplateGetter from "types/TemplateGetter";
+import type {GroupGetter} from './GroupGetter'
+import type {InputGetter} from './InputGetter'
+import type {SelectGetter} from './SelectGetter'
+import type {TemplateGetter} from './TemplateGetter'
 
-type TemplateItems = GroupGetter | InputGetter | SelectGetter | TemplateGetter;
-
-export default TemplateItems;
+export type TemplateItems = GroupGetter | InputGetter | SelectGetter | TemplateGetter

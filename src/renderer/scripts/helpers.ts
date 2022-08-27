@@ -1,21 +1,21 @@
-import { createRoot } from "react-dom/client";
+import {createRoot} from 'react-dom/client'
 
-import main from "./main";
+import {main} from './main'
 
-const { texts } = main;
-const ROOT = document.querySelector("#main");
+const { texts } = main
+const ROOT = document.querySelector('#main')
 
 /** Заменяет `_` на пробелы и делает первую букву большой. */
 export function prettify(str: string): string {
-    const text = str.replaceAll("_", " ");
-    const firstChar = text[0].toUpperCase();
+    const text = str.replaceAll('_', ' ')
+    const firstChar = text[0].toUpperCase()
 
-    return `${firstChar}${text.slice(1)}`;
+    return `${firstChar}${text.slice(1)}`
 }
 
 /** Рендерит компонент в `root` контейнер страницы */
 export function render(element: JSX.Element) {
-    createRoot(ROOT).render(element);
+    createRoot(ROOT).render(element)
 }
 
 /**
@@ -24,40 +24,14 @@ export function render(element: JSX.Element) {
  * @param modId - id модификации.
  */
 export function getGameText(key: string, modId?: string): string {
-    let value: string;
+    let value: string
+    const modsTexts = texts.mods
+    const gameTexts = texts.game
 
-    if (modId && texts.mods[modId] && texts.mods[modId][key])
-        value = texts.mods[modId][key];
-    else if (texts.game[key])
-        value = texts.game[key];
+    if (modId && modsTexts[modId] && modsTexts[modId][key])
+        value = modsTexts[modId][key]
+    else if (gameTexts[key])
+        value = gameTexts[key]
 
-    if (value)
-        return value;
-}
-
-export function callback(_: any, key: string, descriptor: PropertyDescriptor) {
-    let fn = descriptor.value;
-
-    return {
-        configurable: true,
-        get() {
-            const boundFn = fn.bind(this);
-
-            Object.defineProperty(this, key, {
-                configurable: true,
-                get() {
-                    return boundFn;
-                },
-                set(value) {
-                    fn = value;
-                    delete this[key];
-                }
-            });
-
-            return boundFn;
-        },
-        set(value: any) {
-            fn = value;
-        }
-    };
+    return value
 }

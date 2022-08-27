@@ -1,17 +1,22 @@
-import { memo } from "react";
+import type {ReactNode} from 'react'
+import {memo} from 'react'
 
-import { PageHeader, PageHeaderProps } from "antd";
+import type {PageHeaderProps} from 'antd'
+import {PageHeader} from 'antd'
 
 type Props = {
     text: string;
-    extra?: JSX.Element;
+    extra?: ReactNode | ReactNode[];
 } & PageHeaderProps;
 
-export default memo((props: Props) => (
+export const Header = memo((props: Props) => (
     <PageHeader
-        className="header"
-        title={<h3 className="header-title">{props.text}</h3>}
+        className='header'
+        title={
+            <h3 className='header-title'>
+                {props.text}
+            </h3>
+        }
         {...props}
-        extra={props.extra}
     />
-));
+))

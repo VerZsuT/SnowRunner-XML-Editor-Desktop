@@ -1,62 +1,63 @@
-import { memo } from "react";
+import {FileFilled, FolderFilled} from '@ant-design/icons'
+import {Button} from 'antd'
+import {afcMemo} from 'react-afc'
+import {getPreload} from 'scripts/getPreload'
+import type {SetupPreload} from 'types'
 
-import { FileFilled, FolderFilled } from "@ant-design/icons";
-import { Button } from "antd";
-import getPreload from "scripts/getPreload";
-import type IFolder from "types/IFolder";
+import {setupTexts} from '../texts'
 
-import texts from "../texts";
+const { GAME_FOLDER_LABEL } = setupTexts
 
-const { GAME_FOLDER_LABEL } = texts;
-const preload = getPreload<IGameDataProvider>();
+const { getInitialPak, getGameFolder } = getPreload<SetupPreload>()
 
-interface IGameDataProvider {
-    getInitial(): IFolder;
-    getGameFolder(): IFolder;
+interface Props {
+    onChange(path: string): void
 }
 
-interface IProps {
-    onChange(path: string): void;
+function getPak(callback: Props['onChange']) {
+    const data = getInitialPak()
+    if (!data) return
+
+    data.folder = data.initial
+
+    callback(data.initial)
 }
 
-export default memo((props: IProps) => {
-    const { onChange } = props;
+function getFolder(callback: Props['onChange']) {
+    const data = getGameFolder()
+    if (!data) return
 
-    return (
-        <div className="game-folder">
+    callback(data.initial)
+}
+
+export const GameFolder = afcMemo<Props>(props => {
+    function onFolderClick() {
+        getFolder(props.onChange)
+    }
+
+    function onPakClick() {
+        getPak(props.onChange)
+    }
+
+    return () => (
+        <div className='game-folder'>
             <Button
-                className="folder-button"
-                type="primary"
+                className='folder-button'
+                type='primary'
                 icon={<FolderFilled />}
-                size="large"
-                onClick={() => getFolder(onChange)}
+                size='large'
+                onClick={onFolderClick}
             >
                 {GAME_FOLDER_LABEL}
             </Button>
             <Button
-                type="primary"
+                type='primary'
                 icon={<FileFilled />}
-                size="large"
-                onClick={() => getPak(onChange)}
+                size='large'
+                onClick={onPakClick}
             >
                 initial.pak
             </Button>
         </div>
-    );
-});
-
-function getPak(onChange: IProps["onChange"]) {
-    const data = preload.getInitial();
-    if (!data) return;
-
-    data.folder = data.initial;
-
-    onChange(data.initial);
-}
-
-function getFolder(onChange: IProps["onChange"]) {
-    const data = preload.getGameFolder();
-    if (!data) return;
-
-    onChange(data.initial);
-}
+    )
+})

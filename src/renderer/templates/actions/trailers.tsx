@@ -1,208 +1,167 @@
-import { Button, Typography } from "@mui/material";
-import type { CheerioAPI } from "cheerio";
-import ButtonBox from "pages/main/editor/styled/ButtonBox";
-import Container from "pages/main/editor/styled/CranesContainer";
-import { callback } from "scripts/helpers";
-import localize from "scripts/localize";
-import type IActionData from "types/IActionData";
-import type IActionProps from "types/IActionProps";
-import type IIEAllow from "types/IIEAllow";
+import {Button, Typography} from 'antd'
+import type {CheerioAPI} from 'cheerio'
+import {afcMemo, createState} from 'react-afc'
+import {localize} from 'scripts/localize'
+import type {ActionProps} from 'types'
 
-import Action from "./Action";
-import texts from "./texts";
+import {createAction} from './createAction'
+import {actionTexts} from './texts'
+
+const { Text } = Typography
 
 const {
     SCOUT_TRAILERS,
     TRUCK_TRAILERS,
     ADD,
     REMOVE
-} = texts;
+} = actionTexts
 
 enum Trailer {
-    scout = "ScautTrailer",
-    truck = "Trailer"
+    scout = 'ScautTrailer',
+    truck = 'Trailer'
 }
 
-interface IExportData {
-    hasScoutTrailer: boolean;
-    hasTruckTrailer: boolean;
+interface ExportData {
+    hasScoutTrailer: boolean
+    hasTruckTrailer: boolean
 }
 
-interface IState {
-    hasScoutTrailer: boolean;
-    hasTruckTrailer: boolean;
-}
-
-export const data: IActionData = {
+export const Trailers = createAction({
     name: localize({
-        RU: "Прицепы",
-        EN: "Trailers",
-        DE: "Anhänger",
-        CH: "拖车"
+        RU: 'Прицепы',
+        EN: 'Trailers',
+        DE: 'Anhänger',
+        CH: '拖车'
     }),
-    id: "trailers",
+    id: 'trailers',
     minHeight: 100,
-    imgSRC: require("images/icons/editor/trailer.png"),
-    isActive(dom) { return Trailers.hasTrailers(dom).includes(true); }
-};
-
-class Trailers extends Action<IState> implements IIEAllow<IExportData> {
-    constructor(props: IActionProps) {
-        super(props, data, Trailers);
-        this.state = {
-            hasScoutTrailer: false,
-            hasTruckTrailer: false
-        };
-    }
-
-    public export(): IExportData {
-        const [hasScoutTrailer, hasTruckTrailer] = Trailers.hasTrailers(this.props.dom);
-        return { hasScoutTrailer, hasTruckTrailer };
-    }
-
-    public import(data: IExportData) {
-        const [hasScoutTrailer, hasTruckTrailer] = Trailers.hasTrailers(this.props.dom);
+    imgSRC: require('images/icons/trailer.png'),
+    isActive: dom => hasTrailers(dom).includes(true),
+    export: (dom): ExportData => {
+        const [hasScoutTrailer, hasTruckTrailer] = hasTrailers(dom)
+        return { hasScoutTrailer, hasTruckTrailer }
+    },
+    import: (dom, data: ExportData) => {
+        const [hasScoutTrailer, hasTruckTrailer] = hasTrailers(dom)
 
         if (data.hasScoutTrailer && !hasScoutTrailer)
-            this.addTrailer(Trailer.scout, Trailer.truck);
+            addTrailer(Trailer.scout, Trailer.truck, dom)
 
         if (data.hasTruckTrailer && !hasTruckTrailer)
-            this.addTrailer(Trailer.truck, Trailer.scout);
+            addTrailer(Trailer.truck, Trailer.scout, dom)
     }
+}, afcMemo<ActionProps>(props => {
+    const [state, setState] = createState({
+        hasScout: hasTrailers(props.dom)[0],
+        hasTruck: hasTrailers(props.dom)[1]
+    })
 
-    public componentDidMount() {
-        const [hasScoutTrailer, hasTruckTrailer] = Trailers.hasTrailers(this.props.dom);
-        this.setState({ hasScoutTrailer, hasTruckTrailer });
-    }
+    const addScout = () => addTrailer(Trailer.scout, Trailer.truck, props.dom, hasScout => setState({ hasScout }))
+    const addTruck = () => addTrailer(Trailer.truck, Trailer.scout, props.dom, hasTruck => setState({ hasTruck }))
 
-    public render() {
-        const { hasScoutTrailer, hasTruckTrailer } = this.state;
+    const removeScout = () => removeTrailer(Trailer.scout, props.dom, hasScout => setState({ hasScout }))
+    const removeTruck = () => removeTrailer(Trailer.truck, props.dom, hasTruck => setState({ hasTruck }))
+
+    return () => {
+        const { hasScout, hasTruck } = state
 
         return (
-            <Container>
-                <ButtonBox>
-                    <Typography variant="body1">{SCOUT_TRAILERS}</Typography>
-                    {!hasScoutTrailer
-                        ? (
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                disabled={!(hasTruckTrailer && !hasScoutTrailer)}
-                                onClick={this.addScoutTrailers}
-                            >
-                                {ADD}
-                            </Button>
-                        )
-                        : (
-                            <Button
-                                variant="contained"
-                                color="error"
-                                disabled={!(hasScoutTrailer && hasTruckTrailer)}
-                                onClick={this.removeScoutTrailers}
-                            >
-                                {REMOVE}
-                            </Button>
-                        )}
-                </ButtonBox>
-                <ButtonBox>
-                    <Typography variant="body1">{TRUCK_TRAILERS}</Typography>
-                    {!hasTruckTrailer
-                        ? (
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                disabled={!(hasScoutTrailer && !hasTruckTrailer)}
-                                onClick={this.addTruckTrailers}
-                            >
-                                {ADD}
-                            </Button>
-                        )
-                        : (
-                            <Button
-                                variant="contained"
-                                color="error"
-                                disabled={!(hasScoutTrailer && hasTruckTrailer)}
-                                onClick={this.removeTruckTrailers}
-                            >
-                                {REMOVE}
-                            </Button>
-                        )}
-                </ButtonBox>
-            </Container>
-        );
+            <div className='grid trailers-grid'>
+                <div className='trailers-buttons'>
+                    <Text>{SCOUT_TRAILERS}</Text><br/>
+                    {!hasScout
+                        ? <Button
+                            disabled={!(hasTruck && !hasScout)}
+                            onClick={addScout}
+                            type='primary'
+                        >
+                            {ADD}
+                        </Button>
+                        : <Button
+                            disabled={!(hasScout && hasTruck)}
+                            onClick={removeScout}
+                            type='primary'
+                            danger
+                        >
+                            {REMOVE}
+                        </Button>
+                    }
+                </div>
+                <div className='trailers-buttons'>
+                    <Text>{TRUCK_TRAILERS}</Text><br/>
+                    {!hasTruck
+                        ? <Button
+                            disabled={!(hasScout && !hasTruck)}
+                            onClick={addTruck}
+                            type='primary'
+                        >
+                            {ADD}
+                        </Button>
+                        : <Button
+                            disabled={!(hasScout && hasTruck)}
+                            onClick={removeTruck}
+                            type='primary'
+                            danger
+                        >
+                            {REMOVE}
+                        </Button>
+                    }
+                </div>
+            </div>
+        )
     }
+}))
 
-    private addTruckTrailers = () => this.addTrailer(Trailer.truck, Trailer.scout);
-    private addScoutTrailers = () => this.addTrailer(Trailer.scout, Trailer.truck);
+function addTrailer(trailer: Trailer, to: Trailer, dom: CheerioAPI, stateSetter?: (val: boolean) => void) {
+    const mainSocket = dom(`Socket[Names~="${to}"]`).length ? dom(`Socket[Names~="${to}"]`) : dom(`Socket[Names~="${to},"]`)
+    const mainNames = mainSocket.attr('Names').split(',').map(value => value.trim())
 
-    private removeTruckTrailers = () => this.removeTrailer(Trailer.truck);
-    private removeScoutTrailers = () => this.removeTrailer(Trailer.scout);
+    mainNames.push(trailer)
+    mainSocket.attr('Names', mainNames.join(', '))
 
-    @callback
-    private addTrailer(trailer: Trailer, to: Trailer) {
-        const { dom } = this.props;
-        const mainSocket = dom(`Socket[Names~="${to}"]`).length ? dom(`Socket[Names~="${to}"]`) : dom(`Socket[Names~="${to},"]`);
-        const mainNames = mainSocket.attr("Names").split(",").map(value => value.trim());
+    dom(`Socket[NamesBlock~="${to}"], Socket[NamesBlock~="${to},"]`).map((_, el) => {
+        const namesBlock = dom(el).attr('NamesBlock').split(',').map(value => value.trim())
+        namesBlock.push(trailer)
+        dom(el).attr('NamesBlock', namesBlock.join(', '))
+    })
+    dom(`AddonsShift[Types~="${to}"], AddonsShift[Types~="${to},"]`).map((_, el) => {
+        const newShift = el.cloneNode(true)
+        let types = dom(newShift).attr('Types').split(',').map(value => value.trim())
 
-        mainNames.push(trailer);
-        mainSocket.attr("Names", mainNames.join(", "));
+        types = types.filter(value => value !== to)
+        types.push(trailer)
+        dom(newShift).attr('Types', types.join(', '))
+        dom(el).after(newShift)
+    })
 
-        dom(`Socket[NamesBlock~="${to}"], Socket[NamesBlock~="${to},"]`).map((_, el) => {
-            const namesBlock = dom(el).attr("NamesBlock").split(",").map(value => value.trim());
-            namesBlock.push(trailer);
-            dom(el).attr("NamesBlock", namesBlock.join(", "));
-        });
-        dom(`AddonsShift[Types~="${to}"], AddonsShift[Types~="${to},"]`).map((_, el) => {
-            const newShift = el.cloneNode(true);
-            let types = dom(newShift).attr("Types").split(",").map(value => value.trim());
-
-            types = types.filter(value => value !== to);
-            types.push(trailer);
-            dom(newShift).attr("Types", types.join(", "));
-            dom(el).after(newShift);
-        });
-
-        if (trailer === Trailer.scout)
-            this.setState({ hasScoutTrailer: true });
-
-        else if (trailer === Trailer.truck)
-            this.setState({ hasTruckTrailer: true });
-    }
-
-    @callback
-    private removeTrailer(trailer: Trailer) {
-        const { dom } = this.props;
-        const mainSocket = dom(`Socket[Names~="${trailer}"]`).length ? dom(`Socket[Names~="${trailer}"]`) : dom(`Socket[Names~="${trailer},"]`);
-        let mainNames = mainSocket.attr("Names").split(",").map(value => value.trim());
-
-        mainNames = mainNames.filter(value => value !== trailer);
-        mainSocket.attr("Names", mainNames.join(", "));
-
-        dom(`Socket[NamesBlock~="${trailer}"], Socket[NamesBlock~="${trailer},"]`).map((_, el) => {
-            let namesBlock = dom(el).attr("NamesBlock").split(",").map(value => value.trim());
-            namesBlock = namesBlock.filter(value => value !== trailer);
-            dom(el).attr("NamesBlock", namesBlock.join(", "));
-        });
-        dom(`AddonsShift[Types~="${trailer}"], AddonsShift[Types~="${trailer},"]`).map((_, el) => {
-            dom(el).remove();
-        });
-
-        if (trailer === Trailer.scout)
-            this.setState({ hasScoutTrailer: false });
-
-        else if (trailer === Trailer.truck)
-            this.setState({ hasTruckTrailer: false });
-    }
-
-    /**
-     * @returns [scout, main]
-     */
-    public static hasTrailers(dom: CheerioAPI): [boolean, boolean] {
-        return [
-            !!dom("Socket[Names~=\"ScautTrailer\"], Socket[Names~=\"ScautTrailer,\"]").length,
-            !!dom("Socket[Names~=\"Trailer\"], Socket[Names~=\"Trailer,\"]").length
-        ];
-    }
+    stateSetter(true)
 }
 
-export default Trailers;
+function removeTrailer(trailer: Trailer, dom: CheerioAPI, stateSetter?: (val: boolean) => void) {
+    const mainSocket = dom(`Socket[Names~="${trailer}"]`).length ? dom(`Socket[Names~="${trailer}"]`) : dom(`Socket[Names~="${trailer},"]`)
+    let mainNames = mainSocket.attr('Names').split(',').map(value => value.trim())
+
+    mainNames = mainNames.filter(value => value !== trailer)
+    mainSocket.attr('Names', mainNames.join(', '))
+
+    dom(`Socket[NamesBlock~="${trailer}"], Socket[NamesBlock~="${trailer},"]`).map((_, el) => {
+        let namesBlock = dom(el).attr('NamesBlock').split(',').map(value => value.trim())
+        namesBlock = namesBlock.filter(value => value !== trailer)
+        dom(el).attr('NamesBlock', namesBlock.join(', '))
+    })
+    dom(`AddonsShift[Types~="${trailer}"], AddonsShift[Types~="${trailer},"]`).map((_, el) => {
+        dom(el).remove()
+    })
+
+    stateSetter(false)
+}
+
+/**
+ * @returns [scout, main]
+ */
+function hasTrailers(dom: CheerioAPI): [boolean, boolean] {
+    return [
+        !!dom('Socket[Names~="ScautTrailer"], Socket[Names~="ScautTrailer,"]').length,
+        !!dom('Socket[Names~="Trailer"], Socket[Names~="Trailer,"]').length
+    ]
+}

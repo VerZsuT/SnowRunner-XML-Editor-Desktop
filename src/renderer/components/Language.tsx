@@ -1,58 +1,58 @@
-import { memo } from "react";
+import {memo} from 'react'
 
-import { Select, Radio, RadioChangeEvent } from "antd";
-import Lang from "enums/Lang";
-import globalTexts from "globalTexts/renderer";
-import config from "scripts/config";
-import main from "scripts/main";
+import type {RadioChangeEvent} from 'antd'
+import {Radio, Select} from 'antd'
+import {Lang} from 'enums'
+import {globalTexts} from 'globalTexts/renderer'
+import {config} from 'scripts/config'
+import {main} from 'scripts/main'
 
-const { relaunchApp: reload } = main;
-const { LANGUAGE_LABEL } = globalTexts;
+const { relaunchApp } = main
+const { LANGUAGE_LABEL } = globalTexts
 
-interface IProps {
+interface Props {
     isSetup?: boolean;
 }
 
 const langOptions = Object.keys(Lang).map(lang => ({
     label: lang,
     value: lang
-}));
+}))
+
+
+function onChangeRadio(event: RadioChangeEvent) {
+    config.lang = event.target.value
+    relaunchApp()
+}
+
+function changeLang(value: Lang) {
+    config.lang = value
+    relaunchApp()
+}
 
 /** Выбор язка программы */
-export default memo((props: IProps) => (
+export const Language = memo((props: Props) => (
     <div>
         {props.isSetup 
-            ? (
-                <Radio.Group
-                    defaultValue={config.lang}
-                    onChange={onChangeRadio}
-                    optionType="button"
-                    buttonStyle="solid"
-                    options={langOptions}
-                />
-            )
+            ? <Radio.Group
+                defaultValue={config.lang}
+                onChange={onChangeRadio}
+                optionType='button'
+                buttonStyle='solid'
+                options={langOptions}
+            />
             : <>
-                <label htmlFor="lang-select" className="lang-label">
+                <label htmlFor='lang-select' className='lang-label'>
                     {LANGUAGE_LABEL}
                 </label>
                 <Select
-                    id="lang-select"
+                    id='lang-select'
                     onChange={changeLang}
                     value={config.lang}
-                    size="large"
+                    size='large'
                     options={langOptions}
                 />
             </>
         }
     </div>
-));
-
-function onChangeRadio(event: RadioChangeEvent) {
-    config.lang = event.target.value;
-    reload();
-}
-
-function changeLang(value: Lang) {
-    config.lang = value;
-    reload();
-}
+))

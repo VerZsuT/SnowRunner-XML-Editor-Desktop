@@ -1,60 +1,69 @@
-import NameType from "enums/NameType";
-import ParamType from "enums/ParamType";
-import { ONLY_FOR_SELECTOR } from "src/consts";
-import { getGameText } from "templates/service";
-import type GroupGetter from "types/GroupGetter";
-import type GroupTypedProps from "types/GroupTypedProps";
-import type IGroupParams from "types/IGroupParams";
-import type IItemGetterProps from "types/IItemGetterProps";
-import type ITemplateParams from "types/ITemplateParams";
-import type TemplateItems from "types/TemplateItems";
+import {ONLY_FOR_SELECTOR} from 'consts'
+import {NameType, ParamType} from 'enums'
+import {getGameText} from 'templates/service'
+import type {GroupGetter, GroupParams, GroupTypedProps, ItemGetterProps, TemplateItems, TemplateParams} from 'types'
 
-import { getSelectorID } from "./helpers";
+import {getSelectorID} from './helpers'
 
 /**
  * Объединение параметров в раскрывающуюся группу.
  * @param props имя или параметры группы.
  * @param children
  */
-export default (props: string | GroupTypedProps, children: TemplateItems[]): GroupGetter => {
-    if (typeof props === "string")
-        return Group({ label: props }, children);
+export function Group(props: string | GroupTypedProps, children: TemplateItems[]): GroupGetter {
+    if (typeof props === 'string')
+        return _Group({ label: props }, children)
     else
-        return Group(props, children);
-};
+        return _Group(props, children)
+}
 
-function Group(props: GroupTypedProps, children: TemplateItems[]): GroupGetter {
+function _Group(props: GroupTypedProps, children: TemplateItems[]): GroupGetter {
     const {
         label = ONLY_FOR_SELECTOR,
         iconName: iconPath,
-        providedSelector,
+        provided: providedSelector,
         addCounter: withCounter = false
-    } = props;
+    } = props
+    const providedSelectorID = getSelectorID(providedSelector)
 
-    const providedSelectorID = getSelectorID(providedSelector);
+    return (props: ItemGetterProps): [GroupParams] | any[] => {
+        const { formattedSelectors, fileDOM, tNumber, cycleNumber } = props
+        let params: TemplateParams = []
+        let groupLabel: string
+        let resGroupLabel: string
 
-    return (props: IItemGetterProps): [IGroupParams] | any[] => {
-        const { formattedSelectors, fileDOM, tNumber, cycleNumber } = props;
-
-        let params: ITemplateParams = [];
-        let groupLabel: string;
-
-        if (typeof label === "string") {
-            groupLabel = label;
+        if (typeof label === 'string') {
+            groupLabel = label
         }
         else {
-            const labelSelectorID = getSelectorID(label.selector);
-            const labelExtraSelectorID = getSelectorID(label.extraSelector);
-            const $nameElement = fileDOM(formattedSelectors[labelSelectorID]);
-            const $resNameElement = fileDOM(formattedSelectors[labelExtraSelectorID]);
+            let labelSelectorID: string
+            let labelExtraSelectorID: string
+            if (Array.isArray(label.selector)) {
+                labelSelectorID = getSelectorID(label.selector[0])
+                labelExtraSelectorID = getSelectorID(label.selector[1])
+            }
+            else {
+                labelSelectorID = getSelectorID(label.selector)
+            }
+
+            const $nameElement = fileDOM(formattedSelectors[labelSelectorID])
+            const $resNameElement = fileDOM(formattedSelectors[labelExtraSelectorID])
 
             if ($nameElement.length === 0 && $resNameElement.length === 0)
-                return [];
+                return []
 
-            if (label.type === NameType.computed)
-                groupLabel = getGameText($nameElement.attr(label.attribute)) || $resNameElement.attr(label.extraAttribute);
-            else if (label.type === NameType.tagName)
-                groupLabel = $nameElement.html().split("<")[1].split(" ")[0];
+            if (label.type === NameType.computed) {
+                if (Array.isArray(label.attribute)) {
+                    resGroupLabel = $resNameElement.attr(label.attribute[1])
+                    groupLabel = getGameText($nameElement.attr(label.attribute[0])) || $nameElement.attr(label.attribute[0])
+                }
+                else {
+                    groupLabel = getGameText($nameElement.attr(label.attribute))
+                }
+            }
+            else if (label.type === NameType.tagName) {
+                groupLabel = $nameElement.html().split('<')[1].split(' ')[0]
+            }
         }
 
         children.forEach(childGetter => {
@@ -63,23 +72,24 @@ function Group(props: GroupTypedProps, children: TemplateItems[]): GroupGetter {
                 formattedSelectors,
                 tNumber,
                 fileDOM
-            }));
-        });
+            }))
+        })
 
         if (withCounter)
-            groupLabel += ` ${cycleNumber}`;
+            groupLabel += ` ${cycleNumber}`
 
         if (label === ONLY_FOR_SELECTOR)
-            return params;
+            return params
 
         if (!params.length)
-            return [];
+            return []
 
-        return [{
+        return [<GroupParams>{
             paramType: ParamType.group,
             groupItems: params,
             groupName: groupLabel,
+            resGroupName: resGroupLabel,
             iconName: iconPath
-        }];
-    };
+        }]
+    }
 }

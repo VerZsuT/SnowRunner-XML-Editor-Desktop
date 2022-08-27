@@ -1,369 +1,335 @@
-import type { ChangeEvent } from "react";
+import type {ChangeEvent, FocusEvent} from 'react'
 
-import { Button, MenuItem, Select, SelectChangeEvent, styled } from "@mui/material";
-import type { Cheerio, CheerioAPI, Node } from "cheerio";
-import { load } from "cheerio";
-import Container from "components/styled/Container";
-import MyGrid from "components/styled/Grid";
-import memoizee from "memoizee";
-import TextField from "pages/main/editor/styled/AddonTextField";
-import InputLabel from "pages/main/editor/styled/InputLabel";
-import { callback, getGameText } from "scripts/helpers";
-import localize from "scripts/localize";
-import main from "scripts/main";
-import type IActionData from "types/IActionData";
-import type IActionProps from "types/IActionProps";
-import type IFindItem from "types/IFindItem";
+import {Button, Input, message, Select, Spin, Typography} from 'antd'
+import type {DefaultOptionType} from 'antd/lib/select'
+import type {AnyNode, Cheerio, CheerioAPI} from 'cheerio'
+import {load} from 'cheerio'
+import {afcMemo, afterDraw, createState} from 'react-afc'
+import {getGameText} from 'scripts/helpers'
+import {localize} from 'scripts/localize'
+import {main} from 'scripts/main'
+import type {ActionProps, FindItem} from 'types'
 
-import Action from "./Action";
-import texts from "./texts";
+import {createAction} from './createAction'
+import {actionTexts} from './texts'
+
+const { Text } = Typography
 
 const {
     readFileSync, join, writeFileSync, existsSync,
     basename, readdirSync, isDirectory
-} = window.service;
-const { paths, findInDir } = main;
+} = window.service
+const { paths, findInDir } = main
 const {
     ADDON_NAME,
     ADDON_WHEELS,
     ADDON_FUEL,
     ADDON_REPAIRS,
-    ADDON_CHANGE_BUTTON
-} = texts;
+    ADDON_CHANGE_BUTTON,
+    CHANGED
+} = actionTexts
 
-const ContentGrid = styled(MyGrid)({
-    flexDirection: "column",
-    flexWrap: "wrap",
-    alignItems: "center"
-});
-
-interface IState {
-    items: IFindItem[];
-    selectedAddon: string;
-    wheels: string;
-    repairs: string;
-    fuel: string;
+interface ContentFieldProps {
+    text: string
+    value: string
+    onChange(value: string): void
 }
 
-export const data: IActionData = {
+const ContentField = afcMemo<ContentFieldProps>(props => {
+    function onChangeValue(e: ChangeEvent<HTMLInputElement>) {
+        props.onChange(e.target.value)
+    }
+    
+    return () => (
+        <div className='grid ac-content'>
+            <Text>
+                {props.text}
+            </Text>
+            <Input
+                type='number'
+                onChange={onChangeValue}
+                value={props.value}
+            />
+        </div>
+    )
+})
+
+export const AddonsContent = createAction({
     name: localize({
-        RU: "Содержимое аддонов",
-        EN: "Addons content",
-        DE: "Addon-Inhalt",
-        CH: "附加组件的内容"
+        RU: 'Содержимое аддонов',
+        EN: 'Addons content',
+        DE: 'Addon-Inhalt',
+        CH: '附加组件的内容'
     }),
-    id: "addons-content",
+    id: 'addons-content',
     minHeight: 200,
     minWidth: 350,
-    imgSRC: require("images/icons/editor/wrench.png"),
-    isActive: () => true
-};
-
-class AddonsContent extends Action<IState> {
-    private options: JSX.Element[] = [];
-
-    private styles = {
-        content: {
-            justifyContent: "space-around"
-        },
-        mainCont: {
-            marginBottom: "10px"
-        },
-        input: {
-            width: "80px"
-        }
-    };
-
-    constructor(props: IActionProps) {
-        super(props, data, AddonsContent);
-
-        this.state = {
-            items: null,
-            selectedAddon: "",
-            wheels: "",
-            repairs: "",
-            fuel: ""
-        };
+    imgSRC: require('images/icons/wrench.png'),
+    isActive() {
+        return true
     }
+}, afcMemo((props: ActionProps) => {
+    let options: DefaultOptionType[] = []
+    const [state, setState] = createState({
+        items: null as FindItem[],
+        selectedAddon: '',
+        filter: '',
+        wheels: '',
+        repairs: '',
+        fuel: ''
+    })
 
-    public componentDidMount() {
-        setTimeout(() => {
-            if (this.state.items === null) {
-                const { filePath, currentMod } = this.props.runProps;
-                
-                const items = this.getAddons(basename(filePath, ".xml"), currentMod, this.isInstalled);
-                const data = this.getAddonData(items[0].path);
+    afterDraw(() => {
+        const { filePath, currentMod } = props
 
-                this.options = this.getOptions(items);
-                this.setState({
+        if (!state.items) {
+            setTimeout(() => {
+                const items = getAddons(basename(filePath, '.xml'), currentMod, isInstalled)
+                const data = getAddonData(items[0].path)
+
+                options = initOptions(items)
+                setState({
                     items,
                     selectedAddon: items[0].name,
                     wheels: data.wheels,
                     repairs: data.repairs,
                     fuel: data.fuel
-                });
-            }
-        }, 500);
+                })
+            }, 500)
+        }
+    })
+
+    const onChangeWheels = (wheels: string) => setState({ wheels })
+    const onChangeRepairs = (repairs: string) => setState({ repairs })
+    const onChangeFuel = (fuel: string) => setState({ fuel })
+    const onBlurFilter = (e: FocusEvent<HTMLInputElement>) => {
+        const filter = e.target.value
+        const includesFilter = (item: FindItem) => getAddonName(item).toLowerCase().includes(filter.toLowerCase())
+        options = initOptions(state.items.filter(includesFilter))
+        setState({ filter })
+    }
+    
+    return () => {
+        const { selectedAddon, wheels, repairs, fuel, items } = state
+
+        if (!items)
+            return <Spin className='mods-spin' />
+
+        return <>
+            <div className='ac-main'>
+                <Text>
+                    {ADDON_NAME}
+                </Text><br/>
+                <Input
+                    type='text'
+                    onBlur={onBlurFilter}
+                    className='ac-content'
+                /><br/><br/>
+                <Select
+                    value={selectedAddon}
+                    onChange={selectAddon}
+                    options={options}
+                />
+            </div>
+            <div className='grid ac-grid'>
+                <ContentField text={ADDON_WHEELS} value={wheels} onChange={onChangeWheels} />
+                <ContentField text={ADDON_REPAIRS} value={repairs} onChange={onChangeRepairs} />
+                <ContentField text={ADDON_FUEL} value={fuel} onChange={onChangeFuel} />
+            </div>
+
+            <Button
+                className='ac-save'
+                onClick={saveChanges}
+                type='primary'
+            >
+                {ADDON_CHANGE_BUTTON}
+            </Button>
+        </>
     }
 
-    public render() {
-        const { selectedAddon } = this.state;
-
-        return (
-            <>
-                <Container style={this.styles.mainCont}>
-                    <InputLabel id="addon-name-label">
-                        {ADDON_NAME}
-                    </InputLabel>
-                    <Select
-                        labelId="addon-name-label"
-                        value={selectedAddon}
-                        onChange={this.selectAddon}
-                        size="small"
-                    >
-                        {this.options}
-                    </Select>
-                </Container>
-                <MyGrid style={this.styles.content}>
-                    <this.ContentField text={ADDON_WHEELS} name="wheels" />
-                    <this.ContentField text={ADDON_REPAIRS} name="repairs" />
-                    <this.ContentField text={ADDON_FUEL} name="fuel" />
-                </MyGrid>
-
-                <Button
-                    onClick={this.saveChanges}
-                    variant="contained"
-                    color="success"
-                >
-                    {ADDON_CHANGE_BUTTON}
-                </Button>
-            </>
-        );
-    }
-
-    @callback
-    private selectAddon(e: SelectChangeEvent) {
-        const name = e.target.value;
-        const data = this.getAddonData(this.getItem(name).path);
-
-        this.setState({
+    function selectAddon(name: string) {
+        const data = getAddonData(getItem(name).path)
+        setState({
             selectedAddon: name,
             wheels: data.wheels,
-            fuel: data.fuel,
-            repairs: data.repairs
-        });
+            repairs: data.repairs,
+            fuel: data.fuel
+        })
     }
 
-    @callback
-    private isInstalled(dom: CheerioAPI) {
-        const installSocket = dom("InstallSocket");
+    function isInstalled(dom: CheerioAPI) {
+        const installSocket = dom('InstallSocket')
 
         if (!installSocket.length)  
-            return false;
+            return false
 
-        const type = installSocket.attr("Type");
-        const el = this.props.dom(`Socket[Names*="${type}"]`);
+        const type = installSocket.attr('Type')
+        const el = props.dom(`Socket[Names*="${type}"]`)
 
-        return !!el.length;
+        return el.length > 0
     }
 
-    @callback
-    private ContentField(props: {text: string; name: keyof IState}) {
-        return (
-            <ContentGrid>
-                <InputLabel id="addon-fuel-label">
-                    {props.text}
-                </InputLabel>
-                <TextField
-                    type="number"
-                    value={this.state[props.name]}
-                    onChange={this.onChange(props.name)}
-                    size="small"
-                    style={this.styles.input}
-                />
-            </ContentGrid>
-        );
-    }
-
-    private onChange = memoizee(
-        (name: keyof IState) => (event: ChangeEvent<HTMLInputElement>) => {
-            this.setState({
-                [name]: event.target.value
-            } as unknown as IState);
-        }
-    );
-
-    @callback
-    private saveChanges() {
-        const {
-            selectedAddon, fuel, wheels, repairs
-        } = this.state;
-        const pathToAddon = this.getItem(selectedAddon).path;
-        const DOM = this.getDOM(pathToAddon);
-        let TruckData = DOM("TruckAddon TruckData");
+    function saveChanges() {
+        const { selectedAddon, fuel, wheels, repairs } = state
+        const pathToAddon = getItem(selectedAddon).path
+        const DOM = getDOM(pathToAddon)
+        let TruckData = DOM('TruckAddon TruckData')
 
         if (!TruckData.length) {
-            DOM("TruckAddon").eq(0).append("<TruckData></TruckData>");
-            TruckData = DOM("TruckAddon TruckData").eq(0);
+            DOM('TruckAddon').eq(0).append('<TruckData></TruckData>')
+            TruckData = DOM('TruckAddon TruckData').eq(0)
         }
 
-        if (fuel && fuel !== "0")
-            TruckData.attr("FuelCapacity", fuel);
-        else if (TruckData.attr("FuelCapacity"))
-            TruckData.removeAttr("FuelCapacity");
+        if (fuel && fuel !== '0')
+            TruckData.attr('FuelCapacity', fuel)
+        else if (TruckData.attr('FuelCapacity'))
+            TruckData.removeAttr('FuelCapacity')
 
-        if (wheels && wheels !== "0")
-            TruckData.attr("WheelRepairsCapacity", wheels);
-        else if (TruckData.attr("WheelRepairsCapacity"))
-            TruckData.removeAttr("WheelRepairsCapacity");
+        if (wheels && wheels !== '0')
+            TruckData.attr('WheelRepairsCapacity', wheels)
+        else if (TruckData.attr('WheelRepairsCapacity'))
+            TruckData.removeAttr('WheelRepairsCapacity')
 
-        if (repairs && repairs !== "0")
-            TruckData.attr("RepairsCapacity", repairs);
-        else if (TruckData.attr("RepairsCapacity"))
-            TruckData.removeAttr("RepairsCapacity");
+        if (repairs && repairs !== '0')
+            TruckData.attr('RepairsCapacity', repairs)
+        else if (TruckData.attr('RepairsCapacity'))
+            TruckData.removeAttr('RepairsCapacity')
 
-        if ((!fuel || fuel === "0") && (!wheels || wheels === "0") && (!repairs || repairs === "0") && TruckData.attr())
-            TruckData.remove();
+        if ((!fuel || fuel === '0') && (!wheels || wheels === '0') && (!repairs || repairs === '0') && TruckData.attr())
+            TruckData.remove()
 
-        writeFileSync(pathToAddon, DOM.html());
+        writeFileSync(pathToAddon, DOM.html())
+        message.success(CHANGED)
     }
 
-    private getOptions(items: IFindItem[]) {
+    function initOptions(items: FindItem[]): DefaultOptionType[] {
         if (!items)
-            return [];
+            return []
 
-        return items.map(addon => {
-            const name = this.getAddonName(addon);
-            return (
-                <MenuItem key={addon.name} value={addon.name}>
-                    {name}
-                </MenuItem>
-            );
-        });
+        return items.map(addon => ({
+            value: addon.name,
+            label: getAddonName(addon)
+        }))
     }
 
-    private getAddonName(addon: IFindItem) {
-        const { currentMod } = this.props.runProps;
-        const dom = this.getDOM(addon.path);
-        const uiDesc = dom("UiDesc");
-        const key = uiDesc.length ? uiDesc.attr("UiName") : null;
+    function getAddonName(addon: FindItem) {
+        const dom = getDOM(addon.path)
+        const uiDesc = dom('UiDesc')
+        const key = uiDesc.length ? uiDesc.attr('UiName') : null
 
-        return getGameText(key, currentMod) || addon.name;
+        return getGameText(key, props.currentMod) || addon.name
     }
 
-    private getItem(name?: string) {
-        const { selectedAddon, items } = this.state;
-        const itemName = name ?? selectedAddon;
-
-        return items.filter(item => item.name === itemName)[0];
+    function getItem(name?: string) {
+        const { items, selectedAddon } = state
+        const itemName = name ?? selectedAddon
+        return items.filter(item => item.name === itemName)[0]
     }
 
-    private getAddonData(path?: string) {
-        const DOM = this.getDOM(path);
-        let TruckData: Cheerio<Node>;
+    function getAddonData(path?: string) {
+        const DOM = getDOM(path)
+        let TruckData: Cheerio<AnyNode>
 
         if (!DOM) {
             return {
-                wheels: "",
-                repairs: "",
-                fuel: ""
-            }; 
+                wheels: '',
+                repairs: '',
+                fuel: ''
+            } 
         }
 
-        TruckData = DOM("TruckAddon TruckData");
+        TruckData = DOM('TruckAddon TruckData')
         if (!TruckData.length) {
-            DOM("TruckAddon").eq(0).append("<TruckData></TruckData>");
-            TruckData = DOM("TruckAddon TruckData").eq(0);
+            DOM('TruckAddon').eq(0).append('<TruckData></TruckData>')
+            TruckData = DOM('TruckAddon TruckData').eq(0)
         }
 
-        const wheels = TruckData.attr("WheelRepairsCapacity") ?? "0";
-        const repairs = TruckData.attr("RepairsCapacity") ?? "0";
-        const fuel = TruckData.attr("FuelCapacity") ?? "0";
+        const wheels = TruckData.attr('WheelRepairsCapacity') ?? '0'
+        const repairs = TruckData.attr('RepairsCapacity') ?? '0'
+        const fuel = TruckData.attr('FuelCapacity') ?? '0'
 
         return {
             wheels,
             repairs,
             fuel
-        };
+        }
     }
 
-    private getDOM(path?: string) {
-        const filePath = path ?? this.getItem().path;
+    function getDOM(path?: string) {
+        const filePath = path ?? getItem().path
 
         if (!existsSync(filePath))  
-            return;
+            return
         
-        return load(readFileSync(filePath), { xmlMode: true });
+        return load(readFileSync(filePath), { xmlMode: true })
     }
 
-    private getAddons(truckName: string, modId?: string, filter?: (fileDOM: CheerioAPI) => boolean) {
-        const allAddons: IFindItem[] = [];
-        const out: IFindItem[] = [];
-        const pathToTuning = join(paths.classes, `trucks/${truckName}_tuning`);
+    function getAddons(truckName: string, modId?: string, filter?: (fileDOM: CheerioAPI) => boolean) {
+        const allAddons: FindItem[] = []
+        const out: FindItem[] = []
+        const pathToTuning = join(paths.classes, `trucks/${truckName}_tuning`)
 
         if (existsSync(pathToTuning)) {
             allAddons.push(...readdirSync(pathToTuning).map(item => {
                 if (isDirectory(join(pathToTuning, item)))
-                    return null;
+                    return null
 
                 return {
                     name: item,
                     path: join(pathToTuning, item)
-                };
-            })); 
+                }
+            })) 
         }
 
-        const pathToBasic = join(paths.classes, "trucks/addons");
+        const pathToBasic = join(paths.classes, 'trucks/addons')
         if (existsSync(pathToBasic)) {
             allAddons.push(...readdirSync(pathToBasic).map(name => ({
                 name,
                 path: join(pathToBasic, name)
-            }))); 
+            }))) 
         }
 
-        for (const dlcFolder of readdirSync(paths.dlc)) {
-            const pathToDLCTrucks = join(paths.dlc, dlcFolder, "classes/trucks");
+        readdirSync(paths.dlc).forEach(dlcFolder => {
+            const pathToDLCTrucks = join(paths.dlc, dlcFolder, 'classes/trucks')
             if (existsSync(pathToDLCTrucks)) {
-                const pathToDLCBasic = join(pathToDLCTrucks, "addons");
+                const pathToDLCBasic = join(pathToDLCTrucks, 'addons')
                 if (existsSync(pathToDLCBasic)) {
                     allAddons.push(...readdirSync(pathToDLCBasic).map(name => ({
                         name,
                         path: join(pathToDLCBasic, name)
-                    }))); 
+                    })))
                 }
-          
-                for (const item of readdirSync(pathToDLCTrucks)) {
-                    if (isDirectory(join(pathToDLCTrucks, item)) && item.endsWith("_tuning")) {
+
+                readdirSync(pathToDLCTrucks).forEach(item => {
+                    if (isDirectory(join(pathToDLCTrucks, item)) && item.endsWith('_tuning')) {
                         allAddons.push(...readdirSync(join(pathToDLCTrucks, item)).map(name => ({
                             name,
                             path: join(pathToDLCTrucks, item, name)
-                        }))); 
-                    } 
-                }
+                        })))
+                    }
+                })
             }
-        }
+        })
 
         if (modId) {
-            allAddons.push(...findInDir(join(paths.modsTemp, modId, "classes"), false, ".xml", true).filter(item => {
+            allAddons.push(...findInDir(join(paths.modsTemp, modId, 'classes'), false, '.xml', true).filter(item => {
                 if (!existsSync(item.path))
-                    return false;
+                    return false
 
-                return !!load(readFileSync(item.path), {xmlMode: true})("TruckAddon").length;
-            })); 
+                return !!load(readFileSync(item.path), {xmlMode: true})('TruckAddon').length
+            })) 
         }
-      
-        for (const addon of allAddons) {
+
+        allAddons.forEach(addon => {
             if (filter) {
-                if (filter(load(readFileSync(addon.path), { xmlMode: true })))  
-                    out.push(addon);
+                if (filter(load(readFileSync(addon.path), { xmlMode: true })))
+                    out.push(addon)
             }
             else {
-                out.push(addon);
+                out.push(addon)
             }
-        }
-      
-        return out;
+        })
+    
+        return out
     }
-}
-
-export default AddonsContent;
+}))

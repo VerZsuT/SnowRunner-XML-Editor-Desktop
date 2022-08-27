@@ -1,12 +1,10 @@
-import type TemplateType from "enums/TemplateType";
+import type {TemplateType} from 'enums'
 
-import type TemplateProps from "./TemplateProps";
+import type {TemplateProps} from './TemplateProps'
 
-type TemplateTypedProps = TemplateProps & ({
-    type: TemplateType.multiply;
-    itemSelector: TemplateProps["itemSelector"];
+export type TemplateTypedProps = TemplateProps & ({
+    type: TemplateType.multiply
+    itemSelector: TemplateProps['itemSelector']
 } | {
-    type?: TemplateType.single;
+    type?: TemplateType.single
 })
-
-export default TemplateTypedProps;

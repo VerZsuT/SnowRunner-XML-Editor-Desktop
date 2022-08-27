@@ -1,16 +1,19 @@
-import { readFileSync, writeFileSync } from "fs";
-import { basename } from "path";
+import {readFileSync, writeFileSync} from 'fs'
+import {basename} from 'path'
 
-import { alert, getEPF, getMultiEPF, saveEPF } from "./dialogs";
-import { regFunctions } from "./bridge";
-import settings from "./settings";
-import texts from "./texts";
+import {regFunctions} from './bridge'
+import {alert, getEPF, getMultiEPF, saveEPF} from './dialogs'
+import {settings} from './settings'
+import {mainTexts} from './texts'
 
-const { SEE_EXPORTED_MESSAGE, SUCCESS_JOIN } = texts;
+const { SEE_EXPORTED_MESSAGE, SUCCESS_JOIN } = mainTexts
 
-regFunctions([seeEPF, joinEPF]);
+regFunctions([
+    [seeEPF, 'seeEPF'],
+    [joinEPF, 'joinEPF']
+])
 
-const DEFAULT_NAME = "joined";
+const DEFAULT_NAME = 'joined'
 
 /**
  * Открыть окно выбора `.epf` файлов.
@@ -18,36 +21,36 @@ const DEFAULT_NAME = "joined";
  * После выбора объединяет их и сохраняет по выбранному пользователем пути
  */
 export function joinEPF() {
-    const files = getMultiEPF();
+    const files = getMultiEPF()
 
     if (files && files.length > 1) {
-        const result = [];
-        const names = [];
+        const result = []
+        const names = []
 
-        for (const filePath of files) {
-            const fileObject = JSON.parse(readFileSync(filePath).toString());
+        files.forEach(filePath => {
+            const fileObject = JSON.parse(readFileSync(filePath).toString())
 
             if (fileObject instanceof Array) {
-                for (const obj of fileObject) {
+                fileObject.forEach(obj => {
                     if (!names.includes(obj.fileName)) {
-                        result.push(obj);
-                        names.push(obj.fileName);
+                        result.push(obj)
+                        names.push(obj.fileName)
                     }
-                }
+                })
             }
             else if (!names.includes(fileObject.fileName)) {
-                result.push(fileObject);
-                names.push(fileObject.fileName);
+                result.push(fileObject)
+                names.push(fileObject.fileName)
             }
-        }
+        })
 
-        const pathToSave = saveEPF(DEFAULT_NAME);
+        const pathToSave = saveEPF(DEFAULT_NAME)
         if (pathToSave) {
-            writeFileSync(pathToSave, JSON.stringify(result, null, "\t"));
+            writeFileSync(pathToSave, JSON.stringify(result, null, '\t'))
             alert({
                 title: settings.appId,
-                message: `${SUCCESS_JOIN}\n- ${files.map(value => basename(value)).join("\n- ")}`
-            });
+                message: `${SUCCESS_JOIN}\n- ${files.map(value => basename(value)).join('\n- ')}`
+            })
         }
     }
 }
@@ -58,24 +61,21 @@ export function joinEPF() {
  * Анализирует выбранный .epf файл и выводит окно с его содержимым в более удобном формате
  */
 export function seeEPF() {
-    const path = getEPF();
+    const path = getEPF()
 
     if (!path)
-        return;
+        return
 
-    const fileObject = JSON.parse(readFileSync(path).toString());
-    const result: string[] = [];
+    const fileObject = JSON.parse(readFileSync(path).toString())
+    const result: string[] = []
 
-    if (fileObject instanceof Array) {
-        for (const item of fileObject)
-            result.push(item.fileName);
-    }
-    else {
-        result.push(fileObject.fileName);
-    }
+    if (fileObject instanceof Array)
+        fileObject.forEach(item => result.push(item.fileName))
+    else
+        result.push(fileObject.fileName)
 
     alert({
         title: settings.appId,
-        message: `${SEE_EXPORTED_MESSAGE}\n\n${result.join("\n")}`
-    });
+        message: `${SEE_EXPORTED_MESSAGE}\n\n${result.join('\n')}`
+    })
 }

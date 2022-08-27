@@ -1,6 +1,4 @@
-import type IInputParams from "./IInputParams";
-import type IItemGetterProps from "./IItemGetterProps";
+import type {InputParams} from './InputParams'
+import type {ItemGetterProps} from './ItemGetterProps'
 
-type InputGetter = (props: IItemGetterProps) => [IInputParams] | [];
-
-export default InputGetter;
+export type InputGetter = (props: ItemGetterProps) => [InputParams] | []

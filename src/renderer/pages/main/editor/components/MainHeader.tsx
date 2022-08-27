@@ -1,170 +1,244 @@
-import type { MouseEvent } from "react";
-import { memo, useCallback } from "react";
+import type {ReactNode} from 'react'
 
 import {
-    ArrowBack as ArrowBackIcon,
-    ArrowForwardIos,
-    FileDownloadOutlined as ImportIcon,
-    FileUploadOutlined as ExportIcon,
-    FormatListBulletedOutlined as FilesListIcon,
-    Menu as MenuIcon,
-    MoreHoriz as MoreHorizIcon,
-    RotateLeftOutlined as ResetIcon,
-    SaveRounded as SaveIcon
-} from "@mui/icons-material";
-import { Menu, Tooltip, Typography } from "@mui/material";
-import type { CheerioAPI } from "cheerio";
-import type FileType from "enums/FileType";
-import globalTexts from "globalTexts/renderer";
-import { IconMenuItem, NestedMenuItem } from "mui-nested-menu";
-import config from "scripts/config";
-import getPreload from "scripts/getPreload";
-import main from "scripts/main";
-import type IEditorAction from "types/IEditorAction";
-import type IEditorPreload from "types/IEditorPreload";
+    ExportOutlined,
+    FileOutlined,
+    ImportOutlined,
+    MenuOutlined,
+    MoreOutlined,
+    RightOutlined,
+    SaveOutlined,
+    UndoOutlined
+} from '@ant-design/icons'
+import type {MenuProps} from 'antd'
+import {Button, Dropdown, Menu, message, Modal, Tooltip} from 'antd'
+import type {CheerioAPI} from 'cheerio'
+import {load} from 'cheerio'
+import {Header} from 'components/Header'
+import {Page} from 'enums'
+import {globalTexts} from 'globalTexts/renderer'
+import {afcMemo, createState, getDispatcher, inRender} from 'react-afc'
+import {config} from 'scripts/config'
+import {getExported} from 'scripts/dom'
+import {getPreload} from 'scripts/getPreload'
+import {getGameText, prettify} from 'scripts/helpers'
+import {main} from 'scripts/main'
+import type {EditorPreload, TemplateParams, XMLTemplate} from 'types'
 
-import BackArrowButton from "../styled/BackArrowButton";
-import Header from "../styled/Header";
-import SaveButton from "../styled/SaveButton";
-import TasksButton from "../styled/TasksButton";
-import texts from "../texts";
+import type {MainDispatch} from '../../store'
+import {route} from '../../store/pageSlice'
+import type {ResetList} from '../helpers/getResetProvider'
+import {importFile} from '../service'
+import {editorTexts} from '../texts'
+import {subscribeToFiles, XMLFiles} from '../xmlFiles'
 
-const { watchFile } = getPreload<IEditorPreload>("editorPreload");
-const { basename } = window.service;
-const { openPath } = main;
+const { confirm } = Modal
+const { basename, writeFileSync } = window.service
+const { watchFile } = getPreload<EditorPreload>('editorPreload')
+const { openPath, saveEPF, updateFiles } = main
 const {
     SAVE_BUTTON,
     OPEN_BUTTON,
     EXPORT,
     RESET_MENU_ITEM_LABEL
-} = globalTexts;
+} = globalTexts
 const {
     IMPORT,
     ACTIONS_MENU,
-    BACK_BUTTON
-} = texts;
+    PATH_TO_SAVE_NOT_FOUND,
+    WAS_EXPORTED,
+    SUCCESS_RESET,
+    SAVING_MESSAGE,
+    SUCCESS_SAVE_FILES,
+    RESET_CONFIRM_MESSAGE
+} = editorTexts
 
-interface IProps {
-    title: string;
-    filePath: string;
-    currentMod: string;
-    back(): void;
-    save(): void;
-    reset(): void;
-    setAnchor(anchor: Element): void;
-    importFile(): void;
-    exportFile(): void;
-    enableReset: boolean;
-    menuAnchor: Element;
-    actions: IEditorAction[];
-    files: {
-        dom: CheerioAPI;
-        path: string;
-        mod: string;
-        dlc: string;
-        fileType: FileType;
-    }[];
+interface Props {
+    fileDOM: CheerioAPI
+    filePath: string
+    mod: string
+    dlc: string
+    actions: XMLTemplate['actions']
+    tableItems: TemplateParams
+    resetList: ResetList
 }
 
-const iconStyle = { fontSize: "30px" };
+export const MainHeader = afcMemo<Props>(props => {
+    const dispatch = getDispatcher<MainDispatch>()
+    subscribeToFiles()
 
-export default memo((props: IProps) => {
     const {
-        title, back, menuAnchor, files, actions,
-        reset, enableReset, exportFile, importFile,
-        filePath, currentMod, save, setAnchor
-    } = props;
+        fileDOM, mod, dlc, actions, filePath,
+        tableItems, resetList
+    } = props
+    const [state, setState] = createState({
+        action: null as ReactNode
+    })
+    const title = getMainTitle(fileDOM, filePath, mod)
 
-    const saveC = useCallback(() => {
-        save();
-    }, [save]);
-    const openTasksMenu = useCallback((e: MouseEvent<HTMLButtonElement>) => {
-        setAnchor(e.currentTarget);
-    }, [setAnchor]);
-    const closeTasksMenu = useCallback(() => {
-        setAnchor(null);
-    }, [setAnchor]);
+    let menuItems: MenuProps['items']
+    inRender(() => {
+        menuItems = [
+            {
+                label: ACTIONS_MENU,
+                icon: <MoreOutlined />,
+                key: 'actions',
+                children: props.actions.map(action => ({
+                    key: `action-${action.data.id}`,
+                    label: action.data.name,
+                    icon: action.data.imgSRC
+                        ? <img src={action.data.imgSRC}/>
+                        : <RightOutlined />,
+                    onClick() {
+                        setState({
+                            action: <action.Component
+                                filePath={filePath}
+                                currentMod={mod}
+                                dom={fileDOM}
+                            />
+                        })
+                    }
+                }))
+            },
+            {
+                onClick: !mod ? onReset : () => null,
+                icon: <UndoOutlined />,
+                label: RESET_MENU_ITEM_LABEL,
+                key: 'reset'
+            },
+            {
+                onClick: onExportFile,
+                icon: <ExportOutlined />,
+                label: EXPORT,
+                key: 'export'
+            },
+            {
+                onClick: () => importFile(filePath, fileDOM, actions),
+                icon: <ImportOutlined />,
+                label: IMPORT,
+                key: 'import'
+            },
+            ...ifAdvanced({
+                key: 'files',
+                label: OPEN_BUTTON,
+                icon: <FileOutlined/>,
+                children: XMLFiles.map(file => ({
+                    key: file.path,
+                    label: basename(file.path),
+                    icon: <img src={require(`images/icons/${file.type}.png`)}/>,
+                    onClick() {
+                        openPath(file.path)
+                        watchFile(file.path, () => window.location.reload())
+                    }
+                }))
+            })
+        ]
+    })
 
-    return (
-        <Header>
-            <Typography variant="h5">
-                {title}
-            </Typography>
-            <Tooltip title={BACK_BUTTON}>
-                <BackArrowButton onClick={back} color="inherit">
-                    <ArrowBackIcon style={iconStyle}/>
-                </BackArrowButton>
-            </Tooltip>
-            <Tooltip title={SAVE_BUTTON}>
-                <SaveButton onClick={saveC} color="inherit">
-                    <SaveIcon style={iconStyle}/>
-                </SaveButton>
-            </Tooltip>
-            <TasksButton onClick={openTasksMenu} color="inherit">
-                <MenuIcon style={iconStyle}/>
-            </TasksButton>
-            <Menu
-                anchorEl={menuAnchor}
-                open={!!menuAnchor}
-                onClose={closeTasksMenu}
-            >
-                {config.settings.advancedMode
-                    ? (
-                        <NestedMenuItem
-                            label={OPEN_BUTTON}
-                            parentMenuOpen={!!menuAnchor}
-                            leftIcon={<FilesListIcon />}
-                        >
-                            {files.map(file => (
-                                <IconMenuItem
-                                    key={file.path}
-                                    onClick={() => {
-                                        openPath(file.path);
-                                        watchFile(file.path, () => window.location.reload());
-                                    }}
-                                    leftIcon={<img src={require(`images/icons/editor/${file.fileType}.png`)}/>}
-                                    label={basename(file.path)}
-                                />
-                            ))}
-                        </NestedMenuItem>
-                    )
-                    : null}
-                <NestedMenuItem
-                    label={ACTIONS_MENU}
-                    parentMenuOpen={!!menuAnchor}
-                    leftIcon={<MoreHorizIcon />}
-                >
-                    {actions.map(action => (
-                        <IconMenuItem
-                            key={`action-${action.id}`}
-                            onClick={() => {
-                                action.object.run({filePath, currentMod});
-                                closeTasksMenu();
-                            }}
-                            label={action.name}
-                            leftIcon={action.imgSRC
-                                ? <img src={action.imgSRC}/>
-                                : <ArrowForwardIos />
-                            }
+    function onExportFile() {
+        const pathToSave = saveEPF(basename(filePath, '.xml'))
+        if (!pathToSave) {
+            message.error(PATH_TO_SAVE_NOT_FOUND)
+            return
+        }
+
+        const exported = getExported({
+            filePath,
+            shortMode: false,
+            mod,
+            dlc,
+            fileDOM,
+            templateItems: tableItems,
+            actions
+        })
+
+        writeFileSync(pathToSave, JSON.stringify(exported, null, '\t'))
+        message.success(WAS_EXPORTED)
+    }
+
+    function onBack() {
+        dispatch(route(Page.lists))
+    }
+
+    function onReset() {
+        confirm({
+            title: RESET_CONFIRM_MESSAGE,
+            onOk() {
+                resetList.forEach(callback => callback())
+                message.success(SUCCESS_RESET)
+            }
+        })
+    }
+
+    async function onSave() {
+        const hideLoading = message.loading(SAVING_MESSAGE)
+        await new Promise<void>(resolve => {
+            setTimeout(() => {
+                XMLFiles.forEach(file => {
+                    const dom = load(file.dom.html(), { xmlMode: true })
+                    dom('[SXMLE_ID]').map((_, el) => dom(el).removeAttr('SXMLE_ID'))
+                    writeFileSync(file.path, dom.html())
+                })
+
+                mod && updateFiles(mod)
+                updateFiles()
+
+                hideLoading()
+                message.success(SUCCESS_SAVE_FILES)
+                resolve()
+            }, 100)
+        })
+    }
+
+    return () => <>
+        {state.action}
+        <Header
+            text={title}
+            onBack={onBack}
+            extra={[
+                <Dropdown.Button
+                    key='menu'
+                    type='text'
+                    className='menu-button'
+                    icon={<MenuOutlined />}
+                    overlay={
+                        <Menu
+                            selectable={false}
+                            mode='vertical'
+                            items={menuItems}
                         />
-                    ))}
-                </NestedMenuItem>
-                <IconMenuItem
-                    onClick={enableReset ? reset : () => null}
-                    leftIcon={<ResetIcon />}
-                    label={RESET_MENU_ITEM_LABEL}
-                />
-                <IconMenuItem
-                    onClick={exportFile}
-                    leftIcon={<ExportIcon />}
-                    label={EXPORT}
-                />
-                <IconMenuItem
-                    onClick={importFile}
-                    leftIcon={<ImportIcon />}
-                    label={IMPORT}
-                />
-            </Menu>
-        </Header>
-    );
-});
+                    }
+                />,
+                <Tooltip title={SAVE_BUTTON} key='save'>
+                    <Button
+                        id='save'
+                        className='save-button'
+                        type='text'
+                        shape='circle'
+                        icon={<SaveOutlined />}
+                        onClick={onSave}
+                    />
+                </Tooltip>
+            ]}
+        />
+    </>
+})
+
+function getMainTitle(DOM: CheerioAPI, path: string, modName: string) {
+    if (DOM('GameData UiDesc').length === 1) {
+        const text = DOM('GameData UiDesc').attr('UiName')
+        return getGameText(text, modName) || text
+    }
+
+    if (path.split('/').length !== 1) {
+        const a = path.split('/')
+        return prettify(a[a.length - 1].replace('.xml', '')).toUpperCase()
+    }
+
+    const a = path.split('\\')
+    return prettify(a[a.length - 1].replace('.xml', '')).toUpperCase()
+}
+
+function ifAdvanced(item: MenuProps['items'][number]) {
+    return config.settings.advancedMode ? [item] : []
+}

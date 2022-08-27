@@ -2,12 +2,11 @@
   "compilerOptions": {
     "experimentalDecorators": true,
     "target": "ESNext",
-    "lib": ["ESNext", "DOM"],
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
     "jsx": "react-jsx",
     "incremental": true,
     "isolatedModules": true,
     "module": "ESNext",
-    "pretty": true,
     "allowSyntheticDefaultImports": true,
     "allowUnreachableCode": false,
     "esModuleInterop": true,
@@ -21,11 +20,15 @@
     "skipLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "types": ["src/types/index"],
       "types/*": ["src/types/*"],
+      "consts": ["src/types/consts"],
+      "enums": ["src/enums/index"],
       "enums/*": ["src/enums/*"],
       "globalTexts/*": ["src/globalTexts/*"],
       "scripts/*": ["src/renderer/scripts/*"],
       "components/*": ["src/renderer/components/*"],
+      "helpers/*": ["src/renderer/helpers/*"],
       "hooks/*": ["src/renderer/hooks/*"],
       "pages/*": ["src/renderer/pages/*"],
       "templates": ["src/renderer/templates/index"],
@@ -34,10 +37,12 @@
       "main/*": ["src/main/*"],
       "renderer/*": ["src/renderer/*"],
       "images/*": ["src/images/*"],
-      "src/*": ["src/*"],
-      "*": ["node_modules/*"]
+      "src/*": ["src/*"]
     }
   },
-  "include": ["src/**/*"],
-  "exclude": ["mode_modules"]
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.json"
+  ]
 }

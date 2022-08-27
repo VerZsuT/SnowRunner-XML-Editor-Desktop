@@ -1,8 +1,6 @@
-enum SrcType {
-    mods = "mods",
-    dlc = "dlc",
-    main = "main",
-    favorites = "favorites"
+export enum SrcType {
+    mods = 'mods',
+    dlc = 'dlc',
+    main = 'main',
+    favorites = 'favorites'
 }
-
-export default SrcType;

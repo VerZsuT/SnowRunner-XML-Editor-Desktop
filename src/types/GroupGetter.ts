@@ -1,6 +1,4 @@
-import type IGroupParams from "./IGroupParams";
-import type IItemGetterProps from "./IItemGetterProps";
+import type {GroupParams} from './GroupParams'
+import type {ItemGetterProps} from './ItemGetterProps'
 
-type GroupGetter = (props: IItemGetterProps) => [IGroupParams] | any[];
-
-export default GroupGetter;
+export type GroupGetter = (props: ItemGetterProps) => [GroupParams] | any[]

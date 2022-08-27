@@ -1,6 +1,4 @@
-import type IItemGetterProps from "./IItemGetterProps";
-import type ISelectParams from "./ISelectParams";
+import type {ItemGetterProps} from './ItemGetterProps'
+import type {SelectParams} from './SelectParams'
 
-type SelectGetter = (props: IItemGetterProps) => [ISelectParams] | [];
-
-export default SelectGetter;
+export type SelectGetter = (props: ItemGetterProps) => [SelectParams] | []

@@ -1,28 +1,29 @@
-import { app } from "electron";
+import {app} from 'electron'
 
-import Window from "enums/Window";
-import entries from "main/scripts/webpackEntries";
-import { createWindow, wins } from "main/scripts/windows";
-import type ICreateWindowAttributes from "types/ICreateWindowAttributes";
+import {Window} from 'enums'
+import type {CreateWindowAttributes} from 'types'
 
-const createArgs: ICreateWindowAttributes = {
-    path: entries.setup,
-    preload: entries.setupPreload,
+import {webpackEntries} from '../scripts/webpackEntries'
+import {createWindow, wins} from '../scripts/windows'
+import {regWindow} from './winsObject'
+
+const createArgs: CreateWindowAttributes = {
+    path: webpackEntries.setup,
+    preload: webpackEntries.setupPreload,
     width: 620,
     minWidth: 620,
     height: 290,
     minHeight: 310,
-    window: Window.Setup
-};
+    type: Window.Setup
+}
 
-export default async () => {
-    const wind = createWindow(createArgs);
+regWindow(Window.Setup, async () => {
+    const wind = createWindow(createArgs)
 
-    wind.once("focus", () => {
-        wins.loading.hide();
-    });
+    wind.once('focus', () => {
+        wins.loading.hide()
+    })
+    wind.once('close', app.quit)
 
-    wind.once("close", app.quit);
-    
-    return wind;
-};
+    return wind
+})

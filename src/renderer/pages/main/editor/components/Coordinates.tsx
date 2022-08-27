@@ -1,168 +1,77 @@
-import type { FocusEvent } from "react";
-import { memo, useCallback, useContext, useMemo, useState } from "react";
+import {InputNumber, Typography} from 'antd'
+import {afcMemo, handleContext} from 'react-afc'
+import type {ParameterProps} from 'types'
 
-import { Typography } from "@mui/material";
-import GridContainer from "components/styled/GridContainer";
-import type IInputParams from "types/IInputParams";
+import {FileDataContext} from '../helpers/getFileData'
+import {addTag} from '../service'
 
-import { addTag } from "../helpers";
-import useId from "../hooks/useId";
-import useImportExport from "../hooks/useImportExport";
-import useReset from "../hooks/useReset";
-import useResetMenu from "../hooks/useResetMenu";
-import MainContext from "../MainContext";
-import CoordinateField from "../styled/CoordinateField";
+const { Text } = Typography
 
-const { basename } = window.service;
-
-const gridStyle = {
-    justifyContent: "center",
-    alignItems: "center"
-};
-
-interface IProps {
-    item: IInputParams;
-    parentExportEnabled: boolean;
-    exportEnabled: boolean;
-    getValue(): string;
-    getDefaultValue(): string;
-    setValue(selector: string, attName: string, value: string): void;
-    registerReset?(id: string, func: () => void): void;
-    unregisterReset?(id: string): void;
-    show?: boolean;
+interface Coordinates {
+    x: string | number
+    y: string | number
+    z: string | number
 }
 
-type Coordinate = string | number;
+export const Coordinates = afcMemo((props: ParameterProps) => {
+    const getFileData = handleContext(FileDataContext)
 
-export default memo((props: IProps) => {
-    const {
-        item,
-        show,
-        getValue,
-        setValue,
-        registerReset,
-        unregisterReset,
-        getDefaultValue,
-        exportEnabled,
-        parentExportEnabled
-    } = props;
-    const { fileDOM, filePath, addParam, removeParam } = useContext(MainContext);
+    function onChangeValue(coordinate: Partial<Coordinates>) {
+        const { fileDOM } = getFileData()
+        const { item, value, onSetValue } = props
+        const newCoords = {...stringToCoords(value), ...coordinate}
 
-    const id = useId();
-    const [x, setX] = useState<Coordinate>(() => parse(getValue()).x);
-    const [y, setY] = useState<Coordinate>(() => parse(getValue()).y);
-    const [z, setZ] = useState<Coordinate>(() => parse(getValue()).z);
-
-    const stepProps = useMemo(() => ({
-        step: item.step
-    }), [item.step]);
-
-    const save = useCallback(({ argX = x, argY = y, argZ = z }) => {
-        const newValue = `(${argX}; ${argY}; ${argZ})`;
-
-        addTag(fileDOM, item);
-        setValue(item.selector, item.attribute, newValue);
-
-        const parsed = parse(newValue);
-        setX(parsed.x);
-        setY(parsed.y);
-        setZ(parsed.z);
-    }, [fileDOM, item, setValue, x, y, z]);
-
-    useReset({
-        id,
-        register: registerReset,
-        unregister: unregisterReset,
-        callback: [reset, [save, getDefaultValue]]
-    });
-
-    useImportExport({
-        id, item,
-        addParam, removeParam,
-        exportParam: [() => {
-            if (exportEnabled && parentExportEnabled) {
-                return {
-                    fileName: basename(filePath),
-                    selector: item.selector,
-                    name: item.attribute,
-                    value: `(${x}; ${y}; ${z})`
-                };
-            }
-        }, [exportEnabled, parentExportEnabled]],
-        importParam: [(value: string) => {
-            const thisValue = `(${x}; ${y}; ${z})`;
-            if (thisValue !== value)
-                save(toSave(parse(value)));
-        }, [x, y, z]]
-    });
-
-    const [onContextMenu, ResetMenu] = useResetMenu({ onReset: reset });
-
-    const saveX = useCallback((e: FocusEvent<HTMLInputElement>) => save({ argX: +e.target.value }), [save]);
-    const saveY = useCallback((e: FocusEvent<HTMLInputElement>) => save({ argY: +e.target.value }), [save]);
-    const saveZ = useCallback((e: FocusEvent<HTMLInputElement>) => save({ argZ: +e.target.value }), [save]);
-
-    const setXC = useCallback((e: FocusEvent<HTMLInputElement>) => setX(e.target.value), []);
-    const setYC = useCallback((e: FocusEvent<HTMLInputElement>) => setY(e.target.value), []);
-    const setZC = useCallback((e: FocusEvent<HTMLInputElement>) => setZ(e.target.value), []);
-
-    if (show === false)
-        return;
-
-    return <>
-        {ResetMenu}
-        <GridContainer
-            style={gridStyle}
-            id={id}
-            onContextMenu={onContextMenu}
-        >
-            <Typography>X: </Typography>
-            <CoordinateField
-                inputProps={stepProps}
-                value={x}
-                onBlur={saveX}
-                onChange={setXC}
-            />
-            <Typography>Y: </Typography>
-            <CoordinateField
-                inputProps={stepProps}
-                value={y}
-                onBlur={saveY}
-                onChange={setYC}
-            />
-            <Typography>Z: </Typography>
-            <CoordinateField
-                inputProps={stepProps}
-                value={z}
-                onBlur={saveZ}
-                onChange={setZC}
-            />
-        </GridContainer>
-    </>;
-
-    function reset() {
-        const defaultValue = getDefaultValue();
-
-        if (defaultValue !== undefined)
-            save(toSave(parse(defaultValue)));
+        addTag(fileDOM, item)
+        onSetValue(coordsToString(newCoords))
     }
-});
 
-function parse(value: string) {
-    let array: string[];
+    const onChangeX = (value: string) => onChangeValue({ x: value })
+    const onChangeY = (value: string) => onChangeValue({ y: value })
+    const onChangeZ = (value: string) => onChangeValue({ z: value })
 
-    if (!value)
-        return { x: 0, y: 0, z: 0 };
+    return () => {
+        const { item, value } = props
+        const coords = stringToCoords(value)
 
-    array = value.replace("(", "").replace(")", "").replaceAll(" ", "").split(";");
-    if (array.length === 1)
-        array = value.replace("(", "").replace(")", "").replaceAll(" ", "").split(",");
+        return <>
+            <Text>   X:  </Text>
+            <InputNumber
+                step={item.step}
+                value={coords.x}
+                onChange={onChangeX}
+            />
+            <Text>   Y:  </Text>
+            <InputNumber
+                step={item.step}
+                value={coords.y}
+                onChange={onChangeY}
+            />
+            <Text>   Z:  </Text>
+            <InputNumber
+                step={item.step}
+                value={coords.z}
+                onChange={onChangeZ}
+            />
+        </>
+    }
+})
 
-    const [x, y, z] = array;
-    return { x: +x, y: +y, z: +z };
+function coordsToString(coords: Coordinates) {
+    const { x, y, z } = coords
+    return `(${x} ${y} ${z})`
 }
 
-function toSave(args: { x: number; y: number; z: number }) {
-    const { x, y, z } = args;
-    return { argX: x, argY: y, argZ: z };
+function stringToCoords(str: string): Coordinates {
+    let array: string[]
+
+    if (!str)
+        return { x: 0, y: 0, z: 0 }
+
+    const prepared = str.replace('(', '').replace(')', '').replaceAll(' ', '')
+    array = prepared.split(';')
+    if (array.length === 1)
+        array = prepared.split(',')
+
+    const [x, y, z] = array
+    return { x: +x, y: +y, z: +z }
 }

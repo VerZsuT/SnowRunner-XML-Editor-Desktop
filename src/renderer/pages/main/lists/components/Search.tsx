@@ -1,29 +1,28 @@
-import { memo } from "react";
+import {SearchOutlined} from '@ant-design/icons'
+import {Input} from 'antd'
+import type {MainDispatch} from 'pages/main/store'
+import {afcMemo, getDispatcher, useRedux} from 'react-afc'
 
-import { SearchOutlined } from "@ant-design/icons";
-import { Input } from "antd";
+import {changeFilter, selectFilter} from '../../store/filterSlice'
+import {listsTexts} from '../texts'
 
-import { changeFilter, selectFilter } from "../../store/filterSlice";
-import { useMainDispatch, useMainSelector } from "../../store/storeHooks";
-import texts from "../texts";
+const { SEARCH } = listsTexts
 
-const { SEARCH } = texts;
+export const Search = afcMemo(() => {
+    const dispatch = getDispatcher<MainDispatch>()
+    const reduxState = useRedux({
+        filter: selectFilter
+    })
 
-const Search = () => {
-    const filter = useMainSelector(selectFilter);
-    const dispatch = useMainDispatch();
-
-    return (
-        <div className="search">
+    return () => (
+        <div className='search'>
             <Input
                 placeholder={SEARCH}
                 onChange={e => dispatch(changeFilter(e.target.value))}
-                value={filter}
+                value={reduxState.filter}
                 bordered={false}
             />
-            <SearchOutlined className="search-icon" />
+            <SearchOutlined className='search-icon' />
         </div>
-    );
-};
-
-export default memo(Search);
+    )
+})

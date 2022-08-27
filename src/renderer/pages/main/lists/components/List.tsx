@@ -1,144 +1,150 @@
-import { memo, useState } from "react";
-import type { CSSProperties } from "react";
+import type {CSSProperties} from 'react'
+import {memo} from 'react'
 
-import { Button, Modal } from "antd";
-import Category from "enums/Category";
-import SrcType from "enums/SrcType";
-import useConstFunc from "hooks/useConstFunc";
-import useOnMount from "hooks/useOnMount";
-import { FixedSizeGrid } from "react-window";
-import type { GridChildComponentProps } from "react-window";
-import config from "scripts/config";
-import main from "scripts/main";
-import storage from "scripts/storage";
-import { LIST_SCROLL } from "src/consts";
-import type IItem from "types/IItem";
+import {Button, Modal} from 'antd'
+import {LIST_SCROLL} from 'consts'
+import type {Category} from 'enums'
+import {SrcType} from 'enums'
+import {getForceUpdate} from 'helpers/getForceUpdate'
+import {afcMemo, afterUnmount, createState, useRedux} from 'react-afc'
+import type {GridChildComponentProps} from 'react-window'
+import {FixedSizeGrid} from 'react-window'
+import {config} from 'scripts/config'
+import {main} from 'scripts/main'
+import {storage} from 'scripts/storage'
+import type {Item} from 'types'
 
-import { selectFilter } from "../../store/filterSlice";
-import { selectFavorites } from "../../store/listSlice";
-import { useMainSelector } from "../../store/storeHooks";
-import texts from "../texts";
-import ListItem from "./ListItem";
-import ModsPopup from "./ModsPopup";
+import {selectFilter} from '../../store/filterSlice'
+import {selectCategory, selectFavorites} from '../../store/listSlice'
+import {listsTexts} from '../texts'
+import {ListItem} from './ListItem'
+import {ModsPopup} from './ModsPopup'
 
-const { confirm } = Modal;
-const { relaunchApp } = main;
-const { settings } = config;
-const { RELAUNCH_PROMPT, MODS_CHANGE_BUTTON } = texts;
+const { confirm } = Modal
+const { relaunchApp } = main
+const { settings } = config
+const { RELAUNCH_PROMPT, MODS_CHANGE_BUTTON } = listsTexts
 
-interface IProps {
-    srcType: SrcType;
-    category: Category;
-    items: IItem[];
-    opened?: boolean;
+interface Props {
+    srcType: SrcType
+    items: Item[]
+    opened?: boolean
 }
 
-const List = (props: IProps) => {
-    const { items, srcType, opened, category } = props;
-    const forceUpdate = useState<number>()[1];
+export const List = afcMemo<Props>(props => {
+    const [state, setState] = createState({
+        isShowMods: false
+    })
+    const reduxState = useRedux({
+        filter: selectFilter,
+        favorites: selectFavorites,
+        category: selectCategory
+    })
+    const forceUpdate = getForceUpdate()
 
-    const filter = useMainSelector(selectFilter);
-    const favorites = useMainSelector(selectFavorites);
-    const [isShowMods, setIsShowMods] = useState(false);
+    window['onResize'](forceUpdate)
+    afterUnmount(() => window['removeResizeHandler'](forceUpdate))
 
-    const id = `list-${srcType}`;
-    const reloadPromptTimeout = 200;
+    const reloadPromptTimeout = 200
+    const id = `list-${props.srcType}`
 
-    useOnMount(() => {
-        window["onResize"](() => forceUpdate(Math.random()));
-    }, window["removeResizers"]);
+    function showModsPopup() {
+        setState({ isShowMods: true })
+    }
 
-    const showModsPopup = useConstFunc(() => {
-        setIsShowMods(true);
-    });
-
-    const hideModsPopup = useConstFunc((isReload?: boolean) => {
-        setIsShowMods(false);
+    function hideModsPopup(isReload?: boolean) {
+        setState({ isShowMods: false })
         if (isReload) {
             setTimeout(() => {
                 confirm({
                     title: RELAUNCH_PROMPT,
                     onOk: () => relaunchApp()
-                });
-            }, reloadPromptTimeout); 
+                })
+            }, reloadPromptTimeout) 
         }
-    });
+    }
 
-    if ((srcType === SrcType.mods && !settings.mods) ||
+    return () => {
+        const { items, srcType, opened } = props
+        const { isShowMods } = state
+        const { filter, favorites, category } = reduxState
+
+        if ((srcType === SrcType.mods && !settings.mods) ||
         (srcType === SrcType.dlc && !settings.DLC))
-        return;
+            return
 
-    let filteredItems = items;
-    if (srcType === SrcType.favorites)
-        filteredItems = items.filter(value => favorites.includes(value.name));
+        let filteredItems = items
+        if (srcType === SrcType.favorites)
+            filteredItems = filteredItems.filter(value => favorites.includes(value.name))
 
-    if (filter)
-        filteredItems = items.filter(item => item.name.toLowerCase().includes(filter.toLowerCase()));
+        if (filter)
+            filteredItems = filteredItems.filter(item => item.name.toLowerCase().includes(filter.toLowerCase()))
 
-    if (opened === false) return;
+        if (opened === false) return
 
-    const colWidth = 250;
-    const rowHeight = 420;
-    const gridHeight = window.innerHeight - (srcType === SrcType.mods? 230 : 210);
-    const gridWidth = window.innerWidth;
-    let colCount = Math.floor(window.innerWidth / colWidth);
-    const rowCount = Math.ceil(filteredItems.length / colCount);
+        const colWidth = 250
+        const rowHeight = 420
+        const gridHeight = window.innerHeight - (srcType === SrcType.mods? 230 : 210)
+        const gridWidth = window.innerWidth
+        let colCount = Math.floor(window.innerWidth / colWidth)
+        const rowCount = Math.ceil(filteredItems.length / colCount)
 
-    if (filteredItems.length < colCount)
-        colCount = filteredItems.length;
+        if (filteredItems.length < colCount)
+            colCount = filteredItems.length
 
-    const gutter = Math.round((gridWidth - (colCount * colWidth)) / (colCount + 1));
+        const gutter = Math.round((gridWidth - (colCount * colWidth)) / (colCount + 1))
 
-    return (
-        <div className="list" id={id}>
-            {srcType === SrcType.mods && <>
-                <div>
-                    <Button
-                        type="primary"
-                        className="mods-button"
-                        onClick={showModsPopup}
-                    >
-                        {MODS_CHANGE_BUTTON}
-                    </Button>
-                </div>
-                <ModsPopup
-                    show={isShowMods}
-                    hidePopup={hideModsPopup}
-                />
-            </>}
-            <FixedSizeGrid
-                initialScrollTop={parseInt(storage.pop(LIST_SCROLL) || "0")}
-                className="card-list"
-                columnCount={colCount}
-                columnWidth={colWidth}
-                height={gridHeight}
-                width={gridWidth}
-                rowHeight={rowHeight}
-                rowCount={rowCount}
-            >
-                {(props: GridChildComponentProps, index: number) => (
-                    <ItemRenderer
-                        style={props.style}
-                        columnIndex={props.columnIndex}
-                        rowIndex={props.rowIndex}
-                        gutter={gutter}
-                        items={filteredItems}
-                        category={category}
-                        id={id}
-                        colCount={colCount}
-                        key={index}
+        return (
+            <div className='list' id={id}>
+                {srcType === SrcType.mods && <>
+                    <div>
+                        <Button
+                            type='primary'
+                            className='mods-button'
+                            onClick={showModsPopup}
+                        >
+                            {MODS_CHANGE_BUTTON}
+                        </Button>
+                    </div>
+                    <ModsPopup
+                        show={isShowMods}
+                        hidePopup={hideModsPopup}
                     />
-                )}
-            </FixedSizeGrid>
-        </div>
-    );
-};
+                </>}
+                <FixedSizeGrid
+                    initialScrollTop={parseInt(storage.pop(LIST_SCROLL) || '0')}
+                    className='card-list'
+                    columnCount={colCount}
+                    columnWidth={colWidth}
+                    height={gridHeight}
+                    width={gridWidth}
+                    rowHeight={rowHeight}
+                    rowCount={rowCount}
+                >
+                    {(props: GridChildComponentProps, index: number) => (
+                        <ItemRenderer
+                            style={props.style}
+                            columnIndex={props.columnIndex}
+                            rowIndex={props.rowIndex}
+                            gutter={gutter}
+                            items={filteredItems}
+                            category={category}
+                            id={id}
+                            colCount={colCount}
+                            key={index}
+                        />
+                    )}
+                </FixedSizeGrid>
+            </div>
+        )
+    }
+})
 
 interface IItemProps {
     style: CSSProperties;
     rowIndex: number;
     columnIndex: number;
-    items: IItem[];
+    items: Item[];
     category: Category;
     id: string;
     gutter: number;
@@ -146,12 +152,12 @@ interface IItemProps {
 }
 
 const ItemRenderer = memo((props: IItemProps) => {
-    const { colCount, style, rowIndex, columnIndex, category, items, id, gutter } = props;
-    const index = columnIndex + colCount * (rowIndex);
+    const { colCount, style, rowIndex, columnIndex, category, items, id, gutter } = props
+    const index = columnIndex + colCount * (rowIndex)
 
-    if (items.length <= index) return;
+    if (items.length <= index) return
 
-    const item = items[index];
+    const item = items[index]
 
     return (
         <ListItem
@@ -166,7 +172,5 @@ const ItemRenderer = memo((props: IItemProps) => {
             modId={item.modId}
             dlc={item.dlcName}
         />
-    );
-});
-
-export default memo(List);
+    )
+})

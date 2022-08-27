@@ -1,21 +1,21 @@
-import type ITemplates from "types/ITemplates";
+import type {Templates} from 'types'
 
-import engine from "./engine/template";
-import gearbox from "./gearbox/template";
-import suspension from "./suspension/template";
-import trailer from "./trailer/template";
-import truck from "./truck/template";
-import wheels from "./wheels/template";
-import winch from "./winch/template";
+import {engineTemplate} from './engine/template'
+import {gearboxTemplate} from './gearbox/template'
+import {suspensionTemplate} from './suspension/template'
+import {trailerTemplate} from './trailer/template'
+import {truckTemplate} from './truck/template'
+import {wheelsTemplate} from './wheels/template'
+import {winchTemplate} from './winch/template'
 
-export const templates: ITemplates = {
-    engine,
-    gearbox,
-    suspension,
-    trailer,
-    truck,
-    wheels,
-    winch
-};
+export const templates = {
+    engine: engineTemplate,
+    gearbox: gearboxTemplate,
+    suspension: suspensionTemplate,
+    trailer: trailerTemplate,
+    truck: truckTemplate,
+    wheels: wheelsTemplate,
+    winch: winchTemplate
+} as Templates
 
-export const extra = {};
+export const extra = {}

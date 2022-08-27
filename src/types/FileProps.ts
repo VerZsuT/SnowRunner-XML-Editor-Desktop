@@ -1,11 +1,9 @@
-import type FileType from "enums/FileType";
+import type {FileType} from 'enums'
 
 /** Параметры включаемого файла. */
-type FileProps = {
-    attribute: string;
-    selector?: string;
+export interface FileProps {
+    attribute: string
+    selector?: string
     /** Тип включаемого файла. */
-    type: FileType;
+    type: FileType
 }
-
-export default FileProps;

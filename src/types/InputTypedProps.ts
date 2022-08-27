@@ -1,23 +1,21 @@
-import type InputType from "enums/InputType";
+import type {InputType} from 'enums'
 
-import type IInputProps from "./IInputProps";
+import type {InputProps} from './InputProps'
 
-type InputTypedProps = IInputProps & ({
-    type?: InputType.number;
-    numberType?: IInputProps["numberType"];
-    step?: IInputProps["step"];
-    areas?: IInputProps["areas"];
-    min?: IInputProps["min"];
-    max?: IInputProps["max"];
-    default?: IInputProps["default"];
+export type InputTypedProps = InputProps & ({
+    type?: InputType.number
+    numberType?: InputProps['numberType']
+    step?: InputProps['step']
+    areas?: InputProps['areas']
+    min?: InputProps['min']
+    max?: InputProps['max']
+    default?: InputProps['default']
 } | {
-    type: InputType.coordinates;
+    type: InputType.coordinates
 } | {
-    type: InputType.text;
-    default?: IInputProps["default"];
+    type: InputType.text
+    default?: InputProps['default']
 } | {
-    type: InputType.file;
-    fileType: IInputProps["fileType"];
-});
-
-export default InputTypedProps;
+    type: InputType.file
+    fileType: InputProps['fileType']
+})

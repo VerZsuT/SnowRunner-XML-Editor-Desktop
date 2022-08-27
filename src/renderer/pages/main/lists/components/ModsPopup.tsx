@@ -1,153 +1,166 @@
-import { memo, useCallback, useEffect, useState } from "react";
+import {useEffect} from 'react'
 
-import { Modal, Spin, Button, Transfer } from "antd";
-import globalTexts from "globalTexts/renderer";
-import useConstFunc from "hooks/useConstFunc";
-import config from "scripts/config";
-import getPreload from "scripts/getPreload";
-import type IConfigModsItems from "types/IConfigModsItems";
-import type IListPreload from "types/IListPreload";
+import {Button, Modal, Spin, Transfer} from 'antd'
+import {globalTexts} from 'globalTexts/renderer'
+import {afcMemo, createState} from 'react-afc'
+import {config} from 'scripts/config'
+import {getPreload} from 'scripts/getPreload'
+import type {ConfigModsItems, ListPreload} from 'types'
 
-import texts from "../texts";
+import {listsTexts} from '../texts'
 
-const { basename } = window.service;
-const { findMods, getModPak } = getPreload<IListPreload>("listPreload");
-const { MODS_POPUP_TITLE, MANUAL_MOD } = texts;
-const { LOADING } = globalTexts;
+const { basename } = window.service
+const { MODS_POPUP_TITLE, MANUAL_MOD } = listsTexts
+const { LOADING } = globalTexts
+const { findMods, getModPak } = getPreload<ListPreload>('listPreload')
 
-interface IProps {
-    hidePopup(reload?: boolean): void;
-    show: boolean;
+interface Props {
+    hidePopup(reload?: boolean): void
+    show: boolean
 }
 
-interface IItem {
-    name: string;
-    path: string;
+interface Item {
+    name: string
+    path: string
 }
 
-const ModsPopup = (props: IProps) => {
-    const { hidePopup: pHidePopup, show } = props;
-    
-    const [items, setItems] = useState<IItem[]>(null);
-    const [targetKeys, setTargetKeys] = useState<string[]>([]);
-    const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
+export const ModsPopup = afcMemo<Props>(props => {
+    const [state, setState] = createState({
+        items: null as Item[],
+        targetKeys: [] as string[],
+        selectedKeys: [] as string[]
+    })
 
-    useEffect(() => {
+    function loadMods() {
+        const { show } = props
+        const { items } = state
+
         if (show && !items) {
             setTimeout(() => {
                 findMods().then(items => {
-                    setItems(items);
-                    setTargetKeys(getTargetKeys(items));
-                });
-            }, 100);
+                    setState({
+                        items,
+                        targetKeys: getTargetKeys(items)
+                    })
+                })
+            }, 500)
         }
-    }, [show, items]);
+    }
 
-    const hidePopup = useCallback(() => {
-        setTargetKeys(getTargetKeys(items));
-        pHidePopup();
-    }, [pHidePopup, items]);
+    function onHidePopup() {
+        setState({ targetKeys: getTargetKeys(state.items) })
+        props.hidePopup()
+    }
 
-    const applyChanges = useCallback(() => {
-        const length = targetKeys.length;
-        const selected = KeysToModsItems(targetKeys, items);
+    function applyChanges() {
+        const { targetKeys, items } = state
+
+        const length = targetKeys.length
+        const selected = KeysToModsItems(targetKeys, items)
 
         config.mods = {
             length,
             items: selected
-        };
-        pHidePopup(true);
-    }, [pHidePopup, targetKeys, items]);
+        }
+        props.hidePopup(true)
+    }
 
-    const addManual = useCallback(() => {
-        const result = getModPak();
-        if (!result) return;
+    function addManual() {
+        const { items } = state
 
-        for (const stateItem of items) {
-            const stateName = stateItem.name;
-            if (result.id === stateName)
-                return;
+        const result = getModPak()
+        if (!result) return
+
+        for (let i = 0; i < items.length; ++i) {
+            if (result.id === items[i].name)
+                return
         }
 
-        setItems(prev => ([
-            ...prev,
-            {
-                name: result.id,
-                path: result.path
-            }
-        ]));
-    }, [items]);
+        setState({
+            items: [
+                ...items,
+                {
+                    name: result.id,
+                    path: result.path
+                }
+            ]
+        })
+    }
 
-    const onChange = useConstFunc((nextTarget: string[]) => {
-        setTargetKeys(nextTarget);
-    });
+    function onChange(nextTarget: string[]) {
+        setState({ targetKeys: nextTarget })
+    }
     
-    const onSelectChange = useConstFunc((source: string[], target: string[]) => {
-        setSelectedKeys([...source, ...target]);
-    });
+    function onSelectChange(source: string[], target: string[]) {
+        setState({ selectedKeys: [...source, ...target] })
+    }
 
-    if (!show) return;
+    const titles = ['Найдено', 'Добавлено']
 
-    return (
-        <Modal
-            className="mods-modal"
-            title={items ? MODS_POPUP_TITLE : LOADING}
-            onCancel={hidePopup}
-            onOk={applyChanges}
-            visible={show}
-        >
-            {items
-                ? <>
-                    <Transfer
-                        dataSource={items.map(item => ({
-                            key: item.path,
-                            title: item.name
-                        }))}
-                        onChange={onChange}
-                        onSelectChange={onSelectChange}
-                        targetKeys={targetKeys}
-                        selectedKeys={selectedKeys}
-                        titles={["Найдено", "Добавлено"]}
-                        render={item => item.title}
-                        className="mods-transfer"
-                    />
-                    <Button onClick={addManual} className="mods-manual-button">
-                        {MANUAL_MOD}
-                    </Button>
-                </>
-                : <Spin className="mods-spin" />
-            }
-        </Modal>
-    );
-};
+    return () => {
+        const { show } = props
+        const { items, targetKeys, selectedKeys } = state
 
-function IItemToKeys(items: IItem[]): string[] {
-    return items.map(item => item.path);
+        useEffect(loadMods)
+
+        return (
+            <Modal
+                title={items ? MODS_POPUP_TITLE : LOADING}
+                onCancel={onHidePopup}
+                onOk={applyChanges}
+                visible={show}
+            >
+                {items
+                    ? <>
+                        <Transfer
+                            dataSource={items.map(item => ({
+                                key: item.path,
+                                title: item.name
+                            }))}
+                            onChange={onChange}
+                            onSelectChange={onSelectChange}
+                            targetKeys={targetKeys}
+                            selectedKeys={selectedKeys}
+                            titles={titles}
+                            render={item => item.title}
+                            className='mods-transfer'
+                        />
+                        <Button onClick={addManual} className='mods-manual-button'>
+                            {MANUAL_MOD}
+                        </Button>
+                    </>
+                    : <Spin className='mods-spin' />
+                }
+            </Modal>
+        )
+    }
+})
+
+function ItemToKeys(items: Item[]): string[] {
+    return items.map(item => item.path)
 }
 
-function KeysToModsItems(keys: string[], items: IItem[]): IConfigModsItems {
-    const out: IConfigModsItems = {};
+function KeysToModsItems(keys: string[], items: Item[]): ConfigModsItems {
+    const out: ConfigModsItems = {}
 
     keys.forEach(key => {
         Object.values(items).forEach(item => {
             if (item.path === key) {
-                out[basename(item.path, ".pak")] = {
+                out[basename(item.path, '.pak')] = {
                     name: basename(item.path),
                     path: item.path
-                };
+                }
             }
-        });
-    });
+        })
+    })
 
-    return out;
+    return out
 }
 
-function getTargetKeys(items: IItem[]) {
-    const keys = IItemToKeys(items);
+function getTargetKeys(items: Item[]) {
+    const keys = ItemToKeys(items)
 
     return Object.values(config.mods.items)
         .filter(value => keys.includes(value.path))
-        .map(value => value.path);
+        .map(value => value.path)
 }
-
-export default memo(ModsPopup);

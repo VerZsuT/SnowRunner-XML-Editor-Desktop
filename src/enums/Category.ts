@@ -1,6 +1,4 @@
-enum Category {
-    trucks = "trucks",
-    trailers = "trailers"
+export enum Category {
+    trucks = 'trucks',
+    trailers = 'trailers'
 }
-
-export default Category;

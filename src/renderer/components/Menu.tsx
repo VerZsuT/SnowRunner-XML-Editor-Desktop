@@ -1,19 +1,27 @@
-import { memo } from "react";
+import {memo} from 'react'
 
-import { Menu, MenuProps } from "antd";
-import Window from "enums/Window";
-import globalTexts from "globalTexts/renderer";
-import config from "scripts/config";
-import main from "scripts/main";
+import type {MenuProps} from 'antd'
+import {Menu as ANTMenu} from 'antd'
+import {BuildType, Window} from 'enums'
+import {globalTexts} from 'globalTexts/renderer'
+import {config} from 'scripts/config'
+import {getExported} from 'scripts/dom'
+import {main} from 'scripts/main'
+import type {FindItem} from 'types'
 
-import texts from "./texts";
+import {componentsTexts} from './texts'
 
-type MenuItem = Required<MenuProps>["items"][number];
+const MOD_IO_LINK = 'https://snowrunner.mod.io/guides/snowrunner-xml-editor'
+const GITHUB_LINK = 'https://github.com/VerZsuT/SnowRunner-XML-Editor-Desktop'
+const YOUTUBE_LINK = 'https://youtube.com/playlist?list=PLDwd4yUwzS2VtWCpC9X6MXm47Kv_s_mq2'
+
+type MenuItem = Required<MenuProps>['items'][number]
 
 const {
-    quitApp: quit, openLink, openPath, resetConfig, recoverFromBackup, copyBackup,
-    runUninstall, importConfig, exportConfig, openWindow, paths
-} = main;
+    quitApp, openLink, openPath, resetConfig, recoverFromBackup, copyBackup,
+    runUninstall, importConfig, exportConfig, openWindow, paths, findInDir
+} = main
+const { writeFileSync, join } = window.service
 const {
     EXIT_MENU_ITEM_LABEL,
     SETTINGS_MENU_LABEL,
@@ -26,124 +34,174 @@ const {
     FILE_MENU_LABEL,
     BACKUP_MENU_LABEL,
     HELP_MENU_LABEL
-} = texts;
+} = componentsTexts
 const {
     OPEN_BUTTON,
     SAVE_BUTTON,
     RESET_MENU_ITEM_LABEL
-} = globalTexts;
+} = globalTexts
 
-const hasInitial = !config.initial;
+function exportDefaults() {
+    const items: FindItem[] = []
+    const exported: any = {}
+
+    for (const dlcItem of config.dlc) {
+        const path = `${dlcItem.path}\\classes`
+
+        items.push(...findInDir(join(path, 'trucks')))
+        items.push(...findInDir(join(path, 'trucks/trailers')))
+        items.push(...findInDir(join(path, 'gearboxes')))
+        items.push(...findInDir(join(path, 'engines')))
+        items.push(...findInDir(join(path, 'suspensions')))
+        items.push(...findInDir(join(path, 'winches')))
+        items.push(...findInDir(join(path, 'wheels')))
+    }
+
+    items.push(...findInDir(join(paths.classes, 'trucks')))
+    items.push(...findInDir(join(paths.classes, 'trucks/trailers')))
+    items.push(...findInDir(join(paths.classes, 'gearboxes')))
+    items.push(...findInDir(join(paths.classes, 'engines')))
+    items.push(...findInDir(join(paths.classes, 'suspensions')))
+    items.push(...findInDir(join(paths.classes, 'winches')))
+    items.push(...findInDir(join(paths.classes, 'wheels')))
+
+    for (const item of items) {
+        const obj = getExported({
+            filePath: item.path
+        })
+        if (!obj) continue
+
+        const fileName = `${item.name}.xml`
+        exported[fileName] = obj.data[fileName]
+    }
+
+    writeFileSync(join(paths.backupFolder, 'exported.json'), JSON.stringify(exported, null, '\t'))
+}
+
+const hasInitial = !config.initial
+const isDev = config.buildType === BuildType.dev
+
+function menuItem(label: string, onClick: ()=>void, disabled = false): MenuItem {
+    return {
+        label,
+        onClick,
+        disabled,
+        key: Math.random().toString()
+    }
+}
+
+function nestedMenuItem(label: string, children: MenuItem[], disabled = false): MenuItem {
+    return {
+        label,
+        key: Math.random().toString(),
+        children,
+        disabled
+    }
+}
+
+const divider: MenuItem = { type: 'divider' }
 
 const fileMenu: MenuItem[] = [
-    {
-        label: EXIT_MENU_ITEM_LABEL,
-        onClick: () => quit(),
-        key: "exit"
-    }
-];
+    ...(isDev ? [menuItem(
+        'Export defaults',
+        exportDefaults
+    )] : []),
+    menuItem(
+        EXIT_MENU_ITEM_LABEL,
+        () => quitApp()
+    )
+]
 
 const backupMenu: MenuItem[] = [
-    {
-        label: OPEN_BUTTON,
-        onClick: () => openPath(paths.backupFolder),
-        key: "open-backup"
-    },
-    { type: "divider" },
-    {
-        label: SAVE_BUTTON,
-        onClick: () => copyBackup(),
-        key: "save-backup"
-    },
-    {
-        label: RESTORE_MENU_ITEM_LABEL,
-        onClick: () => recoverFromBackup(),
-        key: "recover-backup"
-    }
-];
+    menuItem(
+        OPEN_BUTTON,
+        () => openPath(paths.backupFolder)
+    ),
+    divider,
+    menuItem(
+        SAVE_BUTTON,
+        () => copyBackup()
+    ),
+    menuItem(
+        RESTORE_MENU_ITEM_LABEL,
+        () => recoverFromBackup()
+    )
+]
 
 const settingsMenu: MenuItem[] = [
-    {
-        label: SETTINGS_MENU_LABEL,
-        disabled: hasInitial,
-        onClick: () => openWindow(Window.Settings),
-        key: "open-settings"
-    },
-    { type: "divider" },
-    {
-        label: IMPORT_MENU_ITEM_LABEL,
-        onClick: () => importConfig(false),
-        key: "import-settings"
-    },
-    {
-        label: EXPORT_MENU_ITEM_LABEL,
-        disabled: hasInitial,
-        onClick: () => exportConfig(false),
-        key: "export-settings"
-    },
-    { type: "divider" },
-    {
-        label: RESET_MENU_ITEM_LABEL,
-        disabled: hasInitial,
-        onClick: () => resetConfig(),
-        key: "reset-settings"
-    },
-    {
-        label: UNINSTALL_MENU_ITEM_LABEL,
-        onClick: () => runUninstall(),
-        key: "unins-program"
-    }
-];
+    menuItem(
+        SETTINGS_MENU_LABEL,
+        () => openWindow(Window.Settings),
+        hasInitial
+    ),
+    divider,
+    menuItem(
+        IMPORT_MENU_ITEM_LABEL,
+        () => importConfig(false)
+    ),
+    menuItem(
+        EXPORT_MENU_ITEM_LABEL,
+        () => exportConfig(false),
+        hasInitial
+    ),
+    divider,
+    menuItem(
+        RESET_MENU_ITEM_LABEL,
+        () => resetConfig(),
+        hasInitial
+    ),
+    menuItem(
+        UNINSTALL_MENU_ITEM_LABEL,
+        () => runUninstall()
+    )
+]
 
 const helpMenu: MenuItem[] = [
-    {
-        label: VERSION_MENU_ITEM_LABEL,
-        onClick: () => openWindow(Window.WhatsNew),
-        key: "show-version"
-    },
-    { type: "divider" },
-    {
-        label: HOW_TO_USE_TITLE,
-        onClick: () => openLink("https://snowrunner.mod.io/guides/snowrunner-xml-editor"),
-        key: "how-to-use"
-    },
-    {
-        label: "GitHub",
-        onClick: () => openLink("https://github.com/VerZsuT/SnowRunner-XML-Editor-Desktop"),
-        key: "github"
-    },
-    {
-        label: "YouTube(RU)",
-        onClick: () => openLink("https://youtube.com/playlist?list=PLDwd4yUwzS2VtWCpC9X6MXm47Kv_s_mq2"),
-        key: "youtube"
-    }
-];
+    menuItem(
+        VERSION_MENU_ITEM_LABEL,
+        () => openWindow(Window.WhatsNew)
+    ),
+    divider,
+    menuItem(
+        HOW_TO_USE_TITLE,
+        () => openLink(MOD_IO_LINK)
+    ),
+    menuItem(
+        'GitHub',
+        () => openLink(GITHUB_LINK)
+    ),
+    menuItem(
+        'YouTube(RU)',
+        () => openLink(YOUTUBE_LINK)
+    )
+]
 
 const menuItems: MenuItem[] = [
-    {
-        label: FILE_MENU_LABEL,
-        key: "file-submenu",
-        children: fileMenu
-    },
-    {
-        label: BACKUP_MENU_LABEL,
-        disabled: hasInitial,
-        key: "backup-submenu",
-        children: backupMenu
-    },
-    {
-        label: SETTINGS_MENU_LABEL,
-        key: "settings-submenu",
-        children: settingsMenu
-    },
-    {
-        label: HELP_MENU_LABEL,
-        key: "help-submenu",
-        children: helpMenu
-    }
-];
+    nestedMenuItem(
+        FILE_MENU_LABEL,
+        fileMenu
+    ),
+    nestedMenuItem(
+        BACKUP_MENU_LABEL,
+        backupMenu,
+        hasInitial
+    ),
+    nestedMenuItem(
+        SETTINGS_MENU_LABEL,
+        settingsMenu
+    ),
+    nestedMenuItem(
+        HELP_MENU_LABEL,
+        helpMenu
+    )
+]
 
 /** Верхнее сервисное меню */
-export default memo(() => (
-    <Menu className="menu" mode="horizontal" selectable={false} items={menuItems}/>
-));
+export const Menu = memo(() => (
+    <ANTMenu
+        className='menu'
+        mode='horizontal'
+        selectable={false}
+        items={menuItems}
+    />
+))

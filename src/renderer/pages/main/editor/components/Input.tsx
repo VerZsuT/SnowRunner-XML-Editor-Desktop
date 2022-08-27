@@ -1,206 +1,122 @@
-import type { ChangeEvent, FocusEvent } from "react";
-import { memo, useCallback, useContext, useMemo, useState } from "react";
+import type {ChangeEvent, FocusEvent} from 'react'
 
-import InputType from "enums/InputType";
-import NumberType from "enums/NumberType";
-import useConst from "hooks/useConst";
-import type IInputParams from "types/IInputParams";
+import {Input as ANTInput, InputNumber} from 'antd'
+import {InputType, NumberType} from 'enums'
+import {afcMemo, handleContext} from 'react-afc'
+import type {InputParams, ParameterProps} from 'types'
 
-import useId from "../hooks/useId";
-import useImportExport from "../hooks/useImportExport";
-import useReset from "../hooks/useReset";
-import useResetMenu from "../hooks/useResetMenu";
-import MainContext from "../MainContext";
-import TextField from "../styled/TextField";
+import {FileDataContext} from '../helpers/getFileData'
+import {addTag} from '../service'
 
-const { basename } = window.service;
+type Status = '' | 'error' | 'warning'
 
-interface IProps {
-    item: IInputParams;
-    parentExportEnabled: boolean;
-    exportEnabled: boolean;
-    getValue(): string;
-    getDefaultValue(): string;
-    setValue(selector: string, attName: string, value: string): void;
-    registerReset?(id: string, func: () => void): void;
-    unregisterReset?(id: string): void;
-    show?: boolean;
-}
+export const Input = afcMemo((props: ParameterProps) => {
+    const getFileData = handleContext(FileDataContext)
 
-type BorderColor = "primary" | "warning" | "error";
+    const min = props.item.min ?? 0
+    const max = props.item.max ?? Infinity
 
-const textFieldStyle = { width: "150px" };
+    function onBlur(e: FocusEvent<HTMLInputElement>) {
+        const {fileDOM} = getFileData()
+        const {item, defaultValue, onSetValue} = props
+        let newValue = e.target.value
 
-export default memo((props: IProps) => {
-    const {
-        item,
-        show,
-        getValue,
-        setValue: pSetValue,
-        exportEnabled,
-        parentExportEnabled,
-        registerReset,
-        unregisterReset,
-        getDefaultValue
-    } = props;
-    const { addParam, removeParam, filePath, fileDOM } = useContext(MainContext);
-
-    const id = useId();
-    const min = useConst(props.item.min ?? 0);
-    const max = useConst(props.item.max ?? Infinity);
-    const defaultValue = useConst(() => getValue());
-
-    const [borderColor, setBorderColor] = useState<BorderColor>("primary");
-    const [value, setValue] = useState<string | number>(() => getValue());
-
-    const saveValue = useCallback((e: FocusEvent<HTMLInputElement>) => {
-        let newVal: string | number = e.target.value;
-
-        if (newVal === "")
-            newVal = defaultValue;
+        if (newValue === '')
+            newValue = defaultValue
 
         if (!fileDOM(item.selector).length) {
-            const array = item.selector.split(">").map(value => value.trim());
-            const name = array.pop().split("[")[0];
-            const rootSelector = array.join(" > ");
+            const array = item.selector.split('>').map(value => value.trim())
+            const name = array.pop().split('[')[0]
+            const rootSelector = array.join(' > ')
 
-            fileDOM(rootSelector).eq(0).append(`<${name}></${name}>`);
+            fileDOM(rootSelector).eq(0).append(`<${name}></${name}>`)
         }
-        pSetValue(item.selector, item.attribute, String(newVal));
-        setValue(newVal);
-    }, [defaultValue, fileDOM, item.selector, item.attribute, pSetValue]);
+        onSetValue(newValue)
+    }
 
-    const changeColor = useCallback((value: number) => {
-        let newVal: number = value;
+    function onChange(value: string) {
+        const { item, onSetValue } = props
+        const { fileDOM } = getFileData()
+        let newValue = value
 
-        if (value === null || isNaN(value))
-            newVal = 0;
+        if (item.type !== InputType.text && newValue !== '')
+            newValue = limit(item, +newValue, min, max).toString()
+
+        addTag(fileDOM, item)
+
+        onSetValue(newValue)
+    }
+
+    function onStringChange(e: ChangeEvent<HTMLInputElement>) {
+        onChange(e.target.value)
+    }
+
+    function getStatus() {
+        const { item, value } = props
+        let newVal = +value
+
+        if (value === null || isNaN(+value))
+            newVal = 0
 
         if (item.areas) {
-            let color: BorderColor = "primary";
+            let status: Status = ''
 
             for (const areaName in item.areas) {
-                const value = item.areas[areaName];
+                const value: [number, number][] = item.areas[areaName]
 
-                for (const area of value) {
+                value.forEach(area => {
                     if (newVal >= area[0] && newVal <= area[1]) {
-                        if (areaName === "red")
-                            color = "error";
-                        else if (areaName === "green")
-                            color = "primary";
-                        else if (areaName === "yellow")
-                            color = "warning";
+                        if (areaName === 'red')
+                            status = 'error'
+                        else if (areaName === 'green')
+                            status = ''
+                        else if (areaName === 'yellow')
+                            status = 'warning'
                     }
-                }
+                })
             }
 
-            setBorderColor(color);
+            return status
         }
-    }, [item]);
 
-    const onValueChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-        let newVal: string | number = e.target.value;
+        return ''
+    }
 
-        if (item.type !== InputType.text && newVal !== "")
-            newVal = limit(item, +newVal, min, max);
+    return () => {
+        const { item, value } = props
+        const status = getStatus()
 
-        changeColor(+newVal);
-        setValue(newVal);
-    }, [item, min, max, changeColor]);
+        return item.type === InputType.number
+            ? <InputNumber
+                style={{ width: 150 }}
+                value={value}
+                step={item.step}
+                onChange={onChange}
+                onBlur={onBlur}
+                status={status}
+                size='large'
+            />
+            : <ANTInput
+                style={{ width: 150 }}
+                value={value}
+                onChange={onStringChange}
+                onBlur={onBlur}
+                status={status}
+                size='large'
+            />
+    }
+})
 
-    const reset = useCallback(() => {
-        const defaultValue = getDefaultValue();
-
-        if (defaultValue !== undefined)
-            saveValue({ target: { value: defaultValue } } as FocusEvent<HTMLInputElement>);
-    }, [getDefaultValue, saveValue]);
-
-    useImportExport({
-        id, item, addParam, removeParam,
-        exportParam: [() => {
-            if (exportEnabled && parentExportEnabled) {
-                return {
-                    selector: item.selector,
-                    name: item.attribute,
-                    fileName: basename(filePath),
-                    value
-                };
-            }
-        }, [item, exportEnabled, parentExportEnabled, value]],
-        importParam: [(newValue: string) => {
-            if (value !== newValue)
-                saveValue({ target: { value: newValue } } as FocusEvent<HTMLInputElement>);
-        }, [value, saveValue]]
-    });
-
-    useReset({
-        id,
-        register: registerReset,
-        unregister: unregisterReset,
-        callback: [() => {
-            const defaultValue = getDefaultValue();
-
-            if (defaultValue !== undefined)
-                saveValue({ target: { value: defaultValue } } as FocusEvent<HTMLInputElement>);
-        }, [saveValue, getDefaultValue]]
-    });
-
-    const [onContextMenu, ResetMenu] = useResetMenu({
-        text: item.label,
-        onReset: reset
-    });
-
-    const stepProps = useMemo(() => ({
-        step: item.step
-    }), [item]);
-
-    if (show === false)
-        return null;
-
-    const placeholder = getDefaultValue();
-
-    return <>
-        {ResetMenu}
-        {item.type === InputType.number
-            ? (
-                <TextField
-                    id={id}
-                    value={value}
-                    type="number"
-                    inputProps={stepProps}
-                    onBlur={saveValue}
-                    onChange={onValueChange}
-                    placeholder={placeholder}
-                    onContextMenu={onContextMenu}
-                    color={borderColor}
-                />
-            )
-            : (
-                <TextField
-                    id={id}
-                    type="text"
-                    placeholder={placeholder}
-                    value={value}
-                    onChange={onValueChange}
-                    onBlur={saveValue}
-                    onContextMenu={onContextMenu}
-                    style={textFieldStyle}
-                    color={borderColor}
-                />
-            )}
-    </>;
-});
-
-function limit(item: IInputParams, num: number, min?: number, max?: number) {
-    let number = num;
+function limit(item: InputParams, num: number, min?: number, max?: number) {
+    let number = num
     if (item.numberType === NumberType.integer)
-        number = Math.round(number);
+        number = Math.round(number)
 
     if (min !== undefined && number < min)
-        return min;
+        return min
 
     if (max !== undefined && number > max)
-        return max;
+        return max
 
-    return num;
+    return number
 }

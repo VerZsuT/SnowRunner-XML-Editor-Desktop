@@ -1,48 +1,27 @@
-import { BrowserWindow, ipcMain } from "electron";
+import {BrowserWindow, ipcMain} from 'electron'
 
-import type ICreateWindowAttributes from "types/ICreateWindowAttributes";
-import type IWindowSize from "types/IWindowBounds";
-import type IWindows from "types/IWindows";
+import {BuildType} from 'enums'
+import type {CreateWindowAttributes, Windows} from 'types'
 
-import paths from "./paths";
-import { regFunctions } from "./bridge";
-import { Stack } from "./service";
-import settings from "./settings";
+import {config} from './config'
+import {paths} from './paths'
+import {settings} from './settings'
 
-export const wins: IWindows = {
+export const wins: Windows = {
     loading: null
-};
-
-const stack = new Stack<BrowserWindow>();
-
-regFunctions([setWindowSize]);
-
-/** Установить размер окна */
-export function setWindowSize(size: IWindowSize) {
-    const {
-        height = 500,
-        width = 500,
-        minHeight = 0,
-        minWidth = 0
-    } = size;
-    const current = stack.peek();
-
-    current.setMinimumSize(minWidth, minHeight);
-    current.setSize(width, height);
-    current.center();
 }
 
 /** Открыть модальное окно */
-export function openModal(args: ICreateWindowAttributes): BrowserWindow {
+export function openModal(args: CreateWindowAttributes): BrowserWindow {
     return createWindow({
         ...args,
         modal: true,
         parent: BrowserWindow.getFocusedWindow()
-    });
+    })
 }
 
 /** Создать окно с указанными атрибутами */
-export function createWindow(args: ICreateWindowAttributes): BrowserWindow {
+export function createWindow(args: CreateWindowAttributes): BrowserWindow {
     const {
         width = 800,
         height = 600,
@@ -52,9 +31,9 @@ export function createWindow(args: ICreateWindowAttributes): BrowserWindow {
         show = false,
         modal = false,
         frame = true,
-        parent, preload, window
-    } = args;
-    const { icon } = paths;
+        parent, preload, type
+    } = args
+    const { icon } = paths
 
     const wind = new BrowserWindow({
         width,
@@ -70,29 +49,27 @@ export function createWindow(args: ICreateWindowAttributes): BrowserWindow {
         paintWhenInitiallyHidden: false,
         webPreferences: {
             preload,
-            devTools: process.env.NODE_ENV !== "production",
-            contextIsolation: false
+            devTools: config.buildType === BuildType.dev,
+            contextIsolation: false,
+            webviewTag: false,
+            sandbox: false
         }
-    });
-    stack.push(wind);
-    wind.setMenuBarVisibility(false);
-    wind.removeMenu();
+    })
+    wind.setMenuBarVisibility(false)
+    wind.removeMenu()
 
-    ipcMain.once(`window-${window}-ready`, () => {
+    ipcMain.once(`window-${type}-ready`, () => {
         if (wind && !wind.isDestroyed()) {
-            wind.show();
-            wind.focus();
+            wind.show()
+            wind.focus()
 
             if (settings.devTools)
-                wind.webContents.toggleDevTools();
+                wind.webContents.toggleDevTools()
         }
-    });
-    wind.once("close", () => {
-        stack.pop();
-    });
+    })
+
     wind.loadURL(args.path)
-        .catch(error => {
-            console.error(error);
-        });
-    return wind;
+        .catch(error => console.error(error))
+
+    return wind
 }

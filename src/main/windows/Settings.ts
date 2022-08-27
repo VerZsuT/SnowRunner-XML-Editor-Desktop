@@ -1,19 +1,20 @@
-import Window from "enums/Window";
-import type ICreateWindowAttributes from "types/ICreateWindowAttributes";
+import {Window} from 'enums'
+import type {CreateWindowAttributes} from 'types'
 
-import entries from "../scripts/webpackEntries";
-import { openModal } from "../scripts/windows";
+import {webpackEntries} from '../scripts/webpackEntries'
+import {openModal} from '../scripts/windows'
+import {regWindow} from './winsObject'
 
-const createArgs: ICreateWindowAttributes = {
-    path: entries.settings,
-    preload: entries.settingsPreload,
+const createArgs: CreateWindowAttributes = {
+    path: webpackEntries.settings,
+    preload: webpackEntries.settingsPreload,
     width: 400,
     minWidth: 400,
     height: 330,
     minHeight: 350,
-    window: Window.Settings
-};
+    type: Window.Settings
+}
 
-export default async () => {
-    return openModal(createArgs);
-};
+regWindow(Window.Settings, async () => {
+    return openModal(createArgs)
+})

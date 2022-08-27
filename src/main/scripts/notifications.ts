@@ -1,6 +1,6 @@
-import { Notification } from "electron";
+import {Notification} from 'electron'
 
-import paths from "./paths";
+import {paths} from './paths'
 
 /** Вывести `windows-notification` на экран */
 export async function showNotification(title: string, message: string) {
@@ -9,9 +9,9 @@ export async function showNotification(title: string, message: string) {
             title,
             icon: paths.icon,
             body: message
-        });
+        })
 
-        notification.show();
-        await new Promise(resolve => notification.once("click", resolve));
+        notification.show()
+        await new Promise(resolve => notification.once('click', resolve))
     }
 }

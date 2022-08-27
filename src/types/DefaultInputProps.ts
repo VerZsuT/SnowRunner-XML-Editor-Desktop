@@ -1,16 +1,11 @@
 /** Дефолтные параметры поля ввода. */
-type DefaultInputProps = {
+export interface DefaultInputProps {
     /** Название редактируемого атрибута. */
-    attribute: string;
-
+    attribute: string
     /** Селектор элемента, у которого редактируем атрибут. */
-    selector?: string;
-
+    selector?: string
     /** Текст в таблице. */
-    label: string;
-
+    label: string
     /** Можно ли добавить родительский элемент при его отсутствии. */
-    addMissedTag?: boolean;
+    addMissedTag?: boolean
 }
-
-export default DefaultInputProps;

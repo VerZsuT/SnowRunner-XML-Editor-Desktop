@@ -1,12 +1,9 @@
-import type ISettings from "types/ISettings";
+import type {Settings} from 'types'
 
 /** Объект настроек */
-const settings: ISettings = {};
+export const settings: Settings = {}
 
 /** Установить настройки */
-export function setSettings(newObj: ISettings) {
-    for (const key in newObj)
-        settings[key] = newObj[key];
+export function setSettings(newObj: Settings) {
+    Object.assign(settings, newObj)
 }
-
-export default settings;

@@ -1,37 +1,39 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta charset="utf-8">
-        <title>SnowRunner XML Editor {--VERSION--}</title>
+        <meta charset='utf-8'>
+        <title></title>
     </head>
     <body>
-        <div id="main"></div>
+        <div id='main'></div>
 
-        <script type="module">
-            const { sendSync } = window.ipc;
-            const config = sendSync("property_config_get").value;
+        <script type='module'>
+            const { sendSync } = window.ipc
+            const config = sendSync('property_config_get').value
 
             function quit() {
-                sendSync("function_quit_call");
+                sendSync('function_quit_call')
             }
             function devTools() {
-                sendSync("function_devTools_call");
+                sendSync('function_devTools_call')
             }
 
-            document.title = document.title.replace("{--VERSION--}", `v${config.version}`);
-            document.addEventListener("keydown", (event) => {
-                if (event.ctrlKey && event.code === "KeyS") {
-                    const button = document.querySelector("#save");
-                    if (button)
-                        button.click();
-                }
-                else if (event.ctrlKey && event.code === "KeyQ") {
-                    quit();
-                }
-                else if (event.code === "KeyI" && event.ctrlKey && event.shiftKey && config.buildType === "dev") {
-                    devTools();
-                }
-            });
+            document.title = `SnowRunner XML Editor v${config.version}`
+            document.addEventListener('keydown', event => {
+                const keyIs = code => event.code === `Key${code}`
+                const shift = event.shiftKey
+                const ctrl = event.ctrlKey
+                const dev = config.buildType === 'dev'
+
+                if (!ctrl) return
+
+                if (keyIs('S'))
+                    document.querySelector('#save')?.click()
+                else if (keyIs('Q'))
+                    quit()
+                else if (keyIs('I') && shift && dev)
+                    devTools()
+            })
         </script>
     </body>
 </html>

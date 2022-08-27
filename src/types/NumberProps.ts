@@ -1,15 +1,13 @@
-import type NumberType from "enums/NumberType";
+import type {NumberType} from 'enums'
 
-import type DefaultInputProps from "./DefaultInputProps";
-import type IInputProps from "./IInputProps";
+import type {DefaultInputProps} from './DefaultInputProps'
+import type {InputProps} from './InputProps'
 
-type NumberProps = DefaultInputProps & {
-    type?: NumberType;
-    min?: IInputProps["min"];
-    max?: IInputProps["max"];
-    step?: number;
-    default?: number;
-    areas?: IInputProps["areas"];
-};
-
-export default NumberProps;
+export type NumberProps = DefaultInputProps & {
+    type?: NumberType
+    min?: InputProps['min']
+    max?: InputProps['max']
+    step?: number
+    default?: number
+    areas?: InputProps['areas']
+}

@@ -1,6 +1,6 @@
-import main from "scripts/main";
+import {main} from 'scripts/main'
 
-const { texts } = main;
+const { texts } = main
 
 /**
  * Возвращает игровой перевод по ключу.
@@ -8,24 +8,24 @@ const { texts } = main;
  * @param modId - id модификации.
  */
 export function getGameText(key: string, modId?: string): string {
-    let value: string;
+    let value: string
     if (modId && texts.mods[modId])
-        value = texts.mods[modId][key];
+        value = texts.mods[modId][key]
     else
-        value = texts.game[key];
-    
+        value = texts.game[key]
+
     if (value)
-        return value;
+        return value
 }
 
-const forEach = "[SXMLE_ID=\"-CYCLE1-\"]";
-const first = "[SXMLE_ID=\"-F_CYCLE1-\"]";
-const last = "[SXMLE_ID=\"-L_CYCLE1-\"]";
+const forEach = '[SXMLE_ID="-CYCLE1-"]'
+const first = '[SXMLE_ID="-F_CYCLE1-"]'
+const last = '[SXMLE_ID="-L_CYCLE1-"]'
 
-const forEachBy = (cycleNum: number) => `[SXMLE_ID="-CYCLE${cycleNum}-"]`;
-const firstBy = (cycleNum: number) => `[SXMLE_ID="-F_CYCLE${cycleNum}-"]`;
-const lastBy = (cycleNum: number) => `[SXMLE_ID="-L_CYCLE${cycleNum}-"]`;
-const th = (pos: number, cycleNum = 1) => `[SXMLE_ID="-N${pos}_CYCLE${cycleNum}-"]`;
+const forEachBy = (cycleNum: number) => `[SXMLE_ID="-CYCLE${cycleNum}-"]`
+const firstBy = (cycleNum: number) => `[SXMLE_ID="-F_CYCLE${cycleNum}-"]`
+const lastBy = (cycleNum: number) => `[SXMLE_ID="-L_CYCLE${cycleNum}-"]`
+const th = (pos: number, cycleNum = 1) => `[SXMLE_ID="-N${pos}_CYCLE${cycleNum}-"]`
 
 type SelArgs = {
     /** По каждому элементу с перед-стоящим селектором. */
@@ -126,17 +126,17 @@ export function getSelectors<T extends { [id: string]: string }>(func: (args: Se
         lastBy,
         firstBy,
         th
-    });
-    const newObj: T = { ...obj };
+    })
+    const newObj: T = { ...obj }
 
     for (const id in obj) {
-        newObj[id] = <ItemType>`SELECTOR_ID:${id}||${newObj[id]}`;
+        newObj[id] = <ItemType>`SELECTOR_ID:${id}||${newObj[id]}`
         newObj[id] = <ItemType>newObj[id]
-            .replaceAll(".", ">")
-            .replaceAll(">", " > ")
-            .replaceAll(" ", "!")
-            .replaceAll("!!", "!")
-            .replaceAll("!", " ");
+            .replaceAll('.', '>')
+            .replaceAll('>', ' > ')
+            .replaceAll(' ', '!')
+            .replaceAll('!!', '!')
+            .replaceAll('!', ' ')
     }
-    return newObj;
+    return newObj
 }

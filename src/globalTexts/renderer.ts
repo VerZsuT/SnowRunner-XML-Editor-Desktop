@@ -1,5 +1,5 @@
-import localize from "scripts/localize";
+import {localize} from 'scripts/localize'
 
-import globalTexts from "./texts";
+import {_globalTexts} from './texts'
 
-export default localize(globalTexts);
+export const globalTexts = localize(_globalTexts)

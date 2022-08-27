@@ -1,6 +1,4 @@
-import type IItemGetterProps from "./IItemGetterProps";
-import type ITemplateParams from "./ITemplateParams";
+import type {ItemGetterProps} from './ItemGetterProps'
+import type {TemplateParams} from './TemplateParams'
 
-type TemplateGetter = (props: IItemGetterProps) => ITemplateParams;
-
-export default TemplateGetter;
+export type TemplateGetter = (props: ItemGetterProps) => TemplateParams

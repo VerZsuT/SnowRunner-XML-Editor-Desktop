@@ -1,9 +1,9 @@
-import { existsSync, lstatSync, mkdirSync, readdirSync, rmSync } from "fs";
-import { join } from "path";
+import {existsSync, lstatSync, mkdirSync, readdirSync, rmSync} from 'fs'
+import {join} from 'path'
 
-import type IFindItem from "types/IFindItem";
+import type {FindItem} from 'types'
 
-import paths from "./paths";
+import {paths} from './paths'
 
 /**
  * Найти в папке все соответствия
@@ -13,73 +13,45 @@ import paths from "./paths";
  * @param recursive - рекурсивный поиск
  * @returns массив путей
  */
-export function findInDir(startPath: string, onlyDirs?: boolean, ext = ".xml", recursive?: boolean): IFindItem[] {
-    let array: IFindItem[] = [];
+export function findInDir(startPath: string, onlyDirs?: boolean, ext = '.xml', recursive?: boolean): FindItem[] {
+    let array: FindItem[] = []
 
     if (!existsSync(startPath))
-        return [];
+        return []
 
-    const files = readdirSync(startPath);
-    for (let i = 0; i < files.length; i++) {
-        const filePath = join(startPath, files[i]);
-        const stat = lstatSync(filePath);
+    const files = readdirSync(startPath)
+    files.forEach(file => {
+        const filePath = join(startPath, file)
+        const stat = lstatSync(filePath)
 
         if (onlyDirs) {
             if (!stat.isDirectory())
-                continue;
+                return
 
             array.push({
-                name: files[i],
+                name: file,
                 path: filePath
-            });
+            })
         }
-    
+
         if (stat.isDirectory() && recursive) {
-            array = [...array, ...findInDir(filePath, false, ext, true)];
+            array = [...array, ...findInDir(filePath, false, ext, true)]
         }
-        else if (files[i].indexOf(ext) >= 0) {
+        else if (file.indexOf(ext) >= 0) {
             array.push({
-                name: files[i].replace(ext, ""),
+                name: file.replace(ext, ''),
                 path: filePath
-            });
+            })
         }
-    }
-    return array;
+    })
+    return array
 }
 
 /** Очистить папку для временных файлов программы */
 export function clearTemp() {
-    rmSync(paths.backupInitial, { force: true });
-    rmSync(paths.mainTemp, { recursive: true, force: true });
-    rmSync(paths.modsTemp, { recursive: true, force: true });
-    mkdirSync(paths.mainTemp);
-    mkdirSync(paths.modsTemp);
-}
-
-export class Stack<T> {
-    private readonly storage: T[] = [];
-    private readonly capacity: number;
-  
-    constructor(capacity = Infinity) {
-        this.capacity = capacity;
-    }
-  
-    push(item: T): void {
-        if (this.size() === this.capacity) 
-            throw Error("Stack has reached max capacity, you cannot add more items");
-      
-        this.storage.push(item);
-    }
-  
-    pop(): T | undefined {
-        return this.storage.pop();
-    }
-  
-    peek(): T | undefined {
-        return this.storage[this.size() - 1];
-    }
-  
-    size(): number {
-        return this.storage.length;
-    }
+    rmSync(paths.backupInitial, { force: true })
+    rmSync(paths.mainTemp, { recursive: true, force: true })
+    rmSync(paths.modsTemp, { recursive: true, force: true })
+    mkdirSync(paths.mainTemp)
+    mkdirSync(paths.modsTemp)
 }

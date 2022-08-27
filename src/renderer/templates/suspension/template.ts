@@ -1,47 +1,44 @@
-import NameType from "enums/NameType";
-import NumberType from "enums/NumberType";
-import type ITemplate from "types/ITemplate";
+import {NameType, NumberType} from 'enums'
+import type {XMLTemplate} from 'types'
 
-import { ForEach, Group, Number, Template } from "../items";
-import unlockGroup from "../presets/unlockGroup";
-import { getSelectors } from "../service";
-import texts from "./texts";
+import {ForEach, Group, Number, Template} from '../items'
+import {unlockGroup} from '../presets/unlockGroup'
+import {getSelectors} from '../service'
+import {suspensionTexts} from './texts'
 
 const selectors = getSelectors(({ forEach, forEachBy }) => {
-    const suspensionSet = `SuspensionSetVariants.SuspensionSet${forEach}`;
-    const suspensionSetText = `${suspensionSet}.GameData.UiDesc`;
-    const suspension = `${suspensionSet}.Suspension${forEachBy(2)}`;
-    const gameData = `${suspensionSet}.GameData`;
+    const suspensionSet = `SuspensionSetVariants.SuspensionSet${forEach}`
+    const suspensionSetText = `${suspensionSet}.GameData.UiDesc`
+    const suspension = `${suspensionSet}.Suspension${forEachBy(2)}`
+    const gameData = `${suspensionSet}.GameData`
 
-    return { suspensionSet, suspensionSetText, suspension, gameData };
-});
+    return { suspensionSet, suspensionSetText, suspension, gameData }
+})
 
-export default <ITemplate> {
-    selector: "SuspensionSetVariants",
+export const suspensionTemplate = {
+    selector: 'SuspensionSetVariants',
     template: Template(selectors, [
         ForEach(selectors.suspensionSet, [
             Group({
                 label: {
                     type: NameType.computed,
-                    attribute: "UiName",
-                    extraAttribute: "Name",
-                    selector: selectors.suspensionSetText,
-                    extraSelector: selectors.suspensionSet
+                    attribute: ['UiName', 'Name'],
+                    selector: [selectors.suspensionSetText, selectors.suspensionSet]
                 },
-                providedSelector: selectors.suspensionSet
+                provided: selectors.suspensionSet
             }, [
                 Number({
-                    attribute: "CriticalDamageThreshold",
-                    label: texts.criticalDamageThreshold,
+                    attribute: 'CriticalDamageThreshold',
+                    label: suspensionTexts.criticalDamageThreshold,
                     max: 0.999,
                     min: 0,
                     step: 0.01,
                     default: 0.7
                 }),
                 Number({
-                    attribute: "DamageCapacity",
+                    attribute: 'DamageCapacity',
                     type: NumberType.integer,
-                    label: texts.damageCapacity,
+                    label: suspensionTexts.damageCapacity,
                     max: 64000,
                     step: 10,
                     default: 0,
@@ -52,13 +49,13 @@ export default <ITemplate> {
                 }),
                 ForEach(selectors.suspension, [
                     Group({
-                        label: texts.suspension,
-                        providedSelector: selectors.suspension,
+                        label: suspensionTexts.suspension,
+                        provided: selectors.suspension,
                         addCounter: true
                     }, [
                         Number({
-                            attribute: "Height",
-                            label: texts.height,
+                            attribute: 'Height',
+                            label: suspensionTexts.height,
                             max: 1000,
                             min: -1000,
                             areas: {
@@ -67,8 +64,8 @@ export default <ITemplate> {
                             }
                         }),
                         Number({
-                            attribute: "Strength",
-                            label: texts.strength,
+                            attribute: 'Strength',
+                            label: suspensionTexts.strength,
                             step: 0.01,
                             areas: {
                                 yellow: [[0.5, 1.5]],
@@ -76,8 +73,8 @@ export default <ITemplate> {
                             }
                         }),
                         Number({
-                            attribute: "Damping",
-                            label: texts.damping,
+                            attribute: 'Damping',
+                            label: suspensionTexts.damping,
                             max: 1000,
                             areas: {
                                 yellow: [[1, 3]],
@@ -85,8 +82,8 @@ export default <ITemplate> {
                             }
                         }),
                         Number({
-                            attribute: "SuspensionMin",
-                            label: texts.suspensionMin,
+                            attribute: 'SuspensionMin',
+                            label: suspensionTexts.suspensionMin,
                             max: 1000,
                             min: -1000,
                             step: 0.01,
@@ -96,8 +93,8 @@ export default <ITemplate> {
                             }
                         }),
                         Number({
-                            attribute: "SuspensionMax",
-                            label: texts.suspensionMax,
+                            attribute: 'SuspensionMax',
+                            label: suspensionTexts.suspensionMax,
                             max: 1000,
                             min: -1000,
                             step: 0.01,
@@ -108,8 +105,8 @@ export default <ITemplate> {
                             }
                         }),
                         Number({
-                            attribute: "BrokenSuspensionMax",
-                            label: texts.brokenSuspensionMax,
+                            attribute: 'BrokenSuspensionMax',
+                            label: suspensionTexts.brokenSuspensionMax,
                             max: 1000,
                             min: -1000,
                             step: 0.01,
@@ -124,4 +121,4 @@ export default <ITemplate> {
             ])
         ])
     ])
-};
+} as XMLTemplate

@@ -1,9 +1,9 @@
-import { existsSync, readFileSync, writeFileSync, readdirSync, lstatSync } from "fs";
-import { join, basename } from "path";
+import {existsSync, lstatSync, readdirSync, readFileSync, writeFileSync} from 'fs'
+import {basename, join} from 'path'
 
-import type IService from "types/IService";
+import type {Service} from 'types'
 
-const service: IService = {
+window.service = {
     readFileSync: (path: string) => readFileSync(path).toString(),
     isDirectory: (path: string) => lstatSync(path).isDirectory(),
     writeFileSync,
@@ -11,12 +11,4 @@ const service: IService = {
     existsSync,
     basename,
     join
-};
-
-if (global)
-    global.service = service;
-
-if (window)
-    window.service = service;
-
-export default service;
+} as Service

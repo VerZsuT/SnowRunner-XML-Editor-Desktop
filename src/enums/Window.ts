@@ -1,10 +1,9 @@
-enum Window {
+export enum Window {
     Main,
     Settings,
     Update,
     WhatsNew,
     Loading,
-    Setup
+    Setup,
+    Help
 }
-
-export default Window;

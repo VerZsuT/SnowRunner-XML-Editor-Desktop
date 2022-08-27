@@ -1,3 +1,1 @@
-type KeyEventName = "keypress" | "keyup" | "keydown";
-
-export default KeyEventName;
+export type KeyEventName = 'keypress' | 'keyup' | 'keydown';

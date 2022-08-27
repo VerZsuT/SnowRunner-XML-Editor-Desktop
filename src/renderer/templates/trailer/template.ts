@@ -1,33 +1,33 @@
-import NumberType from "enums/NumberType";
-import type ITemplate from "types/ITemplate";
+import {NumberType} from 'enums'
+import type {XMLTemplate} from 'types'
 
-import { ForEach, Group, Number, Template } from "../items";
-import { getSelectors } from "../service";
-import texts from "./texts";
+import {ForEach, Group, Number, Template} from '../items'
+import {getSelectors} from '../service'
+import {trailerTexts} from './texts'
 
 const selectors = getSelectors(({ forEach }) => {
-    const truckData = "Truck.TruckData";
-    const wheels = `${truckData}.Wheels`;
-    const wheel = `${wheels}.Wheel${forEach}`;
-    const modelBody = "Truck.PhysicsModel.Body";
-    const fuelMass = "Truck.FuelMass.Body";
-    const gameData = "Truck.GameData";
-    const addonSlots = `${gameData}.AddonSlots`;
+    const truckData = 'Truck.TruckData'
+    const wheels = `${truckData}.Wheels`
+    const wheel = `${wheels}.Wheel${forEach}`
+    const modelBody = 'Truck.PhysicsModel.Body'
+    const fuelMass = 'Truck.FuelMass.Body'
+    const gameData = 'Truck.GameData'
+    const addonSlots = `${gameData}.AddonSlots`
 
-    return { truckData, modelBody, fuelMass, gameData, addonSlots, wheel };
-});
+    return { truckData, modelBody, fuelMass, gameData, addonSlots, wheel }
+})
 
-export default <ITemplate> {
-    selector: "Truck[Type=\"Trailer\"]",
+export const trailerTemplate = {
+    selector: 'Truck[Type="Trailer"]',
     template: Template(selectors, [
         Group({
-            label: texts.inner,
-            providedSelector: selectors.truckData
+            label: trailerTexts.inner,
+            provided: selectors.truckData
         }, [
             Number({
-                attribute: "FuelCapacity",
+                attribute: 'FuelCapacity',
                 type: NumberType.integer,
-                label: texts.fuelCapacity,
+                label: trailerTexts.fuelCapacity,
                 max: 64000,
                 step: 10,
                 default: 0,
@@ -37,9 +37,9 @@ export default <ITemplate> {
                 }
             }),
             Number({
-                attribute: "RepairsCapacity",
+                attribute: 'RepairsCapacity',
                 type: NumberType.integer,
-                label: texts.repairsCapacity,
+                label: trailerTexts.repairsCapacity,
                 default: 0,
                 areas: {
                     yellow: [[1000, 5000]],
@@ -47,9 +47,9 @@ export default <ITemplate> {
                 }
             }),
             Number({
-                attribute: "WheelRepairsCapacity",
+                attribute: 'WheelRepairsCapacity',
                 type: NumberType.integer,
-                label: texts.wheelRepairsCapacity,
+                label: trailerTexts.wheelRepairsCapacity,
                 default: 0,
                 areas: {
                     yellow: [[100, 500]],
@@ -57,55 +57,55 @@ export default <ITemplate> {
                 }
             }),
             Number({
-                attribute: "Quantity",
+                attribute: 'Quantity',
                 type: NumberType.integer,
                 selector: selectors.addonSlots,
-                label: texts.quantity
+                label: trailerTexts.quantity
             })
         ]),
-        Group(texts.mass, [
+        Group(trailerTexts.mass, [
             Number({
-                attribute: "Mass",
+                attribute: 'Mass',
                 type: NumberType.integer,
                 selector: selectors.modelBody,
-                label: texts.trailerMass
+                label: trailerTexts.trailerMass
             }),
             Number({
-                attribute: "Mass",
+                attribute: 'Mass',
                 type: NumberType.integer,
                 selector: selectors.fuelMass,
-                label: texts.fuelMass
+                label: trailerTexts.fuelMass
             })
         ]),
         Group({
-            label: texts.wheels
+            label: trailerTexts.wheels
         }, [
             ForEach(selectors.wheel, [
                 Group({
-                    label: texts.wheel,
-                    providedSelector: selectors.wheel,
+                    label: trailerTexts.wheel,
+                    provided: selectors.wheel,
                     addCounter: true
                 }, [
                     Number({
-                        attribute: "SuspensionHeight",
-                        label: texts.suspHeight
+                        attribute: 'SuspensionHeight',
+                        label: trailerTexts.suspHeight
                     }),
                     Number({
-                        attribute: "SuspensionStrength",
-                        label: texts.suspStrength
+                        attribute: 'SuspensionStrength',
+                        label: trailerTexts.suspStrength
                     })
                 ])
             ])
         ]),
         Group({
-            label: texts.other,
-            providedSelector: selectors.gameData
+            label: trailerTexts.other,
+            provided: selectors.gameData
         }, [
             Number({
-                attribute: "Price",
+                attribute: 'Price',
                 type: NumberType.integer,
-                label: texts.price
+                label: trailerTexts.price
             })
         ])
     ])
-};
+} as XMLTemplate
