@@ -1,26 +1,27 @@
-export default {
-    pop<T>(name: string) {
-        const val = localStorage.getItem(name)
+/** Работа с local storage */
+export const storage = {
+    pop<T = string>(name: string) {
+        const value = localStorage.getItem(name)
 
         localStorage.removeItem(name)
-        if (val === 'null')
+        if (value === 'null')
             return null
 
-        if (val === 'undefined')
+        if (value === 'undefined')
             return undefined
 
-        return val as unknown as T
+        return <T><unknown>value
     },
-    get<T>(name: string) {
-        const val = localStorage.getItem(String(name))
+    get<T = string>(name: string) {
+        const value = localStorage.getItem(String(name))
 
-        if (val === 'null')
+        if (value === 'null')
             return null
 
-        if (val === 'undefined')
+        if (value === 'undefined')
             return undefined
 
-        return val as unknown as T
+        return <T><unknown>value
     },
     set(name: string, value: string) {
         localStorage.setItem(String(name), value)

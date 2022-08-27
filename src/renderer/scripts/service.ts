@@ -1,19 +1,14 @@
-import { contextBridge } from 'electron'
-import { join, basename } from 'path'
-import { existsSync, readFileSync, writeFileSync, readdirSync, lstatSync } from 'fs'
-import type IService from './types/IService'
+import {existsSync, lstatSync, readdirSync, readFileSync, writeFileSync} from 'fs'
+import {basename, join} from 'path'
 
-const service: IService = {
-    join,
-    basename,
-    existsSync,
-    readFileSync: path => readFileSync(path).toString(),
-    writeFileSync,
+import type {Service} from 'types'
+
+window.service = {
+    readFileSync: (path: string) => readFileSync(path).toString(),
     isDirectory: (path: string) => lstatSync(path).isDirectory(),
-    readdirSync
-}
-
-contextBridge.exposeInMainWorld('service', service)
-global['service'] = service
-
-export default service
+    writeFileSync,
+    readdirSync,
+    existsSync,
+    basename,
+    join
+} as Service

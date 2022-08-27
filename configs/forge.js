@@ -1,56 +1,52 @@
-const template = './src/renderer/template.html'
-const mainPreload = './src/renderer/scripts/mainPreload.ts'
+const renderer = './src/renderer'
+const webpackConfigs = './configs/webpack'
+
+const rootPreload = `${renderer}/scripts/rootPreload.ts`
+const template = `${renderer}/template.html`
+const pages = `${renderer}/pages`
+const favicon = '.webpack/main/favicon.ico'
+
+const mainConfig = `${webpackConfigs}/main.js`
+const rendererConfig = `${webpackConfigs}/renderer.js`
 
 /**
  * Возвращает путь к модулю
  * @param {string} name
  */
-function getModule(name) {
-    const modules = './src/renderer/modules'
+function getPage(name) {
     return {
-        main: `${modules}/${name}/main.tsx`,
-        preload: `${modules}/${name}/preload.ts`
+        main: `${pages}/${name}/index.tsx`,
+        preload: `${pages}/${name}/preload.ts`
     }
-}
-
-/**
- * Позвращает путь к конфигу
- * @param {string} name
- */
-function getConfig(name) {
-    return `./configs/${name}`
 }
 
 function entryPoint(name, preloadIsMain=false, moduleName=null) {
     return {
         name,
         html: template,
-        js: getModule(moduleName ?? name).main,
+        js: getPage(moduleName ?? name).main,
         preload: {
-            js: preloadIsMain ? mainPreload : getModule(moduleName ?? name).preload
+            js: preloadIsMain? rootPreload : getPage(moduleName ?? name).preload
         }
     }
 }
 
 module.exports = {
-    packagerConfig: { icon: '.webpack/main/favicon.ico' },
+    packagerConfig: { icon: favicon },
     plugins: [
         [
             '@electron-forge/plugin-webpack',
             {
-                mainConfig: getConfig('webpack.main.js'),
+                mainConfig,
                 renderer: {
-                    config: getConfig('webpack.renderer.js'),
+                    config: rendererConfig,
                     entryPoints: [
-                        entryPoint('setup'),
                         entryPoint('loading', true),
-                        entryPoint('categories', true),
-                        entryPoint('console'),
-                        entryPoint('list'),
-                        entryPoint('settings'),
                         entryPoint('update', true),
-                        entryPoint('editor'),
-                        entryPoint('whats_new', true, 'whatsNew')
+                        entryPoint('settings', true),
+                        entryPoint('whatsNew', true),
+                        entryPoint('main'),
+                        entryPoint('setup')
                     ]
                 }
             }

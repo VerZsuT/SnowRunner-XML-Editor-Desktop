@@ -1,133 +1,180 @@
-import { load } from 'cheerio'
-import type { Cheerio, Node as CNode } from 'cheerio'
-import type { JSXElementConstructor } from 'react'
-import type { CheerioAPI } from 'cheerio'
-import type ITemplateParams from 'templates/types/ITemplateParams'
-import type ActionBase from 'templates/actions/ActionBase'
-import type IActionModule from 'templates/types/IActionModule'
-import type IActionProps from 'templates/types/IActionProps'
-import type IEditorAction from 'modules/editor/types/IEditorAction'
-import type IInputParams from 'templates/types/IInputParams'
-import type IGroupParams from 'templates/types/IGroupParams'
-import type ISelectParams from 'main/templates/types/ISelectParams'
-import ParamType from 'templates/enums/ParamType'
+import type {AnyNode, Cheerio, CheerioAPI} from 'cheerio'
+import {load} from 'cheerio'
+import {FileType, ParamType} from 'enums'
+import {XMLFiles} from 'pages/main/editor/xmlFiles'
+import {main} from 'scripts/main'
+import {extra, templates} from 'templates'
+import type {ExportedData, GroupParams, InputParams, SelectParams, TemplateParams, XMLTemplate} from 'types'
 
-import main from 'scripts/main'
-import IExportData from 'modules/editor/types/IExportData'
-import FileType from 'main/templates/enums/FileType'
+const EXPORTED_FILE_VERSION = '2.0'
 
 const { join, basename, readFileSync, existsSync, readdirSync } = window.service
-const { templates, getParams, paths } = main
+const { paths } = main
 
-export function getExported(filePath: string, shortMode=true, modId?: string, dlc?: string) {
-    const [fileDOM, tItems, actions] = process(filePath)
+interface Config {
+    filePath: string
+    shortMode?: boolean
+    mod?: string
+    dlc?: string
+    fileDOM?: CheerioAPI
+    templateItems?: TemplateParams
+    actions?: XMLTemplate['actions']
+}
+
+export function getExported(config: Config): ExportedData | ExportedData['data'][string] {
+    const {
+        filePath,
+        mod,
+        dlc,
+        shortMode = false
+    } = config
+    let {
+        fileDOM,
+        templateItems,
+        actions
+    } = config
+
+    if (!fileDOM)
+        [fileDOM, templateItems, actions] = process(filePath)
+
     const fileName = basename(filePath)
-    const version = '2.0'
-
     const globalTemplates = getGlobalTemplates()
-    let templates: Cheerio<CNode>
 
-    const extraFiles: any = {}
-    const main: any = {}
-    const actionsData: any = {}
+    const extraFiles: ExportedData['data'] = {}
+    const main: ExportedData['data'][string] = {}
+    const actionsData: ExportedData['actionsData'] = {}
 
-    if (!fileDOM || !tItems.length)
+    if (!fileDOM || !templateItems.length)
         return
 
-    templates = fileDOM('_templates').eq(0)
+    const templates = fileDOM('_templates').eq(0)
 
-    function calcInput(item: IInputParams) {
-        if (!main[item.selector])
-            main[item.selector] = {}
+    function calcInput(item: InputParams) {
+        const { selector, attribute } = item
+        const value = getValue(fileDOM, templates, globalTemplates, item)
 
-        main[item.selector][item.name] = getValue(fileDOM, templates, globalTemplates, item)
+        if (value !== null && value !== undefined) {
+            main[selector] = {
+                ...main[selector],
+                [attribute]: value
+            }
+        }
     }
 
-    function calcGroup(item: IGroupParams) {
-        for (const groupItem of item.groupItems) {
+    function calcGroup(item: GroupParams) {
+        item.groupItems.forEach(groupItem => {
             if (groupItem.paramType === ParamType.group)
                 calcGroup(groupItem)
             else if (groupItem.type === 'file' && !shortMode)
                 calcFile(groupItem)
-            else 
+            else
                 calcInput(groupItem)
-        }
+        })
     }
 
-    const calcFile = (item: IInputParams) => {
-        const fileNames: string[] = (String(item.value)).split(',').map((value) => value.trim())
+    function calcFile(item: InputParams) {
+        const fileNames: string[] = (String(item.value)).split(',').map(value => value.trim())
 
-        if (item.fileType === FileType.wheels && item.name !== 'Type') {
+        if (item.fileType === FileType.wheels && item.attribute !== 'Type') {
             fileDOM('Truck > TruckData > CompatibleWheels').map((_, el) => {
                 const type = fileDOM(el).attr('Type')
-                if (!fileNames.includes(type)) {
+                if (!fileNames.includes(type))
                     fileNames.push(type)
-                }
             })
         }
 
-        for (const fileName of fileNames) {
-            const pathsToFiles = [`${paths.classes}/${item.fileType}/${fileName}.xml`]
+        fileNames.forEach(fileName => {
+            const pathsToFiles = [`${paths.classes}\\${item.fileType}\\${fileName}.xml`]
             let mainPath: string
-            let itemMod = modId
+            let itemMod = mod
 
             if (dlc)
-                pathsToFiles.push(`${paths.dlc}/${dlc}/classes/${item.fileType}/${fileName}.xml`)
-            else if (modId)
-                pathsToFiles.push(`${paths.modsTemp}/${modId}/classes/${item.fileType}/${fileName}.xml`)
+                pathsToFiles.push(`${paths.dlc}\\${dlc}\\classes\\${item.fileType}\\${fileName}.xml`)
+            else if (mod)
+                pathsToFiles.push(`${paths.modsTemp}\\${mod}\\classes\\${item.fileType}\\${fileName}.xml`)
 
-            for (const path of pathsToFiles) {
-                if (existsSync(path)) {
+            pathsToFiles.forEach(path => {
+                if (existsSync(path))
                     mainPath = path
-                }
-            }
+            })
 
             if (!mainPath) {
                 mainPath = findFromDLC(fileName, item.fileType)
                 itemMod = undefined
             }
             if (!mainPath)
-                continue
+                return
 
-            extraFiles[`${fileName}.xml`] = getExported(mainPath, true, itemMod, dlc)
-        }
+            const [_, templateItems, actions] = process(mainPath)
+
+            let fileDOM = null
+            XMLFiles.forEach(file => {
+                if (file.path === mainPath)
+                    fileDOM = file.dom
+            })
+
+            extraFiles[`${fileName}.xml`] = getExported({
+                fileDOM,
+                templateItems,
+                actions,
+                shortMode: true,
+                filePath: mainPath,
+                mod: itemMod,
+                dlc
+            }) as ExportedData['data'][string]
+        })
     }
 
-    for (const tItem of tItems) {
-        switch (tItem.paramType) {
-            case ParamType.input:
-                if ((<IInputParams>tItem).type === 'file' && !shortMode)
-                    calcFile(tItem as IInputParams)
-                else
-                    calcInput(tItem as IInputParams)
-            break
-            case ParamType.group:
-                calcGroup(tItem as IGroupParams)
-            break
+    templateItems.forEach(tItem => {
+        if (tItem.paramType === ParamType.input) {
+            if (tItem.type === 'file' && !shortMode)
+                calcFile(tItem)
+            else
+                calcInput(tItem)
         }
-    }
+        else if (tItem.paramType === ParamType.group) {
+            calcGroup(tItem)
+        }
+    })
 
     if (!shortMode) {
-        for (const action of actions) {
-            const obj = action.object.export()
-            if (!obj)
-                continue
+        actions.forEach(action => {
+            const obj = action.data.export(fileDOM)
+            if (!obj) return
 
-            actionsData[action.id] = obj
-        }
+            actionsData[action.data.id] = obj
+        })
 
-        return <IExportData> {
+        return <ExportedData> {
             fileName,
             data: {
                 [fileName]: main,
                 ...extraFiles
             },
             actionsData,
-            version
+            version: EXPORTED_FILE_VERSION
         }
     }
 
     return main
+}
+
+export function getValueInGlobal(templateName: string, tagName: string, globalTemplates: CheerioAPI, item: InputParams | SelectParams) {
+    const template = globalTemplates(`${tagName} > ${templateName}`)
+
+    if (template.length) {
+        const templateValue = template.attr(item.attribute)
+        if (templateValue)
+            return templateValue
+
+        const el2 = template.find(tagName).eq(0)
+        if (el2.length) {
+            const templateValue2 = el2.attr(item.attribute)
+            if (templateValue2)
+                return templateValue2
+        }
+    }
+    return item.value
 }
 
 export function getGlobalTemplates() {
@@ -137,13 +184,12 @@ export function getGlobalTemplates() {
     return load(fileData, { xmlMode: true })
 }
 
-export function process(filePath: string): [CheerioAPI, ITemplateParams, IEditorAction[]] {
+export function process(filePath: string): [CheerioAPI, TemplateParams, XMLTemplate['actions']] {
     const fileData = readFileSync(filePath)
     const fileName = basename(filePath, '.xml')
-    const actions: IEditorAction[] = []
+    const actions: XMLTemplate['actions'] = []
     let dom: CheerioAPI
     let name: keyof typeof templates
-    let result: any
 
     if (!fileData)
         return
@@ -156,52 +202,88 @@ export function process(filePath: string): [CheerioAPI, ITemplateParams, IEditor
             break
         }
     }
+  
     if (!name)
         return [load('<error/>'), [], []]
 
-    result = getParams(dom.html(), name, fileName)
+    const result = getParams(dom.html(), name, fileName)
     dom = load(result.dom, { xmlMode: true })
 
     if (result.actions.length) {
-        for (const actionPath of result.actions) {
-            const module = <IActionModule>require(`templates/actions/${actionPath}`)
-            let object: ActionBase
-            if (module.data.isActive(dom, fileName)) {
-                object = new module.default({ dom }, null, null)
-                actions.push({
-                    ...module.data,
-                    component: module.default as unknown as JSXElementConstructor<IActionProps>,
-                    object: object
-                })
-            }
-        }
+        result.actions.forEach(action => {
+            const actionData = action.data
+            if (actionData.isActive(dom, fileName))
+                actions.push(action)
+        })
     }
 
     return [dom, result.params, actions]
 }
 
 function findFromDLC(fileName: string, type: string) {
-    for (const dlcFolder of readdirSync(paths.dlc)) {
-        const path = join(paths.dlc, dlcFolder, 'classes', type, `${fileName}.xml`)
+    const dlcFolders = readdirSync(paths.dlc)
+    for (let i = 0; i < dlcFolders.length; ++i) {
+        const path = join(paths.dlc, dlcFolders[i], 'classes', type, `${fileName}.xml`)
         if (existsSync(path))
             return path
     }
 }
 
-function getValue(fileDOM: CheerioAPI, templates: Cheerio<CNode>, globalTemplates: CheerioAPI, item: IInputParams | ISelectParams) {
-    let value = item.value
+function getValue(fileDOM: CheerioAPI, templates: Cheerio<AnyNode>, globalTemplates: CheerioAPI, item: InputParams | SelectParams) {
+    let value = fileDOM(item.selector).attr(item.attribute) ?? item.value
 
-    if (!value && value !== 0 && templates.length) {
+    if (!value && value !== 0 && templates.length)
         value = getFromTemplates(fileDOM, templates, globalTemplates, item)
-    }
-    if (value === null || value === undefined) {
+
+    if (value === null || value === undefined)
         value = item.default
-    }
 
     return value
 }
 
-function getFromTemplates(fileDOM: CheerioAPI, templates: Cheerio<CNode>, globalTemplates: CheerioAPI, item: IInputParams | ISelectParams) {
+function getParentTemplate(el: any) {
+    if (el.parentElement) {
+        const template = el.parentElement.getAttribute('_template')
+        if (template)
+            return template
+        return getParentTemplate(el.parentElement)
+    }
+}
+
+export function getParams(domString: string, name: keyof typeof templates, fileName: string) {
+    const fileDOM = load(domString, { xmlMode: true })
+    const mainActions = templates[name].actions
+    const extraActions = extra[fileName]?.actions
+    const extraTemplate = extra[fileName]?.template
+    const extraExclude = extra[fileName]?.exclude
+
+    let resultActions: XMLTemplate['actions'] = []
+    let params = <TemplateParams>templates[name].template({ fileDOM })
+
+    if (mainActions)
+        resultActions.push(...mainActions)
+
+    if (extraTemplate) {
+        params = [
+            ...params,
+            ...extraTemplate({ fileDOM })
+        ]
+    }
+
+    if (extraActions)
+        resultActions.push(...extraActions)
+
+    if (extraExclude)
+        resultActions = resultActions.filter(action => !extraExclude.includes(action))
+
+    return {
+        dom: fileDOM.html(),
+        actions: resultActions,
+        params
+    }
+}
+
+export function getFromTemplates(fileDOM: CheerioAPI, templates: Cheerio<AnyNode>, globalTemplates: CheerioAPI, item: InputParams | SelectParams) {
     let el = fileDOM(item.selector)
     const array = item.selector.split(' ')
         .map(value => value.trim())
@@ -209,9 +291,9 @@ function getFromTemplates(fileDOM: CheerioAPI, templates: Cheerio<CNode>, global
     const innerName = array.slice(array.length - 1)[0]
     const tagName = innerName.split('[')[0]
 
-    if (!el.length) {
+    if (!el.length)
         el = fileDOM(array.slice(0, array.length - 1).join(' > '))
-    }
+
     if (el.length) {
         let templateName = el.attr('_template')
         if (!templateName)
@@ -220,21 +302,19 @@ function getFromTemplates(fileDOM: CheerioAPI, templates: Cheerio<CNode>, global
         if (templateName) {
             const template = templates.find(templateName).eq(0)
             if (template.length) {
-                const templateValue = template.attr(item.name)
-                let el2: Cheerio<CNode>
+                const templateValue = template.attr(item.attribute)
 
                 if (templateValue)
                     return templateValue
 
-                el2 = template.find(tagName).eq(0)
+                const el2 = template.find(tagName).eq(0)
                 if (el2.length) {
-                    const templateValue2 = el2.attr(item.name)
-                    let templateName1: string
+                    const templateValue2 = el2.attr(item.attribute)
 
                     if (templateValue2)
                         return templateValue2
 
-                    templateName1 = el2.attr('_template')
+                    const templateName1 = el2.attr('_template')
                     if (templateName1)
                         return getValueInGlobal(templateName1, tagName, globalTemplates, item)
                 }
@@ -244,34 +324,4 @@ function getFromTemplates(fileDOM: CheerioAPI, templates: Cheerio<CNode>, global
             }
         }
     }
-}
-
-function getParentTemplate(el: any) {
-    if (el.parentElement) {
-        const template = el.parentElement.getAttribute('_template')
-        if (template)
-            return template
-        else
-            return getParentTemplate(el.parentElement)
-    }
-}
-
-function getValueInGlobal(templateName: string, tagName: string, globalTemplates: CheerioAPI, item: IInputParams | ISelectParams) {
-    const template = globalTemplates(`${tagName} > ${templateName}`)
-
-    if (template.length) {
-        const templateValue = template.attr(item.name)
-        if (templateValue) {
-            return templateValue
-        }
-        else {
-            const el2 = template.find(tagName).eq(0)
-            if (el2.length) {
-                const templateValue2 = el2.attr(item.name)
-                if (templateValue2)
-                    return templateValue2
-            }
-        }
-    }
-    return item.value
 }

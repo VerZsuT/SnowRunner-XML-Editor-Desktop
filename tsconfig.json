@@ -1,14 +1,12 @@
 {
   "compilerOptions": {
     "experimentalDecorators": true,
-    "target": "ES2021",
-    "lib": ["ES2021", "DOM"],
+    "target": "ESNext",
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
     "jsx": "react-jsx",
-    "allowJs": true,
     "incremental": true,
     "isolatedModules": true,
-    "module": "esnext",
-    "pretty": true,
+    "module": "ESNext",
     "allowSyntheticDefaultImports": true,
     "allowUnreachableCode": false,
     "esModuleInterop": true,
@@ -17,23 +15,34 @@
     "newLine": "LF",
     "moduleResolution": "node",
     "resolveJsonModule": true,
-    "declaration": true,
-    "emitDeclarationOnly": true,
+    "declaration": false,
+    "emitDeclarationOnly": false,
+    "skipLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "types": ["src/types/index"],
+      "types/*": ["src/types/*"],
+      "consts": ["src/types/consts"],
+      "enums": ["src/enums/index"],
+      "enums/*": ["src/enums/*"],
+      "globalTexts/*": ["src/globalTexts/*"],
+      "scripts/*": ["src/renderer/scripts/*"],
+      "components/*": ["src/renderer/components/*"],
+      "helpers/*": ["src/renderer/helpers/*"],
+      "hooks/*": ["src/renderer/hooks/*"],
+      "pages/*": ["src/renderer/pages/*"],
+      "templates": ["src/renderer/templates/index"],
+      "templates/*": ["src/renderer/templates/*"],
       "main": ["src/main/index"],
       "main/*": ["src/main/*"],
-      "menu": ["src/renderer/scripts/menu"],
-      "scripts/*": ["src/renderer/scripts/*"],
-      "templates/*": ["src/main/templates/*"],
-      "texts": ["src/main/texts/index"],
-      "texts/*": ["src/main/texts/*"],
+      "renderer/*": ["src/renderer/*"],
       "images/*": ["src/images/*"],
-      "styles/*": ["src/renderer/styles/*"],
-      "modules/*": ["src/renderer/modules/*"],
-      "*": ["node_modules/*"]
+      "src/*": ["src/*"]
     }
   },
-  "include": ["src/**/*"],
-  "exclude": ["mode_modules"]
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.json"
+  ]
 }

@@ -1,63 +1,59 @@
-class Log {
-    static FgYellow = '\x1b[33m'
-    static Reset = '\x1b[0m'
-    static FgBlue = '\x1b[34m'
-    static FgRed = '\x1b[31m'
-    static FgCyan = '\x1b[36m'
-    static FgGreen = '\x1b[32m'
+const FG_YELLOW = '\x1b[33m'
+const FG_BLUE = '\x1b[34m'
+const FG_RED = '\x1b[31m'
+const FG_GREEN = '\x1b[32m'
+const RESET_COLOR = '\x1b[0m'
 
-    static stageNumber = 1
-    static prefix = `${this.FgYellow}[POST_BUILD]${this.Reset}`
+const PREFIX = `${FG_YELLOW}[BUILD]${RESET_COLOR}`
 
-    /**
-     * Пишет сообщение в консоль. Если стоит флаг `isLog`, то пишет зелёным вне группы.
-     * @param {string} message 
-     * @param {boolean} isLog 
-     */
-    static print(message, isLog = false) {
-        if (isLog)
-            console.log(`${this.FgGreen}${message}${this.Reset}`)
-        else
-            console.log(`- ${message}`)
-    }
+let stageNumber = 1
+let mainIsStarted = false
 
-    /**
-     * Создаёт главную группу. 
-     */
-    static mainGroup() {
-        console.group(this.prefix)
-    }
+/**
+ * Пишет сообщение в консоль. Если стоит флаг `isLog`, то пишет зелёным вне группы.
+ * @param {string} message 
+ * @param {boolean} isLog 
+ */
+function print(message, isLog=false) {
+    startMain()
+    if (isLog)
+        console.log(`${FG_GREEN}${message}${RESET_COLOR}`)
+    else
+        console.log(`- ${message}`)
+}
 
-    /**
-     * Создаёт группу стадии.
-     */
-    static stageGroup() {
-        console.group(`${this.FgBlue}[STAGE_${this.stageNumber}]${this.Reset}`)
-    }
-
-    /**
-     * Закрывает последнюю созданную группу.
-     */
-    static groupEnd() {
-        console.groupEnd()
-    }
-
-    /**
-     * Пишет в консоль в стиле ошибки.
-     * @param {string} message 
-     */
-    static error(message) {
-        console.log(`${this.FgRed}${message}${this.Reset}`)
-    }
-
-    /**
-     * Закрывает текущую группу, увеличивает номер стадии и создаёт новую группу.
-     */
-    static separator() {
-        this.groupEnd()
-        this.stageNumber++
-        this.stageGroup()
+/**
+ * Главная группа
+ */
+function startMain() {
+    if (!mainIsStarted) {
+        console.group(PREFIX)
+        mainIsStarted = true
     }
 }
 
-module.exports = Log
+/**
+ * Группа стадии
+ * @param {Function} callback
+ */
+function stage(callback) {
+    startMain()
+    console.group(`${FG_BLUE}[STAGE_${stageNumber}]${RESET_COLOR}`)
+    callback()
+    console.groupEnd()
+    stageNumber++
+}
+
+/**
+ * Пишет в консоль в стиле ошибки.
+ * @param {string} message 
+ */
+function error(message) {
+    console.log(`${FG_RED}${message}${RESET_COLOR}`)
+}
+
+module.exports = {
+    print,
+    error,
+    stage
+}
