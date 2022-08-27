@@ -92,6 +92,7 @@ out
 src/backups/
 
 .vscode/
+.idea/
 src/main/test-config.json
 build_scripts/out
 test.js
