@@ -20,6 +20,7 @@ export const paths = <Paths> {
     root: resolve('../../'),
     /** Папка `updateRoot` **/
     updateRoot: resolve('../../../updateRoot'),
+    updateBackupFolder: resolve('../../../updateRoot/.webpack/main/backups'),
     /** `config.json` */
     config: resolve('config.json'),
     /** Файл с переводами игры */

@@ -11,7 +11,26 @@ import './styles.sass'
 
 const { WHATS_NEW_TITLE } = whatsNewTexts
 
-const data = localize({
+const data071 = localize({
+    RU: [
+        'Исправлен баг с редактированием координат',
+        'Восстановлен перенос конфигурации при обновлении'
+    ],
+    EN: [
+        'Fixed a bug with editing coordinates',
+        'Restored the migration of the configuration during the update'
+    ],
+    DE: [
+        'Fehler beim Bearbeiten von Koordinaten behoben',
+        'Beim Upgrade wurde die Konfigurationsumlagerung wiederhergestellt'
+    ],
+    CH: [
+        '修正了编辑坐标的错误',
+        '在更新期间恢复了配置的迁移'
+    ]
+})
+
+const data070 = localize({
     RU: [
         'Программа адаптирована под новую версию игры',
         'Добавлены картинки новых авто',
@@ -111,15 +130,29 @@ const WhatsNew = afc(() => {
 
     return () => <>
         <Divider className='title'>
+            {WHATS_NEW_TITLE} {' v0.7.1'}
+        </Divider>
+        <List
+            className='content'
+            size='small'
+            dataSource={data071}
+            renderItem={item => (
+                <List.Item>
+                    {item}
+                </List.Item>
+            )}
+        />
+
+        <Divider className='title'>
             {WHATS_NEW_TITLE} {' v0.7.0'}
         </Divider>
         <List
             className='content'
             size='small'
-            dataSource={data}
+            dataSource={data070}
             renderItem={item => (
                 <List.Item>
-                    {`- ${item}`}
+                    {item}
                 </List.Item>
             )}
         />

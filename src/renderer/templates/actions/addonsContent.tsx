@@ -26,6 +26,7 @@ const {
     ADDON_FUEL,
     ADDON_REPAIRS,
     ADDON_CHANGE_BUTTON,
+    ADDON_FILTER,
     CHANGED
 } = actionTexts
 
@@ -82,21 +83,21 @@ export const AddonsContent = createAction({
     afterDraw(() => {
         const { filePath, currentMod } = props
 
-        if (!state.items) {
-            setTimeout(() => {
-                const items = getAddons(basename(filePath, '.xml'), currentMod, isInstalled)
-                const data = getAddonData(items[0].path)
+        if (state.items) return
 
-                options = initOptions(items)
-                setState({
-                    items,
-                    selectedAddon: items[0].name,
-                    wheels: data.wheels,
-                    repairs: data.repairs,
-                    fuel: data.fuel
-                })
-            }, 500)
-        }
+        setTimeout(() => {
+            const items = getAddons(basename(filePath, '.xml'), currentMod, isInstalled)
+            const data = getAddonData(items[0].path)
+
+            options = initOptions(items)
+            setState({
+                items,
+                selectedAddon: items[0].name,
+                wheels: data.wheels,
+                repairs: data.repairs,
+                fuel: data.fuel
+            })
+        }, 500)
     })
 
     const onChangeWheels = (wheels: string) => setState({ wheels })
@@ -124,6 +125,7 @@ export const AddonsContent = createAction({
                     type='text'
                     onBlur={onBlurFilter}
                     className='ac-content'
+                    placeholder={ADDON_FILTER}
                 /><br/><br/>
                 <Select
                     value={selectedAddon}

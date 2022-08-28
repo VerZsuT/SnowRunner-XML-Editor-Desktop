@@ -5,6 +5,7 @@ export interface Paths {
     updateMap: string
     root: string
     updateRoot: string
+    updateBackupFolder: string
     config: string
     testConfig: string
     backupFolder: string

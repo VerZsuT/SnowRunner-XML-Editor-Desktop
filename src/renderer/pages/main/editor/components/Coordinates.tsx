@@ -25,9 +25,9 @@ export const Coordinates = afcMemo((props: ParameterProps) => {
         onSetValue(coordsToString(newCoords))
     }
 
-    const onChangeX = (value: string) => onChangeValue({ x: value })
-    const onChangeY = (value: string) => onChangeValue({ y: value })
-    const onChangeZ = (value: string) => onChangeValue({ z: value })
+    const onChangeX = (value: string) => onChangeValue({ x: value ?? 0 })
+    const onChangeY = (value: string) => onChangeValue({ y: value ?? 0 })
+    const onChangeZ = (value: string) => onChangeValue({ z: value ?? 0 })
 
     return () => {
         const { item, value } = props
@@ -58,7 +58,7 @@ export const Coordinates = afcMemo((props: ParameterProps) => {
 
 function coordsToString(coords: Coordinates) {
     const { x, y, z } = coords
-    return `(${x} ${y} ${z})`
+    return `(${x}; ${y}; ${z})`
 }
 
 function stringToCoords(str: string): Coordinates {

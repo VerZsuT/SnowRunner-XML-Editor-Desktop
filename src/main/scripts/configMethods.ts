@@ -1,5 +1,5 @@
 import {app} from 'electron'
-import {existsSync, readFileSync, rmSync, writeFileSync} from 'fs'
+import {existsSync, mkdirSync, readFileSync, rmSync, writeFileSync} from 'fs'
 import {join} from 'path'
 
 import {DialogType} from 'enums'
@@ -77,10 +77,10 @@ export function resetConfig(noReload?: boolean) {
 /** Экспортировать `config.json`. */
 export function exportConfig(toBackups = true) {
     if (toBackups) {
-        if (!existsSync(paths.backupFolder))
-            return false
+        if (!existsSync(paths.updateBackupFolder))
+            mkdirSync(paths.updateBackupFolder, { recursive: true })
 
-        writeFileSync(`${paths.backupFolder}\\config.json`, JSON.stringify(config))
+        writeFileSync(`${paths.updateBackupFolder}\\config.json`, JSON.stringify(config))
         return true
     }
 
