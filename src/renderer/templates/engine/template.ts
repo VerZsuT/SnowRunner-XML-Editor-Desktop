@@ -100,7 +100,7 @@ export const engineTemplate = {
                 }),
                 Number({
                     attribute: 'BrakesDelay',
-                    label: engineTexts.breakesDelay,
+                    label: engineTexts.brakesDelay,
                     max: 1,
                     min: 0,
                     default: 0

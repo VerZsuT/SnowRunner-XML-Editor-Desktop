@@ -98,8 +98,8 @@ export const gearboxTemplate = {
                         attribute: 'IsHighGearExists',
                         label: gearboxTexts.highGear,
                         options: {
-                            true: gearboxTexts.allow,
-                            false: gearboxTexts.notAllow
+                            true: gearboxTexts.gearAllow,
+                            false: gearboxTexts.gearNotAllow
                         },
                         default: 'true'
                     }),
@@ -107,8 +107,8 @@ export const gearboxTemplate = {
                         attribute: 'IsLowerGearExists',
                         label: gearboxTexts.lowerGear,
                         options: {
-                            true: gearboxTexts.allow,
-                            false: gearboxTexts.notAllow
+                            true: gearboxTexts.gearAllow,
+                            false: gearboxTexts.gearNotAllow
                         },
                         default: 'true'
                     }),
@@ -116,8 +116,8 @@ export const gearboxTemplate = {
                         attribute: 'IsLowerPlusGearExists',
                         label: gearboxTexts.lowerPlusGear,
                         options: {
-                            true: gearboxTexts.allow,
-                            false: gearboxTexts.notAllow
+                            true: gearboxTexts.gearAllow,
+                            false: gearboxTexts.gearNotAllow
                         },
                         default: 'true'
                     }),
@@ -125,8 +125,8 @@ export const gearboxTemplate = {
                         attribute: 'IsLowerMinusGearExists',
                         label: gearboxTexts.lowerMinusGear,
                         options: {
-                            true: gearboxTexts.allow,
-                            false: gearboxTexts.notAllow
+                            true: gearboxTexts.gearAllow,
+                            false: gearboxTexts.gearNotAllow
                         },
                         default: 'true'
                     })

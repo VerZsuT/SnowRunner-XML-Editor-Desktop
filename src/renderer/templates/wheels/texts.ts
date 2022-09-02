@@ -26,9 +26,9 @@ export const wheelsTexts = localize({
         no: 'Nein'
     },
     CH: {
-        bodyFriction: '越野车离合器',
-        bodyFrictionAsphalt: '在沥青上的抓地力',
-        substanceFriction: '泥浆中的离合器',
+        bodyFriction: '在干土地上的摩擦力',
+        bodyFrictionAsphalt: '在公路上的摩擦力',
+        substanceFriction: '在泥浆里的摩擦力',
         ignoreIse: '在冰上驾驶',
         yes: '是',
         no: '没有'

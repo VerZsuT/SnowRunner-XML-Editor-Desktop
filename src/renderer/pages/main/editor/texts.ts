@@ -50,8 +50,8 @@ export const editorTexts = localize({
         ACTIONS_MENU: 'zusätzlich'
     },
     CH: {
-        SAVING_MESSAGE: '拯救...',
-        SUCCESS_SAVE_FILES: '救助的对象',
+        SAVING_MESSAGE: '保存中',
+        SUCCESS_SAVE_FILES: '保存成功',
         FILE_IS_RESETED: '参数已被重置',
         SUCCESS_RESET: '参数已被重置',
         RESET_CONFIRM_MESSAGE: '你真的想把所有的参数重设为原来的设置吗？',

@@ -11,6 +11,21 @@ import './styles.sass'
 
 const { WHATS_NEW_TITLE } = whatsNewTexts
 
+const data072 = localize({
+    RU: [
+        'Исправлен перевод для RU, EN, CH'
+    ],
+    EN: [
+        'Fixed translation for RU, EN, CH'
+    ],
+    DE: [
+        'Korrigierte Übersetzung für RU, EN, CH'
+    ],
+    CH: [
+        'RU,EN,CH的固定翻译'
+    ]
+})
+
 const data071 = localize({
     RU: [
         'Исправлен баг с редактированием координат',
@@ -129,6 +144,20 @@ const WhatsNew = afc(() => {
     windowReady(Window.WhatsNew)
 
     return () => <>
+        <Divider className='title'>
+            {WHATS_NEW_TITLE} {' v0.7.2'}
+        </Divider>
+        <List
+            className='content'
+            size='small'
+            dataSource={data072}
+            renderItem={item => (
+                <List.Item>
+                    {item}
+                </List.Item>
+            )}
+        />
+
         <Divider className='title'>
             {WHATS_NEW_TITLE} {' v0.7.1'}
         </Divider>

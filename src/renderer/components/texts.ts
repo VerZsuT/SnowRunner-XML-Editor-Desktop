@@ -2,7 +2,6 @@ import {localize} from 'scripts/localize'
 
 export const componentsTexts = localize({
     RU: {
-        DROP_TEXT: 'Отпустите для импортирования',
         EXIT_MENU_ITEM_LABEL: 'Выход',
         SETTINGS_MENU_LABEL: 'Настройки',
         UNINSTALL_MENU_ITEM_LABEL: 'Удалить программу',
@@ -16,7 +15,6 @@ export const componentsTexts = localize({
         VERSION_MENU_ITEM_LABEL: 'Версия'
     },
     EN: {
-        DROP_TEXT: 'Release to Import',
         EXIT_MENU_ITEM_LABEL: 'Exit',
         SETTINGS_MENU_LABEL: 'Settings',
         RESTORE_MENU_ITEM_LABEL: 'Restore',
@@ -30,7 +28,6 @@ export const componentsTexts = localize({
         VERSION_MENU_ITEM_LABEL: 'Version'
     },
     DE: {
-        DROP_TEXT: 'Zum Importieren freigeben',
         EXIT_MENU_ITEM_LABEL: 'Exit',
         SETTINGS_MENU_LABEL: 'Einstellungen',
         RESTORE_MENU_ITEM_LABEL: 'Standard Wiederherstellen',
@@ -44,8 +41,7 @@ export const componentsTexts = localize({
         VERSION_MENU_ITEM_LABEL: 'Ausführung'
     },
     CH: {
-        DROP_TEXT: '释放进口',
-        EXIT_MENU_ITEM_LABEL: '输出',
+        EXIT_MENU_ITEM_LABEL: '退出',
         SETTINGS_MENU_LABEL: '设置',
         RESTORE_MENU_ITEM_LABEL: '还原',
         UNINSTALL_MENU_ITEM_LABEL: '卸载程序',

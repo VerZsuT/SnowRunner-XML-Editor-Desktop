@@ -8,10 +8,10 @@ export const engineTexts = localize({
         responsiveness: 'Отзывчивость',
         fuelConsumption: 'Потребление топлива',
         torque: 'Крутящий момент',
-        damagedMinTorqueModifier: 'Минимальный множитель мощности при повреждении',
-        damagedMaxTorqueModifier: 'Максимальный множитель мощности при повреждении',
-        breakesDelay: 'Задержка торможения',
-        maxDeltaAngVel: 'Замедление ускорения'
+        damagedMinTorqueModifier: 'Мин. множитель мощности при повреждении',
+        damagedMaxTorqueModifier: 'Макс. множитель мощности при повреждении',
+        brakesDelay: 'Задержка торможения',
+        maxDeltaAngVel: 'Макс. дельта угловой скорости'
     },
     EN: {
         criticalDamageThreshold: 'Critical damage threshold',
@@ -22,8 +22,8 @@ export const engineTexts = localize({
         torque: 'Torque',
         damagedMinTorqueModifier: 'Damaged min torque modifier',
         damagedMaxTorqueModifier: 'Damaged max torque modifier',
-        breakesDelay: 'Braking delay',
-        maxDeltaAngVel: 'Deceleration of acceleration'
+        brakesDelay: 'Braking delay',
+        maxDeltaAngVel: 'Max angular velocity delta'
     },
     DE: {
         criticalDamageThreshold: 'Kritische Schadensschwelle',
@@ -34,19 +34,19 @@ export const engineTexts = localize({
         torque: 'Drehmoment',
         damagedMinTorqueModifier: 'Beschädigter min Drehmomentmodifikator',
         damagedMaxTorqueModifier: 'Beschädigte max Drehmoment-Modifikator',
-        breakesDelay: 'Verzögerung beim Bremsen',
-        maxDeltaAngVel: 'Verlangsamung der Beschleunigung'
+        brakesDelay: 'Verzögerung beim Bremsen',
+        maxDeltaAngVel: 'maximale Winkelgeschwindigkeit Delta'
     },
     CH: {
-        criticalDamageThreshold: '危急伤害阈值',
-        damageCapacity: '耐用性',
-        damagedConsumptionModifier: '损害的燃料消耗乘数',
-        responsiveness: '响应性',
-        fuelConsumption: '燃料消耗',
+        criticalDamageThreshold: '扱害阈値',
+        damageCapacity: '血量',
+        damagedConsumptionModifier: '损伤时油耗增加的倍数',
+        responsiveness: '引擎转速增加的速度',
+        fuelConsumption: '油耗',
         torque: '扭矩',
-        damagedMinTorqueModifier: '伤害的最小功率乘数',
-        damagedMaxTorqueModifier: '伤害的最大功率乘数',
-        breakesDelay: '制动延迟',
+        damagedMinTorqueModifier: '损坏时马力输出倍数',
+        damagedMaxTorqueModifier: '严重损坏时马力输出倍数',
+        brakesDelay: '制动延迟',
         maxDeltaAngVel: '加速的减速'
     }
 })

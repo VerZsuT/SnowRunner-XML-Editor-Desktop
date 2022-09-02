@@ -22,7 +22,7 @@ export const listsTexts = localize({
         MODS_CHANGE_BUTTON: 'Change',
         RELAUNCH_PROMPT: 'To add the mod, you need to restart the program. Perform a reboot?',
         ADD_FAVORITE: 'Add to Favorites',
-        REMOVE_FAVORITE: 'Delete from Favorites',
+        REMOVE_FAVORITE: 'Delete from favorites',
         MANUAL_MOD: 'Select manually',
         MODS_POPUP_TITLE: 'Modifications',
         SEARCH: 'Search',
@@ -30,7 +30,7 @@ export const listsTexts = localize({
         FAVORITES_LIST_TITLE: 'Favorites',
         MAIN_LIST_TITLE: 'Basic',
         MODS_LIST_TITLE: 'From mods',
-        TRUCKS_LIST_TITLE: 'Auto list',
+        TRUCKS_LIST_TITLE: 'List of trucks',
         TRAILERS_LIST_TITLE: 'List of trailers',
         TRAILERS_CATEGORY_TITLE: 'Trailers',
         TRUCKS_CATEGORY_TITLE: 'Trucks'
@@ -47,7 +47,7 @@ export const listsTexts = localize({
         FAVORITES_LIST_TITLE: 'Auswahl',
         MAIN_LIST_TITLE: 'Basic',
         MODS_LIST_TITLE: 'Von Mods',
-        TRUCKS_LIST_TITLE: 'Automatische Liste',
+        TRUCKS_LIST_TITLE: 'LKW-Liste',
         TRAILERS_LIST_TITLE: 'Liste der Anhänger',
         TRAILERS_CATEGORY_TITLE: 'Nutzfahrzeuge',
         TRUCKS_CATEGORY_TITLE: 'Autos'
@@ -64,7 +64,7 @@ export const listsTexts = localize({
         FAVORITES_LIST_TITLE: '收藏',
         MAIN_LIST_TITLE: '基本',
         MODS_LIST_TITLE: '来自修改者',
-        TRUCKS_LIST_TITLE: '汽车清单',
+        TRUCKS_LIST_TITLE: '货车名单',
         TRAILERS_LIST_TITLE: '拖车清单',
         TRAILERS_CATEGORY_TITLE: '拖车',
         TRUCKS_CATEGORY_TITLE: '汽车'

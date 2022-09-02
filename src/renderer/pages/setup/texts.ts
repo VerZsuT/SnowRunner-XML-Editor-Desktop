@@ -17,7 +17,7 @@ export const setupTexts = localize({
         GAME_DATA_STEP: 'Game data',
         FIRST_STEPS_DESCRIPTION: 'Initial setup of the program',
         IMPORT_CONFIG_MESSAGE: 'The program settings from the previous version have been detected. Do you want to use them?',
-        EMPTY_FOLDER_ERROR: 'You didn"t select a folder!',
+        EMPTY_FOLDER_ERROR: 'You didn\'t select a folder!',
         INVALID_FOLDER_ERROR: 'You have selected the wrong folder!',
         INVALID_INITIAL_ERROR: 'Invalid initial.pak selected'
     },

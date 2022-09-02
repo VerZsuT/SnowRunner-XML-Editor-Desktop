@@ -31,7 +31,7 @@ export const _globalTexts = {
     },
     CH: {
         SUCCESS_EXPORT_MESSAGE: '配置已成功导出',
-        LOADING: '下载',
+        LOADING: '加载',
         OPEN_BUTTON: '打开',
         SAVE_BUTTON: '保存',
         RESET_MENU_ITEM_LABEL: '重置',

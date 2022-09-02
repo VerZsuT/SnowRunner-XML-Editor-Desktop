@@ -68,8 +68,7 @@ export function createWindow(args: CreateWindowAttributes): BrowserWindow {
         }
     })
 
-    wind.loadURL(args.path)
-        .catch(error => console.error(error))
+    wind.loadURL(args.path).catch(console.error)
 
     return wind
 }

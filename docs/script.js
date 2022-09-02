@@ -6,6 +6,7 @@ const SOURCE_TYPE = 'source_type'
 const SOURCE = 'source'
 
 const GITHUB_SOURCE = 'GitHub'
+const RELEASES_URL = 'https://github.com/VerZsuT/SnowRunner-XML-Editor-Desktop/releases/download'
 
 const downloadButtons = document.querySelectorAll(`button[${DOWNLOAD}]`)
 
@@ -19,7 +20,7 @@ downloadButtons.forEach($downloadButton => {
     $downloadButton.prepend($a)
 
     if (source === GITHUB_SOURCE)
-        $a.href = `https://github.com/VerZsuT/SnowRunner-XML-Editor-Desktop/releases/download/${version}/SnowRunnerXMLEditor.${type}`
+        $a.href = `${RELEASES_URL}/${version}/SnowRunnerXMLEditor.${type}`
     else
         $a.href = $downloadButton.getAttribute(LINK)
 

@@ -35,14 +35,14 @@ export const suspensionTexts = localize({
         damageCapacity: 'Schadenskapazität'
     },
     CH: {
-        height: '高度',
-        strength: '刚性',
-        damping: '衰减',
-        suspensionMin: '最小悬挂高度',
-        suspensionMax: '最大悬挂高度',
-        brokenSuspensionMax: '最大悬挂高度（断裂时）',
-        suspension: '悬浮液',
-        criticalDamageThreshold: '危急伤害阈值',
-        damageCapacity: '耐用性'
+        height: '悬架的高度',
+        strength: '悬架的硬度',
+        damping: '悬架的阻尼',
+        suspensionMin: '悬架最小行程',
+        suspensionMax: '悬架最大行程(悬空时)',
+        brokenSuspensionMax: '是架损坏时的最大行程',
+        suspension: '悬架',
+        criticalDamageThreshold: '损坏阈值',
+        damageCapacity: '血量'
     }
 })
