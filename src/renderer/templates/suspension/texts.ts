@@ -1,48 +1,58 @@
-import {localize} from 'scripts/localize'
+import { localization } from '#services'
 
-export const suspensionTexts = localize({
-    RU: {
-        height: 'Высота',
-        strength: 'Жёсткость',
-        damping: 'Затухание',
-        suspensionMin: 'Минимальная высота подвески',
-        suspensionMax: 'Максимальная высота подвески',
-        brokenSuspensionMax: 'Максимальная высота подвески (когда сломана)',
-        suspension: 'Подвеска',
-        criticalDamageThreshold: 'Порог критического повреждения',
-        damageCapacity: 'Прочность'
-    },
-    EN: {
-        height: 'Height',
-        strength: 'Strength',
-        damping: 'Damping',
-        suspensionMin: 'Minimum suspension height',
-        suspensionMax: 'Maximum suspension height',
-        brokenSuspensionMax: 'Minimum suspension height in broken condition',
-        suspension: 'Suspension',
-        criticalDamageThreshold: 'Critical damage threshold',
-        damageCapacity: 'Damage capacity'
-    },
-    DE: {
-        height: 'Höhe',
-        strength: 'Stärke',
-        damping: 'Dämpfung',
-        suspensionMin: 'Minimale Aufhängungshöhe',
-        suspensionMax: 'Maximale Aufhängungshöhe',
-        brokenSuspensionMax: 'Minimale Aufhängungshöhe in gebrochenem Zustand',
-        suspension: 'Aussetzung',
-        criticalDamageThreshold: 'Kritische Schadensschwelle',
-        damageCapacity: 'Schadenskapazität'
-    },
-    CH: {
-        height: '悬架的高度',
-        strength: '悬架的硬度',
-        damping: '悬架的阻尼',
-        suspensionMin: '悬架最小行程',
-        suspensionMax: '悬架最大行程(悬空时)',
-        brokenSuspensionMax: '是架损坏时的最大行程',
-        suspension: '悬架',
-        criticalDamageThreshold: '损坏阈值',
-        damageCapacity: '血量'
-    }
+export const {
+  HEIGHT,
+  CRITICAL_DAMAGE_THRESHOLD,
+  DAMAGE_CAPACITY,
+  DAMPING,
+  BROKEN_SUSPENSION_MAX,
+  SUSPENSION_MAX,
+  SUSPENSION_MIN,
+  SUSPENSION,
+  STRENGTH
+} = localization.localize({
+  RU: {
+    HEIGHT: 'Высота',
+    STRENGTH: 'Жёсткость',
+    DAMPING: 'Затухание',
+    SUSPENSION_MIN: 'Минимальная высота подвески',
+    SUSPENSION_MAX: 'Максимальная высота подвески',
+    BROKEN_SUSPENSION_MAX: 'Максимальная высота подвески (когда сломана)',
+    SUSPENSION: 'Подвеска',
+    CRITICAL_DAMAGE_THRESHOLD: 'Порог критического повреждения',
+    DAMAGE_CAPACITY: 'Прочность'
+  },
+  EN: {
+    HEIGHT: 'Height',
+    STRENGTH: 'Strength',
+    DAMPING: 'Damping',
+    SUSPENSION_MIN: 'Minimum suspension height',
+    SUSPENSION_MAX: 'Maximum suspension height',
+    BROKEN_SUSPENSION_MAX: 'Minimum suspension height in broken condition',
+    SUSPENSION: 'Suspension',
+    CRITICAL_DAMAGE_THRESHOLD: 'Critical damage threshold',
+    DAMAGE_CAPACITY: 'Damage capacity'
+  },
+  DE: {
+    HEIGHT: 'Höhe',
+    STRENGTH: 'Stärke',
+    DAMPING: 'Dämpfung',
+    SUSPENSION_MIN: 'Minimale Aufhängungshöhe',
+    SUSPENSION_MAX: 'Maximale Aufhängungshöhe',
+    BROKEN_SUSPENSION_MAX: 'Minimale Aufhängungshöhe in gebrochenem Zustand',
+    SUSPENSION: 'Aussetzung',
+    CRITICAL_DAMAGE_THRESHOLD: 'Kritische Schadensschwelle',
+    DAMAGE_CAPACITY: 'Schadenskapazität'
+  },
+  CH: {
+    HEIGHT: '悬架的高度',
+    STRENGTH: '悬架的硬度',
+    DAMPING: '悬架的阻尼',
+    SUSPENSION_MIN: '悬架最小行程',
+    SUSPENSION_MAX: '悬架最大行程(悬空时)',
+    BROKEN_SUSPENSION_MAX: '是架损坏时的最大行程',
+    SUSPENSION: '悬架',
+    CRITICAL_DAMAGE_THRESHOLD: '损坏阈值',
+    DAMAGE_CAPACITY: '血量'
+  }
 })

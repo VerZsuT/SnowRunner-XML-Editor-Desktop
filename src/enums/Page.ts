@@ -1,4 +1,4 @@
 export enum Page {
-    editor = 'editor',
-    lists = 'lists'
+  editor = 'editor',
+  lists = 'lists'
 }

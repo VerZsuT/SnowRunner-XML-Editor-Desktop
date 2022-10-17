@@ -1,26 +1,35 @@
-import {existsSync, readdirSync, watchFile as watch} from 'fs'
-import {join} from 'path'
+import { existsSync, readdirSync, watchFile as watch } from 'fs'
+import { join } from 'path'
 
-import 'scripts/rootPreload'
-import {main} from 'scripts/main'
-import type {EditorPreload} from 'types'
+import '#r-scripts/root-preload.main'
 
-const { paths } = main
+import { Main } from 'emr-bridge/preload'
 
-window['editorPreload'] = <EditorPreload> {
-    findFromDLC,
-    watchFile
-}
+import { PreloadType } from '#enums'
+import { preload } from '#services/preload'
+import type { IEditorPreload, IMPC } from '#types'
 
-function findFromDLC(fileName: string, type: string) {
-    const dlcFolders = readdirSync(paths.dlc)
+class EditorPreload {
+  private readonly paths = Main.as<IMPC>().paths
+
+  constructor() {
+    preload.register<IEditorPreload>({
+      findFromDLC: this.findFromDLC,
+      watchFile: this.watchFile
+    }, PreloadType.editor)
+  }
+
+  private findFromDLC = (fileName: string, type: string): string | undefined => {
+    const dlcFolders = readdirSync(this.paths.dlc)
     for (let i = 0; i < dlcFolders.length; ++i) {
-        const path = join(paths.dlc, dlcFolders[i], 'classes', type, `${fileName}.xml`)
-        if (existsSync(path))
-            return path
+      const path = join(this.paths.dlc, dlcFolders[i], 'classes', type, `${fileName}.xml`)
+      if (existsSync(path)) return path
     }
+  }
+
+  private watchFile = (path: string, callback: () => void): void => {
+    watch(path, { persistent: false }, callback)
+  }
 }
 
-function watchFile(path: string, callback: ()=>void) {
-    return watch(path, { persistent: false }, callback)
-}
+new EditorPreload()

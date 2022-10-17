@@ -1,91 +1,96 @@
-import {Button, Switch, Typography} from 'antd'
-import {Language} from 'components/Language'
-import {Window} from 'enums'
-import {globalTexts} from 'globalTexts/renderer'
-import {handleIPCMessage} from 'helpers/handleIPCMessage'
-import {windowReady} from 'helpers/windowReady'
-import {afc, createState} from 'react-afc'
-import {config} from 'scripts/config'
-import {render} from 'scripts/helpers'
-import {main} from 'scripts/main'
+import type { ReactNode } from 'react'
 
-import {settingsTexts} from './texts'
+import { Button, Switch, Typography } from 'antd'
+import { Bridge } from 'emr-bridge/renderer'
+import { afcMemo, reactive } from 'react-afc'
 
-import './styles.sass'
+import { ADVANCED_MODE_LABEL, DLC_LABEL, MODS_LABEL, UPDATES_LABEL } from './texts'
 
+import { Language } from '#components/Language'
+import { ProgramWindow } from '#enums'
+import { SAVE_BUTTON } from '#globalTexts/renderer'
+import { handleIPCMessage } from '#helpers/handleIPCMessage'
+import { windowReady } from '#helpers/windowReady'
+import { config, helpers } from '#services'
+import type { IMPC } from '#types'
+
+import './styles'
+
+const bridge = Bridge.as<IMPC>()
 const { Text } = Typography
 const { settings } = config
-const { relaunchApp } = main
 
-const {
-    UPDATES_LABEL,
-    DLC_LABEL,
-    MODS_LABEL,
-    ADVANCED_MODE_LABEL
-} = settingsTexts
-const { SAVE_BUTTON } = globalTexts
+const Settings = afcMemo(() => {
+  const state = reactive(settings)
+  windowReady(ProgramWindow.Settings)
+  handleIPCMessage()
 
-const Settings = afc(() => {
-    const [state, setState] = createState(settings)
-    handleIPCMessage()
-    windowReady(Window.Settings)
+  function render(): ReactNode {
+    const { updates, DLC, mods, advancedMode } = state
 
-    function saveSettings() {
-        config.settings = state
-        relaunchApp()
-    }
+    return <>
+      <Language/>
+      <div className='checkboxes'>
+        <Switch
+          size='small'
+          onClick={onToggleUpdates}
+          checked={updates}
+        />
+        <Text className='label'>{UPDATES_LABEL}</Text>
+        <br/>
 
-    const onToggleUpdates = () => setState({ updates: !state.updates })
-    const onToggleDLC = () => setState({ DLC: !state.DLC })
-    const onToggleMods = () => setState({ mods: !state.mods })
-    const onToggleAdvanced = () => setState({ advancedMode: !state.advancedMode })
+        <Switch
+          size='small'
+          onClick={onToggleDLC}
+          checked={DLC}
+        />
+        <Text className='label'>{DLC_LABEL}</Text>
+        <br/>
 
-    return () => {
-        const { updates, DLC, mods, advancedMode } = state
+        <Switch
+          size='small'
+          onClick={onToggleMods}
+          checked={mods}
+        />
+        <Text className='label'>{MODS_LABEL}</Text>
+        <br/>
 
-        return <>
-            <Language />
-            <div className='checkboxes'>
-                <Switch
-                    size='small'
-                    onClick={onToggleUpdates}
-                    checked={updates}
-                />
-                <Text className='label'>{UPDATES_LABEL}</Text>
-                <br />
+        <Switch
+          size='small'
+          onClick={onToggleAdvanced}
+          checked={advancedMode}
+        />
+        <Text className='label'>{ADVANCED_MODE_LABEL}</Text>
+      </div>
+      <Button
+        onClick={saveSettings}
+        size='large'
+        type='primary'
+      >
+        {SAVE_BUTTON}
+      </Button>
+    </>
+  }
 
-                <Switch
-                    size='small'
-                    onClick={onToggleDLC}
-                    checked={DLC}
-                />
-                <Text className='label'>{DLC_LABEL}</Text>
-                <br />
+  function saveSettings(): void {
+    config.settings = state
+    bridge.relaunchApp()
+  }
 
-                <Switch
-                    size='small'
-                    onClick={onToggleMods}
-                    checked={mods}
-                />
-                <Text className='label'>{MODS_LABEL}</Text>
-                <br />
+  function onToggleUpdates(): void {
+    state.updates = !state.updates
+  }
+  function onToggleDLC(): void {
+    state.DLC = !state.DLC
+  }
+  function onToggleMods(): void {
+    state.mods = !state.mods
+  }
+  function onToggleAdvanced(): void {
+    state.advancedMode = !state.advancedMode
+  }
 
-                <Switch
-                    size='small'
-                    onClick={onToggleAdvanced}
-                    checked={advancedMode}
-                />
-                <Text className='label'>{ADVANCED_MODE_LABEL}</Text>
-            </div>
-            <Button
-                onClick={saveSettings}
-                size='large'
-                type='primary'
-            >
-                {SAVE_BUTTON}
-            </Button>
-        </>
-    }
+  return render
 })
 
-render(<Settings />)
+helpers.renderComponent(<Settings/>)

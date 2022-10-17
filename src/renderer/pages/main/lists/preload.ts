@@ -1,158 +1,156 @@
-import {existsSync, readdirSync, readFileSync, rmSync} from 'fs'
-import {homedir, userInfo} from 'os'
-import {basename, extname, join} from 'path'
+import { existsSync, readdirSync, readFileSync, rmSync } from 'fs'
+import { homedir, userInfo } from 'os'
+import { basename, extname, join } from 'path'
 
-import {Category, SrcType} from 'enums'
-import {findInDir} from 'main/scripts/service'
-import {config} from 'scripts/config'
-import {main} from 'scripts/main'
-import type {FindItem, Item, ListPreload} from 'types'
+import { Main } from 'emr-bridge/preload'
 
-const ipc = window.ipc
-const { unpack, getInitial, paths } = main
+import { Category, PreloadType, SrcType } from '#enums'
+import { preload } from '#services/preload'
+import type { IFindItem, IItem, IListPreload, IMPC } from '#types'
+
+const main = Main.as<IMPC>()
+const { paths, config } = main
 const { dlc, mods } = config
 
-function removeDir(path: string) {
+class ListsPreload {
+  constructor() {
+    preload.register<IListPreload>({
+      findMods: this.findMods,
+      getList: this.getList,
+      getModPak: this.getModPak,
+      removeDir: this.removeDir
+    }, PreloadType.lists)
+  }
+
+  private removeDir = (path: string): void => {
     rmSync(path, { recursive: true })
-}
+  }
 
-async function findMods() {
-    const pathToUser = userInfo().homedir || homedir() || process.env.HOME
-    const out: { name: string; path: string }[] = []
+  private findMods = async (): Promise<IFindItem[]> => {
+    const pathToUser = userInfo().homedir || homedir() || process.env.HOME || ''
+    const out: IFindItem[] = []
 
-    if (!existsSync(pathToUser))
-        return []
+    if (!existsSync(pathToUser)) return []
 
     const pathToMods = join(pathToUser, 'Documents/My Games/SnowRunner/base/Mods/.modio/mods')
-    if (!existsSync(pathToMods))
-        return []
+    if (!existsSync(pathToMods)) return []
 
     readdirSync(pathToMods, { withFileTypes: true }).forEach(folder => {
-        if (folder.isFile())
-            return
+      if (folder.isFile()) return
+      const modFolder = join(pathToMods, folder.name)
 
-        const modFolder = join(pathToMods, folder.name)
+      readdirSync(modFolder, { withFileTypes: true }).forEach(file => {
+        if (file.isDirectory()) return
 
-        readdirSync(modFolder, { withFileTypes: true }).forEach(file => {
-            if (file.isDirectory())
-                return
-
-            const filePath = join(modFolder, file.name)
-            const tempModFolder = join(paths.modsTemp, file.name)
-            if (extname(file.name) === '.pak') {
-                unpack(filePath, tempModFolder, true)
-                if (existsSync(join(tempModFolder, 'classes'))) {
-                    const pathToModio = join(modFolder, 'modio.json')
-                    let modName = basename(file.name, '.pak')
-                    if (existsSync(pathToModio))
-                        modName = JSON.parse(readFileSync(pathToModio).toString()).name
-
-                    out.push({
-                        name: modName,
-                        path: filePath
-                    })
-                }
+        const filePath = join(modFolder, file.name)
+        const tempModFolder = join(paths.modsTemp, file.name)
+        if (extname(file.name) === '.pak') {
+          main.unpack(filePath, tempModFolder, true)
+          if (existsSync(join(tempModFolder, 'classes'))) {
+            const pathToModio = join(modFolder, 'modio.json')
+            let modName = basename(file.name, '.pak')
+            if (existsSync(pathToModio)) {
+              modName = JSON.parse(readFileSync(pathToModio).toString()).name
             }
-        })
+
+            out.push({
+              name: modName,
+              path: filePath
+            })
+          }
+        }
+      })
     })
 
     for (const enabledModName in mods.items) {
-        const enabledModPath = mods.items[enabledModName].path
-        let isExists = false
+      const enabledModPath = mods.items[enabledModName].path
+      let isExists = false
 
-        for (const foundedModName in out) {
-            if (out[foundedModName].path === enabledModPath)
-                isExists = true
+      for (const foundedModName in out) {
+        if (out[foundedModName].path === enabledModPath) {
+          isExists = true
         }
-    
-        if (!isExists)
-            out.push(mods.items[enabledModName])
+      }
+
+      if (!isExists) out.push(mods.items[enabledModName])
     }
 
     return out
-}
+  }
 
-function getModPak() {
-    const path = getInitial()
-    if (!path)
-        return
+  private getModPak = (): IFindItem | undefined => {
+    const path = main.getInitial()
+    if (!path) return
 
     const name = basename(path)
     const id = basename(path, '.pak')
-    unpack(path, join(paths.modsTemp, id), true)
-    if (!existsSync(join(paths.modsTemp, id, 'classes')))
-        return
+    main.unpack(path, join(paths.modsTemp, id), true)
+    if (!existsSync(join(paths.modsTemp, id, 'classes'))) {
+      return
+    }
 
-    return { id, path, name }
-}
+    return { path, name }
+  }
 
-function getList(category: Category, from?: SrcType) {
+  private getList = (category: Category, from?: SrcType): IItem[] => {
     if (from === SrcType.dlc) {
-        const array = []
+      const array: IItem[] = []
 
-        dlc.forEach(dlcItem => {
-            const path = `${dlcItem.path}/classes`
-            let items: FindItem[] = []
+      dlc.forEach(dlcItem => {
+        const path = `${dlcItem.path}/classes`
+        let items: IFindItem[] = []
 
-            if (category === Category.trucks)
-                items = findInDir(join(path, 'trucks'))
-            else if (category === Category.trailers)
-                items = findInDir(join(path, 'trucks/trailers'))
+        if (category === Category.trucks) {
+          items = main.findInDir(join(path, 'trucks'))
+        }
+        else if (category === Category.trailers) {
+          items = main.findInDir(join(path, 'trucks/trailers'))
+        }
 
-            array.push({
-                dlcName: dlcItem.name,
-                items
-            })
+        array.push({
+          dlcName: dlcItem.name,
+          items,
+          path: '',
+          name: ''
         })
+      })
 
-        return array
+      return array
     }
     if (from === SrcType.mods) {
-        const array: Item[] = []
+      const array: IItem[] = []
 
-        for (const modId in mods.items) {
-            const item = mods.items[modId]
-            let items: FindItem[] = []
+      for (const modId in mods.items) {
+        const item = mods.items[modId]
+        let items: IFindItem[] = []
 
-            if (category === Category.trucks)
-                items = findInDir(join(paths.modsTemp, modId, 'classes/trucks'), false, '.xml', true)
-            else if (category === Category.trailers)
-                items = findInDir(join(paths.modsTemp, modId, 'classes/trucks'), false, '.xml', true)
-
-            array.push({
-                id: modId,
-                name: item.name,
-                items
-            })
+        if (category === Category.trucks) {
+          items = main.findInDir(join(paths.modsTemp, modId, 'classes/trucks'), false, '.xml', true)
         }
-        return array
+        else if (category === Category.trailers) {
+          items = main.findInDir(join(paths.modsTemp, modId, 'classes/trucks'), false, '.xml', true)
+        }
+
+        array.push({
+          id: modId,
+          name: item.name,
+          path: '',
+          items
+        })
+      }
+      return array
     }
 
-    if (category === Category.trucks)
-        return findInDir(join(paths.classes, 'trucks'))
-    
-    if (category === Category.trailers)
-        return findInDir(join(paths.classes, 'trucks/trailers'))
-}
-
-window['listPreload'] = <ListPreload>{
-    findMods,
-    getList,
-    getModPak,
-    removeDir
-}
-
-const resizeHandlers = new Set<()=>void>()
-let resizeIsHandled = false
-ipc.on('window-resize', () => resizeHandlers.forEach(handler => handler()))
-
-window['onResize'] = (callback: ()=>void) => {
-    if (!resizeIsHandled) {
-        ipc.send('enable-list-resize')
-        resizeIsHandled = true
+    if (category === Category.trucks) {
+      return main.findInDir(join(paths.classes, 'trucks')) as IItem[]
     }
-    resizeHandlers.add(callback)
+
+    if (category === Category.trailers) {
+      return main.findInDir(join(paths.classes, 'trucks/trailers')) as IItem[]
+    }
+
+    return []
+  }
 }
-window['removeResizeHandler'] = (callback: ()=>void) => {
-    resizeHandlers.delete(callback)
-}
+
+new ListsPreload()

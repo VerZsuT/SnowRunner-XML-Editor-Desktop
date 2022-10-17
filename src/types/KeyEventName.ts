@@ -1,1 +1,1 @@
-export type KeyEventName = 'keypress' | 'keyup' | 'keydown';
+export type KeyEventName = 'keypress' | 'keyup' | 'keydown'

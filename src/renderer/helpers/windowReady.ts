@@ -1,8 +1,9 @@
-import type {Window} from 'enums'
-import {afterDraw} from 'react-afc'
+import { onMount } from 'react-afc/compatible'
 
-const { send } = window.ipc
+import type { ProgramWindow } from '#enums'
+import { IPCChannel } from '#enums'
+import { ipc } from '#services'
 
-export function windowReady(win: Window) {
-    afterDraw(() => send(`window-${win}-ready`))
+export function windowReady(win: ProgramWindow) {
+  onMount(() => ipc.send(IPCChannel.windowReady + win))
 }

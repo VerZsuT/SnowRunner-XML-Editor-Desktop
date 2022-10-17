@@ -1,245 +1,173 @@
-import {ApiOutlined, AppstoreAddOutlined, AppstoreOutlined, StarFilled} from '@ant-design/icons'
-import {Tabs} from 'antd'
-import {load} from 'cheerio'
-import {Header} from 'components/Header'
-import {Menu} from 'components/Menu'
-import {Category, GroupTab, SrcType, Window} from 'enums'
-import {handleIPCMessage} from 'helpers/handleIPCMessage'
-import {handleKey} from 'helpers/handleKey'
-import {afc, afterDraw, getDispatcher, memoized, useRedux} from 'react-afc'
-import {config} from 'scripts/config'
-import {getPreload} from 'scripts/getPreload'
-import {main} from 'scripts/main'
-import type {Item, ListPreload} from 'types'
+import type { ReactNode } from 'react'
 
-import type {MainDispatch} from '../store'
-import {selectCategory, selectGroup, setCategory, setGroup} from '../store/listSlice'
-import {List} from './components/List'
-import {Search} from './components/Search'
-import {listsTexts} from './texts'
+import { ApiOutlined, AppstoreAddOutlined, AppstoreOutlined, StarFilled } from '@ant-design/icons'
+import { Tabs } from 'antd'
+import { Bridge } from 'emr-bridge/renderer'
+import { afcMemo, memoized, onDraw, useRedux } from 'react-afc'
+import { useActions } from 'react-afc/compatible'
 
-import './styles.sass'
+import { actions } from '../store'
+import { selectCategory, selectGroup } from '../store/listSlice'
+import { List } from './components/List'
+import { Search } from './components/Search'
+import { items as itemsService } from './services/items'
+import {
+  DLC_LIST_TITLE,
+  FAVORITES_LIST_TITLE,
+  MAIN_LIST_TITLE,
+  MODS_LIST_TITLE,
+  TRAILERS_CATEGORY_TITLE,
+  TRAILERS_LIST_TITLE,
+  TRUCKS_CATEGORY_TITLE,
+  TRUCKS_LIST_TITLE
+} from './texts'
 
+import { Header } from '#components/Header'
+import { Menu } from '#components/Menu'
+import { Category, GroupTab, ProgramWindow, SrcType } from '#enums'
+import { handleIPCMessage } from '#helpers/handleIPCMessage'
+import { handleKey } from '#helpers/handleKey'
+import { config } from '#services'
+import type { IMPC } from '#types'
+
+import './styles'
+
+const bridge = Bridge.as<IMPC>()
 const { settings } = config
 const { TabPane } = Tabs
-const { readFileSync } = window.service
-const { quitApp, openWindow } = main
-const { getList } = getPreload<ListPreload>('listPreload')
 
-const {
-    TRUCKS_LIST_TITLE,
-    TRAILERS_LIST_TITLE,
-    MAIN_LIST_TITLE,
-    DLC_LIST_TITLE,
-    MODS_LIST_TITLE,
-    FAVORITES_LIST_TITLE,
-    TRAILERS_CATEGORY_TITLE,
-    TRUCKS_CATEGORY_TITLE
-} = listsTexts
+export const Lists = afcMemo(() => {
+  const store = useRedux({
+    category: selectCategory,
+    group: selectGroup
+  })
 
-export const Lists = afc(() => {
-    const dispatch = getDispatcher<MainDispatch>()
-    const reduxState = useRedux({
-        category: selectCategory,
-        group: selectGroup
-    })
-    handleIPCMessage()
-    
-    handleKey({
-        key: 'Escape'
-    }, () => quitApp())
+  handleIPCMessage()
+  handleKey({
+    key: 'Escape'
+  }, () => bridge.quitApp())
 
-    afterDraw(() => {
-        if (settings.showWhatsNew)
-            openWhatsNew()
-    })
+  onDraw(() => {
+    settings.showWhatsNew && openWhatsNew()
+  })
 
-    function onChangeCategory(category: string) {
-        dispatch(setCategory(category as Category))
-    }
+  function render(): ReactNode {
+    const { category, group } = store
+    const { dlc, mods, all, main } = getItems()
 
-    function onChangeGroup(group: string) {
-        dispatch(setGroup(group as GroupTab))
-    }
+    return <>
+      <Menu/>
 
-    const items = memoized(
-        () => getItems(reduxState.category),
-        () => [reduxState.category]
-    )
+      <Header
+        text={category === Category.trucks ? TRUCKS_LIST_TITLE : TRAILERS_LIST_TITLE}
+        extra={<Search/>}
+      />
+      <Tabs
+        className='tabs'
+        activeKey={category}
+        onChange={onChangeCategory}
+      >
+        <TabPane
+          tab={<span>{TRUCKS_CATEGORY_TITLE}</span>}
+          key={Category.trucks}
+        />
+        <TabPane
+          tab={<span>{TRAILERS_CATEGORY_TITLE}</span>}
+          key={Category.trailers}
+        />
+      </Tabs>
+      <Tabs
+        className='tabs'
+        activeKey={group}
+        onChange={onChangeGroup}
+      >
+        <TabPane
+          tab={<span>
+            <AppstoreOutlined className='tab-icon'/>
+            {MAIN_LIST_TITLE}
+          </span>}
+          key={GroupTab.main}
+        />
+        <TabPane
+          tab={<span>
+            <AppstoreAddOutlined className='tab-icon'/>
+            {DLC_LIST_TITLE}
+          </span>}
+          disabled={!settings.DLC}
+          key={GroupTab.dlc}
+        />
+        <TabPane
+          tab={<span>
+            <ApiOutlined className='tab-icon'/>
+            {MODS_LIST_TITLE}
+          </span>}
+          disabled={!settings.mods}
+          key={GroupTab.mods}
+        />
+        <TabPane
+          tab={<span>
+            <StarFilled className='tab-icon'/>
+            {FAVORITES_LIST_TITLE}
+          </span>}
+          key={GroupTab.favorites}
+        />
+      </Tabs>
 
-    return () => {
-        const { category, group } = reduxState
-        const { dlc, mods, all, main } = items()
+      <List
+        srcType={SrcType.main}
+        items={main}
+        opened={group === GroupTab.main}
+      />
+      <List
+        srcType={SrcType.favorites}
+        items={all}
+        opened={group === GroupTab.favorites}
+      />
 
-        return <>
-            <Menu />
+      {settings.DLC &&
+        <List
+          srcType={SrcType.dlc}
+          items={dlc}
+          opened={group === GroupTab.dlc}
+        />
+      }
+      {settings.mods &&
+        <List
+          srcType={SrcType.mods}
+          items={mods}
+          opened={group === GroupTab.mods}
+        />
+      }
+    </>
+  }
 
-            <Header
-                text={category === Category.trucks ? TRUCKS_LIST_TITLE : TRAILERS_LIST_TITLE}
-                extra={<Search />}
-            />
-            <Tabs
-                className='tabs'
-                activeKey={category}
-                onChange={onChangeCategory}
-            >
-                <TabPane
-                    tab={<span>{TRUCKS_CATEGORY_TITLE}</span>}
-                    key={Category.trucks}
-                />
-                <TabPane
-                    tab={<span>{TRAILERS_CATEGORY_TITLE}</span>}
-                    key={Category.trailers}
-                />
-            </Tabs>
-            <Tabs
-                className='tabs'
-                activeKey={group}
-                onChange={onChangeGroup}
-            >
-                <TabPane
-                    tab={<span>
-                        <AppstoreOutlined className='tab-icon' />
-                        {MAIN_LIST_TITLE}
-                    </span>}
-                    key={GroupTab.main}
-                />
-                <TabPane
-                    tab={<span>
-                        <AppstoreAddOutlined className='tab-icon' />
-                        {DLC_LIST_TITLE}
-                    </span>}
-                    disabled={!settings.DLC}
-                    key={GroupTab.dlc}
-                />
-                <TabPane
-                    tab={<span>
-                        <ApiOutlined className='tab-icon' />
-                        {MODS_LIST_TITLE}
-                    </span>}
-                    disabled={!settings.mods}
-                    key={GroupTab.mods}
-                />
-                <TabPane
-                    tab={<span>
-                        <StarFilled className='tab-icon' />
-                        {FAVORITES_LIST_TITLE}
-                    </span>}
-                    key={GroupTab.favorites}
-                />
-            </Tabs>
+  const { setCategory, setGroup } = useActions(actions)
 
-            <List
-                srcType={SrcType.main}
-                items={main}
-                opened={group === GroupTab.main}
-            />
-            <List
-                srcType={SrcType.favorites}
-                items={all}
-                opened={group === GroupTab.favorites}
-            />
+  function onChangeCategory(category: string): void {
+    setCategory(category as Category)
+  }
 
-            {!!settings.DLC &&
-                <List
-                    srcType={SrcType.dlc}
-                    items={dlc}
-                    opened={group === GroupTab.dlc}
-                />
-            }
-            {!!settings.mods &&
-                <List
-                    srcType={SrcType.mods}
-                    items={mods}
-                    opened={group === GroupTab.mods}
-                />
-            }
-        </>
-    }
-})
+  function onChangeGroup(group: string): void {
+    setGroup(group as GroupTab)
+  }
 
-function openWhatsNew() {
+  const getItems = memoized(
+    () => {
+      const main = itemsService.getMain(store.category)
+      const dlc = itemsService.getDLC(store.category)
+      const mods = itemsService.getMods(store.category)
+      const all = [...main, ...dlc, ...mods]
+      return { main, dlc, mods, all }
+    },
+    () => [store.category]
+  )
+
+  function openWhatsNew(): void {
     if (settings.showWhatsNew) {
-        openWindow(Window.WhatsNew)
-        settings.showWhatsNew = false
+      void bridge.openWindow(ProgramWindow.WhatsNew)
+      settings.showWhatsNew = false
     }
-}
+  }
 
-function getItems(category: Category) {
-    const main = getMain(category)
-    const dlc = getDLC(category)
-    const mods = getMods(category)
-    const all = [...main, ...dlc, ...mods]
-    return { main, dlc, mods, all }
-}
-
-function getMain(category: Category) {
-    const array = getList(category, SrcType.main)
-
-    return array.map(value => {
-        if (category !== Category.trucks)
-            return value
-
-        const fileData = readFileSync(value.path)
-        const dom = load(fileData, { xmlMode: true })
-        const $Truck = dom('Truck')
-
-        if (!$Truck.length)
-            return value
-
-        if ($Truck.attr('Type') !== 'Trailer')
-            return value
-    }).filter(value => !!value)
-}
-
-function filterByCategory(array: Item[], category: Category): Item[] {
-    return array.map(value => {
-        const fileData = readFileSync(value.path)
-        const $dom = load(fileData, { xmlMode: true })
-        const $Truck = $dom('Truck')
-
-        if (!$Truck.length) return
-
-        if (category === Category.trailers && $Truck.attr('Type') === 'Trailer')
-            return value
-
-        if (category === Category.trucks && $Truck.attr('Type') !== 'Trailer')
-            return value
-    }).filter(value => !!value)
-}
-
-function getDLC(category: Category) {
-    const newArray: Item[] = []
-
-    if (!settings.DLC)
-        return []
-  
-    getList(category, SrcType.dlc).forEach(dlc => {
-        dlc.items.forEach(item => {
-            newArray.push({
-                ...item,
-                dlcName: dlc.dlcName
-            })
-        })
-    })
-  
-    return filterByCategory(newArray, category)
-}
-
-function getMods(category: Category) {
-    const newArray: Item[] = []
-
-    if (!settings.mods)
-        return []
-
-    getList(category, SrcType.mods).forEach(mod => {
-        mod.items.forEach(item => {
-            newArray.push({
-                ...item,
-                modId: mod.id
-            })
-        })
-    })
-  
-    return filterByCategory(newArray, category)
-}
+  return render
+})

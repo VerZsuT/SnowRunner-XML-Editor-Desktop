@@ -1,23 +1,27 @@
-import {Header} from 'components/Header'
-import {Page} from 'enums'
-import {globalTexts} from 'globalTexts/renderer'
-import type {MainDispatch} from 'pages/main/store'
-import {route} from 'pages/main/store/pageSlice'
-import {afcMemo, getDispatcher} from 'react-afc'
+import type { ReactNode } from 'react'
 
-const { ERROR } = globalTexts
+import { afcMemo, useActions } from 'react-afc'
+
+import { Header } from '#components/Header'
+import { Page } from '#enums'
+import { ERROR } from '#globalTexts/renderer'
+import { actions } from '#pages/main/store'
 
 export const ErrorHeader = afcMemo(() => {
-    const dispatch = getDispatcher<MainDispatch>()
-
-    function onBack() {
-        dispatch(route(Page.lists))
-    }
-
-    return () => (
-        <Header
-            text={ERROR}
-            onBack={onBack}
-        />
+  function render(): ReactNode {
+    return (
+      <Header
+        text={ERROR}
+        onBack={onBack}
+      />
     )
+  }
+
+  const { route } = useActions(actions)
+
+  function onBack(): void {
+    route(Page.lists)
+  }
+
+  return render
 })

@@ -1,5 +1,5 @@
-import type {GroupParams} from './GroupParams'
-import type {InputParams} from './InputParams'
-import type {SelectParams} from './SelectParams'
+import type { IGroupParams } from './IGroupParams'
+import type { IInputParams } from './IInputParams'
+import type { ISelectParams } from './ISelectParams'
 
-export type TemplateParams = (InputParams & GroupParams & SelectParams)[]
+export type TemplateParams = (IInputParams & IGroupParams & ISelectParams)[]

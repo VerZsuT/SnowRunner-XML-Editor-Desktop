@@ -1,55 +1,61 @@
-const renderer = './src/renderer'
-const webpackConfigs = './configs/webpack'
+class ForgeConfig {
+  renderer = './src/renderer'
+  webpackConfigs = './configs/webpack'
+  
+  rootPreload = `${this.renderer}/scripts/root-preload.main.ts`
+  template = `${this.renderer}/template.html`
+  templateScript = `${this.renderer}/templateScript.ts`
+  pages = `${this.renderer}/pages`
+  favicon = '.webpack/main/favicon.ico'
+  
+  mainConfig = `${this.webpackConfigs}/main.js`
+  rendererConfig = `${this.webpackConfigs}/renderer.js`
 
-const rootPreload = `${renderer}/scripts/rootPreload.ts`
-const template = `${renderer}/template.html`
-const pages = `${renderer}/pages`
-const favicon = '.webpack/main/favicon.ico'
-
-const mainConfig = `${webpackConfigs}/main.js`
-const rendererConfig = `${webpackConfigs}/renderer.js`
-
-/**
- * Возвращает путь к модулю
- * @param {string} name
- */
-function getPage(name) {
-    return {
-        main: `${pages}/${name}/index.tsx`,
-        preload: `${pages}/${name}/preload.ts`
-    }
-}
-
-function entryPoint(name, preloadIsMain=false, moduleName=null) {
-    return {
-        name,
-        html: template,
-        js: getPage(moduleName ?? name).main,
-        preload: {
-            js: preloadIsMain? rootPreload : getPage(moduleName ?? name).preload
-        }
-    }
-}
-
-module.exports = {
-    packagerConfig: { icon: favicon },
+  get = () => ({
+    packagerConfig: { icon: this.favicon },
     plugins: [
-        [
-            '@electron-forge/plugin-webpack',
-            {
-                mainConfig,
-                renderer: {
-                    config: rendererConfig,
-                    entryPoints: [
-                        entryPoint('loading', true),
-                        entryPoint('update', true),
-                        entryPoint('settings', true),
-                        entryPoint('whatsNew', true),
-                        entryPoint('main'),
-                        entryPoint('setup')
-                    ]
-                }
-            }
-        ]
+      [
+        '@electron-forge/plugin-webpack',
+        {
+          mainConfig: this.mainConfig,
+          renderer: {
+            config: this.rendererConfig,
+            entryPoints: [
+              this.entryPoint('loading', true),
+              this.entryPoint('update', true),
+              this.entryPoint('settings', true),
+              this.entryPoint('whatsNew', true),
+              this.entryPoint('main'),
+              this.entryPoint('setup')
+            ]
+          }
+        }
+      ]
     ]
+  })
+
+  /**
+   * Возвращает путь к модулю
+   * @param {string} name
+   */
+  getPage(name) {
+    return {
+      main: `${this.pages}/${name}/index.tsx`,
+      preload: `${this.pages}/${name}/preload.ts`
+    }
+  }
+
+  entryPoint(name, preloadIsMain = false, moduleName = null) {
+    return {
+      name,
+      html: this.template,
+      prefixedEntries: [this.templateScript],
+      js: this.getPage(moduleName ?? name).main,
+      preload: {
+        js: preloadIsMain ? this.rootPreload : this.getPage(moduleName ?? name).preload
+      }
+    }
+  }
 }
+
+module.exports = new ForgeConfig().get()

@@ -1,7 +1,9 @@
 # SnowRunner XML Editor Desktop (RU, then EN)
 
-Данная программа позволяет редактировать XML файлы игры SnowRunner с помощью редактирования визуальной таблицы параметров.  
-Редактор распаковывает нужные файлы из _initial.pak_ во временную папку, после чего идёт работает с ними. При сохранении изменения вносятся в архив.  
+Данная программа позволяет редактировать XML файлы игры SnowRunner с помощью редактирования визуальной таблицы
+параметров.  
+Редактор распаковывает нужные файлы из _initial.pak_ во временную папку, после чего идёт работает с ними. При сохранении
+изменения вносятся в архив.  
 Для работы с _initial.pak_ программа использует портативную версию _WinRar_ для 32х разрядных систем.  
 Всё работает с применением **Electron**, **Webpack** и **Typescript**.
 
@@ -24,7 +26,8 @@
 
 ## Как пользоваться
 
-О том как работать в программе можете почитать [в гайде по ссылке](https://snowrunner.mod.io/guides/snowrunner-xml-editor).
+О том как работать в программе можете
+почитать [в гайде по ссылке](https://snowrunner.mod.io/guides/snowrunner-xml-editor).
 
 ## Разработка
 
@@ -43,7 +46,8 @@ npm run package
 ```
 
 В папке _out_ появится собранная тестовая сборка под 32х-битную систему.  
-В данной сборке вам доступен сброс программы, обновление окна, инструменты разработчика (Ctrl+Shift+I), а также не сохраняется бэкап initial.pak.
+В данной сборке вам доступен сброс программы, обновление окна, инструменты разработчика (Ctrl+Shift+I), а также не
+сохраняется бэкап initial.pak.
 
 Значения каталогов проекта:
 
@@ -59,7 +63,7 @@ npm run package
       |-scripts          (скрипты главного процесса)
       |-windows          (инициализаторы окон программы)
       |-winrar           (хранилище WinRAR)
-      |-index.ts         (стартовый файл)
+      |-index.tsx         (стартовый файл)
       |-config.json      (основной конфиг программы)
       |-test-config.json (конфигурация для npm start)
    |-renderer
@@ -68,7 +72,7 @@ npm run package
       |-pages         (скрипты страниц)
       |-scripts       (скрипты)
       |-templates     (шаблоны таблицы)
-      |-styles.sass   (глобальные стили)
+      |-styles.scss   (глобальные стили)
       |-template.html (шаблон всех страниц)
 ```
 
@@ -80,7 +84,8 @@ npm run package
 # SnowRunner XML Editor Desktop (EN)
 
 This program allows you to edit the XML files of the SnowRunner game by editing the visual parameter table.  
-The editor unpacks the necessary files from _initial.pak_ to a temporary folder, after which it goes to work with them. When saving, changes are made to the archive.  
+The editor unpacks the necessary files from _initial.pak_ to a temporary folder, after which it goes to work with them.
+When saving, changes are made to the archive.  
 To work with _initial.pak_, the program uses a portable version of _WinRar_ for 32-bit systems.  
 Everything works using **Electron**, **Webpack** and **Typescript**.
 
@@ -103,7 +108,8 @@ The difference between the versions is only in the installation method.
 
 ## How to use
 
-You can read about how to work in the program [in the guide at the link](https://snowrunner.mod.io/guides/snowrunner-xml-editor).
+You can read about how to work in the
+program [in the guide at the link](https://snowrunner.mod.io/guides/snowrunner-xml-editor).
 
 ## Images
 

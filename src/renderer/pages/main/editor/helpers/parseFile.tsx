@@ -1,101 +1,106 @@
-import type {AnyNode, Cheerio, CheerioAPI} from 'cheerio'
-import {FileType} from 'enums'
-import {addXMLFile} from 'pages/main/editor/xmlFiles'
-import {paramsDefaults} from 'scripts/defaults'
-import {process} from 'scripts/dom'
-import {getPreload} from 'scripts/getPreload'
-import {main} from 'scripts/main'
-import type {Defaults, EditorPreload, InputParams, TemplateParams} from 'types'
+import type { AnyNode, Cheerio, CheerioAPI } from 'cheerio'
+import { Bridge } from 'emr-bridge/renderer'
 
-const { findFromDLC } = getPreload<EditorPreload>('editorPreload')
-const { existsSync } = window.service
-const { paths } = main
+import { xmlFiles } from '../services/xmlFiles'
+
+import { FileType, PreloadType } from '#enums'
+import { paramsDefaults } from '#r-scripts/defaults'
+import { preload, system, xml } from '#services'
+import type { IDefaults, IEditorPreload, IInputParams, IMPC, TemplateParams } from '#types'
+
+const bridge = Bridge.as<IMPC>()
+const paths = bridge.paths
+
+const { findFromDLC } = preload.get<IEditorPreload>(PreloadType.editor)
 
 interface InnerItem {
-    filePath: string
-    fileName: string
-    fileDOM: CheerioAPI
-    mod: string
-    dlc: string
-    templates: Cheerio<AnyNode>
-    tableItems: TemplateParams
-    defaults: Defaults[string]
+  filePath: string
+  fileName: string
+  fileDOM: CheerioAPI
+  mod: string
+  dlc: string
+  templates: Cheerio<AnyNode>
+  tableItems: TemplateParams
+  defaults: IDefaults[string]
 }
 
 interface Config {
-    item: InputParams
-    dlc: string
-    mod: string
-    fileDOM: CheerioAPI
-    regFiles?: boolean
+  item: IInputParams
+  dlc: string
+  mod: string
+  fileDOM: CheerioAPI
+  regFiles?: boolean
 }
 
 export function parseFile(config: Config) {
-    const { dlc, mod, fileDOM, item, regFiles } = config
-    const items: InnerItem[] = []
-    const propsItem: InputParams = item
-    const fileNames: string[] = (String(propsItem.value)).split(',').map(value => value.trim())
+  const { dlc, mod, fileDOM, item, regFiles } = config
+  const items: InnerItem[] = []
+  const propsItem: IInputParams = item
+  const fileNames: string[] = (String(propsItem.value)).split(',').map(value => value.trim())
 
-    if (propsItem.fileType === FileType.wheels && propsItem.attribute !== 'Type') {
-        fileDOM('Truck > TruckData > CompatibleWheels').map((_, el) => {
-            const type = fileDOM(el).attr('Type')
-            if (!fileNames.includes(type))
-                fileNames.push(type)
-        })
+  if (propsItem.fileType === FileType.wheels && propsItem.attribute !== 'Type') {
+    fileDOM('Truck > TruckData > CompatibleWheels').map((_, el) => {
+      const type = fileDOM(el).attr('Type')
+      if (type && !fileNames.includes(type)) {
+        fileNames.push(type)
+      }
+    })
+  }
+
+  fileNames.forEach(fileName => {
+    const pathsToFiles = [`${paths.classes}\\${propsItem.fileType}\\${fileName}.xml`]
+    let mainPath: string | undefined
+    let itemDLC: string | undefined
+    let itemMod: string | undefined
+
+    if (dlc) {
+      const dlcPath = `${paths.dlc}\\${dlc}\\classes\\${propsItem.fileType}\\${fileName}.xml`
+      pathsToFiles.push(dlcPath)
+      itemDLC = dlc
+    }
+    else if (mod) {
+      const modPath = `${paths.modsTemp}\\${mod}\\classes\\${propsItem.fileType}\\${fileName}.xml`
+      pathsToFiles.push(modPath)
+      itemMod = mod
     }
 
-    fileNames.forEach(fileName => {
-        const pathsToFiles = [`${paths.classes}\\${propsItem.fileType}\\${fileName}.xml`]
-        let mainPath: string
-        let itemDLC: string
-        let itemMod: string
-
-        if (dlc) {
-            const dlcPath = `${paths.dlc}\\${dlc}\\classes\\${propsItem.fileType}\\${fileName}.xml`
-            pathsToFiles.push(dlcPath)
-            itemDLC = dlc
-        }
-        else if (mod) {
-            const modPath = `${paths.modsTemp}\\${mod}\\classes\\${propsItem.fileType}\\${fileName}.xml`
-            pathsToFiles.push(modPath)
-            itemMod = mod
-        }
-
-        pathsToFiles.forEach(path => {
-            if (existsSync(path))
-                mainPath = path
-        })
-
-        if (!mainPath) {
-            mainPath = findFromDLC(fileName, propsItem.fileType)
-            itemMod = undefined
-        }
-        if (!mainPath)
-            return
-
-        const [fileDOM, tableItems] = process(mainPath)
-
-        if (regFiles) {
-            addXMLFile({
-                mod: itemMod,
-                dlc: itemDLC,
-                dom: fileDOM,
-                path: mainPath,
-                type: propsItem.fileType
-            })
-        }
-
-        items.push({
-            filePath: mainPath,
-            fileName,
-            fileDOM,
-            dlc: itemDLC,
-            mod: itemMod,
-            templates: fileDOM('_templates'),
-            tableItems,
-            defaults: paramsDefaults[`${fileName}.xml`] || {}
-        })
+    pathsToFiles.forEach(path => {
+      if (system.existsSync(path)) {
+        mainPath = path
+      }
     })
 
-    return items
+    if (!mainPath) {
+      const path = findFromDLC(fileName, propsItem.fileType as string)
+      if (!path) return
+
+      mainPath = path
+      itemMod = undefined
+    }
+
+    const [fileDOM, tableItems] = xml.processFile(mainPath)
+
+    if (regFiles) {
+      xmlFiles.add({
+        mod: itemMod!,
+        dlc: itemDLC!,
+        dom: fileDOM,
+        path: mainPath,
+        type: propsItem.fileType!
+      })
+    }
+
+    items.push({
+      filePath: mainPath,
+      fileName,
+      fileDOM,
+      dlc: itemDLC!,
+      mod: itemMod!,
+      templates: fileDOM('_templates'),
+      tableItems,
+      defaults: paramsDefaults[`${fileName}.xml`] || {}
+    })
+  })
+
+  return items
 }

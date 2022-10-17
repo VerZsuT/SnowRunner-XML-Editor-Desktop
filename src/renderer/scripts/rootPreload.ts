@@ -1,2 +1,0 @@
-import './ipc'
-import './service'

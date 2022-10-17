@@ -1,6 +1,5 @@
-import type {GroupGetter} from './GroupGetter'
-import type {InputGetter} from './InputGetter'
-import type {SelectGetter} from './SelectGetter'
-import type {TemplateGetter} from './TemplateGetter'
+import type { Group, Template } from '#templates/items'
+import type { Input } from '#templates/items/Input'
+import type { Select } from '#templates/items/Select'
 
-export type TemplateItems = GroupGetter | InputGetter | SelectGetter | TemplateGetter
+export type TemplateItems = Group | Input | Select<any> | Template

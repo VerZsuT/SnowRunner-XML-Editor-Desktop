@@ -1,18 +1,21 @@
-import type {InputBaseProps} from 'types'
+import type { IInputBaseProps } from '#types'
 
-/** Возвращает ID селектора после `SELECTOR_ID` */
-export function getSelectorID(selector: string): string | null {
-    if (!selector)
-        return null
+class Helpers {
+  /** Возвращает ID селектора после `SELECTOR_ID` */
+  getSelectorID(selector: string | undefined): string | undefined {
+    if (!selector) return
     return selector.split('||')[0].split('SELECTOR_ID:')[1]
+  }
+
+  /** Возвращает базовые свойства поля ввода */
+  getInputBaseProps(props: IInputBaseProps) {
+    return {
+      attribute: props.attribute,
+      label: props.label,
+      addMissedTag: props.addMissedTag,
+      selector: this.getSelectorID(props.selector)
+    }
+  }
 }
 
-/** Возвращает базовые свойства поля ввода */
-export function getInputBaseProps(props: InputBaseProps) {
-    return {
-        attribute: props.attribute,
-        label: props.label,
-        addMissedTag: props.addMissedTag,
-        selector: getSelectorID(props.selector)
-    }
-}
+export const helpers = new Helpers()

@@ -1,16 +1,17 @@
-import {configureStore} from '@reduxjs/toolkit'
+import { configureStore } from '@reduxjs/toolkit'
 
-import {filterReducer} from './filterSlice'
-import {listReducer} from './listSlice'
-import {pageReducer} from './pageSlice'
+import { filterActions, filterReducer } from './filterSlice'
+import { listActions, listReducer } from './listSlice'
+import { pageActions, pageReducer } from './pageSlice'
 
 export const store = configureStore({
-    reducer: {
-        page: pageReducer,
-        filter: filterReducer,
-        list: listReducer
-    }
+  reducer: {
+    page: pageReducer,
+    filter: filterReducer,
+    list: listReducer
+  }
 })
 
+export const actions = { ...pageActions, ...listActions, ...filterActions }
+
 export type MainState = ReturnType<typeof store.getState>
-export type MainDispatch = typeof store.dispatch

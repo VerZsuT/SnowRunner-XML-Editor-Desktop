@@ -1,16 +1,16 @@
-import {localize} from 'scripts/localize'
+import { localization } from '#services'
 
-export const whatsNewTexts = localize({
-    RU: {
-        WHATS_NEW_TITLE: 'Что нового в версии'
-    },
-    EN: {
-        WHATS_NEW_TITLE: 'What\'s new in the version'
-    },
-    DE: {
-        WHATS_NEW_TITLE: 'Was ist neu in der version'
-    },
-    CH: {
-        WHATS_NEW_TITLE: '该版本有什么新内容'
-    }
+export const { WHATS_NEW_TITLE } = localization.localize({
+  RU: {
+    WHATS_NEW_TITLE: 'Что нового в версии'
+  },
+  EN: {
+    WHATS_NEW_TITLE: 'What\'s new in the version'
+  },
+  DE: {
+    WHATS_NEW_TITLE: 'Was ist neu in der version'
+  },
+  CH: {
+    WHATS_NEW_TITLE: '该版本有什么新内容'
+  }
 })

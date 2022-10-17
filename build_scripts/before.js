@@ -1,77 +1,90 @@
 /*
-    Скрипт преобработки билда.
+  Скрипт преобработки билда.
 
-    - Очищает выходную папку out.
-    - Изменяет package.json, package-lock.json, installer.config.iss.
-      - Меняет версию на указанную в config.json.
-    - Изменяет public.json(sxmle_updater).
-      - Меняет версию на указанную в config.json.
+  - Очищает выходную папку out.
+  - Изменяет package.json, package-lock.json, installer.config.iss.
+    - Меняет версию на указанную в config.json.
+  - Изменяет public.json(sxmle_updater).
+    - Меняет версию на указанную в config.json.
 */
 
 const { rmSync, mkdirSync } = require('fs')
 
 const { allPaths, checkPath, readFile, writeFile } = require('./helpers.js')
-const { print, stage } = require('./log.js')
+const log = require('./log.js')
 
-const paths = allPaths.before
+class BeforeBuild {
+  paths = allPaths.before
 
-let config
-let packageFile
-let packageLockFile
-let publicFile
-let issConfig
+  config = undefined
+  packageFile = undefined
+  packageLockFile = undefined
+  publicFile = undefined
+  issConfig = undefined
 
-print('Starting pre-build script', true)
+  run() {
+    this.printTitle()
+    log.stage(this.clearOutFolder)
+    log.stage(this.readFiles)
+    log.stage(this.changeFiles)
+    log.stage(this.writeFiles)
+  }
 
-stage(() => {
-    print('Cleaning out folder')
-    checkPath(paths.out)
-    rmSync(paths.out, { recursive: true })
-    mkdirSync(paths.out)
-})
+  printTitle = () => {
+    log.print('Starting pre-build script', true)
+  }
 
-stage(() => {
-    print('Reading config.json')
-    config = readFile(paths.config)
+  clearOutFolder = () => {
+    log.print('Clearing out folder')
+    checkPath(this.paths.out)
+    rmSync(this.paths.out, { recursive: true })
+    mkdirSync(this.paths.out)
+  }
 
-    print('Reading package.json')
-    packageFile = readFile(paths.package)
+  readFiles = () => {
+    this.readFile('Reading config.json', 'config', this.paths.config)
+    this.readFile('Reading package.json', 'packageFile', this.paths.package)
+    this.readFile('Reading package-lock.json', 'packageLockFile', this.paths.packageLock)
+    this.readFile('Reading public.json', 'publicFile', this.paths.public)
+    this.readFile('Reading installer.config.iss', 'issConfig', this.paths.issConfig, false)
+  }
 
-    print('Reading package-lock.json')
-    packageLockFile = readFile(paths.packageLock)
+  changeFiles = () => {
+    this.changeFile('Changing package version', this.packageFile)
+    this.changeFile('Changing packageLock version', this.packageLockFile)
+    this.changeFile('Changing public version', this.publicFile, 'latestVersion')
+    this.changeFile(
+      'Changing ISS config file',
+      this,
+      'issConfig',
+      this.issConfig.replace(
+        this.issConfig.split('MyAppVersion ')[1].split('\n')[0],
+        `"${this.config.version}"`
+      )
+    )
+  }
 
-    print('Reading public.json')
-    publicFile = readFile(paths.public)
+  writeFiles = () => {
+    this.writeFile('Writing package.json', this.paths.package, this.packageFile)
+    this.writeFile('Writing package-lock.json', this.paths.packageLock, this.packageLockFile)
+    this.writeFile('Writing public.json', this.paths.public, this.publicFile)
+    this.writeFile('Writing installer.config.iss', this.paths.issConfig, this.issConfig, false)
+  }
 
-    print('Reading installer.config.iss')
-    issConfig = readFile(paths.issConfig, false)
-})
+  readFile(message, key, path, fromJSON = true) {
+    log.print(message)
+    this[key] = readFile(path, fromJSON)
+  }
 
-stage(() => {
-    print('Changing package version')
-    packageFile.version = config.version
+  changeFile(message, variable, key = 'version', value = this.config.version) {
+    log.print(message)
+    variable[key] = value
+  }
 
-    print('Changing packageLock version')
-    packageLockFile.version = config.version
+  writeFile(message, path, variable, stringify = true) {
+    log.print(message)
+    writeFile(path, stringify ? JSON.stringify(variable, null, '\t') : variable)
+  }
+}
 
-    print('Changing public version')
-    publicFile.latestVersion = config.version
-
-    print('Changing ISS config file')
-    const partBefore = issConfig.split('MyAppVersion ')[1].split('\n')[0]
-    issConfig = issConfig.replace(partBefore, `"${config.version}"`)
-})
-
-stage(() => {
-    print('Writing package.json')
-    writeFile(paths.package, JSON.stringify(packageFile, null, '\t'))
-
-    print('Writing package-lock.json')
-    writeFile(paths.packageLock, JSON.stringify(packageLockFile, null, '\t'))
-
-    print('Writing public.json')
-    writeFile(paths.public, JSON.stringify(publicFile, null, '\t'))
-
-    print('Writing installer.config.iss')
-    writeFile(paths.issConfig, issConfig)
-})
+new BeforeBuild().run()

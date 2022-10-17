@@ -1,6 +1,6 @@
-import {createState} from 'react-afc'
+import { ref } from 'react-afc/compatible'
 
 export function getForceUpdate() {
-    const [state, setState] = createState({ bool: false })
-    return () => setState({ bool: !state.bool })
+  const bool = ref(false)
+  return () => bool.value = !bool.value
 }

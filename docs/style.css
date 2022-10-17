@@ -1,25 +1,25 @@
 body {
-    margin: 0;
-    padding: 0;
-    background-color: #dceaf7;
-    font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #dceaf7;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 header {
-    text-align: center;
-    padding: 11px 0 0 0;
-    box-sizing: border-box;
+  text-align: center;
+  padding: 11px 0 0 0;
+  box-sizing: border-box;
 }
 
 .release {
-    text-align: center;
-    border-top: 1px solid #dce1e6;
-    background: white;
-    padding: 20px;
+  text-align: center;
+  border-top: 1px solid #dce1e6;
+  background: white;
+  padding: 20px;
 }
 
 .description {
-    width: 700px;
-    text-align: left;
-    margin: 0 auto;
+  width: 700px;
+  text-align: left;
+  margin: 0 auto;
 }

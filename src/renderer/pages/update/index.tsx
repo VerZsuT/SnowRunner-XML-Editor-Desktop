@@ -1,58 +1,60 @@
-import {Button, Typography} from 'antd'
-import {Window} from 'enums'
-import {windowReady} from 'helpers/windowReady'
-import {afc, createState} from 'react-afc'
-import {config} from 'scripts/config'
-import {render} from 'scripts/helpers'
-import {main} from 'scripts/main'
+import type { ReactNode } from 'react'
 
-import {updateTexts} from './texts'
+import { Button, Typography } from 'antd'
+import { Bridge } from 'emr-bridge/renderer'
+import { afcMemo, reactive } from 'react-afc'
 
-import './styles.sass'
+import { ALLOW_NEW_VERSION_AUTO, CLOSE, IGNORE, UPDATE } from './texts'
 
+import { ProgramWindow } from '#enums'
+import { windowReady } from '#helpers/windowReady'
+import { config, helpers, ipc } from '#services'
+import type { IMPC } from '#types'
+
+import './styles'
+
+const bridge = Bridge.as<IMPC>()
 const { Title } = Typography
-const { updateApp } = main
-const { on } = window.ipc
 const { settings } = config
 
-const {
-    ALLOW_NEW_VERSION_AUTO,
-    UPDATE,
-    IGNORE,
-    CLOSE
-} = updateTexts
+const UpdateWindow = afcMemo(() => {
+  const state = reactive({
+    version: ''
+  })
+  windowReady(ProgramWindow.Update)
+  handleContent()
 
-function closeWindow() {
+  function render(): ReactNode {
+    return <>
+      <Title className='version-title' level={4}>
+        {ALLOW_NEW_VERSION_AUTO} {` (v${state.version})`}
+      </Title>
+      <div className='buttons'>
+        <Button type='primary' onClick={updateProgram}>{UPDATE}</Button>
+        <Button type='primary' danger onClick={ignoreUpdate}>{IGNORE}</Button>
+        <Button onClick={closeWindow}>{CLOSE}</Button>
+      </div>
+    </>
+  }
+
+  function closeWindow(): void {
     window.close()
-}
+  }
 
-function updateProgram() {
-    updateApp()
-}
+  function updateProgram(): void {
+    bridge.updateApp()
+  }
 
-function ignoreUpdate() {
+  function ignoreUpdate(): void {
     settings.updates = false
     window.close()
-}
+  }
 
-const UpdateWindow = afc(() => {
-    const [state, setState] = createState({
-        version: ''
-    })
-    windowReady(Window.Update)
+  function handleContent(): void {
+    ipc.on('content', (_event, data) => state.version = data)
+  }
 
-    on('content', (_event, data) => setState({ version: data }))
-    
-    return () => <>
-        <Title className='version-title' level={4}>
-            {ALLOW_NEW_VERSION_AUTO} {` (v${state.version})`}
-        </Title>
-        <div className='buttons'>
-            <Button type='primary' onClick={updateProgram}>{UPDATE}</Button>
-            <Button type='primary' danger onClick={ignoreUpdate}>{IGNORE}</Button>
-            <Button onClick={closeWindow}>{CLOSE}</Button>
-        </div>
-    </>
+  return render
 })
 
-render(<UpdateWindow />)
+helpers.renderComponent(<UpdateWindow/>)

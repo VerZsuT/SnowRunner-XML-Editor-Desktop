@@ -1,99 +1,117 @@
-import {TemplateType} from 'enums'
-import type {
-    ItemGetterProps,
-    TemplateGetter,
-    TemplateItems,
-    TemplateParams,
-    TemplateProps,
-    TemplateSelectors,
-    TemplateTypedProps
-} from 'types'
+import { helpers } from './helpers'
 
-import {getSelectorID} from './helpers'
+import { TemplateType } from '#enums'
+import type {
+  IItemGetterProps,
+  ITemplateItem,
+  ITemplateProps,
+  ITemplateSelectors,
+  TemplateItems,
+  TemplateParams,
+  TemplateTypedProps
+} from '#types'
 
 /**
  * Шаблон таблицы параметров. Может иметь вложенные под-шаблоны.
- * @param props объект селекторов или параметры шаблона.
- * @param children
  */
-export function Template(props: TemplateSelectors | TemplateTypedProps, children: TemplateItems[]) {
-    if (props.type || props.itemSelector)
-        return _Template(props, children)
+export class Template implements ITemplateItem<TemplateParams> {
+  private replaceName = 'CYCLE'
+  private type!: TemplateType
+  private selectors!: ITemplateSelectors
+  private itemSelector?: string
+  private itemSelectorID?: string
 
-    return _Template({ selectors: <TemplateSelectors>props }, children)
-}
+  constructor(props: TemplateTypedProps, children: TemplateItems[])
+  constructor(props: ITemplateSelectors, children: TemplateItems[])
+  constructor(
+    props: ITemplateSelectors | TemplateTypedProps,
+    private children: TemplateItems[]
+  ) {
+    if (props.type || props.itemSelector) {
+      this.construct(props)
+    }
+    else {
+      this.construct({ selectors: props as ITemplateSelectors })
+    }
+  }
 
-function _Template(props: TemplateProps, children: TemplateItems[]): TemplateGetter {
-    const replaceName = 'CYCLE'
-    const { type, selectors, itemSelector } = props
-    const itemSelectorID = getSelectorID(itemSelector)
+  public getParams(props: IItemGetterProps): TemplateParams {
+    const {
+      providedSelector,
+      fileDOM,
+      cycleNumber = 1,
+      tNumber = 1,
+      formattedSelectors = this.selectors,
+      multiply = (this.type === TemplateType.multiply)
+    } = props
 
-    const getParams = (props: ItemGetterProps): TemplateParams => {
-        const {
-            providedSelector = null,
-            cycleNumber = 1,
-            tNumber = 1,
-            formattedSelectors = selectors,
-            multiply = (type === TemplateType.multiply),
-            fileDOM
-        } = props
-
-        let { counter = 1 } = props
-        let params = []
-        const newSelectors = {}
-        for (const selector in formattedSelectors) {
-            if (formattedSelectors[selector].includes('||'))
-                formattedSelectors[selector] = formattedSelectors[selector].split('||')[1]
-        }
-
-        if (multiply) {
-            let itemSelector = formattedSelectors[itemSelectorID]
-            if (itemSelector.endsWith('"]')) {
-                const temp1 = itemSelector.split(' ')
-                const temp2 = temp1[temp1.length - 1].split('[SXMLE_ID')
-                itemSelector = `${temp1.slice(0, temp1.length - 1).join(' ')} ${temp2[temp2.length - 2]}`
-            }
-
-            const items = fileDOM(itemSelector)
-            const name = replaceName + tNumber
-            let cycleNumber = 1
-            items.each((_, el) => {
-                fileDOM(el).attr('SXMLE_ID', String(counter))
-                for (const selector in formattedSelectors) {
-                    newSelectors[selector] = formattedSelectors[selector].replaceAll(`-${name}-`, String(counter))
-                    if (cycleNumber === 1)
-                        newSelectors[selector] = newSelectors[selector].replaceAll(`-F_${name}-`, String(counter))
-                    else if (cycleNumber === items.length)
-                        newSelectors[selector] = newSelectors[selector].replaceAll(`-L_${name}-`, String(counter))
-                    newSelectors[selector] = newSelectors[selector].replaceAll(`-N${cycleNumber}_${name}-`, String(counter))
-                }
-
-                ++counter
-                params = params.concat(getParams({
-                    formattedSelectors: newSelectors,
-                    tNumber: multiply ? tNumber + 1 : tNumber,
-                    multiply: false,
-                    providedSelector,
-                    cycleNumber,
-                    fileDOM,
-                    counter
-                }))
-                ++cycleNumber
-            })
-        }
-        else {
-            children.forEach(childGetter => {
-                params = params.concat(childGetter({
-                    tNumber: multiply ? tNumber + 1 : tNumber,
-                    formattedSelectors,
-                    providedSelector,
-                    cycleNumber,
-                    fileDOM
-                }))
-            })
-        }
-        return params
+    let { counter = 1 } = props
+    let params: TemplateParams = []
+    const newSelectors: ITemplateSelectors = {}
+    for (const selector in formattedSelectors) {
+      if (formattedSelectors[selector].includes('||')) {
+        formattedSelectors[selector] = formattedSelectors[selector].split('||')[1]
+      }
     }
 
-    return getParams
+    if (multiply) {
+      if (!this.itemSelectorID) {
+        throw new Error('Selector ID is undefined')
+      }
+      let itemSelector = formattedSelectors[this.itemSelectorID]
+      if (itemSelector.endsWith('"]')) {
+        const temp1 = itemSelector.split(' ')
+        const temp2 = temp1[temp1.length - 1].split('[SXMLE_ID')
+        itemSelector = `${temp1.slice(0, temp1.length - 1).join(' ')} ${temp2[temp2.length - 2]}`
+      }
+
+      const items = fileDOM(itemSelector)
+      const name = this.replaceName + tNumber
+      let cycleNumber = 1
+      items.each((_, el) => {
+        fileDOM(el).attr('SXMLE_ID', String(counter))
+        for (const selector in formattedSelectors) {
+          newSelectors[selector] = formattedSelectors[selector].replaceAll(`-${name}-`, String(counter))
+          if (cycleNumber === 1) {
+            newSelectors[selector] = newSelectors[selector].replaceAll(`-F_${name}-`, String(counter))
+          }
+          else if (cycleNumber === items.length) {
+            newSelectors[selector] = newSelectors[selector].replaceAll(`-L_${name}-`, String(counter))
+          }
+          newSelectors[selector] = newSelectors[selector].replaceAll(`-N${cycleNumber}_${name}-`, String(counter))
+        }
+
+        ++counter
+        params = params.concat(this.getParams({
+          formattedSelectors: newSelectors,
+          tNumber: multiply ? tNumber + 1 : tNumber,
+          multiply: false,
+          providedSelector,
+          cycleNumber,
+          fileDOM,
+          counter
+        }))
+        ++cycleNumber
+      })
+    }
+    else {
+      this.children.forEach(child => {
+        params = params.concat((child as ITemplateItem).getParams({
+          tNumber: multiply ? tNumber + 1 : tNumber,
+          formattedSelectors,
+          providedSelector,
+          cycleNumber,
+          fileDOM
+        }))
+      })
+    }
+    return params
+  }
+
+  private construct(props: ITemplateProps): void {
+    this.type = props.type ?? TemplateType.single
+    this.selectors = props.selectors ?? {}
+    this.itemSelector = props.itemSelector
+    this.itemSelectorID = helpers.getSelectorID(this.itemSelector)
+  }
 }

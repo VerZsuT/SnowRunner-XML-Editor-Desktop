@@ -1,59 +1,59 @@
-const FG_YELLOW = '\x1b[33m'
-const FG_BLUE = '\x1b[34m'
-const FG_RED = '\x1b[31m'
-const FG_GREEN = '\x1b[32m'
-const RESET_COLOR = '\x1b[0m'
+class Log {
+  #FG_YELLOW = '\x1b[33m'
+  #FG_BLUE = '\x1b[34m'
+  #FG_RED = '\x1b[31m'
+  #FG_GREEN = '\x1b[32m'
+  #RESET_COLOR = '\x1b[0m'
 
-const PREFIX = `${FG_YELLOW}[BUILD]${RESET_COLOR}`
+  #PREFIX = `${this.#FG_YELLOW}[BUILD]${this.#RESET_COLOR}`
 
-let stageNumber = 1
-let mainIsStarted = false
+  #stageNumber = 1
+  #mainIsStarted = false
 
-/**
- * Пишет сообщение в консоль. Если стоит флаг `isLog`, то пишет зелёным вне группы.
- * @param {string} message 
- * @param {boolean} isLog 
- */
-function print(message, isLog=false) {
-    startMain()
-    if (isLog)
-        console.log(`${FG_GREEN}${message}${RESET_COLOR}`)
-    else
-        console.log(`- ${message}`)
-}
-
-/**
- * Главная группа
- */
-function startMain() {
-    if (!mainIsStarted) {
-        console.group(PREFIX)
-        mainIsStarted = true
+  /**
+   * Пишет сообщение в консоль. Если стоит флаг `isLog`, то пишет зелёным вне группы.
+   * @param {string} message
+   * @param {boolean} isLog
+   */
+  print(message, isLog = false) {
+    this.#startMain()
+    if (isLog) {
+      console.log(`${this.#FG_GREEN}${message}${this.#RESET_COLOR}`)
     }
-}
+    else {
+      console.log(`- ${message}`)
+    }
+  }
 
-/**
- * Группа стадии
- * @param {Function} callback
- */
-function stage(callback) {
-    startMain()
-    console.group(`${FG_BLUE}[STAGE_${stageNumber}]${RESET_COLOR}`)
+  /**
+   * Группа стадии
+   * @param {Function} callback
+   */
+  stage(callback) {
+    this.#startMain()
+    console.group(`${this.#FG_BLUE}[STAGE_${this.#stageNumber}]${this.#RESET_COLOR}`)
     callback()
     console.groupEnd()
-    stageNumber++
+    this.#stageNumber++
+  }
+
+  /**
+   * Пишет в консоль в стиле ошибки.
+   * @param {string} message
+   */
+  error(message) {
+    console.log(`${this.#FG_RED}${message}${this.#RESET_COLOR}`)
+  }
+
+  /**
+   * Главная группа
+   */
+  #startMain() {
+    if (!this.#mainIsStarted) {
+      console.group(this.#PREFIX)
+      this.#mainIsStarted = true
+    }
+  }
 }
 
-/**
- * Пишет в консоль в стиле ошибки.
- * @param {string} message 
- */
-function error(message) {
-    console.log(`${FG_RED}${message}${RESET_COLOR}`)
-}
-
-module.exports = {
-    print,
-    error,
-    stage
-}
+module.exports = new Log()

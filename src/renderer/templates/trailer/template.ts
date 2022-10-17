@@ -1,111 +1,124 @@
-import {NumberType} from 'enums'
-import type {XMLTemplate} from 'types'
+import { ForEach, Group, Num, Template } from '../items'
+import { forEach, initSelectors, selector } from '../service'
+import {
+  FUEL_CAPACITY,
+  FUEL_MASS,
+  INNER,
+  MASS,
+  OTHER,
+  PRICE,
+  QUANTITY,
+  REPAIRS_CAPACITY,
+  SUSP_HEIGHT,
+  SUSP_STRENGTH,
+  TRAILER_MASS,
+  WHEEL,
+  WHEEL_REPAIRS_CAPACITY,
+  WHEELS
+} from './texts'
 
-import {ForEach, Group, Number, Template} from '../items'
-import {getSelectors} from '../service'
-import {trailerTexts} from './texts'
+import { NumberType } from '#enums'
+import type { IXMLTemplate } from '#types'
 
-const selectors = getSelectors(({ forEach }) => {
-    const truckData = 'Truck.TruckData'
-    const wheels = `${truckData}.Wheels`
-    const wheel = `${wheels}.Wheel${forEach}`
-    const modelBody = 'Truck.PhysicsModel.Body'
-    const fuelMass = 'Truck.FuelMass.Body'
-    const gameData = 'Truck.GameData'
-    const addonSlots = `${gameData}.AddonSlots`
+class Selectors {
+  @selector truckData = 'Truck.TruckData'
+  @selector wheels = `${this.truckData}.Wheels`
+  @selector wheel = `${this.wheels}.Wheel${forEach}`
+  @selector modelBody = 'Truck.PhysicsModel.Body'
+  @selector fuelMass = 'Truck.FuelMass.Body'
+  @selector gameData = 'Truck.GameData'
+  @selector addonSlots = `${this.gameData}.AddonSlots`
+}
 
-    return { truckData, modelBody, fuelMass, gameData, addonSlots, wheel }
-})
+const selectors = initSelectors(new Selectors())
 
 export const trailerTemplate = {
-    selector: 'Truck[Type="Trailer"]',
-    template: Template(selectors, [
-        Group({
-            label: trailerTexts.inner,
-            provided: selectors.truckData
+  selector: 'Truck[Type="Trailer"]',
+  template: new Template({ ...selectors }, [
+    new Group({
+      label: INNER,
+      provided: selectors.truckData
+    }, [
+      new Num({
+        attribute: 'FuelCapacity',
+        type: NumberType.integer,
+        label: FUEL_CAPACITY,
+        max: 64000,
+        step: 10,
+        default: 0,
+        areas: {
+          yellow: [[1000, 5000]],
+          red: [[5001, Infinity]]
+        }
+      }),
+      new Num({
+        attribute: 'RepairsCapacity',
+        type: NumberType.integer,
+        label: REPAIRS_CAPACITY,
+        default: 0,
+        areas: {
+          yellow: [[1000, 5000]],
+          red: [[5001, Infinity]]
+        }
+      }),
+      new Num({
+        attribute: 'WheelRepairsCapacity',
+        type: NumberType.integer,
+        label: WHEEL_REPAIRS_CAPACITY,
+        default: 0,
+        areas: {
+          yellow: [[100, 500]],
+          red: [[501, Infinity]]
+        }
+      }),
+      new Num({
+        attribute: 'Quantity',
+        type: NumberType.integer,
+        selector: selectors.addonSlots,
+        label: QUANTITY
+      })
+    ]),
+    new Group(MASS, [
+      new Num({
+        attribute: 'Mass',
+        type: NumberType.integer,
+        selector: selectors.modelBody,
+        label: TRAILER_MASS
+      }),
+      new Num({
+        attribute: 'Mass',
+        type: NumberType.integer,
+        selector: selectors.fuelMass,
+        label: FUEL_MASS
+      })
+    ]),
+    new Group(WHEELS, [
+      new ForEach(selectors.wheel, [
+        new Group({
+          label: WHEEL,
+          provided: selectors.wheel,
+          addCounter: true
         }, [
-            Number({
-                attribute: 'FuelCapacity',
-                type: NumberType.integer,
-                label: trailerTexts.fuelCapacity,
-                max: 64000,
-                step: 10,
-                default: 0,
-                areas: {
-                    yellow: [[1000, 5000]],
-                    red: [[5001, Infinity]]
-                }
-            }),
-            Number({
-                attribute: 'RepairsCapacity',
-                type: NumberType.integer,
-                label: trailerTexts.repairsCapacity,
-                default: 0,
-                areas: {
-                    yellow: [[1000, 5000]],
-                    red: [[5001, Infinity]]
-                }
-            }),
-            Number({
-                attribute: 'WheelRepairsCapacity',
-                type: NumberType.integer,
-                label: trailerTexts.wheelRepairsCapacity,
-                default: 0,
-                areas: {
-                    yellow: [[100, 500]],
-                    red: [[501, Infinity]]
-                }
-            }),
-            Number({
-                attribute: 'Quantity',
-                type: NumberType.integer,
-                selector: selectors.addonSlots,
-                label: trailerTexts.quantity
-            })
-        ]),
-        Group(trailerTexts.mass, [
-            Number({
-                attribute: 'Mass',
-                type: NumberType.integer,
-                selector: selectors.modelBody,
-                label: trailerTexts.trailerMass
-            }),
-            Number({
-                attribute: 'Mass',
-                type: NumberType.integer,
-                selector: selectors.fuelMass,
-                label: trailerTexts.fuelMass
-            })
-        ]),
-        Group({
-            label: trailerTexts.wheels
-        }, [
-            ForEach(selectors.wheel, [
-                Group({
-                    label: trailerTexts.wheel,
-                    provided: selectors.wheel,
-                    addCounter: true
-                }, [
-                    Number({
-                        attribute: 'SuspensionHeight',
-                        label: trailerTexts.suspHeight
-                    }),
-                    Number({
-                        attribute: 'SuspensionStrength',
-                        label: trailerTexts.suspStrength
-                    })
-                ])
-            ])
-        ]),
-        Group({
-            label: trailerTexts.other,
-            provided: selectors.gameData
-        }, [
-            Number({
-                attribute: 'Price',
-                type: NumberType.integer,
-                label: trailerTexts.price
-            })
+          new Num({
+            attribute: 'SuspensionHeight',
+            label: SUSP_HEIGHT
+          }),
+          new Num({
+            attribute: 'SuspensionStrength',
+            label: SUSP_STRENGTH
+          })
         ])
+      ])
+    ]),
+    new Group({
+      label: OTHER,
+      provided: selectors.gameData
+    }, [
+      new Num({
+        attribute: 'Price',
+        type: NumberType.integer,
+        label: PRICE
+      })
     ])
-} as XMLTemplate
+  ])
+} as IXMLTemplate

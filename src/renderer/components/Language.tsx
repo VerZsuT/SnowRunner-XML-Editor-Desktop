@@ -1,58 +1,65 @@
-import {memo} from 'react'
+import type { ReactNode } from 'react'
 
-import type {RadioChangeEvent} from 'antd'
-import {Radio, Select} from 'antd'
-import {Lang} from 'enums'
-import {globalTexts} from 'globalTexts/renderer'
-import {config} from 'scripts/config'
-import {main} from 'scripts/main'
+import type { RadioChangeEvent } from 'antd'
+import { Radio, Select } from 'antd'
+import { Bridge } from 'emr-bridge/renderer'
+import { afcMemo } from 'react-afc'
 
-const { relaunchApp } = main
-const { LANGUAGE_LABEL } = globalTexts
+import { Lang } from '#enums'
+import { LANGUAGE_LABEL } from '#globalTexts/renderer'
+import { config } from '#services'
+import type { IMPC } from '#types'
 
-interface Props {
-    isSetup?: boolean;
+const bridge = Bridge.as<IMPC>()
+
+type Props = {
+  isSetup?: boolean
 }
 
-const langOptions = Object.keys(Lang).map(lang => ({
+/** Выбор языка программы */
+export const Language = afcMemo((props: Props) => {
+  const langOptions = Object.keys(Lang).map(lang => ({
     label: lang,
     value: lang
-}))
+  }))
 
-
-function onChangeRadio(event: RadioChangeEvent) {
-    config.lang = event.target.value
-    relaunchApp()
-}
-
-function changeLang(value: Lang) {
-    config.lang = value
-    relaunchApp()
-}
-
-/** Выбор язка программы */
-export const Language = memo((props: Props) => (
-    <div>
-        {props.isSetup 
-            ? <Radio.Group
-                defaultValue={config.lang}
-                onChange={onChangeRadio}
-                optionType='button'
-                buttonStyle='solid'
-                options={langOptions}
+  function render(): ReactNode {
+    return (
+      <div>
+        {props.isSetup
+          ? <Radio.Group
+            defaultValue={config.lang}
+            onChange={onChangeRadio}
+            optionType='button'
+            buttonStyle='solid'
+            options={langOptions}
+          />
+          : <>
+            <label htmlFor='lang-select' className='lang-label'>
+              {LANGUAGE_LABEL}
+            </label>
+            <Select
+              id='lang-select'
+              onChange={onChangeLang}
+              value={config.lang}
+              size='large'
+              options={langOptions}
             />
-            : <>
-                <label htmlFor='lang-select' className='lang-label'>
-                    {LANGUAGE_LABEL}
-                </label>
-                <Select
-                    id='lang-select'
-                    onChange={changeLang}
-                    value={config.lang}
-                    size='large'
-                    options={langOptions}
-                />
-            </>
+          </>
         }
-    </div>
-))
+      </div>
+    )
+  }
+
+  function onChangeRadio(event: RadioChangeEvent): void {
+    config.lang = event.target.value
+    bridge.relaunchApp()
+  }
+
+  function onChangeLang(value: Lang): void {
+    config.lang = value
+    bridge.relaunchApp()
+  }
+
+  return render
+})

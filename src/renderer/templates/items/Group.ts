@@ -1,95 +1,115 @@
-import {ONLY_FOR_SELECTOR} from 'consts'
-import {NameType, ParamType} from 'enums'
-import {getGameText} from 'templates/service'
-import type {GroupGetter, GroupParams, GroupTypedProps, ItemGetterProps, TemplateItems, TemplateParams} from 'types'
+import { helpers } from './helpers'
 
-import {getSelectorID} from './helpers'
+import { ONLY_FOR_SELECTOR } from '#consts'
+import { NameType, ParamType } from '#enums'
+import { getGameText } from '#templates/service'
+import type {
+  GroupTypedProps,
+  IGroupParams,
+  IItemGetterProps,
+  ITemplateItem,
+  TemplateItems,
+  TemplateParams
+} from '#types'
 
 /**
  * Объединение параметров в раскрывающуюся группу.
- * @param props имя или параметры группы.
- * @param children
  */
-export function Group(props: string | GroupTypedProps, children: TemplateItems[]): GroupGetter {
-    if (typeof props === 'string')
-        return _Group({ label: props }, children)
-    else
-        return _Group(props, children)
-}
+export class Group implements ITemplateItem<[IGroupParams] | any[]> {
+  private label!: Required<GroupTypedProps>['label'] | typeof ONLY_FOR_SELECTOR
+  private withCounter!: boolean
+  private iconPath?: string
+  private providedSelector?: string
+  private providedSelectorID?: string
 
-function _Group(props: GroupTypedProps, children: TemplateItems[]): GroupGetter {
-    const {
-        label = ONLY_FOR_SELECTOR,
-        iconName: iconPath,
-        provided: providedSelector,
-        addCounter: withCounter = false
-    } = props
-    const providedSelectorID = getSelectorID(providedSelector)
+  constructor(
+    props: string | GroupTypedProps,
+    private children: TemplateItems[]
+  ) {
+    if (typeof props === 'string') {
+      this.construct({ label: props })
+    }
+    else {
+      this.construct(props)
+    }
+  }
 
-    return (props: ItemGetterProps): [GroupParams] | any[] => {
-        const { formattedSelectors, fileDOM, tNumber, cycleNumber } = props
-        let params: TemplateParams = []
-        let groupLabel: string
-        let resGroupLabel: string
+  public getParams(props: IItemGetterProps): [IGroupParams] | any[] {
+    const { formattedSelectors = {}, fileDOM, tNumber, cycleNumber } = props
+    let params: TemplateParams = []
+    let groupLabel: string | undefined
+    let resGroupLabel: string | undefined
 
-        if (typeof label === 'string') {
-            groupLabel = label
+    if (typeof this.label === 'string') {
+      groupLabel = this.label
+    }
+    else {
+      let labelSelectorID: string | undefined
+      let labelExtraSelectorID: string | undefined
+      if (Array.isArray(this.label.selector)) {
+        labelSelectorID = helpers.getSelectorID(this.label.selector[0])
+        labelExtraSelectorID = helpers.getSelectorID(this.label.selector[1])
+      }
+      else {
+        labelSelectorID = helpers.getSelectorID(this.label.selector)
+      }
+
+      const $nameElement = fileDOM(formattedSelectors[labelSelectorID!])
+      const $resNameElement = fileDOM(formattedSelectors[labelExtraSelectorID!])
+
+      if ($nameElement.length === 0 && $resNameElement.length === 0) {
+        return []
+      }
+
+      if (this.label.type === NameType.computed) {
+        if (Array.isArray(this.label.attribute)) {
+          resGroupLabel = $resNameElement.attr(this.label.attribute[1])
+          groupLabel = getGameText($nameElement.attr(this.label.attribute[0])!) || $nameElement.attr(this.label.attribute[0])
         }
         else {
-            let labelSelectorID: string
-            let labelExtraSelectorID: string
-            if (Array.isArray(label.selector)) {
-                labelSelectorID = getSelectorID(label.selector[0])
-                labelExtraSelectorID = getSelectorID(label.selector[1])
-            }
-            else {
-                labelSelectorID = getSelectorID(label.selector)
-            }
-
-            const $nameElement = fileDOM(formattedSelectors[labelSelectorID])
-            const $resNameElement = fileDOM(formattedSelectors[labelExtraSelectorID])
-
-            if ($nameElement.length === 0 && $resNameElement.length === 0)
-                return []
-
-            if (label.type === NameType.computed) {
-                if (Array.isArray(label.attribute)) {
-                    resGroupLabel = $resNameElement.attr(label.attribute[1])
-                    groupLabel = getGameText($nameElement.attr(label.attribute[0])) || $nameElement.attr(label.attribute[0])
-                }
-                else {
-                    groupLabel = getGameText($nameElement.attr(label.attribute))
-                }
-            }
-            else if (label.type === NameType.tagName) {
-                groupLabel = $nameElement.html().split('<')[1].split(' ')[0]
-            }
+          groupLabel = getGameText($nameElement.attr(this.label.attribute!)!)
         }
-
-        children.forEach(childGetter => {
-            params = params.concat(childGetter({
-                providedSelector: providedSelectorID,
-                formattedSelectors,
-                tNumber,
-                fileDOM
-            }))
-        })
-
-        if (withCounter)
-            groupLabel += ` ${cycleNumber}`
-
-        if (label === ONLY_FOR_SELECTOR)
-            return params
-
-        if (!params.length)
-            return []
-
-        return [<GroupParams>{
-            paramType: ParamType.group,
-            groupItems: params,
-            groupName: groupLabel,
-            resGroupName: resGroupLabel,
-            iconName: iconPath
-        }]
+      }
+      else if (this.label.type === NameType.tagName) {
+        groupLabel = $nameElement.html()?.split('<')[1].split(' ')[0]
+      }
     }
+
+    this.children.forEach(child => {
+      params = params.concat((child as ITemplateItem).getParams({
+        providedSelector: this.providedSelectorID,
+        formattedSelectors,
+        tNumber,
+        fileDOM
+      }))
+    })
+
+    if (this.withCounter) {
+      groupLabel += ` ${cycleNumber}`
+    }
+
+    if (this.label === ONLY_FOR_SELECTOR) {
+      return params
+    }
+
+    if (!params.length) {
+      return []
+    }
+
+    return [{
+      paramType: ParamType.group,
+      groupItems: params,
+      groupName: groupLabel,
+      resGroupName: resGroupLabel,
+      iconName: this.iconPath
+    } as IGroupParams]
+  }
+
+  private construct(props: GroupTypedProps): void {
+    this.label = props.label ?? ONLY_FOR_SELECTOR
+    this.iconPath = props.iconName
+    this.withCounter = props.addCounter ?? false
+    this.providedSelector = props.provided
+    this.providedSelectorID = helpers.getSelectorID(this.providedSelector)
+  }
 }

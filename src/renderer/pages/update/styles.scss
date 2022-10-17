@@ -1,0 +1,18 @@
+@import "#r/styles";
+
+body {
+  background: #fff;
+  text-align: center;
+}
+
+.version-title {
+  margin-top: 20px;
+}
+
+.buttons {
+  position: absolute;
+  display: flex;
+  width: 100%;
+  bottom: 20px;
+  justify-content: space-evenly;
+}

@@ -1,20 +1,20 @@
-import type {NameType} from 'enums'
+import type { IGroupLabel } from './IGroupLabel'
+import type { IGroupProps } from './IGroupProps'
 
-import type {GroupLabel} from './GroupLabel'
-import type {GroupProps} from './GroupProps'
+import type { NameType } from '#enums'
 
-interface TagNameLabel {
-    type: NameType.tagName
-    selector: GroupLabel['selector']
+interface ITagNameLabel {
+  type: NameType.tagName
+  selector: IGroupLabel['selector']
 }
 
-interface ComputedLabel {
-    type: NameType.computed
-    attribute: GroupLabel['attribute']
-    selector: GroupLabel['selector']
+interface IComputedLabel {
+  type: NameType.computed
+  attribute: IGroupLabel['attribute']
+  selector: IGroupLabel['selector']
 }
 
 /** Параметры группы. */
-export type GroupTypedProps = GroupProps & {
-    label?: string | TagNameLabel | ComputedLabel
+export type GroupTypedProps = IGroupProps & {
+  label?: string | ITagNameLabel | IComputedLabel
 }

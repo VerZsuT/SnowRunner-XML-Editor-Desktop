@@ -1,25 +1,25 @@
-import {createContext} from 'react'
+import { createContext } from 'react'
 
-import {CURRENT_DLC, CURRENT_MOD, FILE_PATH} from 'consts'
-import {storage} from 'scripts/storage'
+import { CURRENT_DLC, CURRENT_MOD, FILE_PATH } from '#consts'
+import { storage } from '#services'
 
 export interface FileInfoContextType {
-    filePath: string
-    mod: string
-    dlc: string
+  filePath: string
+  mod: string
+  dlc: string
 }
 
-export const FileInfoContext = createContext<FileInfoContextType>(null)
+export const FileInfoContext = createContext<FileInfoContextType>(null as unknown as FileInfoContextType)
 
 export function getFileInfo() {
-    const filePath = storage.get(FILE_PATH)
-    const mod = storage.get(CURRENT_MOD)
-    const dlc = storage.get(CURRENT_DLC)
+  const filePath = storage.get(FILE_PATH)
+  const mod = storage.get(CURRENT_MOD)
+  const dlc = storage.get(CURRENT_DLC)
 
-    return {
-        filePath, mod, dlc,
-        fileInfoContext: {
-            filePath, mod, dlc
-        }
+  return {
+    filePath, mod, dlc,
+    fileInfoContext: {
+      filePath, mod, dlc
     }
+  }
 }

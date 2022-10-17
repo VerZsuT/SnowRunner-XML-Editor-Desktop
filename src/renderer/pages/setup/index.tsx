@@ -1,91 +1,88 @@
-import {Button, Modal, Steps} from 'antd'
-import {Header} from 'components/Header'
-import {Language} from 'components/Language'
-import {Menu} from 'components/Menu'
-import {Window} from 'enums'
-import {globalTexts} from 'globalTexts/renderer'
-import {handleIPCMessage} from 'helpers/handleIPCMessage'
-import {windowReady} from 'helpers/windowReady'
-import {afc, afterDraw, createState} from 'react-afc'
-import {config} from 'scripts/config'
-import {render} from 'scripts/helpers'
-import {main} from 'scripts/main'
+import type { ReactNode } from 'react'
 
-import {GameFolder} from './components/GameFolder'
-import {setupTexts} from './texts'
+import { Button, Modal, Steps } from 'antd'
+import { Bridge } from 'emr-bridge/renderer'
+import { afcMemo, onMount, reactive } from 'react-afc'
 
-import './styles.sass'
+import { GameFolder } from './components/GameFolder'
+import { FIRST_STEPS_DESCRIPTION, GAME_DATA_STEP, IMPORT_CONFIG_MESSAGE, NEXT } from './texts'
 
+import { Header } from '#components/Header'
+import { Language } from '#components/Language'
+import { Menu } from '#components/Menu'
+import { ProgramWindow } from '#enums'
+import { LANGUAGE_LABEL } from '#globalTexts/renderer'
+import { handleIPCMessage } from '#helpers/handleIPCMessage'
+import { windowReady } from '#helpers/windowReady'
+import { config, helpers, system } from '#services'
+import type { IMPC } from '#types'
+
+import './styles'
+
+const bridge = Bridge.as<IMPC>()
+const paths = bridge.paths
 const { Step } = Steps
 const { confirm } = Modal
 
-const { importConfig, paths, saveBackup } = main
-const { existsSync, join } = window.service
-const {
-    FIRST_STEPS_DESCRIPTION,
-    IMPORT_CONFIG_MESSAGE,
-    GAME_DATA_STEP,
-    NEXT
-} = setupTexts
-const { LANGUAGE_LABEL } = globalTexts
+const Setup = afcMemo(() => {
+  const stepsContent = [
+    <Language isSetup key='language'/>,
+    <GameFolder key='game-folder' onChange={onSave}/>
+  ]
 
-function checkExportedConfig() {
-    if (existsSync(join(paths.backupFolder, 'config.json'))) {
-        confirm({
-            title: IMPORT_CONFIG_MESSAGE,
-            onOk: () => importConfig()
-        })
+  const state = reactive({
+    step: 0
+  })
+  windowReady(ProgramWindow.Setup)
+  handleIPCMessage()
+
+  onMount(() => {
+    setTimeout(checkExportedConfig, 300)
+  })
+
+  function render(): ReactNode {
+    const { step } = state
+
+    return <>
+      <Menu/>
+      <Header text={FIRST_STEPS_DESCRIPTION}/>
+
+      <Steps className='steps' current={step}>
+        <Step title={LANGUAGE_LABEL}/>
+        <Step title={GAME_DATA_STEP}/>
+      </Steps>
+      <div className='steps-content'>
+        {stepsContent[step]}
+      </div>
+      <div className='steps-actions'>
+        {step < stepsContent.length - 1 && (
+          <Button type='primary' onClick={onNext}>
+            {NEXT}
+          </Button>
+        )}
+      </div>
+    </>
+  }
+
+  function onSave(path: string): void {
+    config.initial = path
+    void bridge.saveBackup(true)
+  }
+
+  function onNext(): void {
+    state.step++
+  }
+
+  function checkExportedConfig(): void {
+    if (system.existsSync(system.join(paths.backupFolder, 'config.json'))) {
+      confirm({
+        title: IMPORT_CONFIG_MESSAGE,
+        onOk: () => bridge.importConfig()
+      })
     }
-}
+  }
 
-const Setup = afc(() => {
-    const [state, setState] = createState({
-        current: 0
-    })
-    windowReady(Window.Setup)
-    handleIPCMessage()
-
-    afterDraw(() => {
-        setTimeout(checkExportedConfig, 300)
-    })
-
-    function onSave(path: string) {
-        config.initial = path
-        saveBackup(true)
-    }
-
-    function onNext() {
-        setState({ current: state.current + 1 })
-    }
-
-    const stepsContent = [
-        <Language isSetup key='language' />,
-        <GameFolder key='game-folder' onChange={onSave} />
-    ]
-
-    return () => {
-        const { current } = state
-
-        return <>
-            <Menu />
-            <Header text={FIRST_STEPS_DESCRIPTION} />
-
-            <Steps className='steps' current={current}>
-                <Step title={LANGUAGE_LABEL} />
-                <Step title={GAME_DATA_STEP} />
-            </Steps>
-            <div className='steps-content'>
-                {stepsContent[current]}
-            </div>
-            <div className='steps-actions'>
-                {current < stepsContent.length - 1 && (
-                    <Button type='primary' onClick={onNext}>
-                        {NEXT}
-                    </Button>
-                )}
-            </div>
-        </>
-    }
+  return render
 })
 
-render(<Setup />)
+helpers.renderComponent(<Setup/>)

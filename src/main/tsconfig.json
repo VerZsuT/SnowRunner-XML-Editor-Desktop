@@ -1,0 +1,71 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "target": "ESNext",
+    "lib": [
+      "ESNext"
+    ],
+    "incremental": true,
+    "isolatedModules": true,
+    "module": "ESNext",
+    "allowSyntheticDefaultImports": true,
+    "allowUnreachableCode": false,
+    "esModuleInterop": true,
+    "sourceMap": true,
+    "outDir": "dist",
+    "newLine": "LF",
+    "noImplicitAny": false,
+    "strict": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "declaration": false,
+    "emitDeclarationOnly": false,
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "#types": [
+        "../types/index"
+      ],
+      "#types/*": [
+        "../types/*"
+      ],
+      "#consts": [
+        "../consts"
+      ],
+      "#enums": [
+        "../enums/index"
+      ],
+      "#enums/*": [
+        "../enums/*"
+      ],
+      "#globalTexts/*": [
+        "../globalTexts/*"
+      ],
+      "#images/*": [
+        "../images/*"
+      ],
+      "#classes": [
+        "classes/index"
+      ],
+      "#classes/*": [
+        "classes/*"
+      ],
+      "#m-scripts": [
+        "scripts/index"
+      ],
+      "#m-scripts/*": [
+        "scripts/*"
+      ],
+      "#windows": [
+        "windows/index"
+      ],
+      "#windows/*": [
+        "windows/*"
+      ],
+      "#m/*": [
+        "./*"
+      ]
+    }
+  }
+}

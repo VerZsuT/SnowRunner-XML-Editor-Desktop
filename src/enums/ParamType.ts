@@ -1,4 +1,4 @@
 export enum ParamType {
-    input = 'input',
-    group = 'group'
+  input = 'input',
+  group = 'group'
 }

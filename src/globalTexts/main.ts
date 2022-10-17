@@ -1,5 +1,8 @@
-import {localize} from 'main/scripts/localize'
+import { _globalTexts } from './texts'
 
-import {_globalTexts} from './texts'
+import { localization } from '#classes/localization'
 
-export const globalTexts = localize(_globalTexts)
+export const {
+  SUCCESS_EXPORT_MESSAGE,
+  LOADING
+} = localization.localize(_globalTexts)

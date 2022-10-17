@@ -1,4 +1,4 @@
 export enum Category {
-    trucks = 'trucks',
-    trailers = 'trailers'
+  trucks = 'trucks',
+  trailers = 'trailers'
 }

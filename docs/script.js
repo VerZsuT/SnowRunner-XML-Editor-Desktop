@@ -11,18 +11,20 @@ const RELEASES_URL = 'https://github.com/VerZsuT/SnowRunner-XML-Editor-Desktop/r
 const downloadButtons = document.querySelectorAll(`button[${DOWNLOAD}]`)
 
 downloadButtons.forEach($downloadButton => {
-    const $a = document.createElement('a')
-    const version = $downloadButton.getAttribute(VERSION)
-    const type = $downloadButton.getAttribute(SOURCE_TYPE)
-    const source = $downloadButton.getAttribute(SOURCE)
+  const $a = document.createElement('a')
+  const version = $downloadButton.getAttribute(VERSION)
+  const type = $downloadButton.getAttribute(SOURCE_TYPE)
+  const source = $downloadButton.getAttribute(SOURCE)
 
-    $a.style.display = 'none'
-    $downloadButton.prepend($a)
+  $a.style.display = 'none'
+  $downloadButton.prepend($a)
 
-    if (source === GITHUB_SOURCE)
-        $a.href = `${RELEASES_URL}/${version}/SnowRunnerXMLEditor.${type}`
-    else
-        $a.href = $downloadButton.getAttribute(LINK)
+  if (source === GITHUB_SOURCE) {
+    $a.href = `${RELEASES_URL}/${version}/SnowRunnerXMLEditor.${type}`
+  }
+  else {
+    $a.href = $downloadButton.getAttribute(LINK)
+  }
 
-    $downloadButton.onclick = () => $a.click()
+  $downloadButton.onclick = () => $a.click()
 })

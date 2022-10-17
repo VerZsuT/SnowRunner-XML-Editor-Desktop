@@ -1,32 +1,38 @@
-import {localize} from 'scripts/localize'
+import { localization } from '#services'
 
-export const winchTexts = localize({
-    RU: {
-        length: 'Длина',
-        strengthMult: 'Сила',
-        isEngineIgnitionRequired: 'Работает от',
-        engine: 'Двигателя',
-        battery: 'Аккумулятора'
-    },
-    EN: {
-        length: 'Length',
-        strengthMult: 'Strength',
-        isEngineIgnitionRequired: 'Works from',
-        engine: 'Engine',
-        battery: 'Battery'
-    },
-    DE: {
-        length: 'Länge',
-        strengthMult: 'Stärke',
-        isEngineIgnitionRequired: 'Arbeitet von',
-        engine: 'Motor',
-        battery: 'Batterie'
-    },
-    CH: {
-        length: '长度',
-        strengthMult: '的力量',
-        isEngineIgnitionRequired: '由以下单位提供',
-        engine: '发动机',
-        battery: '电池'
-    }
+export const {
+  BATTERY,
+  ENGINE,
+  IS_ENGINE_IGNITION_REQUIRED,
+  LENGTH,
+  STRENGTH_MULT
+} = localization.localize({
+  RU: {
+    LENGTH: 'Длина',
+    STRENGTH_MULT: 'Сила',
+    IS_ENGINE_IGNITION_REQUIRED: 'Работает от',
+    ENGINE: 'Двигателя',
+    BATTERY: 'Аккумулятора'
+  },
+  EN: {
+    LENGTH: 'Length',
+    STRENGTH_MULT: 'Strength',
+    IS_ENGINE_IGNITION_REQUIRED: 'Works from',
+    ENGINE: 'Engine',
+    BATTERY: 'Battery'
+  },
+  DE: {
+    LENGTH: 'Länge',
+    STRENGTH_MULT: 'Stärke',
+    IS_ENGINE_IGNITION_REQUIRED: 'Arbeitet von',
+    ENGINE: 'Motor',
+    BATTERY: 'Batterie'
+  },
+  CH: {
+    LENGTH: '长度',
+    STRENGTH_MULT: '的力量',
+    IS_ENGINE_IGNITION_REQUIRED: '由以下单位提供',
+    ENGINE: '发动机',
+    BATTERY: '电池'
+  }
 })
