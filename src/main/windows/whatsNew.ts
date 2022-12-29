@@ -1,7 +1,7 @@
-import { ModalWindow } from './ModalWindow'
+import ModalWindow from './ModalWindow'
 
-import { config } from '#classes/config'
-import { entries } from '#classes/entries'
+import config from '#classes/config'
+import entries from '#classes/entries'
 import { ProgramWindow } from '#enums'
 
 class WhatsNewWindow extends ModalWindow {

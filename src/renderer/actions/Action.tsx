@@ -2,18 +2,15 @@ import type { FC, ReactNode } from 'react'
 
 import { Button, Modal } from 'antd'
 import type { CheerioAPI } from 'cheerio'
-import { afc, onRender, reactive } from 'react-afc'
+import { fafc, useOnRender, useState } from 'react-afc'
 
 import type { IActionData, IActionProps } from '#types'
 
 import './styles'
 
-type CreatedActionData = {
-  import(): void
-  export(): any
-} & IActionData
+type CreatedActionData = IActionData & Required<Pick<IActionData, 'import' | 'export'>>
 
-export abstract class Action {
+abstract class Action {
   data!: CreatedActionData
   Component!: FC<IActionProps>
 
@@ -25,7 +22,7 @@ export abstract class Action {
   protected imgSRC?: string
 
   protected init(): void {
-    const data = {
+    const data: CreatedActionData = {
       import: (dom, data) => this.onImport(dom, data),
       export: dom => this.onExport(dom),
       isActive: (dom, fileName) => this.isActive(dom, fileName),
@@ -35,31 +32,27 @@ export abstract class Action {
       minWidth: this.minWidth,
       minHeight: this.minHeight,
       imgSRC: this.imgSRC
-    } as CreatedActionData
+    }
     const ActionComponent = this.ActionComponent
     this.data = data
 
-    const Component = afc((props: IActionProps) => {
+    const Component = fafc<IActionProps>(props => {
       let isClosing = false
 
-      const state = reactive({
-        isShow: true
-      })
+      const [isShow, setIsShow] = useState(true)
 
-      onRender(() => {
-        if (!isClosing) {
-          state.isShow = true
-        }
-        else {
+      useOnRender(() => {
+        if (!isClosing)
+          setIsShow(true)
+        else
           isClosing = false
-        }
       })
 
       function render(): ReactNode {
         return (
           <Modal
             title={data.name}
-            open={state.isShow}
+            open={isShow.val}
             closable={false}
             footer={[
               <Button key='ok' onClick={onOk}>
@@ -67,13 +60,13 @@ export abstract class Action {
               </Button>
             ]}
           >
-            <ActionComponent {...props} />
+            <ActionComponent {...props.curr} />
           </Modal>
         )
       }
 
       function onOk(): void {
-        state.isShow = false
+        setIsShow(false)
         isClosing = true
         data.onPressOk?.()
       }
@@ -84,8 +77,10 @@ export abstract class Action {
     this.Component = Component
   }
 
-  protected onPressOk(): void { }
-  protected onImport(dom: CheerioAPI, data: any): void { }
+  protected onPressOk(): void {}
+  protected onImport(dom: CheerioAPI, data: any): void {}
   protected onExport(dom: CheerioAPI): any { return null }
   protected isActive(dom: CheerioAPI, fileName: string): boolean { return true }
 }
+
+export default Action

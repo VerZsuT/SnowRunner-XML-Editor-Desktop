@@ -3,24 +3,24 @@ import { memo } from 'react'
 
 import { Button, Modal } from 'antd'
 import { Bridge } from 'emr-bridge/renderer'
-import { afcMemo, onDestroy, reactive, useRedux } from 'react-afc'
+import { fafcMemo, useForceUpdate, useOnDestroy, useRedux, useState } from 'react-afc'
+import type { FastProps } from 'react-afc/types'
 import type { GridChildComponentProps } from 'react-window'
 import { FixedSizeGrid } from 'react-window'
 
 import { selectFilter } from '../../store/filterSlice'
 import { selectCategory, selectFavorites } from '../../store/listSlice'
 import { MODS_CHANGE_BUTTON, RELAUNCH_PROMPT } from '../texts'
-import { ListItem } from './ListItem'
-import { ModsPopup } from './ModsPopup'
+import ListItem from './ListItem'
+import ModsPopup from './ModsPopup'
 
 import { LIST_SCROLL } from '#consts'
 import type { Category } from '#enums'
 import { SrcType } from '#enums'
-import { getForceUpdate } from '#helpers/getForceUpdate'
 import { config, storage, windowResize } from '#services'
-import type { IItem, IMPC } from '#types'
+import type { IItem, MPC } from '#types'
 
-const bridge = Bridge.as<IMPC>()
+const bridge = Bridge.as<MPC>()
 const { confirm } = Modal
 const { settings } = config
 
@@ -30,27 +30,25 @@ type Props = {
   opened?: boolean
 }
 
-export const List = afcMemo((props: Props) => {
+function List(props: FastProps<Props>) {
   const reloadPromptTimeout = 200
   const colWidth = 250
   const rowHeight = 420
-  const id = `list-${props.srcType}`
+  const id = `list-${props.curr.srcType}`
 
-  const state = reactive({
-    isShowMods: false
-  })
+  const [isShowMods, setIsShowMods] = useState(false)
   const store = useRedux({
     filter: selectFilter,
     favorites: selectFavorites,
     category: selectCategory
   })
 
-  onDestroy(() => {
+  useOnDestroy(() => {
     windowResize.removeListener(update)
   })
 
   function render(): ReactNode {
-    const { srcType, opened } = props
+    const { srcType, opened } = props.curr
     const { category } = store
 
     if (
@@ -81,7 +79,7 @@ export const List = afcMemo((props: Props) => {
             </Button>
           </div>
           <ModsPopup
-            show={state.isShowMods}
+            show={isShowMods.val}
             hidePopup={hideModsPopup}
           />
         </>}
@@ -113,10 +111,10 @@ export const List = afcMemo((props: Props) => {
     )
   }
 
-  const forceUpdate = getForceUpdate()
+  const forceUpdate = useForceUpdate()
 
   function filterItems(): IItem[] {
-    const { items, srcType } = props
+    const { items, srcType } = props.curr
     const { favorites, filter } = store
     let filteredItems = items
 
@@ -132,7 +130,7 @@ export const List = afcMemo((props: Props) => {
   }
 
   function getGridParams(itemsLength: number) {
-    const gridHeight = window.innerHeight - (props.srcType === SrcType.mods ? 230 : 210)
+    const gridHeight = window.innerHeight - (props.curr.srcType === SrcType.mods ? 230 : 210)
     const gridWidth = window.innerWidth
     let colCount = Math.floor(window.innerWidth / colWidth)
     const rowCount = Math.ceil(itemsLength / colCount)
@@ -147,11 +145,11 @@ export const List = afcMemo((props: Props) => {
   }
 
   function showModsPopup(): void {
-    state.isShowMods = true
+    setIsShowMods(true)
   }
 
   function hideModsPopup(isReload?: boolean): void {
-    state.isShowMods = false
+    setIsShowMods(false)
     if (isReload) {
       setTimeout(() => {
         confirm({
@@ -163,7 +161,7 @@ export const List = afcMemo((props: Props) => {
   }
 
   return render
-})
+}
 
 type ItemProps = {
   style: CSSProperties
@@ -185,8 +183,8 @@ const ItemRenderer = memo((props: ItemProps) => {
   const item = items[index]
   const itemStyle = {
     ...style,
-    top: style.top as number + 10,
-    left: style.left as number + gutter * (columnIndex + 1)
+    top: Number(style.top) + 10,
+    left: Number(style.left) + gutter * (columnIndex + 1)
   }
 
   return (
@@ -200,3 +198,5 @@ const ItemRenderer = memo((props: ItemProps) => {
     />
   )
 })
+
+export default fafcMemo(List)

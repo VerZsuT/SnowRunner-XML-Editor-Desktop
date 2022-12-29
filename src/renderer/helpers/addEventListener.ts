@@ -1,6 +1,6 @@
-import { onDestroy } from 'react-afc/compatible'
+import { useOnDestroy } from 'react-afc/compatible'
 
-export function addEventListener<K extends keyof DocumentEventMap>(
+function addEventListener<K extends keyof DocumentEventMap>(
   element: Element | Document | Window,
   type: K,
   listener: (this: Element, ev: DocumentEventMap[K]) => any) {
@@ -9,5 +9,7 @@ export function addEventListener<K extends keyof DocumentEventMap>(
   element.addEventListener(type, listener)
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  onDestroy(() => element.removeEventListener(type, listener))
+  useOnDestroy(() => element.removeEventListener(type, listener))
 }
+
+export default addEventListener

@@ -2,39 +2,39 @@ import type { ReactNode } from 'react'
 
 import { Collapse, Typography } from 'antd'
 import type { CheerioAPI } from 'cheerio'
-import { afcMemo, useActions } from 'react-afc'
+import { pafcMemo, useActions } from 'react-afc'
 
 import { actions as reduxActions } from '../store'
-import { ErrorHeader } from './components/ErrorHeader'
-import { MainHeader } from './components/MainHeader'
+import ErrorHeader from './components/ErrorHeader'
+import MainHeader from './components/MainHeader'
 import { FileDataContext, getFileData } from './helpers/getFileData'
 import { FileInfoContext, getFileInfo } from './helpers/getFileInfo'
 import { getResetProvider, ResetContext } from './helpers/getResetProvider'
-import { importService } from './services/import'
-import { template } from './services/template'
-import { xmlFiles } from './services/xmlFiles'
+import importService from './services/import'
+import template from './services/template'
+import xmlFiles from './services/xmlFiles'
 import { PROC_FILE_ERROR } from './texts'
 
-import { Menu } from '#components/Menu'
+import Menu from '#components/Menu'
 import { FileType, Page } from '#enums'
-import { addEventListener } from '#helpers/addEventListener'
-import { handleIPCMessage } from '#helpers/handleIPCMessage'
-import { handleKey } from '#helpers/handleKey'
+import addEventListener from '#helpers/addEventListener'
+import useIPCMessage from '#helpers/useIPCMessage'
+import useKey from '#helpers/useKey'
 import type { IXMLTemplate } from '#types'
 
 import './styles'
 
 const { Text } = Typography
 
-export const Editor = afcMemo(() => {
+function Editor() {
   const { filePath, dlc, mod, fileInfoContext } = getFileInfo()
   const { fileDOM, actions, tableItems, fileDataContext } = getFileData(filePath)
   const { resetList, resetContext } = getResetProvider()
   const hasError = fileDOM('error').length > 0
 
   allowDropImport(filePath, fileDOM, actions)
-  handleIPCMessage()
-  handleKey({ key: 'Escape' }, () => {
+  useIPCMessage()
+  useKey('Escape', () => {
     route(Page.lists)
   })
   xmlFiles.add({
@@ -93,4 +93,6 @@ export const Editor = afcMemo(() => {
   }
 
   return render
-})
+}
+
+export default pafcMemo(Editor)

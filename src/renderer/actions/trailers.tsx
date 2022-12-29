@@ -2,13 +2,13 @@ import type { ReactNode } from 'react'
 
 import { Button, Typography } from 'antd'
 import type { CheerioAPI } from 'cheerio'
-import { afcMemo, reactive } from 'react-afc'
+import { fafcMemo, useState } from 'react-afc'
 
 import { ADD, REMOVE, SCOUT_TRAILERS, TRUCK_TRAILERS } from './texts'
 
 import TrailerIcon from '#images/icons/trailer.png'
-import { Action } from '#r/actions/Action'
-import { localization } from '#services'
+import Action from '#r/actions/Action'
+import { lzn } from '#services'
 import type { IActionProps } from '#types'
 
 const { Text } = Typography
@@ -23,8 +23,8 @@ interface ExportData {
   hasTruckTrailer: boolean
 }
 
-export class Trailers extends Action {
-  protected name = localization.localize({
+class Trailers extends Action {
+  protected name = lzn.localize({
     RU: 'Прицепы',
     EN: 'Trailers',
     DE: 'Anhänger',
@@ -113,29 +113,25 @@ export class Trailers extends Action {
   }
 }
 
-const TrailersComponent = afcMemo((props: IActionProps) => {
-  const state = reactive({
-    hasScout: Trailers.hasTrailers(props.dom)[0],
-    hasTruck: Trailers.hasTrailers(props.dom)[1]
-  })
+const TrailersComponent = fafcMemo<IActionProps>(props => {
+  const [hasScout, setHasScout] = useState(Trailers.hasTrailers(props.curr.dom)[0])
+  const [hasTruck, setHasTruck] = useState(Trailers.hasTrailers(props.curr.dom)[1])
 
   function render(): ReactNode {
-    const { hasScout, hasTruck } = state
-
     return (
       <div className='grid trailers-grid'>
         <div className='trailers-buttons'>
           <Text>{SCOUT_TRAILERS}</Text><br/>
-          {!hasScout
+          {!hasScout.val
             ? <Button
-              disabled={!(hasTruck && !hasScout)}
+              disabled={!(hasTruck.val && !hasScout.val)}
               onClick={addScout}
               type='primary'
             >
               {ADD}
             </Button>
             : <Button
-              disabled={!(hasScout && hasTruck)}
+              disabled={!(hasScout.val && hasTruck.val)}
               onClick={removeScout}
               type='primary'
               danger
@@ -146,16 +142,16 @@ const TrailersComponent = afcMemo((props: IActionProps) => {
         </div>
         <div className='trailers-buttons'>
           <Text>{TRUCK_TRAILERS}</Text><br/>
-          {!hasTruck
+          {!hasTruck.val
             ? <Button
-              disabled={!(hasScout && !hasTruck)}
+              disabled={!(hasScout.val && !hasTruck.val)}
               onClick={addTruck}
               type='primary'
             >
               {ADD}
             </Button>
             : <Button
-              disabled={!(hasScout && hasTruck)}
+              disabled={!(hasScout.val && hasTruck.val)}
               onClick={removeTruck}
               type='primary'
               danger
@@ -169,18 +165,21 @@ const TrailersComponent = afcMemo((props: IActionProps) => {
   }
 
   function addScout(): void {
-    Trailers.addTrailer(Trailer.scout, Trailer.truck, props.dom, hasScout => state.hasScout = hasScout)
+    Trailers.addTrailer(Trailer.scout, Trailer.truck, props.curr.dom, value => setHasScout(value))
   }
   function addTruck(): void {
-    Trailers.addTrailer(Trailer.truck, Trailer.scout, props.dom, hasTruck => state.hasTruck = hasTruck)
+    Trailers.addTrailer(Trailer.truck, Trailer.scout, props.curr.dom, value => setHasTruck(value))
   }
 
   function removeScout(): void {
-    Trailers.removeTrailer(Trailer.scout, props.dom, hasScout => state.hasScout = hasScout)
+    Trailers.removeTrailer(Trailer.scout, props.curr.dom, value => setHasScout(value))
   }
   function removeTruck(): void {
-    Trailers.removeTrailer(Trailer.truck, props.dom, hasTruck => state.hasTruck = hasTruck)
+    Trailers.removeTrailer(Trailer.truck, props.curr.dom, value => setHasTruck(value))
   }
 
   return render
 })
+
+
+export default Trailers

@@ -1,7 +1,8 @@
 import type { ChangeEvent, FocusEvent, ReactNode } from 'react'
 
 import { Input as ANTInput, InputNumber } from 'antd'
-import { afcMemo, handleContext } from 'react-afc'
+import { fafcMemo, useContext } from 'react-afc'
+import type { FastProps } from 'react-afc/types'
 
 import { FileDataContext } from '../helpers/getFileData'
 
@@ -11,14 +12,14 @@ import type { IInputParams, IParameterProps } from '#types'
 
 type Status = '' | 'error' | 'warning'
 
-export const Input = afcMemo((props: IParameterProps) => {
-  const min = props.item.min ?? 0
-  const max = props.item.max ?? Infinity
+function Input(props: FastProps<IParameterProps>) {
+  const min = props.curr.item.min ?? 0
+  const max = props.curr.item.max ?? Infinity
 
-  const getFileData = handleContext(FileDataContext)
+  const fileData = useContext(FileDataContext)
 
   function render(): ReactNode {
-    const { item, value } = props
+    const { item, value } = props.curr
     const status = getStatus()
 
     return item.type === InputType.number
@@ -42,13 +43,12 @@ export const Input = afcMemo((props: IParameterProps) => {
   }
 
   function onBlur(e: FocusEvent<HTMLInputElement>): void {
-    const { fileDOM } = getFileData()
-    const { item, defaultValue, onSetValue } = props
+    const { fileDOM } = fileData.val
+    const { item, defaultValue, onSetValue } = props.curr
     let newValue = e.target.value
 
-    if (newValue === '') {
+    if (newValue === '')
       newValue = defaultValue
-    }
 
     if (!fileDOM(item.selector).length) {
       const array = item.selector.split('>').map(value => value.trim())
@@ -61,13 +61,12 @@ export const Input = afcMemo((props: IParameterProps) => {
   }
 
   function onChange(value: string | null): void {
-    const { item, onSetValue } = props
-    const { fileDOM } = getFileData()
+    const { item, onSetValue } = props.curr
+    const { fileDOM } = fileData.val
     let newValue = value ?? ''
 
-    if (item.type !== InputType.text && newValue !== '') {
+    if (item.type !== InputType.text && newValue !== '')
       newValue = limit(item, +newValue, min, max).toString()
-    }
 
     xml.addTag(fileDOM, item)
     onSetValue(newValue)
@@ -78,12 +77,11 @@ export const Input = afcMemo((props: IParameterProps) => {
   }
 
   function getStatus(): Status {
-    const { item, value } = props
+    const { item, value } = props.curr
     let newVal = +value
 
-    if (value === null || isNaN(+value)) {
+    if (value === null || isNaN(+value))
       newVal = 0
-    }
 
     if (item.areas) {
       let status: Status = ''
@@ -93,15 +91,12 @@ export const Input = afcMemo((props: IParameterProps) => {
 
         value.forEach(area => {
           if (newVal >= area[0] && newVal <= area[1]) {
-            if (areaName === 'red') {
+            if (areaName === 'red')
               status = 'error'
-            }
-            else if (areaName === 'green') {
+            else if (areaName === 'green')
               status = ''
-            }
-            else if (areaName === 'yellow') {
+            else if (areaName === 'yellow')
               status = 'warning'
-            }
           }
         })
       }
@@ -114,20 +109,19 @@ export const Input = afcMemo((props: IParameterProps) => {
 
   function limit(item: IInputParams, num: number, min?: number, max?: number): number {
     let number = num
-    if (item.numberType === NumberType.integer) {
+    if (item.numberType === NumberType.integer)
       number = Math.round(number)
-    }
   
-    if (min !== undefined && number < min) {
+    if (min !== undefined && number < min)
       return min
-    }
   
-    if (max !== undefined && number > max) {
+    if (max !== undefined && number > max)
       return max
-    }
   
     return number
   }
 
   return render
-})
+}
+
+export default fafcMemo(Input)

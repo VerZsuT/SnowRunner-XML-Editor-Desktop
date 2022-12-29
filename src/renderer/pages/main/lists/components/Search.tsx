@@ -2,7 +2,7 @@ import type { ChangeEvent, ReactNode } from 'react'
 
 import { SearchOutlined } from '@ant-design/icons'
 import { Input } from 'antd'
-import { afcMemo, useRedux } from 'react-afc'
+import { pafcMemo, useRedux } from 'react-afc'
 import { useActions } from 'react-afc/compatible'
 
 import { selectFilter } from '../../store/filterSlice'
@@ -10,7 +10,7 @@ import { SEARCH } from '../texts'
 
 import { actions } from '#pages/main/store'
 
-export const Search = afcMemo(() => {
+function Search() {
   const store = useRedux({
     filter: selectFilter
   })
@@ -36,4 +36,6 @@ export const Search = afcMemo(() => {
   }
 
   return render
-})
+}
+
+export default pafcMemo(Search)

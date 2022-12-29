@@ -1,5 +1,7 @@
-import type { IItemGetterProps } from './IItemGetterProps'
+import type IItemGetterProps from './IItemGetterProps'
 
-export interface ITemplateItem<T = any> {
+interface ITemplateItem<T = any> {
   getParams(props: IItemGetterProps): T
 }
+
+export default ITemplateItem

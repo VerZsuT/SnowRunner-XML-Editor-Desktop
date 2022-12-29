@@ -1,4 +1,4 @@
-import { localization } from '#services'
+import { lzn } from '#services'
 
 export const {
   WHEELS,
@@ -15,7 +15,7 @@ export const {
   SUSP_STRENGTH,
   INNER,
   QUANTITY
-} = localization.localize({
+} = lzn.localize({
   RU: {
     QUANTITY: 'Кол-во груза',
     INNER: 'Полезное содержимое',

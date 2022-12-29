@@ -1,4 +1,4 @@
-import { localization } from '#classes/localization'
+import localization from '#classes/localization'
 
 // Перевод программы
 export const {

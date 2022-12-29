@@ -87,5 +87,4 @@ class Paths {
   }
 }
 
-export const paths = new Paths() as unknown as IPaths
-providePublic(paths)
+export default providePublic(new Paths() as unknown as IPaths)

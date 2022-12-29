@@ -1,23 +1,23 @@
 import { message } from 'antd'
 import type { CheerioAPI } from 'cheerio'
 import { Bridge } from 'emr-bridge/renderer'
-import { onDestroy } from 'react-afc/compatible'
+import { useOnDestroy } from 'react-afc/compatible'
 
 import { BREAK_IMPORT_INVALID_NAME, PARAMS_FILE_NOT_FOUND, WAS_IMPORTED } from '../texts'
-import { xmlFiles } from './xmlFiles'
+import xmlFiles from './xmlFiles'
 
 import { system, xml } from '#services'
-import type { IExportedData, IMPC, IXMLTemplate } from '#types'
+import type { IExportedData, IXMLTemplate, MPC } from '#types'
 
 type ImportHandler = () => void
 
 class ImportService {
-  private readonly bridge = Bridge.as<IMPC>()
+  private readonly bridge = Bridge.as<MPC>()
   readonly handlers = new Set<ImportHandler>()
 
   onImport(handler: ImportHandler): void {
     this.handlers.add(handler)
-    onDestroy(() => this.handlers.delete(handler))
+    useOnDestroy(() => this.handlers.delete(handler))
   }
 
   importFile(currentPath: string, fileDOM: CheerioAPI, actions: IXMLTemplate['actions'], importPath?: string): void {
@@ -80,8 +80,8 @@ class ImportService {
     else {
       importData(data)
     }
-    importService.handlers.forEach(handler => handler())
+    this.handlers.forEach(handler => handler())
   }
 }
 
-export const importService = new ImportService()
+export default new ImportService()

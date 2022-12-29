@@ -1,4 +1,4 @@
-import { localization } from '#services'
+import { lzn } from '#services'
 
 export const {
   ANY,
@@ -48,7 +48,7 @@ export const {
   UNINSTALLED,
   INSTALLED,
   CENTER_OF_MASS
-} = localization.localize({
+} = lzn.localize({
   RU: {
     PHYSICS_WHEELS: 'Дополнительно',
     WHEEL: 'Колесо',

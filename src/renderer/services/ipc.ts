@@ -18,4 +18,4 @@ class IPCService {
   }
 }
 
-export const ipc = new IPCService() as IPCService & IIPC
+export default new IPCService() as IPCService & IIPC

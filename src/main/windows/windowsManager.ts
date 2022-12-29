@@ -4,14 +4,11 @@ import { providePublic, publicMethod } from 'emr-bridge'
 
 import type { ProgramWindow } from '#enums'
 
-type WindowsObject = {
-  [key in ProgramWindow]?: WindowCreator
-}
-
+type WindowsObject = Record<keyof ProgramWindow, WindowCreator>
 type WindowCreator = (...args: any[]) => Promise<BrowserWindow>
 
 class Manager {
-  private windows = {} as WindowsObject
+  private windows = <WindowsObject> {}
 
   register(window: ProgramWindow, creator: WindowCreator): void {
     this.windows[window] = creator
@@ -27,13 +24,11 @@ class Manager {
 
   private getCreator(window: ProgramWindow): WindowCreator {
     const creator = this.windows[window]
-    if (!creator) {
+    if (!creator)
       throw new Error(`Window creator for '${window}' is not defined`)
-    }
 
     return creator
   }
 }
 
-export const windowsManager = new Manager()
-providePublic(windowsManager)
+export default providePublic(new Manager())

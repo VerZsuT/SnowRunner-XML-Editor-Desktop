@@ -1,4 +1,4 @@
-import { ipc } from './ipc'
+import ipc from './ipc'
 
 import { IPCChannel } from '#enums'
 
@@ -19,4 +19,4 @@ class WindowResizeService {
   }
 }
 
-export const windowResize = new WindowResizeService()
+export default new WindowResizeService()

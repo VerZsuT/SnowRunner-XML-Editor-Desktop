@@ -1,4 +1,4 @@
-import { localization } from '#services'
+import { lzn } from '#services'
 
 export const {
   ADD,
@@ -16,7 +16,7 @@ export const {
   TRUCK_TRAILERS,
   SCOUT_TRAILERS,
   CRANES_WARN_TITLE
-} = localization.localize({
+} = lzn.localize({
   RU: {
     CRANES_WARN_TITLE: 'Внимание!',
     ADDON_NAME: 'Название',

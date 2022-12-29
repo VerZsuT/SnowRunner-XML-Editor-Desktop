@@ -1,6 +1,6 @@
-import type { IFindItem } from './IFindItem'
+import type IFindItem from './IFindItem'
 
-export interface IItem {
+interface IItem {
   name: string
   path: string
   dlcName?: string
@@ -8,3 +8,5 @@ export interface IItem {
   id?: string
   items?: IFindItem[]
 }
+
+export default IItem

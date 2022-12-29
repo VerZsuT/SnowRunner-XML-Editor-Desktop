@@ -1,9 +1,11 @@
-import type { DialogProperties } from './DialogProperties'
+import type DialogProperties from './DialogProperties'
 
-export interface IDialogParams {
+interface IDialogParams {
   properties?: DialogProperties
   filters?: {
     name: string
     extensions: string[]
   }[]
 }
+
+export default IDialogParams

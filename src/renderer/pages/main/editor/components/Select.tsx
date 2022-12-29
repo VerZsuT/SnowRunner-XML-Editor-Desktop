@@ -1,12 +1,13 @@
 import type { ReactNode } from 'react'
 
 import { Select as ANTSelect } from 'antd'
-import { afcMemo } from 'react-afc'
+import { fafcMemo } from 'react-afc'
+import type { FastProps } from 'react-afc/types'
 
 import type { IParameterProps, ISelectParams } from '#types'
 
-export const Select = afcMemo((props: IParameterProps) => {
-  const item = props.item as unknown as ISelectParams
+function Select(props: FastProps<IParameterProps>) {
+  const item = props.curr.item as unknown as ISelectParams
   const options = item.selectParams.map(option => ({
     label: option.label,
     value: option.value,
@@ -14,7 +15,7 @@ export const Select = afcMemo((props: IParameterProps) => {
   }))
 
   function render(): ReactNode {
-    const { value, onSetValue } = props
+    const { value, onSetValue } = props.curr
 
     return <>
       <ANTSelect
@@ -31,4 +32,6 @@ export const Select = afcMemo((props: IParameterProps) => {
   }
 
   return render
-})
+}
+
+export default fafcMemo(Select)

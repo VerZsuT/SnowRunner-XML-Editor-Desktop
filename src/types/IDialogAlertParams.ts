@@ -1,6 +1,6 @@
 import type { DialogAlertType } from '#enums'
 
-export interface IDialogAlertParams {
+interface IDialogAlertParams {
   title: string
   message: string
   dialogType?: DialogAlertType
@@ -8,3 +8,5 @@ export interface IDialogAlertParams {
   noLink?: boolean
   buttons?: string[]
 }
+
+export default IDialogAlertParams

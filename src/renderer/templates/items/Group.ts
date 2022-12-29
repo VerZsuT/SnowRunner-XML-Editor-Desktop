@@ -1,11 +1,9 @@
-import { helpers } from './helpers'
+import helpers from './helpers'
 
-import { ONLY_FOR_SELECTOR } from '#consts'
-import { NameType, ParamType } from '#enums'
+import { ParamType } from '#enums'
 import { getGameText } from '#templates/service'
 import type {
-  GroupTypedProps,
-  IGroupParams,
+  GroupTypedProps, IGroupParams,
   IItemGetterProps,
   ITemplateItem,
   TemplateItems,
@@ -15,23 +13,24 @@ import type {
 /**
  * Объединение параметров в раскрывающуюся группу.
  */
-export class Group implements ITemplateItem<[IGroupParams] | any[]> {
-  private label!: Required<GroupTypedProps>['label'] | typeof ONLY_FOR_SELECTOR
+class Group implements ITemplateItem<[IGroupParams] | any[]> {
+  private label!: GroupTypedProps['label']
   private withCounter!: boolean
   private iconPath?: string
   private providedSelector?: string
   private providedSelectorID?: string
+  private children: TemplateItems[]
 
   constructor(
     props: string | GroupTypedProps,
-    private children: TemplateItems[]
+    ...children: TemplateItems[]
   ) {
-    if (typeof props === 'string') {
+    this.children = children
+    
+    if (typeof props === 'string')
       this.construct({ label: props })
-    }
-    else {
+    else
       this.construct(props)
-    }
   }
 
   public getParams(props: IItemGetterProps): [IGroupParams] | any[] {
@@ -57,11 +56,10 @@ export class Group implements ITemplateItem<[IGroupParams] | any[]> {
       const $nameElement = fileDOM(formattedSelectors[labelSelectorID!])
       const $resNameElement = fileDOM(formattedSelectors[labelExtraSelectorID!])
 
-      if ($nameElement.length === 0 && $resNameElement.length === 0) {
+      if ($nameElement.length === 0 && $resNameElement.length === 0)
         return []
-      }
 
-      if (this.label.type === NameType.computed) {
+      if (this.label.attribute) {
         if (Array.isArray(this.label.attribute)) {
           resGroupLabel = $resNameElement.attr(this.label.attribute[1])
           groupLabel = getGameText($nameElement.attr(this.label.attribute[0])!) || $nameElement.attr(this.label.attribute[0])
@@ -70,13 +68,13 @@ export class Group implements ITemplateItem<[IGroupParams] | any[]> {
           groupLabel = getGameText($nameElement.attr(this.label.attribute!)!)
         }
       }
-      else if (this.label.type === NameType.tagName) {
+      else if (this.label.selector) {
         groupLabel = $nameElement.html()?.split('<')[1].split(' ')[0]
       }
     }
 
     this.children.forEach(child => {
-      params = params.concat((child as ITemplateItem).getParams({
+      params = params.concat(child.getParams({
         providedSelector: this.providedSelectorID,
         formattedSelectors,
         tNumber,
@@ -84,17 +82,11 @@ export class Group implements ITemplateItem<[IGroupParams] | any[]> {
       }))
     })
 
-    if (this.withCounter) {
+    if (this.withCounter)
       groupLabel += ` ${cycleNumber}`
-    }
 
-    if (this.label === ONLY_FOR_SELECTOR) {
-      return params
-    }
-
-    if (!params.length) {
+    if (!params.length)
       return []
-    }
 
     return [{
       paramType: ParamType.group,
@@ -102,14 +94,16 @@ export class Group implements ITemplateItem<[IGroupParams] | any[]> {
       groupName: groupLabel,
       resGroupName: resGroupLabel,
       iconName: this.iconPath
-    } as IGroupParams]
+    }]
   }
 
   private construct(props: GroupTypedProps): void {
-    this.label = props.label ?? ONLY_FOR_SELECTOR
+    this.label = props.label
     this.iconPath = props.iconName
     this.withCounter = props.addCounter ?? false
     this.providedSelector = props.provided
     this.providedSelectorID = helpers.getSelectorID(this.providedSelector)
   }
 }
+
+export default Group

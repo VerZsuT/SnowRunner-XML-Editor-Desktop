@@ -2,28 +2,29 @@ import type { ReactNode } from 'react'
 
 import { Button, Switch, Typography } from 'antd'
 import { Bridge } from 'emr-bridge/renderer'
-import { afcMemo, reactive } from 'react-afc'
+import { pafc, useReactive } from 'react-afc'
 
 import { ADVANCED_MODE_LABEL, DLC_LABEL, MODS_LABEL, UPDATES_LABEL } from './texts'
 
-import { Language } from '#components/Language'
+import Language from '#components/Language'
 import { ProgramWindow } from '#enums'
 import { SAVE_BUTTON } from '#globalTexts/renderer'
-import { handleIPCMessage } from '#helpers/handleIPCMessage'
-import { windowReady } from '#helpers/windowReady'
+import useIPCMessage from '#helpers/useIPCMessage'
+import useWindowReady from '#helpers/useWindowReady'
 import { config, helpers } from '#services'
-import type { IMPC } from '#types'
+import type { MPC } from '#types'
 
+import '#r/templateScript'
 import './styles'
 
-const bridge = Bridge.as<IMPC>()
+const bridge = Bridge.as<MPC>()
 const { Text } = Typography
 const { settings } = config
 
-const Settings = afcMemo(() => {
-  const state = reactive(settings)
-  windowReady(ProgramWindow.Settings)
-  handleIPCMessage()
+const Settings = pafc(() => {
+  const state = useReactive(settings)
+  useWindowReady(ProgramWindow.Settings)
+  useIPCMessage()
 
   function render(): ReactNode {
     const { updates, DLC, mods, advancedMode } = state

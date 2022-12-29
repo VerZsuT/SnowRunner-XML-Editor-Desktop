@@ -5,11 +5,11 @@ import { join } from 'path'
 
 import { providePublic, publicMethod } from 'emr-bridge'
 
-import { archive } from './archive'
-import { config } from './config'
-import { dialogs } from './dialogs'
-import { exitParams } from './exitParams'
-import { paths } from './paths'
+import archive from './archive'
+import config from './config'
+import dialogs from './dialogs'
+import exitParams from './exitParams'
+import paths from './paths'
 
 import { APP_ID } from '#consts'
 import { SUCCESS_EXPORT_MESSAGE } from '#globalTexts/main'
@@ -127,5 +127,4 @@ class Public {
   }
 }
 
-export const rendererPublic = new Public()
-providePublic(rendererPublic)
+export default providePublic(new Public())

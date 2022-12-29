@@ -1,7 +1,7 @@
 import type { CheerioAPI } from 'cheerio'
+import { useForceUpdate } from 'react-afc/compatible'
 
 import type { FileType } from '#enums'
-import { getForceUpdate } from '#helpers/getForceUpdate'
 
 interface XMLFile {
   dom: CheerioAPI
@@ -12,12 +12,20 @@ interface XMLFile {
 }
 
 class XMLFilesService {
-  files = [] as XMLFile[]
+  files: XMLFile[] = []
 
   private readonly listeners = new Set<() => void>()
 
-  subscribe(): void {
-    setTimeout(getForceUpdate(), 1000)
+  subscribe() {
+    const update = { isForced: false }
+    const forceUpdate = useForceUpdate()
+    setTimeout(() => {
+      update.isForced = true
+      forceUpdate()
+      setTimeout(() => update.isForced = false, 100)
+    }, 1000)
+
+    return update
   }
   
   add(file: XMLFile, clearPrev?: boolean): void {
@@ -32,4 +40,4 @@ class XMLFilesService {
   }
 }
 
-export const xmlFiles = new XMLFilesService()
+export default new XMLFilesService()

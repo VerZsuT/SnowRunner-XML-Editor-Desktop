@@ -1,4 +1,4 @@
-import { localization } from '#services'
+import { lzn } from '#services'
 
 export const {
   MODS_CHANGE_BUTTON,
@@ -16,7 +16,7 @@ export const {
   SEARCH,
   ADD_FAVORITE,
   RELAUNCH_PROMPT
-} = localization.localize({
+} = lzn.localize({
   RU: {
     MODS_CHANGE_BUTTON: 'Изменить',
     RELAUNCH_PROMPT: 'Для загрузки мода необходима перезагрузка программы. Выполнить перезагрузку?',

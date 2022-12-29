@@ -1,20 +1,20 @@
 /** Работа с `local storage` */
 class StorageService {
   pop<T = string>(name: string): T {
-    const value = this.get(name)
+    const value = this.get<T>(name)
     localStorage.removeItem(name)
-    return value as T
+    return value
   }
 
   get<T = string>(name: string): T {
     const value = localStorage.getItem(name)
     switch (value) {
     case 'null':
-      return null as T
+      return <T> null
     case 'undefined':
-      return undefined as T
+      return <T> undefined
     default:
-      return value as T
+      return <T> value
     }
   }
 
@@ -23,4 +23,4 @@ class StorageService {
   }
 }
 
-export const storage = new StorageService()
+export default new StorageService()

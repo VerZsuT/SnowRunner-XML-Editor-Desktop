@@ -3,7 +3,7 @@ import type { app, shell } from 'electron'
 import type { archive, backup, checks, config, dialogs, epf, helpers, rendererPublic, updates } from '#classes'
 import type { windowsManager } from '#windows'
 
-export interface IMainFunctions {
+interface IMainFunctions {
   updateFiles: typeof rendererPublic.updateFiles
   runUninstall: typeof rendererPublic.uninstall
   unpack: typeof archive.syncUnpack
@@ -34,3 +34,5 @@ export interface IMainFunctions {
   unpackMain: typeof archive.unpackMain
   devTools: typeof rendererPublic.devTools
 }
+
+export default IMainFunctions

@@ -17,4 +17,4 @@ class Hash {
   }
 }
 
-export const hash = new Hash()
+export default new Hash()

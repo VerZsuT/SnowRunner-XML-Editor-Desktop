@@ -17,4 +17,3 @@ export const DEBUG_WINRAR_ERRORS = false
 
 // Params
 export const DEBUG_EDITOR_PARAMS = false
-export const ONLY_FOR_SELECTOR = '_ONLY_FOR_SELECTOR_'

@@ -2,8 +2,8 @@ import type { MouseEvent, ReactNode } from 'react'
 
 import type { MenuProps } from 'antd'
 import { Menu } from 'antd'
-import { afcMemo } from 'react-afc'
-import { reactive } from 'react-afc/compatible'
+import { fafcMemo } from 'react-afc'
+import { useReactive } from 'react-afc/compatible'
 
 interface ContextMenuProps {
   items: MenuProps['items']
@@ -13,8 +13,8 @@ interface ContextMenuProps {
   onClose?(): void
 }
 
-export function createContextMenu() {
-  const state = reactive({
+function useContextMenu() {
+  const state = useReactive({
     isShow: false,
     x: 0, y: 0
   })
@@ -35,9 +35,9 @@ export function createContextMenu() {
     return state.isShow
   }
 
-  const Component = afcMemo((props: ContextMenuProps) => {
+  const Component = fafcMemo<ContextMenuProps>(props => {
     function render(): ReactNode {
-      const { items, className = '' } = props
+      const { items, className = '' } = props.curr
       const { x, y, isShow } = state
 
       return (
@@ -60,7 +60,7 @@ export function createContextMenu() {
 
     function onAreaClick(): void {
       state.isShow = false
-      props.onClose?.()
+      props.curr.onClose?.()
     }
 
     return render
@@ -73,3 +73,5 @@ export function createContextMenu() {
     isShow
   }
 }
+
+export default useContextMenu

@@ -1,5 +1,5 @@
 /** Тип названия группы */
-export enum NameType {
+enum NameType {
   /** Статическое */
   static = 'static',
   /** Значение атрибута по селектору */
@@ -7,3 +7,5 @@ export enum NameType {
   /** Название элемента по селектору */
   tagName = 'tagName'
 }
+
+export default NameType

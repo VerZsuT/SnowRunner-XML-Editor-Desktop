@@ -1,4 +1,4 @@
-export enum ProgramWindow {
+enum ProgramWindow {
   Main = 'MainWindow',
   Settings = 'SettingsWindow',
   Update = 'UpdateWindow',
@@ -6,3 +6,5 @@ export enum ProgramWindow {
   Loading = 'LoadingWindow',
   Setup = 'SetupWindow'
 }
+
+export default ProgramWindow

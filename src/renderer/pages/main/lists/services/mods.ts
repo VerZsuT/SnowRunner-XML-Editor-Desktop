@@ -1,6 +1,6 @@
 import { PreloadType } from '#enums'
 import { config, preload, system } from '#services'
-import type { IConfigModsItems, IFindItem, IListPreload } from '#types'
+import type { ConfigModsItems, IFindItem, IListPreload } from '#types'
 
 const { findMods, getModPak } = preload.get<IListPreload>(PreloadType.lists)
 
@@ -31,8 +31,8 @@ class ModsService {
     return items.map(item => item.path)
   }
 
-  keysToModsItems(keys: string[], items: IFindItem[]): IConfigModsItems {
-    const out: IConfigModsItems = {}
+  keysToModsItems(keys: string[], items: IFindItem[]): ConfigModsItems {
+    const out: ConfigModsItems = {}
 
     keys.forEach(key => {
       Object.values(items).forEach(item => {
@@ -49,4 +49,4 @@ class ModsService {
   }
 }
 
-export const mods = new ModsService()
+export default new ModsService()

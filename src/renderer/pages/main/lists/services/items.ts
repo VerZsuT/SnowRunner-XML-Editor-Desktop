@@ -12,17 +12,17 @@ class ItemsService {
     const array = getList(category, SrcType.main)
 
     return array.map(value => {
-      if (category !== Category.trucks) return value
+      if (category !== Category.trucks)
+        return value
 
       const fileData = system.readFileSync(value.path)
       const dom = load(fileData, { xmlMode: true })
       const $Truck = dom('Truck')
 
-      if (!$Truck.length) return value
-
-      if ($Truck.attr('Type') !== 'Trailer') {
-        return value
-      }
+      if (
+        !$Truck.length
+        || $Truck.attr('Type') !== 'Trailer'
+      ) return value
     }).filter(value => !!value) as IItem[]
   }
 
@@ -34,13 +34,10 @@ class ItemsService {
 
       if (!$Truck.length) return
 
-      if (category === Category.trailers && $Truck.attr('Type') === 'Trailer') {
-        return value
-      }
-
-      if (category === Category.trucks && $Truck.attr('Type') !== 'Trailer') {
-        return value
-      }
+      if (
+        (category === Category.trailers && $Truck.attr('Type') === 'Trailer')
+        || (category === Category.trucks && $Truck.attr('Type') !== 'Trailer')
+      ) return value
     }).filter(value => !!value) as IItem[]
   }
 
@@ -77,4 +74,4 @@ class ItemsService {
   }
 }
 
-export const items = new ItemsService()
+export default new ItemsService()

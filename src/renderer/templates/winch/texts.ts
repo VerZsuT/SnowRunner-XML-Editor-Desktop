@@ -1,4 +1,4 @@
-import { localization } from '#services'
+import { lzn } from '#services'
 
 export const {
   BATTERY,
@@ -6,7 +6,7 @@ export const {
   IS_ENGINE_IGNITION_REQUIRED,
   LENGTH,
   STRENGTH_MULT
-} = localization.localize({
+} = lzn.localize({
   RU: {
     LENGTH: 'Длина',
     STRENGTH_MULT: 'Сила',

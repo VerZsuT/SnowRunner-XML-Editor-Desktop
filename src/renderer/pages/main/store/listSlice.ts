@@ -6,7 +6,7 @@ import { Category, GroupTab } from '#enums'
 import { config, storage } from '#services'
 import type { MainState } from './index'
 
-export const listSlice = createSlice({
+const listSlice = createSlice({
   name: 'list',
   initialState: {
     group: storage.get<GroupTab>(OPENED_GROUP) ?? GroupTab.main,

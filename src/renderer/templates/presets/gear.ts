@@ -1,11 +1,11 @@
-import { Num } from '../items'
+import { Float } from '../items'
 
-import { localization } from '#services'
+import { lzn } from '#services'
 
 const {
   ANGEL_VELOCITY,
   FUEL_MODIFIER
-} = localization.localize({
+} = lzn.localize({
   RU: {
     ANGEL_VELOCITY: 'Макс. угловая скорость колеса',
     FUEL_MODIFIER: 'Модификатор потребления топлива'
@@ -24,14 +24,14 @@ const {
   }
 })
 
-export const gearPreset = [
-  new Num({
+export default [
+  new Float({
     attribute: 'AngVel',
     label: ANGEL_VELOCITY,
     max: 32,
     default: 0
   }),
-  new Num({
+  new Float({
     attribute: 'FuelModifier',
     label: FUEL_MODIFIER,
     max: 10,

@@ -1,6 +1,17 @@
-import { localization } from '#services'
+import { lzn } from '#services'
 
-const engineTexts = localization.localize({
+export const {
+  CRITICAL_DAMAGE_THRESHOLD,
+  DAMAGED_CONSUMPTION_MODIFIER,
+  DAMAGED_MAX_TORQUE_MODIFIER,
+  DAMAGED_MIN_TORQUE_MODIFIER,
+  TORQUE,
+  DAMAGE_CAPACITY,
+  RESPONSIVENESS,
+  MAX_DELTA_ANG_VEL,
+  FUEL_CONSUMPTION,
+  BRAKES_DELAY
+} = lzn.localize({
   RU: {
     CRITICAL_DAMAGE_THRESHOLD: 'Порог критического повреждения',
     DAMAGE_CAPACITY: 'Прочность',
@@ -50,16 +61,3 @@ const engineTexts = localization.localize({
     MAX_DELTA_ANG_VEL: '加速的减速'
   }
 })
-
-export const {
-  CRITICAL_DAMAGE_THRESHOLD,
-  DAMAGED_CONSUMPTION_MODIFIER,
-  DAMAGED_MAX_TORQUE_MODIFIER,
-  DAMAGED_MIN_TORQUE_MODIFIER,
-  TORQUE,
-  DAMAGE_CAPACITY,
-  RESPONSIVENESS,
-  MAX_DELTA_ANG_VEL,
-  FUEL_CONSUMPTION,
-  BRAKES_DELAY
-} = engineTexts

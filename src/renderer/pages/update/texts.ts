@@ -1,11 +1,11 @@
-import { localization } from '#services'
+import { lzn } from '#services'
 
 export const {
   ALLOW_NEW_VERSION_AUTO,
   UPDATE,
   CLOSE,
   IGNORE
-} = localization.localize({
+} = lzn.localize({
   RU: {
     ALLOW_NEW_VERSION_AUTO: 'Доступна новая версия программы',
     IGNORE: 'Игнорировать',

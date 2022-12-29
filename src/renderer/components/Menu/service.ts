@@ -1,10 +1,10 @@
 import { Bridge } from 'emr-bridge/renderer'
 
 import { config, system, xml } from '#services'
-import type { IFindItem, IMPC } from '#types'
+import type { IFindItem, MPC } from '#types'
 
 class MenuService {
-  private readonly bridge = Bridge.as<IMPC>()
+  private readonly bridge = Bridge.as<MPC>()
   private readonly paths = this.bridge.paths
 
   exportDefaults(): void {
@@ -42,4 +42,4 @@ class MenuService {
   }
 }
 
-export const menuService = new MenuService()
+export default new MenuService()

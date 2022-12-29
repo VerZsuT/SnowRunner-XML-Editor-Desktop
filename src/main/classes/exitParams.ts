@@ -3,4 +3,4 @@ class ExitParams {
   saveConfig = true
 }
 
-export const exitParams = new ExitParams()
+export default new ExitParams()

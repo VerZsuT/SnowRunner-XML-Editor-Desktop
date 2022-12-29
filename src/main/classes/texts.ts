@@ -3,10 +3,10 @@ import { join } from 'path'
 
 import { Access, providePublic, publicProperty } from 'emr-bridge'
 
-import { config } from './config'
-import { paths } from './paths'
+import config from './config'
+import paths from './paths'
 
-import type { IGameTexts, ITranslation } from '#types'
+import type { IGameTexts, Translation } from '#types'
 
 class Texts {
   private readonly locals = {
@@ -64,7 +64,7 @@ class Texts {
   }
 
   /** Обработать файл игрового перевода */
-  private parseFile(data: string, parseAll?: boolean): ITranslation {
+  private parseFile(data: string, parseAll?: boolean): Translation {
     const strings = {}
     const lines = data.match(/[^\r\n]+/g)
 
@@ -124,5 +124,4 @@ class Texts {
   }
 }
 
-export const texts = new Texts()
-providePublic(texts)
+export default providePublic(new Texts())

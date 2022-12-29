@@ -2,18 +2,19 @@ import type { CSSProperties, ReactNode } from 'react'
 
 import { StarFilled } from '@ant-design/icons'
 import { Card, message } from 'antd'
-import { afcMemo, memoized, useRedux } from 'react-afc'
-import { useActions } from 'react-afc/compatible'
+import { fafcMemo, useRedux } from 'react-afc'
+import { useActions, useMemo } from 'react-afc/compatible'
+import type { FastProps } from 'react-afc/types'
 
 import { selectFilter } from '../../store/filterSlice'
-import { editor } from '../services/editor'
-import { images } from '../services/images'
+import editor from '../services/editor'
+import images from '../services/images'
 import { ADD_FAVORITE, REMOVE_FAVORITE } from '../texts'
 
 import type { Category } from '#enums'
 import { Page } from '#enums'
 import { EXPORT, SUCCESS_EXPORT_MESSAGE } from '#globalTexts/renderer'
-import { createContextMenu } from '#helpers/createContextMenu'
+import useContextMenu from '#helpers/useContextMenu'
 import { actions } from '#pages/main/store'
 import { config, xml } from '#services'
 import type { IItem } from '#types'
@@ -29,12 +30,12 @@ type Props = {
   dlc?: string
 }
 
-export const ListItem = afcMemo((props: Props) => {
+function ListItem(props: FastProps<Props>) {
   const containerStyle = { position: 'relative' as const }
-  const fileDOM = xml.getDOM(props.item.path)
-  const name = xml.getName(props.item, fileDOM)
-  const imgSrc = images.getSrc(props.type, props.item, fileDOM)
-  const contextMenu = createContextMenu()
+  const fileDOM = xml.getDOM(props.curr.item.path)
+  const name = xml.getName(props.curr.item, fileDOM)
+  const imgSrc = images.getSrc(props.curr.type, props.curr.item, fileDOM)
+  const contextMenu = useContextMenu()
 
   const store = useRedux({
     filter: selectFilter
@@ -47,7 +48,7 @@ export const ListItem = afcMemo((props: Props) => {
     return (
       <div style={containerStyle}>
         <Card
-          style={props.style}
+          style={props.curr.style}
           className='card'
           hoverable
           cover={<img height={350} width={250} src={imgSrc}/>}
@@ -79,7 +80,7 @@ export const ListItem = afcMemo((props: Props) => {
   const { toggleFavorite, route } = useActions(actions)
 
   function exportFile(): void {
-    const { item, modId, dlc } = props
+    const { item, modId, dlc } = props.curr
 
     const isSuccess = xml.exportFile({
       filePath: item.path,
@@ -95,7 +96,7 @@ export const ListItem = afcMemo((props: Props) => {
   }
 
   function openEditor(): void {
-    const { item, type, listId } = props
+    const { item, type, listId } = props.curr
 
     editor.setStorageValues(item, type, listId)
     contextMenu.hide()
@@ -104,14 +105,14 @@ export const ListItem = afcMemo((props: Props) => {
 
   function toggle(): void {
     contextMenu.hide()
-    toggleFavorite(props.item.name)
+    toggleFavorite(props.curr.item.name)
   }
 
   function isFavorite(): boolean {
-    return config.favorites.includes(props.item.name)
+    return config.favorites.includes(props.curr.item.name)
   }
 
-  const getContextMenuItems = memoized(() => [
+  const getContextMenuItems = useMemo(() => [
     {
       label: isFavorite() ? REMOVE_FAVORITE : ADD_FAVORITE,
       key: 'toggle-favorite',
@@ -125,12 +126,12 @@ export const ListItem = afcMemo((props: Props) => {
   ],
   () => [isFavorite()])
 
-  const isShow = memoized((): boolean => {
+  const isShow = useMemo((): boolean => {
     if (!store.filter) return true
     return name.toLowerCase().includes(store.filter.toLowerCase())
   }, () => [store.filter, name])
 
-  const getTitle = memoized(() => {
+  const getTitle = useMemo(() => {
     if (!store.filter) return name
 
     const firstIndex = name.toLowerCase().indexOf(store.filter.toLowerCase())
@@ -144,4 +145,6 @@ export const ListItem = afcMemo((props: Props) => {
   }, () => [store.filter, name])
 
   return render
-})
+}
+
+export default fafcMemo(ListItem)

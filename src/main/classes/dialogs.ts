@@ -3,7 +3,7 @@ import { dialog, nativeImage } from 'electron'
 
 import { providePublic, publicMethod } from 'emr-bridge'
 
-import { paths } from './paths'
+import paths from './paths'
 
 import { DialogAlertType, DialogSourceType, DialogType } from '#enums'
 import { ERROR } from '#m-scripts/programTexts'
@@ -54,43 +54,43 @@ class Dialogs {
   /** Открыть окно выбора `.epf` файла */
   @publicMethod()
   getEPF(): string {
-    return this.openDialog({ extention: 'epf' }) as string
+    return <string> this.openDialog({ extention: 'epf' })
   }
 
   /** Открыть окно сохранения `.epf` файла */
   @publicMethod()
   saveEPF(defaultName: string): string {
-    return this.openDialog({
+    return <string> this.openDialog({
       type: DialogType.save,
       defaultPath: defaultName,
       extention: 'epf'
-    }) as string
+    })
   }
 
   /** Открыть окно выбора `initial.pak` */
   @publicMethod()
   getInitial(): string {
-    return this.openDialog({ extention: 'pak' }) as string
+    return <string> this.openDialog({ extention: 'pak' })
   }
 
   /** Открыть окно выбора папки */
   @publicMethod()
   getDir(): string {
-    return this.openDialog({ source: DialogSourceType.dir }) as string
+    return <string> this.openDialog({ source: DialogSourceType.dir })
   }
 
   /** Открыть окно выбора нескольких `.epf` файлов */
   getMultiEPF(): string[] {
-    return this.openDialog({
+    return <string[]> this.openDialog({
       properties: ['openFile', 'multiSelections'],
       extention: 'epf'
-    }) as string[]
+    })
   }
 
   /** Открыть окно выбора `.xml` файла */
   @publicMethod()
   getXML(): string {
-    return this.openDialog({ extention: 'xml' }) as string
+    return <string> this.openDialog({ extention: 'xml' })
   }
 
   /** Открыть диалоговое окно */
@@ -134,5 +134,4 @@ class Dialogs {
   }
 }
 
-export const dialogs = new Dialogs()
-providePublic(dialogs)
+export default providePublic(new Dialogs())

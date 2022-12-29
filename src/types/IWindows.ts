@@ -1,5 +1,7 @@
-import type { IDownloadWindow } from './IDownloadWindow'
+import type IDownloadWindow from './IDownloadWindow'
 
-export interface IWindows {
+interface IWindows {
   loading: IDownloadWindow | null
 }
+
+export default IWindows

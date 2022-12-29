@@ -3,21 +3,22 @@ import type { ReactNode } from 'react'
 import type { RadioChangeEvent } from 'antd'
 import { Radio, Select } from 'antd'
 import { Bridge } from 'emr-bridge/renderer'
-import { afcMemo } from 'react-afc'
+import { fafcMemo } from 'react-afc'
+import type { FastProps } from 'react-afc/types'
 
 import { Lang } from '#enums'
 import { LANGUAGE_LABEL } from '#globalTexts/renderer'
 import { config } from '#services'
-import type { IMPC } from '#types'
+import type { MPC } from '#types'
 
-const bridge = Bridge.as<IMPC>()
+const bridge = Bridge.as<MPC>()
 
 type Props = {
   isSetup?: boolean
 }
 
 /** Выбор языка программы */
-export const Language = afcMemo((props: Props) => {
+function Language(props: FastProps<Props>) {
   const langOptions = Object.keys(Lang).map(lang => ({
     label: lang,
     value: lang
@@ -26,7 +27,7 @@ export const Language = afcMemo((props: Props) => {
   function render(): ReactNode {
     return (
       <div>
-        {props.isSetup
+        {props.curr.isSetup
           ? <Radio.Group
             defaultValue={config.lang}
             onChange={onChangeRadio}
@@ -62,4 +63,6 @@ export const Language = afcMemo((props: Props) => {
   }
 
   return render
-})
+}
+
+export default fafcMemo(Language)

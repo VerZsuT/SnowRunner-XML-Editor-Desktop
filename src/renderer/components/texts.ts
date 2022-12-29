@@ -1,4 +1,4 @@
-import { localization } from '#services'
+import { lzn } from '#services'
 
 export const {
   BACKUP_MENU_LABEL,
@@ -10,7 +10,7 @@ export const {
   SETTINGS_MENU_LABEL,
   HOW_TO_USE_TITLE,
   EXIT_MENU_ITEM_LABEL
-} = localization.localize({
+} = lzn.localize({
   RU: {
     EXIT_MENU_ITEM_LABEL: 'Выход',
     SETTINGS_MENU_LABEL: 'Настройки',

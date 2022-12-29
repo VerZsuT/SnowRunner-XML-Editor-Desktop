@@ -32,4 +32,4 @@ class Entries {
   }
 }
 
-export const entries = new Entries()
+export default new Entries()

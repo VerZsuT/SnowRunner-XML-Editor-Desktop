@@ -1,16 +1,16 @@
 import { Collapse } from 'antd'
 import type { AnyNode, Cheerio, CheerioAPI } from 'cheerio'
 import memoizee from 'memoizee'
-import { handleContext } from 'react-afc'
+import { useContext } from 'react-afc'
 
 import type { FileDataContextType } from '../helpers/getFileData'
 import { FileDataContext } from '../helpers/getFileData'
 import type { FileInfoContextType } from '../helpers/getFileInfo'
 import { FileInfoContext } from '../helpers/getFileInfo'
-import { template } from '../services/template'
-import { parseFile } from './parseFile'
+import template from '../services/template'
+import parseFile from './parseFile'
 
-import type { IDefaults, IInputParams, TemplateParams } from '#types'
+import type { Defaults, IInputParams, TemplateParams } from '#types'
 
 interface InnerItem {
   filePath: string
@@ -20,16 +20,16 @@ interface InnerItem {
   dlc: string
   templates: Cheerio<AnyNode>
   tableItems: TemplateParams
-  defaults: IDefaults[string]
+  defaults: Defaults[string]
 }
 
 export function getFileParser() {
-  const getFileData = handleContext(FileDataContext)
-  const getFileInfo = handleContext(FileInfoContext)
+  const fileData = useContext(FileDataContext)
+  const fileInfo = useContext(FileInfoContext)
 
   return (item: IInputParams) => {
-    const { dlc, mod } = getFileInfo()
-    const { fileDOM } = getFileData()
+    const { dlc, mod } = fileInfo.val
+    const { fileDOM } = fileData.val
 
     const items = parseFile({ dlc, mod, fileDOM, item, regFiles: true })
 
@@ -52,8 +52,8 @@ export function getFileParser() {
     )
 
     return items.map(item => (
-      <FileDataContext.Provider key={item.filePath} value={getFileDataContext(getFileData(), item)}>
-        <FileInfoContext.Provider value={getFileInfoContext(getFileInfo(), item)}>
+      <FileDataContext.Provider key={item.filePath} value={getFileDataContext(fileData.val, item)}>
+        <FileInfoContext.Provider value={getFileInfoContext(fileInfo.val, item)}>
           <Collapse accordion>
             {template.parseItems(item.tableItems)}
           </Collapse>

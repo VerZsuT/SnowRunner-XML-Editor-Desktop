@@ -1,6 +1,6 @@
-import type { IGroupLabel } from './IGroupLabel'
+import type IGroupLabel from './IGroupLabel'
 
-export interface IGroupProps {
+interface IGroupProps {
   /** Параметры подписи группы */
   label?: IGroupLabel
   /** Селектор, наследующийся всеми элементы группы */
@@ -10,3 +10,5 @@ export interface IGroupProps {
   /** Путь к иконке группы */
   iconName?: string
 }
+
+export default IGroupProps

@@ -1,6 +1,6 @@
 import { Notification } from 'electron'
 
-import { paths } from './paths'
+import paths from './paths'
 
 class Notifications {
   async show(title: string, message: string): Promise<void> {
@@ -17,4 +17,4 @@ class Notifications {
   }
 }
 
-export const notifications = new Notifications()
+export default new Notifications()

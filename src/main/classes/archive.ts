@@ -4,10 +4,10 @@ import { basename, join } from 'path'
 
 import { providePublic, publicMethod } from 'emr-bridge'
 
-import { config } from './config'
-import { hash } from './hash'
-import { paths } from './paths'
-import { windows } from './windows'
+import config from './config'
+import hash from './hash'
+import paths from './paths'
+import windows from './windows'
 
 import { DEBUG_WINRAR, DEBUG_WINRAR_ERRORS } from '#consts'
 import { UNPACKING } from '#m-scripts/programTexts'
@@ -202,5 +202,4 @@ class Archive {
   }
 }
 
-export const archive = new Archive()
-providePublic(archive)
+export default providePublic(new Archive())

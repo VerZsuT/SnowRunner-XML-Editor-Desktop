@@ -1,6 +1,6 @@
-import { localization } from '#services'
+import { lzn } from '#services'
 
-export const { WHATS_NEW_TITLE } = localization.localize({
+export const { WHATS_NEW_TITLE } = lzn.localize({
   RU: {
     WHATS_NEW_TITLE: 'Что нового в версии'
   },

@@ -1,9 +1,9 @@
 import type { BrowserWindow } from 'electron'
 
-import { ModalWindow } from './ModalWindow'
+import ModalWindow from './ModalWindow'
 
-import { entries } from '#classes/entries'
-import { windows } from '#classes/windows'
+import entries from '#classes/entries'
+import windows from '#classes/windows'
 import { ProgramWindow } from '#enums'
 import type { IDownloadWindow } from '#types'
 
@@ -26,11 +26,11 @@ class LoadingWindow extends ModalWindow {
   }
 
   protected onCreate(): void {
-    windows.loading = this.wind as IDownloadWindow
+    windows.loading = <IDownloadWindow> this.wind
   }
 
   private initMethods(window: BrowserWindow): IDownloadWindow {
-    const loadingWindow = window as IDownloadWindow
+    const loadingWindow = <IDownloadWindow> window
 
     function postMessage(channel: string, arg: any): void {
       loadingWindow.webContents.postMessage(channel, arg)

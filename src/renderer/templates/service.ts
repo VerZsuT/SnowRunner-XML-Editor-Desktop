@@ -1,8 +1,14 @@
-import { Bridge } from 'emr-bridge/renderer'
+import bridge from '#r-scripts/bridge'
 
-import type { IMPC } from '#types'
+const texts = bridge.texts
 
-const texts = Bridge.as<IMPC>().texts
+interface ISelectors {
+  getSelectors?(): string[]
+}
+
+type Creatable = {
+  new (...args: any): any
+}
 
 /**
  * Возвращает игровой перевод по ключу.
@@ -11,26 +17,18 @@ const texts = Bridge.as<IMPC>().texts
  */
 export function getGameText(key: string, modId?: string): string | undefined {
   let value: string
-  if (modId && texts.mods[modId]) {
+  if (modId && texts.mods[modId])
     value = texts.mods[modId][key]
-  }
-  else {
+  else
     value = texts.main[key]
-  }
 
-  if (value) {
-    return value
-  }
+  if (value) return value
 }
 
 export function selector(tgt: any, key: string): void {
-  const target = tgt as ISelectors
+  const target: ISelectors = tgt
   const prevGetter = target.getSelectors ?? (() => [])
   target.getSelectors = () => [...prevGetter(), key]
-}
-
-interface ISelectors {
-  getSelectors?(): string[]
 }
 
 export const forEach = '[SXMLE_ID="-CYCLE1-"]'
@@ -42,8 +40,8 @@ export const firstBy = (cycleNum: number) => `[SXMLE_ID="-F_CYCLE${cycleNum}-"]`
 export const lastBy = (cycleNum: number) => `[SXMLE_ID="-L_CYCLE${cycleNum}-"]`
 export const th = (pos: number, cycleNum = 1) => `[SXMLE_ID="-N${pos}_CYCLE${cycleNum}-"]`
 
-export function initSelectors<T>(obj: T): T {
-  const target = obj as ISelectors
+export function createSelectors<T extends Creatable>(Class: T) {
+  const target = <ISelectors> new Class()
   target.getSelectors?.().forEach(key => {
     target[key] = `SELECTOR_ID:${key}||${[target[key]]}`
       .replaceAll('.', '>')
@@ -52,5 +50,5 @@ export function initSelectors<T>(obj: T): T {
       .replaceAll('!!', '!')
       .replaceAll('!', ' ')
   })
-  return obj
+  return target as InstanceType<T>
 }

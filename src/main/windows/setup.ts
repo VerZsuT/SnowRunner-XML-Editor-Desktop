@@ -1,9 +1,9 @@
 import { app } from 'electron'
 
-import { Window } from './Window'
+import Window from './Window'
 
-import { entries } from '#classes/entries'
-import { windows } from '#classes/windows'
+import entries from '#classes/entries'
+import windows from '#classes/windows'
 import { ProgramWindow } from '#enums'
 
 class SetupWindow extends Window {

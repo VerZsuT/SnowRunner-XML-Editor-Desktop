@@ -1,17 +1,18 @@
 import type { FC, ReactNode } from 'react'
 
 import { Typography } from 'antd'
-import { afcMemo, handleContext, ref } from 'react-afc'
+import { fafcMemo, useContext, useState } from 'react-afc'
+import type { FastProps } from 'react-afc/types'
 
 import { FileDataContext } from '../helpers/getFileData'
-import { handleReset } from '../helpers/handleReset'
-import { importService } from '../services/import'
-import { Coordinates } from './Coordinates'
-import { Input } from './Input'
-import { Select } from './Select'
+import handleReset from '../helpers/handleReset'
+import importService from '../services/import'
+import Coordinates from './Coordinates'
+import Input from './Input'
+import Select from './Select'
 
 import { RESET_MENU_ITEM_LABEL } from '#globalTexts/renderer'
-import { createContextMenu } from '#helpers/createContextMenu'
+import useContextMenu from '#helpers/useContextMenu'
 import { xml } from '#services'
 import type { IInputParams } from '#types'
 
@@ -21,12 +22,12 @@ type Props = {
   item: IInputParams
 }
 
-export const Parameter = afcMemo((props: Props) => {
-  const { item } = props
+function Parameter(props: FastProps<Props>) {
+  const { item } = props.curr
   
-  const getFileData = handleContext(FileDataContext)
+  const fileData = useContext(FileDataContext)
   const defaultValue = getDefaultValue()
-  const contextMenu = createContextMenu()
+  const contextMenu = useContextMenu()
   const contextItems = [{
     key: 'reset-param',
     label: `${RESET_MENU_ITEM_LABEL} ${item.label}`,
@@ -34,17 +35,15 @@ export const Parameter = afcMemo((props: Props) => {
   }]
   let Element: FC<any> = Input
 
-  const paramVal = ref(getValue())
+  const [paramValue, setParamValue] = useState(getValue())
   handleReset(onReset)
   importService.onImport(() => {
-    paramVal.value = getValue()
+    setParamValue(getValue())
   })
-  if (item.inputType === 'select') {
+  if (item.inputType === 'select')
     Element = Select
-  }
-  else if (item.type === 'coordinates') {
+  else if (item.type === 'coordinates')
     Element = Coordinates
-  }
 
   function render(): ReactNode {
     return (
@@ -60,7 +59,7 @@ export const Parameter = afcMemo((props: Props) => {
           <Element
             defaultValue={defaultValue}
             onSetValue={onSetValue}
-            value={paramVal.value}
+            value={paramValue.val}
             item={item}
           />
         </div>
@@ -70,10 +69,10 @@ export const Parameter = afcMemo((props: Props) => {
 
   function onSetValue(newVal: string) {
     const { selector, attribute } = item
-    const { fileDOM } = getFileData()
+    const { fileDOM } = fileData.val
     xml.addTag(fileDOM, item)
-    getFileData().fileDOM(selector).attr(attribute, newVal)
-    paramVal.value = newVal
+    fileData.val.fileDOM(selector).attr(attribute, newVal)
+    setParamValue(newVal)
   }
 
   function onReset(): void {
@@ -83,7 +82,7 @@ export const Parameter = afcMemo((props: Props) => {
   }
 
   function getDefaultValue(): string | undefined {
-    const { defaults } = getFileData()
+    const { defaults } = fileData.val
 
     if (!defaults[item.selector] || defaults[item.selector][item.attribute] === undefined) {
       return undefined
@@ -93,7 +92,7 @@ export const Parameter = afcMemo((props: Props) => {
   }
 
   function getValue(): string | number | undefined {
-    const { fileDOM, templates, globalTemplates } = getFileData()
+    const { fileDOM, templates, globalTemplates } = fileData.val
     let value = item.value
 
     if (fileDOM(item.selector).length &&
@@ -102,16 +101,16 @@ export const Parameter = afcMemo((props: Props) => {
     }
 
     if (value === null || value === undefined) {
-      if (templates) {
-        value = (xml.getFromTemplates(fileDOM, templates, globalTemplates, item) ?? item.default) as string
-      }
-      else {
+      if (templates)
+        value = xml.getFromTemplates(fileDOM, templates, globalTemplates, item) ?? item.default
+      else
         value = item.default
-      }
     }
 
     return value
   }
 
   return render
-})
+}
+
+export default fafcMemo(Parameter)

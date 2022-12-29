@@ -1,12 +1,12 @@
-import { Input } from './Input'
-import { Template } from './Template'
+import Input from './Input'
+import Template from './Template'
 
-import { InputType, TemplateType } from '#enums'
+import { InputType, NumberType, TemplateType } from '#enums'
 import type { IDefaultInputProps, IFileProps, NumberProps, TemplateItems } from '#types'
 
-export { Group } from './Group'
-export { Select } from './Select'
-export { Template } from './Template'
+export { default as Group } from './Group'
+export { default as Select } from './Select'
+export { default as Template } from './Template'
 
 /** Кнопки для редактирования файла. */
 export class File extends Input {
@@ -41,23 +41,29 @@ export class Num extends Input {
   }
 }
 
+export class Int extends Num {
+  constructor(props: Omit<NumberProps, 'type'>) {
+    super({ type: NumberType.integer, ...props })
+  }
+}
+
+export class Float extends Num {
+  constructor(props: Omit<NumberProps, 'type'>) {
+    super({ type: NumberType.float, ...props })
+  }
+}
+
 /** Текстовое поле ввода. */
 export class Text extends Input {
   constructor(props: IDefaultInputProps) {
-    super({
-      type: InputType.text,
-      ...props
-    })
+    super({ type: InputType.text, ...props })
   }
 }
 
 /** Поля ввода координат. */
 export class Coords extends Input {
   constructor(props: IDefaultInputProps) {
-    super({
-      type: InputType.coordinates,
-      ...props
-    })
+    super({ type: InputType.coordinates, ...props })
   }
 }
 
@@ -65,10 +71,10 @@ export class Coords extends Input {
  * Итерация по всем элементам с данным селектором.
  */
 export class ForEach extends Template {
-  constructor(selector: string, children: TemplateItems[]) {
+  constructor(selector: string, ...children: TemplateItems[]) {
     super({
       type: TemplateType.multiply,
       itemSelector: selector
-    }, children)
+    }, ...children)
   }
 }

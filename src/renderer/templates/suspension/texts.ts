@@ -1,4 +1,4 @@
-import { localization } from '#services'
+import { lzn } from '#services'
 
 export const {
   HEIGHT,
@@ -10,7 +10,7 @@ export const {
   SUSPENSION_MIN,
   SUSPENSION,
   STRENGTH
-} = localization.localize({
+} = lzn.localize({
   RU: {
     HEIGHT: 'Высота',
     STRENGTH: 'Жёсткость',

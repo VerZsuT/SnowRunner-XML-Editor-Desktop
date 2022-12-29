@@ -1,4 +1,4 @@
-import { localization } from '#services'
+import { lzn } from '#services'
 
 export const {
   BODY_FRICTION,
@@ -7,7 +7,7 @@ export const {
   YES,
   NO,
   IGNORE_ICE
-} = localization.localize({
+} = lzn.localize({
   RU: {
     BODY_FRICTION: 'Сцепление на бездорожье',
     BODY_FRICTION_ASPHALT: 'Сцепление на асфальте',

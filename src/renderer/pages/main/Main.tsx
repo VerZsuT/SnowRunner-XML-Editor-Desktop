@@ -1,15 +1,15 @@
 import type { ReactNode } from 'react'
 
-import { afcMemo, useRedux } from 'react-afc'
+import { pafcMemo, useRedux } from 'react-afc'
 
-import { Editor } from './editor'
-import { Lists } from './lists'
+import Editor from './editor'
+import Lists from './lists'
 import { selectPage } from './store/pageSlice'
 
 import { Page, ProgramWindow } from '#enums'
-import { windowReady } from '#helpers/windowReady'
+import useWindowReady from '#helpers/useWindowReady'
 
-export const Main = afcMemo(() => {
+function Main() {
   const pages = {
     [Page.editor]: <Editor/>,
     [Page.lists]: <Lists/>
@@ -18,11 +18,13 @@ export const Main = afcMemo(() => {
   const store = useRedux({
     page: selectPage
   })
-  windowReady(ProgramWindow.Main)
+  useWindowReady(ProgramWindow.Main)
 
   function render(): ReactNode {
     return pages[store.page]
   }
 
   return render
-})
+}
+
+export default pafcMemo(Main)

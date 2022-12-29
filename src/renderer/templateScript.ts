@@ -1,10 +1,10 @@
 import { Bridge } from 'emr-bridge/renderer'
 
 import { config } from '#services'
-import type { IMPC } from '#types'
+import type { MPC } from '#types'
 
 class Template {
-  private readonly bridge = Bridge.as<IMPC>()
+  private readonly bridge = Bridge.as<MPC>()
 
   constructor() {
     this.changeTitle()

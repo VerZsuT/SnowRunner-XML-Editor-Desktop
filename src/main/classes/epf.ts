@@ -3,7 +3,7 @@ import { basename } from 'path'
 
 import { providePublic, publicMethod } from 'emr-bridge'
 
-import { dialogs } from './dialogs'
+import dialogs from './dialogs'
 
 import { APP_ID } from '#consts'
 import { SEE_EXPORTED_MESSAGE, SUCCESS_JOIN } from '#m-scripts/programTexts'
@@ -79,5 +79,4 @@ class EPF {
   }
 }
 
-export const epf = new EPF()
-providePublic(epf)
+export default providePublic(new EPF())

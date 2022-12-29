@@ -1,6 +1,8 @@
-export enum GroupTab {
+enum GroupTab {
   main = 'main',
   dlc = 'dlc',
   mods = 'mods',
-  favorites = 'favorites',
+  favorites = 'favorites'
 }
+
+export default GroupTab

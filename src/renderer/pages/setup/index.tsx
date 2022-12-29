@@ -2,60 +2,57 @@ import type { ReactNode } from 'react'
 
 import { Button, Modal, Steps } from 'antd'
 import { Bridge } from 'emr-bridge/renderer'
-import { afcMemo, onMount, reactive } from 'react-afc'
+import { pafc, useOnMount, useState } from 'react-afc'
 
-import { GameFolder } from './components/GameFolder'
+import GameFolder from './components/GameFolder'
 import { FIRST_STEPS_DESCRIPTION, GAME_DATA_STEP, IMPORT_CONFIG_MESSAGE, NEXT } from './texts'
 
-import { Header } from '#components/Header'
-import { Language } from '#components/Language'
-import { Menu } from '#components/Menu'
+import Header from '#components/Header'
+import Language from '#components/Language'
+import Menu from '#components/Menu'
 import { ProgramWindow } from '#enums'
 import { LANGUAGE_LABEL } from '#globalTexts/renderer'
-import { handleIPCMessage } from '#helpers/handleIPCMessage'
-import { windowReady } from '#helpers/windowReady'
+import useIPCMessage from '#helpers/useIPCMessage'
+import useWindowReady from '#helpers/useWindowReady'
 import { config, helpers, system } from '#services'
-import type { IMPC } from '#types'
+import type { MPC } from '#types'
 
+import '#r/templateScript'
 import './styles'
 
-const bridge = Bridge.as<IMPC>()
+const bridge = Bridge.as<MPC>()
 const paths = bridge.paths
 const { Step } = Steps
 const { confirm } = Modal
 
-const Setup = afcMemo(() => {
+const Setup = pafc(() => {
   const stepsContent = [
     <Language isSetup key='language'/>,
     <GameFolder key='game-folder' onChange={onSave}/>
   ]
 
-  const state = reactive({
-    step: 0
-  })
-  windowReady(ProgramWindow.Setup)
-  handleIPCMessage()
+  const [step, setStep] = useState(0)
+  useWindowReady(ProgramWindow.Setup)
+  useIPCMessage()
 
-  onMount(() => {
+  useOnMount(() => {
     setTimeout(checkExportedConfig, 300)
   })
 
   function render(): ReactNode {
-    const { step } = state
-
     return <>
       <Menu/>
       <Header text={FIRST_STEPS_DESCRIPTION}/>
 
-      <Steps className='steps' current={step}>
+      <Steps className='steps' current={step.val}>
         <Step title={LANGUAGE_LABEL}/>
         <Step title={GAME_DATA_STEP}/>
       </Steps>
       <div className='steps-content'>
-        {stepsContent[step]}
+        {stepsContent[step.val]}
       </div>
       <div className='steps-actions'>
-        {step < stepsContent.length - 1 && (
+        {step.val < stepsContent.length - 1 && (
           <Button type='primary' onClick={onNext}>
             {NEXT}
           </Button>
@@ -70,7 +67,7 @@ const Setup = afcMemo(() => {
   }
 
   function onNext(): void {
-    state.step++
+    setStep(step.val + 1)
   }
 
   function checkExportedConfig(): void {

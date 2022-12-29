@@ -6,11 +6,11 @@ import '#r-scripts/root-preload.main'
 import { Main } from 'emr-bridge/preload'
 
 import { PreloadType } from '#enums'
-import { preload } from '#services/preload'
-import type { IEditorPreload, IMPC } from '#types'
+import preload from '#services/preload'
+import type { IEditorPreload, MPC } from '#types'
 
 class EditorPreload {
-  private readonly paths = Main.as<IMPC>().paths
+  private readonly paths = Main.as<MPC>().paths
 
   constructor() {
     preload.register<IEditorPreload>({

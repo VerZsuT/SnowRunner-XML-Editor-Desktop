@@ -1,9 +1,9 @@
 import { Bridge } from 'emr-bridge/renderer'
 
-import type { IConfig, IMPC } from '#types'
+import type { IConfig, MPC } from '#types'
 
 class ConfigService {
-  private readonly bridge = Bridge.as<IMPC>()
+  private readonly bridge = Bridge.as<MPC>()
   private readonly config = { ...this.bridge.config }
 
   constructor() {
@@ -44,4 +44,4 @@ class ConfigService {
   }
 }
 
-export const config = new ConfigService() as unknown as IConfig
+export default new ConfigService() as unknown as IConfig

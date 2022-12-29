@@ -1,7 +1,6 @@
-import { Group, Num, Select } from '../items'
+import { Group, Int, Select } from '../items'
 
-import { NumberType } from '#enums'
-import { localization } from '#services'
+import { lzn } from '#services'
 
 const {
   BY_RANK,
@@ -10,7 +9,7 @@ const {
   FIND_ON_MAP,
   UNLOCK_BY_RANK,
   UNLOCK_GROUP_NAME
-} = localization.localize({
+} = lzn.localize({
   RU: {
     UNLOCK_GROUP_NAME: 'Разблокировка',
     PRICE: 'Цена',
@@ -45,30 +44,30 @@ const {
   }
 })
 
-export function unlockGroup(selector: string) {
+function unlockGroup(selector: string) {
   return new Group({
     label: UNLOCK_GROUP_NAME,
     provided: selector
-  }, [
-    new Num({
+  },
+    new Int({
       attribute: 'Price',
-      type: NumberType.integer,
       label: PRICE
     }),
     new Select({
       attribute: 'UnlockByExploration',
       label: BY_EXPLORATION,
-      options: {
-        true: FIND_ON_MAP,
-        false: BY_RANK
-      }
+      options: [
+        ['true', FIND_ON_MAP],
+        ['false', BY_RANK]
+      ]
     }),
-    new Num({
+    new Int({
       attribute: 'UnlockByRank',
-      type: NumberType.integer,
       label: UNLOCK_BY_RANK,
       max: 30,
       min: 1
     })
-  ])
+  )
 }
+
+export default unlockGroup

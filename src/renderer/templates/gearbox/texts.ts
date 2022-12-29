@@ -1,4 +1,4 @@
-import { localization } from '#services'
+import { lzn } from '#services'
 
 export const {
   ALLOW,
@@ -19,7 +19,7 @@ export const {
   IDLE_FUEL_CONSUMPTION,
   AWD_CONSUMPTION_MODIFIER,
   GEARBOX_PARAMS
-} = localization.localize({
+} = lzn.localize({
   RU: {
     LOWER_MANUAL_GEAR: 'Точная регулировка',
     AWD_CONSUMPTION_MODIFIER: 'Модификатор потребления топлива при полном приводе',

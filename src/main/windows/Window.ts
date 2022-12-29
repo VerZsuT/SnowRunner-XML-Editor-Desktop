@@ -1,11 +1,11 @@
 import type { BrowserWindow } from 'electron'
 
-import { windows } from '#classes/windows'
+import windows from '#classes/windows'
 import type { ProgramWindow } from '#enums'
 import type { ICreateWindowAttributes } from '#types'
-import { windowsManager } from '#windows/windowsManager'
+import windowsManager from '#windows/windowsManager'
 
-export abstract class Window {
+export default abstract class Window {
   protected abstract readonly args: Omit<ICreateWindowAttributes, 'type'>
   protected abstract readonly type: ProgramWindow
   protected wind?: BrowserWindow

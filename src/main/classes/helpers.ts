@@ -3,7 +3,7 @@ import { join } from 'path'
 
 import { providePublic, publicMethod } from 'emr-bridge'
 
-import { paths } from './paths'
+import paths from './paths'
 
 import type { IFindItem } from '#types'
 
@@ -60,5 +60,4 @@ class Helpers {
   }
 }
 
-export const helpers = new Helpers()
-providePublic(helpers)
+export default providePublic(new Helpers())

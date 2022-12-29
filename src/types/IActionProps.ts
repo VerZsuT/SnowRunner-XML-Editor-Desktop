@@ -1,7 +1,9 @@
 import type { CheerioAPI } from 'cheerio'
 
-export interface IActionProps {
+interface IActionProps {
   filePath: string
   currentMod: string
   dom: CheerioAPI
 }
+
+export default IActionProps

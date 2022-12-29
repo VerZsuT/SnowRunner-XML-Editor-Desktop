@@ -1,8 +1,8 @@
-import type { IInputAreas } from './IInputAreas'
+import type IInputAreas from './IInputAreas'
 
 import type { FileType, InputType, NumberType, ParamType } from '#enums'
 
-export interface IInputParams {
+interface IInputParams {
   attribute: string
   label: string
   value: string | number | undefined
@@ -18,3 +18,5 @@ export interface IInputParams {
   default: string | number | undefined
   areas: IInputAreas | undefined
 }
+
+export default IInputParams

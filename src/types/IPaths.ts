@@ -1,4 +1,4 @@
-export interface IPaths {
+interface IPaths {
   publicInfo: string
   downloadPage: string
   updateFiles: string
@@ -19,3 +19,5 @@ export interface IPaths {
   classes: string
   uninstall: string
 }
+
+export default IPaths

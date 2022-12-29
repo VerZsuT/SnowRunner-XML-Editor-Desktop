@@ -1,9 +1,9 @@
-import type { IInputAreas } from './IInputAreas'
-import type { IInputBaseProps } from './IInputBaseProps'
+import type IInputAreas from './IInputAreas'
+import type IInputBaseProps from './IInputBaseProps'
 
 import type { FileType, InputType, NumberType } from '#enums'
 
-export type InputProps = IInputBaseProps & {
+type InputProps = IInputBaseProps & {
   /**
    * Тип поля ввода.
    *
@@ -59,3 +59,5 @@ export type InputProps = IInputBaseProps & {
    */
   areas?: IInputAreas
 }
+
+export default InputProps

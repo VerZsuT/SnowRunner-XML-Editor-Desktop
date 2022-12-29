@@ -1,4 +1,6 @@
-export interface IGameTexts {
-  mods: { [key: string]: string }
-  main: { [key: string]: string }
+interface IGameTexts {
+  mods: Record<string, string>
+  main: Record<string, string>
 }
+
+export default IGameTexts

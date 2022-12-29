@@ -2,7 +2,8 @@ import type { ReactNode } from 'react'
 
 import { FileFilled, FolderFilled } from '@ant-design/icons'
 import { Button } from 'antd'
-import { afcMemo } from 'react-afc'
+import { fafcMemo } from 'react-afc'
+import type { FastProps } from 'react-afc/types'
 
 import { GAME_FOLDER_LABEL } from '../texts'
 
@@ -15,7 +16,7 @@ type Props = {
   onChange(path: string): void
 }
 
-export const GameFolder = afcMemo((props: Props) => {
+function GameFolder(props: FastProps<Props>) {
   function render(): ReactNode {
     return (
       <div className='game-folder'>
@@ -41,11 +42,11 @@ export const GameFolder = afcMemo((props: Props) => {
   }
 
   function onFolderClick(): void {
-    getFolder(props.onChange)
+    getFolder(props.curr.onChange)
   }
 
   function onPakClick(): void {
-    getPak(props.onChange)
+    getPak(props.curr.onChange)
   }
 
   function getPak(callback: Props['onChange']): void {
@@ -64,4 +65,6 @@ export const GameFolder = afcMemo((props: Props) => {
   }
 
   return render
-})
+}
+
+export default fafcMemo(GameFolder)

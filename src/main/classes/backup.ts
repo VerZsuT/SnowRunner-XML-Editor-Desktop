@@ -3,12 +3,12 @@ import { copyFileSync, existsSync, mkdirSync, rmSync } from 'fs'
 
 import { providePublic, publicMethod } from 'emr-bridge'
 
-import { archive } from './archive'
-import { config } from './config'
-import { dialogs } from './dialogs'
-import { exitParams } from './exitParams'
-import { notifications } from './notifications'
-import { paths } from './paths'
+import archive from './archive'
+import config from './config'
+import dialogs from './dialogs'
+import exitParams from './exitParams'
+import notifications from './notifications'
+import paths from './paths'
 
 import { BuildType } from '#enums'
 import {
@@ -92,5 +92,4 @@ class Backup {
   }
 }
 
-export const backup = new Backup()
-providePublic(backup)
+export default providePublic(new Backup())

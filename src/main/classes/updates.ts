@@ -5,14 +5,14 @@ import { basename, dirname, join } from 'path'
 
 import { providePublic, publicMethod } from 'emr-bridge'
 
-import { config } from './config'
-import { exitParams } from './exitParams'
-import { hash } from './hash'
-import { helpers } from './helpers'
-import { paths } from './paths'
-import { windows } from './windows'
+import config from './config'
+import exitParams from './exitParams'
+import hash from './hash'
+import helpers from './helpers'
+import paths from './paths'
+import windows from './windows'
 
-import type { IDownloadParams, IUpdateMap } from '#types'
+import type { IDownloadParams, UpdateMap } from '#types'
 
 class Updates {
   /** Загрузить файл(ы) из сети */
@@ -151,7 +151,7 @@ class Updates {
    * @param map - карта обновления
    * @returns `[пути_для_удаления, для_обновления]`
    */
-  private processMap(map: IUpdateMap): [string[], string[]] {
+  private processMap(map: UpdateMap): [string[], string[]] {
     const toCreateOrChange: string[] = []
     const toCopy: string[] = []
 
@@ -177,5 +177,4 @@ class Updates {
   }
 }
 
-export const updates = new Updates()
-providePublic(updates)
+export default providePublic(new Updates())

@@ -14,4 +14,4 @@ class EditorService {
   }
 }
 
-export const editor = new EditorService()
+export default new EditorService()

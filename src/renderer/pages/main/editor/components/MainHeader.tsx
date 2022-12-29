@@ -11,17 +11,17 @@ import {
   UndoOutlined
 } from '@ant-design/icons'
 import type { MenuProps } from 'antd'
-import { Button, Dropdown, Menu, message, Modal, Tooltip } from 'antd'
-import type { ItemType } from 'antd/lib/menu/hooks/useItems'
+import { Button, Dropdown, message, Modal, Tooltip } from 'antd'
 import type { CheerioAPI } from 'cheerio'
 import { load } from 'cheerio'
 import { Bridge } from 'emr-bridge/renderer'
-import { afcMemo, onRender, ref, useActions } from 'react-afc'
+import { fafcMemo, useActions, useOnRender, useState } from 'react-afc'
+import type { FastProps } from 'react-afc/types'
 
 import { actions as reduxActions } from '../../store'
 import type { ResetList } from '../helpers/getResetProvider'
-import { importService } from '../services/import'
-import { xmlFiles } from '../services/xmlFiles'
+import importService from '../services/import'
+import xmlFiles from '../services/xmlFiles'
 import {
   ACTIONS_MENU,
   IMPORT,
@@ -33,13 +33,15 @@ import {
   WAS_EXPORTED
 } from '../texts'
 
-import { Header } from '#components/Header'
+import Header from '#components/Header'
 import { Page, PreloadType } from '#enums'
 import { EXPORT, OPEN_BUTTON, RESET_MENU_ITEM_LABEL, SAVE_BUTTON } from '#globalTexts/renderer'
 import { config, helpers, preload, system, xml } from '#services'
-import type { IEditorPreload, IMPC, IXMLTemplate, TemplateParams } from '#types'
+import type { IEditorPreload, IXMLTemplate, MPC, TemplateParams } from '#types'
 
-const bridge = Bridge.as<IMPC>()
+type MenuItemsType = NonNullable<MenuProps['items']>
+
+const bridge = Bridge.as<MPC>()
 const { confirm } = Modal
 const { watchFile } = preload.get<IEditorPreload>(PreloadType.editor)
 
@@ -53,19 +55,21 @@ type Props = {
   resetList: ResetList
 }
 
-export const MainHeader = afcMemo((props: Props) => {
+function MainHeader(props: FastProps<Props>) {
   const {
     fileDOM, mod, dlc, actions, filePath,
     tableItems, resetList
-  } = props
+  } = props.curr
   
-  let menuItems: MenuProps['items']
+  let menuItems: MenuItemsType
   const title = getMainTitle(fileDOM, filePath, mod)
 
-  const action = ref<ReactNode>(null)
-  xmlFiles.subscribe()
+  const [action, setAction] = useState<ReactNode>(null)
+  const updateReason = xmlFiles.subscribe()
 
-  onRender(() => {
+  useOnRender(() => {
+    if (!updateReason.isForced) return
+    
     menuItems = [
       {
         label: ACTIONS_MENU,
@@ -78,11 +82,11 @@ export const MainHeader = afcMemo((props: Props) => {
             ? <img src={item.data.imgSRC}/>
             : <RightOutlined/>,
           onClick() {
-            action.value = <item.Component
+            setAction(<item.Component
               filePath={filePath}
               currentMod={mod}
               dom={fileDOM}
-            />
+            />)
           }
         }))
       },
@@ -123,7 +127,7 @@ export const MainHeader = afcMemo((props: Props) => {
 
   function render(): ReactNode {
     return <>
-      {action.value}
+      {action.val}
       <Header
         text={title}
         onBack={onBack}
@@ -133,13 +137,11 @@ export const MainHeader = afcMemo((props: Props) => {
             type='text'
             className='menu-button'
             icon={<MenuOutlined/>}
-            overlay={
-              <Menu
-                selectable={false}
-                mode='vertical'
-                items={menuItems}
-              />
-            }
+            menu={{
+              selectable: false,
+              mode: 'vertical',
+              items: menuItems
+            }}
           />,
           <Tooltip title={SAVE_BUTTON} key='save'>
             <Button
@@ -228,9 +230,11 @@ export const MainHeader = afcMemo((props: Props) => {
     return helpers.prettyString(a[a.length - 1].replace('.xml', '')).toUpperCase()
   }
   
-  function ifAdvanced(item: ItemType): ItemType[] {
+  function ifAdvanced(item: MenuItemsType[number]): MenuItemsType {
     return config.settings.advancedMode ? [item] : []
   }
 
   return render
-})
+}
+
+export default fafcMemo(MainHeader)

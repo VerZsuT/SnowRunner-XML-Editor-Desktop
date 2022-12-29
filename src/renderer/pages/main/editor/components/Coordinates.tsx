@@ -1,7 +1,8 @@
 import type { ReactNode } from 'react'
 
 import { InputNumber, Typography } from 'antd'
-import { afcMemo, handleContext } from 'react-afc'
+import { fafcMemo, useContext } from 'react-afc'
+import type { FastProps } from 'react-afc/types'
 
 import { FileDataContext } from '../helpers/getFileData'
 
@@ -10,17 +11,17 @@ import type { IParameterProps } from '#types'
 
 const { Text } = Typography
 
-type Coordinates = {
+interface ICoordinates {
   x: string | number
   y: string | number
   z: string | number
 }
 
-export const Coordinates = afcMemo((props: IParameterProps) => {
-  const getFileData = handleContext(FileDataContext)
+function Coordinates(props: FastProps<IParameterProps>) {
+  const fileData = useContext(FileDataContext)
 
   function render(): ReactNode {
-    const { item, value } = props
+    const { item, value } = props.curr
     const coords = stringToCoords(value)
 
     return <>
@@ -45,9 +46,9 @@ export const Coordinates = afcMemo((props: IParameterProps) => {
     </>
   }
 
-  function onChangeValue(coordinate: Partial<Coordinates>): void {
-    const { fileDOM } = getFileData()
-    const { item, value, onSetValue } = props
+  function onChangeValue(coordinate: Partial<ICoordinates>): void {
+    const { fileDOM } = fileData.val
+    const { item, value, onSetValue } = props.curr
     const newCoords = { ...stringToCoords(value), ...coordinate }
 
     xml.addTag(fileDOM, item)
@@ -58,12 +59,12 @@ export const Coordinates = afcMemo((props: IParameterProps) => {
   const onChangeY = (value: string | null): void => onChangeValue({ y: value ?? 0 })
   const onChangeZ = (value: string | null): void => onChangeValue({ z: value ?? 0 })
 
-  function coordsToString(coords: Coordinates): string {
+  function coordsToString(coords: ICoordinates): string {
     const { x, y, z } = coords
     return `(${x}; ${y}; ${z})`
   }
   
-  function stringToCoords(str: string): Coordinates {
+  function stringToCoords(str: string): ICoordinates {
     let array: string[]
   
     if (!str) return { x: 0, y: 0, z: 0 }
@@ -79,4 +80,6 @@ export const Coordinates = afcMemo((props: IParameterProps) => {
   }
 
   return render
-})
+}
+
+export default fafcMemo(Coordinates)

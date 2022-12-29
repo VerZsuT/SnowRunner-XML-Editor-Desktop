@@ -1,4 +1,4 @@
-import { localization } from '#services/localization'
+import localization from '#services/localization'
 
 export const {
   NEXT,

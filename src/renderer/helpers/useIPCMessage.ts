@@ -1,7 +1,9 @@
 import { message } from 'antd'
 
-export function handleIPCMessage() {
+function useIPCMessage() {
   window.handleErrorMessage = (msg: string) => {
     void message.error(msg, 2)
   }
 }
+
+export default useIPCMessage

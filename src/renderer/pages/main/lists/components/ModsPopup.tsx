@@ -1,9 +1,10 @@
 import type { ReactNode } from 'react'
 
 import { Button, Modal, Spin, Transfer } from 'antd'
-import { afcMemo, onRender, reactive } from 'react-afc'
+import { fafcMemo, useOnRender, useReactive } from 'react-afc'
+import type { FastProps } from 'react-afc/types'
 
-import { mods } from '../services/mods'
+import mods from '../services/mods'
 import { MANUAL_MOD, MODS_POPUP_TITLE } from '../texts'
 
 import { LOADING } from '#globalTexts/renderer'
@@ -15,19 +16,19 @@ type Props = {
   hidePopup(reload?: boolean): void
 }
 
-export const ModsPopup = afcMemo((props: Props) => {
+function ModsPopup(props: FastProps<Props>) {
   const titles = ['Found', 'Added']
 
-  const state = reactive({
+  const state = useReactive({
     items: undefined as IFindItem[] | undefined,
     targetKeys: [] as string[],
     selectedKeys: [] as string[]
   })
 
-  onRender(loadMods)
+  useOnRender(loadMods)
 
   function render(): ReactNode {
-    const { show } = props
+    const { show } = props.curr
     const { items, targetKeys, selectedKeys } = state
 
     return (
@@ -63,7 +64,7 @@ export const ModsPopup = afcMemo((props: Props) => {
   }
 
   function loadMods(): void {
-    if (props.show && !state.items) {
+    if (props.curr.show && !state.items) {
       setTimeout(() => {
         mods.load().then(items => {
           state.items = items
@@ -76,13 +77,13 @@ export const ModsPopup = afcMemo((props: Props) => {
   function onHidePopup(): void {
     if (!state.items) return
     state.targetKeys = getTargetKeys(state.items)
-    props.hidePopup()
+    props.curr.hidePopup()
   }
 
   function applyChanges(): void {
     if (!state.items) return
     mods.save(state.targetKeys, state.items)
-    props.hidePopup(true)
+    props.curr.hidePopup(true)
   }
 
   function addManual(): void {
@@ -119,4 +120,6 @@ export const ModsPopup = afcMemo((props: Props) => {
   }
 
   return render
-})
+}
+
+export default fafcMemo(ModsPopup)

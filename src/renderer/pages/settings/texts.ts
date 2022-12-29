@@ -1,11 +1,11 @@
-import { localization } from '#services'
+import { lzn } from '#services'
 
 export const {
   ADVANCED_MODE_LABEL,
   UPDATES_LABEL,
   DLC_LABEL,
   MODS_LABEL
-} = localization.localize({
+} = lzn.localize({
   RU: {
     DLC_LABEL: 'Редактировать DLC',
     MODS_LABEL: 'Редактировать модификации',

@@ -2,27 +2,28 @@ import type { ReactNode } from 'react'
 
 import { LoadingOutlined } from '@ant-design/icons'
 import { Progress, Spin, Typography } from 'antd'
-import { afcMemo, reactive } from 'react-afc'
+import { pafc, useReactive } from 'react-afc'
 
 import { ProgramWindow } from '#enums'
 import { LOADING } from '#globalTexts/renderer'
-import { windowReady } from '#helpers/windowReady'
+import useWindowReady from '#helpers/useWindowReady'
 import { helpers, ipc } from '#services'
 
+import '#r/templateScript'
 import './styles'
 
 const { Title, Text } = Typography
 
-const Loading = afcMemo(() => {
-  const state = reactive({
+const Loading = pafc(() => {
+  const state = useReactive({
     loadedCount: 0,
     allCount: 0,
     percent: 0,
     title: LOADING,
     isDownload: false
   })
-  windowReady(ProgramWindow.Loading)
-  handleIPC()
+  useWindowReady(ProgramWindow.Loading)
+  useIPC()
 
   function render(): ReactNode {
     const { title, isDownload, percent, loadedCount, allCount } = state
@@ -51,7 +52,7 @@ const Loading = afcMemo(() => {
     )
   }
 
-  function handleIPC(): void {
+  function useIPC(): void {
     ipc.on('success', () => {
       state.percent = 0
       state.loadedCount++

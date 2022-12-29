@@ -26,4 +26,4 @@ class PreloadService {
   }
 }
 
-export const preload = new PreloadService()
+export default new PreloadService()

@@ -1,9 +1,8 @@
-import { ForEach, Group, Num, Select, Template } from '../items'
-import { unlockGroup } from '../presets/unlockGroup'
-import { forEach, initSelectors, selector } from '../service'
+import { Float, ForEach, Group, Select, Template } from '../items'
+import unlockGroup from '../presets/unlockGroup'
+import { createSelectors, forEach, selector } from '../service'
 import { BODY_FRICTION, BODY_FRICTION_ASPHALT, IGNORE_ICE, NO, SUBSTANCE_FRICTION, YES } from './texts'
 
-import { NameType } from '#enums'
 import type { IXMLTemplate } from '#types'
 
 class Selectors {
@@ -14,50 +13,49 @@ class Selectors {
   @selector gameData = `${this.truckTire}.GameData`
 }
 
-const selectors = initSelectors(new Selectors())
+const selectors = createSelectors(Selectors)
 
-export const wheelsTemplate = {
+export default {
   selector: 'TruckWheels',
-  template: new Template({ ...selectors }, [
-    new ForEach(selectors.truckTire, [
+  template: new Template({ ...selectors },
+    new ForEach(selectors.truckTire,
       new Group({
         label: {
-          type: NameType.computed,
-          attribute: ['UiName', 'Name'],
-          selector: [selectors.truckTireText, selectors.truckTire]
+          selector: [selectors.truckTireText, selectors.truckTire],
+          attribute: ['UiName', 'Name']
         },
         provided: selectors.wheelFriction
-      }, [
-        new Num({
+      },
+        new Float({
           attribute: 'BodyFriction',
           label: BODY_FRICTION,
           max: 10,
           default: 1,
           areas: {
-            yellow: [[7, 8]],
-            red: [[8.1, 10]]
+            yellow: [7, 8],
+            red: [8.1, 10]
           },
           addMissedTag: true
         }),
-        new Num({
+        new Float({
           attribute: 'BodyFrictionAsphalt',
           label: BODY_FRICTION_ASPHALT,
           max: 10,
           default: 1,
           areas: {
-            yellow: [[7, 8]],
-            red: [[8.1, 10]]
+            yellow: [7, 8],
+            red: [8.1, 10]
           },
           addMissedTag: true
         }),
-        new Num({
+        new Float({
           attribute: 'SubstanceFriction',
           label: SUBSTANCE_FRICTION,
           max: 10,
           default: 1,
           areas: {
-            yellow: [[7, 8]],
-            red: [[8.1, 10]]
+            yellow: [7, 8],
+            red: [8.1, 10]
           },
           addMissedTag: true
         }),
@@ -65,14 +63,14 @@ export const wheelsTemplate = {
           attribute: 'IsIgnoreIce',
           label: IGNORE_ICE,
           addMissedTag: true,
-          options: {
-            true: YES,
-            false: NO
-          },
-          default: 'false'
+          options: [
+            ['true', YES],
+            ['false', NO]
+          ],
+          default: 1
         }),
         unlockGroup(selectors.gameData)
-      ])
-    ])
-  ])
+      )
+    )
+  )
 } as IXMLTemplate

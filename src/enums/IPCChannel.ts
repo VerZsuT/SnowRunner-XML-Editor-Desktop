@@ -1,4 +1,4 @@
-export enum IPCChannel {
+enum IPCChannel {
   getPublicInfo = 'getPublicInfo',
   windowReady = 'window-ready-',
   windowResize = 'window-resize',
@@ -8,3 +8,5 @@ export enum IPCChannel {
   propertySet = 'property-set-',
   promisePostfix = '-promise'
 }
+
+export default IPCChannel

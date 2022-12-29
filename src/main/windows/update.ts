@@ -1,6 +1,6 @@
-import { ModalWindow } from './ModalWindow'
+import ModalWindow from './ModalWindow'
 
-import { entries } from '#classes/entries'
+import entries from '#classes/entries'
 import { ProgramWindow } from '#enums'
 
 class UpdateWindow extends ModalWindow {

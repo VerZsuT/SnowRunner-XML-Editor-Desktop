@@ -4,10 +4,10 @@ import { Bridge } from 'emr-bridge/renderer'
 import { DEBUG_IMAGES } from '#consts'
 import { Category } from '#enums'
 import { system } from '#services'
-import type { IItem, IMPC } from '#types'
+import type { IItem, MPC } from '#types'
 
 class ImagesService {
-  private readonly paths = Bridge.as<IMPC>().paths
+  private readonly paths = Bridge.as<MPC>().paths
 
   getSrc(category: Category, item: IItem, fileDOM: CheerioAPI): string {
     switch (category) {
@@ -41,4 +41,4 @@ class ImagesService {
   }
 }
 
-export const images = new ImagesService()
+export default new ImagesService()

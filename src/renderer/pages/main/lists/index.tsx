@@ -1,16 +1,17 @@
 import type { ReactNode } from 'react'
 
 import { ApiOutlined, AppstoreAddOutlined, AppstoreOutlined, StarFilled } from '@ant-design/icons'
+import type { TabsProps } from 'antd'
 import { Tabs } from 'antd'
 import { Bridge } from 'emr-bridge/renderer'
-import { afcMemo, memoized, onDraw, useRedux } from 'react-afc'
+import { pafcMemo, useMemo, useOnDraw, useRedux } from 'react-afc'
 import { useActions } from 'react-afc/compatible'
 
 import { actions } from '../store'
 import { selectCategory, selectGroup } from '../store/listSlice'
-import { List } from './components/List'
-import { Search } from './components/Search'
-import { items as itemsService } from './services/items'
+import List from './components/List'
+import Search from './components/Search'
+import itemsService from './services/items'
 import {
   DLC_LIST_TITLE,
   FAVORITES_LIST_TITLE,
@@ -22,32 +23,77 @@ import {
   TRUCKS_LIST_TITLE
 } from './texts'
 
-import { Header } from '#components/Header'
-import { Menu } from '#components/Menu'
+import Header from '#components/Header'
+import Menu from '#components/Menu'
 import { Category, GroupTab, ProgramWindow, SrcType } from '#enums'
-import { handleIPCMessage } from '#helpers/handleIPCMessage'
-import { handleKey } from '#helpers/handleKey'
+import useIPCMessage from '#helpers/useIPCMessage'
+import useKey from '#helpers/useKey'
 import { config } from '#services'
-import type { IMPC } from '#types'
+import type { MPC } from '#types'
 
 import './styles'
 
-const bridge = Bridge.as<IMPC>()
+const bridge = Bridge.as<MPC>()
 const { settings } = config
-const { TabPane } = Tabs
 
-export const Lists = afcMemo(() => {
+function Lists() {
+  const categories: TabsProps['items'] = [
+    {
+      key: Category.trucks,
+      label: <span>{TRUCKS_CATEGORY_TITLE}</span>
+    },
+    {
+      key: Category.trailers,
+      label: <span>{TRAILERS_CATEGORY_TITLE}</span>
+    }
+  ]
+
+  const groups: TabsProps['items'] = [
+    {
+      key: GroupTab.main,
+      label:
+        <span>
+          <AppstoreOutlined className='tab-icon'/>
+          {MAIN_LIST_TITLE}
+        </span>
+    },
+    {
+      key: GroupTab.dlc,
+      label:
+        <span>
+          <AppstoreAddOutlined className='tab-icon'/>
+          {DLC_LIST_TITLE}
+        </span>,
+      disabled: !settings.DLC
+    },
+    {
+      key: GroupTab.mods,
+      label: 
+        <span>
+          <ApiOutlined className='tab-icon'/>
+          {MODS_LIST_TITLE}
+        </span>,
+      disabled: !settings.mods
+    },
+    {
+      key: GroupTab.favorites,
+      label:
+        <span>
+          <StarFilled className='tab-icon'/>
+          {FAVORITES_LIST_TITLE}
+        </span>
+    }
+  ]
+
   const store = useRedux({
     category: selectCategory,
     group: selectGroup
   })
 
-  handleIPCMessage()
-  handleKey({
-    key: 'Escape'
-  }, () => bridge.quitApp())
+  useIPCMessage()
+  useKey('Escape', () => bridge.quitApp())
 
-  onDraw(() => {
+  useOnDraw(() => {
     settings.showWhatsNew && openWhatsNew()
   })
 
@@ -66,52 +112,14 @@ export const Lists = afcMemo(() => {
         className='tabs'
         activeKey={category}
         onChange={onChangeCategory}
-      >
-        <TabPane
-          tab={<span>{TRUCKS_CATEGORY_TITLE}</span>}
-          key={Category.trucks}
-        />
-        <TabPane
-          tab={<span>{TRAILERS_CATEGORY_TITLE}</span>}
-          key={Category.trailers}
-        />
-      </Tabs>
+        items={categories}
+      />
       <Tabs
         className='tabs'
         activeKey={group}
         onChange={onChangeGroup}
-      >
-        <TabPane
-          tab={<span>
-            <AppstoreOutlined className='tab-icon'/>
-            {MAIN_LIST_TITLE}
-          </span>}
-          key={GroupTab.main}
-        />
-        <TabPane
-          tab={<span>
-            <AppstoreAddOutlined className='tab-icon'/>
-            {DLC_LIST_TITLE}
-          </span>}
-          disabled={!settings.DLC}
-          key={GroupTab.dlc}
-        />
-        <TabPane
-          tab={<span>
-            <ApiOutlined className='tab-icon'/>
-            {MODS_LIST_TITLE}
-          </span>}
-          disabled={!settings.mods}
-          key={GroupTab.mods}
-        />
-        <TabPane
-          tab={<span>
-            <StarFilled className='tab-icon'/>
-            {FAVORITES_LIST_TITLE}
-          </span>}
-          key={GroupTab.favorites}
-        />
-      </Tabs>
+        items={groups}
+      />
 
       <List
         srcType={SrcType.main}
@@ -151,7 +159,7 @@ export const Lists = afcMemo(() => {
     setGroup(group as GroupTab)
   }
 
-  const getItems = memoized(
+  const getItems = useMemo(
     () => {
       const main = itemsService.getMain(store.category)
       const dlc = itemsService.getDLC(store.category)
@@ -170,4 +178,6 @@ export const Lists = afcMemo(() => {
   }
 
   return render
-})
+}
+
+export default pafcMemo(Lists)

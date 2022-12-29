@@ -5,10 +5,10 @@ import { basename, extname, join } from 'path'
 import { Main } from 'emr-bridge/preload'
 
 import { Category, PreloadType, SrcType } from '#enums'
-import { preload } from '#services/preload'
-import type { IFindItem, IItem, IListPreload, IMPC } from '#types'
+import preload from '#services/preload'
+import type { IFindItem, IItem, IListPreload, MPC } from '#types'
 
-const main = Main.as<IMPC>()
+const main = Main.as<MPC>()
 const { paths, config } = main
 const { dlc, mods } = config
 
@@ -142,11 +142,11 @@ class ListsPreload {
     }
 
     if (category === Category.trucks) {
-      return main.findInDir(join(paths.classes, 'trucks')) as IItem[]
+      return <IItem[]> main.findInDir(join(paths.classes, 'trucks'))
     }
 
     if (category === Category.trailers) {
-      return main.findInDir(join(paths.classes, 'trucks/trailers')) as IItem[]
+      return <IItem[]> main.findInDir(join(paths.classes, 'trucks/trailers'))
     }
 
     return []

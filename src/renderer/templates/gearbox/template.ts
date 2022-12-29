@@ -1,19 +1,13 @@
-import { ForEach, Group, Num, Select, Template } from '../items'
-import { gearPreset } from '../presets/gear'
-import { unlockGroup } from '../presets/unlockGroup'
-import { forEach, forEachBy, initSelectors, selector } from '../service'
+import { Float, ForEach, Group, Int, Select, Template } from '../items'
+import gearPreset from '../presets/gear'
+import unlockGroup from '../presets/unlockGroup'
+import { createSelectors, forEach, forEachBy, selector } from '../service'
 import {
   ALLOW,
   AWD_CONSUMPTION_MODIFIER,
-  CRITICAL_DAMAGE_THRESHOLD,
-  DAMAGE_CAPACITY,
-  DAMAGED_CONSUMPTION_MODIFIER,
-  FUEL_CONSUMPTION,
-  GEAR_ALLOW,
-  GEAR_NOT_ALLOW,
-  GEARBOX_PARAMS,
-  GEARS,
-  HIGH_GEAR,
+  CRITICAL_DAMAGE_THRESHOLD, DAMAGED_CONSUMPTION_MODIFIER, DAMAGE_CAPACITY, FUEL_CONSUMPTION, GEARBOX_PARAMS,
+  GEARS, GEAR_ALLOW,
+  GEAR_NOT_ALLOW, HIGH_GEAR,
   IDLE_FUEL_CONSUMPTION,
   LOWER_GEAR,
   LOWER_MANUAL_GEAR,
@@ -23,7 +17,6 @@ import {
   REVERSE_GEAR
 } from './texts'
 
-import { NameType, NumberType } from '#enums'
 import type { IXMLTemplate } from '#types'
 
 class Selectors {
@@ -36,28 +29,27 @@ class Selectors {
   @selector gearboxParams = `${this.gameData}.GearboxParams`
 }
 
-const selectors = initSelectors(new Selectors())
+const selectors = createSelectors(Selectors)
 
-export const gearboxTemplate = {
+export default {
   selector: 'GearboxVariants',
-  template: new Template({ ...selectors }, [
-    new ForEach(selectors.gearbox, [
+  template: new Template({ ...selectors },
+    new ForEach(selectors.gearbox,
       new Group({
         label: {
-          type: NameType.computed,
-          attribute: ['UiName', 'Name'],
-          selector: [selectors.gearboxText, selectors.gearbox]
+          selector: [selectors.gearboxText, selectors.gearbox],
+          attribute: ['UiName', 'Name']
         },
         provided: selectors.gearbox
-      }, [
-        new Num({
+      },
+        new Float({
           attribute: 'AWDConsumptionModifier',
           label: AWD_CONSUMPTION_MODIFIER,
           max: 32,
           min: 0,
           default: 1
         }),
-        new Num({
+        new Float({
           attribute: 'CriticalDamageThreshold',
           label: CRITICAL_DAMAGE_THRESHOLD,
           max: 0.999,
@@ -65,19 +57,18 @@ export const gearboxTemplate = {
           step: 0.01,
           default: 0.7
         }),
-        new Num({
+        new Int({
           attribute: 'DamageCapacity',
-          type: NumberType.integer,
           label: DAMAGE_CAPACITY,
           max: 64000,
           step: 10,
           default: 0,
           areas: {
-            yellow: [[1000, 10000]],
-            red: [[10001, Infinity]]
+            yellow: [1000, 10000],
+            red: [10001, Infinity]
           }
         }),
-        new Num({
+        new Float({
           attribute: 'DamagedConsumptionModifier',
           label: DAMAGED_CONSUMPTION_MODIFIER,
           max: 32,
@@ -85,14 +76,14 @@ export const gearboxTemplate = {
           step: 0.01,
           default: 1
         }),
-        new Num({
+        new Float({
           attribute: 'FuelConsumption',
           label: FUEL_CONSUMPTION,
           max: 10,
           min: 0,
           default: 0.1
         }),
-        new Num({
+        new Float({
           attribute: 'IdleFuelModifier',
           label: IDLE_FUEL_CONSUMPTION,
           max: 10,
@@ -103,72 +94,72 @@ export const gearboxTemplate = {
           attribute: 'IsManualLowGear',
           selector: selectors.gearboxParams,
           label: LOWER_MANUAL_GEAR,
-          options: {
-            true: ALLOW,
-            false: NOT_ALLOW
-          },
-          default: 'false'
+          options: [
+            ['true', ALLOW],
+            ['false', NOT_ALLOW]
+          ],
+          default: 1
         }),
         new Group({
           label: GEARBOX_PARAMS,
           provided: selectors.gearboxParams
-        }, [
+        },
           new Select({
             attribute: 'IsHighGearExists',
             label: HIGH_GEAR,
-            options: {
-              true: GEAR_ALLOW,
-              false: GEAR_NOT_ALLOW
-            },
-            default: 'true'
+            options: [
+              ['true', GEAR_ALLOW],
+              ['false', GEAR_NOT_ALLOW]
+            ],
+            default: 0
           }),
           new Select({
             attribute: 'IsLowerGearExists',
             label: LOWER_GEAR,
-            options: {
-              true: GEAR_ALLOW,
-              false: GEAR_NOT_ALLOW
-            },
-            default: 'true'
+            options: [
+              ['true', GEAR_ALLOW],
+              ['false', GEAR_NOT_ALLOW]
+            ],
+            default: 0
           }),
           new Select({
             attribute: 'IsLowerPlusGearExists',
             label: LOWER_PLUS_GEAR,
-            options: {
-              true: GEAR_ALLOW,
-              false: GEAR_NOT_ALLOW
-            },
-            default: 'true'
+            options: [
+              ['true', GEAR_ALLOW],
+              ['false', GEAR_NOT_ALLOW]
+            ],
+            default: 0
           }),
           new Select({
             attribute: 'IsLowerMinusGearExists',
             label: LOWER_MINUS_GEAR,
-            options: {
-              true: GEAR_ALLOW,
-              false: GEAR_NOT_ALLOW
-            },
-            default: 'true'
+            options: [
+              ['true', GEAR_ALLOW],
+              ['false', GEAR_NOT_ALLOW]
+            ],
+            default: 0
           })
-        ]),
-        new Group(GEARS, [
+        ),
+        new Group(GEARS,
           new Group({
             label: REVERSE_GEAR,
             provided: selectors.reverseGear
-          }, gearPreset),
+          }, ...gearPreset),
           new Group({
             label: HIGH_GEAR,
             provided: selectors.highGear
-          }, gearPreset),
-          new ForEach(selectors.gearItem, [
+          }, ...gearPreset),
+          new ForEach(selectors.gearItem,
             new Group({
               label: '',
               provided: selectors.gearItem,
               addCounter: true
-            }, gearPreset)
-          ])
-        ]),
+            }, ...gearPreset)
+          )
+        ),
         unlockGroup(selectors.gameData)
-      ])
-    ])
-  ])
+      )
+    )
+  )
 } as IXMLTemplate

@@ -4,9 +4,9 @@ import { join } from 'path'
 
 import { providePublic, publicMethod, publicProperty } from 'emr-bridge'
 
-import { exitParams } from './exitParams'
-import { helpers } from './helpers'
-import { paths } from './paths'
+import exitParams from './exitParams'
+import helpers from './helpers'
+import paths from './paths'
 
 import { Lang } from '#enums'
 import type { IConfig } from '#types'
@@ -176,7 +176,7 @@ class Config {
   }
 
   private getConfig(): IConfig {
-    const config = JSON.parse(readFileSync(paths.config).toString()) as IConfig
+    const config: IConfig = JSON.parse(readFileSync(paths.config).toString())
 
     if (config.lang === null) {
       const locale = Intl.DateTimeFormat().resolvedOptions().locale.split('-')[1]
@@ -186,5 +186,4 @@ class Config {
   }
 }
 
-export const config = new Config() as Config & IConfig
-providePublic(config)
+export default providePublic(new Config() as Config & IConfig)

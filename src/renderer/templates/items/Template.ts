@@ -1,38 +1,36 @@
-import { helpers } from './helpers'
+import helpers from './helpers'
 
 import { TemplateType } from '#enums'
 import type {
   IItemGetterProps,
   ITemplateItem,
-  ITemplateProps,
-  ITemplateSelectors,
-  TemplateItems,
-  TemplateParams,
-  TemplateTypedProps
+  ITemplateProps, TemplateItems,
+  TemplateParams, TemplateSelectors, TemplateTypedProps
 } from '#types'
 
 /**
  * Шаблон таблицы параметров. Может иметь вложенные под-шаблоны.
  */
-export class Template implements ITemplateItem<TemplateParams> {
+class Template implements ITemplateItem<TemplateParams> {
   private replaceName = 'CYCLE'
   private type!: TemplateType
-  private selectors!: ITemplateSelectors
+  private selectors!: TemplateSelectors
   private itemSelector?: string
   private itemSelectorID?: string
+  private children: TemplateItems[]
 
-  constructor(props: TemplateTypedProps, children: TemplateItems[])
-  constructor(props: ITemplateSelectors, children: TemplateItems[])
+  constructor(props: TemplateTypedProps, ...children: TemplateItems[])
+  constructor(props: TemplateSelectors, ...children: TemplateItems[])
   constructor(
-    props: ITemplateSelectors | TemplateTypedProps,
-    private children: TemplateItems[]
+    props: TemplateSelectors | TemplateTypedProps,
+    ...children: TemplateItems[]
   ) {
-    if (props.type || props.itemSelector) {
+    this.children = children
+    
+    if (props.type || props.itemSelector)
       this.construct(props)
-    }
-    else {
-      this.construct({ selectors: props as ITemplateSelectors })
-    }
+    else
+      this.construct({ selectors: <TemplateSelectors> props })
   }
 
   public getParams(props: IItemGetterProps): TemplateParams {
@@ -47,7 +45,7 @@ export class Template implements ITemplateItem<TemplateParams> {
 
     let { counter = 1 } = props
     let params: TemplateParams = []
-    const newSelectors: ITemplateSelectors = {}
+    const newSelectors: TemplateSelectors = {}
     for (const selector in formattedSelectors) {
       if (formattedSelectors[selector].includes('||')) {
         formattedSelectors[selector] = formattedSelectors[selector].split('||')[1]
@@ -96,7 +94,7 @@ export class Template implements ITemplateItem<TemplateParams> {
     }
     else {
       this.children.forEach(child => {
-        params = params.concat((child as ITemplateItem).getParams({
+        params = params.concat(child.getParams({
           tNumber: multiply ? tNumber + 1 : tNumber,
           formattedSelectors,
           providedSelector,
@@ -115,3 +113,5 @@ export class Template implements ITemplateItem<TemplateParams> {
     this.itemSelectorID = helpers.getSelectorID(this.itemSelector)
   }
 }
+
+export default Template

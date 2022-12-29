@@ -1,4 +1,4 @@
-import { config } from './config'
+import config from './config'
 
 import type { ILocalizations } from '#types'
 
@@ -10,4 +10,4 @@ class LocalizationService {
   }
 }
 
-export const localization = new LocalizationService()
+export default new LocalizationService()

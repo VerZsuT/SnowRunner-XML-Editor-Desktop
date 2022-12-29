@@ -7,11 +7,11 @@ import { Main } from 'emr-bridge/preload'
 
 import { EMPTY_FOLDER_ERROR, INVALID_FOLDER_ERROR, INVALID_INITIAL_ERROR } from './texts'
 
-import { preload } from '#services/preload'
-import type { IFolder, IMPC, ISetupPreload } from '#types'
+import preload from '#services/preload'
+import type { IFolder, ISetupPreload, MPC } from '#types'
 
 class SetupPreload {
-  private readonly main = Main.as<IMPC>()
+  private readonly main = Main.as<MPC>()
 
   constructor() {
     preload.register<ISetupPreload>({

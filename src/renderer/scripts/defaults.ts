@@ -1,4 +1,4 @@
-export const paramsDefaults = {
+export default {
   'ford_f750.xml': {
     'Truck > GameData > UiDesc': {
       UiName: 'UI_VEHICLE_FORD_F750_NAME',

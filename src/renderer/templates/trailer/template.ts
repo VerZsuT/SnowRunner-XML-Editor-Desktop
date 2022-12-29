@@ -1,5 +1,5 @@
-import { ForEach, Group, Num, Template } from '../items'
-import { forEach, initSelectors, selector } from '../service'
+import { Float, ForEach, Group, Int, Template } from '../items'
+import { createSelectors, forEach, selector } from '../service'
 import {
   FUEL_CAPACITY,
   FUEL_MASS,
@@ -12,12 +12,9 @@ import {
   SUSP_HEIGHT,
   SUSP_STRENGTH,
   TRAILER_MASS,
-  WHEEL,
-  WHEEL_REPAIRS_CAPACITY,
-  WHEELS
+  WHEEL, WHEELS, WHEEL_REPAIRS_CAPACITY
 } from './texts'
 
-import { NumberType } from '#enums'
 import type { IXMLTemplate } from '#types'
 
 class Selectors {
@@ -30,95 +27,88 @@ class Selectors {
   @selector addonSlots = `${this.gameData}.AddonSlots`
 }
 
-const selectors = initSelectors(new Selectors())
+const selectors = createSelectors(Selectors)
 
-export const trailerTemplate = {
+export default {
   selector: 'Truck[Type="Trailer"]',
-  template: new Template({ ...selectors }, [
+  template: new Template({ ...selectors },
     new Group({
       label: INNER,
       provided: selectors.truckData
-    }, [
-      new Num({
+    },
+      new Int({
         attribute: 'FuelCapacity',
-        type: NumberType.integer,
         label: FUEL_CAPACITY,
         max: 64000,
         step: 10,
         default: 0,
         areas: {
-          yellow: [[1000, 5000]],
-          red: [[5001, Infinity]]
+          yellow: [1000, 5000],
+          red: [5001, Infinity]
         }
       }),
-      new Num({
+      new Int({
         attribute: 'RepairsCapacity',
-        type: NumberType.integer,
         label: REPAIRS_CAPACITY,
         default: 0,
         areas: {
-          yellow: [[1000, 5000]],
-          red: [[5001, Infinity]]
+          yellow: [1000, 5000],
+          red: [5001, Infinity]
         }
       }),
-      new Num({
+      new Int({
         attribute: 'WheelRepairsCapacity',
-        type: NumberType.integer,
         label: WHEEL_REPAIRS_CAPACITY,
         default: 0,
         areas: {
-          yellow: [[100, 500]],
-          red: [[501, Infinity]]
+          yellow: [100, 500],
+          red: [501, Infinity]
         }
       }),
-      new Num({
+      new Int({
         attribute: 'Quantity',
-        type: NumberType.integer,
         selector: selectors.addonSlots,
         label: QUANTITY
       })
-    ]),
-    new Group(MASS, [
-      new Num({
+    ),
+    new Group(MASS,
+      new Int({
         attribute: 'Mass',
-        type: NumberType.integer,
         selector: selectors.modelBody,
         label: TRAILER_MASS
       }),
-      new Num({
+      new Int({
         attribute: 'Mass',
-        type: NumberType.integer,
         selector: selectors.fuelMass,
         label: FUEL_MASS
       })
-    ]),
-    new Group(WHEELS, [
-      new ForEach(selectors.wheel, [
+    ),
+    new Group(WHEELS,
+      new ForEach(selectors.wheel,
         new Group({
           label: WHEEL,
           provided: selectors.wheel,
           addCounter: true
-        }, [
-          new Num({
+        },
+          new Float({
             attribute: 'SuspensionHeight',
             label: SUSP_HEIGHT
           }),
-          new Num({
+          new Float({
             attribute: 'SuspensionStrength',
             label: SUSP_STRENGTH
           })
-        ])
-      ])
-    ]),
+        )
+      )
+    ),
     new Group({
       label: OTHER,
       provided: selectors.gameData
-    }, [
-      new Num({
+    },
+      new Int({
         attribute: 'Price',
-        type: NumberType.integer,
         label: PRICE
       })
-    ])
-  ])
+    )
+  )
 } as IXMLTemplate

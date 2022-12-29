@@ -1,11 +1,11 @@
-import { helpers } from './helpers'
+import helpers from './helpers'
 
 import { DEBUG_EDITOR_PARAMS } from '#consts'
 import type { FileType } from '#enums'
 import { InputType, NumberType, ParamType } from '#enums'
 import type { IInputAreas, IInputParams, IItemGetterProps, InputTypedProps, ITemplateItem } from '#types'
 
-export class Input implements ITemplateItem<[IInputParams] | []> {
+class Input implements ITemplateItem<[IInputParams] | []> {
   private readonly label: string
   private readonly attribute: string
   private readonly addMissedTag: boolean
@@ -40,6 +40,11 @@ export class Input implements ITemplateItem<[IInputParams] | []> {
     const sel = this.selector ? (formattedSelectors[this.selector] || this.selector) : formattedSelectors[providedSelector!]
     let value: string | undefined
 
+    for (const areaName in this.areas) {
+      if (!Array.isArray(this.areas[areaName][0]))
+        this.areas[areaName] = [this.areas[areaName]]
+    }
+
     if (fileDOM(sel).length === 0) {
       if (!this.addMissedTag) {
         if (DEBUG_EDITOR_PARAMS) {
@@ -70,3 +75,5 @@ export class Input implements ITemplateItem<[IInputParams] | []> {
     }]
   }
 }
+
+export default Input

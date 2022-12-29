@@ -1,6 +1,6 @@
 import { _globalTexts } from './texts'
 
-import { localization } from '#classes/localization'
+import localization from '#classes/localization'
 
 export const {
   SUCCESS_EXPORT_MESSAGE,

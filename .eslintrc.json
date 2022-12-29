@@ -11,8 +11,7 @@
     "plugin:import/recommended",
     "plugin:import/electron",
     "plugin:import/typescript",
-    "plugin:react/recommended",
-    "plugin:react-hooks/recommended"
+    "plugin:react/recommended"
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
@@ -24,7 +23,6 @@
   },
   "plugins": [
     "react",
-    "react-hooks",
     "import",
     "@typescript-eslint"
   ],
@@ -51,10 +49,7 @@
       "error",
       "prefer-single"
     ],
-    "indent": [
-      "warn",
-      2
-    ],
+    "indent": "off",
     "no-empty-function": "off",
     "no-extra-bind": "warn",
     "no-extra-label": "warn",

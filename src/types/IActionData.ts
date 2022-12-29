@@ -1,7 +1,7 @@
 import type { CheerioAPI } from 'cheerio'
 
 /** Параметры доп. сценария. */
-export interface IActionData {
+interface IActionData {
   /** Название в меню. */
   name: string
   /** Уникальный номер. */
@@ -14,10 +14,9 @@ export interface IActionData {
   imgSRC?: string
 
   isActive(dom: CheerioAPI, fileName: string): boolean
-
   onPressOk?(): void
-
   export?(dom: CheerioAPI): any
-
   import?(dom: CheerioAPI, data: any): void
 }
+
+export default IActionData

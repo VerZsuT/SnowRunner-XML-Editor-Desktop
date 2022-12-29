@@ -1,14 +1,14 @@
 import type { AnyNode, Cheerio, CheerioAPI } from 'cheerio'
 import { Bridge } from 'emr-bridge/renderer'
 
-import { xmlFiles } from '../services/xmlFiles'
+import xmlFiles from '../services/xmlFiles'
 
 import { FileType, PreloadType } from '#enums'
-import { paramsDefaults } from '#r-scripts/defaults'
+import paramsDefaults from '#r-scripts/defaults'
 import { preload, system, xml } from '#services'
-import type { IDefaults, IEditorPreload, IInputParams, IMPC, TemplateParams } from '#types'
+import type { Defaults, IEditorPreload, IInputParams, MPC, TemplateParams } from '#types'
 
-const bridge = Bridge.as<IMPC>()
+const bridge = Bridge.as<MPC>()
 const paths = bridge.paths
 
 const { findFromDLC } = preload.get<IEditorPreload>(PreloadType.editor)
@@ -21,7 +21,7 @@ interface InnerItem {
   dlc: string
   templates: Cheerio<AnyNode>
   tableItems: TemplateParams
-  defaults: IDefaults[string]
+  defaults: Defaults[string]
 }
 
 interface Config {
@@ -32,7 +32,7 @@ interface Config {
   regFiles?: boolean
 }
 
-export function parseFile(config: Config) {
+function parseFile(config: Config) {
   const { dlc, mod, fileDOM, item, regFiles } = config
   const items: InnerItem[] = []
   const propsItem: IInputParams = item
@@ -71,7 +71,7 @@ export function parseFile(config: Config) {
     })
 
     if (!mainPath) {
-      const path = findFromDLC(fileName, propsItem.fileType as string)
+      const path = findFromDLC(fileName, propsItem.fileType!)
       if (!path) return
 
       mainPath = path
@@ -104,3 +104,5 @@ export function parseFile(config: Config) {
 
   return items
 }
+
+export default parseFile

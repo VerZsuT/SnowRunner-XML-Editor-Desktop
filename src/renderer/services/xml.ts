@@ -2,21 +2,18 @@ import type { AnyNode, Cheerio, CheerioAPI } from 'cheerio'
 import { load } from 'cheerio'
 import { Bridge } from 'emr-bridge/renderer'
 
-import { helpers } from './helpers'
-import { system } from './system'
+import helpers from './helpers'
+import system from './system'
 
 import { FileType, ParamType } from '#enums'
-import { xmlFiles } from '#pages/main/editor/services/xmlFiles'
+import xmlFiles from '#pages/main/editor/services/xmlFiles'
 import { extra, templates } from '#templates'
 import type {
   IExportedData,
   IGroupParams,
   IInputParams,
-  IItem,
-  IMPC,
-  ISelectParams,
-  IXMLTemplate,
-  TemplateParams
+  IItem, ISelectParams,
+  IXMLTemplate, MPC, TemplateParams
 } from '#types'
 
 interface IHasSelector {
@@ -34,7 +31,7 @@ interface IConfig {
 }
 
 class XMLService {
-  private readonly bridge = Bridge.as<IMPC>()
+  private readonly bridge = Bridge.as<MPC>()
   private readonly paths = this.bridge.paths
   private readonly EXPORTED_FILE_VERSION = '2.0'
 
@@ -53,7 +50,7 @@ class XMLService {
   }
 
   getName(item: IItem, fileDOM: CheerioAPI): string {
-    let name = helpers.prettyString(item.name as string)
+    let name = helpers.prettyString(item.name)
     
     if (fileDOM('GameData > UiDesc').length) {
       const uiName = fileDOM('GameData > UiDesc').attr('UiName')
@@ -258,7 +255,7 @@ class XMLService {
 
     for (const tmp in templates) {
       if (templates[tmp].selector && dom(templates[tmp].selector).length) {
-        name = tmp as keyof typeof templates
+        name = <keyof typeof templates> tmp
         break
       }
     }
@@ -294,7 +291,7 @@ class XMLService {
     const extraExclude = extra[fileName]?.exclude
 
     let resultActions: IXMLTemplate['actions'] = []
-    let params = templates[name].template.getParams({ fileDOM }) as TemplateParams
+    let params = templates[name].template.getParams({ fileDOM })
 
     if (mainActions) {
       resultActions.push(...mainActions)
@@ -406,4 +403,4 @@ class XMLService {
   }
 }
 
-export const xml = new XMLService()
+export default new XMLService()

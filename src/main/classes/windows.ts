@@ -1,7 +1,7 @@
 import { BrowserWindow, ipcMain } from 'electron'
 
-import { config } from './config'
-import { paths } from './paths'
+import config from './config'
+import paths from './paths'
 
 import { SHOW_DEVTOOLS } from '#consts'
 import type { ProgramWindow } from '#enums'
@@ -9,7 +9,7 @@ import { BuildType, IPCChannel } from '#enums'
 import type { ICreateWindowAttributes, IWindows } from '#types'
 
 class Windows implements IWindows {
-  loading = null as IWindows['loading']
+  loading: IWindows['loading'] = null
 
   /** Открыть модальное окно */
   openModal(args: ICreateWindowAttributes): BrowserWindow {
@@ -84,4 +84,4 @@ class Windows implements IWindows {
   }
 }
 
-export const windows = new Windows()
+export default new Windows()

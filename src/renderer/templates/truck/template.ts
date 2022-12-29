@@ -1,9 +1,9 @@
-import { AddonsContent } from '../../actions/addonsContent'
-import { Cranes } from '../../actions/cranes'
-import { Trailers } from '../../actions/trailers'
-import { BanditCrane } from '../../actions/zikz_605r/banditCrane'
-import { Coords, File, ForEach, Group, Num, Select, Template, Text } from '../items'
-import { forEach, initSelectors, selector } from '../service'
+import AddonsContent from '../../actions/addonsContent'
+import Cranes from '../../actions/cranes'
+import Trailers from '../../actions/trailers'
+import BanditCrane from '../../actions/zikz_605r/banditCrane'
+import { Coords, File, Float, ForEach, Group, Int, Select, Template, Text } from '../items'
+import { createSelectors, forEach, selector } from '../service'
 import {
   ALWAYS,
   ANY,
@@ -51,7 +51,7 @@ import {
   WINCH_STRENGTH
 } from './texts'
 
-import { FileType, NumberType } from '#enums'
+import { FileType } from '#enums'
 import type { IXMLTemplate } from '#types'
 
 class Selectors {
@@ -72,9 +72,9 @@ class Selectors {
   @selector wheel = `${this.wheels}.Wheel${forEach}`
 }
 
-const selectors = initSelectors(new Selectors())
+const selectors = createSelectors(Selectors)
 
-export const truckTemplate = {
+export default {
   selector: 'Truck',
   actions: [
     new BanditCrane(),
@@ -82,12 +82,12 @@ export const truckTemplate = {
     new Cranes(),
     new Trailers()
   ],
-  template: new Template({ ...selectors }, [
+  template: new Template({ ...selectors },
     new Group({
       label: TEXT_GROUP_NAME,
       provided: selectors.UIDesc,
       iconName: 'texts.png'
-    }, [
+    },
       new Text({
         attribute: 'UiName',
         label: UI_NAME
@@ -96,39 +96,39 @@ export const truckTemplate = {
         attribute: 'UiDesc',
         label: UI_DESC
       })
-    ]),
+    ),
     new Group({
       label: CONTROL_GROUP_NAME,
       provided: selectors.truckData,
       iconName: 'steering-wheel.png'
-    }, [
-      new Num({
+    },
+      new Float({
         attribute: 'Responsiveness',
         label: RESPONSIVENESS,
         max: 1.0,
         min: 0.0,
         step: 0.01
       }),
-      new Num({
+      new Float({
         attribute: 'BackSteerSpeed',
         label: BACK_STEER_SPEED,
         max: 1.0,
         min: 0.0,
         step: 0.01
       }),
-      new Num({
+      new Float({
         attribute: 'SteerSpeed',
         label: STEER_SPEED,
         max: 1.0,
         min: 0.0,
         step: 0.01
       })
-    ]),
+    ),
     new Group({
       label: WINCH_GROUP_NAME,
       iconName: 'winches.png'
-    }, [
-      new Num({
+    },
+      new Float({
         attribute: 'Length',
         selector: selectors.staticWinch,
         label: WINCH_LENGTH,
@@ -137,7 +137,7 @@ export const truckTemplate = {
         step: 1,
         default: 14
       }),
-      new Num({
+      new Float({
         attribute: 'StrengthMult',
         selector: selectors.staticWinch,
         label: WINCH_STRENGTH,
@@ -150,31 +150,31 @@ export const truckTemplate = {
         selector: selectors.upgradableWinch,
         type: FileType.winches
       })
-    ]),
+    ),
     new Group({
       label: WHEELS_GROUP_NAME,
       provided: selectors.wheels,
       iconName: 'wheels.png'
-    }, [
-      new Group(PHYSICS_WHEELS, [
-        new ForEach(selectors.wheel, [
+    },
+      new Group(PHYSICS_WHEELS,
+        new ForEach(selectors.wheel,
           new Group({
             label: WHEEL,
             provided: selectors.wheel,
             addCounter: true
-          }, [
+          },
             new Select({
               attribute: 'Torque',
               label: TORQUE,
-              options: {
-                default: TORQUE_DEFAULT,
-                full: TORQUE_FULL,
-                none: TORQUE_NONE,
-                connectable: TORQUE_CONNECTABLE
-              },
-              default: 'none'
+              options: [
+                ['default', TORQUE_DEFAULT],
+                ['full', TORQUE_FULL],
+                ['none', TORQUE_NONE],
+                ['connectable', TORQUE_CONNECTABLE]
+              ],
+              default: 2
             }),
-            new Num({
+            new Float({
               attribute: 'SteeringAngle',
               label: STEERING_ANGLE,
               max: 90,
@@ -182,26 +182,26 @@ export const truckTemplate = {
               step: 1,
               default: 0
             })
-          ])
-        ]),
-        new ForEach(selectors.extraWheel, [
+          )
+        ),
+        new ForEach(selectors.extraWheel,
           new Group({
             label: EXTRA_WHEEL,
             provided: selectors.extraWheel,
             addCounter: true
-          }, [
+          },
             new Select({
               attribute: 'Torque',
               label: TORQUE,
-              options: {
-                default: TORQUE_DEFAULT,
-                full: TORQUE_FULL,
-                none: TORQUE_NONE,
-                connectable: TORQUE_CONNECTABLE
-              },
-              default: 'none'
+              options: [
+                ['default', TORQUE_DEFAULT],
+                ['full', TORQUE_FULL],
+                ['none', TORQUE_NONE],
+                ['connectable', TORQUE_CONNECTABLE]
+              ],
+              default: 2
             }),
-            new Num({
+            new Float({
               attribute: 'SteeringAngle',
               label: STEERING_ANGLE,
               max: 90,
@@ -209,33 +209,33 @@ export const truckTemplate = {
               step: 1,
               default: 0
             })
-          ])
-        ])
-      ]),
-      new Group(WHEELS_SIZES, [
-        new ForEach(selectors.compatibleWheels, [
+          )
+        )
+      ),
+      new Group(WHEELS_SIZES,
+        new ForEach(selectors.compatibleWheels,
           new Group({
             label: WHEELS_SET,
             provided: selectors.compatibleWheels,
             addCounter: true
-          }, [
-            new Num({
+          },
+            new Float({
               attribute: 'Scale',
               label: WHEELS_SCALE
             })
-          ])
-        ])
-      ]),
+          )
+        )
+      ),
       new File({
         attribute: 'DefaultWheelType',
         type: FileType.wheels
       })
-    ]),
+    ),
     new Group({
       label: SUSPENSION_GROUP_NAME,
       provided: selectors.suspension,
       iconName: 'suspensions.png'
-    }, [
+    },
       new Coords({
         attribute: 'CenterOfMassOffset',
         selector: selectors.physicsBody,
@@ -245,41 +245,41 @@ export const truckTemplate = {
         attribute: 'DiffLockType',
         selector: selectors.truckData,
         label: DIFF_LOCK,
-        options: {
-          None: NONE,
-          Installed: INSTALLED,
-          Uninstalled: UNINSTALLED,
-          Always: ALWAYS
-        }
+        options: [
+          ['None', NONE],
+          ['Installed', INSTALLED],
+          ['Uninstalled', UNINSTALLED],
+          ['Always', ALWAYS]
+        ]
       }),
       new File({
         attribute: 'Type',
         type: FileType.suspensions
       })
-    ]),
+    ),
     new Group({
       label: GEARBOX_GROUP_NAME,
       provided: selectors.gearbox,
       iconName: 'gearboxes.png'
-    }, [
+    },
       new File({
         attribute: 'Type',
         type: FileType.gearboxes
       })
-    ]),
+    ),
     new Group({
       label: ENGINE_GROUP_NAME,
       provided: selectors.engine,
       iconName: 'engines.png'
-    }, [
-      new Num({
+    },
+      new Float({
         attribute: 'EngineStartDelay',
         selector: selectors.truckData,
         label: ENGINE_START_DELAY,
         max: 8,
         min: 0
       }),
-      new Num({
+      new Float({
         attribute: 'ExhaustStartTime',
         selector: selectors.truckData,
         label: EXHAUST_START_TIME,
@@ -289,70 +289,65 @@ export const truckTemplate = {
         attribute: 'Type',
         type: FileType.engines
       })
-    ]),
+    ),
     new Group({
       label: FUEL_GROUP_NAME,
       provided: selectors.fuelTank,
       iconName: 'fuel.png'
-    }, [
-      new Num({
+    },
+      new Int({
         attribute: 'DamageCapacity',
-        type: NumberType.integer,
         label: DAMAGE_CAPACITY,
         step: 10,
         default: 0,
         areas: {
-          yellow: [[1000, 5000]],
-          red: [[5001, Infinity]]
+          yellow: [1000, 5000],
+          red: [5001, Infinity]
         }
       }),
-      new Num({
+      new Int({
         attribute: 'FuelCapacity',
-        type: NumberType.integer,
         selector: selectors.truckData,
         label: FUEL_CAPACITY,
         step: 10,
         areas: {
-          yellow: [[1000, 5000]],
-          red: [[5001, Infinity]]
+          yellow: [1000, 5000],
+          red: [5001, Infinity]
         }
       })
-    ]),
+    ),
     new Group({
       label: UNLOCK_GROUP_NAME,
       provided: selectors.gameData,
       iconName: 'unlock.png'
-    }, [
+    },
       new Select({
         attribute: 'Country',
         label: COUNTRY,
-        default: '',
-        options: {
-          RU: RUSSIA,
-          US: US,
-          EMPTY: ANY
-        }
+        options: [
+          ['RU', RUSSIA],
+          ['US', US],
+          ['EMPTY', ANY]
+        ]
       }),
-      new Num({
+      new Int({
         attribute: 'Price',
-        type: NumberType.integer,
         label: PRICE
       }),
       new Select({
         attribute: 'UnlockByExploration',
         label: BY_EXPLORATION,
-        options: {
-          true: FIND_ON_MAP,
-          false: BY_RANK
-        }
+        options: [
+          ['true', FIND_ON_MAP],
+          ['false', BY_RANK]
+        ]
       }),
-      new Num({
+      new Int({
         attribute: 'UnlockByRank',
-        type: NumberType.integer,
         label: UNLOCK_BY_RANK,
         max: 30,
         min: 1
       })
-    ])
-  ])
+    )
+  )
 } as IXMLTemplate

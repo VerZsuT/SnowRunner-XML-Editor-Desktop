@@ -1,10 +1,10 @@
 import { Bridge } from 'emr-bridge/renderer'
 import { createRoot } from 'react-dom/client'
 
-import type { IMPC } from '#types'
+import type { MPC } from '#types'
 
 class HelpersService {
-  private readonly texts = Bridge.as<IMPC>().texts
+  private readonly texts = Bridge.as<MPC>().texts
   private readonly ROOT = document.getElementById('main')
 
   /** Заменяет `_` на пробелы и делает первую букву большой. */
@@ -44,4 +44,4 @@ class HelpersService {
   }
 }
 
-export const helpers = new HelpersService()
+export default new HelpersService()

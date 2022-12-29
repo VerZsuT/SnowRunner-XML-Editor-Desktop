@@ -1,17 +1,17 @@
 import type { ReactNode } from 'react'
 
 import { Collapse } from 'antd'
-import { afcMemo, handleContext } from 'react-afc'
+import { fafcMemo, useContext } from 'react-afc'
 
 import { FileInfoContext } from '../helpers/getFileInfo'
 import { getFileParser } from '../helpers/getFileParser'
 import { getResetProvider, ResetContext } from '../helpers/getResetProvider'
-import { handleReset } from '../helpers/handleReset'
-import { Parameter } from './Parameter'
+import handleReset from '../helpers/handleReset'
+import Parameter from './Parameter'
 
 import { InputType } from '#enums'
 import { RESET_MENU_ITEM_LABEL } from '#globalTexts/renderer'
-import { createContextMenu } from '#helpers/createContextMenu'
+import useContextMenu from '#helpers/useContextMenu'
 import { helpers } from '#services'
 import type { IGroupParams, IInputParams, ISelectParams, TemplateParams } from '#types'
 
@@ -22,16 +22,16 @@ type Props = {
   item: IGroupParams
 }
 
-export const Group = afcMemo((props: Props) => {
-  const { item } = props
+export const Group = fafcMemo<Props>(props => {
+  const { item } = props.curr
 
-  const { mod } = handleContext(FileInfoContext)()
+  const { mod } = useContext(FileInfoContext).val
   const { resetList, resetContext } = getResetProvider()
   const iconSRC = item.iconName ? require(`#images/icons/${item.iconName}`) : null
   const items = getItems(item)
   const parseFile = getFileParser()
 
-  const contextMenu = createContextMenu()
+  const contextMenu = useContextMenu()
   const contextMenuItems = [{
     key: 'reset-group',
     label: `${RESET_MENU_ITEM_LABEL} ${item.groupName}`,
@@ -62,7 +62,7 @@ export const Group = afcMemo((props: Props) => {
     return <>
       <contextMenu.Component items={contextMenuItems} isShow={contextMenu.isShow()}/>
       <Panel
-        {...props}
+        {...props.curr}
         header={
           <div onContextMenu={contextMenu.onContext}>
             {label}

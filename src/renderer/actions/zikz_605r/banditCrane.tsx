@@ -2,13 +2,13 @@ import type { ReactNode } from 'react'
 
 import { Button, Typography } from 'antd'
 import type { CheerioAPI } from 'cheerio'
-import { afcMemo, reactive } from 'react-afc'
+import { fafcMemo, useState } from 'react-afc'
 
 import { ADD, BANDIT_WARN_MESSAGE, CRANES_WARN_TITLE, REMOVE } from '../texts'
 
 import BananaIcon from '#images/icons/banana.png'
-import { Action } from '#r/actions/Action'
-import { localization } from '#services'
+import Action from '#r/actions/Action'
+import { lzn } from '#services'
 import type { IActionProps } from '#types'
 
 const { Paragraph } = Typography
@@ -18,8 +18,8 @@ interface IExportData {
 }
 
 /** Вкладка `Банан бандита`. */
-export class BanditCrane extends Action {
-  protected name = localization.localize({
+class BanditCrane extends Action {
+  protected name = lzn.localize({
     RU: 'Банан бандита',
     EN: 'Bandit banana',
     DE: 'Bananen-Bandit',
@@ -75,10 +75,8 @@ export class BanditCrane extends Action {
   }
 }
 
-const BanditCraneComponent = afcMemo((props: IActionProps) => {
-  const state = reactive({
-    hasCrane: BanditCrane.hasCrane(props.dom)
-  })
+const BanditCraneComponent = fafcMemo<IActionProps>(props => {
+  const [hasCrane, setHasCrane] = useState(BanditCrane.hasCrane(props.curr.dom))
 
   function render(): ReactNode {
     return <>
@@ -87,7 +85,7 @@ const BanditCraneComponent = afcMemo((props: IActionProps) => {
       </div>
       <Paragraph>{BANDIT_WARN_MESSAGE}</Paragraph>
       <div className='bc-buttons'>
-        {state.hasCrane
+        {hasCrane.val
           ? <Button
             type='primary'
             onClick={onRemove}
@@ -107,14 +105,16 @@ const BanditCraneComponent = afcMemo((props: IActionProps) => {
   }
 
   function onAdd(): void {
-    BanditCrane.addCrane(props.dom)
-    state.hasCrane = true
+    BanditCrane.addCrane(props.curr.dom)
+    setHasCrane(true)
   }
 
   function onRemove(): void {
-    BanditCrane.removeCrane(props.dom)
-    state.hasCrane = false
+    BanditCrane.removeCrane(props.curr.dom)
+    setHasCrane(false)
   }
 
   return render
 })
+
+export default BanditCrane

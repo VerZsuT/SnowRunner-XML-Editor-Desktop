@@ -1,11 +1,11 @@
 import type { ChangeEvent, FocusEvent, ReactNode } from 'react'
 
+import type { SelectProps } from 'antd'
 import { Button, Input, message, Select, Spin, Typography } from 'antd'
-import type { DefaultOptionType } from 'antd/lib/select'
 import type { AnyNode, Cheerio, CheerioAPI } from 'cheerio'
 import { load } from 'cheerio'
 import { Bridge } from 'emr-bridge/renderer'
-import { afcMemo, onMount, reactive } from 'react-afc'
+import { fafcMemo, useOnMount, useReactive } from 'react-afc'
 
 import {
   ADDON_CHANGE_BUTTON,
@@ -18,16 +18,18 @@ import {
 } from './texts'
 
 import WrenchIcon from '#images/icons/wrench.png'
-import { Action } from '#r/actions/Action'
-import { helpers, localization, system } from '#services'
-import type { IActionProps, IFindItem, IMPC } from '#types'
+import Action from '#r/actions/Action'
+import { helpers, lzn, system } from '#services'
+import type { IActionProps, IFindItem, MPC } from '#types'
 
-const bridge = Bridge.as<IMPC>()
+type OptionsType = SelectProps['options']
+
+const bridge = Bridge.as<MPC>()
 const paths = bridge.paths
 const { Text } = Typography
 
-export class AddonsContent extends Action {
-  protected name = localization.localize({
+class AddonsContent extends Action {
+  protected name = lzn.localize({
     RU: 'Содержимое аддонов',
     EN: 'Addons content',
     DE: 'Addon-Inhalt',
@@ -42,10 +44,10 @@ export class AddonsContent extends Action {
   constructor() { super(); this.init() }
 }
 
-const AddonsContentComponent = afcMemo((props: IActionProps) => {
-  let options = [] as DefaultOptionType[]
+const AddonsContentComponent = fafcMemo<IActionProps>(props => {
+  let options: OptionsType = []
 
-  const state = reactive({
+  const state = useReactive({
     items: null as IFindItem[] | null,
     selectedAddon: '',
     filter: '',
@@ -54,8 +56,8 @@ const AddonsContentComponent = afcMemo((props: IActionProps) => {
     fuel: ''
   })
 
-  onMount(() => {
-    const { filePath, currentMod } = props
+  useOnMount(() => {
+    const { filePath, currentMod } = props.curr
     if (state.items) return
 
     setTimeout(() => {
@@ -142,7 +144,7 @@ const AddonsContentComponent = afcMemo((props: IActionProps) => {
     if (!installSocket.length) return false
 
     const type = installSocket.attr('Type')
-    const el = props.dom(`Socket[Names*="${type}"]`)
+    const el = props.curr.dom(`Socket[Names*="${type}"]`)
 
     return el.length > 0
   }
@@ -191,7 +193,7 @@ const AddonsContentComponent = afcMemo((props: IActionProps) => {
     void message.success(CHANGED)
   }
 
-  function initOptions(items: IFindItem[]): DefaultOptionType[] {
+  function initOptions(items: IFindItem[]): OptionsType {
     if (!items) return []
 
     return items.map(addon => ({
@@ -205,7 +207,7 @@ const AddonsContentComponent = afcMemo((props: IActionProps) => {
     const uiDesc = dom?.('UiDesc')
     const key = uiDesc?.length ? uiDesc?.attr('UiName') : undefined
 
-    return helpers.getGameText(key, props.currentMod) || addon.name
+    return helpers.getGameText(key, props.curr.currentMod) || addon.name
   }
 
   function getItem(name?: string): IFindItem | undefined {
@@ -257,15 +259,14 @@ const AddonsContentComponent = afcMemo((props: IActionProps) => {
 
     if (system.existsSync(pathToTuning)) {
       allAddons.push(...system.readdirSync(pathToTuning).map(item => {
-        if (system.isDirectory(system.join(pathToTuning, item))) {
+        if (system.isDirectory(system.join(pathToTuning, item)))
           return null
-        }
 
         return {
           name: item,
           path: system.join(pathToTuning, item)
         }
-      }) as IFindItem[])
+      }).filter(item => item !== null) as IFindItem[])
     }
 
     const pathToBasic = system.join(paths.classes, 'trucks/addons')
@@ -331,9 +332,9 @@ type ContentFieldProps = {
   onChange(value: string): void
 }
 
-const ContentField = afcMemo((props: ContentFieldProps) => {
+const ContentField = fafcMemo<ContentFieldProps>(props => {
   function render(): ReactNode {
-    const { text, value } = props
+    const { text, value } = props.curr
 
     return (
       <div className='grid ac-content'>
@@ -350,8 +351,10 @@ const ContentField = afcMemo((props: ContentFieldProps) => {
   }
 
   function onChangeValue(e: ChangeEvent<HTMLInputElement>): void {
-    props.onChange(e.target.value)
+    props.curr.onChange(e.target.value)
   }
 
   return render
 })
+
+export default AddonsContent

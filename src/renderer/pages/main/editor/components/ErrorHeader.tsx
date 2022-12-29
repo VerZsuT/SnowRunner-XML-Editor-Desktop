@@ -1,13 +1,13 @@
 import type { ReactNode } from 'react'
 
-import { afcMemo, useActions } from 'react-afc'
+import { pafcMemo, useActions } from 'react-afc'
 
-import { Header } from '#components/Header'
+import Header from '#components/Header'
 import { Page } from '#enums'
 import { ERROR } from '#globalTexts/renderer'
 import { actions } from '#pages/main/store'
 
-export const ErrorHeader = afcMemo(() => {
+function ErrorHeader() {
   function render(): ReactNode {
     return (
       <Header
@@ -24,4 +24,6 @@ export const ErrorHeader = afcMemo(() => {
   }
 
   return render
-})
+}
+
+export default pafcMemo(ErrorHeader)

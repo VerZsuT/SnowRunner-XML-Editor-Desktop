@@ -2,32 +2,31 @@ import type { ReactNode } from 'react'
 
 import { Button, Typography } from 'antd'
 import { Bridge } from 'emr-bridge/renderer'
-import { afcMemo, reactive } from 'react-afc'
+import { pafc, useState } from 'react-afc'
 
 import { ALLOW_NEW_VERSION_AUTO, CLOSE, IGNORE, UPDATE } from './texts'
 
 import { ProgramWindow } from '#enums'
-import { windowReady } from '#helpers/windowReady'
+import useWindowReady from '#helpers/useWindowReady'
 import { config, helpers, ipc } from '#services'
-import type { IMPC } from '#types'
+import type { MPC } from '#types'
 
+import '#r/templateScript'
 import './styles'
 
-const bridge = Bridge.as<IMPC>()
+const bridge = Bridge.as<MPC>()
 const { Title } = Typography
 const { settings } = config
 
-const UpdateWindow = afcMemo(() => {
-  const state = reactive({
-    version: ''
-  })
-  windowReady(ProgramWindow.Update)
+const UpdateWindow = pafc(() => {
+  const [version, setVersion] = useState('')
+  useWindowReady(ProgramWindow.Update)
   handleContent()
 
   function render(): ReactNode {
     return <>
       <Title className='version-title' level={4}>
-        {ALLOW_NEW_VERSION_AUTO} {` (v${state.version})`}
+        {ALLOW_NEW_VERSION_AUTO} {` (v${version.val})`}
       </Title>
       <div className='buttons'>
         <Button type='primary' onClick={updateProgram}>{UPDATE}</Button>
@@ -51,7 +50,7 @@ const UpdateWindow = afcMemo(() => {
   }
 
   function handleContent(): void {
-    ipc.on('content', (_event, data) => state.version = data)
+    ipc.on('content', (_event, data) => setVersion(data))
   }
 
   return render

@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 
 import { Menu as ANTMenu } from 'antd'
 import { Bridge } from 'emr-bridge/renderer'
-import { afcMemo } from 'react-afc'
+import { pafcMemo } from 'react-afc'
 
 import {
   BACKUP_MENU_LABEL,
@@ -18,17 +18,17 @@ import {
 import type { MenuItemType } from './items'
 import { Divider, MenuItem, NestedMenuItem } from './items'
 
-import { menuService } from '#components/Menu/service'
+import menuService from '#components/Menu/service'
 import { BuildType, ProgramWindow } from '#enums'
 import { OPEN_BUTTON, RESET_MENU_ITEM_LABEL, SAVE_BUTTON } from '#globalTexts/renderer'
 import { config } from '#services'
-import type { IMPC } from '#types'
+import type { MPC } from '#types'
 
-const bridge = Bridge.as<IMPC>()
+const bridge = Bridge.as<MPC>()
 const paths = bridge.paths
 
 /** Верхнее сервисное меню */
-export const Menu = afcMemo(() => {
+function Menu() {
   const MOD_IO_LINK = 'https://snowrunner.mod.io/guides/snowrunner-xml-editor'
   const GITHUB_LINK = 'https://github.com/VerZsuT/SnowRunner-XML-Editor-Desktop'
   const YOUTUBE_LINK = 'https://youtube.com/playlist?list=PLDwd4yUwzS2VtWCpC9X6MXm47Kv_s_mq2'
@@ -36,7 +36,7 @@ export const Menu = afcMemo(() => {
   const hasInitial = !config.initial
   const isDev = config.buildType === BuildType.dev
 
-  const fileMenu = [
+  const fileMenu: MenuItemType[] = [
     ...onDev(
       MenuItem(
         'Export defaults',
@@ -47,9 +47,9 @@ export const Menu = afcMemo(() => {
       EXIT_MENU_ITEM_LABEL,
       () => bridge.quitApp()
     )
-  ] as MenuItemType[]
+  ]
 
-  const backupMenu = [
+  const backupMenu: MenuItemType[] = [
     MenuItem(
       OPEN_BUTTON,
       () => bridge.openPath(paths.backupFolder)
@@ -63,9 +63,9 @@ export const Menu = afcMemo(() => {
       RESTORE_MENU_ITEM_LABEL,
       () => bridge.recoverFromBackup()
     )
-  ] as MenuItemType[]
+  ]
 
-  const settingsMenu = [
+  const settingsMenu: MenuItemType[] = [
     MenuItem(
       SETTINGS_MENU_LABEL,
       () => bridge.openWindow(ProgramWindow.Settings),
@@ -81,9 +81,9 @@ export const Menu = afcMemo(() => {
       UNINSTALL_MENU_ITEM_LABEL,
       () => bridge.runUninstall()
     )
-  ] as MenuItemType[]
+  ]
 
-  const helpMenu = [
+  const helpMenu: MenuItemType[] = [
     MenuItem(
       VERSION_MENU_ITEM_LABEL,
       () => bridge.openWindow(ProgramWindow.WhatsNew)
@@ -101,9 +101,9 @@ export const Menu = afcMemo(() => {
       'YouTube(RU)',
       () => bridge.openLink(YOUTUBE_LINK)
     )
-  ] as MenuItemType[]
+  ]
 
-  const menuItems = [
+  const menuItems: MenuItemType[] = [
     NestedMenuItem(
       FILE_MENU_LABEL,
       fileMenu
@@ -121,7 +121,7 @@ export const Menu = afcMemo(() => {
       HELP_MENU_LABEL,
       helpMenu
     )
-  ] as MenuItemType[]
+  ]
 
   function render(): ReactNode {
     return (
@@ -139,4 +139,6 @@ export const Menu = afcMemo(() => {
   }
 
   return render
-})
+}
+
+export default pafcMemo(Menu)

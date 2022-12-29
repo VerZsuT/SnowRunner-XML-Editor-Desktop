@@ -1,7 +1,9 @@
 /** Тип выбираемого файла в диалоге */
-export enum DialogSourceType {
+enum DialogSourceType {
   /** Выбором является файл */
   file,
   /** Выбором является папка */
   dir
 }
+
+export default DialogSourceType

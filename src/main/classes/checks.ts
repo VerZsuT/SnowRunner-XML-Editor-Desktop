@@ -6,14 +6,14 @@ import { join } from 'path'
 
 import { providePublic, publicMethod } from 'emr-bridge'
 
-import { archive } from './archive'
-import { backup } from './backup'
-import { config } from './config'
-import { dialogs } from './dialogs'
-import { hash } from './hash'
-import { notifications } from './notifications'
-import { paths } from './paths'
-import { windows } from './windows'
+import archive from './archive'
+import backup from './backup'
+import config from './config'
+import dialogs from './dialogs'
+import hash from './hash'
+import notifications from './notifications'
+import paths from './paths'
+import windows from './windows'
 
 import { ProgramWindow } from '#enums'
 import {
@@ -147,5 +147,4 @@ class Checks {
   }
 }
 
-export const checks = new Checks()
-providePublic(checks)
+export default providePublic(new Checks())

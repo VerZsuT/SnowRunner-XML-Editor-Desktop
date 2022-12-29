@@ -1,13 +1,13 @@
-import { localization } from '#services'
+import { lzn } from '#services'
 
-export const data072 = localization.localize({
+export const data072 = lzn.localize({
   RU: ['Исправлен перевод для RU, EN, CH'],
   EN: ['Fixed translation for RU, EN, CH'],
   DE: ['Korrigierte Übersetzung für RU, EN, CH'],
   CH: ['RU,EN,CH的固定翻译']
 })
 
-export const data071 = localization.localize({
+export const data071 = lzn.localize({
   RU: [
     'Исправлен баг с редактированием координат',
     'Восстановлен перенос конфигурации при обновлении'
@@ -26,7 +26,7 @@ export const data071 = localization.localize({
   ]
 })
 
-export const data070 = localization.localize({
+export const data070 = lzn.localize({
   RU: [
     'Программа адаптирована под новую версию игры',
     'Добавлены картинки новых авто',

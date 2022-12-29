@@ -1,14 +1,8 @@
-export interface IExportedData {
+interface IExportedData {
   fileName: string
   version: string
-  data: {
-    [fileName: string]: {
-      [selector: string]: {
-        [attrName: string]: string | number
-      }
-    }
-  }
-  actionsData: {
-    [key: string]: any
-  }
+  data: Record<string, Record<string, Record<string, string | number>>>
+  actionsData: Record<string, any>
 }
+
+export default IExportedData

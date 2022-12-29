@@ -2,13 +2,13 @@ import type { ReactNode } from 'react'
 
 import { Button, Typography } from 'antd'
 import type { CheerioAPI } from 'cheerio'
-import { afcMemo, reactive } from 'react-afc'
+import { fafcMemo, useState } from 'react-afc'
 
 import { ADD, CRANE, CRANES_WARN_MESSAGE, CRANES_WARN_TITLE, REMOVE } from './texts'
 
 import CraneIcon from '#images/icons/crane.png'
-import { Action } from '#r/actions/Action'
-import { localization } from '#services'
+import Action from '#r/actions/Action'
+import { lzn } from '#services'
 import type { IActionProps } from '#types'
 
 const { Paragraph, Text } = Typography
@@ -23,8 +23,8 @@ interface IExportData {
   hasUSCrane: boolean
 }
 
-export class Cranes extends Action {
-  protected name = localization.localize({
+class Cranes extends Action {
+  protected name = lzn.localize({
     RU: 'Краны',
     EN: 'Cranes',
     DE: 'Kräne',
@@ -113,15 +113,11 @@ export class Cranes extends Action {
   }
 }
 
-const CranesComponent = afcMemo((props: IActionProps) => {
-  const state = reactive({
-    hasRU: Cranes.hasCranes(props.dom)[0],
-    hasUS: Cranes.hasCranes(props.dom)[1]
-  })
+const CranesComponent = fafcMemo<IActionProps>(props => {
+  const [hasRU, setHasRU] = useState(Cranes.hasCranes(props.curr.dom)[0])
+  const [hasUS, setHasUS] = useState(Cranes.hasCranes(props.curr.dom)[1])
 
   function render(): ReactNode {
-    const { hasRU, hasUS } = state
-
     return <>
       <div className='warn-title'>
         <Paragraph>{CRANES_WARN_TITLE}</Paragraph>
@@ -135,16 +131,16 @@ const CranesComponent = afcMemo((props: IActionProps) => {
           <Text>
             US {CRANE}
           </Text><br/>
-          {!hasUS
+          {!hasUS.val
             ? <Button
-              disabled={!(hasRU && !hasUS)}
+              disabled={!(hasRU.val && !hasUS.val)}
               onClick={addUS}
               type='primary'
             >
               {ADD}
             </Button>
             : <Button
-              disabled={!(hasRU && hasUS)}
+              disabled={!(hasRU.val && hasUS.val)}
               onClick={removeUS}
               type='primary'
               danger
@@ -157,16 +153,16 @@ const CranesComponent = afcMemo((props: IActionProps) => {
           <Text>
             RU {CRANE}
           </Text><br/>
-          {!hasRU
+          {!hasRU.val
             ? <Button
-              disabled={!(hasUS && !hasRU)}
+              disabled={!(hasUS.val && !hasRU.val)}
               onClick={addRU}
               type='primary'
             >
               {ADD}
             </Button>
             : <Button
-              disabled={!(hasRU && hasUS)}
+              disabled={!(hasRU.val && hasUS.val)}
               onClick={removeRU}
               type='primary'
               danger
@@ -180,18 +176,20 @@ const CranesComponent = afcMemo((props: IActionProps) => {
   }
 
   function addUS(): void {
-    Cranes.addCrane(Crane.US, Crane.RU, props.dom, hasUS => state.hasUS = hasUS)
+    Cranes.addCrane(Crane.US, Crane.RU, props.curr.dom, value => setHasUS(value))
   }
   function addRU(): void {
-    Cranes.addCrane(Crane.RU, Crane.US, props.dom, hasRU => state.hasRU = hasRU)
+    Cranes.addCrane(Crane.RU, Crane.US, props.curr.dom, value => setHasRU(value))
   }
 
   function removeUS(): void {
-    Cranes.removeCrane(Crane.US, props.dom, hasUS => state.hasUS = hasUS)
+    Cranes.removeCrane(Crane.US, props.curr.dom, value => setHasUS(value))
   }
   function removeRU(): void {
-    Cranes.removeCrane(Crane.RU, props.dom, hasRU => state.hasRU = hasRU)
+    Cranes.removeCrane(Crane.RU, props.curr.dom, value => setHasRU(value))
   }
 
   return render
 })
+
+export default Cranes

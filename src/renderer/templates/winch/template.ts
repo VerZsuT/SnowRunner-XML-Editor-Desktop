@@ -1,9 +1,8 @@
-import { ForEach, Group, Num, Select, Template } from '../items'
-import { unlockGroup } from '../presets/unlockGroup'
-import { forEach, initSelectors, selector } from '../service'
+import { Float, ForEach, Group, Int, Select, Template } from '../items'
+import unlockGroup from '../presets/unlockGroup'
+import { createSelectors, forEach, selector } from '../service'
 import { BATTERY, ENGINE, IS_ENGINE_IGNITION_REQUIRED, LENGTH, STRENGTH_MULT } from './texts'
 
-import { NameType, NumberType } from '#enums'
 import type { IXMLTemplate } from '#types'
 
 class Selectors {
@@ -12,52 +11,50 @@ class Selectors {
   @selector gameData = `${this.winch}.GameData`
 }
 
-const selectors = initSelectors(new Selectors())
+const selectors = createSelectors(Selectors)
 
-export const winchTemplate = {
+export default {
   selector: 'WinchVariants',
-  template: new Template({ ...selectors }, [
-    new ForEach(selectors.winch, [
+  template: new Template({ ...selectors },
+    new ForEach(selectors.winch,
       new Group({
         label: {
-          type: NameType.computed,
-          attribute: ['UiName', 'Name'],
-          selector: [selectors.winchText, selectors.winch]
+          selector: [selectors.winchText, selectors.winch],
+          attribute: ['UiName', 'Name']
         },
         provided: selectors.winch
-      }, [
-        new Num({
+      },
+        new Int({
           attribute: 'Length',
-          type: NumberType.integer,
           label: LENGTH,
           max: 100,
           default: 14,
           areas: {
-            yellow: [[30, 50]],
-            red: [[51, 100]]
+            yellow: [30, 50],
+            red: [51, 100]
           }
         }),
-        new Num({
+        new Float({
           attribute: 'StrengthMult',
           label: STRENGTH_MULT,
           max: 10,
           default: 1,
           areas: {
-            yellow: [[2, 5]],
-            red: [[5.1, 10]]
+            yellow: [2, 5],
+            red: [5.1, 10]
           }
         }),
         new Select({
           attribute: 'IsEngineIgnitionRequired',
           label: IS_ENGINE_IGNITION_REQUIRED,
-          options: {
-            true: ENGINE,
-            false: BATTERY
-          },
-          default: 'true'
+          options: [
+            ['true', ENGINE],
+            ['false', BATTERY]
+          ],
+          default: 0
         }),
         unlockGroup(selectors.gameData)
-      ])
-    ])
-  ])
+      )
+    )
+  )
 } as IXMLTemplate

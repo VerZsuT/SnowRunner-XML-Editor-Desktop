@@ -1,4 +1,4 @@
-import { localization } from '#services'
+import { lzn } from '#services'
 
 export const {
   SAVING_MESSAGE,
@@ -13,7 +13,7 @@ export const {
   WAS_IMPORTED,
   WAS_EXPORTED,
   ACTIONS_MENU
-} = localization.localize({
+} = lzn.localize({
   RU: {
     SAVING_MESSAGE: 'Сохранение...',
     SUCCESS_SAVE_FILES: 'Сохранено',

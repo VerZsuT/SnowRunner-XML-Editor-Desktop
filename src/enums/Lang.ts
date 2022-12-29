@@ -1,7 +1,9 @@
 /** Язык перевода программы */
-export enum Lang {
+enum Lang {
   RU = 'RU',
   EN = 'EN',
   DE = 'DE',
   CH = 'CH'
 }
+
+export default Lang

@@ -1,5 +1,5 @@
 /** Тип XML файла, открываемого по нажатию кнопки */
-export enum FileType {
+enum FileType {
   /** Файл содержит набор двигателей */
   engines = 'engines',
   /** Файл содержит набор КПП */
@@ -12,3 +12,5 @@ export enum FileType {
   winches = 'winches',
   truck = 'truck'
 }
+
+export default FileType

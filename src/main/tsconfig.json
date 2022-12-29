@@ -1,28 +1,22 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
-    "experimentalDecorators": true,
     "target": "ESNext",
-    "lib": [
-      "ESNext"
-    ],
-    "incremental": true,
-    "isolatedModules": true,
     "module": "ESNext",
-    "allowSyntheticDefaultImports": true,
-    "allowUnreachableCode": false,
-    "esModuleInterop": true,
-    "sourceMap": true,
+    "moduleResolution": "node",
+    "lib": ["ESNext"],
     "outDir": "dist",
     "newLine": "LF",
-    "noImplicitAny": false,
-    "strict": true,
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "declaration": false,
-    "emitDeclarationOnly": false,
-    "skipLibCheck": true,
     "baseUrl": ".",
+    "strict": true,
+    "noImplicitAny": false,
+    "experimentalDecorators": true,
+    "isolatedModules": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "sourceMap": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
     "paths": {
       "#types": [
         "../types/index"
@@ -67,5 +61,6 @@
         "./*"
       ]
     }
-  }
+  },
+  "exclude": ["node_modules"]
 }

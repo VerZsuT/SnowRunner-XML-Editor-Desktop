@@ -1,19 +1,20 @@
 import type { ReactNode } from 'react'
 
 import { Divider, List } from 'antd'
-import { afcMemo } from 'react-afc'
+import { pafc } from 'react-afc'
 
 import { data070, data071, data072 } from './data'
 import { WHATS_NEW_TITLE } from './texts'
 
 import { ProgramWindow } from '#enums'
-import { windowReady } from '#helpers/windowReady'
+import useWindowReady from '#helpers/useWindowReady'
 import { helpers } from '#services'
 
+import '#r/templateScript'
 import './styles'
 
-const WhatsNew = afcMemo(() => {
-  windowReady(ProgramWindow.WhatsNew)
+const WhatsNew = pafc(() => {
+  useWindowReady(ProgramWindow.WhatsNew)
 
   function render(): ReactNode {
     return <>

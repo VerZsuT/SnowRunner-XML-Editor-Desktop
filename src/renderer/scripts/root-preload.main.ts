@@ -4,8 +4,8 @@ import { basename, join } from 'path'
 
 import { provideFromMain } from 'emr-bridge/preload'
 
-import { ipc } from '#services/ipc'
-import { system } from '#services/system'
+import ipc from '#services/ipc'
+import system from '#services/system'
 
 provideFromMain(false)
 
@@ -18,7 +18,7 @@ class RootPreload {
   private addIPC(): void {
     ipc.register({
       sendSync<T = any>(channel: string, ...args: any[]): T {
-        return ipcRenderer.sendSync(channel, ...args) as T
+        return <T> ipcRenderer.sendSync(channel, ...args)
       },
       send(channel: string, ...args: any[]): void {
         ipcRenderer.send(channel, ...args)

@@ -18,4 +18,4 @@ class SystemService {
   }
 }
 
-export const system = new SystemService() as SystemService & IServiceMethods
+export default new SystemService() as SystemService & IServiceMethods

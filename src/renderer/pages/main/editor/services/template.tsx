@@ -3,7 +3,7 @@ import type { ReactNode } from 'react'
 import memoizee from 'memoizee'
 
 import { Group } from '../components/Group'
-import { Parameter } from '../components/Parameter'
+import Parameter from '../components/Parameter'
 
 import { ParamType } from '#enums'
 import type { TemplateParams } from '#types'
@@ -28,4 +28,4 @@ class TemplateService {
   })
 }
 
-export const template = new TemplateService()
+export default new TemplateService()

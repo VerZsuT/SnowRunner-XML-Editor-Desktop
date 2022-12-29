@@ -4,7 +4,6 @@ class ForgeConfig {
   
   rootPreload = `${this.renderer}/scripts/root-preload.main.ts`
   template = `${this.renderer}/template.html`
-  templateScript = `${this.renderer}/templateScript.ts`
   pages = `${this.renderer}/pages`
   favicon = '.webpack/main/favicon.ico'
   
@@ -14,9 +13,9 @@ class ForgeConfig {
   get = () => ({
     packagerConfig: { icon: this.favicon },
     plugins: [
-      [
-        '@electron-forge/plugin-webpack',
-        {
+      {
+        name: '@electron-forge/plugin-webpack',
+        config: {
           mainConfig: this.mainConfig,
           renderer: {
             config: this.rendererConfig,
@@ -30,7 +29,7 @@ class ForgeConfig {
             ]
           }
         }
-      ]
+      }
     ]
   })
 
@@ -49,7 +48,6 @@ class ForgeConfig {
     return {
       name,
       html: this.template,
-      prefixedEntries: [this.templateScript],
       js: this.getPage(moduleName ?? name).main,
       preload: {
         js: preloadIsMain ? this.rootPreload : this.getPage(moduleName ?? name).preload
