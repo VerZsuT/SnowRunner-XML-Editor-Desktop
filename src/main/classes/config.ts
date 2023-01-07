@@ -9,6 +9,7 @@ import helpers from './helpers'
 import paths from './paths'
 
 import { Lang } from '#enums'
+import { isNullable } from '#gl-helpers'
 import type { IConfig } from '#types'
 
 class Config {
@@ -95,9 +96,8 @@ class Config {
 
   /** Экспортировать `config.json`. */
   export(): boolean {
-    if (!existsSync(paths.updateBackupFolder)) {
+    if (!existsSync(paths.updateBackupFolder))
       mkdirSync(paths.updateBackupFolder, { recursive: true })
-    }
 
     writeFileSync(`${paths.updateBackupFolder}\\config.json`, JSON.stringify(this.obj))
     return true
@@ -105,7 +105,8 @@ class Config {
 
   /** Импортировать `config.json`. */
   import(): boolean {
-    if (!existsSync(join(paths.backupFolder, 'config.json'))) return false
+    if (!existsSync(join(paths.backupFolder, 'config.json')))
+      return false
 
     const exportedConfig = JSON.parse(readFileSync(`${paths.backupFolder}\\config.json`).toString())
 
@@ -125,9 +126,8 @@ class Config {
 
   /** Преобразовать к версии 0.6.8. */
   private before068(exportedConfig: any): void {
-    if (exportedConfig.version < '0.6.8') {
+    if (exportedConfig.version < '0.6.8')
       exportedConfig.settings.advancedMode = false
-    }
   }
 
   /** Преобразовать к версии 0.6.7. */
@@ -178,7 +178,7 @@ class Config {
   private getConfig(): IConfig {
     const config: IConfig = JSON.parse(readFileSync(paths.config).toString())
 
-    if (config.lang === null) {
+    if (isNullable(config.lang)) {
       const locale = Intl.DateTimeFormat().resolvedOptions().locale.split('-')[1]
       config.lang = Object.keys(Lang).includes(locale) ? <Lang>locale : Lang.EN
     }
@@ -186,4 +186,4 @@ class Config {
   }
 }
 
-export default providePublic(new Config() as Config & IConfig)
+export default providePublic(new Config()) as Config & IConfig

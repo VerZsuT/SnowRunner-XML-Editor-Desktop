@@ -6,10 +6,10 @@ import paths from './paths'
 import { SHOW_DEVTOOLS } from '#consts'
 import type { ProgramWindow } from '#enums'
 import { BuildType, IPCChannel } from '#enums'
-import type { ICreateWindowAttributes, IWindows } from '#types'
+import type { ICreateWindowAttributes, IDownloadWindow } from '#types'
 
-class Windows implements IWindows {
-  loading: IWindows['loading'] = null
+class Windows {
+  loading?: IDownloadWindow | null = null
 
   /** Открыть модальное окно */
   openModal(args: ICreateWindowAttributes): BrowserWindow {
@@ -77,9 +77,8 @@ class Windows implements IWindows {
       win.show()
       win.focus()
 
-      if (SHOW_DEVTOOLS) {
+      if (SHOW_DEVTOOLS)
         win.webContents.toggleDevTools()
-      }
     }
   }
 }

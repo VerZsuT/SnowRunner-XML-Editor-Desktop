@@ -1,10 +1,10 @@
 enum ProgramWindow {
-  Main = 'MainWindow',
+  Main     = 'MainWindow',
   Settings = 'SettingsWindow',
-  Update = 'UpdateWindow',
+  Update   = 'UpdateWindow',
   WhatsNew = 'WhatsNewWindow',
-  Loading = 'LoadingWindow',
-  Setup = 'SetupWindow'
+  Loading  = 'LoadingWindow',
+  Setup    = 'SetupWindow'
 }
 
 export default ProgramWindow

@@ -31,9 +31,8 @@ class XMLFilesService {
   add(file: XMLFile, clearPrev?: boolean): void {
     if (clearPrev) this.files = []
   
-    for (let i = 0; i < this.files.length; ++i) {
+    for (let i = 0; i < this.files.length; ++i)
       if (this.files[i].path === file.path) return
-    }
   
     this.files.push(file)
     this.listeners.forEach(listener => listener())

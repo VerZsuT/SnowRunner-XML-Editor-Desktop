@@ -15,9 +15,7 @@
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
-    "ecmaFeatures": {
-      "jsx": true
-    },
+    "ecmaFeatures": { "jsx": true },
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
@@ -41,22 +39,17 @@
     ],
     "camelcase": [
       "warn",
-      {
-        "properties": "always"
-      }
+      { "properties": "always" }
     ],
     "jsx-quotes": [
       "error",
       "prefer-single"
     ],
-    "indent": "off",
-    "no-empty-function": "off",
     "no-extra-bind": "warn",
     "no-extra-label": "warn",
     "no-invalid-this": "warn",
     "no-lone-blocks": "warn",
     "no-lonely-if": "warn",
-    "no-param-reassign": "off",
     "no-sequences": "warn",
     "no-useless-call": "warn",
     "operator-assignment": "warn",
@@ -72,8 +65,6 @@
     "comma-style": "warn",
     "eol-last": "warn",
     "func-call-spacing": "warn",
-    "key-spacing": "warn",
-    "no-multi-spaces": "warn",
     "no-tabs": "error",
     "no-whitespace-before-property": "error",
     "keyword-spacing": "error",
@@ -82,9 +73,7 @@
     "brace-style": [
       "error",
       "stroustrup",
-      {
-        "allowSingleLine": true
-      }
+      { "allowSingleLine": true }
     ],
     "comma-dangle": [
       "error",
@@ -110,7 +99,6 @@
     "no-alert": "error",
     "no-bitwise": "error",
     "no-caller": "error",
-    "no-empty": "off",
     "import/order": [
       "warn",
       {
@@ -140,6 +128,12 @@
         }
       }
     ],
+    "no-multi-spaces": "off",
+    "key-spacing": "off",
+    "indent": "off",
+    "no-empty": "off",
+    "no-empty-function": "off",
+    "no-param-reassign": "off",
     "no-void": "off",
     "import/namespace": "off",
     "import/no-unresolved": "off",

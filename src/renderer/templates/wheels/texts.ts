@@ -1,13 +1,6 @@
-import { lzn } from '#services'
+import { compareWithGlobal } from '#gl-texts/renderer'
 
-export const {
-  BODY_FRICTION,
-  BODY_FRICTION_ASPHALT,
-  SUBSTANCE_FRICTION,
-  YES,
-  NO,
-  IGNORE_ICE
-} = lzn.localize({
+export default compareWithGlobal({
   RU: {
     BODY_FRICTION: 'Сцепление на бездорожье',
     BODY_FRICTION_ASPHALT: 'Сцепление на асфальте',

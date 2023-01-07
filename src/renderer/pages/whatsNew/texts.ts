@@ -1,6 +1,6 @@
-import { lzn } from '#services'
+import { compareWithGlobal } from '#gl-texts/renderer'
 
-export const { WHATS_NEW_TITLE } = lzn.localize({
+export default compareWithGlobal({
   RU: {
     WHATS_NEW_TITLE: 'Что нового в версии'
   },

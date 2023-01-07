@@ -1,11 +1,6 @@
-import { lzn } from '#services'
+import { compareWithGlobal } from '#gl-texts/renderer'
 
-export const {
-  ALLOW_NEW_VERSION_AUTO,
-  UPDATE,
-  CLOSE,
-  IGNORE
-} = lzn.localize({
+export default compareWithGlobal({
   RU: {
     ALLOW_NEW_VERSION_AUTO: 'Доступна новая версия программы',
     IGNORE: 'Игнорировать',

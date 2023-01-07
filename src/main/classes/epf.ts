@@ -6,7 +6,7 @@ import { providePublic, publicMethod } from 'emr-bridge'
 import dialogs from './dialogs'
 
 import { APP_ID } from '#consts'
-import { SEE_EXPORTED_MESSAGE, SUCCESS_JOIN } from '#m-scripts/programTexts'
+import $ from '#m/texts'
 
 class EPF {
   private readonly DEFAULT_NAME = 'joined'
@@ -27,7 +27,7 @@ class EPF {
       files.forEach(filePath => {
         const fileObject = JSON.parse(readFileSync(filePath).toString())
 
-        if (fileObject instanceof Array) {
+        if (Array.isArray(fileObject)) {
           fileObject.forEach(obj => {
             if (!names.includes(obj.fileName)) {
               result.push(obj)
@@ -46,7 +46,7 @@ class EPF {
         writeFileSync(pathToSave, JSON.stringify(result, null, '\t'))
         dialogs.alert({
           title: APP_ID,
-          message: `${SUCCESS_JOIN}\n- ${files.map(value => basename(value)).join('\n- ')}`
+          message: `${$.SUCCESS_JOIN}\n- ${files.map(value => basename(value)).join('\n- ')}`
         })
       }
     }
@@ -65,16 +65,14 @@ class EPF {
     const fileObject = JSON.parse(readFileSync(path).toString())
     const result: string[] = []
 
-    if (fileObject instanceof Array) {
+    if (Array.isArray(fileObject))
       fileObject.forEach(item => result.push(item.fileName))
-    }
-    else {
+    else
       result.push(fileObject.fileName)
-    }
 
     dialogs.alert({
       title: APP_ID,
-      message: `${SEE_EXPORTED_MESSAGE}\n\n${result.join('\n')}`
+      message: `${$.SEE_EXPORTED_MESSAGE}\n\n${result.join('\n')}`
     })
   }
 }

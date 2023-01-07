@@ -1,7 +1,7 @@
 import { Float, ForEach, Group, Select, Template } from '../items'
 import unlockGroup from '../presets/unlockGroup'
 import { createSelectors, forEach, selector } from '../service'
-import { BODY_FRICTION, BODY_FRICTION_ASPHALT, IGNORE_ICE, NO, SUBSTANCE_FRICTION, YES } from './texts'
+import $ from './texts'
 
 import type { IXMLTemplate } from '#types'
 
@@ -28,7 +28,7 @@ export default {
       },
         new Float({
           attribute: 'BodyFriction',
-          label: BODY_FRICTION,
+          label: $.BODY_FRICTION,
           max: 10,
           default: 1,
           areas: {
@@ -39,7 +39,7 @@ export default {
         }),
         new Float({
           attribute: 'BodyFrictionAsphalt',
-          label: BODY_FRICTION_ASPHALT,
+          label: $.BODY_FRICTION_ASPHALT,
           max: 10,
           default: 1,
           areas: {
@@ -50,7 +50,7 @@ export default {
         }),
         new Float({
           attribute: 'SubstanceFriction',
-          label: SUBSTANCE_FRICTION,
+          label: $.SUBSTANCE_FRICTION,
           max: 10,
           default: 1,
           areas: {
@@ -61,11 +61,11 @@ export default {
         }),
         new Select({
           attribute: 'IsIgnoreIce',
-          label: IGNORE_ICE,
+          label: $.IGNORE_ICE,
           addMissedTag: true,
           options: [
-            ['true', YES],
-            ['false', NO]
+            ['true', $.YES],
+            ['false', $.NO]
           ],
           default: 1
         }),

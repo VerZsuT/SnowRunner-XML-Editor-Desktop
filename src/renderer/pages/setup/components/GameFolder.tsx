@@ -1,11 +1,8 @@
-import type { ReactNode } from 'react'
-
 import { FileFilled, FolderFilled } from '@ant-design/icons'
 import { Button } from 'antd'
-import { fafcMemo } from 'react-afc'
-import type { FastProps } from 'react-afc/types'
+import { afcMemo } from 'react-afc'
 
-import { GAME_FOLDER_LABEL } from '../texts'
+import $ from '../texts'
 
 import { preload } from '#services'
 import type { ISetupPreload } from '#types'
@@ -16,37 +13,35 @@ type Props = {
   onChange(path: string): void
 }
 
-function GameFolder(props: FastProps<Props>) {
-  function render(): ReactNode {
-    return (
-      <div className='game-folder'>
-        <Button
-          className='folder-button'
-          type='primary'
-          icon={<FolderFilled/>}
-          size='large'
-          onClick={onFolderClick}
-        >
-          {GAME_FOLDER_LABEL}
-        </Button>
-        <Button
-          type='primary'
-          icon={<FileFilled/>}
-          size='large'
-          onClick={onPakClick}
-        >
-          initial.pak
-        </Button>
-      </div>
-    )
-  }
+function GameFolder(props: Props) {
+  return () => (
+    <div className='game-folder'>
+      <Button
+        className='folder-button'
+        type='primary'
+        icon={<FolderFilled/>}
+        size='large'
+        onClick={onFolderClick}
+      >
+        {$.GAME_FOLDER_LABEL}
+      </Button>
+      <Button
+        type='primary'
+        icon={<FileFilled/>}
+        size='large'
+        onClick={onPakClick}
+      >
+        initial.pak
+      </Button>
+    </div>
+  )
 
   function onFolderClick(): void {
-    getFolder(props.curr.onChange)
+    getFolder(props.onChange)
   }
 
   function onPakClick(): void {
-    getPak(props.curr.onChange)
+    getPak(props.onChange)
   }
 
   function getPak(callback: Props['onChange']): void {
@@ -63,8 +58,6 @@ function GameFolder(props: FastProps<Props>) {
 
     callback(data.initial)
   }
-
-  return render
 }
 
-export default fafcMemo(GameFolder)
+export default afcMemo(GameFolder)

@@ -1,25 +1,25 @@
-import type { ChangeEvent, FocusEvent, ReactNode } from 'react'
+import type { ChangeEvent, FocusEvent } from 'react'
 
 import { Input as ANTInput, InputNumber } from 'antd'
-import { fafcMemo, useContext } from 'react-afc'
-import type { FastProps } from 'react-afc/types'
+import { afcMemo, useContext } from 'react-afc'
 
 import { FileDataContext } from '../helpers/getFileData'
 
 import { InputType, NumberType } from '#enums'
+import { isNonNullable, isNullable } from '#gl-helpers'
 import { xml } from '#services'
 import type { IInputParams, IParameterProps } from '#types'
 
 type Status = '' | 'error' | 'warning'
 
-function Input(props: FastProps<IParameterProps>) {
-  const min = props.curr.item.min ?? 0
-  const max = props.curr.item.max ?? Infinity
+function Input(props: IParameterProps) {
+  const min = props.item.min ?? 0
+  const max = props.item.max ?? Infinity
 
   const fileData = useContext(FileDataContext)
 
-  function render(): ReactNode {
-    const { item, value } = props.curr
+  return () => {
+    const { item, value } = props
     const status = getStatus()
 
     return item.type === InputType.number
@@ -44,7 +44,7 @@ function Input(props: FastProps<IParameterProps>) {
 
   function onBlur(e: FocusEvent<HTMLInputElement>): void {
     const { fileDOM } = fileData.val
-    const { item, defaultValue, onSetValue } = props.curr
+    const { item, defaultValue, onSetValue } = props
     let newValue = e.target.value
 
     if (newValue === '')
@@ -61,7 +61,7 @@ function Input(props: FastProps<IParameterProps>) {
   }
 
   function onChange(value: string | null): void {
-    const { item, onSetValue } = props.curr
+    const { item, onSetValue } = props
     const { fileDOM } = fileData.val
     let newValue = value ?? ''
 
@@ -77,10 +77,10 @@ function Input(props: FastProps<IParameterProps>) {
   }
 
   function getStatus(): Status {
-    const { item, value } = props.curr
+    const { item, value } = props
     let newVal = +value
 
-    if (value === null || isNaN(+value))
+    if (isNullable(value) || isNaN(+value))
       newVal = 0
 
     if (item.areas) {
@@ -112,16 +112,14 @@ function Input(props: FastProps<IParameterProps>) {
     if (item.numberType === NumberType.integer)
       number = Math.round(number)
   
-    if (min !== undefined && number < min)
+    if (isNonNullable(min) && number < min)
       return min
   
-    if (max !== undefined && number > max)
+    if (isNonNullable(max) && number > max)
       return max
   
     return number
   }
-
-  return render
 }
 
-export default fafcMemo(Input)
+export default afcMemo(Input)

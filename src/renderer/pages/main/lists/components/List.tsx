@@ -1,26 +1,24 @@
-import type { CSSProperties, ReactNode } from 'react'
+import type { CSSProperties } from 'react'
 import { memo } from 'react'
 
 import { Button, Modal } from 'antd'
-import { Bridge } from 'emr-bridge/renderer'
-import { fafcMemo, useForceUpdate, useOnDestroy, useRedux, useState } from 'react-afc'
-import type { FastProps } from 'react-afc/types'
+import { afcMemo, useForceUpdate, useOnDestroy, useRedux, useState } from 'react-afc'
 import type { GridChildComponentProps } from 'react-window'
 import { FixedSizeGrid } from 'react-window'
 
 import { selectFilter } from '../../store/filterSlice'
 import { selectCategory, selectFavorites } from '../../store/listSlice'
-import { MODS_CHANGE_BUTTON, RELAUNCH_PROMPT } from '../texts'
+import $ from '../texts'
 import ListItem from './ListItem'
 import ModsPopup from './ModsPopup'
 
 import { LIST_SCROLL } from '#consts'
 import type { Category } from '#enums'
 import { SrcType } from '#enums'
+import bridge from '#r-scripts/bridge'
 import { config, storage, windowResize } from '#services'
-import type { IItem, MPC } from '#types'
+import type { IItem } from '#types'
 
-const bridge = Bridge.as<MPC>()
 const { confirm } = Modal
 const { settings } = config
 
@@ -30,11 +28,11 @@ type Props = {
   opened?: boolean
 }
 
-function List(props: FastProps<Props>) {
+function List(props: Props) {
   const reloadPromptTimeout = 200
   const colWidth = 250
   const rowHeight = 420
-  const id = `list-${props.curr.srcType}`
+  const id = `list-${props.srcType}`
 
   const [isShowMods, setIsShowMods] = useState(false)
   const store = useRedux({
@@ -46,9 +44,12 @@ function List(props: FastProps<Props>) {
   useOnDestroy(() => {
     windowResize.removeListener(update)
   })
+  windowResize.onResize(update)
 
-  function render(): ReactNode {
-    const { srcType, opened } = props.curr
+  const forceUpdate = useForceUpdate()
+
+  return () => {
+    const { srcType, opened } = props
     const { category } = store
 
     if (
@@ -75,7 +76,7 @@ function List(props: FastProps<Props>) {
               className='mods-button'
               onClick={showModsPopup}
             >
-              {MODS_CHANGE_BUTTON}
+              {$.MODS_CHANGE_BUTTON}
             </Button>
           </div>
           <ModsPopup
@@ -111,26 +112,22 @@ function List(props: FastProps<Props>) {
     )
   }
 
-  const forceUpdate = useForceUpdate()
-
   function filterItems(): IItem[] {
-    const { items, srcType } = props.curr
+    const { items, srcType } = props
     const { favorites, filter } = store
     let filteredItems = items
 
-    if (srcType === SrcType.favorites) {
+    if (srcType === SrcType.favorites)
       filteredItems = filteredItems.filter(value => favorites.includes(value.name))
-    }
 
-    if (filter) {
+    if (filter)
       filteredItems = filteredItems.filter(item => item.name.toLowerCase().includes(filter.toLowerCase()))
-    }
 
     return filteredItems
   }
 
   function getGridParams(itemsLength: number) {
-    const gridHeight = window.innerHeight - (props.curr.srcType === SrcType.mods ? 230 : 210)
+    const gridHeight = window.innerHeight - (props.srcType === SrcType.mods ? 230 : 210)
     const gridWidth = window.innerWidth
     let colCount = Math.floor(window.innerWidth / colWidth)
     const rowCount = Math.ceil(itemsLength / colCount)
@@ -141,7 +138,8 @@ function List(props: FastProps<Props>) {
   }
 
   function update(): void {
-    forceUpdate()
+    if (props.opened)
+      forceUpdate()
   }
 
   function showModsPopup(): void {
@@ -153,14 +151,12 @@ function List(props: FastProps<Props>) {
     if (isReload) {
       setTimeout(() => {
         confirm({
-          title: RELAUNCH_PROMPT,
+          title: $.RELAUNCH_PROMPT,
           onOk: () => bridge.relaunchApp()
         })
       }, reloadPromptTimeout)
     }
   }
-
-  return render
 }
 
 type ItemProps = {
@@ -199,4 +195,4 @@ const ItemRenderer = memo((props: ItemProps) => {
   )
 })
 
-export default fafcMemo(List)
+export default afcMemo(List)

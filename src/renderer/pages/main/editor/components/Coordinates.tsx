@@ -1,8 +1,5 @@
-import type { ReactNode } from 'react'
-
 import { InputNumber, Typography } from 'antd'
-import { fafcMemo, useContext } from 'react-afc'
-import type { FastProps } from 'react-afc/types'
+import { afcMemo, useContext } from 'react-afc'
 
 import { FileDataContext } from '../helpers/getFileData'
 
@@ -17,11 +14,15 @@ interface ICoordinates {
   z: string | number
 }
 
-function Coordinates(props: FastProps<IParameterProps>) {
+function Coordinates(props: IParameterProps) {
   const fileData = useContext(FileDataContext)
 
-  function render(): ReactNode {
-    const { item, value } = props.curr
+  const onChangeX = (value: string | null): void => onChangeValue({ x: value ?? 0 })
+  const onChangeY = (value: string | null): void => onChangeValue({ y: value ?? 0 })
+  const onChangeZ = (value: string | null): void => onChangeValue({ z: value ?? 0 })
+
+  return () => {
+    const { item, value } = props
     const coords = stringToCoords(value)
 
     return <>
@@ -48,16 +49,12 @@ function Coordinates(props: FastProps<IParameterProps>) {
 
   function onChangeValue(coordinate: Partial<ICoordinates>): void {
     const { fileDOM } = fileData.val
-    const { item, value, onSetValue } = props.curr
+    const { item, value, onSetValue } = props
     const newCoords = { ...stringToCoords(value), ...coordinate }
 
     xml.addTag(fileDOM, item)
     onSetValue(coordsToString(newCoords))
   }
-
-  const onChangeX = (value: string | null): void => onChangeValue({ x: value ?? 0 })
-  const onChangeY = (value: string | null): void => onChangeValue({ y: value ?? 0 })
-  const onChangeZ = (value: string | null): void => onChangeValue({ z: value ?? 0 })
 
   function coordsToString(coords: ICoordinates): string {
     const { x, y, z } = coords
@@ -71,15 +68,12 @@ function Coordinates(props: FastProps<IParameterProps>) {
   
     const prepared = str.replace('(', '').replace(')', '').replaceAll(' ', '')
     array = prepared.split(';')
-    if (array.length === 1) {
+    if (array.length === 1)
       array = prepared.split(',')
-    }
   
     const [x, y, z] = array
     return { x: +x, y: +y, z: +z }
   }
-
-  return render
 }
 
-export default fafcMemo(Coordinates)
+export default afcMemo(Coordinates)

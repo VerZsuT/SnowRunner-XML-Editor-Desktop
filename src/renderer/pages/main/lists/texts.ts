@@ -1,22 +1,6 @@
-import { lzn } from '#services'
+import { compareWithGlobal } from '#gl-texts/renderer'
 
-export const {
-  MODS_CHANGE_BUTTON,
-  MANUAL_MOD,
-  MODS_POPUP_TITLE,
-  MODS_LIST_TITLE,
-  TRAILERS_LIST_TITLE,
-  FAVORITES_LIST_TITLE,
-  TRAILERS_CATEGORY_TITLE,
-  DLC_LIST_TITLE,
-  TRUCKS_LIST_TITLE,
-  TRUCKS_CATEGORY_TITLE,
-  MAIN_LIST_TITLE,
-  REMOVE_FAVORITE,
-  SEARCH,
-  ADD_FAVORITE,
-  RELAUNCH_PROMPT
-} = lzn.localize({
+export default compareWithGlobal({
   RU: {
     MODS_CHANGE_BUTTON: 'Изменить',
     RELAUNCH_PROMPT: 'Для загрузки мода необходима перезагрузка программы. Выполнить перезагрузку?',

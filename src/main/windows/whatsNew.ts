@@ -7,12 +7,12 @@ import { ProgramWindow } from '#enums'
 class WhatsNewWindow extends ModalWindow {
   protected type = ProgramWindow.WhatsNew
   protected args = {
-    path: entries.general.whatsNew,
-    preload: entries.preload.whatsNew,
-    width: 600,
-    minWidth: 600,
-    height: 500,
-    minHeight: 520
+    path      : entries.general.whatsNew,
+    preload   : entries.preload.whatsNew,
+    width     : 600,
+    minWidth  : 600,
+    height    : 500,
+    minHeight : 520
   }
 
   constructor() { super(); this.register() }

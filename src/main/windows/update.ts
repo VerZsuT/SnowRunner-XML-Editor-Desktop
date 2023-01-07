@@ -6,13 +6,13 @@ import { ProgramWindow } from '#enums'
 class UpdateWindow extends ModalWindow {
   protected type = ProgramWindow.Update
   protected args = {
-    path: entries.general.update,
-    preload: entries.preload.update,
-    width: 400,
-    minWidth: 400,
-    height: 160,
-    minHeight: 180,
-    frame: false
+    path      : entries.general.update,
+    preload   : entries.preload.update,
+    width     : 400,
+    minWidth  : 400,
+    height    : 160,
+    minHeight : 180,
+    frame     : false
   }
 
   constructor() { super(); this.register() }

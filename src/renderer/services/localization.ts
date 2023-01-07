@@ -1,11 +1,12 @@
 import config from './config'
 
-import type { ILocalizations } from '#types'
+import type { Lang } from '#enums'
+import type { Localizations } from '#types'
 
 class LocalizationService {
   private readonly lang = config.lang
 
-  localize<T extends ILocalizations<T['RU']>>(obj: T): T['RU'] {
+  localize = <T extends Localizations<T[Lang.RU]>>(obj: T) => {
     return obj[this.lang]
   }
 }

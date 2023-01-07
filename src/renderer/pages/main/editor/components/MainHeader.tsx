@@ -14,34 +14,22 @@ import type { MenuProps } from 'antd'
 import { Button, Dropdown, message, Modal, Tooltip } from 'antd'
 import type { CheerioAPI } from 'cheerio'
 import { load } from 'cheerio'
-import { Bridge } from 'emr-bridge/renderer'
-import { fafcMemo, useActions, useOnRender, useState } from 'react-afc'
-import type { FastProps } from 'react-afc/types'
+import { afcMemo, useActions, useOnRender, useState } from 'react-afc'
 
 import { actions as reduxActions } from '../../store'
 import type { ResetList } from '../helpers/getResetProvider'
 import importService from '../services/import'
 import xmlFiles from '../services/xmlFiles'
-import {
-  ACTIONS_MENU,
-  IMPORT,
-  PATH_TO_SAVE_NOT_FOUND,
-  RESET_CONFIRM_MESSAGE,
-  SAVING_MESSAGE,
-  SUCCESS_RESET,
-  SUCCESS_SAVE_FILES,
-  WAS_EXPORTED
-} from '../texts'
+import $ from '../texts'
 
 import Header from '#components/Header'
 import { Page, PreloadType } from '#enums'
-import { EXPORT, OPEN_BUTTON, RESET_MENU_ITEM_LABEL, SAVE_BUTTON } from '#globalTexts/renderer'
+import bridge from '#r-scripts/bridge'
 import { config, helpers, preload, system, xml } from '#services'
-import type { IEditorPreload, IXMLTemplate, MPC, TemplateParams } from '#types'
+import type { IEditorPreload, IXMLTemplate, TemplateParams } from '#types'
 
 type MenuItemsType = NonNullable<MenuProps['items']>
 
-const bridge = Bridge.as<MPC>()
 const { confirm } = Modal
 const { watchFile } = preload.get<IEditorPreload>(PreloadType.editor)
 
@@ -55,13 +43,13 @@ type Props = {
   resetList: ResetList
 }
 
-function MainHeader(props: FastProps<Props>) {
+function MainHeader(props: Props) {
   const {
     fileDOM, mod, dlc, actions, filePath,
     tableItems, resetList
-  } = props.curr
+  } = props
   
-  let menuItems: MenuItemsType
+  let menuItems: MenuItemsType = []
   const title = getMainTitle(fileDOM, filePath, mod)
 
   const [action, setAction] = useState<ReactNode>(null)
@@ -72,7 +60,7 @@ function MainHeader(props: FastProps<Props>) {
     
     menuItems = [
       {
-        label: ACTIONS_MENU,
+        label: $.ACTIONS_MENU,
         icon: <MoreOutlined/>,
         key: 'actions',
         children: actions?.map(item => ({
@@ -93,24 +81,24 @@ function MainHeader(props: FastProps<Props>) {
       {
         onClick: !mod ? onReset : () => null,
         icon: <UndoOutlined/>,
-        label: RESET_MENU_ITEM_LABEL,
+        label: $.RESET_MENU_ITEM_LABEL,
         key: 'reset'
       },
       {
         onClick: onExportFile,
         icon: <ExportOutlined/>,
-        label: EXPORT,
+        label: $.EXPORT,
         key: 'export'
       },
       {
         onClick: () => importService.importFile(filePath, fileDOM, actions),
         icon: <ImportOutlined/>,
-        label: IMPORT,
+        label: $.IMPORT,
         key: 'import'
       },
       ...ifAdvanced({
         key: 'files',
-        label: OPEN_BUTTON,
+        label: $.OPEN_BUTTON,
         icon: <FileOutlined/>,
         children: xmlFiles.files.map(file => ({
           key: file.path,
@@ -125,45 +113,43 @@ function MainHeader(props: FastProps<Props>) {
     ]
   })
 
-  function render(): ReactNode {
-    return <>
-      {action.val}
-      <Header
-        text={title}
-        onBack={onBack}
-        extra={[
-          <Dropdown.Button
-            key='menu'
-            type='text'
-            className='menu-button'
-            icon={<MenuOutlined/>}
-            menu={{
-              selectable: false,
-              mode: 'vertical',
-              items: menuItems
-            }}
-          />,
-          <Tooltip title={SAVE_BUTTON} key='save'>
-            <Button
-              id='save'
-              className='save-button'
-              type='text'
-              shape='circle'
-              icon={<SaveOutlined/>}
-              onClick={onSave}
-            />
-          </Tooltip>
-        ]}
-      />
-    </>
-  }
-
   const { route } = useActions(reduxActions)
+
+  return () => <>
+    {action.val}
+    <Header
+      text={title}
+      onBack={onBack}
+      extra={[
+        <Dropdown.Button
+          key='menu'
+          type='text'
+          className='menu-button'
+          icon={<MenuOutlined/>}
+          menu={{
+            selectable: false,
+            mode: 'vertical',
+            items: menuItems
+          }}
+        />,
+        <Tooltip title={$.SAVE_BUTTON} key='save'>
+          <Button
+            id='save'
+            className='save-button'
+            type='text'
+            shape='circle'
+            icon={<SaveOutlined/>}
+            onClick={onSave}
+          />
+        </Tooltip>
+      ]}
+    />
+  </>
 
   function onExportFile(): void {
     const pathToSave = bridge.saveEPF(system.basename(filePath, '.xml'))
     if (!pathToSave) {
-      void message.error(PATH_TO_SAVE_NOT_FOUND)
+      void message.error($.PATH_TO_SAVE_NOT_FOUND)
       return
     }
 
@@ -178,7 +164,7 @@ function MainHeader(props: FastProps<Props>) {
     })
 
     system.writeFileSync(pathToSave, JSON.stringify(exported, null, '\t'))
-    void message.success(WAS_EXPORTED)
+    void message.success($.WAS_EXPORTED)
   }
 
   function onBack(): void {
@@ -187,16 +173,16 @@ function MainHeader(props: FastProps<Props>) {
 
   function onReset(): void {
     confirm({
-      title: RESET_CONFIRM_MESSAGE,
+      title: $.RESET_CONFIRM_MESSAGE,
       onOk() {
         resetList.forEach(callback => callback())
-        void message.success(SUCCESS_RESET)
+        void message.success($.SUCCESS_RESET)
       }
     })
   }
 
   async function onSave(): Promise<void> {
-    const hideLoading = message.loading(SAVING_MESSAGE)
+    const hideLoading = message.loading($.SAVING_MESSAGE)
     await new Promise<void>(resolve => {
       setTimeout(() => {
         xmlFiles.files.forEach(file => {
@@ -209,7 +195,7 @@ function MainHeader(props: FastProps<Props>) {
         bridge.updateFiles()
 
         hideLoading()
-        message.success(SUCCESS_SAVE_FILES)
+        message.success($.SUCCESS_SAVE_FILES)
         resolve()
       }, 100)
     })
@@ -233,8 +219,6 @@ function MainHeader(props: FastProps<Props>) {
   function ifAdvanced(item: MenuItemsType[number]): MenuItemsType {
     return config.settings.advancedMode ? [item] : []
   }
-
-  return render
 }
 
-export default fafcMemo(MainHeader)
+export default afcMemo(MainHeader)

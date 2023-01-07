@@ -1,16 +1,6 @@
-import { lzn } from '#services'
+import { compareWithGlobal } from '#gl-texts/renderer'
 
-export const {
-  HEIGHT,
-  CRITICAL_DAMAGE_THRESHOLD,
-  DAMAGE_CAPACITY,
-  DAMPING,
-  BROKEN_SUSPENSION_MAX,
-  SUSPENSION_MAX,
-  SUSPENSION_MIN,
-  SUSPENSION,
-  STRENGTH
-} = lzn.localize({
+export default compareWithGlobal({
   RU: {
     HEIGHT: 'Высота',
     STRENGTH: 'Жёсткость',

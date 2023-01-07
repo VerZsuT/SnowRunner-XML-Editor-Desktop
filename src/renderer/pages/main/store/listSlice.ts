@@ -25,12 +25,10 @@ const listSlice = createSlice({
       const favorites = config.favorites
       const name = action.payload
 
-      if (favorites.includes(name)) {
+      if (favorites.includes(name))
         config.favorites = favorites.filter(value => value !== name)
-      }
-      else {
+      else
         config.favorites = [...favorites, name]
-      }
 
       state.favorites = config.favorites
     }

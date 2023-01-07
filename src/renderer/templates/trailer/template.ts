@@ -1,19 +1,6 @@
 import { Float, ForEach, Group, Int, Template } from '../items'
 import { createSelectors, forEach, selector } from '../service'
-import {
-  FUEL_CAPACITY,
-  FUEL_MASS,
-  INNER,
-  MASS,
-  OTHER,
-  PRICE,
-  QUANTITY,
-  REPAIRS_CAPACITY,
-  SUSP_HEIGHT,
-  SUSP_STRENGTH,
-  TRAILER_MASS,
-  WHEEL, WHEELS, WHEEL_REPAIRS_CAPACITY
-} from './texts'
+import $ from './texts'
 
 import type { IXMLTemplate } from '#types'
 
@@ -33,12 +20,12 @@ export default {
   selector: 'Truck[Type="Trailer"]',
   template: new Template({ ...selectors },
     new Group({
-      label: INNER,
+      label: $.INNER,
       provided: selectors.truckData
     },
       new Int({
         attribute: 'FuelCapacity',
-        label: FUEL_CAPACITY,
+        label: $.FUEL_CAPACITY,
         max: 64000,
         step: 10,
         default: 0,
@@ -49,7 +36,7 @@ export default {
       }),
       new Int({
         attribute: 'RepairsCapacity',
-        label: REPAIRS_CAPACITY,
+        label: $.REPAIRS_CAPACITY,
         default: 0,
         areas: {
           yellow: [1000, 5000],
@@ -58,7 +45,7 @@ export default {
       }),
       new Int({
         attribute: 'WheelRepairsCapacity',
-        label: WHEEL_REPAIRS_CAPACITY,
+        label: $.WHEEL_REPAIRS_CAPACITY,
         default: 0,
         areas: {
           yellow: [100, 500],
@@ -68,46 +55,46 @@ export default {
       new Int({
         attribute: 'Quantity',
         selector: selectors.addonSlots,
-        label: QUANTITY
+        label: $.QUANTITY
       })
     ),
-    new Group(MASS,
+    new Group($.MASS,
       new Int({
         attribute: 'Mass',
         selector: selectors.modelBody,
-        label: TRAILER_MASS
+        label: $.TRAILER_MASS
       }),
       new Int({
         attribute: 'Mass',
         selector: selectors.fuelMass,
-        label: FUEL_MASS
+        label: $.FUEL_MASS
       })
     ),
-    new Group(WHEELS,
+    new Group($.WHEELS,
       new ForEach(selectors.wheel,
         new Group({
-          label: WHEEL,
+          label: $.WHEEL,
           provided: selectors.wheel,
           addCounter: true
         },
           new Float({
             attribute: 'SuspensionHeight',
-            label: SUSP_HEIGHT
+            label: $.SUSP_HEIGHT
           }),
           new Float({
             attribute: 'SuspensionStrength',
-            label: SUSP_STRENGTH
+            label: $.SUSP_STRENGTH
           })
         )
       )
     ),
     new Group({
-      label: OTHER,
+      label: $.OTHER,
       provided: selectors.gameData
     },
       new Int({
         attribute: 'Price',
-        label: PRICE
+        label: $.PRICE
       })
     )
   )

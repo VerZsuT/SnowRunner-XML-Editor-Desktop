@@ -27,9 +27,7 @@ class Helpers {
       const stat = lstatSync(filePath)
 
       if (onlyDirs) {
-        if (!stat.isDirectory()) {
-          return
-        }
+        if (!stat.isDirectory()) return
 
         array.push({
           name: file,
@@ -37,15 +35,13 @@ class Helpers {
         })
       }
 
-      if (stat.isDirectory() && recursive) {
+      if (stat.isDirectory() && recursive)
         array = [...array, ...this.findInDir(filePath, false, ext, true)]
-      }
-      else if (file.indexOf(ext) >= 0) {
+      else if (file.indexOf(ext) >= 0)
         array.push({
           name: file.replace(ext, ''),
           path: filePath
         })
-      }
     })
     return array
   }

@@ -1,19 +1,20 @@
 import type { AnyNode, Cheerio, CheerioAPI } from 'cheerio'
 import { load } from 'cheerio'
-import { Bridge } from 'emr-bridge/renderer'
 
 import helpers from './helpers'
 import system from './system'
 
 import { FileType, ParamType } from '#enums'
+import { isNonNullable, isNullable } from '#gl-helpers'
 import xmlFiles from '#pages/main/editor/services/xmlFiles'
+import bridge from '#r-scripts/bridge'
 import { extra, templates } from '#templates'
 import type {
   IExportedData,
   IGroupParams,
   IInputParams,
   IItem, ISelectParams,
-  IXMLTemplate, MPC, TemplateParams
+  IXMLTemplate, TemplateParams
 } from '#types'
 
 interface IHasSelector {
@@ -30,9 +31,9 @@ interface IConfig {
   actions?: IXMLTemplate['actions']
 }
 
+const paths = bridge.paths
+
 class XMLService {
-  private readonly bridge = Bridge.as<MPC>()
-  private readonly paths = this.bridge.paths
   private readonly EXPORTED_FILE_VERSION = '2.0'
 
   /** Добавляет тег в ДОМ файла */
@@ -54,16 +55,15 @@ class XMLService {
     
     if (fileDOM('GameData > UiDesc').length) {
       const uiName = fileDOM('GameData > UiDesc').attr('UiName')
-      if (uiName) {
+      if (uiName)
         name = helpers.getGameText(uiName, item.modId) || uiName
-      }
     }
     return name
   }
 
   exportFile(config: IConfig, saveName: string): boolean {
     const exported = this.exportToObject(config)
-    const path = this.bridge.saveEPF(saveName)
+    const path = bridge.saveEPF(saveName)
     if (!path) return false
     
     system.writeFileSync(path, JSON.stringify(exported, null, '\t'))
@@ -74,9 +74,8 @@ class XMLService {
     const { filePath, mod, dlc, shortMode = false } = config
     let { fileDOM, templateItems, actions = undefined } = config
 
-    if (!fileDOM) {
+    if (!fileDOM)
       [fileDOM, templateItems, actions] = this.processFile(filePath)
-    }
 
     const fileName = system.basename(filePath)
     const globalTemplates = this.getGlobalTemplates()
@@ -85,9 +84,8 @@ class XMLService {
     const main: IExportedData['data'][string] = {}
     const actionsData: IExportedData['actionsData'] = {}
 
-    if (!fileDOM || !templateItems?.length) {
+    if (!fileDOM || !templateItems?.length)
       return {}
-    }
 
     const templates = fileDOM('_templates').eq(0)
 
@@ -95,7 +93,7 @@ class XMLService {
       const { selector, attribute } = item
       const value = this.getValue(fileDOM!, templates, globalTemplates, item)
 
-      if (value !== null && value !== undefined) {
+      if (isNonNullable(value)) {
         main[selector] = {
           ...main[selector],
           [attribute]: value
@@ -105,15 +103,12 @@ class XMLService {
 
     const calcGroup = (item: IGroupParams): void => {
       item.groupItems.forEach(groupItem => {
-        if (groupItem.paramType === ParamType.group) {
+        if (groupItem.paramType === ParamType.group)
           calcGroup(groupItem)
-        }
-        else if (groupItem.type === 'file' && !shortMode) {
+        else if (groupItem.type === 'file' && !shortMode)
           calcFile(groupItem)
-        }
-        else {
+        else
           calcInput(groupItem)
-        }
       })
     }
 
@@ -123,45 +118,38 @@ class XMLService {
       if (item.fileType === FileType.wheels && item.attribute !== 'Type') {
         fileDOM!('Truck > TruckData > CompatibleWheels').map((_, el) => {
           const type = fileDOM!(el).attr('Type')
-          if (!fileNames.includes(<string>type)) {
+          if (!fileNames.includes(<string>type))
             fileNames.push(<string>type)
-          }
         })
       }
 
       fileNames.forEach(fileName => {
-        const pathsToFiles = [`${this.paths.classes}\\${item.fileType}\\${fileName}.xml`]
+        const pathsToFiles = [`${paths.classes}\\${item.fileType}\\${fileName}.xml`]
         let mainPath: string | undefined
         let itemMod = mod
 
-        if (dlc) {
-          pathsToFiles.push(`${this.paths.dlc}\\${dlc}\\classes\\${item.fileType}\\${fileName}.xml`)
-        }
-        else if (mod) {
-          pathsToFiles.push(`${this.paths.modsTemp}\\${mod}\\classes\\${item.fileType}\\${fileName}.xml`)
-        }
+        if (dlc)
+          pathsToFiles.push(`${paths.dlc}\\${dlc}\\classes\\${item.fileType}\\${fileName}.xml`)
+        else if (mod)
+          pathsToFiles.push(`${paths.modsTemp}\\${mod}\\classes\\${item.fileType}\\${fileName}.xml`)
 
         pathsToFiles.forEach(path => {
-          if (system.existsSync(path)) {
+          if (system.existsSync(path))
             mainPath = path
-          }
         })
 
         if (!mainPath) {
           mainPath = this.findFromDLC(fileName, item.fileType!)
           itemMod = undefined
         }
-        if (!mainPath) {
-          return
-        }
+        if (!mainPath) return
 
         const [_, templateItems, actions] = this.processFile(mainPath)
 
         let fileDOM: CheerioAPI | undefined
         xmlFiles.files.forEach(file => {
-          if (file.path === mainPath) {
+          if (file.path === mainPath)
             fileDOM = file.dom
-          }
         })
 
         extraFiles[`${fileName}.xml`] = this.exportToObject({
@@ -178,12 +166,10 @@ class XMLService {
 
     templateItems.forEach(tItem => {
       if (tItem.paramType === ParamType.input) {
-        if (tItem.type === 'file' && !shortMode) {
+        if (tItem.type === 'file' && !shortMode)
           calcFile(tItem)
-        }
-        else {
+        else
           calcInput(tItem)
-        }
       }
       else if (tItem.paramType === ParamType.group) {
         calcGroup(tItem)
@@ -234,22 +220,21 @@ class XMLService {
   }
 
   getGlobalTemplates(): CheerioAPI {
-    const filePath = system.join(this.paths.mainTemp, '[media]/_templates/trucks.xml')
+    const filePath = system.join(paths.mainTemp, '[media]/_templates/trucks.xml')
     const fileData = system.readFileSync(filePath)
 
     return load(fileData, { xmlMode: true })
   }
 
-  processFile(filePath: string): [CheerioAPI, TemplateParams, IXMLTemplate['actions']] {
+  processFile(filePath: string): [CheerioAPI, TemplateParams, IXMLTemplate['actions']] | never {
     const fileData = system.readFileSync(filePath)
     const fileName = system.basename(filePath, '.xml')
     const actions: IXMLTemplate['actions'] = []
     let dom: CheerioAPI
     let name: keyof typeof templates | undefined
 
-    if (!fileData) {
+    if (!fileData)
       throw new Error('File process failed')
-    }
 
     dom = load(fileData, { xmlMode: true })
 
@@ -260,9 +245,8 @@ class XMLService {
       }
     }
 
-    if (!name) {
+    if (!name)
       return [load('<error/>'), [], []]
-    }
 
     const result = this.getParameters(dom.html(), name, fileName)
     dom = load(result.dom, { xmlMode: true })
@@ -270,9 +254,8 @@ class XMLService {
     if (result.actions.length) {
       result.actions.forEach(action => {
         const actionData = action.data
-        if (actionData.isActive(dom, fileName)) {
+        if (actionData.isActive(dom, fileName))
           actions.push(action)
-        }
       })
     }
 
@@ -293,9 +276,8 @@ class XMLService {
     let resultActions: IXMLTemplate['actions'] = []
     let params = templates[name].template.getParams({ fileDOM })
 
-    if (mainActions) {
+    if (mainActions)
       resultActions.push(...mainActions)
-    }
 
     if (extraTemplate) {
       params = [
@@ -304,13 +286,11 @@ class XMLService {
       ]
     }
 
-    if (extraActions) {
+    if (extraActions)
       resultActions.push(...extraActions)
-    }
 
-    if (extraExclude) {
+    if (extraExclude)
       resultActions = resultActions.filter(action => !extraExclude.includes(action))
-    }
 
     return {
       dom: fileDOM.html(),
@@ -332,15 +312,13 @@ class XMLService {
     const innerName = array.slice(array.length - 1)[0]
     const tagName = innerName.split('[')[0]
 
-    if (!el.length) {
+    if (!el.length)
       el = fileDOM(array.slice(0, array.length - 1).join(' > '))
-    }
 
     if (el.length) {
       let templateName = el.attr('_template')
-      if (!templateName) {
+      if (!templateName)
         templateName = this.getParentTemplate(el)
-      }
 
       if (templateName) {
         const template = templates.find(templateName).eq(0)
@@ -365,12 +343,11 @@ class XMLService {
   }
 
   private findFromDLC(fileName: string, type: string): string | undefined {
-    const dlcFolders = system.readdirSync(this.paths.dlc)
+    const dlcFolders = system.readdirSync(paths.dlc)
     for (let i = 0; i < dlcFolders.length; ++i) {
-      const path = system.join(this.paths.dlc, dlcFolders[i], 'classes', type, `${fileName}.xml`)
-      if (system.existsSync(path)) {
+      const path = system.join(paths.dlc, dlcFolders[i], 'classes', type, `${fileName}.xml`)
+      if (system.existsSync(path))
         return path
-      }
     }
   }
 
@@ -382,13 +359,11 @@ class XMLService {
   ): string | number | undefined {
     let value = fileDOM(item.selector).attr(item.attribute) ?? item.value
 
-    if (!value && value !== 0 && templates.length) {
+    if (!value && value !== 0 && templates.length)
       value = this.getFromTemplates(fileDOM, templates, globalTemplates, item)
-    }
 
-    if (value === null || value === undefined) {
+    if (isNullable(value))
       value = item.default
-    }
 
     return value
   }

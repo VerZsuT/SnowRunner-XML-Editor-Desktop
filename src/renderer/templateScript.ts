@@ -1,11 +1,7 @@
-import { Bridge } from 'emr-bridge/renderer'
-
+import bridge from '#r-scripts/bridge'
 import { config } from '#services'
-import type { MPC } from '#types'
 
 class Template {
-  private readonly bridge = Bridge.as<MPC>()
-
   constructor() {
     this.changeTitle()
     this.handleKeys()
@@ -38,11 +34,11 @@ class Template {
   }
 
   private onQuit(): void {
-    this.bridge.quitApp()
+    bridge.quitApp()
   }
 
   private onDevtools(): void {
-    this.bridge.devTools()
+    bridge.devTools()
   }
 }
 

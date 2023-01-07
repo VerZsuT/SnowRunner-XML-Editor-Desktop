@@ -2,20 +2,7 @@ import { Float, ForEach, Group, Int, Select, Template } from '../items'
 import gearPreset from '../presets/gear'
 import unlockGroup from '../presets/unlockGroup'
 import { createSelectors, forEach, forEachBy, selector } from '../service'
-import {
-  ALLOW,
-  AWD_CONSUMPTION_MODIFIER,
-  CRITICAL_DAMAGE_THRESHOLD, DAMAGED_CONSUMPTION_MODIFIER, DAMAGE_CAPACITY, FUEL_CONSUMPTION, GEARBOX_PARAMS,
-  GEARS, GEAR_ALLOW,
-  GEAR_NOT_ALLOW, HIGH_GEAR,
-  IDLE_FUEL_CONSUMPTION,
-  LOWER_GEAR,
-  LOWER_MANUAL_GEAR,
-  LOWER_MINUS_GEAR,
-  LOWER_PLUS_GEAR,
-  NOT_ALLOW,
-  REVERSE_GEAR
-} from './texts'
+import $ from './texts'
 
 import type { IXMLTemplate } from '#types'
 
@@ -44,14 +31,14 @@ export default {
       },
         new Float({
           attribute: 'AWDConsumptionModifier',
-          label: AWD_CONSUMPTION_MODIFIER,
+          label: $.AWD_CONSUMPTION_MODIFIER,
           max: 32,
           min: 0,
           default: 1
         }),
         new Float({
           attribute: 'CriticalDamageThreshold',
-          label: CRITICAL_DAMAGE_THRESHOLD,
+          label: $.CRITICAL_DAMAGE_THRESHOLD,
           max: 0.999,
           min: 0,
           step: 0.01,
@@ -59,7 +46,7 @@ export default {
         }),
         new Int({
           attribute: 'DamageCapacity',
-          label: DAMAGE_CAPACITY,
+          label: $.DAMAGE_CAPACITY,
           max: 64000,
           step: 10,
           default: 0,
@@ -70,7 +57,7 @@ export default {
         }),
         new Float({
           attribute: 'DamagedConsumptionModifier',
-          label: DAMAGED_CONSUMPTION_MODIFIER,
+          label: $.DAMAGED_CONSUMPTION_MODIFIER,
           max: 32,
           min: 0,
           step: 0.01,
@@ -78,14 +65,14 @@ export default {
         }),
         new Float({
           attribute: 'FuelConsumption',
-          label: FUEL_CONSUMPTION,
+          label: $.FUEL_CONSUMPTION,
           max: 10,
           min: 0,
           default: 0.1
         }),
         new Float({
           attribute: 'IdleFuelModifier',
-          label: IDLE_FUEL_CONSUMPTION,
+          label: $.IDLE_FUEL_CONSUMPTION,
           max: 10,
           min: 0,
           default: 0.3
@@ -93,61 +80,61 @@ export default {
         new Select({
           attribute: 'IsManualLowGear',
           selector: selectors.gearboxParams,
-          label: LOWER_MANUAL_GEAR,
+          label: $.LOWER_MANUAL_GEAR,
           options: [
-            ['true', ALLOW],
-            ['false', NOT_ALLOW]
+            ['true', $.ALLOW],
+            ['false', $.NOT_ALLOW]
           ],
           default: 1
         }),
         new Group({
-          label: GEARBOX_PARAMS,
+          label: $.GEARBOX_PARAMS,
           provided: selectors.gearboxParams
         },
           new Select({
             attribute: 'IsHighGearExists',
-            label: HIGH_GEAR,
+            label: $.HIGH_GEAR,
             options: [
-              ['true', GEAR_ALLOW],
-              ['false', GEAR_NOT_ALLOW]
+              ['true', $.GEAR_ALLOW],
+              ['false', $.GEAR_NOT_ALLOW]
             ],
             default: 0
           }),
           new Select({
             attribute: 'IsLowerGearExists',
-            label: LOWER_GEAR,
+            label: $.LOWER_GEAR,
             options: [
-              ['true', GEAR_ALLOW],
-              ['false', GEAR_NOT_ALLOW]
+              ['true', $.GEAR_ALLOW],
+              ['false', $.GEAR_NOT_ALLOW]
             ],
             default: 0
           }),
           new Select({
             attribute: 'IsLowerPlusGearExists',
-            label: LOWER_PLUS_GEAR,
+            label: $.LOWER_PLUS_GEAR,
             options: [
-              ['true', GEAR_ALLOW],
-              ['false', GEAR_NOT_ALLOW]
+              ['true', $.GEAR_ALLOW],
+              ['false', $.GEAR_NOT_ALLOW]
             ],
             default: 0
           }),
           new Select({
             attribute: 'IsLowerMinusGearExists',
-            label: LOWER_MINUS_GEAR,
+            label: $.LOWER_MINUS_GEAR,
             options: [
-              ['true', GEAR_ALLOW],
-              ['false', GEAR_NOT_ALLOW]
+              ['true', $.GEAR_ALLOW],
+              ['false', $.GEAR_NOT_ALLOW]
             ],
             default: 0
           })
         ),
-        new Group(GEARS,
+        new Group($.GEARS,
           new Group({
-            label: REVERSE_GEAR,
+            label: $.REVERSE_GEAR,
             provided: selectors.reverseGear
           }, ...gearPreset),
           new Group({
-            label: HIGH_GEAR,
+            label: $.HIGH_GEAR,
             provided: selectors.highGear
           }, ...gearPreset),
           new ForEach(selectors.gearItem,

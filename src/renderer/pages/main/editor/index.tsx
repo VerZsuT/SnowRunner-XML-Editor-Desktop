@@ -1,5 +1,3 @@
-import type { ReactNode } from 'react'
-
 import { Collapse, Typography } from 'antd'
 import type { CheerioAPI } from 'cheerio'
 import { pafcMemo, useActions } from 'react-afc'
@@ -13,7 +11,7 @@ import { getResetProvider, ResetContext } from './helpers/getResetProvider'
 import importService from './services/import'
 import template from './services/template'
 import xmlFiles from './services/xmlFiles'
-import { PROC_FILE_ERROR } from './texts'
+import $ from './texts'
 
 import Menu from '#components/Menu'
 import { FileType, Page } from '#enums'
@@ -44,43 +42,41 @@ function Editor() {
     type: FileType.truck
   }, true)
 
-  function render(): ReactNode {
-    return <>
-      <Menu/>
-      {hasError
-        ? <>
-          <ErrorHeader/>
-          <div className='error-container'>
-            <Text>{PROC_FILE_ERROR}</Text>
-          </div>
-        </>
-        : <>
-          <MainHeader
-            fileDOM={fileDOM}
-            filePath={filePath}
-            mod={mod}
-            dlc={dlc}
-            actions={actions}
-            tableItems={tableItems}
-            resetList={resetList}
-          />
-          <FileDataContext.Provider value={fileDataContext}>
-            <ResetContext.Provider value={resetContext}>
-              <FileInfoContext.Provider value={fileInfoContext}>
-                <div className='table'>
-                  <Collapse accordion>
-                    {template.parseItems(tableItems)}
-                  </Collapse>
-                </div>
-              </FileInfoContext.Provider>
-            </ResetContext.Provider>
-          </FileDataContext.Provider>
-        </>
-      }
-    </>
-  }
-
   const { route } = useActions(reduxActions)
+
+  return () => <>
+    <Menu/>
+    {hasError
+      ? <>
+        <ErrorHeader/>
+        <div className='error-container'>
+          <Text>{$.PROC_FILE_ERROR}</Text>
+        </div>
+      </>
+      : <>
+        <MainHeader
+          fileDOM={fileDOM}
+          filePath={filePath}
+          mod={mod}
+          dlc={dlc}
+          actions={actions}
+          tableItems={tableItems}
+          resetList={resetList}
+        />
+        <FileDataContext.Provider value={fileDataContext}>
+          <ResetContext.Provider value={resetContext}>
+            <FileInfoContext.Provider value={fileInfoContext}>
+              <div className='table'>
+                <Collapse accordion>
+                  {template.parseItems(tableItems)}
+                </Collapse>
+              </div>
+            </FileInfoContext.Provider>
+          </ResetContext.Provider>
+        </FileDataContext.Provider>
+      </>
+    }
+  </>
 
   function allowDropImport(filePath: string, fileDOM: CheerioAPI, actions: IXMLTemplate['actions']): void {
     addEventListener(window, 'drop', event => {
@@ -91,8 +87,6 @@ function Editor() {
       event.preventDefault()
     })
   }
-
-  return render
 }
 
 export default pafcMemo(Editor)

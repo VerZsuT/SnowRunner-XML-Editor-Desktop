@@ -1,7 +1,7 @@
 enum GroupTab {
-  main = 'main',
-  dlc = 'dlc',
-  mods = 'mods',
+  main      = 'main',
+  dlc       = 'dlc',
+  mods      = 'mods',
   favorites = 'favorites'
 }
 

@@ -2,13 +2,11 @@ import { existsSync, readdirSync, readFileSync, rmSync } from 'fs'
 import { homedir, userInfo } from 'os'
 import { basename, extname, join } from 'path'
 
-import { Main } from 'emr-bridge/preload'
-
 import { Category, PreloadType, SrcType } from '#enums'
+import main from '#r-scripts/main'
 import preload from '#services/preload'
-import type { IFindItem, IItem, IListPreload, MPC } from '#types'
+import type { IFindItem, IItem, IListPreload } from '#types'
 
-const main = Main.as<MPC>()
 const { paths, config } = main
 const { dlc, mods } = config
 
@@ -49,9 +47,8 @@ class ListsPreload {
           if (existsSync(join(tempModFolder, 'classes'))) {
             const pathToModio = join(modFolder, 'modio.json')
             let modName = basename(file.name, '.pak')
-            if (existsSync(pathToModio)) {
+            if (existsSync(pathToModio))
               modName = JSON.parse(readFileSync(pathToModio).toString()).name
-            }
 
             out.push({
               name: modName,
@@ -67,9 +64,8 @@ class ListsPreload {
       let isExists = false
 
       for (const foundedModName in out) {
-        if (out[foundedModName].path === enabledModPath) {
+        if (out[foundedModName].path === enabledModPath)
           isExists = true
-        }
       }
 
       if (!isExists) out.push(mods.items[enabledModName])
@@ -85,9 +81,8 @@ class ListsPreload {
     const name = basename(path)
     const id = basename(path, '.pak')
     main.unpack(path, join(paths.modsTemp, id), true)
-    if (!existsSync(join(paths.modsTemp, id, 'classes'))) {
+    if (!existsSync(join(paths.modsTemp, id, 'classes')))
       return
-    }
 
     return { path, name }
   }
@@ -100,12 +95,10 @@ class ListsPreload {
         const path = `${dlcItem.path}/classes`
         let items: IFindItem[] = []
 
-        if (category === Category.trucks) {
+        if (category === Category.trucks)
           items = main.findInDir(join(path, 'trucks'))
-        }
-        else if (category === Category.trailers) {
+        else if (category === Category.trailers)
           items = main.findInDir(join(path, 'trucks/trailers'))
-        }
 
         array.push({
           dlcName: dlcItem.name,
@@ -124,12 +117,10 @@ class ListsPreload {
         const item = mods.items[modId]
         let items: IFindItem[] = []
 
-        if (category === Category.trucks) {
+        if (category === Category.trucks)
           items = main.findInDir(join(paths.modsTemp, modId, 'classes/trucks'), false, '.xml', true)
-        }
-        else if (category === Category.trailers) {
+        else if (category === Category.trailers)
           items = main.findInDir(join(paths.modsTemp, modId, 'classes/trucks'), false, '.xml', true)
-        }
 
         array.push({
           id: modId,
@@ -141,13 +132,11 @@ class ListsPreload {
       return array
     }
 
-    if (category === Category.trucks) {
+    if (category === Category.trucks)
       return <IItem[]> main.findInDir(join(paths.classes, 'trucks'))
-    }
 
-    if (category === Category.trailers) {
+    if (category === Category.trailers)
       return <IItem[]> main.findInDir(join(paths.classes, 'trucks/trailers'))
-    }
 
     return []
   }

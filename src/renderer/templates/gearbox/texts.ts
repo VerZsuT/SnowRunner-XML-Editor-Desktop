@@ -1,25 +1,6 @@
-import { lzn } from '#services'
+import { compareWithGlobal } from '#gl-texts/renderer'
 
-export const {
-  ALLOW,
-  GEAR_ALLOW,
-  GEAR_NOT_ALLOW,
-  HIGH_GEAR,
-  NOT_ALLOW,
-  REVERSE_GEAR,
-  LOWER_GEAR,
-  LOWER_MINUS_GEAR,
-  LOWER_MANUAL_GEAR,
-  LOWER_PLUS_GEAR,
-  GEARS,
-  CRITICAL_DAMAGE_THRESHOLD,
-  DAMAGE_CAPACITY,
-  DAMAGED_CONSUMPTION_MODIFIER,
-  FUEL_CONSUMPTION,
-  IDLE_FUEL_CONSUMPTION,
-  AWD_CONSUMPTION_MODIFIER,
-  GEARBOX_PARAMS
-} = lzn.localize({
+export default compareWithGlobal({
   RU: {
     LOWER_MANUAL_GEAR: 'Точная регулировка',
     AWD_CONSUMPTION_MODIFIER: 'Модификатор потребления топлива при полном приводе',

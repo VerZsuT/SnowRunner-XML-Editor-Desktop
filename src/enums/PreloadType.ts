@@ -1,6 +1,6 @@
 enum PreloadType {
   common = 'common',
-  lists = 'lists',
+  lists  = 'lists',
   editor = 'editor'
 }
 

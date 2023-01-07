@@ -10,13 +10,13 @@ import type { IDownloadWindow } from '#types'
 class LoadingWindow extends ModalWindow {
   protected type = ProgramWindow.Loading
   protected args = {
-    path: entries.general.loading,
-    preload: entries.preload.loading,
-    width: 280,
-    minWidth: 280,
-    height: 130,
-    minHeight: 150,
-    frame: false
+    path      : entries.general.loading,
+    preload   : entries.preload.loading,
+    width     : 280,
+    minWidth  : 280,
+    height    : 130,
+    minHeight : 150,
+    frame     : false
   }
 
   constructor() { super(); this.register() }
@@ -36,11 +36,11 @@ class LoadingWindow extends ModalWindow {
       loadingWindow.webContents.postMessage(channel, arg)
     }
 
-    loadingWindow.setText = (text: string) => postMessage('fileName', text)
-    loadingWindow.setCount = (count: number) => postMessage('count', count)
-    loadingWindow.setPercent = (percent: string | number) => postMessage('percent', percent)
-    loadingWindow.success = () => postMessage('success', true)
-    loadingWindow.download = () => postMessage('download', true)
+    loadingWindow.setText     = (text: string)  => postMessage('fileName', text)
+    loadingWindow.setCount    = (count: number) => postMessage('count', count)
+    loadingWindow.setPercent  = (percent: string | number) => postMessage('percent', percent)
+    loadingWindow.success     = () => postMessage('success', true)
+    loadingWindow.download    = () => postMessage('download', true)
     loadingWindow.showAndWait = () => new Promise<void>(resolve => {
       loadingWindow.show()
       setTimeout(resolve, 100)

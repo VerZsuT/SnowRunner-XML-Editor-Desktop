@@ -30,9 +30,8 @@ class Texts {
 
   /** Обработать файл с переводом из `initial.pak` (текущий выбранный язык в программе) */
   async getFromGame(): Promise<void> {
-    if (existsSync(paths.texts)) {
+    if (existsSync(paths.texts))
       this.gameTexts.main = JSON.parse(readFileSync(paths.texts).toString())
-    }
 
     if (existsSync(paths.strings)) {
       const stringsFilePath = join(paths.strings, `strings_${this.locals[config.lang]}.str`)
@@ -50,9 +49,8 @@ class Texts {
     for (const modId in config.mods.items) {
       if (existsSync(join(paths.modsTemp, modId, 'texts'))) {
         const stringsFilePath = join(paths.modsTemp, modId, `texts/strings_${this.locals[config.lang]}.str`)
-        if (existsSync(stringsFilePath)) {
+        if (existsSync(stringsFilePath))
           mods[modId] = this.parseFile(readFileSync(stringsFilePath, { encoding: 'utf16le' }).toString(), true)
-        }
       }
     }
     this.gameTexts.mods = mods
@@ -115,9 +113,8 @@ class Texts {
 
   private startsWith(key: string, array: string[]): boolean {
     for (let i = 0; i < array.length; ++i) {
-      if (key.startsWith(array[i])) {
+      if (key.startsWith(array[i]))
         return true
-      }
     }
 
     return false

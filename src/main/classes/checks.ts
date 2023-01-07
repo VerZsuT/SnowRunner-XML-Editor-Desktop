@@ -16,14 +16,7 @@ import paths from './paths'
 import windows from './windows'
 
 import { ProgramWindow } from '#enums'
-import {
-  ADMIN_REQUIRED_MESSAGE,
-  ALLOW_NEW_VERSION,
-  CLASSES_NOT_FOUND,
-  DLC_FOLDER_NOT_FOUND,
-  INITIAL_NOT_FOUND,
-  NOTIFICATION
-} from '#m-scripts/programTexts'
+import $ from '#m/texts'
 import { windowsManager } from '#windows'
 
 class Checks {
@@ -43,7 +36,7 @@ class Checks {
     catch {
       windows.loading?.setPercent(0)
       dialogs.alert({
-        message: ADMIN_REQUIRED_MESSAGE,
+        message: $.ADMIN_REQUIRED_MESSAGE,
         type: 'warning',
         buttons: ['Exit'],
         title: 'Error'
@@ -61,12 +54,10 @@ class Checks {
   async checkInitialChanges(): Promise<void> {
     if (!existsSync(join(paths.mainTemp, this.MEDIA_FOLDER)) || hash.getSize(config.initial) !== config.sizes.initial) {
       if (existsSync(config.initial)) {
-        if (!existsSync(paths.backupInitial)) {
+        if (!existsSync(paths.backupInitial))
           await backup.save()
-        }
-        else {
+        else
           await archive.unpackMain(false)
-        }
       }
     }
   }
@@ -96,15 +87,11 @@ class Checks {
             config.version.includes('-beta')
             && config.version.split('-beta')[0] === data.latestVersion)
           ) {
-            if (config.version >= data.minVersion) {
+            if (config.version >= data.minVersion)
               void windowsManager.open(ProgramWindow.Update, data.latestVersion)
-            }
-            else {
-              notifications.show(NOTIFICATION, ALLOW_NEW_VERSION)
-                .then(() => {
-                  void shell.openExternal(paths.downloadPage)
-                })
-            }
+            else
+              notifications.show($.NOTIFICATION, $.ALLOW_NEW_VERSION)
+                .then(() => void shell.openExternal(paths.downloadPage))
           }
         })
       })
@@ -118,17 +105,17 @@ class Checks {
    */
   hasAllPaths(): boolean {
     if (!existsSync(config.initial)) {
-      dialogs.error(INITIAL_NOT_FOUND)
+      dialogs.error($.INITIAL_NOT_FOUND)
       return false
     }
 
     if (!existsSync(paths.classes)) {
-      dialogs.error(CLASSES_NOT_FOUND)
+      dialogs.error($.CLASSES_NOT_FOUND)
       return false
     }
 
     if (config.settings.DLC && !existsSync(paths.dlc)) {
-      dialogs.error(DLC_FOLDER_NOT_FOUND)
+      dialogs.error($.DLC_FOLDER_NOT_FOUND)
       config.settings.DLC = false
     }
 

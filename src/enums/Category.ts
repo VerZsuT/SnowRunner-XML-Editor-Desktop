@@ -1,5 +1,5 @@
 enum Category {
-  trucks = 'trucks',
+  trucks   = 'trucks',
   trailers = 'trailers'
 }
 

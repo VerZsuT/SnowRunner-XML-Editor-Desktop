@@ -1,6 +1,7 @@
 import helpers from './helpers'
 
 import { ParamType } from '#enums'
+import { isString } from '#gl-helpers'
 import { getGameText } from '#templates/service'
 import type {
   GroupTypedProps, IGroupParams,
@@ -27,7 +28,7 @@ class Group implements ITemplateItem<[IGroupParams] | any[]> {
   ) {
     this.children = children
     
-    if (typeof props === 'string')
+    if (isString(props))
       this.construct({ label: props })
     else
       this.construct(props)
@@ -39,7 +40,7 @@ class Group implements ITemplateItem<[IGroupParams] | any[]> {
     let groupLabel: string | undefined
     let resGroupLabel: string | undefined
 
-    if (typeof this.label === 'string') {
+    if (isString(this.label)) {
       groupLabel = this.label
     }
     else {

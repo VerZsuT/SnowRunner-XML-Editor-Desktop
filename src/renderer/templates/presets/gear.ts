@@ -1,11 +1,8 @@
 import { Float } from '../items'
 
-import { lzn } from '#services'
+import { compareWithGlobal } from '#gl-texts/renderer'
 
-const {
-  ANGEL_VELOCITY,
-  FUEL_MODIFIER
-} = lzn.localize({
+const $ = compareWithGlobal({
   RU: {
     ANGEL_VELOCITY: 'Макс. угловая скорость колеса',
     FUEL_MODIFIER: 'Модификатор потребления топлива'
@@ -27,13 +24,13 @@ const {
 export default [
   new Float({
     attribute: 'AngVel',
-    label: ANGEL_VELOCITY,
+    label: $.ANGEL_VELOCITY,
     max: 32,
     default: 0
   }),
   new Float({
     attribute: 'FuelModifier',
-    label: FUEL_MODIFIER,
+    label: $.FUEL_MODIFIER,
     max: 10,
     min: 0,
     default: 1

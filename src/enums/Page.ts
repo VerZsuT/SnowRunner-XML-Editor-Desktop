@@ -1,6 +1,6 @@
 enum Page {
   editor = 'editor',
-  lists = 'lists'
+  lists  = 'lists'
 }
 
 export default Page

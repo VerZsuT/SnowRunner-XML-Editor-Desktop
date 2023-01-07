@@ -1,4 +1,4 @@
-import type { MouseEvent, ReactNode } from 'react'
+import type { MouseEvent } from 'react'
 
 import type { MenuProps } from 'antd'
 import { Menu } from 'antd'
@@ -9,7 +9,6 @@ interface ContextMenuProps {
   items: MenuProps['items']
   className?: string
   isShow: boolean
-
   onClose?(): void
 }
 
@@ -36,7 +35,7 @@ function useContextMenu() {
   }
 
   const Component = fafcMemo<ContextMenuProps>(props => {
-    function render(): ReactNode {
+    return () => {
       const { items, className = '' } = props.curr
       const { x, y, isShow } = state
 
@@ -62,8 +61,6 @@ function useContextMenu() {
       state.isShow = false
       props.curr.onClose?.()
     }
-
-    return render
   })
 
   return {

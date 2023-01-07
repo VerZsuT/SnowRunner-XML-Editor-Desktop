@@ -1,11 +1,9 @@
-import type { ReactNode } from 'react'
-
 import { LoadingOutlined } from '@ant-design/icons'
 import { Progress, Spin, Typography } from 'antd'
 import { pafc, useReactive } from 'react-afc'
 
 import { ProgramWindow } from '#enums'
-import { LOADING } from '#globalTexts/renderer'
+import $ from '#gl-texts/renderer'
 import useWindowReady from '#helpers/useWindowReady'
 import { helpers, ipc } from '#services'
 
@@ -19,13 +17,13 @@ const Loading = pafc(() => {
     loadedCount: 0,
     allCount: 0,
     percent: 0,
-    title: LOADING,
+    title: $.LOADING,
     isDownload: false
   })
   useWindowReady(ProgramWindow.Loading)
   useIPC()
 
-  function render(): ReactNode {
+  return () => {
     const { title, isDownload, percent, loadedCount, allCount } = state
 
     return (
@@ -62,8 +60,6 @@ const Loading = pafc(() => {
     ipc.on('percent', (_, percent) => state.percent = percent)
     ipc.on('count', (_, allCount) => state.allCount = allCount)
   }
-
-  return render
 })
 
 helpers.renderComponent(<Loading/>)

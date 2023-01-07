@@ -4,7 +4,8 @@ class Aliases {
   get = () => ({
     '#consts': this.src('/consts'),
     '#types': this.src('/types'),
-    '#globalTexts': this.src('/globalTexts'),
+    '#gl-texts': this.src('/texts'),
+    '#gl-helpers': this.src('/helpers'),
     '#enums': this.src('/enums'),
     '#images': this.src('/images'),
     '#classes': this.main('/classes'),
@@ -22,21 +23,10 @@ class Aliases {
     '#src': this.src()
   })
 
-  resolve(...paths) {
-    return join(__dirname, ...paths)
-  }
-
-  src(path = '') {
-    return this.resolve(`../../src${path}`)
-  }
-
-  main(path = '') {
-    return this.src(`/main${path}`)
-  }
-
-  renderer(path = '') {
-    return this.src(`/renderer${path}`)
-  }
+  resolve = (...paths) => join(__dirname, ...paths)
+  src = (path = '') => this.resolve(`../../src${path}`)
+  main = (path = '') => this.src(`/main${path}`)
+  renderer = (path = '') => this.src(`/renderer${path}`)
 }
 
 module.exports = new Aliases().get()

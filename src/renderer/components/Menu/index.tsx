@@ -1,144 +1,65 @@
-import type { ReactNode } from 'react'
-
 import { Menu as ANTMenu } from 'antd'
-import { Bridge } from 'emr-bridge/renderer'
 import { pafcMemo } from 'react-afc'
 
-import {
-  BACKUP_MENU_LABEL,
-  EXIT_MENU_ITEM_LABEL,
-  FILE_MENU_LABEL,
-  HELP_MENU_LABEL,
-  HOW_TO_USE_TITLE,
-  RESTORE_MENU_ITEM_LABEL,
-  SETTINGS_MENU_LABEL,
-  UNINSTALL_MENU_ITEM_LABEL,
-  VERSION_MENU_ITEM_LABEL
-} from '../texts'
+import $ from '../texts'
+import MenuController from './controller'
 import type { MenuItemType } from './items'
 import { Divider, MenuItem, NestedMenuItem } from './items'
-
-import menuService from '#components/Menu/service'
-import { BuildType, ProgramWindow } from '#enums'
-import { OPEN_BUTTON, RESET_MENU_ITEM_LABEL, SAVE_BUTTON } from '#globalTexts/renderer'
-import { config } from '#services'
-import type { MPC } from '#types'
-
-const bridge = Bridge.as<MPC>()
-const paths = bridge.paths
+import MenuModel from './model'
 
 /** Верхнее сервисное меню */
 function Menu() {
-  const MOD_IO_LINK = 'https://snowrunner.mod.io/guides/snowrunner-xml-editor'
-  const GITHUB_LINK = 'https://github.com/VerZsuT/SnowRunner-XML-Editor-Desktop'
-  const YOUTUBE_LINK = 'https://youtube.com/playlist?list=PLDwd4yUwzS2VtWCpC9X6MXm47Kv_s_mq2'
+  const m = new MenuModel()
+  const c = new MenuController(m)
 
-  const hasInitial = !config.initial
-  const isDev = config.buildType === BuildType.dev
-
-  const fileMenu: MenuItemType[] = [
+  const file: MenuItemType[] = [
     ...onDev(
-      MenuItem(
-        'Export defaults',
-        () => menuService.exportDefaults()
-      )
+      MenuItem($.EXPORT_DEFAULTS_TITLE, c.exportDefaults)
     ),
-    MenuItem(
-      EXIT_MENU_ITEM_LABEL,
-      () => bridge.quitApp()
-    )
+    MenuItem($.EXIT_MENU_ITEM_LABEL, c.quitApp)
   ]
 
-  const backupMenu: MenuItemType[] = [
-    MenuItem(
-      OPEN_BUTTON,
-      () => bridge.openPath(paths.backupFolder)
-    ),
+  const backup: MenuItemType[] = [
+    MenuItem($.OPEN_BUTTON, c.openBackupFolder),
     Divider(),
-    MenuItem(
-      SAVE_BUTTON,
-      () => bridge.copyBackup()
-    ),
-    MenuItem(
-      RESTORE_MENU_ITEM_LABEL,
-      () => bridge.recoverFromBackup()
-    )
+    MenuItem($.SAVE_BUTTON, c.saveBackup),
+    MenuItem($.RESTORE_MENU_ITEM_LABEL, c.restoreBackup)
   ]
 
-  const settingsMenu: MenuItemType[] = [
-    MenuItem(
-      SETTINGS_MENU_LABEL,
-      () => bridge.openWindow(ProgramWindow.Settings),
-      hasInitial
-    ),
+  const settings: MenuItemType[] = [
+    MenuItem($.SETTINGS_MENU_LABEL, c.openSettings, m.hasInitial),
     Divider(),
-    MenuItem(
-      RESET_MENU_ITEM_LABEL,
-      () => bridge.resetConfig(),
-      hasInitial
-    ),
-    MenuItem(
-      UNINSTALL_MENU_ITEM_LABEL,
-      () => bridge.runUninstall()
-    )
+    MenuItem($.RESET_MENU_ITEM_LABEL, c.resetConfig, m.hasInitial),
+    MenuItem($.UNINSTALL_MENU_ITEM_LABEL, c.uninstall)
   ]
 
-  const helpMenu: MenuItemType[] = [
-    MenuItem(
-      VERSION_MENU_ITEM_LABEL,
-      () => bridge.openWindow(ProgramWindow.WhatsNew)
-    ),
+  const help: MenuItemType[] = [
+    MenuItem($.VERSION_MENU_ITEM_LABEL, c.showWhatsNew),
     Divider(),
-    MenuItem(
-      HOW_TO_USE_TITLE,
-      () => bridge.openLink(MOD_IO_LINK)
-    ),
-    MenuItem(
-      'GitHub',
-      () => bridge.openLink(GITHUB_LINK)
-    ),
-    MenuItem(
-      'YouTube(RU)',
-      () => bridge.openLink(YOUTUBE_LINK)
-    )
+    MenuItem($.HOW_TO_USE_TITLE, c.openModio),
+    MenuItem($.GITHUB_TITLE, c.openGithub),
+    MenuItem($.YOUTUBE_TITLE, c.openYoutube)
   ]
 
-  const menuItems: MenuItemType[] = [
-    NestedMenuItem(
-      FILE_MENU_LABEL,
-      fileMenu
-    ),
-    NestedMenuItem(
-      BACKUP_MENU_LABEL,
-      backupMenu,
-      hasInitial
-    ),
-    NestedMenuItem(
-      SETTINGS_MENU_LABEL,
-      settingsMenu
-    ),
-    NestedMenuItem(
-      HELP_MENU_LABEL,
-      helpMenu
-    )
+  const items: MenuItemType[] = [
+    NestedMenuItem($.FILE_MENU_LABEL, file),
+    NestedMenuItem($.BACKUP_MENU_LABEL, backup, m.hasInitial),
+    NestedMenuItem($.SETTINGS_MENU_LABEL, settings),
+    NestedMenuItem($.HELP_MENU_LABEL, help)
   ]
 
-  function render(): ReactNode {
-    return (
-      <ANTMenu
-        className='menu'
-        mode='horizontal'
-        selectable={false}
-        items={menuItems}
-      />
-    )
-  }
+  return () => (
+    <ANTMenu
+      className='menu'
+      mode='horizontal'
+      selectable={false}
+      items={items}
+    />
+  )
 
   function onDev(...items: MenuItemType[]): MenuItemType[] {
-    return isDev ? items : []
+    return m.isDev ? items : []
   }
-
-  return render
 }
 
 export default pafcMemo(Menu)

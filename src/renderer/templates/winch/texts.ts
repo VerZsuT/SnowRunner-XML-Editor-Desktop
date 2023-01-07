@@ -1,12 +1,6 @@
-import { lzn } from '#services'
+import { compareWithGlobal } from '#gl-texts/renderer'
 
-export const {
-  BATTERY,
-  ENGINE,
-  IS_ENGINE_IGNITION_REQUIRED,
-  LENGTH,
-  STRENGTH_MULT
-} = lzn.localize({
+export default compareWithGlobal({
   RU: {
     LENGTH: 'Длина',
     STRENGTH_MULT: 'Сила',

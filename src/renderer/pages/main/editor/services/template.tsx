@@ -16,12 +16,10 @@ class TemplateService {
       const isGroup = item.paramType === ParamType.group
       const hasItems = item.groupItems.length > 0
   
-      if (isGroup && hasItems) {
+      if (isGroup && hasItems)
         children.push(<Group key={item.selector} item={item}/>)
-      }
-      else if (!isGroup) {
+      else if (!isGroup)
         children.push(<Parameter key={item.selector} item={item}/>)
-      }
     })
   
     return children

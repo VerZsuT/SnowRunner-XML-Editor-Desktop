@@ -1,11 +1,6 @@
-import { lzn } from '#services'
+import { compareWithGlobal } from '#gl-texts/renderer'
 
-export const {
-  ADVANCED_MODE_LABEL,
-  UPDATES_LABEL,
-  DLC_LABEL,
-  MODS_LABEL
-} = lzn.localize({
+export default compareWithGlobal({
   RU: {
     DLC_LABEL: 'Редактировать DLC',
     MODS_LABEL: 'Редактировать модификации',

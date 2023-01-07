@@ -13,7 +13,7 @@ import texts from '#classes/texts'
 import windows from '#classes/windows'
 import { APP_ID } from '#consts'
 import { BuildType, ProgramWindow } from '#enums'
-import { LOADING } from '#globalTexts/main'
+import $ from '#gl-texts/main'
 import { windowsManager } from '#windows'
 
 import '#classes/public'
@@ -30,12 +30,10 @@ class SnowRunnerXMLEditor {
   }
 
   private start(): void {
-    if (config.buildType === BuildType.dev) {
+    if (config.buildType === BuildType.dev)
       this.installDevtools()
-    }
-    else {
+    else
       app.whenReady().then(() => this.openProgram())
-    }
   }
 
   private async openProgram(): Promise<void> {
@@ -43,7 +41,7 @@ class SnowRunnerXMLEditor {
     const loading = windows.loading
 
     await loading?.showAndWait()
-    loading?.setText(LOADING)
+    loading?.setText($.LOADING)
 
     if (!checks.hasAdminPrivileges()) return
 
@@ -98,9 +96,8 @@ class SnowRunnerXMLEditor {
   private handleQuit(): void {
     app.on('before-quit', () => {
       exitParams.quit = true
-      if (exitParams.saveConfig) {
+      if (exitParams.saveConfig)
         config.save()
-      }
 
       if (existsSync(paths.updateRoot)) {
         rmSync(paths.root, { recursive: true })
@@ -152,12 +149,10 @@ class SnowRunnerXMLEditor {
       else {
         await archive.unpackMod(mod.path)
 
-        if (!existsSync(join(paths.modsTemp, modName, 'classes'))) {
+        if (!existsSync(join(paths.modsTemp, modName, 'classes')))
           deleteFromList(config.mods.items[modName].name)
-        }
-        else {
+        else
           --counter
-        }
 
         if (counter === 0) {
           texts.getFromMods()
@@ -166,9 +161,8 @@ class SnowRunnerXMLEditor {
       }
     }
 
-    if (counter <= 0) {
+    if (counter <= 0)
       texts.getFromMods()
-    }
   }
 }
 

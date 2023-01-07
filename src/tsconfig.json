@@ -18,81 +18,30 @@
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "paths": {
-      "#types": [
-        "types/index"
-      ],
-      "#types/*": [
-        "types/*"
-      ],
-      "#consts": [
-        "consts"
-      ],
-      "#enums": [
-        "enums/index"
-      ],
-      "#enums/*": [
-        "enums/*"
-      ],
-      "#globalTexts/*": [
-        "globalTexts/*"
-      ],
-      "#m-scripts": [
-        "main/scripts/index"
-      ],
-      "#m-scripts/*": [
-        "main/scripts/*"
-      ],
-      "#r-scripts/*": [
-        "renderer/scripts/*"
-      ],
-      "#classes": [
-        "main/classes/index"
-      ],
-      "#classes/*": [
-        "main/classes/*"
-      ],
-      "#windows": [
-        "main/windows/index.ts"
-      ],
-      "#windows/*": [
-        "main/windows/*"
-      ],
-      "#services": [
-        "renderer/services/index"
-      ],
-      "#services/*": [
-        "renderer/services/*"
-      ],
-      "#components/*": [
-        "renderer/components/*"
-      ],
-      "#helpers/*": [
-        "renderer/helpers/*"
-      ],
-      "#hooks/*": [
-        "renderer/hooks/*"
-      ],
-      "#pages/*": [
-        "renderer/pages/*"
-      ],
-      "#templates": [
-        "renderer/templates/index"
-      ],
-      "#templates/*": [
-        "renderer/templates/*"
-      ],
-      "#m/*": [
-        "main/*"
-      ],
-      "#r/*": [
-        "renderer/*"
-      ],
-      "#images/*": [
-        "images/*"
-      ],
-      "#src/*": [
-        "src/*"
-      ]
+      "#types"        : [ "types/index"              ],
+      "#types/*"      : [ "types/*"                  ],
+      "#consts"       : [ "consts"                   ],
+      "#enums"        : [ "enums/index"              ],
+      "#enums/*"      : [ "enums/*"                  ],
+      "#gl-texts/*"   : [ "texts/*"                  ],
+      "#r-scripts/*"  : [ "renderer/scripts/*"       ],
+      "#classes"      : [ "main/classes/index"       ],
+      "#classes/*"    : [ "main/classes/*"           ],
+      "#windows"      : [ "main/windows/index.ts"    ],
+      "#windows/*"    : [ "main/windows/*"           ],
+      "#services"     : [ "renderer/services/index"  ],
+      "#services/*"   : [ "renderer/services/*"      ],
+      "#components/*" : [ "renderer/components/*"    ],
+      "#helpers/*"    : [ "renderer/helpers/*"       ],
+      "#hooks/*"      : [ "renderer/hooks/*"         ],
+      "#pages/*"      : [ "renderer/pages/*"         ],
+      "#templates"    : [ "renderer/templates/index" ],
+      "#templates/*"  : [ "renderer/templates/*"     ],
+      "#m/*"          : [ "main/*"                   ],
+      "#r/*"          : [ "renderer/*"               ],
+      "#gl-helpers"   : [ "helpers"                  ],
+      "#images/*"     : [ "images/*"                 ],
+      "#src/*"        : [ "src/*"                    ]
     }
   },
   "exclude": ["node_modules"]

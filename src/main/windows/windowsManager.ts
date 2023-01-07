@@ -22,7 +22,7 @@ class Manager {
     })
   }
 
-  private getCreator(window: ProgramWindow): WindowCreator {
+  private getCreator(window: ProgramWindow): WindowCreator | never {
     const creator = this.windows[window]
     if (!creator)
       throw new Error(`Window creator for '${window}' is not defined`)

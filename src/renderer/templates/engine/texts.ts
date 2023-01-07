@@ -1,17 +1,6 @@
-import { lzn } from '#services'
+import { compareWithGlobal } from '#gl-texts/renderer'
 
-export const {
-  CRITICAL_DAMAGE_THRESHOLD,
-  DAMAGED_CONSUMPTION_MODIFIER,
-  DAMAGED_MAX_TORQUE_MODIFIER,
-  DAMAGED_MIN_TORQUE_MODIFIER,
-  TORQUE,
-  DAMAGE_CAPACITY,
-  RESPONSIVENESS,
-  MAX_DELTA_ANG_VEL,
-  FUEL_CONSUMPTION,
-  BRAKES_DELAY
-} = lzn.localize({
+export default compareWithGlobal({
   RU: {
     CRITICAL_DAMAGE_THRESHOLD: 'Порог критического повреждения',
     DAMAGE_CAPACITY: 'Прочность',

@@ -1,7 +1,7 @@
 import { Float, ForEach, Group, Int, Select, Template } from '../items'
 import unlockGroup from '../presets/unlockGroup'
 import { createSelectors, forEach, selector } from '../service'
-import { BATTERY, ENGINE, IS_ENGINE_IGNITION_REQUIRED, LENGTH, STRENGTH_MULT } from './texts'
+import $ from './texts'
 
 import type { IXMLTemplate } from '#types'
 
@@ -26,7 +26,7 @@ export default {
       },
         new Int({
           attribute: 'Length',
-          label: LENGTH,
+          label: $.LENGTH,
           max: 100,
           default: 14,
           areas: {
@@ -36,7 +36,7 @@ export default {
         }),
         new Float({
           attribute: 'StrengthMult',
-          label: STRENGTH_MULT,
+          label: $.STRENGTH_MULT,
           max: 10,
           default: 1,
           areas: {
@@ -46,10 +46,10 @@ export default {
         }),
         new Select({
           attribute: 'IsEngineIgnitionRequired',
-          label: IS_ENGINE_IGNITION_REQUIRED,
+          label: $.IS_ENGINE_IGNITION_REQUIRED,
           options: [
-            ['true', ENGINE],
-            ['false', BATTERY]
+            ['true', $.ENGINE],
+            ['false', $.BATTERY]
           ],
           default: 0
         }),

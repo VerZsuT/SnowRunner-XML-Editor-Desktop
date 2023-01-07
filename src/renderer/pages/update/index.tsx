@@ -1,20 +1,16 @@
-import type { ReactNode } from 'react'
-
 import { Button, Typography } from 'antd'
-import { Bridge } from 'emr-bridge/renderer'
 import { pafc, useState } from 'react-afc'
 
-import { ALLOW_NEW_VERSION_AUTO, CLOSE, IGNORE, UPDATE } from './texts'
+import $ from './texts'
 
 import { ProgramWindow } from '#enums'
 import useWindowReady from '#helpers/useWindowReady'
+import bridge from '#r-scripts/bridge'
 import { config, helpers, ipc } from '#services'
-import type { MPC } from '#types'
 
 import '#r/templateScript'
 import './styles'
 
-const bridge = Bridge.as<MPC>()
 const { Title } = Typography
 const { settings } = config
 
@@ -23,18 +19,16 @@ const UpdateWindow = pafc(() => {
   useWindowReady(ProgramWindow.Update)
   handleContent()
 
-  function render(): ReactNode {
-    return <>
-      <Title className='version-title' level={4}>
-        {ALLOW_NEW_VERSION_AUTO} {` (v${version.val})`}
-      </Title>
-      <div className='buttons'>
-        <Button type='primary' onClick={updateProgram}>{UPDATE}</Button>
-        <Button type='primary' danger onClick={ignoreUpdate}>{IGNORE}</Button>
-        <Button onClick={closeWindow}>{CLOSE}</Button>
-      </div>
-    </>
-  }
+  return () => <>
+    <Title className='version-title' level={4}>
+      {$.ALLOW_NEW_VERSION_AUTO} {` (v${version.val})`}
+    </Title>
+    <div className='buttons'>
+      <Button type='primary' onClick={updateProgram}>{$.UPDATE}</Button>
+      <Button type='primary' danger onClick={ignoreUpdate}>{$.IGNORE}</Button>
+      <Button onClick={closeWindow}>{$.CLOSE}</Button>
+    </div>
+  </>
 
   function closeWindow(): void {
     window.close()
@@ -52,8 +46,6 @@ const UpdateWindow = pafc(() => {
   function handleContent(): void {
     ipc.on('content', (_event, data) => setVersion(data))
   }
-
-  return render
 })
 
 helpers.renderComponent(<UpdateWindow/>)

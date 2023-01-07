@@ -1,4 +1,3 @@
-type DialogProperties = ('openFile' | 'openDirectory' | 'multiSelections')[]
-
+type DialogProperties = Array<'openFile' | 'openDirectory' | 'multiSelections'>
 
 export default DialogProperties

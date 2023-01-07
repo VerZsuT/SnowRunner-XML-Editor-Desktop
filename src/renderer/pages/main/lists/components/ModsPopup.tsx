@@ -1,13 +1,9 @@
-import type { ReactNode } from 'react'
-
 import { Button, Modal, Spin, Transfer } from 'antd'
-import { fafcMemo, useOnRender, useReactive } from 'react-afc'
-import type { FastProps } from 'react-afc/types'
+import { afcMemo, useOnRender, useReactive } from 'react-afc'
 
 import mods from '../services/mods'
-import { MANUAL_MOD, MODS_POPUP_TITLE } from '../texts'
+import $ from '../texts'
 
-import { LOADING } from '#globalTexts/renderer'
 import { config } from '#services'
 import type { IFindItem } from '#types'
 
@@ -16,7 +12,7 @@ type Props = {
   hidePopup(reload?: boolean): void
 }
 
-function ModsPopup(props: FastProps<Props>) {
+function ModsPopup(props: Props) {
   const titles = ['Found', 'Added']
 
   const state = useReactive({
@@ -27,13 +23,13 @@ function ModsPopup(props: FastProps<Props>) {
 
   useOnRender(loadMods)
 
-  function render(): ReactNode {
-    const { show } = props.curr
+  return () => {
+    const { show } = props
     const { items, targetKeys, selectedKeys } = state
 
     return (
       <Modal
-        title={items ? MODS_POPUP_TITLE : LOADING}
+        title={items ? $.MODS_POPUP_TITLE : $.LOADING}
         onCancel={onHidePopup}
         onOk={applyChanges}
         open={show}
@@ -54,7 +50,7 @@ function ModsPopup(props: FastProps<Props>) {
               className='mods-transfer'
             />
             <Button onClick={addManual} className='mods-manual-button'>
-              {MANUAL_MOD}
+              {$.MANUAL_MOD}
             </Button>
           </>
           : <Spin className='mods-spin'/>
@@ -64,7 +60,7 @@ function ModsPopup(props: FastProps<Props>) {
   }
 
   function loadMods(): void {
-    if (props.curr.show && !state.items) {
+    if (props.show && !state.items) {
       setTimeout(() => {
         mods.load().then(items => {
           state.items = items
@@ -77,13 +73,13 @@ function ModsPopup(props: FastProps<Props>) {
   function onHidePopup(): void {
     if (!state.items) return
     state.targetKeys = getTargetKeys(state.items)
-    props.curr.hidePopup()
+    props.hidePopup()
   }
 
   function applyChanges(): void {
     if (!state.items) return
     mods.save(state.targetKeys, state.items)
-    props.curr.hidePopup(true)
+    props.hidePopup(true)
   }
 
   function addManual(): void {
@@ -118,8 +114,6 @@ function ModsPopup(props: FastProps<Props>) {
       .filter(value => keys.includes(value.path))
       .map(value => value.path)
   }
-
-  return render
 }
 
-export default fafcMemo(ModsPopup)
+export default afcMemo(ModsPopup)

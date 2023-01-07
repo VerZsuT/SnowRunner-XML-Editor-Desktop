@@ -1,22 +1,6 @@
-import { lzn } from '#services'
+import { compareWithGlobal } from '#gl-texts/renderer'
 
-export const {
-  ADD,
-  CHANGED,
-  ADDON_CHANGE_BUTTON,
-  REMOVE,
-  ADDON_FILTER,
-  ADDON_FUEL,
-  ADDON_NAME,
-  ADDON_REPAIRS,
-  BANDIT_WARN_MESSAGE,
-  ADDON_WHEELS,
-  CRANE,
-  CRANES_WARN_MESSAGE,
-  TRUCK_TRAILERS,
-  SCOUT_TRAILERS,
-  CRANES_WARN_TITLE
-} = lzn.localize({
+export default compareWithGlobal({
   RU: {
     CRANES_WARN_TITLE: 'Внимание!',
     ADDON_NAME: 'Название',

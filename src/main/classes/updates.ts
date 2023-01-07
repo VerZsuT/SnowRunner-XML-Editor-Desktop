@@ -22,9 +22,8 @@ class Updates {
     if (array) {
       const { url, path } = array[0]
 
-      if (isRoot) {
+      if (isRoot)
         loadingPage?.setCount(array.length)
-      }
 
       loadingPage?.setText(basename(path))
 
@@ -46,12 +45,10 @@ class Updates {
 
         response.on('data', chunk => chunks += chunk)
         response.on('end', () => {
-          if (fromJSON) {
+          if (fromJSON)
             callback(JSON.parse(chunks))
-          }
-          else {
+          else
             callback(chunks)
-          }
         })
       }
       else {
@@ -100,9 +97,8 @@ class Updates {
         const mainAbsPath = join(paths.root, relPath)
         const updateAbsPath = join(paths.updateRoot, relPath)
 
-        if (!existsSync(dirname(updateAbsPath))) {
+        if (!existsSync(dirname(updateAbsPath)))
           mkdirSync(dirname(updateAbsPath), { recursive: true })
-        }
 
         copyFileSync(mainAbsPath, updateAbsPath)
       })
@@ -120,9 +116,8 @@ class Updates {
         const webPath = relativePath.replaceAll('\\', '/').replace('.webpack', 'webpack')
         const url = `${paths.updateFiles}/${webPath}`
 
-        if (!existsSync(dirname(path))) {
+        if (!existsSync(dirname(path)))
           mkdirSync(dirname(path), { recursive: true })
-        }
 
         toDownload.push({ url, path })
       })
@@ -164,12 +159,10 @@ class Updates {
       else {
         if (lstatSync(absolutePath).isDirectory()) continue
 
-        if (hash.calc(absolutePath) !== map[relativePath]) {
+        if (hash.calc(absolutePath) !== map[relativePath])
           toCreateOrChange.push(relativePath)
-        }
-        else {
+        else
           toCopy.push(relativePath)
-        }
       }
     }
 

@@ -106,7 +106,7 @@ export default {
       DamageCapacity: '120'
     },
     'Truck > GameData': {
-      Country: 'RU',
+      Country: 'RU,CAS',
       Price: '54400',
       UnlockByExploration: 'true',
       UnlockByRank: '1'
@@ -598,7 +598,7 @@ export default {
       DamageCapacity: '120'
     },
     'Truck > GameData': {
-      Country: 'RU',
+      Country: 'RU,CAS',
       Price: '19900',
       UnlockByExploration: 'true',
       UnlockByRank: '1'
@@ -1347,7 +1347,7 @@ export default {
       DamageCapacity: '100'
     },
     'Truck > GameData': {
-      Country: 'RU',
+      Country: 'RU,CAS',
       Price: '98500',
       UnlockByExploration: 'false',
       UnlockByRank: '1'
@@ -1497,7 +1497,7 @@ export default {
       DamageCapacity: '120'
     },
     'Truck > GameData': {
-      Country: 'RU',
+      Country: 'RU,CAS',
       Price: '155800',
       UnlockByExploration: 'false',
       UnlockByRank: '1'
@@ -2011,7 +2011,7 @@ export default {
       DamageCapacity: '50'
     },
     'Truck > GameData': {
-      Country: 'RU',
+      Country: 'RU,CAS',
       Price: '28200',
       UnlockByExploration: 'false',
       UnlockByRank: '1'
@@ -2060,7 +2060,7 @@ export default {
       DamageCapacity: '50'
     },
     'Truck > GameData': {
-      Country: 'RU',
+      Country: 'RU,CAS',
       Price: '22500',
       UnlockByExploration: 'false',
       UnlockByRank: '1'
@@ -2125,7 +2125,7 @@ export default {
       DamageCapacity: '100'
     },
     'Truck > GameData': {
-      Country: 'RU',
+      Country: 'RU,CAS',
       Price: '177100',
       UnlockByExploration: 'false',
       UnlockByRank: '1'
@@ -2187,7 +2187,7 @@ export default {
       DamageCapacity: '100'
     },
     'Truck > GameData': {
-      Country: 'RU',
+      Country: 'RU,CAS',
       Price: '165300',
       UnlockByExploration: 'true',
       UnlockByRank: '1'
@@ -2199,7 +2199,6 @@ export default {
       UiDesc: 'UI_SEMITRAILER_FOR_ROCKET_DESC'
     },
     'Truck > GameData': {
-      Country: '',
       Price: '18800'
     }
   },
@@ -2209,7 +2208,6 @@ export default {
       UiDesc: 'UI_SEMITRAILER_ROCKET_DESC'
     },
     'Truck > GameData': {
-      Country: '',
       Price: '18800'
     }
   },
@@ -2886,7 +2884,7 @@ export default {
       DamageCapacity: '100'
     },
     'Truck > GameData': {
-      Country: 'RU',
+      Country: 'RU,CAS',
       Price: '182600',
       UnlockByExploration: 'true',
       UnlockByRank: '1'
@@ -2951,7 +2949,7 @@ export default {
       DamageCapacity: '100'
     },
     'Truck > GameData': {
-      Country: 'RU',
+      Country: 'RU,CAS',
       Price: '72800',
       UnlockByExploration: 'true',
       UnlockByRank: '1'
@@ -3327,7 +3325,7 @@ export default {
     },
     'Truck > GameData': {
       Country: 'US',
-      Price: '0',
+      Price: '3500',
       UnlockByExploration: 'true',
       UnlockByRank: '1'
     }
@@ -3491,7 +3489,7 @@ export default {
       DamageCapacity: '50'
     },
     'Truck > GameData': {
-      Country: 'RU',
+      Country: 'RU,CAS',
       Price: '1',
       UnlockByRank: '1'
     }
@@ -3556,7 +3554,7 @@ export default {
       DamageCapacity: '50'
     },
     'Truck > GameData': {
-      Country: 'RU',
+      Country: 'RU,CAS',
       Price: '70200',
       UnlockByRank: '1'
     }
@@ -4129,7 +4127,7 @@ export default {
       DamageCapacity: '100'
     },
     'Truck > GameData': {
-      Country: 'RU',
+      Country: 'RU,CAS',
       Price: '58500',
       UnlockByExploration: 'true',
       UnlockByRank: '1'
@@ -4190,9 +4188,66 @@ export default {
       DamageCapacity: '50'
     },
     'Truck > GameData': {
-      Country: 'RU',
+      Country: 'RU,CAS',
       Price: '3600',
       UnlockByExploration: 'true',
+      UnlockByRank: '1'
+    }
+  },
+  'western_star_57x.xml': {
+    'Truck > GameData > UiDesc': {
+      UiName: 'UI_VEHICLE_WESTERN_STAR_57X_NAME',
+      UiDesc: 'UI_VEHICLE_WESTERN_STAR_57X_DESC'
+    },
+    'Truck > TruckData': {
+      Responsiveness: '0.3',
+      BackSteerSpeed: '0.025',
+      SteerSpeed: '0.02',
+      DiffLockType: 'Uninstalled',
+      EngineStartDelay: '3.2',
+      ExhaustStartTime: '2.8',
+      FuelCapacity: '290'
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="1"]': {
+      Torque: 'connectable',
+      SteeringAngle: '36'
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="2"]': {
+      Torque: 'connectable',
+      SteeringAngle: '36'
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="3"]': {
+      Torque: 'default',
+      SteeringAngle: 0
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="4"]': {
+      Torque: 'default',
+      SteeringAngle: 0
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="5"]': {
+      Torque: 'default',
+      SteeringAngle: 0
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="6"]': {
+      Torque: 'default',
+      SteeringAngle: 0
+    },
+    'Truck > TruckData > CompatibleWheels[SXMLE_ID="1"]': {
+      Scale: '0.54'
+    },
+    'Truck > TruckData > CompatibleWheels[SXMLE_ID="2"]': {
+      Scale: '0.56'
+    },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(-1.5; -0.2; 0)'
+    },
+    'Truck > TruckData > FuelTank': {
+      DamageCapacity: '100'
+    },
+    'Truck > GameData': {
+      Country: 'US',
+      Price: '115700',
+      UnlockByExploration: 'false',
       UnlockByRank: '1'
     }
   },
@@ -4348,6 +4403,58 @@ export default {
       UnlockByRank: '1'
     }
   },
+  's_western_star_57x.xml': {
+    'SuspensionSetVariants > SuspensionSet[SXMLE_ID="1"]': {
+      CriticalDamageThreshold: '0.6',
+      DamageCapacity: '280'
+    },
+    'SuspensionSetVariants > SuspensionSet[SXMLE_ID="1"] > Suspension[SXMLE_ID="1"]': {
+      Height: '0.08',
+      Strength: '0.07',
+      Damping: '0.15',
+      SuspensionMin: '-0.17',
+      SuspensionMax: 1,
+      BrokenSuspensionMax: '0.2'
+    },
+    'SuspensionSetVariants > SuspensionSet[SXMLE_ID="1"] > Suspension[SXMLE_ID="2"]': {
+      Height: '0.07',
+      Strength: '0.08',
+      Damping: '0.2',
+      SuspensionMin: '-0.21',
+      SuspensionMax: 1,
+      BrokenSuspensionMax: '0.15'
+    },
+    'SuspensionSetVariants > SuspensionSet[SXMLE_ID="1"] > GameData': {
+      Price: '6600',
+      UnlockByExploration: 'false',
+      UnlockByRank: '1'
+    },
+    'SuspensionSetVariants > SuspensionSet[SXMLE_ID="2"]': {
+      CriticalDamageThreshold: '0.5',
+      DamageCapacity: '240'
+    },
+    'SuspensionSetVariants > SuspensionSet[SXMLE_ID="2"] > Suspension[SXMLE_ID="1"]': {
+      Height: '0.16',
+      Strength: '0.09',
+      Damping: '0.05',
+      SuspensionMin: '-0.17',
+      SuspensionMax: 1,
+      BrokenSuspensionMax: '0.2'
+    },
+    'SuspensionSetVariants > SuspensionSet[SXMLE_ID="2"] > Suspension[SXMLE_ID="2"]': {
+      Height: '0.15',
+      Strength: '0.1',
+      Damping: '0.5',
+      SuspensionMin: '-0.21',
+      SuspensionMax: 1,
+      BrokenSuspensionMax: '0.15'
+    },
+    'SuspensionSetVariants > SuspensionSet[SXMLE_ID="2"] > GameData': {
+      Price: '7900',
+      UnlockByExploration: 'false',
+      UnlockByRank: '16'
+    }
+  },
   'wheels_azov_43_191_sprinter.xml': {
     'TruckWheels > TruckTires > TruckTire[SXMLE_ID="1"] > WheelFriction': {
       BodyFriction: '1.5',
@@ -4372,6 +4479,900 @@ export default {
       Price: '4900',
       UnlockByExploration: 'false',
       UnlockByRank: '7'
+    }
+  },
+  'kirovets_k700.xml': {
+    'Truck > GameData > UiDesc': {
+      UiName: 'UI_VEHICLE_KIROVETS_K700_NAME',
+      UiDesc: 'UI_VEHICLE_KIROVETS_K700_DESC'
+    },
+    'Truck > TruckData': {
+      Responsiveness: '0.4',
+      BackSteerSpeed: '0.02',
+      SteerSpeed: '0.015',
+      DiffLockType: 'Always',
+      EngineStartDelay: '0.6',
+      ExhaustStartTime: '0.6',
+      FuelCapacity: '340'
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="1"]': {
+      Torque: 'default',
+      SteeringAngle: 0
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="2"]': {
+      Torque: 'default',
+      SteeringAngle: 0
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="3"]': {
+      Torque: 'default',
+      SteeringAngle: 0
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="4"]': {
+      Torque: 'default',
+      SteeringAngle: 0
+    },
+    'Truck > TruckData > CompatibleWheels[SXMLE_ID="1"]': {
+      Scale: '0.8'
+    },
+    'Truck > TruckData > CompatibleWheels[SXMLE_ID="2"]': {
+      Scale: '0.8'
+    },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(-0.5; -0.5; 0)'
+    },
+    'Truck > TruckData > FuelTank': {
+      DamageCapacity: '50'
+    },
+    'Truck > GameData': {
+      Country: 'RU,CAS',
+      Price: '126100',
+      UnlockByExploration: 'true',
+      UnlockByRank: '1'
+    }
+  },
+  'kirovets_k7m.xml': {
+    'Truck > GameData > UiDesc': {
+      UiName: 'UI_VEHICLE_KIROVETS_K7M_NAME',
+      UiDesc: 'UI_VEHICLE_KIROVETS_K7M_DESC'
+    },
+    'Truck > TruckData': {
+      Responsiveness: '0.4',
+      BackSteerSpeed: '0.02',
+      SteerSpeed: '0.015',
+      DiffLockType: 'Always',
+      EngineStartDelay: '0.6',
+      ExhaustStartTime: '0.6',
+      FuelCapacity: '340'
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="1"]': {
+      Torque: 'default',
+      SteeringAngle: 0
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="2"]': {
+      Torque: 'default',
+      SteeringAngle: 0
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="3"]': {
+      Torque: 'default',
+      SteeringAngle: 0
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="4"]': {
+      Torque: 'default',
+      SteeringAngle: 0
+    },
+    'Truck > TruckData > CompatibleWheels[SXMLE_ID="1"]': {
+      Scale: '1'
+    },
+    'Truck > TruckData > CompatibleWheels[SXMLE_ID="2"]': {
+      Scale: '1'
+    },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(0.5; 1; 0)'
+    },
+    'Truck > TruckData > FuelTank': {
+      DamageCapacity: '50'
+    },
+    'Truck > GameData': {
+      Country: 'RU,CAS',
+      Price: '172300',
+      UnlockByExploration: 'true',
+      UnlockByRank: '1'
+    }
+  },
+  'rezvani_hercules_6x6.xml': {
+    'Truck > GameData > UiDesc': {
+      UiName: 'UI_VEHICLE_REZVANI_NAME',
+      UiDesc: 'UI_VEHICLE_REZVANI_DESC'
+    },
+    'Truck > TruckData': {
+      Responsiveness: '0.6',
+      BackSteerSpeed: '0.15',
+      SteerSpeed: '0.03',
+      DiffLockType: 'Always',
+      EngineStartDelay: '1.8',
+      ExhaustStartTime: '1.6',
+      FuelCapacity: '80'
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="1"]': {
+      Torque: 'full',
+      SteeringAngle: '40'
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="2"]': {
+      Torque: 'full',
+      SteeringAngle: '40'
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="3"]': {
+      Torque: 'default',
+      SteeringAngle: 0
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="4"]': {
+      Torque: 'default',
+      SteeringAngle: 0
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="5"]': {
+      Torque: 'default',
+      SteeringAngle: 0
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="6"]': {
+      Torque: 'default',
+      SteeringAngle: 0
+    },
+    'Truck > TruckData > CompatibleWheels[SXMLE_ID="1"]': {
+      Scale: '0.47'
+    },
+    'Truck > TruckData > CompatibleWheels[SXMLE_ID="2"]': {
+      Scale: '0.49'
+    },
+    'Truck > TruckData > CompatibleWheels[SXMLE_ID="3"]': {
+      Scale: '0.47'
+    },
+    'Truck > TruckData > CompatibleWheels[SXMLE_ID="4"]': {
+      Scale: '0.49'
+    },
+    'Truck > TruckData > CompatibleWheels[SXMLE_ID="5"]': {
+      Scale: '0.47'
+    },
+    'Truck > TruckData > CompatibleWheels[SXMLE_ID="6"]': {
+      Scale: '0.49'
+    },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(0; -0.3; 0)'
+    },
+    'Truck > TruckData > FuelTank': {
+      DamageCapacity: '50'
+    },
+    'Truck > GameData': {
+      Country: 'US',
+      Price: '25800',
+      UnlockByRank: '1'
+    }
+  },
+  'step_39331_pike.xml': {
+    'Truck > GameData > UiDesc': {
+      UiName: 'UI_VEHICLE_STEP_39331_PIKE_NAME',
+      UiDesc: 'UI_VEHICLE_STEP_39331_PIKE_DESC'
+    },
+    'Truck > TruckData': {
+      Responsiveness: '0.15',
+      BackSteerSpeed: '0.03',
+      SteerSpeed: '0.03',
+      DiffLockType: 'Always',
+      EngineStartDelay: '0.8',
+      ExhaustStartTime: '0.9',
+      FuelCapacity: '250'
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="1"]': {
+      Torque: 'default',
+      SteeringAngle: '30'
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="2"]': {
+      Torque: 'default',
+      SteeringAngle: '30'
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="3"]': {
+      Torque: 'default',
+      SteeringAngle: 0
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="4"]': {
+      Torque: 'default',
+      SteeringAngle: 0
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="5"]': {
+      Torque: 'default',
+      SteeringAngle: 0
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="6"]': {
+      Torque: 'default',
+      SteeringAngle: 0
+    },
+    'Truck > TruckData > CompatibleWheels[SXMLE_ID="1"]': {
+      Scale: '0.52'
+    },
+    'Truck > TruckData > CompatibleWheels[SXMLE_ID="2"]': {
+      Scale: '0.52'
+    },
+    'Truck > TruckData > CompatibleWheels[SXMLE_ID="3"]': {
+      Scale: '0.55'
+    },
+    'Truck > TruckData > CompatibleWheels[SXMLE_ID="4"]': {
+      Scale: '0.52'
+    },
+    'Truck > TruckData > CompatibleWheels[SXMLE_ID="5"]': {
+      Scale: '0.55'
+    },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(-2.5; 0; 0)'
+    },
+    'Truck > TruckData > FuelTank': {
+      DamageCapacity: '50'
+    },
+    'Truck > GameData': {
+      Country: 'RU,CAS',
+      Price: '63000',
+      UnlockByExploration: 'true',
+      UnlockByRank: '1'
+    }
+  },
+  'western_star_nf1424.xml': {
+    'Truck > GameData > UiDesc': {
+      UiName: 'UI_VEHICLE_WESTERN_STAR_NF1424_NAME',
+      UiDesc: 'UI_VEHICLE_WESTERN_STAR_NF1424_DESC'
+    },
+    'Truck > TruckData': {
+      Responsiveness: '0.3',
+      BackSteerSpeed: '0.025',
+      SteerSpeed: '0.02',
+      DiffLockType: 'Uninstalled',
+      EngineStartDelay: '3.2',
+      ExhaustStartTime: '2.8',
+      FuelCapacity: '290'
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="1"]': {
+      Torque: 'connectable',
+      SteeringAngle: '36'
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="2"]': {
+      Torque: 'connectable',
+      SteeringAngle: '36'
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="3"]': {
+      Torque: 'default',
+      SteeringAngle: 0
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="4"]': {
+      Torque: 'default',
+      SteeringAngle: 0
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="5"]': {
+      Torque: 'default',
+      SteeringAngle: 0
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="6"]': {
+      Torque: 'default',
+      SteeringAngle: 0
+    },
+    'Truck > TruckData > CompatibleWheels[SXMLE_ID="1"]': {
+      Scale: '0.56'
+    },
+    'Truck > TruckData > CompatibleWheels[SXMLE_ID="2"]': {
+      Scale: '0.61'
+    },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(-0.9; 0; 0)'
+    },
+    'Truck > TruckData > FuelTank': {
+      DamageCapacity: '100'
+    },
+    'Truck > GameData': {
+      Country: 'US',
+      Price: '113500',
+      UnlockByExploration: 'false',
+      UnlockByRank: '1'
+    }
+  },
+  'western_star_nf1430.xml': {
+    'Truck > GameData > UiDesc': {
+      UiName: 'UI_VEHICLE_WESTERN_STAR_NF1430_NAME',
+      UiDesc: 'UI_VEHICLE_WESTERN_STAR_NF1430_DESC'
+    },
+    'Truck > TruckData': {
+      Responsiveness: '0.3',
+      BackSteerSpeed: '0.025',
+      SteerSpeed: '0.02',
+      DiffLockType: 'Installed',
+      EngineStartDelay: '3.2',
+      ExhaustStartTime: '2.8',
+      FuelCapacity: '290'
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="1"]': {
+      Torque: 'connectable',
+      SteeringAngle: '36'
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="2"]': {
+      Torque: 'connectable',
+      SteeringAngle: '36'
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="3"]': {
+      Torque: 'default',
+      SteeringAngle: 0
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="4"]': {
+      Torque: 'default',
+      SteeringAngle: 0
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="5"]': {
+      Torque: 'default',
+      SteeringAngle: 0
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="6"]': {
+      Torque: 'default',
+      SteeringAngle: 0
+    },
+    'Truck > TruckData > ExtraWheels > Wheel[SXMLE_ID="1"]': {
+      Torque: 'none',
+      SteeringAngle: 0
+    },
+    'Truck > TruckData > ExtraWheels > Wheel[SXMLE_ID="2"]': {
+      Torque: 'none',
+      SteeringAngle: 0
+    },
+    'Truck > TruckData > ExtraWheels > Wheel[SXMLE_ID="3"]': {
+      Torque: 'none',
+      SteeringAngle: 0
+    },
+    'Truck > TruckData > ExtraWheels > Wheel[SXMLE_ID="4"]': {
+      Torque: 'none',
+      SteeringAngle: 0
+    },
+    'Truck > TruckData > CompatibleWheels[SXMLE_ID="1"]': {
+      Scale: '0.56'
+    },
+    'Truck > TruckData > CompatibleWheels[SXMLE_ID="2"]': {
+      Scale: '0.56'
+    },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(0; -0; 0)'
+    },
+    'Truck > TruckData > FuelTank': {
+      DamageCapacity: '100'
+    },
+    'Truck > GameData': {
+      Country: 'US',
+      Price: '120600',
+      UnlockByExploration: 'false',
+      UnlockByRank: '1'
+    }
+  },
+  'trailer_cultivator.xml': {
+    'Truck > TruckData': {
+      FuelCapacity: 0,
+      RepairsCapacity: 0,
+      WheelRepairsCapacity: 0
+    },
+    'Truck > PhysicsModel > Body': {
+      Mass: '500'
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="1"]': {
+      SuspensionHeight: '0.0',
+      SuspensionStrength: '.9'
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="2"]': {
+      SuspensionHeight: '0.0',
+      SuspensionStrength: '.9'
+    },
+    'Truck > GameData': {
+      Price: '4200'
+    }
+  },
+  'trailer_harvester.xml': {
+    'Truck > TruckData': {
+      FuelCapacity: 0,
+      RepairsCapacity: 0,
+      WheelRepairsCapacity: 0
+    },
+    'Truck > PhysicsModel > Body': {
+      Mass: '1000'
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="1"]': {
+      SuspensionHeight: '0.02',
+      SuspensionStrength: '.3'
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="2"]': {
+      SuspensionHeight: '0.02',
+      SuspensionStrength: '.3'
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="3"]': {
+      SuspensionHeight: '0.02',
+      SuspensionStrength: '.3'
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="4"]': {
+      SuspensionHeight: '0.02',
+      SuspensionStrength: '.3'
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="5"]': {
+      SuspensionHeight: '0.02',
+      SuspensionStrength: '.3'
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="6"]': {
+      SuspensionHeight: '0.02',
+      SuspensionStrength: '.3'
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="7"]': {
+      SuspensionHeight: '0.02',
+      SuspensionStrength: '.3'
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="8"]': {
+      SuspensionHeight: '0.02',
+      SuspensionStrength: '.3'
+    },
+    'Truck > GameData': {
+      Price: '2900'
+    }
+  },
+  'trailer_planter.xml': {
+    'Truck > TruckData': {
+      FuelCapacity: 0,
+      RepairsCapacity: 0,
+      WheelRepairsCapacity: 0
+    },
+    'Truck > PhysicsModel > Body': {
+      Mass: '500'
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="1"]': {
+      SuspensionHeight: '0.0',
+      SuspensionStrength: '.9'
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="2"]': {
+      SuspensionHeight: '0.0',
+      SuspensionStrength: '.9'
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="3"]': {
+      SuspensionHeight: '0.0',
+      SuspensionStrength: '.9'
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="4"]': {
+      SuspensionHeight: '0.0',
+      SuspensionStrength: '.9'
+    },
+    'Truck > GameData': {
+      Price: '5700'
+    }
+  },
+  'e_ru_kirovets_k700_special.xml': {
+    'EngineVariants > Engine[SXMLE_ID="1"]': {
+      CriticalDamageThreshold: '0.3',
+      DamageCapacity: '220',
+      DamagedConsumptionModifier: '1.4',
+      EngineResponsiveness: '0.045',
+      FuelConsumption: '9.0',
+      Torque: '130000',
+      DamagedMinTorqueMultiplier: '1.0',
+      DamagedMaxTorqueMultiplier: '0.6',
+      BrakesDelay: '0.5',
+      MaxDeltaAngVel: '0.01'
+    },
+    'EngineVariants > Engine[SXMLE_ID="1"] > GameData': {
+      Price: '5700',
+      UnlockByExploration: 'false',
+      UnlockByRank: '1'
+    },
+    'EngineVariants > Engine[SXMLE_ID="2"]': {
+      CriticalDamageThreshold: '0.6',
+      DamageCapacity: '270',
+      DamagedConsumptionModifier: '1.3',
+      EngineResponsiveness: 0.04,
+      FuelConsumption: '10.0',
+      Torque: '150000',
+      DamagedMinTorqueMultiplier: '1.0',
+      DamagedMaxTorqueMultiplier: '0.8',
+      BrakesDelay: '0.5',
+      MaxDeltaAngVel: '0.01'
+    },
+    'EngineVariants > Engine[SXMLE_ID="2"] > GameData': {
+      Price: '20700',
+      UnlockByExploration: 'true',
+      UnlockByRank: '1'
+    },
+    'EngineVariants > Engine[SXMLE_ID="3"]': {
+      CriticalDamageThreshold: '0.6',
+      DamageCapacity: '300',
+      DamagedConsumptionModifier: '1.5',
+      EngineResponsiveness: 0.04,
+      FuelConsumption: '11.5',
+      Torque: '175000',
+      DamagedMinTorqueMultiplier: '1.0',
+      DamagedMaxTorqueMultiplier: '0.7',
+      BrakesDelay: '0.5',
+      MaxDeltaAngVel: '0.01'
+    },
+    'EngineVariants > Engine[SXMLE_ID="3"] > GameData': {
+      Price: '24400',
+      UnlockByExploration: 'true',
+      UnlockByRank: '1'
+    }
+  },
+  'e_ru_kirovets_k7m_special.xml': {
+    'EngineVariants > Engine[SXMLE_ID="1"]': {
+      CriticalDamageThreshold: '0.3',
+      DamageCapacity: '220',
+      DamagedConsumptionModifier: '1.4',
+      EngineResponsiveness: '0.045',
+      FuelConsumption: '9.0',
+      Torque: '115000',
+      DamagedMinTorqueMultiplier: '1.0',
+      DamagedMaxTorqueMultiplier: '0.6',
+      BrakesDelay: '0.5',
+      MaxDeltaAngVel: '0.01'
+    },
+    'EngineVariants > Engine[SXMLE_ID="1"] > GameData': {
+      Price: '5700',
+      UnlockByExploration: 'false',
+      UnlockByRank: '1'
+    },
+    'EngineVariants > Engine[SXMLE_ID="2"]': {
+      CriticalDamageThreshold: '0.6',
+      DamageCapacity: '270',
+      DamagedConsumptionModifier: '1.3',
+      EngineResponsiveness: 0.04,
+      FuelConsumption: '10.0',
+      Torque: '140000',
+      DamagedMinTorqueMultiplier: '1.0',
+      DamagedMaxTorqueMultiplier: '0.8',
+      BrakesDelay: '0.5',
+      MaxDeltaAngVel: '0.01'
+    },
+    'EngineVariants > Engine[SXMLE_ID="2"] > GameData': {
+      Price: '20700',
+      UnlockByExploration: 'true',
+      UnlockByRank: '1'
+    },
+    'EngineVariants > Engine[SXMLE_ID="3"]': {
+      CriticalDamageThreshold: '0.6',
+      DamageCapacity: '300',
+      DamagedConsumptionModifier: '1.5',
+      EngineResponsiveness: 0.04,
+      FuelConsumption: '11.5',
+      Torque: '170000',
+      DamagedMinTorqueMultiplier: '1.0',
+      DamagedMaxTorqueMultiplier: '0.7',
+      BrakesDelay: '0.5',
+      MaxDeltaAngVel: '0.01'
+    },
+    'EngineVariants > Engine[SXMLE_ID="3"] > GameData': {
+      Price: '24400',
+      UnlockByExploration: 'true',
+      UnlockByRank: '1'
+    }
+  },
+  's_kirovets_k700.xml': {
+    'SuspensionSetVariants > SuspensionSet[SXMLE_ID="1"]': {
+      CriticalDamageThreshold: '0.6',
+      DamageCapacity: '280'
+    },
+    'SuspensionSetVariants > SuspensionSet[SXMLE_ID="1"] > Suspension[SXMLE_ID="1"]': {
+      Height: '0.02',
+      Strength: '.1',
+      Damping: '.8',
+      SuspensionMin: '-0.134',
+      SuspensionMax: '0.2',
+      BrokenSuspensionMax: '0.3'
+    },
+    'SuspensionSetVariants > SuspensionSet[SXMLE_ID="1"] > Suspension[SXMLE_ID="2"]': {
+      Height: '0',
+      Strength: '.9',
+      SuspensionMin: '-.0',
+      SuspensionMax: '0.0',
+      BrokenSuspensionMax: '0.1'
+    },
+    'SuspensionSetVariants > SuspensionSet[SXMLE_ID="1"] > GameData': {
+      Price: '7500',
+      UnlockByExploration: 'false',
+      UnlockByRank: '1'
+    }
+  },
+  's_kirovets_k7m.xml': {
+    'SuspensionSetVariants > SuspensionSet[SXMLE_ID="1"]': {
+      CriticalDamageThreshold: '0.6',
+      DamageCapacity: '280'
+    },
+    'SuspensionSetVariants > SuspensionSet[SXMLE_ID="1"] > Suspension[SXMLE_ID="1"]': {
+      Height: '0',
+      Strength: '0.1',
+      Damping: '0.5',
+      SuspensionMin: '-0.13',
+      SuspensionMax: '0.13',
+      BrokenSuspensionMax: '0.13'
+    },
+    'SuspensionSetVariants > SuspensionSet[SXMLE_ID="1"] > Suspension[SXMLE_ID="2"]': {
+      Height: '0',
+      Strength: '0',
+      Damping: '0',
+      SuspensionMin: '0',
+      SuspensionMax: '0',
+      BrokenSuspensionMax: '0'
+    },
+    'SuspensionSetVariants > SuspensionSet[SXMLE_ID="1"] > GameData': {
+      Price: '7500',
+      UnlockByExploration: 'false',
+      UnlockByRank: '1'
+    }
+  },
+  's_rezvani_hercules_6x6.xml': {
+    'SuspensionSetVariants > SuspensionSet[SXMLE_ID="1"]': {
+      CriticalDamageThreshold: '0.7',
+      DamageCapacity: '80'
+    },
+    'SuspensionSetVariants > SuspensionSet[SXMLE_ID="1"] > Suspension[SXMLE_ID="1"]': {
+      Height: '0.06',
+      Strength: '0.06',
+      Damping: '0.17',
+      SuspensionMin: '-0.19',
+      SuspensionMax: 1,
+      BrokenSuspensionMax: '0.15'
+    },
+    'SuspensionSetVariants > SuspensionSet[SXMLE_ID="1"] > Suspension[SXMLE_ID="2"]': {
+      Height: '0.08',
+      Strength: '0.05',
+      Damping: '0.17',
+      SuspensionMin: '-0.25',
+      SuspensionMax: 1,
+      BrokenSuspensionMax: '0.15'
+    },
+    'SuspensionSetVariants > SuspensionSet[SXMLE_ID="1"] > GameData': {
+      Price: '2700',
+      UnlockByExploration: 'false',
+      UnlockByRank: '1'
+    },
+    'SuspensionSetVariants > SuspensionSet[SXMLE_ID="2"]': {
+      CriticalDamageThreshold: '0.7',
+      DamageCapacity: '120'
+    },
+    'SuspensionSetVariants > SuspensionSet[SXMLE_ID="2"] > Suspension[SXMLE_ID="1"]': {
+      Height: '0.18',
+      Strength: '0.05',
+      Damping: '0.2',
+      SuspensionMin: '-0.28',
+      SuspensionMax: 1,
+      BrokenSuspensionMax: '0.15'
+    },
+    'SuspensionSetVariants > SuspensionSet[SXMLE_ID="2"] > Suspension[SXMLE_ID="2"]': {
+      Height: '0.2',
+      Strength: '0.04',
+      Damping: '0.2',
+      SuspensionMin: '-0.37',
+      SuspensionMax: 1,
+      BrokenSuspensionMax: '0.15'
+    },
+    'SuspensionSetVariants > SuspensionSet[SXMLE_ID="2"] > GameData': {
+      Price: '5300',
+      UnlockByExploration: 'false',
+      UnlockByRank: '1'
+    }
+  },
+  's_step_39331_pike.xml': {
+    'SuspensionSetVariants > SuspensionSet[SXMLE_ID="1"]': {
+      CriticalDamageThreshold: '0.5',
+      DamageCapacity: '200'
+    },
+    'SuspensionSetVariants > SuspensionSet[SXMLE_ID="1"] > Suspension[SXMLE_ID="1"]': {
+      Height: '0.05',
+      Strength: '0.04',
+      Damping: '0.2',
+      SuspensionMin: '-0.25',
+      SuspensionMax: 1,
+      BrokenSuspensionMax: '0.1'
+    },
+    'SuspensionSetVariants > SuspensionSet[SXMLE_ID="1"] > Suspension[SXMLE_ID="2"]': {
+      Height: '0.05',
+      Strength: '0.06',
+      Damping: '0.3',
+      SuspensionMin: '-0.25',
+      SuspensionMax: 1,
+      BrokenSuspensionMax: '0.1'
+    },
+    'SuspensionSetVariants > SuspensionSet[SXMLE_ID="1"] > GameData': {
+      Price: '4700',
+      UnlockByExploration: 'false',
+      UnlockByRank: '1'
+    },
+    'SuspensionSetVariants > SuspensionSet[SXMLE_ID="2"]': {
+      CriticalDamageThreshold: '0.5',
+      DamageCapacity: '200'
+    },
+    'SuspensionSetVariants > SuspensionSet[SXMLE_ID="2"] > Suspension[SXMLE_ID="1"]': {
+      Height: '0.1',
+      Strength: '0.05',
+      Damping: '0.3',
+      SuspensionMin: '-0.25',
+      SuspensionMax: 1,
+      BrokenSuspensionMax: '0.1'
+    },
+    'SuspensionSetVariants > SuspensionSet[SXMLE_ID="2"] > Suspension[SXMLE_ID="2"]': {
+      Height: '0.1',
+      Strength: '0.07',
+      Damping: '0.3',
+      SuspensionMin: '-0.25',
+      SuspensionMax: 1,
+      BrokenSuspensionMax: '0.1'
+    },
+    'SuspensionSetVariants > SuspensionSet[SXMLE_ID="2"] > GameData': {
+      Price: '4700',
+      UnlockByExploration: 'false',
+      UnlockByRank: '1'
+    }
+  },
+  's_western_star_nf1424.xml': {
+    'SuspensionSetVariants > SuspensionSet[SXMLE_ID="1"]': {
+      CriticalDamageThreshold: '0.6',
+      DamageCapacity: '280'
+    },
+    'SuspensionSetVariants > SuspensionSet[SXMLE_ID="1"] > Suspension[SXMLE_ID="1"]': {
+      Height: '0.16',
+      Strength: '0.12',
+      Damping: '0.12',
+      SuspensionMin: '-0.12',
+      SuspensionMax: 1,
+      BrokenSuspensionMax: '0.2'
+    },
+    'SuspensionSetVariants > SuspensionSet[SXMLE_ID="1"] > Suspension[SXMLE_ID="2"]': {
+      Height: '0.07',
+      Strength: '0.1',
+      Damping: '0.2',
+      SuspensionMin: '-0.15',
+      SuspensionMax: 1,
+      BrokenSuspensionMax: '0.15'
+    },
+    'SuspensionSetVariants > SuspensionSet[SXMLE_ID="1"] > GameData': {
+      Price: '6800',
+      UnlockByExploration: 'false',
+      UnlockByRank: '1'
+    },
+    'SuspensionSetVariants > SuspensionSet[SXMLE_ID="2"]': {
+      CriticalDamageThreshold: '0.5',
+      DamageCapacity: '240'
+    },
+    'SuspensionSetVariants > SuspensionSet[SXMLE_ID="2"] > Suspension[SXMLE_ID="1"]': {
+      Height: '0.3',
+      Strength: '0.07',
+      Damping: '0.3',
+      SuspensionMin: '-0.3',
+      SuspensionMax: 1,
+      BrokenSuspensionMax: '.25'
+    },
+    'SuspensionSetVariants > SuspensionSet[SXMLE_ID="2"] > Suspension[SXMLE_ID="2"]': {
+      Height: '0.23',
+      Strength: '0.08',
+      Damping: '0.3',
+      SuspensionMin: '-0.25',
+      SuspensionMax: 1,
+      BrokenSuspensionMax: '.25'
+    },
+    'SuspensionSetVariants > SuspensionSet[SXMLE_ID="2"] > GameData': {
+      Price: '7500',
+      UnlockByExploration: 'false',
+      UnlockByRank: '17'
+    },
+    'SuspensionSetVariants > SuspensionSet[SXMLE_ID="3"]': {
+      CriticalDamageThreshold: '0.55',
+      DamageCapacity: '220'
+    },
+    'SuspensionSetVariants > SuspensionSet[SXMLE_ID="3"] > Suspension[SXMLE_ID="1"]': {
+      Height: '0.17',
+      Strength: '0.1',
+      SuspensionMin: '-0.2',
+      SuspensionMax: '0.3',
+      BrokenSuspensionMax: '0.2'
+    },
+    'SuspensionSetVariants > SuspensionSet[SXMLE_ID="3"] > Suspension[SXMLE_ID="2"]': {
+      Height: '0.1',
+      Strength: '0.1',
+      SuspensionMin: '-0.2',
+      SuspensionMax: '0.3'
+    },
+    'SuspensionSetVariants > SuspensionSet[SXMLE_ID="3"] > GameData': {
+      Price: '8300',
+      UnlockByExploration: 'false',
+      UnlockByRank: '1'
+    }
+  },
+  's_western_star_nf1430.xml': {
+    'SuspensionSetVariants > SuspensionSet[SXMLE_ID="1"]': {
+      CriticalDamageThreshold: '0.6',
+      DamageCapacity: '280'
+    },
+    'SuspensionSetVariants > SuspensionSet[SXMLE_ID="1"] > Suspension[SXMLE_ID="1"]': {
+      Height: '0.2',
+      Strength: '0.15',
+      Damping: '0.15',
+      SuspensionMin: '-0.25',
+      SuspensionMax: 1,
+      BrokenSuspensionMax: '0.2'
+    },
+    'SuspensionSetVariants > SuspensionSet[SXMLE_ID="1"] > Suspension[SXMLE_ID="2"]': {
+      Height: '0.15',
+      Strength: '0.09',
+      Damping: '0.2',
+      SuspensionMin: '-0.17',
+      SuspensionMax: 1,
+      BrokenSuspensionMax: '0.15'
+    },
+    'SuspensionSetVariants > SuspensionSet[SXMLE_ID="1"] > Suspension[SXMLE_ID="3"]': {
+      Height: '0.09',
+      Strength: '0.07',
+      Damping: '0.6',
+      SuspensionMin: '-0.17',
+      SuspensionMax: 1,
+      BrokenSuspensionMax: '0.2'
+    },
+    'SuspensionSetVariants > SuspensionSet[SXMLE_ID="1"] > GameData': {
+      Price: '7700',
+      UnlockByExploration: 'false',
+      UnlockByRank: '1'
+    }
+  },
+  'wheels_base_kirovets_k7m.xml': {
+    'TruckWheels > TruckTires > TruckTire[SXMLE_ID="1"] > WheelFriction': {
+      BodyFriction: '1.7',
+      BodyFrictionAsphalt: '0.5',
+      SubstanceFriction: '3.0',
+      IsIgnoreIce: 'false'
+    },
+    'TruckWheels > TruckTires > TruckTire[SXMLE_ID="1"] > GameData': {
+      Price: '7500',
+      UnlockByExploration: 'false',
+      UnlockByRank: '1'
+    }
+  },
+  'wheels_extend_kirovets_k7m.xml': {
+    'TruckWheels > TruckTires > TruckTire[SXMLE_ID="1"] > WheelFriction': {
+      BodyFriction: '1.7',
+      BodyFrictionAsphalt: '0.5',
+      SubstanceFriction: '3.0',
+      IsIgnoreIce: 'false'
+    },
+    'TruckWheels > TruckTires > TruckTire[SXMLE_ID="1"] > GameData': {
+      Price: '7500',
+      UnlockByExploration: 'true',
+      UnlockByRank: '1'
+    }
+  },
+  'wheels_kirovets_k700.xml': {
+    'TruckWheels > TruckTires > TruckTire[SXMLE_ID="1"] > WheelFriction': {
+      BodyFriction: '1.7',
+      BodyFrictionAsphalt: '0.5',
+      SubstanceFriction: '3.0',
+      IsIgnoreIce: 'false'
+    },
+    'TruckWheels > TruckTires > TruckTire[SXMLE_ID="1"] > GameData': {
+      Price: '7500',
+      UnlockByExploration: 'false',
+      UnlockByRank: '1'
+    }
+  },
+  'wheels_rezvani_hercules_6x6.xml': {
+    'TruckWheels > TruckTires > TruckTire[SXMLE_ID="1"] > WheelFriction': {
+      BodyFriction: '2.0',
+      BodyFrictionAsphalt: '3.0',
+      SubstanceFriction: '1.2',
+      IsIgnoreIce: 'false'
+    },
+    'TruckWheels > TruckTires > TruckTire[SXMLE_ID="1"] > GameData': {
+      Price: '4500',
+      UnlockByExploration: 'false',
+      UnlockByRank: '1'
+    }
+  },
+  'wheels_step_39331_pike.xml': {
+    'TruckWheels > TruckTires > TruckTire[SXMLE_ID="1"] > WheelFriction': {
+      BodyFriction: '1.4',
+      BodyFrictionAsphalt: '1.5',
+      SubstanceFriction: '1.5',
+      IsIgnoreIce: 'false'
+    },
+    'TruckWheels > TruckTires > TruckTire[SXMLE_ID="1"] > GameData': {
+      Price: '4900',
+      UnlockByExploration: 'false',
+      UnlockByRank: '1'
     }
   },
   'gmc_8000.xml': {
@@ -4524,6 +5525,15 @@ export default {
       UnlockByRank: '16'
     }
   },
+  'semitrailer_wind_blade.xml': {
+    'Truck > GameData > UiDesc': {
+      UiName: 'UI_SEMITRAILER_ROCKET_NAME',
+      UiDesc: 'UI_SEMITRAILER_ROCKET_DESC'
+    },
+    'Truck > GameData': {
+      Price: '20000'
+    }
+  },
   'ank_mk38.xml': {
     'Truck > GameData > UiDesc': {
       UiName: 'UI_VEHICLE_ANK_MK38_NAME',
@@ -4638,7 +5648,7 @@ export default {
       DamageCapacity: '50'
     },
     'Truck > GameData': {
-      Country: 'RU',
+      Country: 'RU,CAS',
       Price: '111600',
       UnlockByExploration: 'false',
       UnlockByRank: '26'
@@ -4700,7 +5710,7 @@ export default {
       DamageCapacity: '100'
     },
     'Truck > GameData': {
-      Country: 'RU',
+      Country: 'RU,CAS',
       Price: '64600',
       UnlockByExploration: 'false',
       UnlockByRank: '14'
@@ -4762,7 +5772,7 @@ export default {
       DamageCapacity: '100'
     },
     'Truck > GameData': {
-      Country: 'RU',
+      Country: 'RU,CAS',
       Price: '69000',
       UnlockByExploration: 'false',
       UnlockByRank: '1'
@@ -4832,7 +5842,7 @@ export default {
       DamageCapacity: '100'
     },
     'Truck > GameData': {
-      Country: 'RU',
+      Country: 'RU,CAS',
       Price: '66000',
       UnlockByExploration: 'false',
       UnlockByRank: '20'
@@ -5104,7 +6114,7 @@ export default {
       DamageCapacity: '100'
     },
     'Truck > GameData': {
-      Country: 'RU',
+      Country: 'RU,CAS',
       Price: '106800',
       UnlockByExploration: 'true',
       UnlockByRank: '1'
@@ -5298,7 +6308,7 @@ export default {
       DamageCapacity: '50'
     },
     'Truck > GameData': {
-      Country: 'RU',
+      Country: 'RU,CAS',
       Price: '3600',
       UnlockByExploration: 'false',
       UnlockByRank: '1'
@@ -5908,7 +6918,7 @@ export default {
       DamageCapacity: '50'
     },
     'Truck > GameData': {
-      Country: 'RU',
+      Country: 'RU,CAS',
       Price: '2700',
       UnlockByExploration: 'false',
       UnlockByRank: '1'
@@ -5963,7 +6973,7 @@ export default {
       DamageCapacity: '50'
     },
     'Truck > GameData': {
-      Country: 'RU',
+      Country: 'RU,CAS',
       Price: '3400',
       UnlockByExploration: 'false',
       UnlockByRank: '1'
@@ -6025,7 +7035,7 @@ export default {
       DamageCapacity: '100'
     },
     'Truck > GameData': {
-      Country: 'RU',
+      Country: 'RU,CAS',
       Price: '107700',
       UnlockByExploration: 'false',
       UnlockByRank: '22'
@@ -6087,7 +7097,7 @@ export default {
       DamageCapacity: '100'
     },
     'Truck > GameData': {
-      Country: 'RU',
+      Country: 'RU,CAS',
       Price: '92300',
       UnlockByExploration: 'false',
       UnlockByRank: '1'
@@ -6378,7 +7388,7 @@ export default {
       DamageCapacity: '50'
     },
     'Truck > GameData': {
-      Country: 'RU',
+      Country: 'RU,CAS',
       Price: '75500',
       UnlockByExploration: 'true',
       UnlockByRank: '1'
@@ -6459,7 +7469,7 @@ export default {
       DamageCapacity: '50'
     },
     'Truck > GameData': {
-      Country: 'RU',
+      Country: 'RU,CAS',
       Price: '57100',
       UnlockByExploration: 'true',
       UnlockByRank: '1'
@@ -6517,7 +7527,7 @@ export default {
       DamageCapacity: '50'
     },
     'Truck > GameData': {
-      Country: 'RU',
+      Country: 'RU,CAS',
       Price: '7200',
       UnlockByExploration: 'true',
       UnlockByRank: '1'
@@ -6579,7 +7589,7 @@ export default {
       DamageCapacity: '100'
     },
     'Truck > GameData': {
-      Country: 'RU',
+      Country: 'RU,CAS',
       Price: '106700',
       UnlockByExploration: 'true',
       UnlockByRank: '1'
@@ -6654,7 +7664,7 @@ export default {
       DamageCapacity: '50'
     },
     'Truck > GameData': {
-      Country: 'RU',
+      Country: 'RU,CAS',
       Price: '64900',
       UnlockByExploration: 'false',
       UnlockByRank: '1'
@@ -6729,7 +7739,7 @@ export default {
       DamageCapacity: '50'
     },
     'Truck > GameData': {
-      Country: 'RU',
+      Country: 'RU,CAS',
       Price: '62600',
       UnlockByExploration: 'false',
       UnlockByRank: '1'
@@ -6804,7 +7814,7 @@ export default {
       DamageCapacity: '50'
     },
     'Truck > GameData': {
-      Country: 'RU',
+      Country: 'RU,CAS',
       Price: '65700',
       UnlockByExploration: 'false',
       UnlockByRank: '18'
@@ -6989,7 +7999,7 @@ export default {
       DamageCapacity: '50'
     },
     'Truck > GameData': {
-      Country: 'RU',
+      Country: 'RU,CAS',
       Price: '15100',
       UnlockByExploration: 'false',
       UnlockByRank: '10'
@@ -7044,7 +8054,7 @@ export default {
       DamageCapacity: '50'
     },
     'Truck > GameData': {
-      Country: 'RU',
+      Country: 'RU,CAS',
       Price: '17800',
       UnlockByExploration: 'false',
       UnlockByRank: '1'
@@ -11612,6 +12622,39 @@ export default {
     },
     'TruckWheels > TruckTires > TruckTire[SXMLE_ID="5"] > GameData': {
       Price: '6800',
+      UnlockByExploration: 'false',
+      UnlockByRank: '14'
+    },
+    'TruckWheels > TruckTires > TruckTire[SXMLE_ID="6"] > WheelFriction': {
+      BodyFriction: '2.0',
+      BodyFrictionAsphalt: '0.5',
+      SubstanceFriction: '2.0',
+      IsIgnoreIce: 'false'
+    },
+    'TruckWheels > TruckTires > TruckTire[SXMLE_ID="6"] > GameData': {
+      Price: '8500',
+      UnlockByExploration: 'false',
+      UnlockByRank: '15'
+    },
+    'TruckWheels > TruckTires > TruckTire[SXMLE_ID="7"] > WheelFriction': {
+      BodyFriction: '2.0',
+      BodyFrictionAsphalt: '0.5',
+      SubstanceFriction: '2.0',
+      IsIgnoreIce: 'false'
+    },
+    'TruckWheels > TruckTires > TruckTire[SXMLE_ID="7"] > GameData': {
+      Price: '7900',
+      UnlockByExploration: 'false',
+      UnlockByRank: '14'
+    },
+    'TruckWheels > TruckTires > TruckTire[SXMLE_ID="8"] > WheelFriction': {
+      BodyFriction: '2.0',
+      BodyFrictionAsphalt: '0.5',
+      SubstanceFriction: '2.0',
+      IsIgnoreIce: 'false'
+    },
+    'TruckWheels > TruckTires > TruckTire[SXMLE_ID="8"] > GameData': {
+      Price: '7500',
       UnlockByExploration: 'false',
       UnlockByRank: '14'
     }

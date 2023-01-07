@@ -33,7 +33,7 @@ class Template implements ITemplateItem<TemplateParams> {
       this.construct({ selectors: <TemplateSelectors> props })
   }
 
-  public getParams(props: IItemGetterProps): TemplateParams {
+  public getParams(props: IItemGetterProps): TemplateParams | never {
     const {
       providedSelector,
       fileDOM,
@@ -47,15 +47,13 @@ class Template implements ITemplateItem<TemplateParams> {
     let params: TemplateParams = []
     const newSelectors: TemplateSelectors = {}
     for (const selector in formattedSelectors) {
-      if (formattedSelectors[selector].includes('||')) {
+      if (formattedSelectors[selector].includes('||'))
         formattedSelectors[selector] = formattedSelectors[selector].split('||')[1]
-      }
     }
 
     if (multiply) {
-      if (!this.itemSelectorID) {
+      if (!this.itemSelectorID)
         throw new Error('Selector ID is undefined')
-      }
       let itemSelector = formattedSelectors[this.itemSelectorID]
       if (itemSelector.endsWith('"]')) {
         const temp1 = itemSelector.split(' ')
@@ -70,12 +68,10 @@ class Template implements ITemplateItem<TemplateParams> {
         fileDOM(el).attr('SXMLE_ID', String(counter))
         for (const selector in formattedSelectors) {
           newSelectors[selector] = formattedSelectors[selector].replaceAll(`-${name}-`, String(counter))
-          if (cycleNumber === 1) {
+          if (cycleNumber === 1)
             newSelectors[selector] = newSelectors[selector].replaceAll(`-F_${name}-`, String(counter))
-          }
-          else if (cycleNumber === items.length) {
+          else if (cycleNumber === items.length)
             newSelectors[selector] = newSelectors[selector].replaceAll(`-L_${name}-`, String(counter))
-          }
           newSelectors[selector] = newSelectors[selector].replaceAll(`-N${cycleNumber}_${name}-`, String(counter))
         }
 

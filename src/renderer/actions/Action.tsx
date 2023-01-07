@@ -1,8 +1,8 @@
-import type { FC, ReactNode } from 'react'
+import type { FC } from 'react'
 
 import { Button, Modal } from 'antd'
 import type { CheerioAPI } from 'cheerio'
-import { fafc, useOnRender, useState } from 'react-afc'
+import { afc, useOnRender, useState } from 'react-afc'
 
 import type { IActionData, IActionProps } from '#types'
 
@@ -14,12 +14,15 @@ abstract class Action {
   data!: CreatedActionData
   Component!: FC<IActionProps>
 
-  protected ActionComponent!: FC<IActionProps>
   protected name = 'no-name'
   protected id: string | number = 'no-id'
   protected minWidth?: number
   protected minHeight?: number
   protected imgSRC?: string
+
+  constructor(
+    private ActionComponent: FC<IActionProps>
+  ) {}
 
   protected init(): void {
     const data: CreatedActionData = {
@@ -33,14 +36,13 @@ abstract class Action {
       minHeight: this.minHeight,
       imgSRC: this.imgSRC
     }
-    const ActionComponent = this.ActionComponent
     this.data = data
-
-    const Component = fafc<IActionProps>(props => {
-      let isClosing = false
-
+    
+    const ActionComponent = this.ActionComponent
+    function Component(props: IActionProps) {
       const [isShow, setIsShow] = useState(true)
-
+      let isClosing = false
+      
       useOnRender(() => {
         if (!isClosing)
           setIsShow(true)
@@ -48,33 +50,29 @@ abstract class Action {
           isClosing = false
       })
 
-      function render(): ReactNode {
-        return (
-          <Modal
-            title={data.name}
-            open={isShow.val}
-            closable={false}
-            footer={[
-              <Button key='ok' onClick={onOk}>
-                OK
-              </Button>
-            ]}
-          >
-            <ActionComponent {...props.curr} />
-          </Modal>
-        )
-      }
-
       function onOk(): void {
         setIsShow(false)
         isClosing = true
         data.onPressOk?.()
       }
 
-      return render
-    })
+      return () => (
+        <Modal
+          title={data.name}
+          open={isShow.val}
+          closable={false}
+          footer={
+            <Button key='ok' onClick={onOk}>
+              OK
+            </Button>
+          }
+        >
+          <ActionComponent {...props} />
+        </Modal>
+      )
+    }
 
-    this.Component = Component
+    this.Component = afc(Component)
   }
 
   protected onPressOk(): void {}

@@ -1,14 +1,13 @@
 import type { AnyNode, Cheerio, CheerioAPI } from 'cheerio'
-import { Bridge } from 'emr-bridge/renderer'
 
 import xmlFiles from '../services/xmlFiles'
 
 import { FileType, PreloadType } from '#enums'
+import bridge from '#r-scripts/bridge'
 import paramsDefaults from '#r-scripts/defaults'
 import { preload, system, xml } from '#services'
-import type { Defaults, IEditorPreload, IInputParams, MPC, TemplateParams } from '#types'
+import type { Defaults, IEditorPreload, IInputParams, TemplateParams } from '#types'
 
-const bridge = Bridge.as<MPC>()
 const paths = bridge.paths
 
 const { findFromDLC } = preload.get<IEditorPreload>(PreloadType.editor)
@@ -41,9 +40,8 @@ function parseFile(config: Config) {
   if (propsItem.fileType === FileType.wheels && propsItem.attribute !== 'Type') {
     fileDOM('Truck > TruckData > CompatibleWheels').map((_, el) => {
       const type = fileDOM(el).attr('Type')
-      if (type && !fileNames.includes(type)) {
+      if (type && !fileNames.includes(type))
         fileNames.push(type)
-      }
     })
   }
 
@@ -65,9 +63,8 @@ function parseFile(config: Config) {
     }
 
     pathsToFiles.forEach(path => {
-      if (system.existsSync(path)) {
+      if (system.existsSync(path))
         mainPath = path
-      }
     })
 
     if (!mainPath) {

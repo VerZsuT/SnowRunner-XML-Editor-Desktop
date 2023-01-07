@@ -1,26 +1,21 @@
-import type { ReactNode } from 'react'
-
 import { Button, Modal, Steps } from 'antd'
-import { Bridge } from 'emr-bridge/renderer'
 import { pafc, useOnMount, useState } from 'react-afc'
 
 import GameFolder from './components/GameFolder'
-import { FIRST_STEPS_DESCRIPTION, GAME_DATA_STEP, IMPORT_CONFIG_MESSAGE, NEXT } from './texts'
+import $ from './texts'
 
 import Header from '#components/Header'
 import Language from '#components/Language'
 import Menu from '#components/Menu'
 import { ProgramWindow } from '#enums'
-import { LANGUAGE_LABEL } from '#globalTexts/renderer'
 import useIPCMessage from '#helpers/useIPCMessage'
 import useWindowReady from '#helpers/useWindowReady'
+import bridge from '#r-scripts/bridge'
 import { config, helpers, system } from '#services'
-import type { MPC } from '#types'
 
 import '#r/templateScript'
 import './styles'
 
-const bridge = Bridge.as<MPC>()
 const paths = bridge.paths
 const { Step } = Steps
 const { confirm } = Modal
@@ -39,27 +34,25 @@ const Setup = pafc(() => {
     setTimeout(checkExportedConfig, 300)
   })
 
-  function render(): ReactNode {
-    return <>
-      <Menu/>
-      <Header text={FIRST_STEPS_DESCRIPTION}/>
+  return () => <>
+    <Menu/>
+    <Header text={$.FIRST_STEPS_DESCRIPTION}/>
 
-      <Steps className='steps' current={step.val}>
-        <Step title={LANGUAGE_LABEL}/>
-        <Step title={GAME_DATA_STEP}/>
-      </Steps>
-      <div className='steps-content'>
-        {stepsContent[step.val]}
-      </div>
-      <div className='steps-actions'>
-        {step.val < stepsContent.length - 1 && (
-          <Button type='primary' onClick={onNext}>
-            {NEXT}
-          </Button>
-        )}
-      </div>
-    </>
-  }
+    <Steps className='steps' current={step.val}>
+      <Step title={$.LANGUAGE_LABEL}/>
+      <Step title={$.GAME_DATA_STEP}/>
+    </Steps>
+    <div className='steps-content'>
+      {stepsContent[step.val]}
+    </div>
+    <div className='steps-actions'>
+      {step.val < stepsContent.length - 1 && (
+        <Button type='primary' onClick={onNext}>
+          {$.NEXT}
+        </Button>
+      )}
+    </div>
+  </>
 
   function onSave(path: string): void {
     config.initial = path
@@ -73,13 +66,11 @@ const Setup = pafc(() => {
   function checkExportedConfig(): void {
     if (system.existsSync(system.join(paths.backupFolder, 'config.json'))) {
       confirm({
-        title: IMPORT_CONFIG_MESSAGE,
+        title: $.IMPORT_CONFIG_MESSAGE,
         onOk: () => bridge.importConfig()
       })
     }
   }
-
-  return render
 })
 
 helpers.renderComponent(<Setup/>)

@@ -51,7 +51,7 @@ body {
     color: #5c5c5c;
 
     &:hover,
-    &[aria-selected="true"] {
+    &[aria-selected="true"] span {
       color: black;
     }
   }
@@ -119,16 +119,18 @@ body {
   height: fit-content !important;
   box-sizing: content-box;
 
-  &-title {
-    justify-content: center;
-  }
-
   &-list {
     will-change: auto !important;
   }
 
-  .ant-card-body {
-    padding: 15px;
+  .ant-card {
+    &-body {
+      padding: 15px;
+    }
+
+    &-meta-title {
+      text-align: center;
+    }
   }
 
   .fav-star {

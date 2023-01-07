@@ -1,5 +1,6 @@
 import { useOnDestroy, useOnMount } from 'react-afc/compatible'
 
+import { isString } from '#gl-helpers'
 import type { ISetHotKeyParams } from '#types'
 
 /**
@@ -13,7 +14,7 @@ function useKey(config: ISetHotKeyParams | ISetHotKeyParams['key'], handler: (ev
   let prevent: boolean | undefined
   let key: ISetHotKeyParams['key']
 
-  if (typeof config === 'string') {
+  if (isString(config)) {
     key = config
   }
   else {

@@ -10,7 +10,7 @@ import paths from './paths'
 import windows from './windows'
 
 import { DEBUG_WINRAR, DEBUG_WINRAR_ERRORS } from '#consts'
-import { UNPACKING } from '#m-scripts/programTexts'
+import $ from '#m/texts'
 
 class Archive {
   private readonly MAIN_UNPACK_LIST = '@unpack-list.lst'
@@ -82,7 +82,7 @@ class Archive {
   @publicMethod()
   async unpackMain(hideLoading = true): Promise<void> {
     await windows.loading?.showAndWait()
-    windows.loading?.setText(UNPACKING)
+    windows.loading?.setText($.UNPACKING)
 
     this.clearDir(paths.mainTemp)
     this.rmFile(paths.texts)
@@ -90,9 +90,8 @@ class Archive {
     await this.unpack(config.initial, paths.mainTemp, false, true)
     this.saveSize(config.initial)
 
-    if (hideLoading) {
+    if (hideLoading)
       windows.loading?.hide()
-    }
   }
 
   /**
@@ -117,12 +116,10 @@ class Archive {
    */
   private saveSize(path: string, isMod?: boolean): void {
     const fileName = this.cutDotPak(path)
-    if (isMod) {
+    if (isMod)
       config.sizes.mods[fileName] = hash.getSize(path)
-    }
-    else {
+    else
       config.sizes.initial = hash.getSize(path)
-    }
   }
 
   /**
@@ -146,9 +143,8 @@ class Archive {
    * @param path - путь создания
    */
   private mkDir(path: string): void {
-    if (!existsSync(path)) {
+    if (!existsSync(path))
       mkdirSync(path)
-    }
   }
 
   /**
@@ -170,10 +166,9 @@ class Archive {
       try {
         execFileSync(this.WINRAR, attrs, { cwd: paths.winrar })
       }
-      catch (error: any) {
-        if (DEBUG_WINRAR_ERRORS) {
+      catch (error: unknown) {
+        if (DEBUG_WINRAR_ERRORS && error instanceof Error)
           console.error(error.message)
-        }
       }
       return
     }

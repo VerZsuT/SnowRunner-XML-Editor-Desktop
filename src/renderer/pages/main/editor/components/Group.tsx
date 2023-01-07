@@ -1,5 +1,3 @@
-import type { ReactNode } from 'react'
-
 import { Collapse } from 'antd'
 import { fafcMemo, useContext } from 'react-afc'
 
@@ -10,7 +8,7 @@ import handleReset from '../helpers/handleReset'
 import Parameter from './Parameter'
 
 import { InputType } from '#enums'
-import { RESET_MENU_ITEM_LABEL } from '#globalTexts/renderer'
+import $ from '#gl-texts/renderer'
 import useContextMenu from '#helpers/useContextMenu'
 import { helpers } from '#services'
 import type { IGroupParams, IInputParams, ISelectParams, TemplateParams } from '#types'
@@ -34,7 +32,7 @@ export const Group = fafcMemo<Props>(props => {
   const contextMenu = useContextMenu()
   const contextMenuItems = [{
     key: 'reset-group',
-    label: `${RESET_MENU_ITEM_LABEL} ${item.groupName}`,
+    label: `${$.RESET_MENU_ITEM_LABEL} ${item.groupName}`,
     onClick: onReset
   }]
   
@@ -52,38 +50,35 @@ export const Group = fafcMemo<Props>(props => {
     />
   ))
   let label = item.groupName
-  if (mod) {
+  if (mod)
     label = helpers.getGameText(item.groupName, mod) ?? item.resGroupName ?? item.groupName
-  }
 
   handleReset(onReset)
 
-  function render(): ReactNode {
-    return <>
-      <contextMenu.Component items={contextMenuItems} isShow={contextMenu.isShow()}/>
-      <Panel
-        {...props.curr}
-        header={
-          <div onContextMenu={contextMenu.onContext}>
-            {label}
-          </div>
+  return () => <>
+    <contextMenu.Component items={contextMenuItems} isShow={contextMenu.isShow()}/>
+    <Panel
+      {...props.curr}
+      header={
+        <div onContextMenu={contextMenu.onContext}>
+          {label}
+        </div>
+      }
+      extra={iconSRC ? <img src={iconSRC}/> : null}
+    >
+      <ResetContext.Provider value={resetContext}>
+        {params.length > 0 &&
+          <div>{params}</div>
         }
-        extra={iconSRC ? <img src={iconSRC}/> : null}
-      >
-        <ResetContext.Provider value={resetContext}>
-          {params.length > 0 &&
-            <div>{params}</div>
-          }
-          {files}
-          {groups.length > 0 &&
-            <Collapse accordion>
-              {groups}
-            </Collapse>
-          }
-        </ResetContext.Provider>
-      </Panel>
-    </>
-  }
+        {files}
+        {groups.length > 0 &&
+          <Collapse accordion>
+            {groups}
+          </Collapse>
+        }
+      </ResetContext.Provider>
+    </Panel>
+  </>
 
   function onReset(): void {
     resetList.forEach(onReset => onReset())
@@ -101,19 +96,14 @@ export const Group = fafcMemo<Props>(props => {
     }
   
     item.groupItems.forEach(groupItem => {
-      if (groupItem.paramType === 'group') {
+      if (groupItem.paramType === 'group')
         groups.push(groupItem)
-      }
-      else if (groupItem.type === InputType.file) {
+      else if (groupItem.type === InputType.file)
         params.files.push(groupItem)
-      }
-      else {
+      else
         params.default.push(groupItem)
-      }
     })
   
     return { groups, params }
   }
-
-  return render
 })

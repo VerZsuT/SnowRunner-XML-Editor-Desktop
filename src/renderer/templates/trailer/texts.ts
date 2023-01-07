@@ -1,21 +1,6 @@
-import { lzn } from '#services'
+import { compareWithGlobal } from '#gl-texts/renderer'
 
-export const {
-  WHEELS,
-  WHEEL_REPAIRS_CAPACITY,
-  REPAIRS_CAPACITY,
-  FUEL_CAPACITY,
-  WHEEL,
-  FUEL_MASS,
-  MASS,
-  TRAILER_MASS,
-  OTHER,
-  PRICE,
-  SUSP_HEIGHT,
-  SUSP_STRENGTH,
-  INNER,
-  QUANTITY
-} = lzn.localize({
+export default compareWithGlobal({
   RU: {
     QUANTITY: 'Кол-во груза',
     INNER: 'Полезное содержимое',

@@ -1,15 +1,8 @@
 import { Group, Int, Select } from '../items'
 
-import { lzn } from '#services'
+import { compareWithGlobal } from '#gl-texts/renderer'
 
-const {
-  BY_RANK,
-  PRICE,
-  BY_EXPLORATION,
-  FIND_ON_MAP,
-  UNLOCK_BY_RANK,
-  UNLOCK_GROUP_NAME
-} = lzn.localize({
+const $ = compareWithGlobal({
   RU: {
     UNLOCK_GROUP_NAME: 'Разблокировка',
     PRICE: 'Цена',
@@ -46,24 +39,24 @@ const {
 
 function unlockGroup(selector: string) {
   return new Group({
-    label: UNLOCK_GROUP_NAME,
+    label: $.UNLOCK_GROUP_NAME,
     provided: selector
   },
     new Int({
       attribute: 'Price',
-      label: PRICE
+      label: $.PRICE
     }),
     new Select({
       attribute: 'UnlockByExploration',
-      label: BY_EXPLORATION,
+      label: $.BY_EXPLORATION,
       options: [
-        ['true', FIND_ON_MAP],
-        ['false', BY_RANK]
+        ['true', $.FIND_ON_MAP],
+        ['false', $.BY_RANK]
       ]
     }),
     new Int({
       attribute: 'UnlockByRank',
-      label: UNLOCK_BY_RANK,
+      label: $.UNLOCK_BY_RANK,
       max: 30,
       min: 1
     })

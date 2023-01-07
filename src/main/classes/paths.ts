@@ -87,4 +87,4 @@ class Paths {
   }
 }
 
-export default providePublic(new Paths() as unknown as IPaths)
+export default providePublic(new Paths()) as unknown as IPaths

@@ -1,17 +1,7 @@
 import { Float, ForEach, Group, Int, Template } from '../items'
 import unlockGroup from '../presets/unlockGroup'
 import { createSelectors, forEach, forEachBy, selector } from '../service'
-import {
-  BROKEN_SUSPENSION_MAX,
-  CRITICAL_DAMAGE_THRESHOLD,
-  DAMAGE_CAPACITY,
-  DAMPING,
-  HEIGHT,
-  STRENGTH,
-  SUSPENSION,
-  SUSPENSION_MAX,
-  SUSPENSION_MIN
-} from './texts'
+import $ from './texts'
 
 import type { IXMLTemplate } from '#types'
 
@@ -37,7 +27,7 @@ export default {
       },
         new Float({
           attribute: 'CriticalDamageThreshold',
-          label: CRITICAL_DAMAGE_THRESHOLD,
+          label: $.CRITICAL_DAMAGE_THRESHOLD,
           max: 0.999,
           min: 0,
           step: 0.01,
@@ -45,7 +35,7 @@ export default {
         }),
         new Int({
           attribute: 'DamageCapacity',
-          label: DAMAGE_CAPACITY,
+          label: $.DAMAGE_CAPACITY,
           max: 64000,
           step: 10,
           default: 0,
@@ -56,13 +46,13 @@ export default {
         }),
         new ForEach(selectors.suspension,
           new Group({
-            label: SUSPENSION,
+            label: $.SUSPENSION,
             provided: selectors.suspension,
             addCounter: true
           },
             new Float({
               attribute: 'Height',
-              label: HEIGHT,
+              label: $.HEIGHT,
               max: 1000,
               min: -1000,
               areas: {
@@ -78,7 +68,7 @@ export default {
             }),
             new Float({
               attribute: 'Strength',
-              label: STRENGTH,
+              label: $.STRENGTH,
               step: 0.01,
               areas: {
                 yellow: [0.5, 1.5],
@@ -87,7 +77,7 @@ export default {
             }),
             new Float({
               attribute: 'Damping',
-              label: DAMPING,
+              label: $.DAMPING,
               max: 1000,
               areas: {
                 yellow: [1, 3],
@@ -96,7 +86,7 @@ export default {
             }),
             new Float({
               attribute: 'SuspensionMin',
-              label: SUSPENSION_MIN,
+              label: $.SUSPENSION_MIN,
               max: 1000,
               min: -1000,
               step: 0.01,
@@ -113,7 +103,7 @@ export default {
             }),
             new Float({
               attribute: 'SuspensionMax',
-              label: SUSPENSION_MAX,
+              label: $.SUSPENSION_MAX,
               max: 1000,
               min: -1000,
               step: 0.01,
@@ -131,7 +121,7 @@ export default {
             }),
             new Float({
               attribute: 'BrokenSuspensionMax',
-              label: BROKEN_SUSPENSION_MAX,
+              label: $.BROKEN_SUSPENSION_MAX,
               max: 1000,
               min: -1000,
               step: 0.01,

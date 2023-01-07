@@ -47,9 +47,8 @@ class Input implements ITemplateItem<[IInputParams] | []> {
 
     if (fileDOM(sel).length === 0) {
       if (!this.addMissedTag) {
-        if (DEBUG_EDITOR_PARAMS) {
+        if (DEBUG_EDITOR_PARAMS)
           console.warn(`Missing parameter\n\tName: "${(this.attribute)}",\n\tText: "${(this.label)}",\n\tSelector: "${sel}".`)
-        }
         return []
       }
     }

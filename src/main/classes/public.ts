@@ -12,8 +12,7 @@ import exitParams from './exitParams'
 import paths from './paths'
 
 import { APP_ID } from '#consts'
-import { SUCCESS_EXPORT_MESSAGE } from '#globalTexts/main'
-import { IMPORT_CONFIG_ERROR, ONLY_MANUAL_UNINS, SAVE_MOD_ERROR, SAVE_ORIGINAL_ERROR } from '#m-scripts/programTexts'
+import $ from '#m/texts'
 
 import './epf'
 import './updates'
@@ -55,7 +54,7 @@ class Public {
   uninstall() {
     if (!existsSync(paths.uninstall)) {
       dialogs.alert({
-        message: ONLY_MANUAL_UNINS,
+        message: $.ONLY_MANUAL_UNINS,
         title: APP_ID
       })
     }
@@ -70,7 +69,7 @@ class Public {
   exportConfig() {
     if (config.export()) {
       dialogs.alert({
-        message: SUCCESS_EXPORT_MESSAGE,
+        message: $.SUCCESS_EXPORT_MESSAGE,
         title: APP_ID
       })
       return true
@@ -88,7 +87,7 @@ class Public {
     }
 
     dialogs.alert({
-      message: IMPORT_CONFIG_ERROR,
+      message: $.IMPORT_CONFIG_ERROR,
       title: APP_ID
     })
     return false
@@ -106,7 +105,7 @@ class Public {
           archive.update(join(paths.modsTemp, modId), config.mods.items[modId].path, true)
         }
         catch {
-          dialogs.error(SAVE_MOD_ERROR)
+          dialogs.error($.SAVE_MOD_ERROR)
         }
       }
     }
@@ -120,7 +119,7 @@ class Public {
           archive.update(paths.mainTemp, config.initial)
         }
         catch {
-          dialogs.error(SAVE_ORIGINAL_ERROR)
+          dialogs.error($.SAVE_ORIGINAL_ERROR)
         }
       }
     }

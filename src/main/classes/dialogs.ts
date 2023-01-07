@@ -6,7 +6,7 @@ import { providePublic, publicMethod } from 'emr-bridge'
 import paths from './paths'
 
 import { DialogAlertType, DialogSourceType, DialogType } from '#enums'
-import { ERROR } from '#m-scripts/programTexts'
+import $ from '#m/texts'
 import type { IDialogAlertParams, IDialogParams, IOpenDialogParams } from '#types'
 
 class Dialogs {
@@ -21,7 +21,7 @@ class Dialogs {
   error(message: string): void {
     this.alert({
       type: 'warning',
-      title: ERROR,
+      title: $.ERROR,
       message
     })
   }
@@ -44,9 +44,8 @@ class Dialogs {
       type
     }
 
-    if (dialogType === DialogAlertType.sync) {
+    if (dialogType === DialogAlertType.sync)
       return dialog.showMessageBoxSync(dialogParams)
-    }
 
     return dialog.showMessageBox(dialogParams)
   }
@@ -94,7 +93,7 @@ class Dialogs {
   }
 
   /** Открыть диалоговое окно */
-  openDialog(params: IOpenDialogParams): string | string[] {
+  openDialog(params: IOpenDialogParams): string | string[] | undefined {
     const {
       type = DialogType.open,
       source = DialogSourceType.file,
@@ -115,11 +114,11 @@ class Dialogs {
     if (type === DialogType.open) {
       const result = dialog.showOpenDialogSync(dialogParams)
       if (Array.isArray(result)) {
-        if (!dialogParams.properties?.includes('multiSelections')) {
+        if (!dialogParams.properties?.includes('multiSelections'))
           return result[0]
-        }
         return result
       }
+      return undefined
     }
     else {
       const saveDialogParams = {
@@ -128,9 +127,11 @@ class Dialogs {
       }
       const result = dialog.showSaveDialogSync(saveDialogParams)
 
-      if (result) return result
+      if (result)
+        return result
+
+      return []
     }
-    return []
   }
 }
 

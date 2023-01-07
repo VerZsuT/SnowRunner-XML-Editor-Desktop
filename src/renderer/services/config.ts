@@ -1,10 +1,9 @@
-import { Bridge } from 'emr-bridge/renderer'
-
-import type { IConfig, MPC } from '#types'
+import { isNonNullable, isObject } from '#gl-helpers'
+import bridge from '#r-scripts/bridge'
+import type { IConfig } from '#types'
 
 class ConfigService {
-  private readonly bridge = Bridge.as<MPC>()
-  private readonly config = { ...this.bridge.config }
+  private readonly config = { ...bridge.config }
 
   constructor() {
     this.defineObject(this.config, this)
@@ -13,7 +12,7 @@ class ConfigService {
   private defineObject(obj: any, to: any): void {
     for (const key in obj) {
       const value = obj[key]
-      if (typeof value === 'object' && !Array.isArray(value) && value !== null) {
+      if (isObject(value) && !Array.isArray(value) && isNonNullable(value)) {
         const defined = {}
         this.defineObject(value, defined)
         Object.defineProperty(to, key, {
@@ -40,7 +39,7 @@ class ConfigService {
 
   private changeConfig(callback: () => void): void {
     callback()
-    this.bridge.config = this.config
+    bridge.config = this.config
   }
 }
 

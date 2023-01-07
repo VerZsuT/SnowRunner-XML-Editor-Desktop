@@ -1,55 +1,10 @@
-import AddonsContent from '../../actions/addonsContent'
+import AddonsContent from '../../actions/AddonsContent'
+import BanditCrane from '../../actions/BanditCrane'
 import Cranes from '../../actions/cranes'
 import Trailers from '../../actions/trailers'
-import BanditCrane from '../../actions/zikz_605r/banditCrane'
 import { Coords, File, Float, ForEach, Group, Int, Select, Template, Text } from '../items'
 import { createSelectors, forEach, selector } from '../service'
-import {
-  ALWAYS,
-  ANY,
-  BACK_STEER_SPEED,
-  BY_EXPLORATION,
-  BY_RANK,
-  CENTER_OF_MASS,
-  CONTROL_GROUP_NAME,
-  COUNTRY,
-  DAMAGE_CAPACITY,
-  DIFF_LOCK,
-  ENGINE_GROUP_NAME,
-  ENGINE_START_DELAY,
-  EXHAUST_START_TIME,
-  EXTRA_WHEEL,
-  FIND_ON_MAP,
-  FUEL_CAPACITY,
-  FUEL_GROUP_NAME,
-  GEARBOX_GROUP_NAME,
-  INSTALLED,
-  NONE,
-  PHYSICS_WHEELS,
-  PRICE,
-  RESPONSIVENESS,
-  RUSSIA, STEERING_ANGLE, STEER_SPEED, SUSPENSION_GROUP_NAME,
-  TEXT_GROUP_NAME,
-  TORQUE,
-  TORQUE_CONNECTABLE,
-  TORQUE_DEFAULT,
-  TORQUE_FULL,
-  TORQUE_NONE,
-  UI_DESC,
-  UI_NAME,
-  UNINSTALLED,
-  UNLOCK_BY_RANK,
-  UNLOCK_GROUP_NAME,
-  US,
-  WHEEL,
-  WHEELS_GROUP_NAME,
-  WHEELS_SCALE,
-  WHEELS_SET,
-  WHEELS_SIZES,
-  WINCH_GROUP_NAME,
-  WINCH_LENGTH,
-  WINCH_STRENGTH
-} from './texts'
+import $ from './texts'
 
 import { FileType } from '#enums'
 import type { IXMLTemplate } from '#types'
@@ -77,61 +32,61 @@ const selectors = createSelectors(Selectors)
 export default {
   selector: 'Truck',
   actions: [
-    new BanditCrane(),
-    new AddonsContent(),
-    new Cranes(),
-    new Trailers()
+    BanditCrane,
+    AddonsContent,
+    Cranes,
+    Trailers
   ],
   template: new Template({ ...selectors },
     new Group({
-      label: TEXT_GROUP_NAME,
+      label: $.TEXT_GROUP_NAME,
       provided: selectors.UIDesc,
       iconName: 'texts.png'
     },
       new Text({
         attribute: 'UiName',
-        label: UI_NAME
+        label: $.UI_NAME
       }),
       new Text({
         attribute: 'UiDesc',
-        label: UI_DESC
+        label: $.UI_DESC
       })
     ),
     new Group({
-      label: CONTROL_GROUP_NAME,
+      label: $.CONTROL_GROUP_NAME,
       provided: selectors.truckData,
       iconName: 'steering-wheel.png'
     },
       new Float({
         attribute: 'Responsiveness',
-        label: RESPONSIVENESS,
+        label: $.RESPONSIVENESS,
         max: 1.0,
         min: 0.0,
         step: 0.01
       }),
       new Float({
         attribute: 'BackSteerSpeed',
-        label: BACK_STEER_SPEED,
+        label: $.BACK_STEER_SPEED,
         max: 1.0,
         min: 0.0,
         step: 0.01
       }),
       new Float({
         attribute: 'SteerSpeed',
-        label: STEER_SPEED,
+        label: $.STEER_SPEED,
         max: 1.0,
         min: 0.0,
         step: 0.01
       })
     ),
     new Group({
-      label: WINCH_GROUP_NAME,
+      label: $.WINCH_GROUP_NAME,
       iconName: 'winches.png'
     },
       new Float({
         attribute: 'Length',
         selector: selectors.staticWinch,
-        label: WINCH_LENGTH,
+        label: $.WINCH_LENGTH,
         max: 100,
         min: 0,
         step: 1,
@@ -140,7 +95,7 @@ export default {
       new Float({
         attribute: 'StrengthMult',
         selector: selectors.staticWinch,
-        label: WINCH_STRENGTH,
+        label: $.WINCH_STRENGTH,
         max: 10,
         min: 0,
         default: 1
@@ -152,31 +107,31 @@ export default {
       })
     ),
     new Group({
-      label: WHEELS_GROUP_NAME,
+      label: $.WHEELS_GROUP_NAME,
       provided: selectors.wheels,
       iconName: 'wheels.png'
     },
-      new Group(PHYSICS_WHEELS,
+      new Group($.PHYSICS_WHEELS,
         new ForEach(selectors.wheel,
           new Group({
-            label: WHEEL,
+            label: $.WHEEL,
             provided: selectors.wheel,
             addCounter: true
           },
             new Select({
               attribute: 'Torque',
-              label: TORQUE,
+              label: $.TORQUE,
               options: [
-                ['default', TORQUE_DEFAULT],
-                ['full', TORQUE_FULL],
-                ['none', TORQUE_NONE],
-                ['connectable', TORQUE_CONNECTABLE]
+                ['default', $.TORQUE_DEFAULT],
+                ['full', $.TORQUE_FULL],
+                ['none', $.TORQUE_NONE],
+                ['connectable', $.TORQUE_CONNECTABLE]
               ],
               default: 2
             }),
             new Float({
               attribute: 'SteeringAngle',
-              label: STEERING_ANGLE,
+              label: $.STEERING_ANGLE,
               max: 90,
               min: -90,
               step: 1,
@@ -186,24 +141,24 @@ export default {
         ),
         new ForEach(selectors.extraWheel,
           new Group({
-            label: EXTRA_WHEEL,
+            label: $.EXTRA_WHEEL,
             provided: selectors.extraWheel,
             addCounter: true
           },
             new Select({
               attribute: 'Torque',
-              label: TORQUE,
+              label: $.TORQUE,
               options: [
-                ['default', TORQUE_DEFAULT],
-                ['full', TORQUE_FULL],
-                ['none', TORQUE_NONE],
-                ['connectable', TORQUE_CONNECTABLE]
+                ['default', $.TORQUE_DEFAULT],
+                ['full', $.TORQUE_FULL],
+                ['none', $.TORQUE_NONE],
+                ['connectable', $.TORQUE_CONNECTABLE]
               ],
               default: 2
             }),
             new Float({
               attribute: 'SteeringAngle',
-              label: STEERING_ANGLE,
+              label: $.STEERING_ANGLE,
               max: 90,
               min: -90,
               step: 1,
@@ -212,16 +167,16 @@ export default {
           )
         )
       ),
-      new Group(WHEELS_SIZES,
+      new Group($.WHEELS_SIZES,
         new ForEach(selectors.compatibleWheels,
           new Group({
-            label: WHEELS_SET,
+            label: $.WHEELS_SET,
             provided: selectors.compatibleWheels,
             addCounter: true
           },
             new Float({
               attribute: 'Scale',
-              label: WHEELS_SCALE
+              label: $.WHEELS_SCALE
             })
           )
         )
@@ -232,24 +187,24 @@ export default {
       })
     ),
     new Group({
-      label: SUSPENSION_GROUP_NAME,
+      label: $.SUSPENSION_GROUP_NAME,
       provided: selectors.suspension,
       iconName: 'suspensions.png'
     },
       new Coords({
         attribute: 'CenterOfMassOffset',
         selector: selectors.physicsBody,
-        label: CENTER_OF_MASS
+        label: $.CENTER_OF_MASS
       }),
       new Select({
         attribute: 'DiffLockType',
         selector: selectors.truckData,
-        label: DIFF_LOCK,
+        label: $.DIFF_LOCK,
         options: [
-          ['None', NONE],
-          ['Installed', INSTALLED],
-          ['Uninstalled', UNINSTALLED],
-          ['Always', ALWAYS]
+          ['None', $.NONE],
+          ['Installed', $.INSTALLED],
+          ['Uninstalled', $.UNINSTALLED],
+          ['Always', $.ALWAYS]
         ]
       }),
       new File({
@@ -258,7 +213,7 @@ export default {
       })
     ),
     new Group({
-      label: GEARBOX_GROUP_NAME,
+      label: $.GEARBOX_GROUP_NAME,
       provided: selectors.gearbox,
       iconName: 'gearboxes.png'
     },
@@ -268,21 +223,21 @@ export default {
       })
     ),
     new Group({
-      label: ENGINE_GROUP_NAME,
+      label: $.ENGINE_GROUP_NAME,
       provided: selectors.engine,
       iconName: 'engines.png'
     },
       new Float({
         attribute: 'EngineStartDelay',
         selector: selectors.truckData,
-        label: ENGINE_START_DELAY,
+        label: $.ENGINE_START_DELAY,
         max: 8,
         min: 0
       }),
       new Float({
         attribute: 'ExhaustStartTime',
         selector: selectors.truckData,
-        label: EXHAUST_START_TIME,
+        label: $.EXHAUST_START_TIME,
         min: 0
       }),
       new File({
@@ -291,13 +246,13 @@ export default {
       })
     ),
     new Group({
-      label: FUEL_GROUP_NAME,
+      label: $.FUEL_GROUP_NAME,
       provided: selectors.fuelTank,
       iconName: 'fuel.png'
     },
       new Int({
         attribute: 'DamageCapacity',
-        label: DAMAGE_CAPACITY,
+        label: $.DAMAGE_CAPACITY,
         step: 10,
         default: 0,
         areas: {
@@ -308,7 +263,7 @@ export default {
       new Int({
         attribute: 'FuelCapacity',
         selector: selectors.truckData,
-        label: FUEL_CAPACITY,
+        label: $.FUEL_CAPACITY,
         step: 10,
         areas: {
           yellow: [1000, 5000],
@@ -317,34 +272,34 @@ export default {
       })
     ),
     new Group({
-      label: UNLOCK_GROUP_NAME,
+      label: $.UNLOCK_GROUP_NAME,
       provided: selectors.gameData,
       iconName: 'unlock.png'
     },
       new Select({
         attribute: 'Country',
-        label: COUNTRY,
+        label: $.COUNTRY,
         options: [
-          ['RU', RUSSIA],
-          ['US', US],
-          ['EMPTY', ANY]
+          ['RU', $.RUSSIA],
+          ['US', $.US],
+          ['EMPTY', $.ANY]
         ]
       }),
       new Int({
         attribute: 'Price',
-        label: PRICE
+        label: $.PRICE
       }),
       new Select({
         attribute: 'UnlockByExploration',
-        label: BY_EXPLORATION,
+        label: $.BY_EXPLORATION,
         options: [
-          ['true', FIND_ON_MAP],
-          ['false', BY_RANK]
+          ['true', $.FIND_ON_MAP],
+          ['false', $.BY_RANK]
         ]
       }),
       new Int({
         attribute: 'UnlockByRank',
-        label: UNLOCK_BY_RANK,
+        label: $.UNLOCK_BY_RANK,
         max: 30,
         min: 1
       })

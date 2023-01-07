@@ -1,19 +1,17 @@
-import type { CSSProperties, ReactNode } from 'react'
+import type { CSSProperties } from 'react'
 
 import { StarFilled } from '@ant-design/icons'
 import { Card, message } from 'antd'
-import { fafcMemo, useRedux } from 'react-afc'
-import { useActions, useMemo } from 'react-afc/compatible'
-import type { FastProps } from 'react-afc/types'
+import { afcMemo, useActions, useMemo, useRedux } from 'react-afc'
 
 import { selectFilter } from '../../store/filterSlice'
 import editor from '../services/editor'
 import images from '../services/images'
-import { ADD_FAVORITE, REMOVE_FAVORITE } from '../texts'
+import $ from '../texts'
 
 import type { Category } from '#enums'
 import { Page } from '#enums'
-import { EXPORT, SUCCESS_EXPORT_MESSAGE } from '#globalTexts/renderer'
+import { isString } from '#gl-helpers'
 import useContextMenu from '#helpers/useContextMenu'
 import { actions } from '#pages/main/store'
 import { config, xml } from '#services'
@@ -30,96 +28,27 @@ type Props = {
   dlc?: string
 }
 
-function ListItem(props: FastProps<Props>) {
+function ListItem(props: Props) {
   const containerStyle = { position: 'relative' as const }
-  const fileDOM = xml.getDOM(props.curr.item.path)
-  const name = xml.getName(props.curr.item, fileDOM)
-  const imgSrc = images.getSrc(props.curr.type, props.curr.item, fileDOM)
+  const fileDOM = xml.getDOM(props.item.path)
+  const name = xml.getName(props.item, fileDOM)
+  const imgSrc = images.getSrc(props.type, props.item, fileDOM)
   const contextMenu = useContextMenu()
 
   const store = useRedux({
     filter: selectFilter
   })
-
-  function render(): ReactNode {
-    const title = getTitle()
-    if (!isShow()) return null
-
-    return (
-      <div style={containerStyle}>
-        <Card
-          style={props.curr.style}
-          className='card'
-          hoverable
-          cover={<img height={350} width={250} src={imgSrc}/>}
-          onContextMenu={contextMenu.onContext}
-          onClick={openEditor}
-        >
-          <Meta
-            className='card-title'
-            title={typeof title === 'string'
-              ? title
-              : <>
-                {title.first}
-                <span className='red'>
-                  {title.second}
-                </span>
-                {title.last}
-              </>
-            }
-          />
-          {isFavorite() &&
-            <StarFilled className='fav-star'/>
-          }
-        </Card>
-        <contextMenu.Component isShow={contextMenu.isShow()} items={getContextMenuItems()}/>
-      </div>
-    )
-  }
-
-  const { toggleFavorite, route } = useActions(actions)
-
-  function exportFile(): void {
-    const { item, modId, dlc } = props.curr
-
-    const isSuccess = xml.exportFile({
-      filePath: item.path,
-      shortMode: false,
-      mod: modId,
-      dlc
-    }, item.name)
   
-    contextMenu.hide()   
-    if (isSuccess) {
-      void message.success(SUCCESS_EXPORT_MESSAGE)
-    }
-  }
-
-  function openEditor(): void {
-    const { item, type, listId } = props.curr
-
-    editor.setStorageValues(item, type, listId)
-    contextMenu.hide()
-    route(Page.editor)
-  }
-
-  function toggle(): void {
-    contextMenu.hide()
-    toggleFavorite(props.curr.item.name)
-  }
-
-  function isFavorite(): boolean {
-    return config.favorites.includes(props.curr.item.name)
-  }
+  const { toggleFavorite, route } = useActions(actions)
 
   const getContextMenuItems = useMemo(() => [
     {
-      label: isFavorite() ? REMOVE_FAVORITE : ADD_FAVORITE,
+      label: isFavorite() ? $.REMOVE_FAVORITE : $.ADD_FAVORITE,
       key: 'toggle-favorite',
       onClick: toggle
     },
     {
-      label: EXPORT,
+      label: $.EXPORT,
       key: 'export',
       onClick: exportFile
     }
@@ -144,7 +73,73 @@ function ListItem(props: FastProps<Props>) {
     }
   }, () => [store.filter, name])
 
-  return render
+  return () => {
+    const title = getTitle()
+    if (!isShow()) return null
+
+    return (
+      <div style={containerStyle}>
+        <Card
+          style={props.style}
+          className='card'
+          hoverable
+          cover={<img height={350} width={250} src={imgSrc}/>}
+          onContextMenu={contextMenu.onContext}
+          onClick={openEditor}
+        >
+          <Meta
+            className='card-title'
+            title={isString(title)
+              ? title
+              : <>
+                {title.first}
+                <span className='red'>
+                  {title.second}
+                </span>
+                {title.last}
+              </>
+            }
+          />
+          {isFavorite() &&
+            <StarFilled className='fav-star'/>
+          }
+        </Card>
+        <contextMenu.Component isShow={contextMenu.isShow()} items={getContextMenuItems()}/>
+      </div>
+    )
+  }
+
+  function exportFile(): void {
+    const { item, modId, dlc } = props
+
+    const isSuccess = xml.exportFile({
+      filePath: item.path,
+      shortMode: false,
+      mod: modId,
+      dlc
+    }, item.name)
+  
+    contextMenu.hide()   
+    if (isSuccess)
+      void message.success($.SUCCESS_EXPORT_MESSAGE)
+  }
+
+  function openEditor(): void {
+    const { item, type, listId } = props
+
+    editor.setStorageValues(item, type, listId)
+    contextMenu.hide()
+    route(Page.editor)
+  }
+
+  function toggle(): void {
+    contextMenu.hide()
+    toggleFavorite(props.item.name)
+  }
+
+  function isFavorite(): boolean {
+    return config.favorites.includes(props.item.name)
+  }
 }
 
-export default fafcMemo(ListItem)
+export default afcMemo(ListItem)

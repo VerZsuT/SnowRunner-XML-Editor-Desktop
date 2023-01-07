@@ -1,10 +1,9 @@
-import { Bridge } from 'emr-bridge/renderer'
 import { createRoot } from 'react-dom/client'
 
-import type { MPC } from '#types'
+import bridge from '#r-scripts/bridge'
 
 class HelpersService {
-  private readonly texts = Bridge.as<MPC>().texts
+  private readonly texts = bridge.texts
   private readonly ROOT = document.getElementById('main')
 
   /** Заменяет `_` на пробелы и делает первую букву большой. */
@@ -16,7 +15,7 @@ class HelpersService {
   }
 
   /** Рендерит компонент в `root` контейнер страницы */
-  renderComponent(element: JSX.Element): void {
+  renderComponent(element: JSX.Element): void | never {
     if (!this.ROOT) throw new Error('Missing root element')
     createRoot(this.ROOT).render(element)
   }
@@ -33,12 +32,10 @@ class HelpersService {
 
     if (!key) return
 
-    if (modId && modsTexts[modId] && modsTexts[modId][key]) {
+    if (modId && modsTexts[modId] && modsTexts[modId][key])
       value = modsTexts[modId][key]
-    }
-    else if (gameTexts[key]) {
+    else if (gameTexts[key])
       value = gameTexts[key]
-    }
 
     return value
   }

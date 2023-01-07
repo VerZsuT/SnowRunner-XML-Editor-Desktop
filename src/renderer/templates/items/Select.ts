@@ -2,6 +2,7 @@ import helpers from './helpers'
 
 import { DEBUG_EDITOR_PARAMS } from '#consts'
 import { InputType, ParamType } from '#enums'
+import { isNonNullable } from '#gl-helpers'
 import type { IItemGetterProps, ISelectParams, ITemplateItem, SelectOptions, SelectProps } from '#types'
 
 class Select<T extends SelectOptions> implements ITemplateItem<[ISelectParams] | []> {
@@ -19,7 +20,7 @@ class Select<T extends SelectOptions> implements ITemplateItem<[ISelectParams] |
     this.attribute = baseProps.attribute
     this.addMissedTag = baseProps.addMissedTag ?? false
     this.options = props.options
-    if (props.default !== undefined)
+    if (isNonNullable(props.default))
       this.default = props.options[props.default][0]
   }
 

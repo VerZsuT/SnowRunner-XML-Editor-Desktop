@@ -9,12 +9,12 @@ import { IPCChannel, ProgramWindow } from '#enums'
 class MainWindow extends Window {
   protected type = ProgramWindow.Main
   protected args = {
-    path: entries.general.main,
-    preload: entries.preload.main,
-    width: 840,
-    minWidth: 800,
-    height: 700,
-    minHeight: 630
+    path      : entries.general.main,
+    preload   : entries.preload.main,
+    width     : 840,
+    minWidth  : 800,
+    height    : 700,
+    minHeight : 630
   }
 
   constructor() { super(); this.register() }

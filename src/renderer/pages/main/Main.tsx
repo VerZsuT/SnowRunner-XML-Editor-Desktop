@@ -1,6 +1,4 @@
-import type { ReactNode } from 'react'
-
-import { pafcMemo, useRedux } from 'react-afc'
+import { pafc, useRedux } from 'react-afc'
 
 import Editor from './editor'
 import Lists from './lists'
@@ -11,8 +9,8 @@ import useWindowReady from '#helpers/useWindowReady'
 
 function Main() {
   const pages = {
-    [Page.editor]: <Editor/>,
-    [Page.lists]: <Lists/>
+    [Page.lists]: Lists,
+    [Page.editor]: Editor
   }
 
   const store = useRedux({
@@ -20,11 +18,10 @@ function Main() {
   })
   useWindowReady(ProgramWindow.Main)
 
-  function render(): ReactNode {
-    return pages[store.page]
+  return () => {
+    const Page = pages[store.page]
+    return <Page/>
   }
-
-  return render
 }
 
-export default pafcMemo(Main)
+export default pafc(Main)
