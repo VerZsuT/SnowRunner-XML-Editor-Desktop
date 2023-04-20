@@ -1,32 +1,21 @@
-const { join } = require('path')
+const { readFileSync } = require('fs')
+
+const paths = require('../paths')
 
 class Aliases {
-  get = () => ({
-    '#consts': this.src('/consts'),
-    '#types': this.src('/types'),
-    '#gl-texts': this.src('/texts'),
-    '#gl-helpers': this.src('/helpers'),
-    '#enums': this.src('/enums'),
-    '#images': this.src('/images'),
-    '#classes': this.main('/classes'),
-    '#m-scripts': this.main('/scripts'),
-    '#windows': this.main('/windows'),
-    '#m': this.main(),
-    '#r': this.renderer(),
-    '#templates': this.renderer('/templates'),
-    '#r-scripts': this.renderer('/scripts'),
-    '#services': this.renderer('/services'),
-    '#pages': this.renderer('/pages'),
-    '#components': this.renderer('/components'),
-    '#helpers': this.renderer('/helpers'),
-    '#hooks': this.renderer('/hooks'),
-    '#src': this.src()
-  })
+  obj = {}
 
-  resolve = (...paths) => join(__dirname, ...paths)
-  src = (path = '') => this.resolve(`../../src${path}`)
-  main = (path = '') => this.src(`/main${path}`)
-  renderer = (path = '') => this.src(`/renderer${path}`)
+  constructor() {
+    const aliases = JSON.parse(readFileSync(paths.tsconfig)).compilerOptions.paths
+    for (const key in aliases) {
+      if (key in this.obj) continue
+      const objKey = key.replace('/*', '')
+      const objVal = `${paths.src}/${aliases[key][0].replace(/\/(index|\*)/g, '')}`
+      this.obj[objKey] = objVal
+    }
+  }
+
+  get = () => this.obj
 }
 
 module.exports = new Aliases().get()

@@ -1,6 +1,6 @@
 import type TemplateParams from './TemplateParams'
 
-import type { ParamType } from '#enums'
+import type { ParamType } from '#g/enums'
 
 interface IGroupParams {
   paramType: ParamType

@@ -1,4 +1,4 @@
-import type { DialogAlertType } from '#enums'
+import type { DialogAlertType } from '#g/enums'
 
 interface IDialogAlertParams {
   title: string

@@ -1,14 +1,13 @@
 import { existsSync } from 'fs'
 import { basename, join } from 'path'
 
-import '#r-scripts/root-preload.main'
-
+import '#r/scripts/root-preload.main'
 
 import $ from './texts'
 
-import main from '#r-scripts/main'
-import preload from '#services/preload'
-import type { IFolder, ISetupPreload } from '#types'
+import type { IFolder, ISetupPreload } from '#g/types'
+import main from '#r/scripts/main'
+import { preload } from '#r/services/interprocess'
 
 class SetupPreload {
   constructor() {
@@ -18,7 +17,7 @@ class SetupPreload {
     })
   }
 
-  private getGameFolder = (): IFolder | undefined => {
+  getGameFolder = (): IFolder | undefined => {
     const result = main.getDir()
     let existed = ''
 
@@ -55,7 +54,7 @@ class SetupPreload {
     }
   }
 
-  private getInitialPak = (): IFolder | undefined => {
+  getInitialPak = (): IFolder | undefined => {
     const result = main.getInitial()
 
     if (!result || basename(result) !== 'initial.pak' || !existsSync(result)) {

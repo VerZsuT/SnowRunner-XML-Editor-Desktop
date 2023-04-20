@@ -1,25 +1,23 @@
 import { createContext } from 'react'
 
-import type { AnyNode, Cheerio, CheerioAPI } from 'cheerio'
-
-import paramsDefaults from '#r-scripts/defaults'
-import { system, xml } from '#services'
-import type { Defaults } from '#types'
+import type { IDefaults, IXMLElement } from '#g/types'
+import paramsDefaults from '#r/scripts/defaults'
+import { system, xml } from '#r/services'
 
 export interface FileDataContextType {
-  fileDOM: CheerioAPI
-  templates: Cheerio<AnyNode>
-  globalTemplates: CheerioAPI
-  defaults: Defaults[string]
+  fileDOM: IXMLElement
+  templates: IXMLElement
+  globalTemplates: IXMLElement
+  defaults: IDefaults[string]
 }
 
 export const FileDataContext = createContext(null as unknown as FileDataContextType)
 
 export function getFileData(filePath: string) {
   const [fileDOM, tableItems, actions] = xml.processFile(filePath)
-  const templates = fileDOM('_templates')
+  const templates = fileDOM.select('_templates')
   const globalTemplates = xml.getGlobalTemplates()
-  const defaults: Defaults[string] = paramsDefaults[system.basename(filePath)] ?? {}
+  const defaults: IDefaults[string] = paramsDefaults[system.basename(filePath)] ?? {}
 
   const fileDataContext: FileDataContextType = {
     fileDOM, defaults, globalTemplates, templates

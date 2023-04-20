@@ -1,5 +1,8 @@
 import { Bridge } from 'emr-bridge/renderer'
 
-import type { MPC } from '#types'
+import type { MPC } from '#g/types'
 
-export default Bridge.as<MPC>()
+/** Свойства и функции, доступные из Main процесса */
+const bridge = Bridge.as<MPC>()
+
+export default bridge

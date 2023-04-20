@@ -1,7 +1,7 @@
 import { createContext } from 'react'
 
-import { CURRENT_DLC, CURRENT_MOD, FILE_PATH } from '#consts'
-import { storage } from '#services'
+import { CURRENT_DLC, CURRENT_MOD, FILE_PATH } from '#g/consts'
+import { storage } from '#r/services'
 
 export interface FileInfoContextType {
   filePath: string

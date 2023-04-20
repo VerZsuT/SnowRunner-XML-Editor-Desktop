@@ -1,29 +1,20 @@
-class ForgeConfig {
-  renderer = './src/renderer'
-  webpackConfigs = './configs/webpack'
-  
-  rootPreload = `${this.renderer}/scripts/root-preload.main.ts`
-  template = `${this.renderer}/template.html`
-  pages = `${this.renderer}/pages`
-  favicon = '.webpack/main/favicon.ico'
-  
-  mainConfig = `${this.webpackConfigs}/main.js`
-  rendererConfig = `${this.webpackConfigs}/renderer.js`
+const paths = require('./paths')
 
+class ForgeConfig {
   get = () => ({
-    packagerConfig: { icon: this.favicon },
+    packagerConfig: { icon: paths.bundledFavicon },
     plugins: [
       {
         name: '@electron-forge/plugin-webpack',
         config: {
-          mainConfig: this.mainConfig,
+          mainConfig: paths.mainConfig,
           renderer: {
-            config: this.rendererConfig,
+            config: paths.rendererConfig,
             entryPoints: [
               this.entryPoint('loading', true),
               this.entryPoint('update', true),
               this.entryPoint('settings', true),
-              this.entryPoint('whatsNew', true),
+              this.entryPoint('whatsnew', true),
               this.entryPoint('main'),
               this.entryPoint('setup')
             ]
@@ -39,18 +30,18 @@ class ForgeConfig {
    */
   getPage(name) {
     return {
-      main: `${this.pages}/${name}/index.tsx`,
-      preload: `${this.pages}/${name}/preload.ts`
+      main: `${paths.pages}/${name}/index.tsx`,
+      preload: `${paths.pages}/${name}/preload.ts`
     }
   }
 
   entryPoint(name, preloadIsMain = false, moduleName = null) {
     return {
       name,
-      html: this.template,
+      html: paths.template,
       js: this.getPage(moduleName ?? name).main,
       preload: {
-        js: preloadIsMain ? this.rootPreload : this.getPage(moduleName ?? name).preload
+        js: preloadIsMain ? paths.rootPreload : this.getPage(moduleName ?? name).preload
       }
     }
   }

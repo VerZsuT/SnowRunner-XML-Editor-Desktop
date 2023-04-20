@@ -1,5 +1,5 @@
-import bridge from '#r-scripts/bridge'
-import { config } from '#services'
+import bridge from '#r/scripts/bridge'
+import { config } from '#r/services'
 
 class Template {
   constructor() {
@@ -20,12 +20,15 @@ class Template {
 
       if (!ctrl) return
 
-      if (keyIs('S'))
+      if (keyIs('S')) {
         this.onSave()
-      else if (keyIs('Q'))
+      }
+      else if (keyIs('Q')) {
         this.onQuit()
-      else if (keyIs('I') && shift && dev)
+      }
+      else if (keyIs('I') && shift && dev) {
         this.onDevtools()
+      }
     })
   }
 

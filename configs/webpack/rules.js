@@ -17,7 +17,7 @@ class Rules {
       type: 'asset/resource'
     },
     {
-      test: /\.(ts|tsx)$/,
+      test: /\.tsx?$/,
       exclude: /(node_modules|\.webpack)/,
       use: [{
         loader: 'ts-loader',

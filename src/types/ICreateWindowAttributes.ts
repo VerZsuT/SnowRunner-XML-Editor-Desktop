@@ -1,6 +1,6 @@
 import type { BrowserWindow } from 'electron'
 
-import type { ProgramWindow } from '#enums'
+import type { ProgramWindow } from '#g/enums'
 
 interface ICreateWindowAttributes {
   path: string

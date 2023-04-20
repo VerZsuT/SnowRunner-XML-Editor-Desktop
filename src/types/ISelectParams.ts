@@ -1,4 +1,4 @@
-import type { ParamType } from '#enums'
+import type { InputType, ParamType } from '#g/enums'
 
 interface ISelectParams {
   attribute: string
@@ -10,7 +10,7 @@ interface ISelectParams {
   }[]
   selector: string
   paramType: ParamType
-  inputType: string
+  inputType: InputType
   default: string
 }
 

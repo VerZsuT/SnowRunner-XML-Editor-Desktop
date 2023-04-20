@@ -2,23 +2,16 @@ import { app } from 'electron'
 import { existsSync, renameSync, rmSync } from 'fs'
 import { join } from 'path'
 
-import archive from '#classes/archive'
-import checks from '#classes/checks'
-import config from '#classes/config'
-import exitParams from '#classes/exitParams'
-import hash from '#classes/hash'
-import helpers from '#classes/helpers'
-import paths from '#classes/paths'
-import texts from '#classes/texts'
-import windows from '#classes/windows'
-import { APP_ID } from '#consts'
-import { BuildType, ProgramWindow } from '#enums'
-import $ from '#gl-texts/main'
-import { windowsManager } from '#windows'
+import { APP_NAME } from '#g/consts'
+import { ProgramWindow } from '#g/enums'
+import $ from '#g/texts/main'
+import { Archive, Checks, Config, ExitParams, Hash, Helpers, Paths, Texts, Windows } from '#m/modules'
+import { WindowsManager } from '#m/windows'
 
-import '#classes/public'
+import { hasItems } from '#g/helpers'
+import '#m/modules/RendererPublic'
 
-class SnowRunnerXMLEditor {
+class App {
   constructor() {
     this.checkMultipleInstances()
     this.setName()
@@ -29,141 +22,131 @@ class SnowRunnerXMLEditor {
     this.start()
   }
 
-  private start(): void {
-    if (config.buildType === BuildType.dev)
-      this.installDevtools()
-    else
-      app.whenReady().then(() => this.openProgram())
+  start(): void {
+    app.whenReady().then(() => this.openProgram())
   }
 
-  private async openProgram(): Promise<void> {
-    await windowsManager.open(ProgramWindow.Loading)
-    const loading = windows.loading
+  async openProgram(): Promise<void> {
+    await WindowsManager.open(ProgramWindow.Loading)
+    const loading = Windows.loading
 
     await loading?.showAndWait()
     loading?.setText($.LOADING)
 
-    if (!checks.hasAdminPrivileges()) return
+    if (!Checks.hasAdminPrivileges()) return
 
-    if (!config.initial) {
-      await windowsManager.open(ProgramWindow.Setup)
-      checks.checkUpdate()
+    if (!Config.initial) {
+      await WindowsManager.open(ProgramWindow.Setup)
+      Checks.checkUpdate()
       return
     }
 
-    await checks.checkInitialChanges()
+    await Checks.checkInitialChanges()
 
-    if (checks.hasAllPaths()) {
+    if (Checks.hasAllPaths()) {
       await Promise.all([
-        texts.getFromGame(),
+        Texts.getFromGame(),
         this.initDLC(),
         this.initMods()
       ])
-      await windowsManager.open(ProgramWindow.Main)
-      checks.checkUpdate()
+      await WindowsManager.open(ProgramWindow.Main)
+      Checks.checkUpdate()
     }
     else {
-      config.reset()
+      Config.reset()
     }
   }
 
-  private installDevtools(): void {
-    app.whenReady()
-      .then(() => import('electron-devtools-installer'))
-      .then(({ default: installExtension, REDUX_DEVTOOLS, REACT_DEVELOPER_TOOLS }) => {
-        installExtension([REDUX_DEVTOOLS, REACT_DEVELOPER_TOOLS], {
-          loadExtensionOptions: { allowFileAccess: true }
-        }).then(() => this.openProgram())
-      })
-      .catch(e => console.error('Failed install extension:', e))
-  }
-
-  private checkMultipleInstances(): void {
+  checkMultipleInstances(): void {
     if (!app.requestSingleInstanceLock()) {
       app.quit()
       process.exit(102)
     }
   }
 
-  private optimize(): void {
+  optimize(): void {
     app.disableHardwareAcceleration()
   }
 
-  private setName(): void {
-    app.setAppUserModelId(APP_ID)
+  setName(): void {
+    app.setAppUserModelId(APP_NAME)
   }
 
-  private handleQuit(): void {
+  handleQuit(): void {
     app.on('before-quit', () => {
-      exitParams.quit = true
-      if (exitParams.saveConfig)
-        config.save()
+      ExitParams.quit = true
+      if (ExitParams.saveConfig) {
+        Config.save()
+      }
 
-      if (existsSync(paths.updateRoot)) {
-        rmSync(paths.root, { recursive: true })
-        renameSync(paths.updateRoot, paths.root)
+      if (existsSync(Paths.updateRoot)) {
+        rmSync(Paths.root, { recursive: true })
+        renameSync(Paths.updateRoot, Paths.root)
       }
     })
   }
 
-  private handleAllClosed(): void {
+  handleAllClosed(): void {
     app.once('window-all-closed', () => app.exit())
   }
 
   /** Находит и инициализирует игровые DLC */
-  private async initDLC(): Promise<void> {
-    if (!config.settings.DLC) return
+  async initDLC(): Promise<void> {
+    if (!Config.settings.DLC) return
 
-    config.dlc = helpers.findInDir(paths.dlc, true)
+    Config.dlc = Helpers.findInDir(Paths.dlc, true)
   }
 
   /** Инициализирует модификации, указанные в `config.json` */
-  private async initMods(): Promise<void> {
-    if (!config.settings.mods) return
-    if (config.mods.length === 0) return
+  async initMods(): Promise<void> {
+    if (!Config.settings.mods) return
+    if (!hasItems(Config.mods)) return
 
-    let counter = config.mods.length
+    let counter = Config.mods.length
 
     function deleteFromList(name: string) {
       const modName = name.replace('.pak', '')
-      delete config.mods.items[modName]
-      --config.mods.length
+      delete Config.mods.items[modName]
+      --Config.mods.length
       --counter
     }
 
-    for (const modName in config.mods.items) {
-      const mod = config.mods.items[modName]
+    for (const modName in Config.mods.items) {
+      const mod = Config.mods.items[modName]
 
       if (!existsSync(mod.path)) {
-        deleteFromList(config.mods.items[modName].name)
+        deleteFromList(Config.mods.items[modName].name)
         continue
       }
-      else if (!checks.hasPermissions(mod.path)) {
-        deleteFromList(config.mods.items[modName].name)
+      else if (!Checks.hasPermissions(mod.path)) {
+        deleteFromList(Config.mods.items[modName].name)
         continue
       }
 
-      if (hash.getSize(mod.path) === config.sizes.mods[modName] && existsSync(paths.modsTemp[modName])) {
+      if (Hash.getSize(mod.path) === Config.sizes.mods[modName] && existsSync(Paths.modsTemp[modName])) {
         --counter
       }
       else {
-        await archive.unpackMod(mod.path)
+        await Archive.unpackMod(mod.path)
 
-        if (!existsSync(join(paths.modsTemp, modName, 'classes')))
-          deleteFromList(config.mods.items[modName].name)
-        else
+        if (!existsSync(join(Paths.modsTemp, modName, 'classes'))) {
+          deleteFromList(Config.mods.items[modName].name)
+        }
+        else {
           --counter
+        }
 
         if (counter === 0) {
-          texts.getFromMods()
+          Texts.getFromMods()
           return
         }
       }
     }
 
-    if (counter <= 0)
-      texts.getFromMods()
+    if (counter <= 0) {
+      Texts.getFromMods()
+    }
   }
 }
 
-new SnowRunnerXMLEditor()
+new App()

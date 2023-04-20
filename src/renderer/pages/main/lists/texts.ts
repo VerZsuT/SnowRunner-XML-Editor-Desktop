@@ -1,6 +1,6 @@
-import { compareWithGlobal } from '#gl-texts/renderer'
+import { compareWithGlobal } from '#g/texts/renderer'
 
-export default compareWithGlobal({
+const $ = compareWithGlobal({
   RU: {
     MODS_CHANGE_BUTTON: 'Изменить',
     RELAUNCH_PROMPT: 'Для загрузки мода необходима перезагрузка программы. Выполнить перезагрузку?',
@@ -70,3 +70,5 @@ export default compareWithGlobal({
     TRUCKS_CATEGORY_TITLE: '汽车'
   }
 })
+
+export default $

@@ -1,7 +1,12 @@
+/** Группа в списках */
 enum GroupTab {
-  main      = 'main',
-  dlc       = 'dlc',
-  mods      = 'mods',
+  /** Основная группа */
+  main = 'main',
+  /** Группа дополнений */
+  dlc = 'dlc',
+  /** Группа модификаций */
+  mods = 'mods',
+  /** Группа избранного */
   favorites = 'favorites'
 }
 

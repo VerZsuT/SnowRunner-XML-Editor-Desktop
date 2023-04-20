@@ -1,9 +1,9 @@
 import type IConfigDLC from './IConfigDLC'
+import type IConfigFilesSizes from './IConfigFilesSizes'
 import type IConfigMods from './IConfigMods'
 import type IConfigSettings from './IConfigSettings'
 
-import type { BuildType, Lang } from '#enums'
-import type { IConfigFilesSizes } from '#types'
+import type { BuildType, Lang } from '#g/enums'
 
 interface IConfig {
   /** Версия программы. */

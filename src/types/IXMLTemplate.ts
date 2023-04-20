@@ -1,5 +1,5 @@
-import type Action from '#r/actions/Action'
-import type { Template } from '#templates/items'
+import type Action from '#r_editor/actions/Action'
+import type Template from '#r_editor/templates/items/template.item'
 
 interface IXMLTemplate {
   template: Template

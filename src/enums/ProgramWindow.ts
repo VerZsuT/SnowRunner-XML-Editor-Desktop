@@ -1,10 +1,17 @@
+/** Окно программы */
 enum ProgramWindow {
-  Main     = 'MainWindow',
+  /** Основное окно (списки и таблица) */
+  Main = 'MainWindow',
+  /** Окно настроек */
   Settings = 'SettingsWindow',
-  Update   = 'UpdateWindow',
+  /** Окно доступности обновления */
+  Update = 'UpdateWindow',
+  /** Окно нововведений в обновлении */
   WhatsNew = 'WhatsNewWindow',
-  Loading  = 'LoadingWindow',
-  Setup    = 'SetupWindow'
+  /** Окно загрузки */
+  Loading = 'LoadingWindow',
+  /** Окно первоначальной настройки */
+  Setup = 'SetupWindow'
 }
 
 export default ProgramWindow

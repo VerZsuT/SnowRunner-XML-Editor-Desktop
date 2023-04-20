@@ -1,16 +1,17 @@
-/** Тип XML файла, открываемого по нажатию кнопки */
+/** Тип XML файла */
 enum FileType {
-  /** Файл содержит набор двигателей */
-  engines     = 'engines',
-  /** Файл содержит набор КПП */
-  gearboxes   = 'gearboxes',
-  /** Файл содержит набор подвесок */
+  /** Файл двигателей */
+  engines = 'engines',
+  /** Файл КПП */
+  gearboxes = 'gearboxes',
+  /** Файл подвесок */
   suspensions = 'suspensions',
-  /** Файл содержит набор колёс */
-  wheels      = 'wheels',
-  /** Файл содержит набор лебёдок */
-  winches     = 'winches',
-  truck       = 'truck'
+  /** Файл колёс */
+  wheels = 'wheels',
+  /** Файл лебёдок */
+  winches = 'winches',
+  /** Осовной файл автомобиля */
+  truck = 'truck'
 }
 
 export default FileType

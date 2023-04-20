@@ -1,4 +1,4 @@
-import type { FileType } from '#enums'
+import type { FileType } from '#g/enums'
 
 /** Параметры включаемого файла. */
 interface IFileProps {

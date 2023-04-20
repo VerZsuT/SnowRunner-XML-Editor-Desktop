@@ -1,7 +1,7 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createSlice } from '@reduxjs/toolkit'
 
-import { Page } from '#enums'
+import { Page } from '#g/enums'
 import type { MainState } from './index'
 
 const pageSlice = createSlice({

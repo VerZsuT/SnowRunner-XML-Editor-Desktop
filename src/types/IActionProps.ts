@@ -1,9 +1,9 @@
-import type { CheerioAPI } from 'cheerio'
+import type IXMLElement from './IXMLElement'
 
 interface IActionProps {
   filePath: string
   currentMod: string
-  dom: CheerioAPI
+  dom: IXMLElement
 }
 
 export default IActionProps

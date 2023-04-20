@@ -1,6 +1,8 @@
 interface IConfigFilesSizes {
   initial: number
-  mods: Record<string, number>
+  mods: {
+    [fileName: string]: number
+  }
 }
 
 export default IConfigFilesSizes

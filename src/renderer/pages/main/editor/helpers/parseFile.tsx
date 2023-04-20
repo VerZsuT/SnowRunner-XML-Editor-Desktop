@@ -1,12 +1,10 @@
-import type { AnyNode, Cheerio, CheerioAPI } from 'cheerio'
-
 import xmlFiles from '../services/xmlFiles'
 
-import { FileType, PreloadType } from '#enums'
-import bridge from '#r-scripts/bridge'
-import paramsDefaults from '#r-scripts/defaults'
-import { preload, system, xml } from '#services'
-import type { Defaults, IEditorPreload, IInputParams, TemplateParams } from '#types'
+import { FileType, PreloadType } from '#g/enums'
+import type { IDefaults, IEditorPreload, IInputParams, IXMLElement, TemplateParams } from '#g/types'
+import bridge from '#r/scripts/bridge'
+import paramsDefaults from '#r/scripts/defaults'
+import { preload, system, xml } from '#r/services'
 
 const paths = bridge.paths
 
@@ -15,19 +13,19 @@ const { findFromDLC } = preload.get<IEditorPreload>(PreloadType.editor)
 interface InnerItem {
   filePath: string
   fileName: string
-  fileDOM: CheerioAPI
+  fileDOM: IXMLElement
   mod: string
   dlc: string
-  templates: Cheerio<AnyNode>
+  templates: IXMLElement
   tableItems: TemplateParams
-  defaults: Defaults[string]
+  defaults: IDefaults[string]
 }
 
 interface Config {
   item: IInputParams
   dlc: string
   mod: string
-  fileDOM: CheerioAPI
+  fileDOM: IXMLElement
   regFiles?: boolean
 }
 
@@ -38,10 +36,11 @@ function parseFile(config: Config) {
   const fileNames: string[] = (String(propsItem.value)).split(',').map(value => value.trim())
 
   if (propsItem.fileType === FileType.wheels && propsItem.attribute !== 'Type') {
-    fileDOM('Truck > TruckData > CompatibleWheels').map((_, el) => {
-      const type = fileDOM(el).attr('Type')
-      if (type && !fileNames.includes(type))
+    fileDOM.selectAll('Truck > TruckData > CompatibleWheels').map(element => {
+      const type = element.getAttr('Type')
+      if (type && !fileNames.includes(type)) {
         fileNames.push(type)
+      }
     })
   }
 
@@ -63,8 +62,9 @@ function parseFile(config: Config) {
     }
 
     pathsToFiles.forEach(path => {
-      if (system.existsSync(path))
+      if (system.existsSync(path)) {
         mainPath = path
+      }
     })
 
     if (!mainPath) {
@@ -93,7 +93,7 @@ function parseFile(config: Config) {
       fileDOM,
       dlc: itemDLC!,
       mod: itemMod!,
-      templates: fileDOM('_templates'),
+      templates: fileDOM.select('_templates'),
       tableItems,
       defaults: paramsDefaults[`${fileName}.xml`] || {}
     })

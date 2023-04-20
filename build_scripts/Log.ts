@@ -1,4 +1,7 @@
-class Log {
+/**
+ * Отвечает за форматированный вывод информации в консоль
+ */
+class LogClass {
   private readonly FG_YELLOW = '\x1b[33m'
   private readonly FG_BLUE = '\x1b[34m'
   private readonly FG_RED = '\x1b[31m'
@@ -11,29 +14,42 @@ class Log {
   private mainIsStarted = false
 
   /**
-   * Пишет сообщение в консоль. Если стоит флаг `isLog`, то пишет зелёным вне группы.
+   * Пишет сообщение в консоль. Если стоит флаг `isLog`, то пишет зелёным вне группы
    */
   print(message: string, isLog = false): void {
     this.startMain()
-    if (isLog)
+    if (isLog) {
       console.log(`${this.FG_GREEN}${message}${this.RESET_COLOR}`)
-    else
+    }
+    else {
       console.log(`- ${message}`)
+    }
   }
 
   /**
    * Группа стадии
+   * 
+   * @decorator
    */
-  stage(callback: () => void): void {
-    this.startMain()
-    console.group(`${this.FG_BLUE}[STAGE_${this.stageNumber}]${this.RESET_COLOR}`)
-    callback()
-    console.groupEnd()
-    this.stageNumber++
+  stage = <This, Args extends any[], Return>(
+    method: (this: This, ...args: Args) => Return,
+    context: ClassMethodDecoratorContext<This, (this: This, ...args: Args) => Return>
+  ) => {
+    const obj = this
+
+    return function (this: This, ...args: Args): Return {
+      obj.startMain()
+      console.group(`${obj.FG_BLUE}[STAGE_${obj.stageNumber}]${obj.RESET_COLOR}`)
+      const result = method.call(this, ...args)
+      console.groupEnd()
+      obj.stageNumber++
+
+      return result
+    }
   }
 
   /**
-   * Пишет в консоль в стиле ошибки.
+   * Пишет в консоль в стиле ошибки
    */
   error(message: string): void {
     console.log(`${this.FG_RED}${message}${this.RESET_COLOR}`)
@@ -50,4 +66,6 @@ class Log {
   }
 }
 
-export default new Log()
+const Log = new LogClass()
+
+export default Log

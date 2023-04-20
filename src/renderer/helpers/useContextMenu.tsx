@@ -2,7 +2,7 @@ import type { MouseEvent } from 'react'
 
 import type { MenuProps } from 'antd'
 import { Menu } from 'antd'
-import { fafcMemo } from 'react-afc'
+import { afcMemo } from 'react-afc'
 import { useReactive } from 'react-afc/compatible'
 
 interface ContextMenuProps {
@@ -34,9 +34,14 @@ function useContextMenu() {
     return state.isShow
   }
 
-  const Component = fafcMemo<ContextMenuProps>(props => {
+  const Component = afcMemo<ContextMenuProps>(props => {
+    function onAreaClick(): void {
+      state.isShow = false
+      props.onClose?.()
+    }
+
     return () => {
-      const { items, className = '' } = props.curr
+      const { items, className = '' } = props
       const { x, y, isShow } = state
 
       return (
@@ -55,11 +60,6 @@ function useContextMenu() {
           />
         </div>
       )
-    }
-
-    function onAreaClick(): void {
-      state.isShow = false
-      props.curr.onClose?.()
     }
   })
 

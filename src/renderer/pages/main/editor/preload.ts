@@ -1,12 +1,12 @@
 import { existsSync, readdirSync, watchFile as watch } from 'fs'
 import { join } from 'path'
 
-import '#r-scripts/root-preload.main'
+import '#r/scripts/root-preload.main'
 
-import { PreloadType } from '#enums'
-import main from '#r-scripts/main'
-import preload from '#services/preload'
-import type { IEditorPreload } from '#types'
+import { PreloadType } from '#g/enums'
+import type { IEditorPreload } from '#g/types'
+import main from '#r/scripts/main'
+import { preload } from '#r/services/interprocess'
 
 const paths = main.paths
 

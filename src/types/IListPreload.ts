@@ -1,7 +1,7 @@
 import type IFindItem from './IFindItem'
 import type IItem from './IItem'
 
-import type { Category, SrcType } from '#enums'
+import type { Category, SrcType } from '#g/enums'
 
 interface IListPreload {
   removeDir(path: string): void

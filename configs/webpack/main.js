@@ -1,25 +1,25 @@
 const { existsSync } = require('fs')
-const { join } = require('path')
 
 const CopyPlugin = require('copy-webpack-plugin')
 
 const alias = require('./aliases.js')
 const rules = require('./rules.js')
+const paths = require('../paths')
 
 class MainConfig {
-  mode    = process.env.NODE_ENV || 'development'
-  isDev   = this.mode === 'development'
+  mode = process.env.NODE_ENV || 'development'
+  isDev = this.mode === 'development'
   devtool = this.isDev && 'inline-source-map'
-  hasTestConfig = existsSync(join(__dirname, '../../src/main/test-config.json'))
-  entryPoint = './src/main/index.ts'
-  
-  winrar  = { from: 'src/main/winrar', to: 'winrar/' }
-  favicon = { from: 'src/images/favicon.ico' }
-  license = { from: 'LICENSE', to: '../../' }
-  readme  = { from: 'README.md', to: '../../' }
+  hasTestConfig = existsSync(paths.testConfig)
+
+  // CopyPlugin patterns
+  winrar = { from: paths.winrar, to: 'winrar/' }
+  favicon = { from: paths.favicon }
+  license = { from: paths.license, to: '../../' }
+  readme = { from: paths.readme, to: '../../' }
   config = this.isDev && this.hasTestConfig
-    ? { from: 'src/main/test-config.json', to: 'config.json' }
-    : { from: 'src/main/config.json' }
+    ? { from: paths.testConfig, to: 'config.json' }
+    : { from: paths.config }
 
   get = () => ({
     mode: this.mode,
@@ -35,7 +35,7 @@ class MainConfig {
         ]
       })
     ],
-    entry: this.entryPoint,
+    entry: paths.entryPoint,
     module: { rules },
     resolve: {
       alias,

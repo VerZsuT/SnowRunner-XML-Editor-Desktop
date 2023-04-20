@@ -1,6 +1,6 @@
 import type IInputAreas from './IInputAreas'
 
-import type { FileType, InputType, NumberType, ParamType } from '#enums'
+import type { FileType, InputType, NumberType, ParamType } from '#g/enums'
 
 interface IInputParams {
   attribute: string
@@ -8,7 +8,7 @@ interface IInputParams {
   value?: string | number
   selector: string
   paramType: ParamType
-  inputType: string
+  inputType: InputType
   type: InputType
   min: number
   max: number

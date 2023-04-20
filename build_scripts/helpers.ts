@@ -2,14 +2,14 @@ import { createHash } from 'crypto'
 import { existsSync, readdirSync, readFileSync, statSync, writeFileSync } from 'fs'
 import { basename, join } from 'path'
 
-import log from './Log'
+import Log from './Log'
 
 const resolve = (...paths: string[]) => join(__dirname, ...paths)
 
 export const allPaths = {
   before: {
     out: resolve('../out'),
-    config: resolve('../src/main/config.json'),
+    config: resolve('../src/main/configs/config.json'),
     package: resolve('../package.json'),
     packageLock: resolve('../package-lock.json'),
     public: resolve('../../sxmle_updater/public.json'),
@@ -20,7 +20,7 @@ export const allPaths = {
     original: resolve('../out/SnowRunner XML Editor-win32-ia32'),
     renamed: resolve('../out/SnowRunnerXMLEditor'),
     config: resolve('../out/SnowRunnerXMLEditor/resources/app/.webpack/main/config.json'),
-    winrar: resolve('../src/main/winrar'),
+    winrar: resolve('../src/main/archivers/winrar/files'),
     sxmleUpdater: resolve('../../sxmle_updater')
   }
 }
@@ -58,7 +58,7 @@ export function checkPath(path: string, callback?: () => void): string {
       throw new Error(`Path '${path}' not found`)
     }
     else {
-      log.error(`Path '${path}' not found`)
+      Log.error(`Path '${path}' not found`)
       return ''
     }
   }
@@ -77,10 +77,12 @@ export function readFile<T>(path: string, fromJSON = true): typeof fromJSON exte
 
   if (existsSync(path)) {
     try {
-      if (fromJSON)
+      if (fromJSON) {
         return JSON.parse(readFileSync(path).toString())
-      else
+      }
+      else {
         return readFileSync(path).toString()
+      }
     }
     catch {
       throw new Error(`Error reading file ${fileName}`)
@@ -97,9 +99,15 @@ export function readFile<T>(path: string, fromJSON = true): typeof fromJSON exte
  * Если путь не существует, то выбрасывает ошибку.
  */
 export function writeFile(path: string, data: string): void {
-  if (existsSync(path))
-    try { writeFileSync(path, data) }
-    catch { throw new Error(`Error writing ${basename(path)}`) }
-  else
+  if (existsSync(path)) {
+    try {
+      writeFileSync(path, data)
+    }
+    catch {
+      throw new Error(`Error writing ${basename(path)}`)
+    }
+  }
+  else {
     throw new Error(`${basename(path)} not found.`)
+  }
 }

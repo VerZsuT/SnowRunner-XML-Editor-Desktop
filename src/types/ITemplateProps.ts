@@ -1,6 +1,6 @@
 import type TemplateSelectors from './TemplateSelectors'
 
-import type { TemplateType } from '#enums'
+import type { TemplateType } from '#g/enums'
 
 interface ITemplateProps {
   /**

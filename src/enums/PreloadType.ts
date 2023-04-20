@@ -1,6 +1,10 @@
+/** Preload окна */
 enum PreloadType {
+  /** Стандартный preload */
   common = 'common',
-  lists  = 'lists',
+  /** Preload списов */
+  lists = 'lists',
+  /** Preload таблицы */
   editor = 'editor'
 }
 

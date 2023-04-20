@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "newLine": "LF",
+    "strict": true,
+    "isolatedModules": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "sourceMap": true,
+    "noImplicitAny": false,
+    "resolveJsonModule": true,
+    "skipLibCheck": true
+  }
+}

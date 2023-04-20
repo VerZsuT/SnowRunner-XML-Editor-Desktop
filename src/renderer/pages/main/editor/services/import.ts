@@ -1,14 +1,13 @@
 import { message } from 'antd'
-import type { CheerioAPI } from 'cheerio'
 import { useOnDestroy } from 'react-afc/compatible'
 
 import $ from '../texts'
 import xmlFiles from './xmlFiles'
 
-import { isString } from '#gl-helpers'
-import bridge from '#r-scripts/bridge'
-import { system, xml } from '#services'
-import type { IExportedData, IXMLTemplate } from '#types'
+import { isString } from '#g/helpers'
+import type { IExportedData, IXMLElement, IXMLTemplate } from '#g/types'
+import bridge from '#r/scripts/bridge'
+import { system, xml } from '#r/services'
 
 type ImportHandler = () => void
 
@@ -20,54 +19,59 @@ class ImportService {
     useOnDestroy(() => this.handlers.delete(handler))
   }
 
-  importFile(currentPath: string, fileDOM: CheerioAPI, actions: IXMLTemplate['actions'], importPath?: string): void {
+  importFile(currentPath: string, fileDOM: IXMLElement, actions: IXMLTemplate['actions'], importPath?: string): void {
     const currentFileName = system.basename(currentPath)
     let pathToImport = importPath
-  
-    if (isString(importPath))
+
+    if (!isString(importPath)) {
       pathToImport = bridge.getEPF()
-  
+    }
+
     if (!pathToImport) {
       void message.error($.PARAMS_FILE_NOT_FOUND)
       return
     }
     const data: IExportedData | IExportedData[] = JSON.parse(system.readFileSync(pathToImport))
-  
+
     function importData(item: IExportedData) {
       for (const fileName in item.data) {
-        let dom!: CheerioAPI
+        let dom!: IXMLElement
         xmlFiles.files.forEach(file => {
-          if (system.basename(file.path) === fileName)
+          if (system.basename(file.path) === fileName) {
             dom = file.dom
+          }
         })
-  
+
         for (const selector in item.data[fileName]) {
           xml.addTag(dom, { selector })
           for (const attribute in item.data[fileName][selector]) {
-            dom(selector).attr(attribute, item.data[fileName][selector][attribute].toString())
+            dom.select(selector).setAttr(attribute, item.data[fileName][selector][attribute].toString())
           }
         }
       }
-  
+
       for (const actionID in item.actionsData) {
         actions?.forEach(action => {
-          if (action.data.id === actionID)
+          if (action.data.id === actionID) {
             action.data.import(fileDOM, item.actionsData[actionID])
+          }
         })
       }
-  
+
       void message.success($.WAS_IMPORTED)
       return true
     }
-  
+
     if (Array.isArray(data)) {
       let imported = false
       data.forEach(item => {
-        if (item.fileName === currentFileName && importData(item))
+        if (item.fileName === currentFileName && importData(item)) {
           imported = true
+        }
       })
-      if (!imported)
+      if (!imported) {
         void message.error($.BREAK_IMPORT_INVALID_NAME.replace('%file', currentFileName))
+      }
     }
     else if (currentFileName !== data.fileName) {
       void message.error($.BREAK_IMPORT_INVALID_NAME.replace('%file', currentFileName))
@@ -79,4 +83,6 @@ class ImportService {
   }
 }
 
-export default new ImportService()
+const imports = new ImportService()
+
+export default imports

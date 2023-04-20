@@ -1,30 +1,29 @@
 import { app } from 'electron'
 
-import Window from './Window'
+import ProgramWindow from './ProgramWindow'
 
-import entries from '#classes/entries'
-import windows from '#classes/windows'
-import { ProgramWindow } from '#enums'
+import { ProgramWindow as ProgramWindowEnum } from '#g/enums'
+import Entries from '#m/modules/Entries'
+import Windows from '#m/modules/Windows'
 
-class SetupWindow extends Window {
-  protected type = ProgramWindow.Setup
+class SetupWindow extends ProgramWindow {
+  protected type = ProgramWindowEnum.Setup
   protected args = {
-    path      : entries.general.setup,
-    preload   : entries.preload.setup,
-    width     : 620,
-    minWidth  : 620,
-    height    : 290,
-    minHeight : 310
+    path: Entries.general.setup,
+    preload: Entries.preload.setup,
+    width: 620,
+    minWidth: 620,
+    height: 290,
+    minHeight: 310
   }
 
-  constructor() { super(); this.register() }
+  protected onClose(): void {
+    app.quit()
+  }
 
-  protected onCreate(): void {
-    this.wind?.once('focus', () => {
-      windows.loading?.hide()
-    })
-    this.wind?.once('close', app.quit)
+  protected onFocus(): void {
+    Windows.loading?.hide()
   }
 }
 
-new SetupWindow()
+new SetupWindow().register()

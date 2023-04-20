@@ -11,37 +11,40 @@
 import { mkdirSync, rmSync } from 'fs'
 
 import { allPaths, checkPath, readFile, writeFile } from './helpers'
-import log from './Log'
+import Log from './Log'
 
 class BeforeBuild {
   paths = allPaths.before
 
-  config: any
-  packageFile: any
-  packageLockFile: any
-  publicFile: any
-  issConfig: string
+  config!: any
+  packageFile!: any
+  packageLockFile!: any
+  publicFile!: any
+  issConfig!: string
 
   run(): void {
     this.printTitle()
-    log.stage(this.clearOutFolder)
-    log.stage(this.readFiles)
-    log.stage(this.changeFiles)
-    log.stage(this.writeFiles)
+
+    this.clearOutFolder()
+    this.readFiles()
+    this.changeFiles()
+    this.writeFiles()
   }
 
   printTitle(): void {
-    log.print('Starting pre-build script', true)
+    Log.print('Starting pre-build script', true)
   }
 
-  clearOutFolder = () => {
-    log.print('Clearing out folder')
+  @Log.stage
+  clearOutFolder() {
+    Log.print('Clearing out folder')
     checkPath(this.paths.out)
     rmSync(this.paths.out, { recursive: true })
     mkdirSync(this.paths.out)
   }
 
-  readFiles = () => {
+  @Log.stage
+  readFiles() {
     this.readFile('Reading config.json', 'config', this.paths.config)
     this.readFile('Reading package.json', 'packageFile', this.paths.package)
     this.readFile('Reading package-lock.json', 'packageLockFile', this.paths.packageLock)
@@ -49,7 +52,8 @@ class BeforeBuild {
     this.readFile('Reading installer.config.iss', 'issConfig', this.paths.issConfig, false)
   }
 
-  changeFiles = () => {
+  @Log.stage
+  changeFiles() {
     this.changeFile('Changing package version', this.packageFile)
     this.changeFile('Changing packageLock version', this.packageLockFile)
     this.changeFile('Changing public version', this.publicFile, 'latestVersion')
@@ -64,7 +68,8 @@ class BeforeBuild {
     )
   }
 
-  writeFiles = () => {
+  @Log.stage
+  writeFiles() {
     this.writeFile('Writing package.json', this.paths.package, this.packageFile)
     this.writeFile('Writing package-lock.json', this.paths.packageLock, this.packageLockFile)
     this.writeFile('Writing public.json', this.paths.public, this.publicFile)
@@ -72,17 +77,17 @@ class BeforeBuild {
   }
 
   readFile(message: string, key: string, path: string, fromJSON = true): void {
-    log.print(message)
+    Log.print(message)
     this[key] = readFile(path, fromJSON)
   }
 
   changeFile(message: string, variable: any, key = 'version', value = this.config.version): void {
-    log.print(message)
+    Log.print(message)
     variable[key] = value
   }
 
   writeFile(message: string, path: string, variable: any, stringify = true): void {
-    log.print(message)
+    Log.print(message)
     writeFile(path, stringify ? JSON.stringify(variable, null, '\t') : variable)
   }
 }

@@ -1,8 +1,8 @@
-import type ConfigModsItems from './ConfigModsItems'
+import type IConfigModsItems from './IConfigModsItems'
 
 interface IConfigMods {
   length: number
-  items: ConfigModsItems
+  items: IConfigModsItems
 }
 
 export default IConfigMods

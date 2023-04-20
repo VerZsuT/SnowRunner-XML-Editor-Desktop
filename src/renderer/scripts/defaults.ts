@@ -1,4 +1,5 @@
-export default {
+/** Стандартные значения таблицы */
+const defaults = {
   'ford_f750.xml': {
     'Truck > GameData > UiDesc': {
       UiName: 'UI_VEHICLE_FORD_F750_NAME',
@@ -13177,3 +13178,5 @@ export default {
     }
   }
 }
+
+export default defaults

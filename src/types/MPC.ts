@@ -1,6 +1,6 @@
-import type MainFunctions from './MainFunctions'
-import type MainProperties from './MainProperties'
+import type IMainFunctions from './IMainFunctions'
+import type IMainProperties from './IMainProperties'
 
-type MPC = MainProperties & MainFunctions
+type MPC = IMainProperties & IMainFunctions
 
 export default MPC

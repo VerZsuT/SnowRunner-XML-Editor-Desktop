@@ -1,10 +1,10 @@
-import type { CheerioAPI } from 'cheerio'
 import { useForceUpdate } from 'react-afc/compatible'
 
-import type { FileType } from '#enums'
+import type { FileType } from '#g/enums'
+import type { IXMLElement } from '#g/types'
 
-interface XMLFile {
-  dom: CheerioAPI
+interface IXMLFile {
+  dom: IXMLElement
   path: string
   mod: string
   dlc: string
@@ -12,7 +12,7 @@ interface XMLFile {
 }
 
 class XMLFilesService {
-  files: XMLFile[] = []
+  files: IXMLFile[] = []
 
   private readonly listeners = new Set<() => void>()
 
@@ -27,16 +27,19 @@ class XMLFilesService {
 
     return update
   }
-  
-  add(file: XMLFile, clearPrev?: boolean): void {
+
+  add(file: IXMLFile, clearPrev?: boolean): void {
     if (clearPrev) this.files = []
-  
-    for (let i = 0; i < this.files.length; ++i)
+
+    for (let i = 0; i < this.files.length; ++i) {
       if (this.files[i].path === file.path) return
-  
+    }
+
     this.files.push(file)
     this.listeners.forEach(listener => listener())
   }
 }
 
-export default new XMLFilesService()
+const xmlFiles = new XMLFilesService()
+
+export default xmlFiles

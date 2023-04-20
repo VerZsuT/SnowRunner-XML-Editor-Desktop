@@ -15,7 +15,9 @@
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
-    "ecmaFeatures": { "jsx": true },
+    "ecmaFeatures": {
+      "jsx": true
+    },
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
@@ -39,7 +41,9 @@
     ],
     "camelcase": [
       "warn",
-      { "properties": "always" }
+      {
+        "properties": "always"
+      }
     ],
     "jsx-quotes": [
       "error",
@@ -47,7 +51,6 @@
     ],
     "no-extra-bind": "warn",
     "no-extra-label": "warn",
-    "no-invalid-this": "warn",
     "no-lone-blocks": "warn",
     "no-lonely-if": "warn",
     "no-sequences": "warn",
@@ -73,7 +76,9 @@
     "brace-style": [
       "error",
       "stroustrup",
-      { "allowSingleLine": true }
+      {
+        "allowSingleLine": true
+      }
     ],
     "comma-dangle": [
       "error",
@@ -133,6 +138,7 @@
     "indent": "off",
     "no-empty": "off",
     "no-empty-function": "off",
+    "no-invalid-this": "off",
     "no-param-reassign": "off",
     "no-void": "off",
     "import/namespace": "off",
@@ -147,7 +153,8 @@
     "@typescript-eslint/no-empty-function": "off",
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/no-var-requires": "off",
-    "@typescript-eslint/no-non-null-assertion": "warn",
+    "@typescript-eslint/no-this-alias": "off",
+    "@typescript-eslint/no-non-null-assertion": "off",
     "@typescript-eslint/consistent-type-imports": "warn",
     "@typescript-eslint/no-unused-vars": [
       "warn",

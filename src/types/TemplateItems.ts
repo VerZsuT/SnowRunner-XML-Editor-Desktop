@@ -1,6 +1,7 @@
-import type { Group, Template } from '#templates/items'
-import type Input from '#templates/items/Input'
-import type Select from '#templates/items/Select'
+import type Group from '#r_editor/templates/items/group.item'
+import type Input from '#r_editor/templates/items/input.item'
+import type Select from '#r_editor/templates/items/select.item'
+import type Template from '#r_editor/templates/items/template.item'
 
 type TemplateItems = Group | Input | Select<any> | Template
 

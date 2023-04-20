@@ -1,7 +1,7 @@
 import type IInputAreas from './IInputAreas'
 import type IInputBaseProps from './IInputBaseProps'
 
-import type { FileType, InputType, NumberType } from '#enums'
+import type { FileType, InputType, NumberType } from '#g/enums'
 
 type InputProps = IInputBaseProps & {
   /**

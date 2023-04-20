@@ -1,9 +1,9 @@
-export { default as windowsManager } from './windowsManager'
+export { default as WindowsManager } from './service/Manager'
 
-import './loading'
-import './main'
-import './settings'
-import './setup'
-import './update'
-import './whatsNew'
+import './Loading'
+import './Main'
+import './Settings'
+import './Setup'
+import './Update'
+import './WhatsNew'
 

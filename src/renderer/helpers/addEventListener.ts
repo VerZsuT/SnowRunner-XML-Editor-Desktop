@@ -1,13 +1,14 @@
-import { useOnDestroy } from 'react-afc/compatible'
+import { useOnDestroy } from 'react-afc'
 
+/** Добавляет обработчик события элементу */
 function addEventListener<
   ElemType extends Element | Document | Window,
   KeyType extends keyof MapType,
   MapType = ElemType extends Element
   ? ElementEventMap
   : ElemType extends Document
-    ? DocumentEventMap
-    : WindowEventMap
+  ? DocumentEventMap
+  : WindowEventMap
 >(
   element: ElemType,
   type: KeyType,

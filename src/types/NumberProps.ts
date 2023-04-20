@@ -1,7 +1,7 @@
 import type IDefaultInputProps from './IDefaultInputProps'
 import type InputProps from './InputProps'
 
-import type { NumberType } from '#enums'
+import type { NumberType } from '#g/enums'
 
 type NumberProps = IDefaultInputProps & {
   type?: NumberType

@@ -1,7 +1,12 @@
+/** Источник элемента */
 enum SrcType {
-  mods      = 'mods',
-  dlc       = 'dlc',
-  main      = 'main',
+  /** Источник - модификации */
+  mods = 'mods',
+  /** Источник - дополнения */
+  dlc = 'dlc',
+  /** Источник - основной */
+  main = 'main',
+  /** Источник - избранное */
   favorites = 'favorites'
 }
 

@@ -1,14 +1,13 @@
-import type { CheerioAPI } from 'cheerio'
-
+import type IXMLElement from './IXMLElement'
 import type TemplateSelectors from './TemplateSelectors'
 
 interface IItemGetterProps {
-  fileDOM: CheerioAPI
+  fileDOM: IXMLElement
   formattedSelectors?: TemplateSelectors
   providedSelector?: string
   multiply?: boolean
   cycleNumber?: number
-  tNumber?: number
+  tCount?: number
   counter?: number
 }
 

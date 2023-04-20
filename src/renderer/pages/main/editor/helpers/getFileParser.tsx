@@ -1,5 +1,4 @@
 import { Collapse } from 'antd'
-import type { AnyNode, Cheerio, CheerioAPI } from 'cheerio'
 import memoizee from 'memoizee'
 import { useContext } from 'react-afc'
 
@@ -10,17 +9,17 @@ import { FileInfoContext } from '../helpers/getFileInfo'
 import template from '../services/template'
 import parseFile from './parseFile'
 
-import type { Defaults, IInputParams, TemplateParams } from '#types'
+import type { IDefaults, IInputParams, IXMLElement, TemplateParams } from '#g/types'
 
 interface InnerItem {
   filePath: string
   fileName: string
-  fileDOM: CheerioAPI
+  fileDOM: IXMLElement
   mod: string
   dlc: string
-  templates: Cheerio<AnyNode>
+  templates: IXMLElement
   tableItems: TemplateParams
-  defaults: Defaults[string]
+  defaults: IDefaults[string]
 }
 
 export function getFileParser() {
