@@ -10,7 +10,7 @@ function prop<Props extends object>(key: keyof Props) {
 
     return function (this: This, value: Type) {
       Object.defineProperty(this, name, {
-        get: () => this.props[key],
+        get: () => this.props[key] ?? value,
         set: () => undefined,
         enumerable: true
       })

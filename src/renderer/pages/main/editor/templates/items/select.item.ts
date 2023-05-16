@@ -3,8 +3,8 @@ import helpers from './helpers'
 
 import { DEBUG_EDITOR_PARAMS } from '#g/consts'
 import { InputType, ParamType } from '#g/enums'
-import { isNonNullable } from '#g/helpers'
 import type { IItemGetterProps, ISelectParams, ITemplateItem, SelectOptions, SelectProps } from '#g/types'
+import { isNonNullable } from '#g/utils'
 
 class Select<T extends SelectOptions> implements ITemplateItem<[ISelectParams] | []> {
   private readonly label: string
@@ -22,7 +22,13 @@ class Select<T extends SelectOptions> implements ITemplateItem<[ISelectParams] |
     this.addMissedTag = baseProps.addMissedTag ?? false
     this.options = props.options
     if (isNonNullable(props.default)) {
-      this.default = props.options[props.default][0]
+      const defaultOption = props.options[props.default][0]
+      if (Array.isArray(defaultOption)) {
+        this.default = defaultOption[0]
+      }
+      else {
+        this.default = defaultOption
+      }
     }
   }
 

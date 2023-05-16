@@ -7,7 +7,7 @@ interface IMainHeaderProps {
   filePath: string
   mod: string
   dlc: string
-  actions: IXMLTemplate['actions']
+  actions: IXMLTemplate['extraActions']
   tableItems: TemplateParams
   resetList: ResetList
 }

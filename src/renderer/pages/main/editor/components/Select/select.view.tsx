@@ -20,7 +20,7 @@ function Select(props: IParameterProps) {
       style={style}
       options={model.options}
       size='large'
-      value={props.value}
+      value={model.value}
       onChange={props.onSetValue}
     />
   </>

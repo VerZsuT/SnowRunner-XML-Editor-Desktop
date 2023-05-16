@@ -11,8 +11,8 @@ import ParameterModel from './parameter.model'
 import type IParameterProps from './parameter.props'
 
 import { InputType } from '#g/enums'
-import { isNullable } from '#g/helpers'
 import $ from '#g/texts/renderer'
+import { isNullable } from '#g/utils'
 import { useContextMenu } from '#r/helpers'
 
 const { Text } = Typography
@@ -36,25 +36,34 @@ function Parameter(props: IParameterProps) {
     Element = Coordinates
   }
 
-  return () => (
-    <div className='grid parameter' onContextMenu={contextMenu.onContext}>
-      <contextMenu.Component
-        items={contextItems}
-        isShow={contextMenu.isShow()}
-      />
-      <div className='label'>
-        <Text>{model.label}</Text>
-      </div>
-      <div className='content'>
-        <Element
-          defaultValue={model.defaultValue}
-          onSetValue={onSetValue}
-          value={model.paramValue}
-          item={model.item}
+  let firstRender = true
+
+  return () => {
+    if (!model.render && firstRender) {
+      firstRender = false
+      return null
+    }
+
+    return (
+      <div className='grid parameter' onContextMenu={contextMenu.onContext}>
+        <contextMenu.Component
+          items={contextItems}
+          isShow={contextMenu.isShow()}
         />
+        <div className='label'>
+          <Text>{model.label}</Text>
+        </div>
+        <div className='content'>
+          <Element
+            defaultValue={model.defaultValue}
+            onSetValue={onSetValue}
+            value={model.paramValue}
+            item={model.item}
+          />
+        </div>
       </div>
-    </div>
-  )
+    )
+  }
 
   function onSetValue(newValue: string) {
     ctrlr.setValue(newValue)

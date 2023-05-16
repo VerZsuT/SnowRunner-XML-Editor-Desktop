@@ -5,8 +5,8 @@ import { FileDataContext } from '../../helpers/getFileData'
 import type Status from './Satus'
 
 import { NumberType } from '#g/enums'
-import { isNonNullable, isNullable } from '#g/helpers'
 import type { IInputParams, IParameterProps } from '#g/types'
+import { isNonNullable, isNullable } from '#g/utils'
 import { ViewModel, prop, unwrap } from '#r/model-ctrlr'
 
 class InputModel extends ViewModel<IParameterProps> {

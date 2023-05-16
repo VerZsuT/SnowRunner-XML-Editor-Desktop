@@ -2,10 +2,10 @@ import Trailer from './Trailer'
 import TrailersAction from './trailers.action'
 import type TrailersModel from './trailers.model'
 
-import type { IActionProps } from '#g/types'
+import type { IExtraActionProps } from '#g/types'
 import { ViewController } from '#r/model-ctrlr'
 
-class TrailersController extends ViewController<IActionProps, TrailersModel> {
+class TrailersController extends ViewController<IExtraActionProps, TrailersModel> {
   addTrailer(trailer: Trailer): void {
     if (trailer === Trailer.scout) {
       TrailersAction.addTrailer(Trailer.scout, Trailer.truck, this.props.dom, value => this.model.hasScout = value)

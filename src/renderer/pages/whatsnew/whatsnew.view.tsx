@@ -14,40 +14,12 @@ function WhatsNew() {
 
   return () => <>
     <Divider className='title'>
-      {$.WHATS_NEW_TITLE} {' v0.7.2'}
+      {$.WHATS_NEW_TITLE} {' v0.7.3'}
     </Divider>
     <List
       className='content'
       size='small'
-      dataSource={model.desc072}
-      renderItem={item => (
-        <List.Item>
-          {item}
-        </List.Item>
-      )}
-    />
-
-    <Divider className='title'>
-      {$.WHATS_NEW_TITLE} {' v0.7.1'}
-    </Divider>
-    <List
-      className='content'
-      size='small'
-      dataSource={model.desc071}
-      renderItem={item => (
-        <List.Item>
-          {item}
-        </List.Item>
-      )}
-    />
-
-    <Divider className='title'>
-      {$.WHATS_NEW_TITLE} {' v0.7.0'}
-    </Divider>
-    <List
-      className='content'
-      size='small'
-      dataSource={model.desc070}
+      dataSource={model.desc073}
       renderItem={item => (
         <List.Item>
           {item}

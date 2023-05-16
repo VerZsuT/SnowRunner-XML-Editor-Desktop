@@ -5,8 +5,8 @@ import $ from '../texts'
 import type OptionsType from './OptionsType'
 import type AddonsContentModel from './addonscontent.model'
 
-import { isNonNullable } from '#g/helpers'
-import type { IActionProps, IFindItem, IXMLElement } from '#g/types'
+import type { IExtraActionProps, IFindItem, IXMLElement } from '#g/types'
+import { isNonNullable } from '#g/utils'
 import { ViewController } from '#r/model-ctrlr'
 import bridge from '#r/scripts/bridge'
 import { XMLDOM } from '#r/scripts/xml'
@@ -14,8 +14,8 @@ import { helpers, system } from '#r/services'
 
 const paths = bridge.paths
 
-class AddonsContentController extends ViewController<IActionProps, AddonsContentModel> {
-  constructor(props: IActionProps, model: AddonsContentModel) {
+class AddonsContentController extends ViewController<IExtraActionProps, AddonsContentModel> {
+  constructor(props: IExtraActionProps, model: AddonsContentModel) {
     super(props, model)
 
     useOnMount(() => {

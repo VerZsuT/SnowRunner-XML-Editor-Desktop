@@ -2,13 +2,13 @@ import { ID_ATTRIBUTE, SELECTOR_SEPARATOR, SelPrefix, genAttributeValue } from '
 import helpers from './helpers'
 
 import { TemplateType } from '#g/enums'
-import { lastItem } from '#g/helpers'
 import type {
   IItemGetterProps, ITemplateItem,
   ITemplateProps, TemplateItems,
   TemplateParams, TemplateSelectors,
   TemplateTypedProps
 } from '#g/types'
+import { lastItem } from '#g/utils'
 
 /**
  * Шаблон таблицы параметров. Может иметь вложенные под-шаблоны.

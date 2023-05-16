@@ -1,7 +1,6 @@
 import helpers from './helpers'
 
 import { ParamType } from '#g/enums'
-import { hasItems, isString } from '#g/helpers'
 import type {
   GroupTypedProps, IGroupParams,
   IItemGetterProps,
@@ -9,6 +8,7 @@ import type {
   TemplateItems,
   TemplateParams
 } from '#g/types'
+import { hasItems, isString } from '#g/utils'
 import { getGameText } from '#r/pages/main/editor/templates/helpers'
 
 /**
@@ -79,6 +79,7 @@ class Group implements ITemplateItem<[IGroupParams] | any[]> {
         providedSelector: this.providedSelectorID,
         formattedSelectors,
         counter: tNumber,
+        tCount: props.tCount,
         fileDOM
       }))
     })

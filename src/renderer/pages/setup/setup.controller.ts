@@ -39,7 +39,8 @@ class SetupController extends ViewController<{}, SetupModel> {
     if (system.existsSync(system.join(paths.backupFolder, 'config.json'))) {
       confirm({
         title: $.IMPORT_CONFIG_MESSAGE,
-        onOk: () => bridge.importConfig()
+        onOk: () => bridge.importConfig(),
+        style: { marginTop: -60 }
       })
     }
   }

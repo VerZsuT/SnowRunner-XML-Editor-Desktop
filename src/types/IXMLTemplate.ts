@@ -1,11 +1,11 @@
-import type Action from '#r_editor/actions/Action'
+import type ExtraAction from '#r_editor/extraActions/ExtraAction'
 import type Template from '#r_editor/templates/items/template.item'
 
 interface IXMLTemplate {
   template: Template
   selector: string
-  actions?: Action[]
-  exclude?: Action[]
+  extraActions?: ExtraAction[]
+  exclude?: ExtraAction[]
 }
 
 export default IXMLTemplate

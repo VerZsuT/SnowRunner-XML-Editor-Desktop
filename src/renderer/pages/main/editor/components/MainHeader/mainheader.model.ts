@@ -3,8 +3,8 @@ import type { ReactNode } from 'react'
 import type IMainHeaderProps from './mainheader.props'
 import type MenuItemsType from './MenuItemsType'
 
-import { lastItem } from '#g/helpers'
 import type { IXMLElement } from '#g/types'
+import { lastItem } from '#g/utils'
 import { reactive, ViewModel } from '#r/model-ctrlr'
 import { config, helpers } from '#r/services'
 

@@ -4,8 +4,8 @@ import { useOnDestroy } from 'react-afc/compatible'
 import $ from '../texts'
 import xmlFiles from './xmlFiles'
 
-import { isString } from '#g/helpers'
 import type { IExportedData, IXMLElement, IXMLTemplate } from '#g/types'
+import { isString } from '#g/utils'
 import bridge from '#r/scripts/bridge'
 import { system, xml } from '#r/services'
 
@@ -19,7 +19,7 @@ class ImportService {
     useOnDestroy(() => this.handlers.delete(handler))
   }
 
-  importFile(currentPath: string, fileDOM: IXMLElement, actions: IXMLTemplate['actions'], importPath?: string): void {
+  importFile(currentPath: string, fileDOM: IXMLElement, actions: IXMLTemplate['extraActions'], importPath?: string): void {
     const currentFileName = system.basename(currentPath)
     let pathToImport = importPath
 

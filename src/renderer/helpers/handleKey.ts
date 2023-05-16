@@ -1,7 +1,7 @@
 import { useOnDestroy, useOnMount } from 'react-afc/compatible'
 
-import { isString } from '#g/helpers'
 import type { ISetHotKeyParams } from '#g/types'
+import { isString } from '#g/utils'
 
 /**
  * Устанавливает обработчик события нажатия кнопки

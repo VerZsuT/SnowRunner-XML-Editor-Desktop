@@ -5,11 +5,11 @@ import $ from '../texts'
 import BanditCraneController from './banditcrane.controller'
 import BanditCraneModel from './banditcrane.model'
 
-import type { IActionProps } from '#g/types'
+import type { IExtraActionProps } from '#g/types'
 
 const { Paragraph } = Typography
 
-function BanditCraneComponent(props: IActionProps) {
+function BanditCraneComponent(props: IExtraActionProps) {
   const model = new BanditCraneModel(props)
   const ctrlr = new BanditCraneController(props, model)
 

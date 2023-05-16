@@ -1,10 +1,9 @@
-
 import helpers from './helpers'
 
 import { DEBUG_EDITOR_PARAMS } from '#g/consts'
 import type { FileType } from '#g/enums'
 import { InputType, NumberType, ParamType } from '#g/enums'
-import type { IInputAreas, IInputParams, IItemGetterProps, ITemplateItem, InputTypedProps } from '#g/types'
+import type { IInputAreas, IInputParams, IItemGetterProps, ITemplateItem, IXMLElement, InputTypedProps } from '#g/types'
 
 class Input implements ITemplateItem<[IInputParams] | []> {
   private readonly label: string
@@ -37,31 +36,23 @@ class Input implements ITemplateItem<[IInputParams] | []> {
   }
 
   getParams(props: IItemGetterProps): [IInputParams] | [] {
-    const { formattedSelectors = {}, providedSelector, fileDOM } = props
-    const sel = this.selector ? (formattedSelectors[this.selector] || this.selector) : formattedSelectors[providedSelector!]
+    const fileDOM = props.fileDOM
+    const selector = this.getSelector(props)
     let value: string | undefined
 
-    for (const areaName in this.areas) {
-      if (!Array.isArray(this.areas[areaName][0])) {
-        this.areas[areaName] = [this.areas[areaName]]
-      }
-    }
+    this.prepareAreas()
 
-    if (!fileDOM.has(sel)) {
-      if (!this.addMissedTag) {
-        if (DEBUG_EDITOR_PARAMS) {
-          console.warn(`Missing parameter\n\tName: "${(this.attribute)}",\n\tText: "${(this.label)}",\n\tSelector: "${sel}".`)
-        }
-        return []
-      }
+    const [isMissedTag, isCritical] = this.missedTag(fileDOM, selector)
+    if (isMissedTag) {
+      if (isCritical) return []
     }
     else {
-      value = fileDOM.select(sel).getAttr(this.attribute)
+      value = fileDOM.select(selector).getAttr(this.attribute)
     }
 
     return [{
       default: this.default,
-      selector: sel,
+      selector: selector,
       paramType: ParamType.input,
       inputType: InputType.text,
       attribute: this.attribute,
@@ -75,6 +66,33 @@ class Input implements ITemplateItem<[IInputParams] | []> {
       areas: this.areas,
       value
     }]
+  }
+
+  private getSelector(props: IItemGetterProps): string {
+    const { formattedSelectors = {}, providedSelector } = props
+    return this.selector ? (formattedSelectors[this.selector] || this.selector) : formattedSelectors[providedSelector!]
+  }
+
+  private prepareAreas(): void {
+    for (const areaName in this.areas) {
+      if (!Array.isArray(this.areas[areaName][0])) {
+        this.areas[areaName] = [this.areas[areaName]]
+      }
+    }
+  }
+
+  /** @returns [isMissed, isCritical] */
+  private missedTag(fileDOM: IXMLElement, selector: string): [boolean, boolean] {
+    if (!fileDOM.has(selector)) {
+      if (!this.addMissedTag) {
+        if (DEBUG_EDITOR_PARAMS) {
+          console.warn(`Missing parameter\n\tName: "${(this.attribute)}",\n\tText: "${(this.label)}",\n\tSelector: "${selector}".`)
+        }
+        return [true, true]
+      }
+      return [true, false]
+    }
+    return [false, false]
   }
 }
 

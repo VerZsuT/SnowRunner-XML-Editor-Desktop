@@ -48,7 +48,7 @@ function Editor() {
             <FileInfoContext.Provider value={fileInfoContext}>
               <div className='table'>
                 <Collapse accordion>
-                  {template.parseItems(tableItems)}
+                  {template.parseItems(tableItems, true)}
                 </Collapse>
               </div>
             </FileInfoContext.Provider>

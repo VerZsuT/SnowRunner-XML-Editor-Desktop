@@ -9,8 +9,8 @@ import Helpers from './Helpers'
 import Paths from './Paths'
 
 import { Lang } from '#g/enums'
-import { hasItems, isNullable } from '#g/helpers'
 import type { IConfig } from '#g/types'
+import { hasItems, isNullable } from '#g/utils'
 
 type ConfigChangeHandler = () => void
 

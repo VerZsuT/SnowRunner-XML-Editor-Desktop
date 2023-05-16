@@ -6,7 +6,7 @@ interface ISelectParams {
   value: string | undefined
   selectParams: {
     label: string
-    value: string
+    value: string | string[]
   }[]
   selector: string
   paramType: ParamType

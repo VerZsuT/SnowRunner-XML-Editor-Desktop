@@ -4,16 +4,22 @@ import type { FileDataContextType } from '../../helpers/getFileData'
 import { FileDataContext } from '../../helpers/getFileData'
 import type IParameterProps from './parameter.props'
 
-import { isNullable } from '#g/helpers'
-import { ViewModel, reactive, unwrap } from '#r/model-ctrlr'
+import { isNullable } from '#g/utils'
+import { ViewModel, prop, reactive, unwrap } from '#r/model-ctrlr'
 import { xml } from '#r/services'
 
 class ParameterModel extends ViewModel<IParameterProps> {
-  @unwrap readonly fileData = useContext(FileDataContext) as unknown as FileDataContextType
+  @unwrap
+  readonly fileData = useContext(FileDataContext) as unknown as FileDataContextType
 
   readonly item = this.props.item
 
-  @reactive paramValue = this.getValue()
+  @prop<IParameterProps>('render')
+  readonly render = true
+
+  @reactive
+  paramValue = this.getValue()
+
   readonly label = this.item.label
   readonly inputType = this.item.inputType
   readonly type = this.item.type

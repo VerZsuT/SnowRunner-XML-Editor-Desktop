@@ -5376,6 +5376,554 @@ const defaults = {
       UnlockByRank: '1'
     }
   },
+  'derry_special_15c177.xml': {
+    'Truck > GameData > UiDesc': {
+      UiName: 'UI_VEHICLE_DERRY_SPECIAL_15C177_NAME',
+      UiDesc: 'UI_VEHICLE_DERRY_SPECIAL_15C177_DESC'
+    },
+    'Truck > TruckData': {
+      Responsiveness: '0.2',
+      BackSteerSpeed: '0.02',
+      SteerSpeed: '0.017',
+      DiffLockType: 'Installed',
+      EngineStartDelay: '0.6',
+      ExhaustStartTime: '0.6',
+      FuelCapacity: '380'
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="1"]': {
+      Torque: 'default',
+      SteeringAngle: '26'
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="2"]': {
+      Torque: 'default',
+      SteeringAngle: '26'
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="3"]': {
+      Torque: 'default',
+      SteeringAngle: '21'
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="4"]': {
+      Torque: 'default',
+      SteeringAngle: '21'
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="5"]': {
+      Torque: 'default',
+      SteeringAngle: 0
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="6"]': {
+      Torque: 'default',
+      SteeringAngle: 0
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="7"]': {
+      Torque: 'default',
+      SteeringAngle: 0
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="8"]': {
+      Torque: 'default',
+      SteeringAngle: 0
+    },
+    'Truck > TruckData > CompatibleWheels[SXMLE_ID="1"]': {
+      Scale: '0.7'
+    },
+    'Truck > TruckData > CompatibleWheels[SXMLE_ID="2"]': {
+      Scale: '0.7'
+    },
+    'Truck > TruckData > CompatibleWheels[SXMLE_ID="3"]': {
+      Scale: '0.7'
+    },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(0; 0; 0)'
+    },
+    'Truck > TruckData > FuelTank': {
+      DamageCapacity: '100'
+    },
+    'Truck > GameData': {
+      Country: 'US',
+      Price: '150000',
+      UnlockByExploration: 'true',
+      UnlockByRank: '1'
+    }
+  },
+  'zikz_566a.xml': {
+    'Truck > GameData > UiDesc': {
+      UiName: 'UI_VEHICLE_ZiKZ_566A_NAME',
+      UiDesc: 'UI_VEHICLE_ZiKZ_566A_DESC'
+    },
+    'Truck > TruckData': {
+      Responsiveness: '0.12',
+      BackSteerSpeed: '0.01',
+      SteerSpeed: '0.022',
+      DiffLockType: 'Installed',
+      EngineStartDelay: '3',
+      ExhaustStartTime: '3.2',
+      FuelCapacity: '150'
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="1"]': {
+      Torque: 'default',
+      SteeringAngle: '27'
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="2"]': {
+      Torque: 'default',
+      SteeringAngle: '27'
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="3"]': {
+      Torque: 'default',
+      SteeringAngle: 0
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="4"]': {
+      Torque: 'default',
+      SteeringAngle: 0
+    },
+    'Truck > TruckData > CompatibleWheels[SXMLE_ID="1"]': {
+      Scale: '0.6'
+    },
+    'Truck > TruckData > CompatibleWheels[SXMLE_ID="2"]': {
+      Scale: '0.6'
+    },
+    'Truck > TruckData > CompatibleWheels[SXMLE_ID="3"]': {
+      Scale: '0.55'
+    },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(0; -0.2; 0)'
+    },
+    'Truck > TruckData > FuelTank': {
+      DamageCapacity: '100'
+    },
+    'Truck > GameData': {
+      Country: 'RU,CAS',
+      Price: '80900',
+      UnlockByExploration: 'true',
+      UnlockByRank: '1'
+    }
+  },
+  'semitrailer_watertank.xml': {
+    'Truck > TruckData': {
+      FuelCapacity: 0,
+      RepairsCapacity: 0,
+      WheelRepairsCapacity: 0
+    },
+    'Truck > PhysicsModel > Body': {
+      Mass: '4000'
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="1"]': {
+      SuspensionHeight: '0.0244',
+      SuspensionStrength: '0.0422'
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="2"]': {
+      SuspensionHeight: '0.0244',
+      SuspensionStrength: '0.0422'
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="3"]': {
+      SuspensionHeight: '0.0244',
+      SuspensionStrength: '0.0422'
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="4"]': {
+      SuspensionHeight: '0.0244',
+      SuspensionStrength: '0.0422'
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="5"]': {
+      SuspensionHeight: '0.0244',
+      SuspensionStrength: '0.0422'
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="6"]': {
+      SuspensionHeight: '0.0244',
+      SuspensionStrength: '0.0422'
+    },
+    'Truck > GameData': {
+      Price: '6000'
+    }
+  },
+  'trailer_watertank.xml': {
+    'Truck > TruckData': {
+      FuelCapacity: 0,
+      RepairsCapacity: 0,
+      WheelRepairsCapacity: 0
+    },
+    'Truck > PhysicsModel > Body': {
+      Mass: '1300'
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="1"]': {
+      SuspensionHeight: '0.075',
+      SuspensionStrength: '0.33'
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="2"]': {
+      SuspensionHeight: '0.075',
+      SuspensionStrength: '0.33'
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="3"]': {
+      SuspensionHeight: '0.07',
+      SuspensionStrength: '0.33'
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="4"]': {
+      SuspensionHeight: '0.07',
+      SuspensionStrength: '0.33'
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="5"]': {
+      SuspensionHeight: '0.07',
+      SuspensionStrength: '0.33'
+    },
+    'Truck > TruckData > Wheels > Wheel[SXMLE_ID="6"]': {
+      SuspensionHeight: '0.07',
+      SuspensionStrength: '0.33'
+    },
+    'Truck > GameData': {
+      Price: '4900'
+    }
+  },
+  'gearboxes_zikz_566a.xml': {
+    'GearboxVariants > Gearbox[SXMLE_ID="1"]': {
+      AWDConsumptionModifier: '1.2',
+      CriticalDamageThreshold: '0.4',
+      DamageCapacity: '180',
+      DamagedConsumptionModifier: '1.5',
+      FuelConsumption: '3.8',
+      IdleFuelModifier: '0.3'
+    },
+    'GearboxVariants > Gearbox[SXMLE_ID="1"] > GameData > GearboxParams': {
+      IsManualLowGear: 'false',
+      IsHighGearExists: 'false',
+      IsLowerGearExists: 'true',
+      IsLowerPlusGearExists: 'false',
+      IsLowerMinusGearExists: 'false'
+    },
+    'GearboxVariants > Gearbox[SXMLE_ID="1"] > ReverseGear': {
+      AngVel: '1.5',
+      FuelModifier: '1.1'
+    },
+    'GearboxVariants > Gearbox[SXMLE_ID="1"] > HighGear': {
+      AngVel: '7.5',
+      FuelModifier: '1.8'
+    },
+    'GearboxVariants > Gearbox[SXMLE_ID="1"] > Gear[SXMLE_ID="1"]': {
+      AngVel: '1.5',
+      FuelModifier: '1.7'
+    },
+    'GearboxVariants > Gearbox[SXMLE_ID="1"] > Gear[SXMLE_ID="2"]': {
+      AngVel: '4.0',
+      FuelModifier: '1.5'
+    },
+    'GearboxVariants > Gearbox[SXMLE_ID="1"] > Gear[SXMLE_ID="3"]': {
+      AngVel: '6.0',
+      FuelModifier: '1.3'
+    },
+    'GearboxVariants > Gearbox[SXMLE_ID="1"] > Gear[SXMLE_ID="4"]': {
+      AngVel: '8.5',
+      FuelModifier: '1.1'
+    },
+    'GearboxVariants > Gearbox[SXMLE_ID="1"] > GameData': {
+      Price: '1900',
+      UnlockByExploration: 'false',
+      UnlockByRank: '1'
+    },
+    'GearboxVariants > Gearbox[SXMLE_ID="2"]': {
+      AWDConsumptionModifier: '1.3',
+      CriticalDamageThreshold: '0.4',
+      DamageCapacity: '150',
+      DamagedConsumptionModifier: '1.7',
+      FuelConsumption: '2.5',
+      IdleFuelModifier: '0.3'
+    },
+    'GearboxVariants > Gearbox[SXMLE_ID="2"] > GameData > GearboxParams': {
+      IsManualLowGear: 'false',
+      IsHighGearExists: 'true',
+      IsLowerGearExists: 'true',
+      IsLowerPlusGearExists: 'false',
+      IsLowerMinusGearExists: 'false'
+    },
+    'GearboxVariants > Gearbox[SXMLE_ID="2"] > ReverseGear': {
+      AngVel: '1.0',
+      FuelModifier: '1.0'
+    },
+    'GearboxVariants > Gearbox[SXMLE_ID="2"] > HighGear': {
+      AngVel: '14.0',
+      FuelModifier: '1.8'
+    },
+    'GearboxVariants > Gearbox[SXMLE_ID="2"] > Gear[SXMLE_ID="1"]': {
+      AngVel: '1.5',
+      FuelModifier: '2.0'
+    },
+    'GearboxVariants > Gearbox[SXMLE_ID="2"] > Gear[SXMLE_ID="2"]': {
+      AngVel: '4.0',
+      FuelModifier: '1.9'
+    },
+    'GearboxVariants > Gearbox[SXMLE_ID="2"] > Gear[SXMLE_ID="3"]': {
+      AngVel: '6.0',
+      FuelModifier: '1.7'
+    },
+    'GearboxVariants > Gearbox[SXMLE_ID="2"] > Gear[SXMLE_ID="4"]': {
+      AngVel: '8.0',
+      FuelModifier: '1.6'
+    },
+    'GearboxVariants > Gearbox[SXMLE_ID="2"] > Gear[SXMLE_ID="5"]': {
+      AngVel: '11.0',
+      FuelModifier: '1.5'
+    },
+    'GearboxVariants > Gearbox[SXMLE_ID="2"] > Gear[SXMLE_ID="6"]': {
+      AngVel: '15.0',
+      FuelModifier: '1.4'
+    },
+    'GearboxVariants > Gearbox[SXMLE_ID="2"] > GameData': {
+      Price: '9300',
+      UnlockByExploration: 'true',
+      UnlockByRank: '1'
+    },
+    'GearboxVariants > Gearbox[SXMLE_ID="3"]': {
+      AWDConsumptionModifier: '1.4',
+      CriticalDamageThreshold: '0.4',
+      DamageCapacity: '220',
+      DamagedConsumptionModifier: '1.6',
+      FuelConsumption: '3.0',
+      IdleFuelModifier: '0.3'
+    },
+    'GearboxVariants > Gearbox[SXMLE_ID="3"] > GameData > GearboxParams': {
+      IsManualLowGear: 'false',
+      IsHighGearExists: 'true',
+      IsLowerGearExists: 'true',
+      IsLowerPlusGearExists: 'true',
+      IsLowerMinusGearExists: 'true'
+    },
+    'GearboxVariants > Gearbox[SXMLE_ID="3"] > ReverseGear': {
+      AngVel: '0.5',
+      FuelModifier: '0.9'
+    },
+    'GearboxVariants > Gearbox[SXMLE_ID="3"] > HighGear': {
+      AngVel: '8.0',
+      FuelModifier: '1.7'
+    },
+    'GearboxVariants > Gearbox[SXMLE_ID="3"] > Gear[SXMLE_ID="1"]': {
+      AngVel: '1.5',
+      FuelModifier: '1.6'
+    },
+    'GearboxVariants > Gearbox[SXMLE_ID="3"] > Gear[SXMLE_ID="2"]': {
+      AngVel: '5.0',
+      FuelModifier: '1.4'
+    },
+    'GearboxVariants > Gearbox[SXMLE_ID="3"] > Gear[SXMLE_ID="3"]': {
+      AngVel: '8.0',
+      FuelModifier: '1.3'
+    },
+    'GearboxVariants > Gearbox[SXMLE_ID="3"] > Gear[SXMLE_ID="4"]': {
+      AngVel: '11.0',
+      FuelModifier: '1.1'
+    },
+    'GearboxVariants > Gearbox[SXMLE_ID="3"] > GameData': {
+      Price: '9500',
+      UnlockByExploration: 'false',
+      UnlockByRank: '1'
+    },
+    'GearboxVariants > Gearbox[SXMLE_ID="4"]': {
+      AWDConsumptionModifier: '1.6',
+      CriticalDamageThreshold: '0.4',
+      DamageCapacity: '130',
+      DamagedConsumptionModifier: '1.5',
+      FuelConsumption: '3.2',
+      IdleFuelModifier: '0.3'
+    },
+    'GearboxVariants > Gearbox[SXMLE_ID="4"] > GameData > GearboxParams': {
+      IsManualLowGear: 'true',
+      IsHighGearExists: 'true',
+      IsLowerGearExists: 'true',
+      IsLowerPlusGearExists: 'true',
+      IsLowerMinusGearExists: 'true'
+    },
+    'GearboxVariants > Gearbox[SXMLE_ID="4"] > ReverseGear': {
+      AngVel: '0.7',
+      FuelModifier: '0.9'
+    },
+    'GearboxVariants > Gearbox[SXMLE_ID="4"] > HighGear': {
+      AngVel: '9.0',
+      FuelModifier: '1.8'
+    },
+    'GearboxVariants > Gearbox[SXMLE_ID="4"] > Gear[SXMLE_ID="1"]': {
+      AngVel: '2.0',
+      FuelModifier: '1.6'
+    },
+    'GearboxVariants > Gearbox[SXMLE_ID="4"] > Gear[SXMLE_ID="2"]': {
+      AngVel: '5.0',
+      FuelModifier: '1.5'
+    },
+    'GearboxVariants > Gearbox[SXMLE_ID="4"] > Gear[SXMLE_ID="3"]': {
+      AngVel: '7.5',
+      FuelModifier: '1.4'
+    },
+    'GearboxVariants > Gearbox[SXMLE_ID="4"] > Gear[SXMLE_ID="4"]': {
+      AngVel: '10.5',
+      FuelModifier: '1.2'
+    },
+    'GearboxVariants > Gearbox[SXMLE_ID="4"] > GameData': {
+      Price: '11300',
+      UnlockByExploration: 'true',
+      UnlockByRank: '1'
+    }
+  },
+  'e_ru_truck_old_zikz_566a.xml': {
+    'EngineVariants > Engine[SXMLE_ID="1"]': {
+      CriticalDamageThreshold: '0.7',
+      DamageCapacity: '100',
+      DamagedConsumptionModifier: '1.7',
+      EngineResponsiveness: 0.04,
+      FuelConsumption: '8.5',
+      Torque: '200000',
+      DamagedMinTorqueMultiplier: '1.0',
+      DamagedMaxTorqueMultiplier: '0.4',
+      BrakesDelay: '1',
+      MaxDeltaAngVel: '0.01'
+    },
+    'EngineVariants > Engine[SXMLE_ID="1"] > GameData': {
+      Price: '16200',
+      UnlockByExploration: 'false',
+      UnlockByRank: '1'
+    }
+  },
+  'e_us_truck_modern_derry_special.xml': {
+    'EngineVariants > Engine[SXMLE_ID="1"]': {
+      CriticalDamageThreshold: '0.4',
+      DamageCapacity: '300',
+      DamagedConsumptionModifier: '1.5',
+      EngineResponsiveness: 0.04,
+      FuelConsumption: '12',
+      Torque: '280000',
+      DamagedMinTorqueMultiplier: '1.0',
+      DamagedMaxTorqueMultiplier: '0.7',
+      BrakesDelay: '0.3',
+      MaxDeltaAngVel: '0.05'
+    },
+    'EngineVariants > Engine[SXMLE_ID="1"] > GameData': {
+      Price: '25000',
+      UnlockByExploration: 'true',
+      UnlockByRank: '1'
+    }
+  },
+  's_derry_special_15c177.xml': {
+    'SuspensionSetVariants > SuspensionSet[SXMLE_ID="1"]': {
+      CriticalDamageThreshold: '0.7',
+      DamageCapacity: '300'
+    },
+    'SuspensionSetVariants > SuspensionSet[SXMLE_ID="1"] > Suspension[SXMLE_ID="1"]': {
+      Height: '0.1',
+      Strength: '0.15',
+      Damping: '0.9',
+      SuspensionMin: '-0.22',
+      SuspensionMax: 1,
+      BrokenSuspensionMax: '0.2'
+    },
+    'SuspensionSetVariants > SuspensionSet[SXMLE_ID="1"] > Suspension[SXMLE_ID="2"]': {
+      Height: '0.01',
+      Strength: '0.1',
+      Damping: '0.65',
+      SuspensionMin: '-0.09',
+      SuspensionMax: 1,
+      BrokenSuspensionMax: '0.2'
+    },
+    'SuspensionSetVariants > SuspensionSet[SXMLE_ID="1"] > GameData': {
+      Price: '5900',
+      UnlockByExploration: 'false',
+      UnlockByRank: '1'
+    },
+    'SuspensionSetVariants > SuspensionSet[SXMLE_ID="2"]': {
+      CriticalDamageThreshold: '0.6',
+      DamageCapacity: '230'
+    },
+    'SuspensionSetVariants > SuspensionSet[SXMLE_ID="2"] > Suspension[SXMLE_ID="1"]': {
+      Height: '0.14',
+      Strength: '0.1',
+      Damping: '0.4',
+      SuspensionMin: '-0.15',
+      SuspensionMax: 1,
+      BrokenSuspensionMax: '0.2'
+    },
+    'SuspensionSetVariants > SuspensionSet[SXMLE_ID="2"] > Suspension[SXMLE_ID="2"]': {
+      Height: '0.037',
+      Strength: '0.15',
+      Damping: '0.5',
+      SuspensionMin: '-0.1',
+      SuspensionMax: 1,
+      BrokenSuspensionMax: '0.2'
+    },
+    'SuspensionSetVariants > SuspensionSet[SXMLE_ID="2"] > GameData': {
+      Price: '15500',
+      UnlockByExploration: 'false',
+      UnlockByRank: '1'
+    }
+  },
+  's_zikz_566a.xml': {
+    'SuspensionSetVariants > SuspensionSet[SXMLE_ID="1"]': {
+      CriticalDamageThreshold: '0.4',
+      DamageCapacity: '180'
+    },
+    'SuspensionSetVariants > SuspensionSet[SXMLE_ID="1"] > Suspension[SXMLE_ID="1"]': {
+      Height: '0.2',
+      Strength: '0.05',
+      Damping: '0.8',
+      SuspensionMin: '-0.21',
+      SuspensionMax: 1,
+      BrokenSuspensionMax: '0.1'
+    },
+    'SuspensionSetVariants > SuspensionSet[SXMLE_ID="1"] > Suspension[SXMLE_ID="2"]': {
+      Height: '0.12',
+      Strength: '0.08',
+      Damping: '0.6',
+      SuspensionMin: '-0.14',
+      SuspensionMax: 1,
+      BrokenSuspensionMax: '0.1'
+    },
+    'SuspensionSetVariants > SuspensionSet[SXMLE_ID="1"] > GameData': {
+      Price: '4200',
+      UnlockByExploration: 'false',
+      UnlockByRank: '1'
+    },
+    'SuspensionSetVariants > SuspensionSet[SXMLE_ID="2"]': {
+      CriticalDamageThreshold: '0.4',
+      DamageCapacity: '180'
+    },
+    'SuspensionSetVariants > SuspensionSet[SXMLE_ID="2"] > Suspension[SXMLE_ID="1"]': {
+      Height: '0.26',
+      Strength: '0.05',
+      Damping: '0.8',
+      SuspensionMin: '-0.27',
+      SuspensionMax: 1,
+      BrokenSuspensionMax: '0.1'
+    },
+    'SuspensionSetVariants > SuspensionSet[SXMLE_ID="2"] > Suspension[SXMLE_ID="2"]': {
+      Height: '0.24',
+      Strength: '0.08',
+      Damping: '0.6',
+      SuspensionMin: '-0.21',
+      SuspensionMax: 1,
+      BrokenSuspensionMax: '0.1'
+    },
+    'SuspensionSetVariants > SuspensionSet[SXMLE_ID="2"] > GameData': {
+      Price: '4200',
+      UnlockByExploration: 'true',
+      UnlockByRank: '1'
+    }
+  },
+  'wheels_derry_special_15c177.xml': {
+    'TruckWheels > TruckTires > TruckTire[SXMLE_ID="1"] > WheelFriction': {
+      BodyFriction: 1,
+      BodyFrictionAsphalt: '1.0',
+      SubstanceFriction: '1.7',
+      IsIgnoreIce: 'false'
+    },
+    'TruckWheels > TruckTires > TruckTire[SXMLE_ID="1"] > GameData': {
+      Price: '5500',
+      UnlockByExploration: 'false',
+      UnlockByRank: '1'
+    }
+  },
+  'wheels_zikz_566a.xml': {
+    'TruckWheels > TruckTires > TruckTire[SXMLE_ID="1"] > WheelFriction': {
+      BodyFriction: '3.0',
+      BodyFrictionAsphalt: '0.8',
+      SubstanceFriction: '1.3',
+      IsIgnoreIce: 'false'
+    },
+    'TruckWheels > TruckTires > TruckTire[SXMLE_ID="1"] > GameData': {
+      Price: '7500',
+      UnlockByExploration: 'false',
+      UnlockByRank: '1'
+    }
+  },
   'gmc_8000.xml': {
     'Truck > GameData > UiDesc': {
       UiName: 'UI_VEHICLE_GMC_8000_NAME',

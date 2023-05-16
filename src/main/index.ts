@@ -8,7 +8,7 @@ import $ from '#g/texts/main'
 import { Archive, Checks, Config, ExitParams, Hash, Helpers, Paths, Texts, Windows } from '#m/modules'
 import { WindowsManager } from '#m/windows'
 
-import { hasItems } from '#g/helpers'
+import { hasItems } from '#g/utils'
 import '#m/modules/RendererPublic'
 
 class App {

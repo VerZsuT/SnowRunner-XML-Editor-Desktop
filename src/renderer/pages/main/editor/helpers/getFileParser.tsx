@@ -50,11 +50,11 @@ export function getFileParser() {
       })
     )
 
-    return items.map(item => (
+    return (render = false) => items.map(item => (
       <FileDataContext.Provider key={item.filePath} value={getFileDataContext(fileData.val, item)}>
         <FileInfoContext.Provider value={getFileInfoContext(fileInfo.val, item)}>
           <Collapse accordion>
-            {template.parseItems(item.tableItems)}
+            {template.parseItems(item.tableItems, render)}
           </Collapse>
         </FileInfoContext.Provider>
       </FileDataContext.Provider>

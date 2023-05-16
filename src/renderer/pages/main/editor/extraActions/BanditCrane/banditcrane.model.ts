@@ -1,9 +1,9 @@
 import BanditCraneAction from './banditcrane.action'
 
-import type { IActionProps } from '#g/types'
+import type { IExtraActionProps } from '#g/types'
 import { ViewModel, reactive } from '#r/model-ctrlr'
 
-class BanditCraneModel extends ViewModel<IActionProps> {
+class BanditCraneModel extends ViewModel<IExtraActionProps> {
   @reactive hasCrane = BanditCraneAction.hasCrane(this.props.dom)
 }
 

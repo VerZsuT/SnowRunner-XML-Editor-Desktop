@@ -3,7 +3,6 @@ import helpers from './helpers.service'
 import system from './system.service'
 
 import { FileType, ParamType } from '#g/enums'
-import { hasItems, isNonNullable, isNullable } from '#g/helpers'
 import type {
   IExportedData,
   IGroupParams,
@@ -12,6 +11,7 @@ import type {
   IXMLElement,
   IXMLTemplate, TemplateParams
 } from '#g/types'
+import { hasItems, isNonNullable, isNullable } from '#g/utils'
 import xmlFiles from '#r/pages/main/editor/services/xmlFiles'
 import bridge from '#r/scripts/bridge'
 import { extra, templates } from '#r_editor/templates'
@@ -27,7 +27,7 @@ interface IConfig {
   dlc?: string
   fileDOM?: IXMLElement
   templateItems?: TemplateParams
-  actions?: IXMLTemplate['actions']
+  actions?: IXMLTemplate['extraActions']
 }
 
 const paths = bridge.paths
@@ -237,10 +237,10 @@ class XMLService {
     return XMLDOM.fromPath(filePath)
   }
 
-  processFile(filePath: string): [IXMLElement, TemplateParams, IXMLTemplate['actions']] | never {
+  processFile(filePath: string): [IXMLElement, TemplateParams, IXMLTemplate['extraActions']] | never {
     const fileData = system.readFileSync(filePath)
     const fileName = system.basename(filePath, '.xml')
-    const actions: IXMLTemplate['actions'] = []
+    const actions: IXMLTemplate['extraActions'] = []
     let dom: IXMLElement
     let name: keyof typeof templates | undefined
 
@@ -282,12 +282,12 @@ class XMLService {
     fileName: string
   ) {
     const fileDOM = XMLDOM.fromString(domString)
-    const mainActions = templates[name].actions
+    const mainActions = templates[name].extraActions
     const extraActions = extra[fileName]?.actions
     const extraTemplate = extra[fileName]?.template
     const extraExclude = extra[fileName]?.exclude
 
-    let resultActions: IXMLTemplate['actions'] = []
+    let resultActions: IXMLTemplate['extraActions'] = []
     let params = templates[name].template.getParams({ fileDOM })
 
     if (mainActions) {
@@ -334,29 +334,30 @@ class XMLService {
     }
     else {
       el = fileDOM.select(item.selector)
-      let templateName = el.getAttr('_template')
-      if (!templateName) {
-        templateName = this.getParentTemplate(el)
+    }
+
+    let templateName = el.getAttr('_template')
+    if (!templateName) {
+      templateName = this.getParentTemplate(el)
+    }
+
+    if (templateName) {
+      const template = templates.select(templateName)
+      if (template.exists) {
+        const templateValue = template.getAttr(item.attribute)
+        if (templateValue) return templateValue
+
+        const el2 = template.select(tagName)
+        if (el2.exists) {
+          const templateValue2 = el2.getAttr(item.attribute)
+          if (templateValue2) return templateValue2
+
+          const templateName1 = el2.getAttr('_template')
+          if (templateName1) return this.getValueInGlobal(templateName1, tagName, globalTemplates, item)
+        }
       }
-
-      if (templateName) {
-        const template = templates.select(templateName)
-        if (template.exists) {
-          const templateValue = template.getAttr(item.attribute)
-          if (templateValue) return templateValue
-
-          const el2 = template.select(tagName)
-          if (el2.exists) {
-            const templateValue2 = el2.getAttr(item.attribute)
-            if (templateValue2) return templateValue2
-
-            const templateName1 = el2.getAttr('_template')
-            if (templateName1) return this.getValueInGlobal(templateName1, tagName, globalTemplates, item)
-          }
-        }
-        else {
-          return this.getValueInGlobal(templateName, tagName, globalTemplates, item)
-        }
+      else {
+        return this.getValueInGlobal(templateName, tagName, globalTemplates, item)
       }
     }
   }

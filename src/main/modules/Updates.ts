@@ -12,8 +12,8 @@ import Helpers from './Helpers'
 import Paths from './Paths'
 import Windows from './Windows'
 
-import { hasItems } from '#g/helpers'
 import type { IDownloadParams, UpdateMap } from '#g/types'
+import { hasItems } from '#g/utils'
 
 class UpdatesClass {
   /** Загрузить файл(ы) из сети */

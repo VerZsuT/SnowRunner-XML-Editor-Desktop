@@ -3,15 +3,15 @@ import type { FC } from 'react'
 import { Button, Modal } from 'antd'
 import { afc, useOnRender, useState } from 'react-afc'
 
-import type { IActionData, IActionProps, IXMLElement } from '#g/types'
+import type { IExtraActionData, IExtraActionProps, IXMLElement } from '#g/types'
 
 import './styles'
 
-type CreatedActionData = IActionData & Required<Pick<IActionData, 'import' | 'export'>>
+type CreatedExtraActionData = IExtraActionData & Required<Pick<IExtraActionData, 'import' | 'export'>>
 
-abstract class Action {
-  data!: CreatedActionData
-  Component!: FC<IActionProps>
+abstract class ExtraAction {
+  data!: CreatedExtraActionData
+  Component!: FC<IExtraActionProps>
 
   protected name = 'no-name'
   protected id: string | number = 'no-id'
@@ -20,11 +20,11 @@ abstract class Action {
   protected imgSRC?: string
 
   constructor(
-    private ActionComponent: FC<IActionProps>
+    private ExtraActionComponent: FC<IExtraActionProps>
   ) { }
 
   protected init(): void {
-    const data: CreatedActionData = {
+    const data: CreatedExtraActionData = {
       import: (dom, data) => this.onImport(dom, data),
       export: dom => this.onExport(dom),
       isActive: (dom, fileName) => this.isActive(dom, fileName),
@@ -37,8 +37,8 @@ abstract class Action {
     }
     this.data = data
 
-    const ActionComponent = this.ActionComponent
-    function Component(props: IActionProps) {
+    const ExtraActionComponent = this.ExtraActionComponent
+    function Component(props: IExtraActionProps) {
       const [isShow, setIsShow] = useState(true)
       let isClosing = false
 
@@ -68,7 +68,7 @@ abstract class Action {
             </Button>
           }
         >
-          <ActionComponent {...props} />
+          <ExtraActionComponent {...props} />
         </Modal>
       )
     }
@@ -82,4 +82,4 @@ abstract class Action {
   protected isActive(dom: IXMLElement, fileName: string): boolean { return true }
 }
 
-export default Action
+export default ExtraAction

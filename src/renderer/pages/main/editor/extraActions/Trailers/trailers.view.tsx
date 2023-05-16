@@ -6,11 +6,11 @@ import Trailer from './Trailer'
 import TrailersController from './trailers.controller'
 import TrailersModel from './trailers.model'
 
-import type { IActionProps } from '#g/types'
+import type { IExtraActionProps } from '#g/types'
 
 const { Text } = Typography
 
-function TrailersComponent(props: IActionProps) {
+function TrailersComponent(props: IExtraActionProps) {
   const model = new TrailersModel(props)
   const ctrlr = new TrailersController(props, model)
 

@@ -4,7 +4,7 @@ import $ from './truck.texts'
 
 import { FileType } from '#g/enums'
 import type { IXMLTemplate } from '#g/types'
-import { AddonsContent, BanditCrane, Cranes, Trailers } from '#r_editor/actions'
+import { AddonsContent, BanditCrane, Cranes, Trailers } from '#r_editor/extraActions'
 
 class Selectors {
   @selector truckData = 'Truck.TruckData'
@@ -28,7 +28,7 @@ const selectors = createSelectors(Selectors)
 
 const truckTemplate: IXMLTemplate = {
   selector: 'Truck',
-  actions: [
+  extraActions: [
     BanditCrane,
     AddonsContent,
     Cranes,
@@ -277,7 +277,7 @@ const truckTemplate: IXMLTemplate = {
         attribute: 'Country',
         label: $.COUNTRY,
         options: [
-          ['RU', $.RUSSIA],
+          [['RU', 'RU,CAS'], $.RUSSIA],
           ['US', $.US],
           ['EMPTY', $.ANY]
         ]

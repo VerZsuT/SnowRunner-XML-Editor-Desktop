@@ -1,4 +1,4 @@
-import Action from '../Action'
+import ExtraAction from '../ExtraAction'
 import type IBanditCraneData from './banditcrane.data'
 import type BanditCraneComponent from './banditcrane.view'
 
@@ -7,7 +7,7 @@ import { localizeVal } from '#g/texts/renderer'
 import type { IXMLElement } from '#g/types'
 
 /** Вкладка `Банан бандита`. */
-class BanditCraneAction extends Action {
+class BanditCraneAction extends ExtraAction {
   protected name = localizeVal({
     RU: 'Банан бандита',
     EN: 'Bandit banana',

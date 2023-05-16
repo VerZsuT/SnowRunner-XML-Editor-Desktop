@@ -2,10 +2,10 @@ import Crane from './Crane'
 import CranesAction from './cranes.action'
 import type CranesModel from './cranes.model'
 
-import type { IActionProps } from '#g/types'
+import type { IExtraActionProps } from '#g/types'
 import { ViewController } from '#r/model-ctrlr'
 
-class CranesController extends ViewController<IActionProps, CranesModel> {
+class CranesController extends ViewController<IExtraActionProps, CranesModel> {
   addCrane(crane: Crane): void {
     if (crane === Crane.RU) {
       CranesAction.addCrane(Crane.RU, Crane.US, this.props.dom, value => this.model.hasRU = value)

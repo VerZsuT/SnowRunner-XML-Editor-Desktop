@@ -1,8 +1,8 @@
 import ipc from './ipc.service'
 
 import { IPCChannel } from '#g/enums'
-import { isNonNullable, isObject } from '#g/helpers'
 import type { IConfig } from '#g/types'
+import { isNonNullable, isObject } from '#g/utils'
 import bridge from '#r/scripts/bridge'
 
 class ConfigService {

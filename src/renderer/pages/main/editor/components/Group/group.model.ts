@@ -6,7 +6,7 @@ import type IGroupProps from './group.props'
 
 import { InputType } from '#g/enums'
 import type { IGroupParams, IInputParams, ISelectParams, TemplateParams } from '#g/types'
-import { ViewModel } from '#r/model-ctrlr'
+import { ViewModel, prop, reactive } from '#r/model-ctrlr'
 import { helpers } from '#r/services'
 
 class GroupModel extends ViewModel<IGroupProps> {
@@ -19,6 +19,15 @@ class GroupModel extends ViewModel<IGroupProps> {
   readonly groups = this.items.groups
 
   readonly groupName = this.item.groupName
+
+  @prop<IGroupProps>('isActive')
+  readonly isActive!: boolean
+
+
+  @prop<IGroupProps>('render')
+  readonly render = this.props.render ?? false
+
+  @reactive activeKey = ''
 
   readonly label = this.mod
     ? helpers.getGameText(this.groupName, this.mod) ?? this.item.resGroupName ?? this.groupName

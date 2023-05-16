@@ -6,11 +6,11 @@ import Crane from './Crane'
 import CranesController from './cranes.controller'
 import CranesModel from './cranes.model'
 
-import type { IActionProps } from '#g/types'
+import type { IExtraActionProps } from '#g/types'
 
 const { Paragraph, Text } = Typography
 
-function CranesComponent(props: IActionProps) {
+function CranesComponent(props: IExtraActionProps) {
   const model = new CranesModel(props)
   const ctrlr = new CranesController(props, model)
 

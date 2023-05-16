@@ -30,7 +30,7 @@ class EditorController extends ViewController<{}, EditorModel> {
     }, true)
   }
 
-  private allowDropImport(filePath: string, fileDOM: IXMLElement, actions: IXMLTemplate['actions']): void {
+  private allowDropImport(filePath: string, fileDOM: IXMLElement, actions: IXMLTemplate['extraActions']): void {
     addEventListener(window, 'drop', event => {
       event.preventDefault()
       importService.importFile(filePath, fileDOM, actions, event.dataTransfer?.files[0].path)

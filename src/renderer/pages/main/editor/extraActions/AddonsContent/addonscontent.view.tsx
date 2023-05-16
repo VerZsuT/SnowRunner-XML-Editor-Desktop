@@ -8,11 +8,11 @@ import ContentField from './ContentField'
 import AddonsContentController from './addonscontent.controller'
 import AddonsContentModel from './addonscontent.model'
 
-import type { IActionProps } from '#g/types'
+import type { IExtraActionProps } from '#g/types'
 
 const { Text } = Typography
 
-function AddonsContentComponent(props: IActionProps) {
+function AddonsContentComponent(props: IExtraActionProps) {
   const model = new AddonsContentModel(props)
   const ctrlr = new AddonsContentController(props, model)
 

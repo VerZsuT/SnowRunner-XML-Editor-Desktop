@@ -1,10 +1,10 @@
-import Action from '../Action'
+import ExtraAction from '../ExtraAction'
 import type AddonsContentComponent from './addonscontent.view'
 
 import WrenchIcon from '#g/images/icons/wrench.png'
 import { localizeVal } from '#g/texts/renderer'
 
-class AddonsContentAction extends Action {
+class AddonsContentAction extends ExtraAction {
   protected name = localizeVal({
     RU: 'Содержимое аддонов',
     EN: 'Addons content',

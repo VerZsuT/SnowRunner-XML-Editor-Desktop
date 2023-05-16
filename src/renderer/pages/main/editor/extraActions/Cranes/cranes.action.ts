@@ -1,4 +1,4 @@
-import Action from '../Action'
+import ExtraAction from '../ExtraAction'
 import Crane from './Crane'
 import type ICranesData from './cranes.data'
 import type CranesComponent from './cranes.view'
@@ -7,7 +7,7 @@ import CraneIcon from '#g/images/icons/crane.png'
 import { localizeVal } from '#g/texts/renderer'
 import type { IXMLElement } from '#g/types'
 
-class CranesAction extends Action {
+class CranesAction extends ExtraAction {
   protected name = localizeVal({
     RU: 'Краны',
     EN: 'Cranes',

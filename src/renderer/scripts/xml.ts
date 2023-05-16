@@ -3,8 +3,8 @@ import { load } from 'cheerio'
 
 import system from '../services/system.service'
 
-import { hasItems, isString } from '#g/helpers'
 import type { IXMLElement } from '#g/types'
+import { hasItems, isString } from '#g/utils'
 
 enum SourceType {
   path,

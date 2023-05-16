@@ -1,7 +1,7 @@
 import { message } from 'antd'
 
 import { actions } from '../../../store'
-import type Action from '../../actions/Action'
+import type ExtraAction from '../../extraActions/ExtraAction'
 import { importService, xmlFiles } from '../../services'
 import $ from '../../texts'
 import type MainHeaderModel from './mainheader.model'
@@ -20,7 +20,7 @@ class MainHeaderController extends ViewController<IMainHeaderProps, MainHeaderMo
   @action(actions.route)
   private route!: typeof actions.route
 
-  changeAction(newAction: Action): void {
+  changeAction(newAction: ExtraAction): void {
     this.model.action = <newAction.Component
       filePath={this.props.filePath}
       currentMod={this.props.mod}
