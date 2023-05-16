@@ -11,7 +11,6 @@ import { Page, PreloadType } from '#g/enums'
 import type { IEditorPreload } from '#g/types'
 import { ViewController, action } from '#r/model-ctrlr'
 import bridge from '#r/scripts/bridge'
-import { XMLDOM } from '#r/scripts/xml'
 import { preload, system, xml } from '#r/services'
 
 const { watchFile } = preload.get<IEditorPreload>(PreloadType.editor)
@@ -38,9 +37,9 @@ class MainHeaderController extends ViewController<IMainHeaderProps, MainHeaderMo
     await new Promise<void>(resolve => {
       setTimeout(() => {
         xmlFiles.files.forEach(file => {
-          const dom = XMLDOM.fromString(file.dom.toHTML()!)
+          const dom = file.dom.clone()
           dom.selectAll('[SXMLE_ID]').map(element => element.removeAttr('SXMLE_ID'))
-          system.writeFileSync(file.path, dom.toHTML())
+          system.writeFileSync(file.path, dom.toHTML()!)
         })
 
         this.props.mod && bridge.updateFiles(this.props.mod)

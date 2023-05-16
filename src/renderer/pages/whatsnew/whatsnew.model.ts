@@ -2,6 +2,13 @@ import { localizeVal } from '#g/texts/renderer'
 import { ViewModel, unwrap } from '#r/model-ctrlr'
 
 class WhatsNewModel extends ViewModel {
+  @unwrap readonly desc073a = localizeVal({
+    RU: ['Исправлен баг с изменением параметров во вложенных группах'],
+    EN: ['Fixed a bug with changing parameters in nested groups'],
+    DE: ['Ein Fehler beim Ändern von Parametern in verschachtelten Gruppen wurde behoben'],
+    CH: ['修复了嵌套组中更改参数的错误']
+  }) as unknown as string[]
+
   @unwrap readonly desc073 = localizeVal({
     RU: [
       'Переписан код программы для возможности её дальнейшего улучшения',

@@ -26,11 +26,17 @@ export function getFileParser() {
   const fileData = useContext(FileDataContext)
   const fileInfo = useContext(FileInfoContext)
 
+  const map = new Map<string, InnerItem[]>()
+
   return (item: IInputParams) => {
     const { dlc, mod } = fileInfo.val
     const { fileDOM } = fileData.val
 
-    const items = parseFile({ dlc, mod, fileDOM, item, regFiles: true })
+    if (!map.has(item.selector)) {
+      map.set(item.selector, parseFile({ dlc, mod, fileDOM, item, regFiles: true }))
+    }
+
+    const items = map.get(item.selector)!.map(val => ({ ...val, tableItems: [...val.tableItems] }))
 
     const getFileDataContext = memoizee(
       (context: FileDataContextType, item: InnerItem): FileDataContextType => ({
