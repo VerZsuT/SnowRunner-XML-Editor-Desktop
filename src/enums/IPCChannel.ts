@@ -1,10 +1,13 @@
-export enum IPCChannel {
-  getPublicInfo = 'getPublicInfo',
+/** IPC каналы */
+enum IPCChannel {
+  /** Сигнал изменения конфигурации */
+  changeConfig = 'change-config',
+  /** Сигнал готовности окна к показу */
   windowReady = 'window-ready-',
+  /** Сигнал изменения ширины окна */
   windowResize = 'window-resize',
-  handleWindowResize = 'handle-window-resize',
-  functionCall = 'function-call-',
-  propertyGet = 'property-get-',
-  propertySet = 'property-set-',
-  promisePostfix = '-promise'
+  /** Канал отслеживания ширины окна */
+  handleWindowSize = 'handle-window-size'
 }
+
+export default IPCChannel

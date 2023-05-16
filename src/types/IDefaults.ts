@@ -1,7 +1,10 @@
-export interface IDefaults {
-  [filePath: string]: {
+/** Стандартные значения параметров таблицы */
+interface IDefaults {
+  [fileName: string]: {
     [selector: string]: {
-      [attrName: string]: string
+      [attribute: string]: string
     }
   }
 }
+
+export default IDefaults

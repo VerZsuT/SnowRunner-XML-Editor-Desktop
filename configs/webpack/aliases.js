@@ -1,42 +1,21 @@
-const { join } = require('path')
+const { readFileSync } = require('fs')
+
+const paths = require('../paths')
 
 class Aliases {
-  get = () => ({
-    '#consts': this.src('/consts'),
-    '#types': this.src('/types'),
-    '#globalTexts': this.src('/globalTexts'),
-    '#enums': this.src('/enums'),
-    '#images': this.src('/images'),
-    '#classes': this.main('/classes'),
-    '#m-scripts': this.main('/scripts'),
-    '#windows': this.main('/windows'),
-    '#m': this.main(),
-    '#r': this.renderer(),
-    '#templates': this.renderer('/templates'),
-    '#r-scripts': this.renderer('/scripts'),
-    '#services': this.renderer('/services'),
-    '#pages': this.renderer('/pages'),
-    '#components': this.renderer('/components'),
-    '#helpers': this.renderer('/helpers'),
-    '#hooks': this.renderer('/hooks'),
-    '#src': this.src()
-  })
+  obj = {}
 
-  resolve(...paths) {
-    return join(__dirname, ...paths)
+  constructor() {
+    const aliases = JSON.parse(readFileSync(paths.tsconfig)).compilerOptions.paths
+    for (const key in aliases) {
+      if (key in this.obj) continue
+      const objKey = key.replace('/*', '')
+      const objVal = `${paths.src}/${aliases[key][0].replace(/\/(index|\*)/g, '')}`
+      this.obj[objKey] = objVal
+    }
   }
 
-  src(path = '') {
-    return this.resolve(`../../src${path}`)
-  }
-
-  main(path = '') {
-    return this.src(`/main${path}`)
-  }
-
-  renderer(path = '') {
-    return this.src(`/renderer${path}`)
-  }
+  get = () => this.obj
 }
 
 module.exports = new Aliases().get()

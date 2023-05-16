@@ -1,9 +1,9 @@
-import type { IDefaultInputProps } from './IDefaultInputProps'
-import type { InputProps } from './InputProps'
+import type IDefaultInputProps from './IDefaultInputProps'
+import type InputProps from './InputProps'
 
-import type { NumberType } from '#enums'
+import type { NumberType } from '#g/enums'
 
-export type NumberProps = IDefaultInputProps & {
+type NumberProps = IDefaultInputProps & {
   type?: NumberType
   min?: InputProps['min']
   max?: InputProps['max']
@@ -11,3 +11,5 @@ export type NumberProps = IDefaultInputProps & {
   default?: number
   areas?: InputProps['areas']
 }
+
+export default NumberProps

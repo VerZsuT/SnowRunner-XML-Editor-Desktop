@@ -1,5 +1,5 @@
 /** Дефолтные параметры поля ввода. */
-export interface IDefaultInputProps {
+interface IDefaultInputProps {
   /** Название редактируемого атрибута. */
   attribute: string
   /** Селектор элемента, у которого редактируем атрибут. */
@@ -9,3 +9,5 @@ export interface IDefaultInputProps {
   /** Можно ли добавить родительский элемент при его отсутствии. */
   addMissedTag?: boolean
 }
+
+export default IDefaultInputProps

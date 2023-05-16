@@ -1,9 +1,13 @@
+type InputArea = [start: number, end: number]
+
 /** Цветовые зоны поля ввода */
-export interface IInputAreas {
+interface IInputAreas {
   /** Красная зона */
-  red?: [number, number][]
+  red?: InputArea | InputArea[]
   /** Жёлтая зона */
-  yellow?: [number, number][]
+  yellow?: InputArea | InputArea[]
   /** Зелёная зона */
-  green?: [number, number][]
+  green?: InputArea | InputArea[]
 }
+
+export default IInputAreas

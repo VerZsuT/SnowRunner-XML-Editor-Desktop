@@ -1,18 +1,15 @@
 import { existsSync } from 'fs'
 import { basename, join } from 'path'
 
-import '#r-scripts/root-preload.main'
+import '#r/scripts/root-preload.main'
 
-import { Main } from 'emr-bridge/preload'
+import $ from './texts'
 
-import { EMPTY_FOLDER_ERROR, INVALID_FOLDER_ERROR, INVALID_INITIAL_ERROR } from './texts'
-
-import { preload } from '#services/preload'
-import type { IFolder, IMPC, ISetupPreload } from '#types'
+import type { IFolder, ISetupPreload } from '#g/types'
+import main from '#r/scripts/main'
+import { preload } from '#r/services/interprocess'
 
 class SetupPreload {
-  private readonly main = Main.as<IMPC>()
-
   constructor() {
     preload.register<ISetupPreload>({
       getGameFolder: this.getGameFolder,
@@ -20,12 +17,12 @@ class SetupPreload {
     })
   }
 
-  private getGameFolder = (): IFolder | undefined => {
-    const result = this.main.getDir()
+  getGameFolder = (): IFolder | undefined => {
+    const result = main.getDir()
     let existed = ''
 
     if (!result) {
-      window.handleErrorMessage?.(EMPTY_FOLDER_ERROR)
+      window.handleErrorMessage?.($.EMPTY_FOLDER_ERROR)
       return
     }
     const folder = result
@@ -47,7 +44,7 @@ class SetupPreload {
     }
 
     if (!existed) {
-      window.handleErrorMessage?.(INVALID_FOLDER_ERROR)
+      window.handleErrorMessage?.($.INVALID_FOLDER_ERROR)
       return
     }
 
@@ -57,11 +54,11 @@ class SetupPreload {
     }
   }
 
-  private getInitialPak = (): IFolder | undefined => {
-    const result = this.main.getInitial()
+  getInitialPak = (): IFolder | undefined => {
+    const result = main.getInitial()
 
     if (!result || basename(result) !== 'initial.pak' || !existsSync(result)) {
-      window.handleErrorMessage?.(INVALID_INITIAL_ERROR)
+      window.handleErrorMessage?.($.INVALID_INITIAL_ERROR)
       return
     }
     return { initial: result }

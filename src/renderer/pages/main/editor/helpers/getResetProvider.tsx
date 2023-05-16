@@ -7,7 +7,7 @@ interface ContextType {
   unregister(onReset: () => void): void
 }
 
-export const ResetContext = createContext<ContextType>(null as unknown as ContextType)
+export const ResetContext = createContext(null as unknown as ContextType)
 
 /**
  * Предоставляет список для функционала сброса
@@ -18,7 +18,7 @@ export function getResetProvider() {
   const resetList: ResetList = new Set()
   const register = (onReset: () => void) => resetList.add(onReset)
   const unregister = (onReset: () => void) => resetList.delete(onReset)
-  const resetContext = { register, unregister } as ContextType
+  const resetContext: ContextType = { register, unregister }
 
   return { resetList, resetContext }
 }

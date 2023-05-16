@@ -1,11 +1,6 @@
-import { localization } from '#services'
+import { compareWithGlobal } from '#g/texts/renderer'
 
-export const {
-  ALLOW_NEW_VERSION_AUTO,
-  UPDATE,
-  CLOSE,
-  IGNORE
-} = localization.localize({
+const $ = compareWithGlobal({
   RU: {
     ALLOW_NEW_VERSION_AUTO: 'Доступна новая версия программы',
     IGNORE: 'Игнорировать',
@@ -31,3 +26,5 @@ export const {
     CLOSE: '关闭'
   }
 })
+
+export default $

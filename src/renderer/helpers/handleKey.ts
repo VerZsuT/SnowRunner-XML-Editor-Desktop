@@ -1,20 +1,34 @@
-import { onDestroy, onMount } from 'react-afc/compatible'
+import { useOnDestroy, useOnMount } from 'react-afc/compatible'
 
-import type { ISetHotKeyParams } from '#types'
+import type { ISetHotKeyParams } from '#g/types'
+import { isString } from '#g/utils'
 
 /**
  * Устанавливает обработчик события нажатия кнопки
  * @param config - параметры
  * @param handler - обработчик события
  */
-export function handleKey(config: ISetHotKeyParams, handler: (event: KeyboardEvent) => void): void {
-  const {
-    key,
-    ctrlKey = false,
-    shiftKey = false,
-    prevent = false,
-    eventName = (key === 'Escape') ? 'keydown' : 'keypress'
-  } = config
+function handleKey(config: ISetHotKeyParams | ISetHotKeyParams['key'], handler: (event: KeyboardEvent) => void): void {
+  let ctrlKey: boolean | undefined
+  let shiftKey: boolean | undefined
+  let prevent: boolean | undefined
+  let key: ISetHotKeyParams['key']
+
+  if (isString(config)) {
+    key = config
+  }
+  else {
+    key = config.key
+    ctrlKey = config.ctrlKey
+    shiftKey = config.shiftKey
+    prevent = config.prevent
+  }
+
+  ctrlKey ??= false
+  shiftKey ??= false
+  prevent ??= false
+
+  const eventName = (key === 'Escape') ? 'keydown' : 'keypress'
 
   function eventHandler(event: KeyboardEvent) {
     const keyIsValid = event.code === key
@@ -27,6 +41,8 @@ export function handleKey(config: ISetHotKeyParams, handler: (event: KeyboardEve
     }
   }
 
-  onMount(() => document.addEventListener(eventName, eventHandler))
-  onDestroy(() => document.removeEventListener(eventName, eventHandler))
+  useOnMount(() => document.addEventListener(eventName, eventHandler))
+  useOnDestroy(() => document.removeEventListener(eventName, eventHandler))
 }
+
+export default handleKey

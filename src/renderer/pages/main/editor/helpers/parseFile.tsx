@@ -1,14 +1,11 @@
-import type { AnyNode, Cheerio, CheerioAPI } from 'cheerio'
-import { Bridge } from 'emr-bridge/renderer'
+import xmlFiles from '../services/xmlFiles'
 
-import { xmlFiles } from '../services/xmlFiles'
+import { FileType, PreloadType } from '#g/enums'
+import type { IDefaults, IEditorPreload, IInputParams, IXMLElement, TemplateParams } from '#g/types'
+import bridge from '#r/scripts/bridge'
+import paramsDefaults from '#r/scripts/defaults'
+import { preload, system, xml } from '#r/services'
 
-import { FileType, PreloadType } from '#enums'
-import { paramsDefaults } from '#r-scripts/defaults'
-import { preload, system, xml } from '#services'
-import type { IDefaults, IEditorPreload, IInputParams, IMPC, TemplateParams } from '#types'
-
-const bridge = Bridge.as<IMPC>()
 const paths = bridge.paths
 
 const { findFromDLC } = preload.get<IEditorPreload>(PreloadType.editor)
@@ -16,10 +13,10 @@ const { findFromDLC } = preload.get<IEditorPreload>(PreloadType.editor)
 interface InnerItem {
   filePath: string
   fileName: string
-  fileDOM: CheerioAPI
+  fileDOM: IXMLElement
   mod: string
   dlc: string
-  templates: Cheerio<AnyNode>
+  templates: IXMLElement
   tableItems: TemplateParams
   defaults: IDefaults[string]
 }
@@ -28,19 +25,19 @@ interface Config {
   item: IInputParams
   dlc: string
   mod: string
-  fileDOM: CheerioAPI
+  fileDOM: IXMLElement
   regFiles?: boolean
 }
 
-export function parseFile(config: Config) {
+function parseFile(config: Config) {
   const { dlc, mod, fileDOM, item, regFiles } = config
   const items: InnerItem[] = []
   const propsItem: IInputParams = item
   const fileNames: string[] = (String(propsItem.value)).split(',').map(value => value.trim())
 
   if (propsItem.fileType === FileType.wheels && propsItem.attribute !== 'Type') {
-    fileDOM('Truck > TruckData > CompatibleWheels').map((_, el) => {
-      const type = fileDOM(el).attr('Type')
+    fileDOM.selectAll('Truck > TruckData > CompatibleWheels').map(element => {
+      const type = element.getAttr('Type')
       if (type && !fileNames.includes(type)) {
         fileNames.push(type)
       }
@@ -71,7 +68,7 @@ export function parseFile(config: Config) {
     })
 
     if (!mainPath) {
-      const path = findFromDLC(fileName, propsItem.fileType as string)
+      const path = findFromDLC(fileName, propsItem.fileType!)
       if (!path) return
 
       mainPath = path
@@ -96,7 +93,7 @@ export function parseFile(config: Config) {
       fileDOM,
       dlc: itemDLC!,
       mod: itemMod!,
-      templates: fileDOM('_templates'),
+      templates: fileDOM.select('_templates'),
       tableItems,
       defaults: paramsDefaults[`${fileName}.xml`] || {}
     })
@@ -104,3 +101,5 @@ export function parseFile(config: Config) {
 
   return items
 }
+
+export default parseFile

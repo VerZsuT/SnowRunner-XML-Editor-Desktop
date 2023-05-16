@@ -8,13 +8,12 @@ export const CURRENT_DLC = 'currentDLC'
 export const DEBUG_IMAGES = false
 
 // Main
-export const APP_ID = 'SnowRunner XML Editor'
+export const APP_NAME = 'SnowRunner XML Editor'
 export const SHOW_DEVTOOLS = false
 
 // Winrar
-export const DEBUG_WINRAR = false
-export const DEBUG_WINRAR_ERRORS = false
+export const DEBUG_ARCHIVER = false
+export const SHOW_ARCHIVER_ERRORS = false
 
 // Params
 export const DEBUG_EDITOR_PARAMS = false
-export const ONLY_FOR_SELECTOR = '_ONLY_FOR_SELECTOR_'

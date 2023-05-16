@@ -1,10 +1,10 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createSlice } from '@reduxjs/toolkit'
 
-import { Page } from '#enums'
+import { Page } from '#g/enums'
 import type { MainState } from './index'
 
-export const pageSlice = createSlice({
+const pageSlice = createSlice({
   name: 'page',
   initialState: {
     current: Page.lists

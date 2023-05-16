@@ -1,11 +1,7 @@
-import { Bridge } from 'emr-bridge/renderer'
-
-import { config } from '#services'
-import type { IMPC } from '#types'
+import bridge from '#r/scripts/bridge'
+import { config } from '#r/services'
 
 class Template {
-  private readonly bridge = Bridge.as<IMPC>()
-
   constructor() {
     this.changeTitle()
     this.handleKeys()
@@ -24,12 +20,15 @@ class Template {
 
       if (!ctrl) return
 
-      if (keyIs('S'))
+      if (keyIs('S')) {
         this.onSave()
-      else if (keyIs('Q'))
+      }
+      else if (keyIs('Q')) {
         this.onQuit()
-      else if (keyIs('I') && shift && dev)
+      }
+      else if (keyIs('I') && shift && dev) {
         this.onDevtools()
+      }
     })
   }
 
@@ -38,11 +37,11 @@ class Template {
   }
 
   private onQuit(): void {
-    this.bridge.quitApp()
+    bridge.quitApp()
   }
 
   private onDevtools(): void {
-    this.bridge.devTools()
+    bridge.devTools()
   }
 }
 

@@ -1,12 +1,4 @@
-import type { NameType } from '#enums'
-
-export interface IGroupLabel {
-  /**
-   * Тип названия группы.
-   *
-   * @default NameType.static
-   */
-  type?: NameType
+interface IGroupLabel {
   /**
    * Селектор элемента, у которого будет взято название группы
    *
@@ -14,7 +6,7 @@ export interface IGroupLabel {
    *
    * _Только при `nameType`=`NameType.computed` | `NameType.tagName`_
    */
-  selector?: string | [string, string]
+  selector: string | [string, string]
   /**
    * Имя атрибута, который будет взят у элемента названия
    *
@@ -24,3 +16,5 @@ export interface IGroupLabel {
    */
   attribute?: string | [string, string]
 }
+
+export default IGroupLabel

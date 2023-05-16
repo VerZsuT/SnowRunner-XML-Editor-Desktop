@@ -1,6 +1,13 @@
-export enum GroupTab {
+/** Группа в списках */
+enum GroupTab {
+  /** Основная группа */
   main = 'main',
+  /** Группа дополнений */
   dlc = 'dlc',
+  /** Группа модификаций */
   mods = 'mods',
-  favorites = 'favorites',
+  /** Группа избранного */
+  favorites = 'favorites'
 }
+
+export default GroupTab

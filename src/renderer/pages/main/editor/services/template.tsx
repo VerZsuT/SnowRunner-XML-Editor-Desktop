@@ -2,30 +2,32 @@ import type { ReactNode } from 'react'
 
 import memoizee from 'memoizee'
 
-import { Group } from '../components/Group'
-import { Parameter } from '../components/Parameter'
+import Group from '../components/Group'
+import Parameter from '../components/Parameter'
 
-import { ParamType } from '#enums'
-import type { TemplateParams } from '#types'
+import { ParamType } from '#g/enums'
+import type { TemplateParams } from '#g/types'
+import { hasItems } from '#g/utils'
 
 class TemplateService {
-  parseItems = memoizee((items: TemplateParams) => {
+  parseItems = memoizee((items: TemplateParams, render = false) => {
     const children: ReactNode[] = []
-  
+
     items.forEach(item => {
       const isGroup = item.paramType === ParamType.group
-      const hasItems = item.groupItems.length > 0
-  
-      if (isGroup && hasItems) {
-        children.push(<Group key={item.selector} item={item}/>)
+
+      if (isGroup && hasItems(item.groupItems)) {
+        children.push(<Group key={item.selector} item={item} render={render} />)
       }
       else if (!isGroup) {
-        children.push(<Parameter key={item.selector} item={item}/>)
+        children.push(<Parameter key={item.selector} item={item} render={render} />)
       }
     })
-  
+
     return children
   })
 }
 
-export const template = new TemplateService()
+const templates = new TemplateService()
+
+export default templates

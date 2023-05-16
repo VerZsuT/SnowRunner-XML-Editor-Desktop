@@ -1,10 +1,12 @@
-import { handleContext, onDestroy } from 'react-afc'
+import { useContext, useOnDestroy } from 'react-afc'
 
 import { ResetContext } from './getResetProvider'
 
 /** Добавляет возможность сброса параметра */
-export function handleReset(onReset: () => void) {
-  const { register, unregister } = handleContext(ResetContext)()
+function handleReset(onReset: () => void) {
+  const { register, unregister } = useContext(ResetContext).val
   register(onReset)
-  onDestroy(() => unregister(onReset))
+  useOnDestroy(() => unregister(onReset))
 }
+
+export default handleReset

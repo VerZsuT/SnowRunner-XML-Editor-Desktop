@@ -1,19 +1,6 @@
-import { localization } from '#services'
+import { compareWithGlobal } from '#g/texts/renderer'
 
-export const {
-  SAVING_MESSAGE,
-  SUCCESS_SAVE_FILES,
-  PARAMS_FILE_NOT_FOUND,
-  PATH_TO_SAVE_NOT_FOUND,
-  SUCCESS_RESET,
-  PROC_FILE_ERROR,
-  RESET_CONFIRM_MESSAGE,
-  IMPORT,
-  BREAK_IMPORT_INVALID_NAME,
-  WAS_IMPORTED,
-  WAS_EXPORTED,
-  ACTIONS_MENU
-} = localization.localize({
+const $ = compareWithGlobal({
   RU: {
     SAVING_MESSAGE: 'Сохранение...',
     SUCCESS_SAVE_FILES: 'Сохранено',
@@ -71,3 +58,5 @@ export const {
     ACTIONS_MENU: '锦上添花'
   }
 })
+
+export default $

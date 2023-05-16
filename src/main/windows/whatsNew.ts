@@ -1,29 +1,23 @@
-import { ModalWindow } from './ModalWindow'
+import ModalWindow from './service/ModalWindow'
 
-import { config } from '#classes/config'
-import { entries } from '#classes/entries'
-import { ProgramWindow } from '#enums'
+import { ProgramWindow } from '#g/enums'
+import Config from '#m/modules/Config'
+import Entries from '#m/modules/Entries'
 
 class WhatsNewWindow extends ModalWindow {
   protected type = ProgramWindow.WhatsNew
   protected args = {
-    path: entries.general.whatsNew,
-    preload: entries.preload.whatsNew,
+    path: Entries.general.whatsNew,
+    preload: Entries.preload.whatsNew,
     width: 600,
     minWidth: 600,
     height: 500,
     minHeight: 520
   }
 
-  constructor() { super(); this.register() }
-
-  protected onCreate(): Promise<void> | void {
-    this.wind?.once('close', () => this.onClose())
-  }
-
-  private onClose(): void {
-    config.settings.showWhatsNew = false
+  protected onClose(): void {
+    Config.settings.showWhatsNew = false
   }
 }
 
-new WhatsNewWindow()
+new WhatsNewWindow().register()

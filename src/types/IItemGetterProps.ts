@@ -1,13 +1,14 @@
-import type { CheerioAPI } from 'cheerio'
+import type IXMLElement from './IXMLElement'
+import type TemplateSelectors from './TemplateSelectors'
 
-import type { ITemplateSelectors } from './ITemplateSelectors'
-
-export interface IItemGetterProps {
-  fileDOM: CheerioAPI
-  formattedSelectors?: ITemplateSelectors
+interface IItemGetterProps {
+  fileDOM: IXMLElement
+  formattedSelectors?: TemplateSelectors
   providedSelector?: string
   multiply?: boolean
   cycleNumber?: number
-  tNumber?: number
+  tCount?: number
   counter?: number
 }
+
+export default IItemGetterProps

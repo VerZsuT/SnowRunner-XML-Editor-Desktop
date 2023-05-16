@@ -1,9 +1,11 @@
-import type { FileType } from '#enums'
+import type { FileType } from '#g/enums'
 
 /** Параметры включаемого файла. */
-export interface IFileProps {
+interface IFileProps {
   attribute: string
   selector?: string
   /** Тип включаемого файла. */
   type: FileType
 }
+
+export default IFileProps

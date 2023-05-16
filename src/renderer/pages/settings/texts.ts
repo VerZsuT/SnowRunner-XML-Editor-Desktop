@@ -1,11 +1,6 @@
-import { localization } from '#services'
+import { compareWithGlobal } from '#g/texts/renderer'
 
-export const {
-  ADVANCED_MODE_LABEL,
-  UPDATES_LABEL,
-  DLC_LABEL,
-  MODS_LABEL
-} = localization.localize({
+const $ = compareWithGlobal({
   RU: {
     DLC_LABEL: 'Редактировать DLC',
     MODS_LABEL: 'Редактировать модификации',
@@ -31,3 +26,5 @@ export const {
     ADVANCED_MODE_LABEL: '高级模式'
   }
 })
+
+export default $

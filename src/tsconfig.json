@@ -1,93 +1,28 @@
 {
   "compilerOptions": {
-    "experimentalDecorators": true,
-    "target": "ESNext",
+    "target": "ES2021",
+    "moduleResolution": "bundler",
     "lib": [
       "ESNext",
       "DOM",
       "DOM.Iterable"
     ],
     "jsx": "react-jsx",
-    "incremental": true,
-    "isolatedModules": true,
     "module": "ESNext",
-    "allowSyntheticDefaultImports": true,
-    "allowUnreachableCode": false,
-    "esModuleInterop": true,
-    "sourceMap": true,
     "outDir": "../dist",
     "newLine": "LF",
-    "noImplicitAny": false,
-    "strict": true,
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "declaration": false,
-    "emitDeclarationOnly": false,
-    "skipLibCheck": true,
     "baseUrl": ".",
+    "strict": true,
+    "isolatedModules": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "sourceMap": true,
+    "noImplicitAny": false,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
     "paths": {
-      "#types": [
-        "types/index"
-      ],
-      "#types/*": [
-        "types/*"
-      ],
-      "#consts": [
-        "consts"
-      ],
-      "#enums": [
-        "enums/index"
-      ],
-      "#enums/*": [
-        "enums/*"
-      ],
-      "#globalTexts/*": [
-        "globalTexts/*"
-      ],
-      "#m-scripts": [
-        "main/scripts/index"
-      ],
-      "#m-scripts/*": [
-        "main/scripts/*"
-      ],
-      "#r-scripts/*": [
-        "renderer/scripts/*"
-      ],
-      "#classes": [
-        "main/classes/index"
-      ],
-      "#classes/*": [
-        "main/classes/*"
-      ],
-      "#windows": [
-        "main/windows/index.ts"
-      ],
-      "#windows/*": [
-        "main/windows/*"
-      ],
-      "#services": [
-        "renderer/services/index"
-      ],
-      "#services/*": [
-        "renderer/services/*"
-      ],
-      "#components/*": [
-        "renderer/components/*"
-      ],
-      "#helpers/*": [
-        "renderer/helpers/*"
-      ],
-      "#hooks/*": [
-        "renderer/hooks/*"
-      ],
-      "#pages/*": [
-        "renderer/pages/*"
-      ],
-      "#templates": [
-        "renderer/templates/index"
-      ],
-      "#templates/*": [
-        "renderer/templates/*"
+      "#g/*": [
+        "./*"
       ],
       "#m/*": [
         "main/*"
@@ -95,12 +30,12 @@
       "#r/*": [
         "renderer/*"
       ],
-      "#images/*": [
-        "images/*"
-      ],
-      "#src/*": [
-        "src/*"
+      "#r_editor/*": [
+        "renderer/pages/main/editor/*"
       ]
     }
-  }
+  },
+  "exclude": [
+    "node_modules"
+  ]
 }

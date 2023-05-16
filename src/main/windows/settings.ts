@@ -1,19 +1,18 @@
-import { ModalWindow } from './ModalWindow'
+import ModalWindow from './service/ModalWindow'
 
-import { entries } from '#classes/entries'
-import { ProgramWindow } from '#enums'
+import { ProgramWindow } from '#g/enums'
+import Entries from '#m/modules/Entries'
 
 class SettingsWindow extends ModalWindow {
   protected type = ProgramWindow.Settings
   protected args = {
-    path: entries.general.settings,
-    preload: entries.preload.settings,
+    path: Entries.general.settings,
+    preload: Entries.preload.settings,
     width: 400,
     minWidth: 400,
     height: 330,
     minHeight: 350
   }
-  constructor() { super(); this.register() }
 }
 
-new SettingsWindow()
+new SettingsWindow().register()

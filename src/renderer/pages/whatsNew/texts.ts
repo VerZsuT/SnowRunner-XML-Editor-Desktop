@@ -1,6 +1,6 @@
-import { localization } from '#services'
+import { compareWithGlobal } from '#g/texts/renderer'
 
-export const { WHATS_NEW_TITLE } = localization.localize({
+const $ = compareWithGlobal({
   RU: {
     WHATS_NEW_TITLE: 'Что нового в версии'
   },
@@ -14,3 +14,5 @@ export const { WHATS_NEW_TITLE } = localization.localize({
     WHATS_NEW_TITLE: '该版本有什么新内容'
   }
 })
+
+export default $

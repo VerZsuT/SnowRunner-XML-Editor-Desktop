@@ -1,12 +1,12 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createSlice } from '@reduxjs/toolkit'
 
-import { OPENED_CATEGORY, OPENED_GROUP } from '#consts'
-import { Category, GroupTab } from '#enums'
-import { config, storage } from '#services'
+import { OPENED_CATEGORY, OPENED_GROUP } from '#g/consts'
+import { Category, GroupTab } from '#g/enums'
+import { config, storage } from '#r/services'
 import type { MainState } from './index'
 
-export const listSlice = createSlice({
+const listSlice = createSlice({
   name: 'list',
   initialState: {
     group: storage.get<GroupTab>(OPENED_GROUP) ?? GroupTab.main,

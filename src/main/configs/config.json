@@ -1,0 +1,23 @@
+{
+	"version": "0.7.3",
+	"lang": null,
+	"buildType": "dev",
+	"initial": null,
+	"settings": {
+		"updates": true,
+		"DLC": true,
+		"mods": true,
+		"showWhatsNew": true,
+		"advancedMode": false
+	},
+	"sizes": {
+		"mods": {},
+		"initial": null
+	},
+	"dlc": [],
+	"mods": {
+		"length": 0,
+		"items": {}
+	},
+	"favorites": []
+}

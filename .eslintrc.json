@@ -11,8 +11,7 @@
     "plugin:import/recommended",
     "plugin:import/electron",
     "plugin:import/typescript",
-    "plugin:react/recommended",
-    "plugin:react-hooks/recommended"
+    "plugin:react/recommended"
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
@@ -24,7 +23,6 @@
   },
   "plugins": [
     "react",
-    "react-hooks",
     "import",
     "@typescript-eslint"
   ],
@@ -51,17 +49,10 @@
       "error",
       "prefer-single"
     ],
-    "indent": [
-      "warn",
-      2
-    ],
-    "no-empty-function": "off",
     "no-extra-bind": "warn",
     "no-extra-label": "warn",
-    "no-invalid-this": "warn",
     "no-lone-blocks": "warn",
     "no-lonely-if": "warn",
-    "no-param-reassign": "off",
     "no-sequences": "warn",
     "no-useless-call": "warn",
     "operator-assignment": "warn",
@@ -77,8 +68,6 @@
     "comma-style": "warn",
     "eol-last": "warn",
     "func-call-spacing": "warn",
-    "key-spacing": "warn",
-    "no-multi-spaces": "warn",
     "no-tabs": "error",
     "no-whitespace-before-property": "error",
     "keyword-spacing": "error",
@@ -115,7 +104,6 @@
     "no-alert": "error",
     "no-bitwise": "error",
     "no-caller": "error",
-    "no-empty": "off",
     "import/order": [
       "warn",
       {
@@ -145,6 +133,13 @@
         }
       }
     ],
+    "no-multi-spaces": "off",
+    "key-spacing": "off",
+    "indent": "off",
+    "no-empty": "off",
+    "no-empty-function": "off",
+    "no-invalid-this": "off",
+    "no-param-reassign": "off",
     "no-void": "off",
     "import/namespace": "off",
     "import/no-unresolved": "off",
@@ -158,7 +153,8 @@
     "@typescript-eslint/no-empty-function": "off",
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/no-var-requires": "off",
-    "@typescript-eslint/no-non-null-assertion": "warn",
+    "@typescript-eslint/no-this-alias": "off",
+    "@typescript-eslint/no-non-null-assertion": "off",
     "@typescript-eslint/consistent-type-imports": "warn",
     "@typescript-eslint/no-unused-vars": [
       "warn",

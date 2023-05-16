@@ -1,17 +1,17 @@
 import type { BrowserWindow } from 'electron'
 
-import { ModalWindow } from './ModalWindow'
+import ModalWindow from './service/ModalWindow'
 
-import { entries } from '#classes/entries'
-import { windows } from '#classes/windows'
-import { ProgramWindow } from '#enums'
-import type { IDownloadWindow } from '#types'
+import { ProgramWindow } from '#g/enums'
+import type { IDownloadWindow } from '#g/types'
+import Entries from '#m/modules/Entries'
+import Windows from '#m/modules/Windows'
 
 class LoadingWindow extends ModalWindow {
   protected type = ProgramWindow.Loading
   protected args = {
-    path: entries.general.loading,
-    preload: entries.preload.loading,
+    path: Entries.general.loading,
+    preload: Entries.preload.loading,
     width: 280,
     minWidth: 280,
     height: 130,
@@ -19,14 +19,12 @@ class LoadingWindow extends ModalWindow {
     frame: false
   }
 
-  constructor() { super(); this.register() }
-
   protected async creator(...args: any[]): Promise<BrowserWindow> {
     return this.initMethods(await super.creator(...args))
   }
 
   protected onCreate(): void {
-    windows.loading = this.wind as IDownloadWindow
+    Windows.loading = this.wind as IDownloadWindow
   }
 
   private initMethods(window: BrowserWindow): IDownloadWindow {
@@ -50,4 +48,4 @@ class LoadingWindow extends ModalWindow {
   }
 }
 
-new LoadingWindow()
+new LoadingWindow().register()

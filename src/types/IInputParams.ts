@@ -1,20 +1,22 @@
-import type { IInputAreas } from './IInputAreas'
+import type IInputAreas from './IInputAreas'
 
-import type { FileType, InputType, NumberType, ParamType } from '#enums'
+import type { FileType, InputType, NumberType, ParamType } from '#g/enums'
 
-export interface IInputParams {
+interface IInputParams {
   attribute: string
   label: string
-  value: string | number | undefined
+  value?: string | number
   selector: string
   paramType: ParamType
-  inputType: string
+  inputType: InputType
   type: InputType
   min: number
   max: number
   step: number
   numberType: NumberType
-  fileType: FileType | undefined
-  default: string | number | undefined
-  areas: IInputAreas | undefined
+  fileType?: FileType
+  default?: string | number
+  areas?: IInputAreas
 }
+
+export default IInputParams

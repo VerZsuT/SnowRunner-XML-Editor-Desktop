@@ -8,23 +8,24 @@ const SOURCE = 'source'
 const GITHUB_SOURCE = 'GitHub'
 const RELEASES_URL = 'https://github.com/VerZsuT/SnowRunner-XML-Editor-Desktop/releases/download'
 
-const downloadButtons = document.querySelectorAll(`button[${DOWNLOAD}]`)
+const genLink = (version, type) => `${RELEASES_URL}/${version}/SnowRunnerXMLEditor.${type}`
 
-downloadButtons.forEach($downloadButton => {
+// Download buttons
+const buttons = document.querySelectorAll(`button[${DOWNLOAD}]`)
+
+buttons.forEach($button => {
   const $a = document.createElement('a')
-  const version = $downloadButton.getAttribute(VERSION)
-  const type = $downloadButton.getAttribute(SOURCE_TYPE)
-  const source = $downloadButton.getAttribute(SOURCE)
+  const version = $button.getAttribute(VERSION)
+  const type = $button.getAttribute(SOURCE_TYPE)
+  const source = $button.getAttribute(SOURCE)
 
   $a.style.display = 'none'
-  $downloadButton.prepend($a)
+  $button.prepend($a)
 
-  if (source === GITHUB_SOURCE) {
-    $a.href = `${RELEASES_URL}/${version}/SnowRunnerXMLEditor.${type}`
-  }
-  else {
-    $a.href = $downloadButton.getAttribute(LINK)
-  }
+  if (source === GITHUB_SOURCE)
+    $a.href = genLink(version, type)
+  else
+    $a.href = $button.getAttribute(LINK)
 
-  $downloadButton.onclick = () => $a.click()
+  $button.addEventListener('click', () => $a.click())
 })

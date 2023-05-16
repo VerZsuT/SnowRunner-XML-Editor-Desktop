@@ -1,6 +1,8 @@
-export interface IConfigFilesSizes {
+interface IConfigFilesSizes {
   initial: number
   mods: {
-    [name: string]: number
+    [fileName: string]: number
   }
 }
+
+export default IConfigFilesSizes

@@ -1,16 +1,6 @@
-import { localization } from '#services'
+import { compareWithGlobal } from '#g/texts/renderer'
 
-export const {
-  BACKUP_MENU_LABEL,
-  FILE_MENU_LABEL,
-  HELP_MENU_LABEL,
-  VERSION_MENU_ITEM_LABEL,
-  RESTORE_MENU_ITEM_LABEL,
-  UNINSTALL_MENU_ITEM_LABEL,
-  SETTINGS_MENU_LABEL,
-  HOW_TO_USE_TITLE,
-  EXIT_MENU_ITEM_LABEL
-} = localization.localize({
+const $ = compareWithGlobal({
   RU: {
     EXIT_MENU_ITEM_LABEL: 'Выход',
     SETTINGS_MENU_LABEL: 'Настройки',
@@ -55,4 +45,10 @@ export const {
     HOW_TO_USE_TITLE: '如何使用',
     VERSION_MENU_ITEM_LABEL: '版本'
   }
+}, {
+  EXPORT_DEFAULTS_TITLE: 'Export defaults',
+  GITHUB_TITLE: 'Github',
+  YOUTUBE_TITLE: 'YouTube(RU)'
 })
+
+export default $

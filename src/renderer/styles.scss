@@ -1,4 +1,4 @@
-@import "antd/dist/antd.css";
+@import "antd/dist/reset.css";
 
 body {
   height: auto;
@@ -110,7 +110,7 @@ body {
 }
 
 li[role="menuitem"] {
-  margin: 0 !important;
+  margin: 0 auto !important;
   color: #5c5c5c;
 
   &:hover {

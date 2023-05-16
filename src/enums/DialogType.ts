@@ -1,7 +1,9 @@
 /** Тип диалога */
-export enum DialogType {
+enum DialogType {
   /** Диалог открытия */
-  open,
+  open = 'open',
   /** Диалог сохранения */
-  save
+  save = 'save'
 }
+
+export default DialogType

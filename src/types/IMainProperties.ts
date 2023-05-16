@@ -1,9 +1,11 @@
-import type { IConfig } from './IConfig'
-import type { IGameTexts } from './IGameTexts'
-import type { IPaths } from './IPaths'
+import type IConfig from './IConfig'
+import type IGameTexts from './IGameTexts'
+import type IPaths from './IPaths'
 
-export interface IMainProperties {
+interface IMainProperties {
   texts: IGameTexts
   paths: IPaths
   config: IConfig
 }
+
+export default IMainProperties

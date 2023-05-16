@@ -63,6 +63,10 @@ body {
   gap: 20px !important;
 }
 
+.ant-collapse-header {
+  background-color: #f7f7f7;
+}
+
 span.anticon-arrow-left {
   @include header-button;
   position: relative;

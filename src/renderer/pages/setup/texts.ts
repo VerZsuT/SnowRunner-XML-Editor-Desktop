@@ -1,15 +1,6 @@
-import { localization } from '#services/localization'
+import { compareWithGlobal } from '#g/texts/renderer'
 
-export const {
-  NEXT,
-  FIRST_STEPS_DESCRIPTION,
-  GAME_DATA_STEP,
-  GAME_FOLDER_LABEL,
-  INVALID_FOLDER_ERROR,
-  INVALID_INITIAL_ERROR,
-  EMPTY_FOLDER_ERROR,
-  IMPORT_CONFIG_MESSAGE
-} = localization.localize({
+const $ = compareWithGlobal({
   RU: {
     NEXT: 'Дальше',
     GAME_FOLDER_LABEL: 'Папка с игрой',
@@ -51,3 +42,5 @@ export const {
     INVALID_INITIAL_ERROR: '选择了错误的initial.pak'
   }
 })
+
+export default $

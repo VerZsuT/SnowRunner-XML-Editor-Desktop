@@ -1,8 +1,8 @@
-import type { ITemplateSelectors } from './ITemplateSelectors'
+import type TemplateSelectors from './TemplateSelectors'
 
-import type { TemplateType } from '#enums'
+import type { TemplateType } from '#g/enums'
 
-export interface ITemplateProps {
+interface ITemplateProps {
   /**
    * Тип шаблона.
    *
@@ -20,5 +20,7 @@ export interface ITemplateProps {
    *
    * Устанавливается у `root` шаблона.
    */
-  selectors?: ITemplateSelectors
+  selectors?: TemplateSelectors
 }
+
+export default ITemplateProps

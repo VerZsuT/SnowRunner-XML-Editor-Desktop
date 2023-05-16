@@ -1,17 +1,16 @@
 import { existsSync, readdirSync, watchFile as watch } from 'fs'
 import { join } from 'path'
 
-import '#r-scripts/root-preload.main'
+import '#r/scripts/root-preload.main'
 
-import { Main } from 'emr-bridge/preload'
+import { PreloadType } from '#g/enums'
+import type { IEditorPreload } from '#g/types'
+import main from '#r/scripts/main'
+import { preload } from '#r/services/interprocess'
 
-import { PreloadType } from '#enums'
-import { preload } from '#services/preload'
-import type { IEditorPreload, IMPC } from '#types'
+const paths = main.paths
 
 class EditorPreload {
-  private readonly paths = Main.as<IMPC>().paths
-
   constructor() {
     preload.register<IEditorPreload>({
       findFromDLC: this.findFromDLC,
@@ -20,9 +19,9 @@ class EditorPreload {
   }
 
   private findFromDLC = (fileName: string, type: string): string | undefined => {
-    const dlcFolders = readdirSync(this.paths.dlc)
+    const dlcFolders = readdirSync(paths.dlc)
     for (let i = 0; i < dlcFolders.length; ++i) {
-      const path = join(this.paths.dlc, dlcFolders[i], 'classes', type, `${fileName}.xml`)
+      const path = join(paths.dlc, dlcFolders[i], 'classes', type, `${fileName}.xml`)
       if (existsSync(path)) return path
     }
   }

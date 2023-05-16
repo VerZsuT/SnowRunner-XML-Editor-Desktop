@@ -1,7 +1,9 @@
 /** Тип диалогового окна */
-export enum DialogAlertType {
-  /** Синхронное */
-  sync,
-  /** Асинхронное */
-  async
+enum DialogAlertType {
+  /** Синхронный тип */
+  sync = 'sync',
+  /** Асинхронный тип */
+  async = 'async'
 }
+
+export default DialogAlertType

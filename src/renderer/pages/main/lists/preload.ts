@@ -2,13 +2,11 @@ import { existsSync, readdirSync, readFileSync, rmSync } from 'fs'
 import { homedir, userInfo } from 'os'
 import { basename, extname, join } from 'path'
 
-import { Main } from 'emr-bridge/preload'
+import { Category, PreloadType, SrcType } from '#g/enums'
+import type { IFindItem, IItem, IListPreload } from '#g/types'
+import main from '#r/scripts/main'
+import { preload } from '#r/services/interprocess'
 
-import { Category, PreloadType, SrcType } from '#enums'
-import { preload } from '#services/preload'
-import type { IFindItem, IItem, IListPreload, IMPC } from '#types'
-
-const main = Main.as<IMPC>()
 const { paths, config } = main
 const { dlc, mods } = config
 
@@ -22,11 +20,11 @@ class ListsPreload {
     }, PreloadType.lists)
   }
 
-  private removeDir = (path: string): void => {
+  removeDir = (path: string): void => {
     rmSync(path, { recursive: true })
   }
 
-  private findMods = async (): Promise<IFindItem[]> => {
+  findMods = async (): Promise<IFindItem[]> => {
     const pathToUser = userInfo().homedir || homedir() || process.env.HOME || ''
     const out: IFindItem[] = []
 
@@ -78,21 +76,20 @@ class ListsPreload {
     return out
   }
 
-  private getModPak = (): IFindItem | undefined => {
+  getModPak = (): IFindItem | undefined => {
     const path = main.getInitial()
     if (!path) return
 
     const name = basename(path)
     const id = basename(path, '.pak')
     main.unpack(path, join(paths.modsTemp, id), true)
-    if (!existsSync(join(paths.modsTemp, id, 'classes'))) {
+    if (!existsSync(join(paths.modsTemp, id, 'classes')))
       return
-    }
 
     return { path, name }
   }
 
-  private getList = (category: Category, from?: SrcType): IItem[] => {
+  getList = (category: Category, from?: SrcType): IItem[] => {
     if (from === SrcType.dlc) {
       const array: IItem[] = []
 
@@ -142,11 +139,11 @@ class ListsPreload {
     }
 
     if (category === Category.trucks) {
-      return main.findInDir(join(paths.classes, 'trucks')) as IItem[]
+      return <IItem[]>main.findInDir(join(paths.classes, 'trucks'))
     }
 
     if (category === Category.trailers) {
-      return main.findInDir(join(paths.classes, 'trucks/trailers')) as IItem[]
+      return <IItem[]>main.findInDir(join(paths.classes, 'trucks/trailers'))
     }
 
     return []

@@ -1,16 +1,15 @@
 interface Window {
   preloads?: {
-    [type in import('#enums').PreloadType]?: any
+    [name in import('#g/enums').PreloadType]?: any
   }
-  ipc?: import('#types').IIPC
-  service?: import('#types').IServiceMethods
+  ipc?: import('#g/types').IIPC
+  service?: import('#g/types').IServiceMethods
 
   ipcErrorHandler?(error: string, channel: string): void
-
   handleErrorMessage?(message: string): void
 }
 
-module '*.png' {
+declare module '*.png' {
   const value: string
   export default value
 }

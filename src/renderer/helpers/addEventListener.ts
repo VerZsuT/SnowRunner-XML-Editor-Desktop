@@ -1,13 +1,20 @@
-import { onDestroy } from 'react-afc/compatible'
+import { useOnDestroy } from 'react-afc'
 
-export function addEventListener<K extends keyof DocumentEventMap>(
-  element: Element | Document | Window,
-  type: K,
-  listener: (this: Element, ev: DocumentEventMap[K]) => any) {
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  element.addEventListener(type, listener)
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  onDestroy(() => element.removeEventListener(type, listener))
+/** Добавляет обработчик события элементу */
+function addEventListener<
+  ElemType extends Element | Document | Window,
+  KeyType extends keyof MapType,
+  MapType = ElemType extends Element
+  ? ElementEventMap
+  : ElemType extends Document
+  ? DocumentEventMap
+  : WindowEventMap
+>(
+  element: ElemType,
+  type: KeyType,
+  listener: (event: MapType[KeyType]) => void) {
+  element.addEventListener(type.toString(), listener as EventListener)
+  useOnDestroy(() => element.removeEventListener(type.toString(), listener as EventListener))
 }
+
+export default addEventListener
