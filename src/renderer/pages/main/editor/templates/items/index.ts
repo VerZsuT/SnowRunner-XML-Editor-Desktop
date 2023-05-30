@@ -10,25 +10,17 @@ export function Select<T extends SelectOptions>(props: SelectProps<T>): SelectEl
   return new SelectElement(props)
 }
 
-/**
- * Объединение параметров в раскрывающуюся группу
- */
+/** Объединение параметров в раскрывающуюся группу */
 export function Group(name: string, ...children: TemplateItems[]): GroupElement
-/**
- * Объединение параметров в раскрывающуюся группу
- */
+/** Объединение параметров в раскрывающуюся группу */
 export function Group(props: GroupTypedProps, ...children: TemplateItems[]): GroupElement
 export function Group(props: string | GroupTypedProps, ...children: TemplateItems[]): GroupElement {
   return new GroupElement(props, ...children)
 }
 
-/**
- * Шаблон таблицы параметров. Может иметь вложенные под-шаблоны
- */
+/** Шаблон таблицы параметров. Может иметь вложенные под-шаблоны */
 export function Template(props: TemplateTypedProps, ...children: TemplateItems[]): TemplateElement
-/**
- * Шаблон таблицы параметров. Может иметь вложенные под-шаблоны
- */
+/** Шаблон таблицы параметров. Может иметь вложенные под-шаблоны */
 export function Template(props: TemplateSelectors, ...children: TemplateItems[]): TemplateElement
 export function Template(props: TemplateSelectors | TemplateTypedProps, ...children: TemplateItems[]): TemplateElement {
   return new TemplateElement(props, ...children)
@@ -49,17 +41,9 @@ export function File(props: IFileProps): InputElement {
 /** Поле ввода числа */
 export function Num(props: NumberProps): InputElement {
   return new InputElement({
-    attribute: props.attribute,
-    selector: props.selector,
-    type: InputType.number,
-    label: props.label,
+    ...props,
     numberType: props.type,
-    min: props.min,
-    max: props.max,
-    step: props.step,
-    default: props.default,
-    areas: props.areas,
-    addMissedTag: props.addMissedTag
+    type: InputType.number
   })
 }
 
@@ -83,9 +67,7 @@ export function Coords(props: IDefaultInputProps): InputElement {
   return new InputElement({ type: InputType.coordinates, ...props })
 }
 
-/**
- * Итерация по всем элементам с данным селектором
- */
+/** Итерация по всем элементам с данным селектором */
 export function ForEach(selector: string, ...children: TemplateItems[]): TemplateElement {
   return new TemplateElement({
     type: TemplateType.multiply,

@@ -29,9 +29,9 @@ class Input implements ITemplateItem<[IInputParams] | []> {
     this.areas = props.areas
     this.type = props.type ?? InputType.number
     this.numberType = props.numberType ?? NumberType.float
-    this.min = (this.numberType === NumberType.float) ? 0.01 : 0
+    this.min = props.min ?? ((this.numberType === NumberType.float) ? 0.01 : 0)
     this.max = props.max ?? Infinity
-    this.step = (this.numberType === NumberType.float) ? 0.1 : 1
+    this.step = props.step ?? ((this.numberType === NumberType.float) ? 0.1 : 1)
     this.default = props.default
   }
 

@@ -13,7 +13,7 @@ class InputController extends ViewController<IParameterProps, InputModel> {
     let newValue = value ?? ''
 
     if (item.type !== InputType.text && newValue !== '') {
-      newValue = this.model.limit(item, +newValue, min, max).toString()
+      newValue = this.model.limit(item, Number(newValue), min, max).toString()
     }
 
     xml.addTag(fileDOM, item)

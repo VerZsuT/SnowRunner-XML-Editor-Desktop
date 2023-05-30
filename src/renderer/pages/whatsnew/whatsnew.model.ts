@@ -2,6 +2,13 @@ import { localizeVal } from '#g/texts/renderer'
 import { ViewModel, unwrap } from '#r/model-ctrlr'
 
 class WhatsNewModel extends ViewModel {
+  @unwrap readonly desc073b = localizeVal({
+    RU: ['Исправлен баг с отрицательными значениями параметров'],
+    EN: ['Fixed a bug with negative parameter values'],
+    DE: ['Ein Fehler mit negativen Parameterwerten wurde behoben'],
+    CH: ['修正了参数值为负的错误']
+  }) as unknown as string[]
+
   @unwrap readonly desc073a = localizeVal({
     RU: ['Исправлен баг с изменением параметров во вложенных группах'],
     EN: ['Fixed a bug with changing parameters in nested groups'],
