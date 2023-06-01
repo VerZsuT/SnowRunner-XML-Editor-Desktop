@@ -4,7 +4,7 @@ interface IGroupProps {
   key: string | number
   item: IGroupParams
   isActive?: boolean
-  render?: boolean
+  renderIt?: boolean
 }
 
 export default IGroupProps

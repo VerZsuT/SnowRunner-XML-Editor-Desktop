@@ -2,7 +2,7 @@
   Скрипт преобработки билда.
 
   - Очищает выходную папку out.
-  - Изменяет package.json, package-lock.json, installer.config.iss.
+  - Изменяет package.json, installer.config.iss.
     - Меняет версию на указанную в config.json.
   - Изменяет public.json(sxmle_updater).
     - Меняет версию на указанную в config.json.
@@ -47,7 +47,6 @@ class BeforeBuild {
   readFiles() {
     this.readFile('Reading config.json', 'config', this.paths.config)
     this.readFile('Reading package.json', 'packageFile', this.paths.package)
-    this.readFile('Reading package-lock.json', 'packageLockFile', this.paths.packageLock)
     this.readFile('Reading public.json', 'publicFile', this.paths.public)
     this.readFile('Reading installer.config.iss', 'issConfig', this.paths.issConfig, false)
   }
@@ -55,7 +54,6 @@ class BeforeBuild {
   @Log.stage
   changeFiles() {
     this.changeFile('Changing package version', this.packageFile)
-    this.changeFile('Changing packageLock version', this.packageLockFile)
     this.changeFile('Changing public version', this.publicFile, 'latestVersion')
     this.changeFile(
       'Changing ISS config file',
@@ -71,7 +69,6 @@ class BeforeBuild {
   @Log.stage
   writeFiles() {
     this.writeFile('Writing package.json', this.paths.package, this.packageFile)
-    this.writeFile('Writing package-lock.json', this.paths.packageLock, this.packageLockFile)
     this.writeFile('Writing public.json', this.paths.public, this.publicFile)
     this.writeFile('Writing installer.config.iss', this.paths.issConfig, this.issConfig, false)
   }

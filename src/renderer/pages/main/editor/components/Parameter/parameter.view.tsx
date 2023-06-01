@@ -39,7 +39,7 @@ function Parameter(props: IParameterProps) {
   let firstRender = true
 
   return () => {
-    if (!model.render && firstRender) {
+    if (!model.renderIt && firstRender) {
       firstRender = false
       return null
     }

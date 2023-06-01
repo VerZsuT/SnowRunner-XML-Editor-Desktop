@@ -53,6 +53,7 @@ function MenuView() {
   return () => (
     <ANTMenu
       className='menu'
+      triggerSubMenuAction='click'
       mode='horizontal'
       selectable={false}
       items={items.val}

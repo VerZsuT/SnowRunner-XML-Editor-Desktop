@@ -82,6 +82,8 @@ function MainHeader(props: IMainHeaderProps) {
     ]
   })
 
+  const size25 = { fontSize: 25 }
+
   return () => <>
     {model.action}
     <Header
@@ -92,7 +94,7 @@ function MainHeader(props: IMainHeaderProps) {
           key='menu'
           type='text'
           className='menu-button'
-          icon={<MenuOutlined />}
+          icon={<MenuOutlined style={size25} />}
           menu={{
             selectable: false,
             mode: 'vertical',
@@ -105,7 +107,7 @@ function MainHeader(props: IMainHeaderProps) {
             className='save-button'
             type='text'
             shape='circle'
-            icon={<SaveOutlined />}
+            icon={<SaveOutlined style={size25} />}
             onClick={onSave}
           />
         </Tooltip>
@@ -123,6 +125,7 @@ function MainHeader(props: IMainHeaderProps) {
 
   function onReset(): void {
     confirm({
+      okText: $.OK, cancelText: $.CANCEL,
       title: $.RESET_CONFIRM_MESSAGE,
       onOk() {
         ctrlr.reset()

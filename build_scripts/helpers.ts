@@ -11,7 +11,6 @@ export const allPaths = {
     out: resolve('../out'),
     config: resolve('../src/main/configs/config.json'),
     package: resolve('../package.json'),
-    packageLock: resolve('../package-lock.json'),
     public: resolve('../../sxmle_updater/public.json'),
     issConfig: resolve('../innoSetup/installer.config.iss')
   },

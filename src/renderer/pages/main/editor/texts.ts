@@ -54,7 +54,7 @@ const $ = compareWithGlobal({
     PATH_TO_SAVE_NOT_FOUND: '没有指定输出的路径。',
     PARAMS_FILE_NOT_FOUND: '没有选择要导入的文件。',
     BREAK_IMPORT_INVALID_NAME: '无法导入参数。没有找到%file的参数。',
-    IMPORT: '进口',
+    IMPORT: '导入',
     ACTIONS_MENU: '锦上添花'
   }
 })

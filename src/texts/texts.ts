@@ -8,7 +8,9 @@ const globalTexts = {
     RESET_MENU_ITEM_LABEL: 'Сбросить',
     EXPORT: 'Экспорт',
     ERROR: 'Ошибка',
-    LANGUAGE_LABEL: 'Язык программы'
+    LANGUAGE_LABEL: 'Язык программы',
+    OK: 'Ок',
+    CANCEL: 'Отменить'
   },
   EN: {
     SUCCESS_EXPORT_MESSAGE: 'Configuration exported successfully',
@@ -18,7 +20,9 @@ const globalTexts = {
     RESET_MENU_ITEM_LABEL: 'Reset',
     EXPORT: 'Export',
     ERROR: 'Error',
-    LANGUAGE_LABEL: 'Program language'
+    LANGUAGE_LABEL: 'Program language',
+    OK: 'Ok',
+    CANCEL: 'Cancel'
   },
   DE: {
     SUCCESS_EXPORT_MESSAGE: 'Konfiguration erfolgreich exportiert',
@@ -28,7 +32,9 @@ const globalTexts = {
     RESET_MENU_ITEM_LABEL: 'Zurücksetzen',
     EXPORT: 'Export',
     ERROR: 'Fehler',
-    LANGUAGE_LABEL: 'Programmsprache'
+    LANGUAGE_LABEL: 'Programmsprache',
+    OK: 'Ok',
+    CANCEL: 'Stornieren'
   },
   CH: {
     SUCCESS_EXPORT_MESSAGE: '配置已成功导出',
@@ -36,9 +42,11 @@ const globalTexts = {
     OPEN_BUTTON: '打开',
     SAVE_BUTTON: '保存',
     RESET_MENU_ITEM_LABEL: '重置',
-    EXPORT: '出口',
+    EXPORT: '导出',
     ERROR: '误差',
-    LANGUAGE_LABEL: '方案语言'
+    LANGUAGE_LABEL: '方案语言',
+    OK: '确认',
+    CANCEL: '取消'
   }
 }
 

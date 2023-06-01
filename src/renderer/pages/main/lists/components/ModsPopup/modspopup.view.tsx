@@ -19,6 +19,8 @@ function ModsPopupView(props: IModsPopupProps) {
         onCancel={onModalCancel}
         onOk={onModalOk}
         open={show}
+        okText={$.OK}
+        cancelText={$.CANCEL}
       >
         {items
           ? <>

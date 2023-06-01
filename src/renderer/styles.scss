@@ -38,6 +38,10 @@ body {
   box-sizing: border-box;
 }
 
+.ant-menu-submenu-popup {
+  top: 30px !important;
+}
+
 .menu {
   height: 35px;
   margin-top: -8px;
@@ -105,8 +109,16 @@ body {
   }
 }
 
+.ant-select-dropdown {
+  width: auto !important;
+}
+
 .ant-menu {
   border: none;
+
+  &-item {
+    width: auto !important;
+  }
 }
 
 li[role="menuitem"] {

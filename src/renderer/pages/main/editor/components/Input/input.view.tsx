@@ -13,7 +13,7 @@ function Input(props: IParameterProps) {
   const model = new InputModel(props)
   const ctrlr = new InputController(props, model)
 
-  const style = { width: 150 }
+  const style = { minWidth: 150 }
 
   return () => {
     return model.type === InputType.number

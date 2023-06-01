@@ -14,6 +14,20 @@ function WhatsNew() {
 
   return () => <>
     <Divider className='title'>
+      {$.WHATS_NEW_TITLE} {' v0.7.3c'}
+    </Divider>
+    <List
+      className='content'
+      size='small'
+      dataSource={model.desc073c}
+      renderItem={item => (
+        <List.Item>
+          {item}
+        </List.Item>
+      )}
+    />
+
+    <Divider className='title'>
       {$.WHATS_NEW_TITLE} {' v0.7.3b'}
     </Divider>
     <List
@@ -26,6 +40,7 @@ function WhatsNew() {
         </List.Item>
       )}
     />
+
     <Divider className='title'>
       {$.WHATS_NEW_TITLE} {' v0.7.3a'}
     </Divider>
@@ -39,6 +54,7 @@ function WhatsNew() {
         </List.Item>
       )}
     />
+
     <Divider className='title'>
       {$.WHATS_NEW_TITLE} {' v0.7.3'}
     </Divider>

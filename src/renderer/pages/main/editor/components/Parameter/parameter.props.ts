@@ -2,7 +2,7 @@ import type { IInputParams } from '#g/types'
 
 interface IParameterProps {
   item: IInputParams
-  render: boolean
+  renderIt: boolean
 }
 
 export default IParameterProps

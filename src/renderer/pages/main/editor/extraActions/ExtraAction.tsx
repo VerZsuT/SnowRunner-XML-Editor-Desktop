@@ -3,6 +3,7 @@ import type { FC } from 'react'
 import { Button, Modal } from 'antd'
 import { afc, useOnRender, useState } from 'react-afc'
 
+import $ from '#g/texts/renderer'
 import type { IExtraActionData, IExtraActionProps, IXMLElement } from '#g/types'
 
 import './styles'
@@ -64,7 +65,7 @@ abstract class ExtraAction {
           closable={false}
           footer={
             <Button key='ok' onClick={onOk}>
-              OK
+              {$.OK}
             </Button>
           }
         >

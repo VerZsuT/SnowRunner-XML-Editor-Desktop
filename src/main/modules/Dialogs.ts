@@ -30,7 +30,7 @@ class DialogsClass {
   alert(params: IDialogAlertParams): number | Promise<MessageBoxReturnValue> {
     const {
       dialogType = DialogAlertType.sync,
-      buttons = ['OK'],
+      buttons = [$.OK],
       noLink = false,
       type = 'info',
       title, message

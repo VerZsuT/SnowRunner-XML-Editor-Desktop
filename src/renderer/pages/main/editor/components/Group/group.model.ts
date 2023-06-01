@@ -24,8 +24,8 @@ class GroupModel extends ViewModel<IGroupProps> {
   readonly isActive!: boolean
 
 
-  @prop<IGroupProps>('render')
-  readonly render = this.props.render ?? false
+  @prop<IGroupProps>('renderIt')
+  readonly renderIt = this.props.renderIt ?? false
 
   @reactive activeKey = ''
 

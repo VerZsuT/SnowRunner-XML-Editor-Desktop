@@ -14,8 +14,8 @@ class ParameterModel extends ViewModel<IParameterProps> {
 
   readonly item = this.props.item
 
-  @prop<IParameterProps>('render')
-  readonly render = true
+  @prop<IParameterProps>('renderIt')
+  readonly renderIt = true
 
   @reactive
   paramValue = this.getValue()

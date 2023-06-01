@@ -31,21 +31,21 @@ function Group(props: IGroupProps) {
     <Parameter
       item={param}
       key={`${param.selector}-${index}`}
-      render={model.render && model.isActive}
+      renderIt={model.renderIt && model.isActive}
     />
-  )), () => [model.isActive, model.render])
+  )), () => [model.isActive, model.renderIt])
   const groupsElements = useMemo(() => model.groups.map((groupItem, index) => (
     <GroupComponent
       item={groupItem}
       key={`${groupItem.groupName}-${index}`}
-      render={model.isActive}
+      renderIt={model.isActive}
     />
   )), () => [model.isActive])
 
   let firstRender = true
 
   return () => {
-    if (!model.render && firstRender) {
+    if (!model.renderIt && firstRender) {
       firstRender = false
       return <>{paramsElements.val}{filesElements.val}{groupsElements.val}</>
     }

@@ -11,7 +11,7 @@ function Select(props: IParameterProps) {
   const model = new SelectModel(props)
 
   const style = {
-    width: 150,
+    minWidth: 150,
     textAlign: 'left'
   } satisfies CSSProperties
 

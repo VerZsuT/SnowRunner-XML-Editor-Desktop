@@ -35,6 +35,7 @@ class ListController extends ViewController<IListProps, ListModel> {
     if (isReload) {
       setTimeout(() => {
         confirm({
+          okText: $.OK, cancelText: $.CANCEL,
           title: $.RELAUNCH_PROMPT,
           onOk: () => bridge.relaunchApp()
         })

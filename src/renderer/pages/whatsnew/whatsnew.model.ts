@@ -2,6 +2,41 @@ import { localizeVal } from '#g/texts/renderer'
 import { ViewModel, unwrap } from '#r/model-ctrlr'
 
 class WhatsNewModel extends ViewModel {
+  @unwrap readonly desc073c = localizeVal({
+    RU: [
+      'Меню программы открывается при нажатии, а не при наведении',
+      'Иконки в шапке таблици увеличины до стандартных',
+      'Все элементы меню, а также поля выбора не обрезают текст',
+      'Переведены кнопки диалогов и названия колонок при выборе модификаций',
+      'Исправлен CH перевод (спасибо 杨 新民)',
+      'Небольшая оптимизация'
+    ],
+    EN: [
+      'The program menu opens when you click, not when you hover',
+      'Icons in the table header have been enlarged to standard',
+      'All menu items, as well as selection fields, do not crop the text',
+      'Dialog buttons and column names have been translated when selecting modifications',
+      'Fixed CH translation (thank you 杨 新民)',
+      'Small optimization'
+    ],
+    DE: [
+      'Das Programmmenü wird beim Klicken und nicht beim Schweben geöffnet',
+      'Symbole im Tabellenkopf sind auf Standard vergrößert',
+      'Alle Menüelemente und Auswahlfelder schneiden den Text nicht ab',
+      'Dialogschaltflächen und Spaltennamen wurden bei der Auswahl von Änderungen übersetzt',
+      'Korrigierte CH-Übersetzung (danke 杨 新民)',
+      'Kleine Optimierung'
+    ],
+    CH: [
+      '程序菜单在您单击时打开，而不是在您悬停时打开',
+      '表头中的图标已放大为标准',
+      '所有菜单项，以及选择字段，不裁剪文本',
+      '选择修改时已翻译对话框按钮和列名',
+      '更正CH翻译（谢谢, 杨 新民）',
+      '小优化'
+    ]
+  }) as unknown as string[]
+
   @unwrap readonly desc073b = localizeVal({
     RU: ['Исправлен баг с отрицательными значениями параметров'],
     EN: ['Fixed a bug with negative parameter values'],
