@@ -10,9 +10,11 @@ class WinRARClass implements IArchiver {
 
   // WinRAR flags
   private readonly EXCLUDE_BASE_FOLDER = '-ep1'
+  private readonly EXCLUDE_ALL_PATHS = '-ep'
   private readonly RECURSIVE = '-r'
   private readonly UPDATE = 'f'
   private readonly UNPACK = 'x'
+  private readonly ADD = 'a'
   private readonly WINRAR_EXE = 'WinRAR.exe'
   private readonly NO_ERRORS = '-inul'
   private readonly IN_BACKGROUND = '-ibck'
@@ -28,15 +30,26 @@ class WinRARClass implements IArchiver {
       this.EXCLUDE_BASE_FOLDER
     ])
   }
-  async unpack(source: string, direction: string, isMod?: boolean): Promise<void> {
+
+  unpack(source: string, direction: string, isMod?: boolean): Promise<void> {
     const list = isMod ? this.MODS_UNPACK_LIST : this.MAIN_UNPACK_LIST
 
-    await this.run([
+    return this.run([
       this.UNPACK,
       ...this.IGNORE_ERRORS,
       source,
       list,
       this.inner(direction)
+    ])
+  }
+
+  add(source: string, direction: string): Promise<void> {
+    return this.run([
+      this.ADD,
+      ...this.IGNORE_ERRORS,
+      direction,
+      source,
+      this.EXCLUDE_ALL_PATHS
     ])
   }
 

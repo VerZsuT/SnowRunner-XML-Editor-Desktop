@@ -1,4 +1,4 @@
-import { existsSync, mkdirSync, rmSync } from 'fs'
+import { existsSync, mkdirSync, rmSync, writeFileSync } from 'fs'
 import { basename, join } from 'path'
 
 import { publicMethod } from 'emr-bridge'
@@ -22,6 +22,11 @@ class ArchiveClass {
    * @param isMod - архив является модом
    */
   async update(source: string, direction: string, isMod?: boolean): Promise<void> {
+    const markerPath = join(source, 'edited')
+    if (!existsSync(markerPath)) {
+      writeFileSync(markerPath, '')
+    }
+    await this.archiver.add(markerPath, direction)
     await this.archiver.update(source, direction)
     this.saveSize(direction, isMod)
   }
