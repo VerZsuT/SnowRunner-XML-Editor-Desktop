@@ -136,6 +136,7 @@
     "no-multi-spaces": "off",
     "key-spacing": "off",
     "indent": "off",
+    "no-async-promise-executor": "off",
     "no-empty": "off",
     "no-empty-function": "off",
     "no-invalid-this": "off",
