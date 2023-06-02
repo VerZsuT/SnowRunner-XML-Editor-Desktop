@@ -33,17 +33,17 @@ class ListsPreload {
     const pathToMods = join(pathToUser, 'Documents/My Games/SnowRunner/base/Mods/.modio/mods')
     if (!existsSync(pathToMods)) return []
 
-    readdirSync(pathToMods, { withFileTypes: true }).forEach(folder => {
-      if (folder.isFile()) return
+    for (const folder of readdirSync(pathToMods, { withFileTypes: true })) {
+      if (folder.isFile()) continue
       const modFolder = join(pathToMods, folder.name)
 
-      readdirSync(modFolder, { withFileTypes: true }).forEach(file => {
-        if (file.isDirectory()) return
+      for (const file of readdirSync(modFolder, { withFileTypes: true })) {
+        if (file.isDirectory()) continue
 
         const filePath = join(modFolder, file.name)
         const tempModFolder = join(paths.modsTemp, file.name)
         if (extname(file.name) === '.pak') {
-          main.unpack(filePath, tempModFolder, true)
+          await main.unpack(filePath, tempModFolder, true)
           if (existsSync(join(tempModFolder, 'classes'))) {
             const pathToModio = join(modFolder, 'modio.json')
             let modName = basename(file.name, '.pak')
@@ -57,8 +57,8 @@ class ListsPreload {
             })
           }
         }
-      })
-    })
+      }
+    }
 
     for (const enabledModName in mods.items) {
       const enabledModPath = mods.items[enabledModName].path
@@ -76,13 +76,13 @@ class ListsPreload {
     return out
   }
 
-  getModPak = (): IFindItem | undefined => {
+  getModPak = async (): Promise<IFindItem | undefined> => {
     const path = main.getInitial()
     if (!path) return
 
     const name = basename(path)
     const id = basename(path, '.pak')
-    main.unpack(path, join(paths.modsTemp, id), true)
+    await main.unpack(path, join(paths.modsTemp, id), true)
     if (!existsSync(join(paths.modsTemp, id, 'classes')))
       return
 

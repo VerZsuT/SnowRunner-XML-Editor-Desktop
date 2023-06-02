@@ -94,15 +94,15 @@ class RendererPublicClass {
   }
 
   @publicMethod()
-  updateFiles(modId?: string) {
+  async updateFiles(modId?: string): Promise<void> {
     if (modId) {
       try {
-        Archive.update(join(Paths.modsTemp, modId), Config.mods.items[modId].path, true)
+        await Archive.update(join(Paths.modsTemp, modId), Config.mods.items[modId].path, true)
       }
       catch {
         try {
           chmodSync(Config.mods.items[modId].path, 0o777)
-          Archive.update(join(Paths.modsTemp, modId), Config.mods.items[modId].path, true)
+          await Archive.update(join(Paths.modsTemp, modId), Config.mods.items[modId].path, true)
         }
         catch {
           Dialogs.error($.SAVE_MOD_ERROR)
@@ -111,12 +111,12 @@ class RendererPublicClass {
     }
     else {
       try {
-        Archive.update(Paths.mainTemp, Config.initial)
+        await Archive.update(Paths.mainTemp, Config.initial)
       }
       catch {
         try {
           chmodSync(Config.initial, 0o777)
-          Archive.update(Paths.mainTemp, Config.initial)
+          await Archive.update(Paths.mainTemp, Config.initial)
         }
         catch {
           Dialogs.error($.SAVE_ORIGINAL_ERROR)

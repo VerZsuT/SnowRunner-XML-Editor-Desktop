@@ -1,5 +1,5 @@
 import { IArchiver } from '#g/types'
-import { execFile, execFileSync } from 'child_process'
+import { execFile } from 'child_process'
 
 import { DEBUG_ARCHIVER, SHOW_ARCHIVER_ERRORS } from '#g/consts'
 import Paths from '#m/modules/Paths'
@@ -18,8 +18,8 @@ class WinRARClass implements IArchiver {
   private readonly IN_BACKGROUND = '-ibck'
   private readonly IGNORE_ERRORS = DEBUG_ARCHIVER ? [] : [this.IN_BACKGROUND, this.NO_ERRORS]
 
-  update(source: string, direction: string): void {
-    this.run([
+  update(source: string, direction: string): Promise<void> {
+    return this.run([
       this.UPDATE,
       ...this.IGNORE_ERRORS,
       direction,
@@ -28,7 +28,7 @@ class WinRARClass implements IArchiver {
       this.EXCLUDE_BASE_FOLDER
     ])
   }
-  async unpack(source: string, direction: string, isMod?: boolean, sync?: boolean): Promise<void> {
+  async unpack(source: string, direction: string, isMod?: boolean): Promise<void> {
     const list = isMod ? this.MODS_UNPACK_LIST : this.MAIN_UNPACK_LIST
 
     await this.run([
@@ -37,7 +37,7 @@ class WinRARClass implements IArchiver {
       source,
       list,
       this.inner(direction)
-    ], sync)
+    ])
   }
 
   /**
@@ -45,19 +45,7 @@ class WinRARClass implements IArchiver {
    * @param attrs - параметры вызова
    * @param sync - запустить синхронно (default=true)
    */
-  private run(attrs: string[], sync = true): Promise<void> | undefined {
-    if (sync) {
-      try {
-        execFileSync(this.WINRAR_EXE, attrs, { cwd: Paths.winrar })
-      }
-      catch (error: unknown) {
-        if (SHOW_ARCHIVER_ERRORS && error instanceof Error) {
-          console.error(error.message)
-        }
-      }
-      return
-    }
-
+  private run(attrs: string[]): Promise<void> {
     return new Promise<void>(resolve => {
       execFile(this.WINRAR_EXE, attrs, { cwd: Paths.winrar })
         .once('close', resolve)

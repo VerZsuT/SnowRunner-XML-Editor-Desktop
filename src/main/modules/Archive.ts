@@ -21,8 +21,8 @@ class ArchiveClass {
    * @param direction - путь до архива
    * @param isMod - архив является модом
    */
-  update(source: string, direction: string, isMod?: boolean): void {
-    this.archiver.update(source, direction)
+  async update(source: string, direction: string, isMod?: boolean): Promise<void> {
+    await this.archiver.update(source, direction)
     this.saveSize(direction, isMod)
   }
 
@@ -31,11 +31,10 @@ class ArchiveClass {
    * @param source - путь до архива
    * @param direction - путь до папки
    * @param isMod - архив является модом
-   * @param sync - синхронный вызов архиватора
    */
-  async unpack(source: string, direction: string, isMod?: boolean, sync?: boolean): Promise<void> {
+  async unpack(source: string, direction: string, isMod?: boolean): Promise<void> {
     this.rmDir(direction)
-    this.archiver.unpack(source, direction, isMod, sync)
+    await this.archiver.unpack(source, direction, isMod)
   }
 
   /**
@@ -47,8 +46,8 @@ class ArchiveClass {
    * @param isMod - архив является модом
    */
   @publicMethod('unpack')
-  syncUnpack(source: string, direction: string, isMod?: boolean): void {
-    void this.unpack(source, direction, isMod, true)
+  publicUnpack(source: string, direction: string, isMod?: boolean) {
+    return this.unpack(source, direction, isMod)
   }
 
   /**
@@ -64,7 +63,7 @@ class ArchiveClass {
     this.clearDir(Paths.mainTemp)
     this.rmFile(Paths.texts)
 
-    await this.unpack(Config.initial, Paths.mainTemp, false, true)
+    await this.unpack(Config.initial, Paths.mainTemp, false)
     this.saveSize(Config.initial)
 
     if (Windows.loading && hideLoading) {

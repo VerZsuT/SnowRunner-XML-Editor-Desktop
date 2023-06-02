@@ -37,9 +37,9 @@ class ModsPopupController extends ViewController<IModsPopupProps, ModsPopupModel
     this.props.hidePopup(false)
   }
 
-  addManual(): void {
+  async addManual(): Promise<void> {
     const { items } = this.model
-    const mod = modsService.requestMod()
+    const mod = await modsService.requestMod()
     if (!mod
       || !items
       || items.find(item => item.name === mod.id)

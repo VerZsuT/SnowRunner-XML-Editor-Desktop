@@ -35,15 +35,17 @@ class MainHeaderController extends ViewController<IMainHeaderProps, MainHeaderMo
   async save() {
     const hideLoading = message.loading($.SAVING_MESSAGE)
     await new Promise<void>(resolve => {
-      setTimeout(() => {
+      setTimeout(async () => {
         xmlFiles.files.forEach(file => {
           const dom = file.dom.clone()
           dom.selectAll('[SXMLE_ID]').map(element => element.removeAttr('SXMLE_ID'))
           system.writeFileSync(file.path, dom.toHTML()!)
         })
 
-        this.props.mod && bridge.updateFiles(this.props.mod)
-        bridge.updateFiles()
+        if (this.props.mod) {
+          await bridge.updateFiles(this.props.mod)
+        }
+        await bridge.updateFiles()
 
         hideLoading()
         message.success($.SUCCESS_SAVE_FILES)

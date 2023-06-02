@@ -9,8 +9,8 @@ class ModsService {
     return findMods()
   }
 
-  requestMod() {
-    const result = getModPak()
+  async requestMod() {
+    const result = await getModPak()
     if (!result) return
     return {
       ...result,

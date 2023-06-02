@@ -6,7 +6,7 @@ import type { WindowsManager } from '#m/windows'
 interface IMainFunctions {
   updateFiles: typeof RendererPublic.updateFiles
   runUninstall: typeof RendererPublic.uninstall
-  unpack: typeof Archive.syncUnpack
+  unpack: typeof Archive.publicUnpack
 
   findInDir: typeof Helpers.findInDir
   joinEPF: typeof EPF.join
