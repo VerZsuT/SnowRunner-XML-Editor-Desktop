@@ -1,5 +1,5 @@
 import { ID_ATTRIBUTE, SELECTOR_SEPARATOR, SelPrefix, genAttributeValue } from '../service'
-import helpers from './helpers'
+import Helpers from './helpers'
 
 import { TemplateType } from '#g/enums'
 import type {
@@ -13,7 +13,7 @@ import { lastItem } from '#g/utils'
 /**
  * Шаблон таблицы параметров. Может иметь вложенные под-шаблоны.
  */
-class Template implements ITemplateItem<TemplateParams> {
+export default class Template implements ITemplateItem<TemplateParams> {
   private type!: TemplateType
   private selectors!: TemplateSelectors
   private itemSelector?: string
@@ -28,7 +28,7 @@ class Template implements ITemplateItem<TemplateParams> {
       this.type = props.type ?? TemplateType.single
       this.selectors = props.selectors ?? {}
       this.itemSelector = props.itemSelector
-      this.itemSelectorID = helpers.getSelectorID(this.itemSelector)
+      this.itemSelectorID = Helpers.getSelectorID(this.itemSelector)
     }
 
     this.children = children
@@ -112,5 +112,3 @@ class Template implements ITemplateItem<TemplateParams> {
     return params
   }
 }
-
-export default Template

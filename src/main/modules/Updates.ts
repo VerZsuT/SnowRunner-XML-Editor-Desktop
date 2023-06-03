@@ -15,9 +15,9 @@ import Windows from './Windows'
 import type { IDownloadParams, UpdateMap } from '#g/types'
 import { hasItems } from '#g/utils'
 
-class UpdatesClass {
+export default class Updates {
   /** Загрузить файл(ы) из сети */
-  download(params: IDownloadParams, callback: (data?: any) => any): void {
+  static download(params: IDownloadParams, callback: (data?: any) => any): void {
     const { array, isRoot, inMemory, loadingPage, path, url, fromJSON } = params
 
     if (array) {
@@ -79,7 +79,7 @@ class UpdatesClass {
 
   /** Запустить процесс обновления программы */
   @publicMethod('updateApp')
-  update(): void {
+  static update(): void {
     const page = Windows.loading
     let flagToReload = false
 
@@ -152,7 +152,7 @@ class UpdatesClass {
    * @param map - карта обновления
    * @returns `[пути_для_удаления, для_обновления]`
    */
-  private processMap(map: UpdateMap): [string[], string[]] {
+  private static processMap(map: UpdateMap): [string[], string[]] {
     const toCreateOrChange: string[] = []
     const toCopy: string[] = []
 
@@ -177,7 +177,3 @@ class UpdatesClass {
     return [toCopy, toCreateOrChange]
   }
 }
-
-const Updates = new UpdatesClass()
-
-export default Updates

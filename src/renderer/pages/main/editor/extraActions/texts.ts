@@ -1,6 +1,6 @@
 import { compareWithGlobal } from '#g/texts/renderer'
 
-const $ = compareWithGlobal({
+export default compareWithGlobal({
   RU: {
     CRANES_WARN_TITLE: 'Внимание!',
     ADDON_NAME: 'Название',
@@ -70,5 +70,3 @@ const $ = compareWithGlobal({
     TRUCK_TRAILERS: '传统的拖车'
   }
 })
-
-export default $

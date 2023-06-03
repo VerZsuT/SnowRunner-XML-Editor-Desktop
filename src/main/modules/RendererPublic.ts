@@ -17,20 +17,20 @@ import $ from '#m/texts'
 import './EPF'
 import './Updates'
 
-class RendererPublicClass {
+export default class RendererPublic {
   @publicMethod()
-  openLink(url: string): Promise<void> {
+  static openLink(url: string): Promise<void> {
     return shell.openExternal(url)
   }
 
   @publicMethod()
-  openPath(path: string): Promise<string> {
+  static openPath(path: string): Promise<string> {
     return shell.openPath(path)
   }
 
   /** Перезапустить программу */
   @publicMethod('relaunchApp')
-  reload() {
+  static reload() {
     ExitParams.quit = true
     app.relaunch()
     app.quit()
@@ -38,20 +38,20 @@ class RendererPublicClass {
 
   /** Закрыть программу */
   @publicMethod('quitApp')
-  quit() {
+  static quit() {
     ExitParams.quit = true
     app.quit()
   }
 
   /** Управление `DevTools` */
   @publicMethod()
-  devTools() {
+  static devTools() {
     BrowserWindow.getFocusedWindow()?.webContents.toggleDevTools()
   }
 
   /** Запустить деинсталлятор */
   @publicMethod('runUninstall')
-  uninstall() {
+  static uninstall() {
     if (!existsSync(Paths.uninstall)) {
       Dialogs.alert({
         message: $.ONLY_MANUAL_UNINS,
@@ -66,7 +66,7 @@ class RendererPublicClass {
   }
 
   @publicMethod()
-  exportConfig() {
+  static exportConfig() {
     if (Config.export()) {
       Dialogs.alert({
         message: $.SUCCESS_EXPORT_MESSAGE,
@@ -78,7 +78,7 @@ class RendererPublicClass {
   }
 
   @publicMethod()
-  importConfig() {
+  static importConfig() {
     if (Config.import()) {
       ExitParams.quit = true
       app.relaunch()
@@ -94,7 +94,7 @@ class RendererPublicClass {
   }
 
   @publicMethod()
-  async updateFiles(modId?: string): Promise<void> {
+  static async updateFiles(modId?: string): Promise<void> {
     if (modId) {
       try {
         await Archive.update(join(Paths.modsTemp, modId), Config.mods.items[modId].path, true)
@@ -125,7 +125,3 @@ class RendererPublicClass {
     }
   }
 }
-
-const RendererPublic = new RendererPublicClass()
-
-export default RendererPublic

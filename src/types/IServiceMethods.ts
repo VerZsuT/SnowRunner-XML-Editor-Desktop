@@ -1,7 +1,7 @@
 import type { existsSync, readdirSync, writeFileSync } from 'fs'
 import type { basename, join } from 'path'
 
-interface IServiceMethods {
+export default interface IServiceMethods {
   join: typeof join
   basename: typeof basename
   writeFileSync: typeof writeFileSync
@@ -10,5 +10,3 @@ interface IServiceMethods {
   readFileSync(path: string): string
   isDirectory(path: string): boolean
 }
-
-export default IServiceMethods

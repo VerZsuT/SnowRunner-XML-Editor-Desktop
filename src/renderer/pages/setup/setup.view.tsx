@@ -11,9 +11,7 @@ import { Header, Language, Menu } from '#r/components'
 import '#r/templateScript'
 import './setup.styles'
 
-const { Step } = Steps
-
-function Setup() {
+export default afc(function Setup() {
   const model = new SetupModel()
   const ctrlr = new SetupController(model)
 
@@ -27,8 +25,8 @@ function Setup() {
     <Header text={$.FIRST_STEPS_DESCRIPTION} />
 
     <Steps className='steps' current={model.step}>
-      <Step title={$.LANGUAGE_LABEL} />
-      <Step title={$.GAME_DATA_STEP} />
+      <Steps.Step title={$.LANGUAGE_LABEL} />
+      <Steps.Step title={$.GAME_DATA_STEP} />
     </Steps>
     <div className='steps-content'>
       {stepsContent[model.step]}
@@ -49,6 +47,4 @@ function Setup() {
   function onNextClick(): void {
     ctrlr.nextStep()
   }
-}
-
-export default afc(Setup)
+})

@@ -19,16 +19,16 @@ import { ProgramWindow } from '#g/enums'
 import $ from '#m/texts'
 import { WindowsManager } from '#m/windows'
 
-class ChecksClass {
-  private readonly MEDIA_FOLDER = '[media]'
-  private readonly DNS_TO_RESOLVE = 'www.google.com'
+export default class Checks {
+  private static readonly MEDIA_FOLDER = '[media]'
+  private static readonly DNS_TO_RESOLVE = 'www.google.com'
 
   /**
    * Проверить наличие прав администратора у программы (требуется для чтения/записи файлов).
    *
    * Выводит уведомление и закрывает программу при неудаче
    */
-  hasAdminPrivileges(): boolean {
+  static hasAdminPrivileges(): boolean {
     try {
       writeFileSync(Paths.config, JSON.stringify(Config.config, null, '\t'))
       return true
@@ -51,7 +51,7 @@ class ChecksClass {
    *
    * Если изменения присутствуют, то обновляет файлы в программе
    */
-  async checkInitialChanges(): Promise<void> {
+  static async checkInitialChanges(): Promise<void> {
     if (!existsSync(join(Paths.mainTemp, this.MEDIA_FOLDER)) || HashClass.getSize(Config.initial) !== Config.sizes.initial) {
       if (existsSync(Config.initial)) {
         if (!existsSync(Paths.backupInitial)) {
@@ -71,7 +71,7 @@ class ChecksClass {
    * @param whateverCheck игнорировать настройку `settings.updates` в `config.json`
    */
   @publicMethod()
-  checkUpdate(whateverCheck?: boolean): void {
+  static checkUpdate(whateverCheck?: boolean): void {
     if (!Config.settings.updates && !whateverCheck) return
 
     resolve(this.DNS_TO_RESOLVE, error => {
@@ -110,7 +110,7 @@ class ChecksClass {
    *
    * В случае неудачи выводит уведомление
    */
-  hasAllPaths(): boolean {
+  static hasAllPaths(): boolean {
     if (!existsSync(Config.initial)) {
       Dialogs.error($.INITIAL_NOT_FOUND)
       return false
@@ -130,7 +130,7 @@ class ChecksClass {
   }
 
   /** Проверить наличие у программы прав на чтение/запись файла по переданному пути */
-  hasPermissions(path: string): boolean {
+  static hasPermissions(path: string): boolean {
     try {
       accessSync(path, constants.W_OK)
       return true
@@ -140,7 +140,3 @@ class ChecksClass {
     }
   }
 }
-
-const Checks = new ChecksClass()
-
-export default Checks

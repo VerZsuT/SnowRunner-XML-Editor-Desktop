@@ -15,9 +15,9 @@ import $ from '#g/texts/renderer'
 import { isNullable } from '#g/utils'
 import { useContextMenu } from '#r/helpers'
 
-const { Text } = Typography
+export default afcMemo<IParameterProps>(function Parameter(props) {
+  const Text = Typography.Text
 
-function Parameter(props: IParameterProps) {
   const model = new ParameterModel(props)
   const ctrlr = new ParameterController(model, onReset)
 
@@ -74,6 +74,4 @@ function Parameter(props: IParameterProps) {
     if (isNullable(model.defaultValue)) return
     ctrlr.setValue(model.defaultValue)
   }
-}
-
-export default afcMemo(Parameter)
+})

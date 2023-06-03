@@ -1,4 +1,4 @@
-interface IGroupLabel {
+export default interface IGroupLabel {
   /**
    * Селектор элемента, у которого будет взято название группы
    *
@@ -16,5 +16,3 @@ interface IGroupLabel {
    */
   attribute?: string | [string, string]
 }
-
-export default IGroupLabel

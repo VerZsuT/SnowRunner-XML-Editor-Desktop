@@ -12,8 +12,8 @@ import type { IArchiver } from '#g/types'
 import WinRAR from '#m/archivers/winrar'
 import $ from '#m/texts'
 
-class ArchiveClass {
-  private archiver: IArchiver = WinRAR
+export default class Archive {
+  private static archiver: IArchiver = WinRAR
 
   /**
    * Обновить файлы в архиве
@@ -21,7 +21,7 @@ class ArchiveClass {
    * @param direction - путь до архива
    * @param isMod - архив является модом
    */
-  async update(source: string, direction: string, isMod?: boolean): Promise<void> {
+  static async update(source: string, direction: string, isMod?: boolean): Promise<void> {
     const markerPath = join(source, 'edited')
     if (!existsSync(markerPath)) {
       writeFileSync(markerPath, '')
@@ -37,7 +37,7 @@ class ArchiveClass {
    * @param direction - путь до папки
    * @param isMod - архив является модом
    */
-  async unpack(source: string, direction: string, isMod?: boolean): Promise<void> {
+  static async unpack(source: string, direction: string, isMod?: boolean): Promise<void> {
     this.rmDir(direction)
     await this.archiver.unpack(source, direction, isMod)
   }
@@ -51,15 +51,13 @@ class ArchiveClass {
    * @param isMod - архив является модом
    */
   @publicMethod('unpack')
-  publicUnpack(source: string, direction: string, isMod?: boolean) {
+  static publicUnpack(source: string, direction: string, isMod?: boolean): Promise<void> {
     return this.unpack(source, direction, isMod)
   }
 
-  /**
-   * Распаковать основные XML файлы (+DLC) из `initial.pak`
-   */
+  /** Распаковать основные XML файлы (+DLC) из `initial.pak` */
   @publicMethod()
-  async unpackMain(hideLoading = true): Promise<void> {
+  static async unpackMain(hideLoading = true): Promise<void> {
     if (Windows.loading) {
       await Windows.loading.showAndWait()
       Windows.loading.setText($.UNPACKING)
@@ -80,7 +78,7 @@ class ArchiveClass {
    * Распаковать XML файлы из архива модификации
    * @param pathToFile - путь к архиву модификации
    */
-  async unpackMod(pathToFile: string): Promise<void> {
+  static async unpackMod(pathToFile: string): Promise<void> {
     const modId = this.cutDotPak(pathToFile)
     const pathToDir = join(Paths.modsTemp, modId)
 
@@ -96,7 +94,7 @@ class ArchiveClass {
    * @param path - путь к файлу
    * @param isMod - архив является модом
    */
-  private saveSize(path: string, isMod?: boolean): void {
+  private static saveSize(path: string, isMod?: boolean): void {
     const fileName = this.cutDotPak(path)
 
     if (isMod) {
@@ -111,7 +109,7 @@ class ArchiveClass {
    * Удалить папку с содержимым
    * @param path - путь к папке
    */
-  private rmDir(path: string): void {
+  private static rmDir(path: string): void {
     rmSync(path, { recursive: true, force: true })
   }
 
@@ -119,7 +117,7 @@ class ArchiveClass {
    * Удалить файл
    * @param path - путь к файлу
    */
-  private rmFile(path: string): void {
+  private static rmFile(path: string): void {
     rmSync(path, { force: true })
   }
 
@@ -127,7 +125,7 @@ class ArchiveClass {
    * Создать папку (при отсутствии)
    * @param path - путь создания
    */
-  private mkDir(path: string): void {
+  private static mkDir(path: string): void {
     if (!existsSync(path)) {
       mkdirSync(path)
     }
@@ -137,7 +135,7 @@ class ArchiveClass {
    * Очистить содержимое папки
    * @param path - путь к папке
    */
-  private clearDir(path: string): void {
+  private static clearDir(path: string): void {
     this.rmDir(path)
     this.mkDir(path)
   }
@@ -146,11 +144,7 @@ class ArchiveClass {
    * Удаляет `.pak` из пути
    * @param path - путь
    */
-  private cutDotPak(path: string): string {
+  private static cutDotPak(path: string): string {
     return basename(path, '.pak')
   }
 }
-
-const Archive = new ArchiveClass()
-
-export default Archive

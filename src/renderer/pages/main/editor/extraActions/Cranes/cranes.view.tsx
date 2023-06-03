@@ -8,9 +8,9 @@ import CranesModel from './cranes.model'
 
 import type { IExtraActionProps } from '#g/types'
 
-const { Paragraph, Text } = Typography
+export default afcMemo<IExtraActionProps>(function CranesComponent(props) {
+  const { Paragraph, Text } = Typography
 
-function CranesComponent(props: IExtraActionProps) {
   const model = new CranesModel(props)
   const ctrlr = new CranesController(props, model)
 
@@ -83,6 +83,4 @@ function CranesComponent(props: IExtraActionProps) {
   function onRemoveRU(): void {
     ctrlr.removeCrane(Crane.RU)
   }
-}
-
-export default afcMemo(CranesComponent)
+})

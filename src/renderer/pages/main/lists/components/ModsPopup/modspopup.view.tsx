@@ -6,7 +6,7 @@ import ModsPopupController from './modspopup.controller'
 import ModsPopupModel from './modspopup.model'
 import type IModsPopupProps from './modspopup.props'
 
-function ModsPopupView(props: IModsPopupProps) {
+export default afcMemo<IModsPopupProps>(function ModsPopupView(props) {
   const model = new ModsPopupModel(props)
   const ctrlr = new ModsPopupController(props, model)
 
@@ -66,6 +66,4 @@ function ModsPopupView(props: IModsPopupProps) {
   function onSelectChange(source: string[], target: string[]): void {
     ctrlr.changeSelectedKeys([...source, ...target])
   }
-}
-
-export default afcMemo(ModsPopupView)
+})

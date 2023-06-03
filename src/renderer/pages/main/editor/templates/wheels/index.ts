@@ -1,2 +1,5 @@
 import wheelsTemplate from './wheels.template'
-export default wheelsTemplate
+
+import type { IXMLTemplate } from '#g/types'
+
+export default wheelsTemplate as IXMLTemplate

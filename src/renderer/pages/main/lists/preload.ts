@@ -5,26 +5,19 @@ import { basename, extname, join } from 'path'
 import { Category, PreloadType, SrcType } from '#g/enums'
 import type { IFindItem, IItem, IListPreload } from '#g/types'
 import main from '#r/scripts/main'
-import { preload } from '#r/services/interprocess'
+import { Preload } from '#r/services/interprocess'
 
-const { paths, config } = main
-const { dlc, mods } = config
+class _ListsPreload {
+  static readonly paths = main.paths
+  static readonly config = main.config
+  static readonly dlc = this.config.dlc
+  static readonly mods = this.config.mods
 
-class ListsPreload {
-  constructor() {
-    preload.register<IListPreload>({
-      findMods: this.findMods,
-      getList: this.getList,
-      getModPak: this.getModPak,
-      removeDir: this.removeDir
-    }, PreloadType.lists)
-  }
-
-  removeDir = (path: string): void => {
+  static removeDir = (path: string): void => {
     rmSync(path, { recursive: true })
   }
 
-  findMods = async (): Promise<IFindItem[]> => {
+  static findMods = async (): Promise<IFindItem[]> => {
     const pathToUser = userInfo().homedir || homedir() || process.env.HOME || ''
     const out: IFindItem[] = []
 
@@ -41,7 +34,7 @@ class ListsPreload {
         if (file.isDirectory()) continue
 
         const filePath = join(modFolder, file.name)
-        const tempModFolder = join(paths.modsTemp, file.name)
+        const tempModFolder = join(this.paths.modsTemp, file.name)
         if (extname(file.name) === '.pak') {
           await main.unpack(filePath, tempModFolder, true)
           if (existsSync(join(tempModFolder, 'classes'))) {
@@ -60,8 +53,8 @@ class ListsPreload {
       }
     }
 
-    for (const enabledModName in mods.items) {
-      const enabledModPath = mods.items[enabledModName].path
+    for (const enabledModName in this.mods.items) {
+      const enabledModPath = this.mods.items[enabledModName].path
       let isExists = false
 
       for (const foundedModName in out) {
@@ -70,30 +63,30 @@ class ListsPreload {
         }
       }
 
-      if (!isExists) out.push(mods.items[enabledModName])
+      if (!isExists) out.push(this.mods.items[enabledModName])
     }
 
     return out
   }
 
-  getModPak = async (): Promise<IFindItem | undefined> => {
+  static getModPak = async (): Promise<IFindItem | undefined> => {
     const path = main.getInitial()
     if (!path) return
 
     const name = basename(path)
     const id = basename(path, '.pak')
-    await main.unpack(path, join(paths.modsTemp, id), true)
-    if (!existsSync(join(paths.modsTemp, id, 'classes')))
+    await main.unpack(path, join(this.paths.modsTemp, id), true)
+    if (!existsSync(join(this.paths.modsTemp, id, 'classes')))
       return
 
     return { path, name }
   }
 
-  getList = (category: Category, from?: SrcType): IItem[] => {
+  static getList = (category: Category, from?: SrcType): IItem[] => {
     if (from === SrcType.dlc) {
       const array: IItem[] = []
 
-      dlc.forEach(dlcItem => {
+      this.dlc.forEach(dlcItem => {
         const path = `${dlcItem.path}/classes`
         let items: IFindItem[] = []
 
@@ -117,15 +110,15 @@ class ListsPreload {
     if (from === SrcType.mods) {
       const array: IItem[] = []
 
-      for (const modId in mods.items) {
-        const item = mods.items[modId]
+      for (const modId in this.mods.items) {
+        const item = this.mods.items[modId]
         let items: IFindItem[] = []
 
         if (category === Category.trucks) {
-          items = main.findInDir(join(paths.modsTemp, modId, 'classes/trucks'), false, '.xml', true)
+          items = main.findInDir(join(this.paths.modsTemp, modId, 'classes/trucks'), false, '.xml', true)
         }
         else if (category === Category.trailers) {
-          items = main.findInDir(join(paths.modsTemp, modId, 'classes/trucks'), false, '.xml', true)
+          items = main.findInDir(join(this.paths.modsTemp, modId, 'classes/trucks'), false, '.xml', true)
         }
 
         array.push({
@@ -139,15 +132,22 @@ class ListsPreload {
     }
 
     if (category === Category.trucks) {
-      return <IItem[]>main.findInDir(join(paths.classes, 'trucks'))
+      return <IItem[]>main.findInDir(join(this.paths.classes, 'trucks'))
     }
 
     if (category === Category.trailers) {
-      return <IItem[]>main.findInDir(join(paths.classes, 'trucks/trailers'))
+      return <IItem[]>main.findInDir(join(this.paths.classes, 'trucks/trailers'))
     }
 
     return []
   }
-}
 
-new ListsPreload()
+  static {
+    Preload.register<IListPreload>({
+      findMods: this.findMods,
+      getList: this.getList,
+      getModPak: this.getModPak,
+      removeDir: this.removeDir
+    }, PreloadType.lists)
+  }
+}

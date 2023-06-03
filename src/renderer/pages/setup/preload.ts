@@ -7,17 +7,10 @@ import $ from './texts'
 
 import type { IFolder, ISetupPreload } from '#g/types'
 import main from '#r/scripts/main'
-import { preload } from '#r/services/interprocess'
+import { Preload } from '#r/services/interprocess'
 
-class SetupPreload {
-  constructor() {
-    preload.register<ISetupPreload>({
-      getGameFolder: this.getGameFolder,
-      getInitialPak: this.getInitialPak
-    })
-  }
-
-  getGameFolder = (): IFolder | undefined => {
+class _SetupPreload {
+  static getGameFolder = (): IFolder | undefined => {
     const result = main.getDir()
     let existed = ''
 
@@ -54,7 +47,7 @@ class SetupPreload {
     }
   }
 
-  getInitialPak = (): IFolder | undefined => {
+  static getInitialPak = (): IFolder | undefined => {
     const result = main.getInitial()
 
     if (!result || basename(result) !== 'initial.pak' || !existsSync(result)) {
@@ -63,6 +56,11 @@ class SetupPreload {
     }
     return { initial: result }
   }
-}
 
-new SetupPreload()
+  static {
+    Preload.register<ISetupPreload>({
+      getGameFolder: this.getGameFolder,
+      getInitialPak: this.getInitialPak
+    })
+  }
+}

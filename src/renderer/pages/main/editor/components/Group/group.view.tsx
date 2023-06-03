@@ -1,7 +1,7 @@
 import { Collapse } from 'antd'
 import { afcMemo, useMemo } from 'react-afc'
 
-import { getResetProvider, ResetContext } from '../../helpers/getResetProvider'
+import getResetProvider, { ResetContext } from '../../helpers/getResetProvider'
 import Parameter from '../Parameter'
 import GroupController from './group.controller'
 import GroupModel from './group.model'
@@ -11,9 +11,9 @@ import $ from '#g/texts/renderer'
 import { hasItems } from '#g/utils'
 import { useContextMenu } from '#r/helpers'
 
-const { Panel } = Collapse
-
 function Group(props: IGroupProps) {
+  const Panel = Collapse.Panel
+
   const model = new GroupModel(props)
   new GroupController(onReset)
 

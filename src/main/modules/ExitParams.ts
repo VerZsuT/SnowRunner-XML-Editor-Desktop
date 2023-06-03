@@ -1,8 +1,4 @@
-class ExitParamsClass {
-  quit = false
-  saveConfig = true
+export default class ExitParams {
+  static quit = false
+  static saveConfig = true
 }
-
-const ExitParams = new ExitParamsClass()
-
-export default ExitParams

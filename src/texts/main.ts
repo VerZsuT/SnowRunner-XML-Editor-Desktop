@@ -5,7 +5,15 @@ import globalTexts from './texts'
 import type { TextsToLocalize } from '#g/types'
 import Config from '#m/modules/Config'
 
-const $ = localize(globalTexts)
+/**
+ * Обновляет все поля объекта при изменении языка
+ * @param texts - объект с локализированными вариантами
+ */
+export function localize<T extends object>(texts: TextsToLocalize<T>): T {
+  return new Localized(texts, () => Config.lang, handler => Config.addChangeHandler(handler)).get()
+}
+
+export default localize(globalTexts)
 
 /**
  * Вызывает `handler` когда язык программы был изменён
@@ -25,15 +33,5 @@ export function handleLangChange(handler: () => void): () => void {
   return () => Config.removeChangeHandler(changeHandler)
 }
 
-/**
- * Обновляет все поля объекта при изменении языка
- * @param texts - объект с локализированными вариантами
- */
-function localize<T extends object>(texts: TextsToLocalize<T>): T {
-  return new Localized(texts, () => Config.lang, Config.addChangeHandler).get()
-}
-
 /** Объединить локальный перевод с глобальным */
 export const compareWithGlobal = comparator(globalTexts, localize)
-
-export default $

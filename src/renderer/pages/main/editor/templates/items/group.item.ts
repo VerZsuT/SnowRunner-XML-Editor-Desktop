@@ -1,4 +1,4 @@
-import helpers from './helpers'
+import Helpers from './helpers'
 
 import { ParamType } from '#g/enums'
 import type {
@@ -9,12 +9,12 @@ import type {
   TemplateParams
 } from '#g/types'
 import { hasItems, isString } from '#g/utils'
-import { getGameText } from '#r/pages/main/editor/templates/helpers'
+import { getGameText } from '#r_editor/templates/helpers'
 
 /**
  * Объединение параметров в раскрывающуюся группу.
  */
-class Group implements ITemplateItem<[IGroupParams] | any[]> {
+export default class Group implements ITemplateItem<[IGroupParams] | any[]> {
   private label!: GroupTypedProps['label']
   private withCounter!: boolean
   private iconPath?: string
@@ -46,11 +46,11 @@ class Group implements ITemplateItem<[IGroupParams] | any[]> {
       let labelSelectorID: string | undefined
       let labelExtraSelectorID: string | undefined
       if (Array.isArray(this.label.selector)) {
-        labelSelectorID = helpers.getSelectorID(this.label.selector[0])
-        labelExtraSelectorID = helpers.getSelectorID(this.label.selector[1])
+        labelSelectorID = Helpers.getSelectorID(this.label.selector[0])
+        labelExtraSelectorID = Helpers.getSelectorID(this.label.selector[1])
       }
       else {
-        labelSelectorID = helpers.getSelectorID(this.label.selector)
+        labelSelectorID = Helpers.getSelectorID(this.label.selector)
       }
 
       const $nameElement = fileDOM.select(formattedSelectors[labelSelectorID!])
@@ -106,8 +106,6 @@ class Group implements ITemplateItem<[IGroupParams] | any[]> {
     this.iconPath = props.iconName
     this.withCounter = props.addCounter ?? false
     this.providedSelector = props.provided
-    this.providedSelectorID = helpers.getSelectorID(this.providedSelector)
+    this.providedSelectorID = Helpers.getSelectorID(this.providedSelector)
   }
 }
-
-export default Group

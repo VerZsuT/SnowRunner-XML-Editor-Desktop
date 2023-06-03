@@ -12,11 +12,11 @@ import type IListProps from './list.props'
 
 import { LIST_SCROLL } from '#g/consts'
 import { SrcType } from '#g/enums'
-import { config, storage } from '#r/services'
+import { Config, Storage } from '#r/services'
 
-const { settings } = config
+export default afcMemo<IListProps>(function ListView(props) {
+  const { settings } = Config
 
-function ListView(props: IListProps) {
   const model = new ListModel(props)
   const ctrlr = new ListController(props, model)
 
@@ -65,7 +65,7 @@ function ListView(props: IListProps) {
           />
         </>}
         <FixedSizeGrid
-          initialScrollTop={parseInt(storage.pop(LIST_SCROLL) || '0')}
+          initialScrollTop={parseInt(Storage.pop(LIST_SCROLL) || '0')}
           className='card-list'
           columnCount={colCount}
           columnWidth={colWidth}
@@ -99,6 +99,4 @@ function ListView(props: IListProps) {
   function onHideModsPopup(isReload?: boolean): void {
     ctrlr.hideModsPopup(isReload)
   }
-}
-
-export default afcMemo(ListView)
+})

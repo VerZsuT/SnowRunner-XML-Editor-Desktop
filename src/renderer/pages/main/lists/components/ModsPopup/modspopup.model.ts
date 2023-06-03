@@ -1,10 +1,10 @@
+import $ from '../../texts'
 import type IModsPopupProps from './modspopup.props'
 
 import type { IFindItem } from '#g/types'
 import { prop, reactive, ViewModel } from '#r/model-ctrlr'
-import $ from '../../texts'
 
-class ModsPopupModel extends ViewModel<IModsPopupProps> {
+export default class ModsPopupModel extends ViewModel<IModsPopupProps> {
   readonly titles = [$.FOUND_ITEMS, $.ADDED_ITEMS]
 
   @prop<IModsPopupProps>('show')
@@ -14,5 +14,3 @@ class ModsPopupModel extends ViewModel<IModsPopupProps> {
   @reactive targetKeys: string[] = []
   @reactive selectedKeys: string[] = []
 }
-
-export default ModsPopupModel

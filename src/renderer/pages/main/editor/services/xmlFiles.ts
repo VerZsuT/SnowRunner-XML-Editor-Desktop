@@ -11,12 +11,12 @@ interface IXMLFile {
   type: FileType
 }
 
-class XMLFilesService {
-  files: IXMLFile[] = []
+export default class XMLFilesService {
+  static files: IXMLFile[] = []
 
-  private readonly listeners = new Set<() => void>()
+  private static readonly listeners = new Set<() => void>()
 
-  subscribe() {
+  static subscribe() {
     const update = { isForced: false }
     const forceUpdate = useForceUpdate()
     setTimeout(() => {
@@ -28,7 +28,7 @@ class XMLFilesService {
     return update
   }
 
-  add(file: IXMLFile, clearPrev?: boolean): void {
+  static add(file: IXMLFile, clearPrev?: boolean): void {
     if (clearPrev) this.files = []
 
     for (let i = 0; i < this.files.length; ++i) {
@@ -39,7 +39,3 @@ class XMLFilesService {
     this.listeners.forEach(listener => listener())
   }
 }
-
-const xmlFiles = new XMLFilesService()
-
-export default xmlFiles

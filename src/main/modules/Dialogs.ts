@@ -9,8 +9,8 @@ import { DialogAlertType, DialogSourceType, DialogType } from '#g/enums'
 import type { IDialogAlertParams, IDialogParams, IOpenDialogParams } from '#g/types'
 import $ from '#m/texts'
 
-class DialogsClass {
-  private readonly extNames = {
+export default class Dialogs {
+  private static readonly extNames = {
     epf: 'Editor params file',
     ecf: 'Editor configuration file',
     pak: 'Package file',
@@ -18,7 +18,7 @@ class DialogsClass {
   }
 
   /** Выводит ошибку на экран */
-  error(message: string): void {
+  static error(message: string): void {
     this.alert({
       type: 'warning',
       title: $.ERROR,
@@ -27,7 +27,7 @@ class DialogsClass {
   }
 
   /** Открыть окно с сообщением */
-  alert(params: IDialogAlertParams): number | Promise<MessageBoxReturnValue> {
+  static alert(params: IDialogAlertParams): number | Promise<MessageBoxReturnValue> {
     const {
       dialogType = DialogAlertType.sync,
       buttons = [$.OK],
@@ -53,13 +53,13 @@ class DialogsClass {
 
   /** Открыть окно выбора `.epf` файла */
   @publicMethod()
-  getEPF(): string {
+  static getEPF(): string {
     return this.openDialog({ extention: 'epf' }) as string
   }
 
   /** Открыть окно сохранения `.epf` файла */
   @publicMethod()
-  saveEPF(defaultName: string): string {
+  static saveEPF(defaultName: string): string {
     return this.openDialog({
       type: DialogType.save,
       defaultPath: defaultName,
@@ -69,18 +69,18 @@ class DialogsClass {
 
   /** Открыть окно выбора `initial.pak` */
   @publicMethod()
-  getInitial(): string {
+  static getInitial(): string {
     return this.openDialog({ extention: 'pak' }) as string
   }
 
   /** Открыть окно выбора папки */
   @publicMethod()
-  getDir(): string {
+  static getDir(): string {
     return this.openDialog({ source: DialogSourceType.dir }) as string
   }
 
   /** Открыть окно выбора нескольких `.epf` файлов */
-  getMultiEPF(): string[] {
+  static getMultiEPF(): string[] {
     return this.openDialog({
       properties: ['openFile', 'multiSelections'],
       extention: 'epf'
@@ -89,12 +89,12 @@ class DialogsClass {
 
   /** Открыть окно выбора `.xml` файла */
   @publicMethod()
-  getXML(): string {
+  static getXML(): string {
     return this.openDialog({ extention: 'xml' }) as string
   }
 
   /** Открыть диалоговое окно */
-  openDialog(params: IOpenDialogParams): string | string[] | undefined {
+  static openDialog(params: IOpenDialogParams): string | string[] | undefined {
     const {
       type = DialogType.open,
       source = DialogSourceType.file,
@@ -141,7 +141,3 @@ class DialogsClass {
     }
   }
 }
-
-const Dialogs = new DialogsClass()
-
-export default Dialogs

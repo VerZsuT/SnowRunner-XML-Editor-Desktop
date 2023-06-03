@@ -10,9 +10,9 @@ import AddonsContentModel from './addonscontent.model'
 
 import type { IExtraActionProps } from '#g/types'
 
-const { Text } = Typography
+export default afcMemo<IExtraActionProps>(function AddonsContentComponent(props) {
+  const Text = Typography.Text
 
-function AddonsContentComponent(props: IExtraActionProps) {
   const model = new AddonsContentModel(props)
   const ctrlr = new AddonsContentController(props, model)
 
@@ -77,6 +77,4 @@ function AddonsContentComponent(props: IExtraActionProps) {
   function onSaveClick(): void | never {
     ctrlr.save()
   }
-}
-
-export default afcMemo(AddonsContentComponent)
+})

@@ -8,7 +8,7 @@ import $ from '../../texts'
 import SearchController from './search.controller'
 import SearchModel from './search.model'
 
-function SearchView() {
+export default afcMemo(function SearchView() {
   const model = new SearchModel()
   const ctrlr = new SearchController()
 
@@ -27,6 +27,4 @@ function SearchView() {
   function onInput(e: ChangeEvent<HTMLInputElement>): void {
     ctrlr.changeFilter(e.currentTarget.value)
   }
-}
-
-export default afcMemo(SearchView)
+})

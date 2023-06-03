@@ -7,13 +7,12 @@ import $ from './texts'
 import { ProgramWindow } from '#g/enums'
 import { handleIPC, handleLocale, windowReady } from '#r/helpers'
 import { ViewController } from '#r/model-ctrlr'
-import bridge from '#r/scripts/bridge'
-import { config, system } from '#r/services'
+import Bridge from '#r/scripts/bridge'
+import { Config, System } from '#r/services'
 
-const paths = bridge.paths
-const { confirm } = Modal
+export default class SetupController extends ViewController<{}, SetupModel> {
+  private readonly paths = Bridge.paths
 
-class SetupController extends ViewController<{}, SetupModel> {
   constructor(model: SetupModel) {
     super({}, model)
 
@@ -27,8 +26,8 @@ class SetupController extends ViewController<{}, SetupModel> {
   }
 
   save = (path: string): void => {
-    config.initial = path
-    void bridge.saveBackup(true)
+    Config.initial = path
+    void Bridge.saveBackup(true)
   }
 
   nextStep = (): void => {
@@ -36,15 +35,13 @@ class SetupController extends ViewController<{}, SetupModel> {
   }
 
   private checkExportedConfig = (): void => {
-    if (system.existsSync(system.join(paths.backupFolder, 'config.json'))) {
-      confirm({
+    if (System.existsSync(System.join(this.paths.backupFolder, 'config.json'))) {
+      Modal.confirm({
         okText: $.OK, cancelText: $.CANCEL,
         title: $.IMPORT_CONFIG_MESSAGE,
-        onOk: () => bridge.importConfig(),
+        onOk: () => Bridge.importConfig(),
         style: { marginTop: -60 }
       })
     }
   }
 }
-
-export default SetupController

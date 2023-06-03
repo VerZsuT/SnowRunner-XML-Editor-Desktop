@@ -1,6 +1,6 @@
 import { compareWithGlobal } from '#g/texts/main'
 
-const $ = compareWithGlobal({
+export default compareWithGlobal({
   RU: {
     DELETE_OLD_INITIAL_BACKUP_ERROR: 'Не удалось удалить старый бэкап initial.pak.',
     DELETE_CURRENT_INITIAL_BACKUP_ERROR: 'Не удалось удалить текущий бэкап initial.pak',
@@ -90,5 +90,3 @@ const $ = compareWithGlobal({
     SAVE_ORIGINAL_ERROR: '更新initial.pak中的文件失败。没有写入权限'
   }
 })
-
-export default $

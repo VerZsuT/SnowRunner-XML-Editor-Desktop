@@ -2,7 +2,7 @@ import type { BrowserWindow } from 'electron'
 
 import type { ProgramWindow } from '#g/enums'
 
-interface ICreateWindowAttributes {
+export default interface ICreateWindowAttributes {
   path: string
   preload: string
   width?: number
@@ -16,5 +16,3 @@ interface ICreateWindowAttributes {
   frame?: boolean
   type: ProgramWindow
 }
-
-export default ICreateWindowAttributes

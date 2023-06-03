@@ -3,11 +3,9 @@ import type IItem from './IItem'
 
 import type { Category, SrcType } from '#g/enums'
 
-interface IListPreload {
+export default interface IListPreload {
   removeDir(path: string): void
   getModPak(): Promise<IFindItem | undefined>
   findMods(): Promise<IFindItem[]>
   getList(listType: Category, from?: SrcType): IItem[]
 }
-
-export default IListPreload

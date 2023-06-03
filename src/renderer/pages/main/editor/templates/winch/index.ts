@@ -1,2 +1,5 @@
 import winchTemplate from './winch.template'
-export default winchTemplate
+
+import type { IXMLTemplate } from '#g/types'
+
+export default winchTemplate as IXMLTemplate

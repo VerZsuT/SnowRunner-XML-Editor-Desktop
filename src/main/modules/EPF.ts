@@ -8,8 +8,8 @@ import Dialogs from './Dialogs'
 import { APP_NAME } from '#g/consts'
 import $ from '#m/texts'
 
-class EPFClass {
-  private readonly DEFAULT_NAME = 'joined'
+export default class EPF {
+  private static readonly DEFAULT_NAME = 'joined'
 
   /**
    * Открыть окно выбора `.epf` файлов.
@@ -17,7 +17,7 @@ class EPFClass {
    * После выбора объединяет их и сохраняет по выбранному пользователем пути
    */
   @publicMethod('joinEPF')
-  join(): void {
+  static join(): void {
     const files = Dialogs.getMultiEPF()
 
     if (files && files.length > 1) {
@@ -58,7 +58,7 @@ class EPFClass {
    * Анализирует выбранный .epf файл и выводит окно с его содержимым в более удобном формате
    */
   @publicMethod('seeEPF')
-  see(): void {
+  static see(): void {
     const path = Dialogs.getEPF()
     if (!path) return
 
@@ -78,7 +78,3 @@ class EPFClass {
     })
   }
 }
-
-const EPF = new EPFClass()
-
-export default EPF

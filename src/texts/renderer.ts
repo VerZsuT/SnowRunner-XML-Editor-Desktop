@@ -3,26 +3,26 @@ import Localized from './Localized'
 import globalTexts from './texts'
 
 import type { TextsToLocalize } from '#g/types'
-import config from '#r/services/config.service'
+import Config from '#r/services/config.service'
 
-const $ = localize(globalTexts)
+export default localize(globalTexts)
 
 /**
  * Вызывает `handler` когда язык программы был изменён
  * @returns функция удаления обработчика
  */
 export function handleLangChange(handler: () => void): () => void {
-  let prevLang = config.lang
+  let prevLang = Config.lang
 
   function changeHandler() {
-    if (config.lang !== prevLang) {
-      prevLang = config.lang
+    if (Config.lang !== prevLang) {
+      prevLang = Config.lang
       handler()
     }
   }
 
-  config.addChangeHandler(changeHandler)
-  return () => config.removeChangeHandler(changeHandler)
+  Config.addChangeHandler(changeHandler)
+  return () => Config.removeChangeHandler(changeHandler)
 }
 
 /**
@@ -30,7 +30,7 @@ export function handleLangChange(handler: () => void): () => void {
  * @param texts - объект с локализированными вариантами
  */
 export function localize<Value extends { [key: string]: any }>(texts: TextsToLocalize<Value>): Value {
-  return new Localized(texts, () => config.lang, handleLangChange).get()
+  return new Localized(texts, () => Config.lang, handleLangChange).get()
 }
 
 /**
@@ -62,5 +62,3 @@ export function updateOnLangChange<Value>(getter: () => Value): { val: Value, ca
 
 /** Объединить локальный перевод с глобальным */
 export const compareWithGlobal = comparator(globalTexts, localize)
-
-export default $

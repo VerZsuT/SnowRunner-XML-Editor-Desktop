@@ -1,28 +1,23 @@
-import ipc from './ipc.service'
+import IPC from './ipc.service'
 
 import { IPCChannel } from '#g/enums'
 import type { IConfig } from '#g/types'
 import { isNonNullable, isObject } from '#g/utils'
-import bridge from '#r/scripts/bridge'
+import Bridge from '#r/scripts/bridge'
 
-class ConfigService {
-  private readonly changeHandlers = new Set<() => void>()
-  private readonly config = { ...bridge.config }
+class Config {
+  private static readonly changeHandlers = new Set<() => void>()
+  private static readonly config = { ...Bridge.config }
 
-  constructor() {
-    this.defineObject(this.config, this)
-    ipc.on(IPCChannel.changeConfig, this.onChangeConfig)
-  }
-
-  addChangeHandler = (handler: () => void): void => {
+  static addChangeHandler = (handler: () => void): void => {
     this.changeHandlers.add(handler)
   }
 
-  removeChangeHandler = (handler: () => void): void => {
+  static removeChangeHandler = (handler: () => void): void => {
     this.changeHandlers.delete(handler)
   }
 
-  private defineObject(obj: any, to: any): void {
+  private static defineObject(obj: any, to: any): void {
     for (const key in obj) {
       const value = obj[key]
       if (isObject(value) && !Array.isArray(value) && isNonNullable(value)) {
@@ -41,7 +36,7 @@ class ConfigService {
     }
   }
 
-  private define(from: any, to: any, key: string): void {
+  private static define(from: any, to: any, key: string): void {
     Object.defineProperty(to, key, {
       get: () => from[key],
       set: value => this.changeConfig(() => from[key] = value),
@@ -50,17 +45,20 @@ class ConfigService {
     })
   }
 
-  private changeConfig(callback: () => void): void {
+  private static changeConfig(callback: () => void): void {
     callback()
-    bridge.config = this.config
+    Bridge.config = this.config
   }
 
-  private onChangeConfig = () => {
-    Object.assign(this.config, bridge.config)
+  private static onChangeConfig = () => {
+    Object.assign(this.config, Bridge.config)
     this.changeHandlers.forEach(handler => handler())
+  }
+
+  static {
+    this.defineObject(this.config, this)
+    IPC.on(IPCChannel.changeConfig, this.onChangeConfig)
   }
 }
 
-const config = new ConfigService() as ConfigService & IConfig
-
-export default config
+export default Config as typeof Config & IConfig

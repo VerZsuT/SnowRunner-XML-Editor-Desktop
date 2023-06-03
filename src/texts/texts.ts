@@ -1,5 +1,5 @@
 /** Глобальный перевод */
-const globalTexts = {
+export default {
   RU: {
     SUCCESS_EXPORT_MESSAGE: 'Конфигурация успешно экпортирована',
     LOADING: 'Загрузка',
@@ -49,5 +49,3 @@ const globalTexts = {
     CANCEL: '取消'
   }
 }
-
-export default globalTexts

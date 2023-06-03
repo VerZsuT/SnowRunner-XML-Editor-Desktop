@@ -1,7 +1,7 @@
 import { useOnDestroy } from 'react-afc'
 
 /** Добавляет обработчик события элементу */
-function addEventListener<
+export default function addEventListener<
   ElemType extends Element | Document | Window,
   KeyType extends keyof MapType,
   MapType = ElemType extends Element
@@ -16,5 +16,3 @@ function addEventListener<
   element.addEventListener(type.toString(), listener as EventListener)
   useOnDestroy(() => element.removeEventListener(type.toString(), listener as EventListener))
 }
-
-export default addEventListener

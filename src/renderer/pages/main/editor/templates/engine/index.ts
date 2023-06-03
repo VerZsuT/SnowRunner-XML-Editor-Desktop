@@ -1,2 +1,5 @@
 import engineTemplate from './enigne.template'
-export default engineTemplate
+
+import type { IXMLTemplate } from '#g/types'
+
+export default engineTemplate as IXMLTemplate

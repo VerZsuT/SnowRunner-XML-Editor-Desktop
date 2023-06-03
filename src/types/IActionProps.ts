@@ -1,9 +1,7 @@
 import type IXMLElement from './IXMLElement'
 
-interface IActionProps {
+export default interface IActionProps {
   filePath: string
   currentMod: string
   dom: IXMLElement
 }
-
-export default IActionProps

@@ -1,10 +1,8 @@
 import type { IGroupParams } from '#g/types'
 
-interface IGroupProps {
+export default interface IGroupProps {
   key: string | number
   item: IGroupParams
   isActive?: boolean
   renderIt?: boolean
 }
-
-export default IGroupProps

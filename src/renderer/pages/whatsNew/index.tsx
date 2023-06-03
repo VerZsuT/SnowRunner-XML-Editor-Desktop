@@ -1,5 +1,5 @@
 import WhatsNew from './whatsnew.view'
 
-import { helpers } from '#r/services'
+import { Helpers } from '#r/services'
 
-helpers.renderComponent(<WhatsNew />)
+Helpers.renderComponent(<WhatsNew />)

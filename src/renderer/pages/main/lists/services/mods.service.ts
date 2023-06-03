@@ -1,16 +1,16 @@
 import { PreloadType } from '#g/enums'
 import type { IConfigModsItems, IFindItem, IListPreload } from '#g/types'
-import { config, preload, system } from '#r/services'
+import { Config, Preload, System } from '#r/services'
 
-const { findMods, getModPak } = preload.get<IListPreload>(PreloadType.lists)
+export default class ModsService {
+  private static readonly preload = Preload.get<IListPreload>(PreloadType.lists)
 
-class ModsService {
-  async load(): Promise<IFindItem[]> {
-    return findMods()
+  static async load(): Promise<IFindItem[]> {
+    return this.preload.findMods()
   }
 
-  async requestMod() {
-    const result = await getModPak()
+  static async requestMod() {
+    const result = await this.preload.getModPak()
     if (!result) return
     return {
       ...result,
@@ -18,27 +18,27 @@ class ModsService {
     }
   }
 
-  save(keys: string[], items: IFindItem[]): void {
+  static save(keys: string[], items: IFindItem[]): void {
     const selected = this.keysToModsItems(keys, items)
 
-    config.mods = {
+    Config.mods = {
       length: keys.length,
       items: selected
     }
   }
 
-  itemToKeys(items: IFindItem[]): string[] {
+  static itemToKeys(items: IFindItem[]): string[] {
     return items.map(item => item.path)
   }
 
-  keysToModsItems(keys: string[], items: IFindItem[]): IConfigModsItems {
+  static keysToModsItems(keys: string[], items: IFindItem[]): IConfigModsItems {
     const out: IConfigModsItems = {}
 
     keys.forEach(key => {
       Object.values(items).forEach(item => {
         if (item.path === key) {
-          out[system.basename(item.path, '.pak')] = {
-            name: system.basename(item.path),
+          out[System.basename(item.path, '.pak')] = {
+            name: System.basename(item.path),
             path: item.path
           }
         }
@@ -48,7 +48,3 @@ class ModsService {
     return out
   }
 }
-
-const mods = new ModsService()
-
-export default mods

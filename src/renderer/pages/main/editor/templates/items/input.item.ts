@@ -1,11 +1,11 @@
-import helpers from './helpers'
+import Helpers from './helpers'
 
 import { DEBUG_EDITOR_PARAMS } from '#g/consts'
 import type { FileType } from '#g/enums'
 import { InputType, NumberType, ParamType } from '#g/enums'
 import type { IInputAreas, IInputParams, IItemGetterProps, ITemplateItem, IXMLElement, InputTypedProps } from '#g/types'
 
-class Input implements ITemplateItem<[IInputParams] | []> {
+export default class Input implements ITemplateItem<[IInputParams] | []> {
   private readonly label: string
   private readonly attribute: string
   private readonly addMissedTag: boolean
@@ -20,7 +20,7 @@ class Input implements ITemplateItem<[IInputParams] | []> {
   private readonly areas?: IInputAreas
 
   constructor(props: InputTypedProps) {
-    const baseProps = helpers.getInputBaseProps(props)
+    const baseProps = Helpers.getInputBaseProps(props)
     this.label = baseProps.label
     this.attribute = baseProps.attribute
     this.addMissedTag = baseProps.addMissedTag ?? false
@@ -95,5 +95,3 @@ class Input implements ITemplateItem<[IInputParams] | []> {
     return [false, false]
   }
 }
-
-export default Input

@@ -7,20 +7,20 @@ import xmlFiles from './xmlFiles'
 import type { IExportedData, IXMLElement, IXMLTemplate } from '#g/types'
 import { isString } from '#g/utils'
 import bridge from '#r/scripts/bridge'
-import { system, xml } from '#r/services'
+import { System, XML } from '#r/services'
 
 type ImportHandler = () => void
 
-class ImportService {
-  readonly handlers = new Set<ImportHandler>()
+export default class ImportService {
+  private static readonly handlers = new Set<ImportHandler>()
 
-  onImport(handler: ImportHandler): void {
+  static onImport(handler: ImportHandler): void {
     this.handlers.add(handler)
     useOnDestroy(() => this.handlers.delete(handler))
   }
 
-  importFile(currentPath: string, fileDOM: IXMLElement, actions: IXMLTemplate['extraActions'], importPath?: string): void {
-    const currentFileName = system.basename(currentPath)
+  static importFile(currentPath: string, fileDOM: IXMLElement, actions: IXMLTemplate['extraActions'], importPath?: string): void {
+    const currentFileName = System.basename(currentPath)
     let pathToImport = importPath
 
     if (!isString(importPath)) {
@@ -31,19 +31,19 @@ class ImportService {
       void message.error($.PARAMS_FILE_NOT_FOUND)
       return
     }
-    const data: IExportedData | IExportedData[] = JSON.parse(system.readFileSync(pathToImport))
+    const data: IExportedData | IExportedData[] = JSON.parse(System.readFileSync(pathToImport))
 
     function importData(item: IExportedData) {
       for (const fileName in item.data) {
         let dom!: IXMLElement
         xmlFiles.files.forEach(file => {
-          if (system.basename(file.path) === fileName) {
+          if (System.basename(file.path) === fileName) {
             dom = file.dom
           }
         })
 
         for (const selector in item.data[fileName]) {
-          xml.addTag(dom, { selector })
+          XML.addTag(dom, { selector })
           for (const attribute in item.data[fileName][selector]) {
             dom.select(selector).setAttr(attribute, item.data[fileName][selector][attribute].toString())
           }
@@ -82,7 +82,3 @@ class ImportService {
     this.handlers.forEach(handler => handler())
   }
 }
-
-const imports = new ImportService()
-
-export default imports

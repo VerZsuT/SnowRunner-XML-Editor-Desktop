@@ -10,9 +10,9 @@ import { Language } from '#r/components'
 import '#r/templateScript'
 import './settings.styles'
 
-const { Text } = Typography
+export default afc(function Settings() {
+  const Text = Typography.Text
 
-function Settings() {
   const model = new SettingsModel()
   const ctrlr = new SettingsController(model)
 
@@ -62,6 +62,4 @@ function Settings() {
       </Button>
     </>
   }
-}
-
-export default afc(Settings)
+})

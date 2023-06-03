@@ -4,7 +4,7 @@ import { afcMemo } from 'react-afc'
 import HeaderModel from './header.model'
 import type HeaderProps from './header.props'
 
-function HeaderView(props: HeaderProps) {
+export default afcMemo<HeaderProps>(function HeaderView(props) {
   const model = new HeaderModel(props)
 
   return () => (
@@ -18,6 +18,4 @@ function HeaderView(props: HeaderProps) {
       {...props}
     />
   )
-}
-
-export default afcMemo(HeaderView)
+})

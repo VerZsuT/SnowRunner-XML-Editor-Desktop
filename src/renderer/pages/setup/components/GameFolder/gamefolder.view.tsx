@@ -6,7 +6,7 @@ import $ from '../../texts'
 import GameFolderController from './gamefolder.controller'
 import type GameFolderProps from './gamefolder.props'
 
-function GameFolderView(props: GameFolderProps) {
+export default afcMemo<GameFolderProps>(function GameFolderView(props) {
   const ctrlr = new GameFolderController(props)
 
   return () => (
@@ -38,6 +38,4 @@ function GameFolderView(props: GameFolderProps) {
   function onPakClick(): void {
     ctrlr.getPak()
   }
-}
-
-export default afcMemo(GameFolderView)
+})

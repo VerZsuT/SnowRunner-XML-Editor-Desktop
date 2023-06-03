@@ -8,7 +8,7 @@ import WhatsNewModel from './whatsnew.model'
 import '#r/templateScript'
 import './whatsnew.styles'
 
-function WhatsNew() {
+export default afc(function WhatsNew() {
   const model = new WhatsNewModel()
   new WhatsNewController()
 
@@ -69,6 +69,4 @@ function WhatsNew() {
       )}
     />
   </>
-}
-
-export default afc(WhatsNew)
+})

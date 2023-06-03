@@ -3,36 +3,36 @@ import { createSlice } from '@reduxjs/toolkit'
 
 import { OPENED_CATEGORY, OPENED_GROUP } from '#g/consts'
 import { Category, GroupTab } from '#g/enums'
-import { config, storage } from '#r/services'
+import { Config, Storage } from '#r/services'
 import type { MainState } from './index'
 
 const listSlice = createSlice({
   name: 'list',
   initialState: {
-    group: storage.get<GroupTab>(OPENED_GROUP) ?? GroupTab.main,
-    category: storage.get<Category>(OPENED_CATEGORY) ?? Category.trucks,
-    favorites: config.favorites
+    group: Storage.get<GroupTab>(OPENED_GROUP) ?? GroupTab.main,
+    category: Storage.get<Category>(OPENED_CATEGORY) ?? Category.trucks,
+    favorites: Config.favorites
   },
   reducers: {
     setGroup(state, action: PayloadAction<GroupTab>): void {
       state.group = action.payload
     },
     setCategory(state, action: PayloadAction<Category>): void {
-      storage.set(OPENED_CATEGORY, action.payload)
+      Storage.set(OPENED_CATEGORY, action.payload)
       state.category = action.payload
     },
     toggleFavorite(state, action: PayloadAction<string>): void {
-      const favorites = config.favorites
+      const favorites = Config.favorites
       const name = action.payload
 
       if (favorites.includes(name)) {
-        config.favorites = favorites.filter(value => value !== name)
+        Config.favorites = favorites.filter(value => value !== name)
       }
       else {
-        config.favorites = [...favorites, name]
+        Config.favorites = [...favorites, name]
       }
 
-      state.favorites = config.favorites
+      state.favorites = Config.favorites
     }
   }
 })

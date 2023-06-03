@@ -1,6 +1,6 @@
 import { compareWithGlobal } from '#g/texts/renderer'
 
-const $ = compareWithGlobal({
+export default compareWithGlobal({
   RU: {
     HEIGHT: 'Высота',
     STRENGTH: 'Жёсткость',
@@ -46,5 +46,3 @@ const $ = compareWithGlobal({
     DAMAGE_CAPACITY: '血量'
   }
 })
-
-export default $

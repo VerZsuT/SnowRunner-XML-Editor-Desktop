@@ -2,9 +2,9 @@ import type ILanguageProps from './language.props'
 
 import { Lang } from '#g/enums'
 import { ViewModel, reactive } from '#r/model-ctrlr'
-import { config } from '#r/services'
+import { Config } from '#r/services'
 
-class LanguageModel extends ViewModel<ILanguageProps> {
+export default class LanguageModel extends ViewModel<ILanguageProps> {
   readonly inSetup: boolean
 
   readonly options = Object.keys(Lang).map(lang => ({
@@ -12,12 +12,10 @@ class LanguageModel extends ViewModel<ILanguageProps> {
     value: lang
   }))
 
-  @reactive currentLang = config.lang
+  @reactive currentLang = Config.lang
 
   constructor(props: ILanguageProps) {
     super(props)
     this.inSetup = !!props.isSetup
   }
 }
-
-export default LanguageModel

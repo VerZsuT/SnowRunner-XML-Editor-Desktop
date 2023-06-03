@@ -2,8 +2,8 @@ import { Notification } from 'electron'
 
 import Paths from './Paths'
 
-class NotificationsClass {
-  async show(title: string, message: string): Promise<void> {
+export default class Notifications {
+  static async show(title: string, message: string): Promise<void> {
     if (!Notification.isSupported()) return
 
     const notification = new Notification({
@@ -16,7 +16,3 @@ class NotificationsClass {
     await new Promise(resolve => notification.once('click', resolve))
   }
 }
-
-const Notifications = new NotificationsClass()
-
-export default Notifications

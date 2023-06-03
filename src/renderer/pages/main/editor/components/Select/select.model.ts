@@ -2,7 +2,7 @@ import type { IParameterProps, ISelectParams } from '#g/types'
 import { isNullable } from '#g/utils'
 import { ViewModel, prop } from '#r/model-ctrlr'
 
-class SelectModel extends ViewModel<IParameterProps> {
+export default class SelectModel extends ViewModel<IParameterProps> {
   @prop<IParameterProps>('value')
   readonly value!: IParameterProps['value']
 
@@ -31,5 +31,3 @@ class SelectModel extends ViewModel<IParameterProps> {
     }
   })
 }
-
-export default SelectModel

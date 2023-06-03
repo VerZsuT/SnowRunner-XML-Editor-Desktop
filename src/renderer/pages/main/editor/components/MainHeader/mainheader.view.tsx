@@ -19,11 +19,9 @@ import MainHeaderModel from './mainheader.model'
 import type IMainHeaderProps from './mainheader.props'
 
 import { Header } from '#r/components'
-import { system } from '#r/services'
+import { System } from '#r/services'
 
-const { confirm } = Modal
-
-function MainHeader(props: IMainHeaderProps) {
+export default afcMemo<IMainHeaderProps>(function MainHeader(props) {
   const model = new MainHeaderModel(props)
   const ctrlr = new MainHeaderController(props, model)
 
@@ -72,7 +70,7 @@ function MainHeader(props: IMainHeaderProps) {
         icon: <FileOutlined />,
         children: xmlFiles.files.map(file => ({
           key: file.path,
-          label: system.basename(file.path),
+          label: System.basename(file.path),
           icon: <img src={require(`#g/images/icons/${file.type}.png`)} />,
           onClick() {
             ctrlr.openXMLFile(file)
@@ -124,7 +122,7 @@ function MainHeader(props: IMainHeaderProps) {
   }
 
   function onReset(): void {
-    confirm({
+    Modal.confirm({
       okText: $.OK, cancelText: $.CANCEL,
       title: $.RESET_CONFIRM_MESSAGE,
       onOk() {
@@ -140,6 +138,4 @@ function MainHeader(props: IMainHeaderProps) {
   function ifAdvanced(item: MenuItemsType[number]): MenuItemsType {
     return model.advancedMode ? [item] : []
   }
-}
-
-export default afcMemo(MainHeader)
+})

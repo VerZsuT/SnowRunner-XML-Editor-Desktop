@@ -8,13 +8,13 @@ import type AddonsContentModel from './addonscontent.model'
 import type { IExtraActionProps, IFindItem, IXMLElement } from '#g/types'
 import { isNonNullable } from '#g/utils'
 import { ViewController } from '#r/model-ctrlr'
-import bridge from '#r/scripts/bridge'
+import Bridge from '#r/scripts/bridge'
 import { XMLDOM } from '#r/scripts/xml'
-import { helpers, system } from '#r/services'
+import { Helpers, System } from '#r/services'
 
-const paths = bridge.paths
+export default class AddonsContentController extends ViewController<IExtraActionProps, AddonsContentModel> {
+  private static paths = Bridge.paths
 
-class AddonsContentController extends ViewController<IExtraActionProps, AddonsContentModel> {
   constructor(props: IExtraActionProps, model: AddonsContentModel) {
     super(props, model)
 
@@ -23,7 +23,7 @@ class AddonsContentController extends ViewController<IExtraActionProps, AddonsCo
       if (this.model.items) return
 
       setTimeout(() => {
-        const items = this.getAddons(system.basename(filePath, '.xml'), currentMod, this.isInstalled.bind(this))
+        const items = this.getAddons(System.basename(filePath, '.xml'), currentMod, this.isInstalled.bind(this))
         const data = this.getAddonData(items[0].path)
 
         model.options = this.initOptions(items)
@@ -105,7 +105,7 @@ class AddonsContentController extends ViewController<IExtraActionProps, AddonsCo
     if (!pathToAddon) throw new Error('Path to addon not found')
     if (!DOM) throw new Error('DOM is undefined')
 
-    system.writeFileSync(pathToAddon, DOM.toHTML()!)
+    System.writeFileSync(pathToAddon, DOM.toHTML()!)
     void message.success($.CHANGED)
   }
 
@@ -133,7 +133,7 @@ class AddonsContentController extends ViewController<IExtraActionProps, AddonsCo
     const uiDesc = dom?.select('UiDesc')
     const key = uiDesc?.exists ? uiDesc?.getAttr('UiName') : undefined
 
-    return helpers.getGameText(key, this.props.currentMod) || addon.name
+    return Helpers.getGameText(key, this.props.currentMod) || addon.name
   }
 
   private getItem(name?: string): IFindItem | undefined {
@@ -173,7 +173,7 @@ class AddonsContentController extends ViewController<IExtraActionProps, AddonsCo
 
   private getDOM(path?: string): IXMLElement | undefined {
     const filePath = path ?? this.getItem()?.path ?? ''
-    if (!system.existsSync(filePath)) return
+    if (!System.existsSync(filePath)) return
 
     return XMLDOM.fromPath(filePath)
   }
@@ -181,45 +181,45 @@ class AddonsContentController extends ViewController<IExtraActionProps, AddonsCo
   private getAddons(truckName: string, modId?: string, filter?: (fileDOM: IXMLElement) => boolean): IFindItem[] {
     const allAddons: IFindItem[] = []
     const out: IFindItem[] = []
-    const pathToTuning = system.join(paths.classes, `trucks/${truckName}_tuning`)
+    const pathToTuning = System.join(AddonsContentController.paths.classes, `trucks/${truckName}_tuning`)
 
-    if (system.existsSync(pathToTuning)) {
-      allAddons.push(...system.readdirSync(pathToTuning).map(item => {
-        if (system.isDirectory(system.join(pathToTuning, item))) {
+    if (System.existsSync(pathToTuning)) {
+      allAddons.push(...System.readdirSync(pathToTuning).map(item => {
+        if (System.isDirectory(System.join(pathToTuning, item))) {
           return
         }
 
         return {
           name: item,
-          path: system.join(pathToTuning, item)
+          path: System.join(pathToTuning, item)
         }
       }).filter(item => isNonNullable(item)) as IFindItem[])
     }
 
-    const pathToBasic = system.join(paths.classes, 'trucks/addons')
-    if (system.existsSync(pathToBasic)) {
-      allAddons.push(...system.readdirSync(pathToBasic).map(name => ({
+    const pathToBasic = System.join(AddonsContentController.paths.classes, 'trucks/addons')
+    if (System.existsSync(pathToBasic)) {
+      allAddons.push(...System.readdirSync(pathToBasic).map(name => ({
         name,
-        path: system.join(pathToBasic, name)
+        path: System.join(pathToBasic, name)
       })))
     }
 
-    system.readdirSync(paths.dlc).forEach(dlcFolder => {
-      const pathToDLCTrucks = system.join(paths.dlc, dlcFolder, 'classes/trucks')
-      if (system.existsSync(pathToDLCTrucks)) {
-        const pathToDLCBasic = system.join(pathToDLCTrucks, 'addons')
-        if (system.existsSync(pathToDLCBasic)) {
-          allAddons.push(...system.readdirSync(pathToDLCBasic).map(name => ({
+    System.readdirSync(AddonsContentController.paths.dlc).forEach(dlcFolder => {
+      const pathToDLCTrucks = System.join(AddonsContentController.paths.dlc, dlcFolder, 'classes/trucks')
+      if (System.existsSync(pathToDLCTrucks)) {
+        const pathToDLCBasic = System.join(pathToDLCTrucks, 'addons')
+        if (System.existsSync(pathToDLCBasic)) {
+          allAddons.push(...System.readdirSync(pathToDLCBasic).map(name => ({
             name,
-            path: system.join(pathToDLCBasic, name)
+            path: System.join(pathToDLCBasic, name)
           })))
         }
 
-        system.readdirSync(pathToDLCTrucks).forEach(item => {
-          if (system.isDirectory(system.join(pathToDLCTrucks, item)) && item.endsWith('_tuning')) {
-            allAddons.push(...system.readdirSync(system.join(pathToDLCTrucks, item)).map(name => ({
+        System.readdirSync(pathToDLCTrucks).forEach(item => {
+          if (System.isDirectory(System.join(pathToDLCTrucks, item)) && item.endsWith('_tuning')) {
+            allAddons.push(...System.readdirSync(System.join(pathToDLCTrucks, item)).map(name => ({
               name,
-              path: system.join(pathToDLCTrucks, item, name)
+              path: System.join(pathToDLCTrucks, item, name)
             })))
           }
         })
@@ -227,8 +227,8 @@ class AddonsContentController extends ViewController<IExtraActionProps, AddonsCo
     })
 
     if (modId) {
-      allAddons.push(...bridge.findInDir(system.join(paths.modsTemp, modId, 'classes'), false, '.xml', true).filter(item => {
-        if (!system.existsSync(item.path)) {
+      allAddons.push(...Bridge.findInDir(System.join(AddonsContentController.paths.modsTemp, modId, 'classes'), false, '.xml', true).filter(item => {
+        if (!System.existsSync(item.path)) {
           return false
         }
 
@@ -250,5 +250,3 @@ class AddonsContentController extends ViewController<IExtraActionProps, AddonsCo
     return out
   }
 }
-
-export default AddonsContentController

@@ -6,7 +6,7 @@ import type { TextsToLocalize } from '#g/types'
  * 
  * Имеет функционал обработки изменений
  */
-class Localized<T extends object> {
+export default class Localized<T extends object> {
   private readonly localized: T
 
   constructor(
@@ -27,5 +27,3 @@ class Localized<T extends object> {
     Object.assign(this.localized, this.texts[this.getLang()])
   }
 }
-
-export default Localized

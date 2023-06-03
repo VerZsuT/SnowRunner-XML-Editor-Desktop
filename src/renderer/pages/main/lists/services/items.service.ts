@@ -1,14 +1,14 @@
 import { Category, PreloadType, SrcType } from '#g/enums'
 import type { IItem, IListPreload } from '#g/types'
 import { XMLDOM } from '#r/scripts/xml'
-import { config, preload } from '#r/services'
+import { Config, Preload } from '#r/services'
 
-const { getList } = preload.get<IListPreload>(PreloadType.lists)
-const { settings } = config
+export default class ItemsService {
+  private static readonly preload = Preload.get<IListPreload>(PreloadType.lists)
+  private static readonly settings = Config.settings
 
-class ItemsService {
-  getMain(category: Category): IItem[] {
-    const array = getList(category, SrcType.main)
+  static getMain(category: Category): IItem[] {
+    const array = this.preload.getList(category, SrcType.main)
 
     return array.map(value => {
       if (category !== Category.trucks) {
@@ -25,7 +25,7 @@ class ItemsService {
     }).filter(value => !!value) as IItem[]
   }
 
-  filterByCategory(array: IItem[], category: Category): IItem[] {
+  static filterByCategory(array: IItem[], category: Category): IItem[] {
     return array.map(value => {
       const dom = XMLDOM.fromPath(value.path)
       const $Truck = dom.select('Truck')
@@ -39,11 +39,11 @@ class ItemsService {
     }).filter(value => !!value) as IItem[]
   }
 
-  getDLC(category: Category): IItem[] {
+  static getDLC(category: Category): IItem[] {
     const newArray: IItem[] = []
-    if (!settings.DLC) return []
+    if (!this.settings.DLC) return []
 
-    getList(category, SrcType.dlc).forEach(dlc => {
+    this.preload.getList(category, SrcType.dlc).forEach(dlc => {
       dlc.items?.forEach(item => {
         newArray.push({
           ...item,
@@ -55,11 +55,11 @@ class ItemsService {
     return this.filterByCategory(newArray, category)
   }
 
-  getMods(category: Category): IItem[] {
+  static getMods(category: Category): IItem[] {
     const newArray: IItem[] = []
-    if (!settings.mods) return []
+    if (!this.settings.mods) return []
 
-    getList(category, SrcType.mods).forEach(mod => {
+    this.preload.getList(category, SrcType.mods).forEach(mod => {
       mod.items?.forEach(item => {
         newArray.push({
           ...item,
@@ -71,7 +71,3 @@ class ItemsService {
     return this.filterByCategory(newArray, category)
   }
 }
-
-const items = new ItemsService()
-
-export default items

@@ -11,13 +11,13 @@ import $ from './texts'
 import { Category, GroupTab, SrcType } from '#g/enums'
 import { updateOnLangChange } from '#g/texts/renderer'
 import { Header, Menu } from '#r/components'
-import { config } from '#r/services'
+import { Config } from '#r/services'
 
 import './lists.styles'
 
-const { settings } = config
+export default afcMemo(function ListsView() {
+  const { settings } = Config
 
-function ListsView() {
   const model = new ListsModel()
   const ctrlr = new ListsController()
 
@@ -128,6 +128,4 @@ function ListsView() {
   function onChangeGroup(group: string): void {
     ctrlr.setGroup(group as GroupTab)
   }
-}
-
-export default afcMemo(ListsView)
+})

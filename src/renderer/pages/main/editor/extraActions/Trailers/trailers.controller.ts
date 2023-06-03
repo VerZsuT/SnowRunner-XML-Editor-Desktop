@@ -5,7 +5,7 @@ import type TrailersModel from './trailers.model'
 import type { IExtraActionProps } from '#g/types'
 import { ViewController } from '#r/model-ctrlr'
 
-class TrailersController extends ViewController<IExtraActionProps, TrailersModel> {
+export default class TrailersController extends ViewController<IExtraActionProps, TrailersModel> {
   addTrailer(trailer: Trailer): void {
     if (trailer === Trailer.scout) {
       TrailersAction.addTrailer(Trailer.scout, Trailer.truck, this.props.dom, value => this.model.hasScout = value)
@@ -24,5 +24,3 @@ class TrailersController extends ViewController<IExtraActionProps, TrailersModel
     }
   }
 }
-
-export default TrailersController

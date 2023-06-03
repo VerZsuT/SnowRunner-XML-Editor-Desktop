@@ -7,7 +7,7 @@ import CraneIcon from '#g/images/icons/crane.png'
 import { localizeVal } from '#g/texts/renderer'
 import type { IXMLElement } from '#g/types'
 
-class CranesAction extends ExtraAction {
+export default class CranesAction extends ExtraAction {
   protected name = localizeVal({
     RU: 'Краны',
     EN: 'Cranes',
@@ -95,5 +95,3 @@ class CranesAction extends ExtraAction {
     ]
   }
 }
-
-export default CranesAction

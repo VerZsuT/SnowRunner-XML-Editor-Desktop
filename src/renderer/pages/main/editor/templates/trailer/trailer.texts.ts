@@ -1,6 +1,6 @@
 import { compareWithGlobal } from '#g/texts/renderer'
 
-const $ = compareWithGlobal({
+export default compareWithGlobal({
   RU: {
     QUANTITY: 'Кол-во груза',
     INNER: 'Полезное содержимое',
@@ -66,5 +66,3 @@ const $ = compareWithGlobal({
     SUSP_STRENGTH: '悬架刚度'
   }
 })
-
-export default $

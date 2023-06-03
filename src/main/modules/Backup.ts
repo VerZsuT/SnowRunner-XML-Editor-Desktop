@@ -13,14 +13,14 @@ import Paths from './Paths'
 import { BuildType } from '#g/enums'
 import $ from '#m/texts'
 
-class BackupClass {
+export default class BackupClass {
   /**
    * Сохранить бэкап `initial.pak` и распаковать файлы
    * @param reload - перезагрузить после завершения
    * @param hideLoading - скрыть окно загрузки по завершению
    */
   @publicMethod('saveBackup')
-  async save(reload?: boolean, hideLoading?: boolean): Promise<void> {
+  static async save(reload?: boolean, hideLoading?: boolean): Promise<void> {
     await Archive.unpackMain(hideLoading)
 
     if (!existsSync(Paths.backupFolder)) {
@@ -50,7 +50,7 @@ class BackupClass {
 
   /** Сохранить бэкап `initial.pak` без распаковки */
   @publicMethod('copyBackup')
-  copy(): void {
+  static copy(): void {
     try {
       copyFileSync(Config.initial, Paths.backupInitial)
       void Notifications.show($.SUCCESS, $.SUCCESS_BACKUP_SAVE)
@@ -62,7 +62,7 @@ class BackupClass {
 
   /** Заменить оригинальный `initial.pak` на сохранённый. */
   @publicMethod('recoverFromBackup')
-  async recoverFromIt(): Promise<void> {
+  static async recoverFromIt(): Promise<void> {
     if (!existsSync(Paths.backupInitial)) return
 
     if (existsSync(Config.initial)) {
@@ -84,7 +84,3 @@ class BackupClass {
     }
   }
 }
-
-const Backup = new BackupClass()
-
-export default Backup

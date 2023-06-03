@@ -1,6 +1,4 @@
-interface ICranesData {
+export default interface ICranesData {
   hasRUCrane: boolean
   hasUSCrane: boolean
 }
-
-export default ICranesData

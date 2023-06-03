@@ -5,7 +5,7 @@ import type IConfigSettings from './IConfigSettings'
 
 import type { BuildType, Lang } from '#g/enums'
 
-interface IConfig {
+export default interface IConfig {
   /** Версия программы. */
   version: string
   /** Текущий язык перевода программы. */
@@ -25,5 +25,3 @@ interface IConfig {
   /** Список "избранных" автомобилей */
   favorites: string[]
 }
-
-export default IConfig

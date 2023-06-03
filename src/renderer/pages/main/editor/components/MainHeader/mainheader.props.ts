@@ -2,7 +2,7 @@ import type { ResetList } from '../../helpers/getResetProvider'
 
 import type { IXMLElement, IXMLTemplate, TemplateParams } from '#g/types'
 
-interface IMainHeaderProps {
+export default interface IMainHeaderProps {
   fileDOM: IXMLElement
   filePath: string
   mod: string
@@ -11,5 +11,3 @@ interface IMainHeaderProps {
   tableItems: TemplateParams
   resetList: ResetList
 }
-
-export default IMainHeaderProps

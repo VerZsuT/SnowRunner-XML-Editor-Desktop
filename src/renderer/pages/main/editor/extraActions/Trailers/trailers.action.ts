@@ -7,7 +7,7 @@ import TrailerIcon from '#g/images/icons/trailer.png'
 import { localizeVal } from '#g/texts/renderer'
 import type { IXMLElement } from '#g/types'
 
-class TrailersAction extends ExtraAction {
+export default class TrailersAction extends ExtraAction {
   protected name = localizeVal({
     RU: 'Прицепы',
     EN: 'Trailers',
@@ -95,5 +95,3 @@ class TrailersAction extends ExtraAction {
     ]
   }
 }
-
-export default TrailersAction

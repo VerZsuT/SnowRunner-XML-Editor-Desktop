@@ -5,25 +5,15 @@ import { Access, publicProperty } from 'emr-bridge'
 import type { IPaths } from '#g/types'
 
 /** Пути, используемые в программе (в собранном виде) */
-class PathsClass {
-  private readonly UPDATER_URL = 'https://verzsut.github.io/sxmle_updater'
-  private readonly REPOS_URL = 'https://verzsut.github.io/SnowRunner-XML-Editor-Desktop'
-
-  constructor() {
-    for (const key in this.obj) {
-      Object.defineProperty(this, key, {
-        get: () => this.obj[key],
-        enumerable: true,
-        configurable: false
-      })
-    }
-  }
+class Paths {
+  private static readonly UPDATER_URL = 'https://verzsut.github.io/sxmle_updater'
+  private static readonly REPOS_URL = 'https://verzsut.github.io/SnowRunner-XML-Editor-Desktop'
 
   @publicProperty({
     name: 'paths',
     access: Access.get
   })
-  private readonly obj = <IPaths>{
+  private static readonly obj: IPaths = {
     /** URL json файла обновления */
     publicInfo: `${this.UPDATER_URL}/public.json`,
 
@@ -82,11 +72,19 @@ class PathsClass {
     dlc: this.resolve('mainTemp/[media]/_dlc')
   }
 
-  private resolve(...args: string[]) {
+  private static resolve(...args: string[]) {
     return res(__dirname, ...args)
+  }
+
+  static {
+    for (const key in this.obj) {
+      Object.defineProperty(this, key, {
+        get: () => this.obj[key],
+        enumerable: true,
+        configurable: false
+      })
+    }
   }
 }
 
-const Paths = new PathsClass() as unknown as IPaths
-
-export default Paths
+export default Paths as unknown as IPaths

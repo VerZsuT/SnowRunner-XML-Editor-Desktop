@@ -8,10 +8,6 @@ interface ISelectors {
   getSelectors?(): string[]
 }
 
-type Creatable = {
-  new(...args: any): any
-}
-
 /**
  * Возвращает игровой перевод по ключу.
  * @param key
@@ -50,11 +46,12 @@ export const firstBy = (cycleCount: number) => genElementSelector(SelPrefix.firs
 export const lastBy = (cycleCount: number) => genElementSelector(SelPrefix.last, cycleCount)
 export const th = (pos: number, cycleCount = 1) => genElementSelector(SelPrefix.th + pos, cycleCount)
 
-export function createSelectors<T extends Creatable>(Class: T) {
-  const target = new Class() as ISelectors
+export function createSelectors<T>(Class: T): { [key in keyof Omit<T, 'prototype'>]: T[key] } {
+  const target = Class as ISelectors
   const value: any = {}
 
   target.getSelectors?.().forEach(key => {
+    if (key === 'prototype') return
     value[key] = genFormattedSelector(key, target[key])
       .replaceAll('.', '>')
       .replaceAll('>', ' > ')

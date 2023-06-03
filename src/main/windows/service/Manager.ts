@@ -7,22 +7,22 @@ import type { ProgramWindow } from '#g/enums'
 type WindowsObject = Record<keyof ProgramWindow, WindowCreator>
 type WindowCreator = (...args: any[]) => Promise<BrowserWindow>
 
-class ManagerClass {
-  private windows = <WindowsObject>{}
+export default class Manager {
+  private static windows = {} as WindowsObject
 
-  register(window: ProgramWindow, creator: WindowCreator): void {
+  static register(window: ProgramWindow, creator: WindowCreator): void {
     this.windows[window] = creator
   }
 
   @publicMethod('openWindow')
-  async open(window: ProgramWindow, ...args: any[]): Promise<void> {
+  static async open(window: ProgramWindow, ...args: any[]): Promise<void> {
     const wind = await this.getCreator(window)(...args)
     await new Promise(resolve => {
       wind.once('show', resolve)
     })
   }
 
-  private getCreator(window: ProgramWindow): WindowCreator | never {
+  private static getCreator(window: ProgramWindow): WindowCreator | never {
     const creator = this.windows[window]
     if (!creator) {
       throw new Error(`Window creator for '${window}' is not defined`)
@@ -31,7 +31,3 @@ class ManagerClass {
     return creator
   }
 }
-
-const Manager = new ManagerClass()
-
-export default Manager

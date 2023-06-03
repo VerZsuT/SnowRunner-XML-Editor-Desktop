@@ -1,7 +1,7 @@
 import { localizeVal } from '#g/texts/renderer'
 import { ViewModel, unwrap } from '#r/model-ctrlr'
 
-class WhatsNewModel extends ViewModel {
+export default class WhatsNewModel extends ViewModel {
   @unwrap readonly desc073c = localizeVal({
     RU: [
       'Меню программы открывается при нажатии, а не при наведении',
@@ -86,5 +86,3 @@ class WhatsNewModel extends ViewModel {
     ]
   }) as unknown as string[]
 }
-
-export default WhatsNewModel

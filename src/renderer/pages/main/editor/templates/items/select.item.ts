@@ -1,12 +1,11 @@
-
-import helpers from './helpers'
+import Helpers from './helpers'
 
 import { DEBUG_EDITOR_PARAMS } from '#g/consts'
 import { InputType, ParamType } from '#g/enums'
 import type { IItemGetterProps, ISelectParams, ITemplateItem, SelectOptions, SelectProps } from '#g/types'
 import { isNonNullable } from '#g/utils'
 
-class Select<T extends SelectOptions> implements ITemplateItem<[ISelectParams] | []> {
+export default class Select<T extends SelectOptions> implements ITemplateItem<[ISelectParams] | []> {
   private readonly label: string
   private readonly attribute: string
   private readonly addMissedTag: boolean
@@ -15,7 +14,7 @@ class Select<T extends SelectOptions> implements ITemplateItem<[ISelectParams] |
   private readonly options: T
 
   constructor(props: SelectProps<T>) {
-    const baseProps = helpers.getInputBaseProps(props)
+    const baseProps = Helpers.getInputBaseProps(props)
     this.label = baseProps.label
     this.selector = baseProps.selector
     this.attribute = baseProps.attribute
@@ -71,5 +70,3 @@ class Select<T extends SelectOptions> implements ITemplateItem<[ISelectParams] |
     }]
   }
 }
-
-export default Select

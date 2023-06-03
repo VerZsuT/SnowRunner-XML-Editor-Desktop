@@ -14,34 +14,23 @@ import { hasItems, isNullable } from '#g/utils'
 
 type ConfigChangeHandler = () => void
 
-class ConfigClass {
-  private readonly changeHandlers = new Set<ConfigChangeHandler>()
-  private readonly obj = this.getConfig()
-
-  constructor() {
-    for (const key in this.obj) {
-      Object.defineProperty(this, key, {
-        get: () => this.obj[key],
-        set: value => this.obj[key] = value,
-        enumerable: true,
-        configurable: true
-      })
-    }
-  }
+class Config {
+  private static readonly changeHandlers = new Set<ConfigChangeHandler>()
+  private static readonly obj = this.getConfig()
 
   @publicGetter()
-  get config(): IConfig {
+  static get config(): IConfig {
     return this.obj
   }
 
   @publicSetter()
-  set config(value: IConfig) {
+  static set config(value: IConfig) {
     this.set(value)
     this.changeHandlers.forEach(handler => handler())
   }
 
   /** Сохранить изменения в `config.json` */
-  save(): void {
+  static save(): void {
     try {
       writeFileSync(Paths.config, JSON.stringify(this.obj, null, '\t'))
     }
@@ -51,7 +40,7 @@ class ConfigClass {
   }
 
   /** Установить настройки */
-  set(newObj: IConfig): void {
+  static set(newObj: IConfig): void {
     for (const key in newObj) {
       this.obj[key] = newObj[key]
     }
@@ -62,7 +51,7 @@ class ConfigClass {
    * @param noReload - отмена перезагрузки после завершения.
    */
   @publicMethod('resetConfig')
-  reset(noReload?: boolean): void {
+  static reset(noReload?: boolean): void {
     const { version, buildType } = this.obj
 
     this.set({
@@ -100,7 +89,7 @@ class ConfigClass {
   }
 
   /** Экспортировать `config.json`. */
-  export(): boolean {
+  static export(): boolean {
     if (!existsSync(Paths.updateBackupFolder)) {
       mkdirSync(Paths.updateBackupFolder, { recursive: true })
     }
@@ -110,7 +99,7 @@ class ConfigClass {
   }
 
   /** Импортировать `config.json`. */
-  import(): boolean {
+  static import(): boolean {
     if (!existsSync(join(Paths.backupFolder, 'config.json'))) {
       return false
     }
@@ -120,9 +109,9 @@ class ConfigClass {
     ExitParams.saveConfig = false
     exportedConfig.settings.showWhatsNew = true
 
-    this.before066d(exportedConfig)
-    this.before067(exportedConfig)
-    this.before068(exportedConfig)
+    this.to066d(exportedConfig)
+    this.to067(exportedConfig)
+    this.to068(exportedConfig)
 
     exportedConfig.version = this.obj.version
     writeFileSync(Paths.config, JSON.stringify(exportedConfig))
@@ -131,23 +120,23 @@ class ConfigClass {
     return true
   }
 
-  addChangeHandler = (handler: ConfigChangeHandler): void => {
+  static addChangeHandler(handler: ConfigChangeHandler): void {
     this.changeHandlers.add(handler)
   }
 
-  removeChangeHandler(handler: ConfigChangeHandler): void {
+  static removeChangeHandler(handler: ConfigChangeHandler): void {
     this.changeHandlers.delete(handler)
   }
 
   /** Преобразовать к версии 0.6.8. */
-  private before068(exportedConfig: any): void {
+  private static to068(exportedConfig: any): void {
     if (exportedConfig.version < '0.6.8') {
       exportedConfig.settings.advancedMode = false
     }
   }
 
   /** Преобразовать к версии 0.6.7. */
-  private before067(exportedConfig: any): void {
+  private static to067(exportedConfig: any): void {
     if (exportedConfig.version < '0.6.7') {
       const mods: any = {}
       let length = 0
@@ -181,7 +170,7 @@ class ConfigClass {
   }
 
   /** Преобразовать к версии 0.6.6d. */
-  private before066d(exportedConfig: any): void {
+  private static to066d(exportedConfig: any): void {
     if (exportedConfig.version < '0.6.6d') {
       delete exportedConfig.sums
       exportedConfig.sizes = {
@@ -191,7 +180,7 @@ class ConfigClass {
     }
   }
 
-  private getConfig(): IConfig {
+  private static getConfig(): IConfig {
     const config: IConfig = JSON.parse(readFileSync(Paths.config).toString())
 
     if (isNullable(config.lang)) {
@@ -200,8 +189,17 @@ class ConfigClass {
     }
     return config
   }
+
+  static {
+    for (const key in this.obj) {
+      Object.defineProperty(this, key, {
+        get: () => this.obj[key],
+        set: value => this.obj[key] = value,
+        enumerable: true,
+        configurable: true
+      })
+    }
+  }
 }
 
-const Config = new ConfigClass() as ConfigClass & IConfig
-
-export default Config
+export default Config as typeof Config & IConfig

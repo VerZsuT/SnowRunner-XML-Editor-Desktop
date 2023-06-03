@@ -6,27 +6,25 @@ import { FileType } from '#g/enums'
 import type { IXMLTemplate } from '#g/types'
 import { AddonsContent, BanditCrane, Cranes, Trailers } from '#r_editor/extraActions'
 
-class Selectors {
-  @selector truckData = 'Truck.TruckData'
-  @selector gameData = 'Truck.GameData'
-  @selector UIDesc = `${this.gameData}.UiDesc`
-  @selector wheels = `${this.truckData}.Wheels`
-  @selector extraWheels = `${this.truckData}.ExtraWheels`
-  @selector extraWheel = `${this.extraWheels}.Wheel${forEach}`
-  @selector compatibleWheels = `${this.truckData}.CompatibleWheels${forEach}`
-  @selector upgradableWinch = `${this.truckData}.WinchUpgradeSocket`
-  @selector staticWinch = `${this.truckData}.Winch`
-  @selector suspension = `${this.truckData}.SuspensionSocket`
-  @selector gearbox = `${this.truckData}.GearboxSocket`
-  @selector engine = `${this.truckData}.EngineSocket`
-  @selector fuelTank = `${this.truckData}.FuelTank`
-  @selector physicsBody = 'Truck.PhysicsModel.Body'
-  @selector wheel = `${this.wheels}.Wheel${forEach}`
-}
+const selectors = createSelectors(class {
+  @selector static truckData = 'Truck.TruckData' as const
+  @selector static gameData = 'Truck.GameData' as const
+  @selector static UIDesc = `${this.gameData}.UiDesc` as const
+  @selector static wheels = `${this.truckData}.Wheels` as const
+  @selector static extraWheels = `${this.truckData}.ExtraWheels` as const
+  @selector static extraWheel = `${this.extraWheels}.Wheel${forEach}` as const
+  @selector static compatibleWheels = `${this.truckData}.CompatibleWheels${forEach}` as const
+  @selector static upgradableWinch = `${this.truckData}.WinchUpgradeSocket` as const
+  @selector static staticWinch = `${this.truckData}.Winch` as const
+  @selector static suspension = `${this.truckData}.SuspensionSocket` as const
+  @selector static gearbox = `${this.truckData}.GearboxSocket` as const
+  @selector static engine = `${this.truckData}.EngineSocket` as const
+  @selector static fuelTank = `${this.truckData}.FuelTank` as const
+  @selector static physicsBody = 'Truck.PhysicsModel.Body' as const
+  @selector static wheel = `${this.wheels}.Wheel${forEach}` as const
+})
 
-const selectors = createSelectors(Selectors)
-
-const truckTemplate: IXMLTemplate = {
+export default {
   selector: 'Truck',
   extraActions: [
     BanditCrane,
@@ -302,6 +300,4 @@ const truckTemplate: IXMLTemplate = {
       })
     )
   )
-}
-
-export default truckTemplate
+} satisfies IXMLTemplate

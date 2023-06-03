@@ -1,15 +1,15 @@
 import { useOnRender } from 'react-afc'
 
-import { modsService } from '../../services'
+import { ModsService } from '../../services'
 import type ModsPopupModel from './modspopup.model'
 import type IModsPopupProps from './modspopup.props'
 
 import type { IFindItem } from '#g/types'
 import { handleLocale } from '#r/helpers'
 import { ViewController } from '#r/model-ctrlr'
-import { config } from '#r/services'
+import { Config } from '#r/services'
 
-class ModsPopupController extends ViewController<IModsPopupProps, ModsPopupModel> {
+export default class ModsPopupController extends ViewController<IModsPopupProps, ModsPopupModel> {
   constructor(props: IModsPopupProps, model: ModsPopupModel) {
     super(props, model)
 
@@ -27,7 +27,7 @@ class ModsPopupController extends ViewController<IModsPopupProps, ModsPopupModel
 
   saveChanges(): void {
     if (!this.model.items) return
-    modsService.save(this.model.targetKeys, this.model.items)
+    ModsService.save(this.model.targetKeys, this.model.items)
     this.props.hidePopup(true)
   }
 
@@ -39,7 +39,7 @@ class ModsPopupController extends ViewController<IModsPopupProps, ModsPopupModel
 
   async addManual(): Promise<void> {
     const { items } = this.model
-    const mod = await modsService.requestMod()
+    const mod = await ModsService.requestMod()
     if (!mod
       || !items
       || items.find(item => item.name === mod.id)
@@ -57,7 +57,7 @@ class ModsPopupController extends ViewController<IModsPopupProps, ModsPopupModel
   private loadMods = (): void => {
     if (this.model.show && !this.model.items) {
       setTimeout(() => {
-        modsService.load().then(items => {
+        ModsService.load().then(items => {
           this.model.items = items
           this.model.targetKeys = this.getTargetKeys(items)
         })
@@ -66,12 +66,10 @@ class ModsPopupController extends ViewController<IModsPopupProps, ModsPopupModel
   }
 
   private getTargetKeys(items: IFindItem[]): string[] {
-    const keys = modsService.itemToKeys(items)
+    const keys = ModsService.itemToKeys(items)
 
-    return Object.values(config.mods.items)
+    return Object.values(Config.mods.items)
       .filter(value => keys.includes(value.path))
       .map(value => value.path)
   }
 }
-
-export default ModsPopupController
