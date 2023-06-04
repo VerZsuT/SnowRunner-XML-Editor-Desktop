@@ -2,6 +2,8 @@ import { useContext } from 'react-afc'
 
 import type { FileDataContextType } from '../../helpers/getFileData'
 import { FileDataContext } from '../../helpers/getFileData'
+import type { FileInfoContextType } from '../../helpers/getFileInfo'
+import { FileInfoContext } from '../../helpers/getFileInfo'
 import type IParameterProps from './parameter.props'
 
 import { isNullable } from '#g/utils'
@@ -11,6 +13,9 @@ import { XML } from '#r/services'
 export default class ParameterModel extends ViewModel<IParameterProps> {
   @unwrap
   readonly fileData = useContext(FileDataContext) as unknown as FileDataContextType
+
+  @unwrap
+  readonly fileInfo = useContext(FileInfoContext) as unknown as FileInfoContextType
 
   readonly item = this.props.item
 

@@ -1,5 +1,5 @@
 {
-	"version": "0.7.3c",
+	"version": "0.7.4",
 	"lang": null,
 	"buildType": "dev",
 	"initial": null,
@@ -19,5 +19,6 @@
 		"length": 0,
 		"items": {}
 	},
-	"favorites": []
+	"favorites": [],
+	"edited": []
 }

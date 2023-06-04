@@ -1,4 +1,5 @@
 import type IConfigDLC from './IConfigDLC'
+import type IConfigEditedFile from './IConfigEditedFile'
 import type IConfigFilesSizes from './IConfigFilesSizes'
 import type IConfigMods from './IConfigMods'
 import type IConfigSettings from './IConfigSettings'
@@ -24,4 +25,6 @@ export default interface IConfig {
   dlc: IConfigDLC[]
   /** Список "избранных" автомобилей */
   favorites: string[]
+  /** Список редактированных файлов */
+  edited: IConfigEditedFile[]
 }

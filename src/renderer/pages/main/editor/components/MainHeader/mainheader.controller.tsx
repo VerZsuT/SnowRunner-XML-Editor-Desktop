@@ -11,7 +11,7 @@ import { Page, PreloadType } from '#g/enums'
 import type { IEditorPreload } from '#g/types'
 import { ViewController, action } from '#r/model-ctrlr'
 import bridge from '#r/scripts/bridge'
-import { Preload, System, XML } from '#r/services'
+import { Config, Preload, System, XML } from '#r/services'
 
 export default class MainHeaderController extends ViewController<IMainHeaderProps, MainHeaderModel> {
   private static preload = Preload.get<IEditorPreload>(PreloadType.editor)
@@ -34,23 +34,28 @@ export default class MainHeaderController extends ViewController<IMainHeaderProp
 
   async save() {
     const hideLoading = message.loading($.SAVING_MESSAGE)
-    await new Promise<void>(resolve => {
-      setTimeout(async () => {
-        XMLFiles.files.forEach(file => {
-          const dom = file.dom.clone()
-          dom.selectAll('[SXMLE_ID]').map(element => element.removeAttr('SXMLE_ID'))
-          System.writeFileSync(file.path, dom.toHTML()!)
-        })
+    await new Promise<void>(async resolve => {
+      XMLFiles.files.forEach(file => {
+        const dom = file.dom.clone()
+        dom.selectAll('[SXMLE_ID]').map(element => element.removeAttr('SXMLE_ID'))
+        System.writeFileSync(file.path, dom.toHTML()!)
+      })
 
-        if (this.props.mod) {
-          await bridge.updateFiles(this.props.mod)
-        }
-        await bridge.updateFiles()
+      if (this.props.mod) {
+        await bridge.updateFiles(this.props.mod)
+      }
+      await bridge.updateFiles()
 
-        hideLoading()
-        message.success($.SUCCESS_SAVE_FILES)
-        resolve()
-      }, 100)
+      XMLFiles.files.forEach(file => {
+        if (!XMLFiles.edited.includes(file.path)) return
+
+        const edited = Config.edited
+        if (edited.find(item => item.path === file.path)) return
+        Config.edited = [...edited, { path: file.path, mod: file.mod, dlc: file.dlc }]
+      })
+      hideLoading()
+      message.success($.SUCCESS_SAVE_FILES)
+      resolve()
     })
   }
 

@@ -12,7 +12,6 @@ import type IParameterProps from './parameter.props'
 
 import { InputType } from '#g/enums'
 import $ from '#g/texts/renderer'
-import { isNullable } from '#g/utils'
 import { useContextMenu } from '#r/helpers'
 
 export default afcMemo<IParameterProps>(function Parameter(props) {
@@ -71,7 +70,6 @@ export default afcMemo<IParameterProps>(function Parameter(props) {
 
   function onReset(): void {
     contextMenu.hide()
-    if (isNullable(model.defaultValue)) return
-    ctrlr.setValue(model.defaultValue)
+    ctrlr.resetValue()
   }
 })

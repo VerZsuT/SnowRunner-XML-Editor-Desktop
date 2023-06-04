@@ -1,6 +1,7 @@
 import { useForceUpdate } from 'react-afc/compatible'
 
 import type { FileType } from '#g/enums'
+import { Config } from '#g/renderer/services'
 import type { IXMLElement } from '#g/types'
 
 interface IXMLFile {
@@ -13,6 +14,7 @@ interface IXMLFile {
 
 export default class XMLFilesService {
   static files: IXMLFile[] = []
+  static edited: string[] = []
 
   private static readonly listeners = new Set<() => void>()
 
@@ -37,5 +39,16 @@ export default class XMLFilesService {
 
     this.files.push(file)
     this.listeners.forEach(listener => listener())
+  }
+
+  static markAsEdited(path: string): void {
+    if (this.edited.includes(path)) return
+    this.edited.push(path)
+  }
+
+  static removeFromEdited(path: string): void {
+    if (!this.edited.includes(path)) return
+    this.edited = this.edited.filter(item => item !== path)
+    Config.edited = Config.edited.filter(val => val.path !== path)
   }
 }
