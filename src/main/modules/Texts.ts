@@ -109,7 +109,8 @@ class TextsClass {
             'UI_SUSPENSION',
             'UI_RIM',
             'UI_TIRE',
-            'UI_WINCH'
+            'UI_WINCH',
+            'UI_DLC'
           ]) && key.endsWith('NAME'))) {
             try {
               strings[key] = value
