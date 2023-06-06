@@ -15,8 +15,8 @@ class MainConfig {
   // CopyPlugin patterns
   winrar = { from: paths.winrar, to: 'winrar/' }
   favicon = { from: paths.favicon }
-  license = { from: paths.license, to: '../../' }
-  readme = { from: paths.readme, to: '../../' }
+  license = { from: paths.license, to: '../' }
+  readme = { from: paths.readme, to: '../' }
   config = this.isDev && this.hasTestConfig
     ? { from: paths.testConfig, to: 'config.json' }
     : { from: paths.config }
