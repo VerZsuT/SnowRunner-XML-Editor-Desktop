@@ -26,7 +26,6 @@ export default interface IMainFunctions {
   saveEPF: typeof Dialogs.saveEPF
 
   saveBackup: typeof Backup.save
-  copyBackup: typeof Backup.copy
   recoverFromBackup: typeof Backup.recoverFromIt
   resetConfig: typeof Config.reset
   checkUpdate: typeof Checks.checkUpdate

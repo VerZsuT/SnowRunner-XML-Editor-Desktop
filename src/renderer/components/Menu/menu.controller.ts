@@ -79,7 +79,7 @@ export default class MenuController extends ViewController<{}, MenuModel> {
   }
 
   saveBackup = () => {
-    Bridge.copyBackup()
+    Bridge.saveBackup()
   }
 
   restoreBackup = () => {

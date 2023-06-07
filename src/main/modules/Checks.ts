@@ -52,16 +52,19 @@ export default class Checks {
    * Если изменения присутствуют, то обновляет файлы в программе
    */
   static async checkInitialChanges(): Promise<void> {
-    if (!existsSync(join(Paths.mainTemp, this.MEDIA_FOLDER)) || HashClass.getSize(Config.initial) !== Config.sizes.initial) {
-      if (existsSync(Config.initial)) {
-        if (!existsSync(Paths.backupInitial)) {
-          await Backup.save()
-        }
-        else {
-          await Archive.unpackMain(false)
-        }
+    const pakIsMissed = !existsSync(Config.initial)
+    const hasContent = existsSync(join(Paths.mainTemp, this.MEDIA_FOLDER))
+    const withoutChanges = HashClass.getSize(Config.initial) === Config.sizes.initial
+
+    if (pakIsMissed || (hasContent && withoutChanges)) return
+
+    if (!existsSync(Paths.backupInitial)) {
+      await Backup.save()
+    }
       }
     }
+
+    await Archive.unpackMain(false)
   }
 
   /**

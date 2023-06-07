@@ -26,9 +26,11 @@ export default class SetupController extends ViewController<{}, SetupModel> {
     })
   }
 
-  save = (path: string): void => {
+  save = async (path: string) => {
     Config.initial = path
-    void Bridge.saveBackup(true)
+    await Bridge.saveBackup()
+    await Bridge.unpackMain()
+    Bridge.relaunchApp()
   }
 
   nextStep = (): void => {

@@ -1,4 +1,3 @@
-import { app } from 'electron'
 import { copyFileSync, existsSync, mkdirSync, rmSync } from 'fs'
 
 import { publicMethod } from 'emr-bridge'
@@ -14,14 +13,11 @@ import $ from '#m/texts'
 
 export default class BackupClass {
   /**
-   * Сохранить бэкап `initial.pak` и распаковать файлы
+   * Сохранить бэкап `initial.pak`
    * @param reload - перезагрузить после завершения
-   * @param hideLoading - скрыть окно загрузки по завершению
    */
   @publicMethod('saveBackup')
-  static async save(reload?: boolean, hideLoading?: boolean): Promise<void> {
-    await Archive.unpackMain(hideLoading)
-
+  static async save(): Promise<void> {
     if (!existsSync(Paths.backupFolder)) {
       mkdirSync(Paths.backupFolder)
     }
@@ -35,20 +31,9 @@ export default class BackupClass {
       }
     }
 
-    // Не сохранять бэкап в development режиме
-    if (Config.buildType === BuildType.prod) {
-      this.copy()
-    }
+    // Не сохранять бэкап в dev режиме
+    if (Config.buildType === BuildType.dev) return
 
-    if (reload) {
-      app.relaunch()
-      app.quit()
-    }
-  }
-
-  /** Сохранить бэкап `initial.pak` без распаковки */
-  @publicMethod('copyBackup')
-  static copy(): void {
     try {
       copyFileSync(Config.initial, Paths.backupInitial)
       Notifications.show($.SUCCESS_BACKUP_SAVE, 'info')
