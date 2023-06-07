@@ -116,15 +116,15 @@ export default class Updates {
       }
       const toDownload: { url: string, path: string }[] = []
       forCreateOrChange.forEach(relativePath => {
+        const updateFiles = Config.version.includes('-win7') ? Paths.updateWin7Files : Paths.updateFiles
         const path = join(Paths.updateRoot, relativePath)
         const webPath = relativePath.replaceAll('\\', '/').replace('.webpack', 'webpack')
-        const url = `${Paths.updateFiles}/${webPath}`
 
         if (!existsSync(dirname(path))) {
           mkdirSync(dirname(path), { recursive: true })
         }
 
-        toDownload.push({ url, path })
+        toDownload.push({ url: `${updateFiles}/${webPath}`, path })
       })
 
       this.download({

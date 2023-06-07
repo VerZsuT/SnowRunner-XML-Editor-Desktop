@@ -23,6 +23,9 @@ class Paths {
     /** URL папки с файлами обновления */
     updateFiles: `${this.UPDATER_URL}/files`,
 
+    /** URL папки с файлами обновления (win7) */
+    updateWin7Files: `${this.UPDATER_URL}/win7_files`,
+
     /** URL с hash-картой файлов обновления */
     updateMap: `${this.UPDATER_URL}/updateMap.json`,
 

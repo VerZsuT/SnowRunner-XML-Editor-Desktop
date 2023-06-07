@@ -1,7 +1,7 @@
 {
 	"name": "snowrunner-xml-editor-desktop",
 	"productName": "SnowRunner XML Editor",
-	"version": "0.7.3c",
+	"version": "0.7.4",
 	"description": "Allows you to visually edit the game's XML files.",
 	"repository": {
 		"type": "git",
@@ -9,15 +9,18 @@
 	},
 	"main": ".webpack/main",
 	"scripts": {
-		"build": "npm run build:before && npm run package-prod && npm run build:after",
+		"build": "npm run i:electron:latest && npm run build:before && npm run package-prod && npm run build:after",
+		"build:win7": "npm run i:electron:win7 && npm run build:before && npm run package-prod && npm run build:after -- win7",
 		"build:before": "ts-node ./build_scripts/before.ts",
-		"build:after": "ts-node ./build_scripts/after.ts x32",
+		"build:after": "ts-node ./build_scripts/after.ts",
 		"package": "electron-forge package --platform=win32 --arch=ia32",
 		"package-prod": "cross-env NODE_ENV=production electron-forge package --platform=win32 --arch=ia32",
 		"start": "cross-env NODE_ENV=development electron-forge start",
 		"lint": "eslint src/**",
 		"lint:fix": "npm run lint -- --fix",
-		"check": "tsc --project src/tsconfig.json --noEmit"
+		"check": "tsc --project src/tsconfig.json --noEmit",
+		"i:electron:latest": "npm i electron@latest --save-dev",
+		"i:electron:win7": "npm i electron@22 --save-dev"
 	},
 	"keywords": [],
 	"author": {

@@ -16,6 +16,7 @@ import Paths from './Paths'
 import Windows from './Windows'
 
 import { ProgramWindow } from '#g/enums'
+import type { IPublicFile } from '#g/types'
 import $ from '#m/texts'
 import { WindowsManager } from '#m/windows'
 
@@ -86,15 +87,12 @@ export default class Checks {
         res.setEncoding('utf-8')
         res.on('data', chunk => rawData += chunk)
         res.on('end', () => {
-          const data = JSON.parse(rawData)
+          const data = JSON.parse(rawData) as IPublicFile
           const version = Config.version
+          const hasNewVersion = version < data.latestVersion
+          const isBetaNewVersion = version.includes('-beta') && version.split('-beta')[0] === data.latestVersion
 
-          if (
-            version < data.latestVersion || (
-              version.includes('-beta') &&
-              version.split('-beta')[0] === data.latestVersion
-            )
-          ) {
+          if (hasNewVersion || isBetaNewVersion) {
             if (version >= data.minVersion) {
               void WindowsManager.open(ProgramWindow.Update, data.latestVersion)
             }

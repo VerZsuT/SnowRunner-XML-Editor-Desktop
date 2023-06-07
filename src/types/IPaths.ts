@@ -2,6 +2,7 @@ export default interface IPaths {
   publicInfo: string
   downloadPage: string
   updateFiles: string
+  updateWin7Files: string
   updateMap: string
   root: string
   updateRoot: string
