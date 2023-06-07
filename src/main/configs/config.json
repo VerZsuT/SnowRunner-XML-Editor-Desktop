@@ -1,7 +1,7 @@
 {
 	"version": "0.7.4",
 	"lang": null,
-	"buildType": "dev",
+	"buildType": "prod",
 	"initial": null,
 	"settings": {
 		"updates": true,

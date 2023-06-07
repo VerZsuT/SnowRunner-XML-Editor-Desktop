@@ -6,7 +6,6 @@ import { publicMethod } from 'emr-bridge'
 import Archive from './Archive'
 import Config from './Config'
 import Dialogs from './Dialogs'
-import ExitParams from './ExitParams'
 import Notifications from './Notifications'
 import Paths from './Paths'
 
@@ -32,7 +31,7 @@ export default class BackupClass {
         rmSync(Paths.backupInitial)
       }
       catch {
-        throw new Error($.DELETE_OLD_INITIAL_BACKUP_ERROR)
+        Notifications.show($.DELETE_OLD_INITIAL_BACKUP_ERROR, 'error')
       }
     }
 
@@ -42,7 +41,6 @@ export default class BackupClass {
     }
 
     if (reload) {
-      ExitParams.quit = true
       app.relaunch()
       app.quit()
     }
@@ -53,10 +51,10 @@ export default class BackupClass {
   static copy(): void {
     try {
       copyFileSync(Config.initial, Paths.backupInitial)
-      void Notifications.show($.SUCCESS, $.SUCCESS_BACKUP_SAVE)
+      Notifications.show($.SUCCESS_BACKUP_SAVE, 'info')
     }
     catch {
-      throw new Error($.SAVE_INITIAL_BACKUP_ERROR)
+      Notifications.show($.SAVE_INITIAL_BACKUP_ERROR, 'error')
     }
   }
 
@@ -77,7 +75,7 @@ export default class BackupClass {
     try {
       copyFileSync(Paths.backupInitial, Config.initial)
       await Archive.unpackMain()
-      await Notifications.show($.SUCCESS, $.SUCCESS_INITIAL_RESTORE)
+      Notifications.show($.SUCCESS_INITIAL_RESTORE, 'info')
     }
     catch {
       Dialogs.error($.DELETE_CURRENT_INITIAL_BACKUP_ERROR)

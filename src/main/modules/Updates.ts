@@ -111,7 +111,6 @@ export default class Updates {
       if (!hasItems(forCreateOrChange)) {
         ExitParams.saveConfig = false
         Config.export()
-        ExitParams.quit = true
         app.relaunch()
         app.quit()
       }
@@ -136,7 +135,6 @@ export default class Updates {
         forCreateOrChange = forCreateOrChange.slice(1)
         if (!hasItems(forCreateOrChange) && !flagToReload) {
           ExitParams.saveConfig = false
-          ExitParams.quit = true
           flagToReload = true
 
           Config.export()

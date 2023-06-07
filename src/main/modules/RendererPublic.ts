@@ -8,7 +8,6 @@ import { publicMethod } from 'emr-bridge'
 import Archive from './Archive'
 import Config from './Config'
 import Dialogs from './Dialogs'
-import ExitParams from './ExitParams'
 import Paths from './Paths'
 
 import { APP_NAME } from '#g/consts'
@@ -31,7 +30,6 @@ export default class RendererPublic {
   /** Перезапустить программу */
   @publicMethod('relaunchApp')
   static reload() {
-    ExitParams.quit = true
     app.relaunch()
     app.quit()
   }
@@ -39,7 +37,6 @@ export default class RendererPublic {
   /** Закрыть программу */
   @publicMethod('quitApp')
   static quit() {
-    ExitParams.quit = true
     app.quit()
   }
 
@@ -60,7 +57,6 @@ export default class RendererPublic {
     }
     else {
       execFile(Paths.uninstall)
-      ExitParams.quit = true
       app.quit()
     }
   }
@@ -80,7 +76,6 @@ export default class RendererPublic {
   @publicMethod()
   static importConfig() {
     if (Config.import()) {
-      ExitParams.quit = true
       app.relaunch()
       app.quit()
       return true

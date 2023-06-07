@@ -5,7 +5,7 @@ import type SetupModel from './setup.model'
 import $ from './texts'
 
 import { ProgramWindow } from '#g/enums'
-import { handleIPC, handleLocale, windowReady } from '#r/helpers'
+import { handleIPC, handleLocale, handleNotification, windowReady } from '#r/helpers'
 import { ViewController } from '#r/model-ctrlr'
 import Bridge from '#r/scripts/bridge'
 import { Config, System } from '#r/services'
@@ -19,6 +19,7 @@ export default class SetupController extends ViewController<{}, SetupModel> {
     windowReady(ProgramWindow.Setup)
     handleIPC()
     handleLocale()
+    handleNotification()
 
     useOnMount(() => {
       setTimeout(this.checkExportedConfig, 300)

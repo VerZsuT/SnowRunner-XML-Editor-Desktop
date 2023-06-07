@@ -96,8 +96,7 @@ export default class Checks {
               void WindowsManager.open(ProgramWindow.Update, data.latestVersion)
             }
             else {
-              Notifications.show($.NOTIFICATION, $.ALLOW_NEW_VERSION)
-                .then(() => void shell.openExternal(Paths.downloadPage))
+              Notifications.show($.ALLOW_NEW_VERSION, 'info')
             }
           }
         })

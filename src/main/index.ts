@@ -64,7 +64,6 @@ class _App {
 
   static handleQuit(): void {
     app.on('before-quit', () => {
-      ExitParams.quit = true
       if (ExitParams.saveConfig) {
         Config.save()
       }
