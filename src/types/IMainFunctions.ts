@@ -20,6 +20,8 @@ export default interface IMainFunctions {
 
   openWindow: typeof WindowsManager.open
   getDir: typeof Dialogs.getDir
+  getDirs: typeof Dialogs.getDirs
+  getPaks: typeof Dialogs.getPaks
   getXML: typeof Dialogs.getXML
   getInitial: typeof Dialogs.getInitial
   getEPF: typeof Dialogs.getEPF

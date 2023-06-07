@@ -5,7 +5,8 @@ import type { Category, SrcType } from '#g/enums'
 
 export default interface IListPreload {
   removeDir(path: string): void
-  getModPak(): Promise<IFindItem | undefined>
-  findMods(): Promise<IFindItem[]>
+  getModPaks(): Promise<IFindItem[] | undefined>
+  getFromFolders(): Promise<IFindItem[] | undefined>
+  getMods(): Promise<IFindItem[]>
   getList(listType: Category, from?: SrcType): IItem[]
 }

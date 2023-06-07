@@ -53,35 +53,47 @@ export default class Dialogs {
 
   /** Открыть окно выбора `.epf` файла */
   @publicMethod()
-  static getEPF(): string {
-    return this.openDialog({ extention: 'epf' }) as string
+  static getEPF(): string | undefined {
+    return this.openDialog<string>({ extention: 'epf' })
   }
 
   /** Открыть окно сохранения `.epf` файла */
   @publicMethod()
-  static saveEPF(defaultName: string): string {
-    return this.openDialog({
+  static saveEPF(defaultName: string): string | undefined {
+    return this.openDialog<string>({
       type: DialogType.save,
       defaultPath: defaultName,
       extention: 'epf'
-    }) as string
+    })
   }
 
   /** Открыть окно выбора `initial.pak` */
   @publicMethod()
-  static getInitial(): string {
-    return this.openDialog({ extention: 'pak' }) as string
+  static getInitial(): string | undefined {
+    return this.openDialog<string>({ extention: 'pak' })
   }
 
   /** Открыть окно выбора папки */
   @publicMethod()
-  static getDir(): string {
-    return this.openDialog({ source: DialogSourceType.dir }) as string
+  static getDir(): string | undefined {
+    return this.openDialog<string>({ source: DialogSourceType.dir })
+  }
+
+  /** Открыть окно выбора папки */
+  @publicMethod()
+  static getDirs(): string[] | undefined {
+    return this.openDialog<string[]>({ properties: ['multiSelections', 'openDirectory'] })
+  }
+
+  /** Открыть окно выбора папки */
+  @publicMethod()
+  static getPaks(): string[] | undefined {
+    return this.openDialog<string[]>({ properties: ['multiSelections', 'openFile'], extention: '.pak' })
   }
 
   /** Открыть окно выбора нескольких `.epf` файлов */
-  static getMultiEPF(): string[] {
-    return this.openDialog({
+  static getMultiEPF(): string[] | undefined {
+    return this.openDialog<string[]>({
       properties: ['openFile', 'multiSelections'],
       extention: 'epf'
     }) as string[]
@@ -89,12 +101,12 @@ export default class Dialogs {
 
   /** Открыть окно выбора `.xml` файла */
   @publicMethod()
-  static getXML(): string {
-    return this.openDialog({ extention: 'xml' }) as string
+  static getXML(): string | undefined {
+    return this.openDialog<string>({ extention: 'xml' })
   }
 
   /** Открыть диалоговое окно */
-  static openDialog(params: IOpenDialogParams): string | string[] | undefined {
+  static openDialog<T extends string | string[]>(params: IOpenDialogParams): T | undefined {
     const {
       type = DialogType.open,
       source = DialogSourceType.file,
@@ -116,10 +128,10 @@ export default class Dialogs {
       const result = dialog.showOpenDialogSync(dialogParams)
       if (Array.isArray(result)) {
         if (!dialogParams.properties?.includes('multiSelections')) {
-          return result[0]
+          return result[0] as T
         }
         else {
-          return result
+          return result as T
         }
       }
       else {
@@ -133,10 +145,10 @@ export default class Dialogs {
       })
 
       if (result) {
-        return result
+        return result as T
       }
       else {
-        return []
+        return undefined
       }
     }
   }

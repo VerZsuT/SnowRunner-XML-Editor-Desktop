@@ -38,20 +38,11 @@ export default class ModsPopupController extends ViewController<IModsPopupProps,
   }
 
   async addManual(): Promise<void> {
-    const { items } = this.model
-    const mod = await ModsService.requestMod()
-    if (!mod
-      || !items
-      || items.find(item => item.name === mod.id)
-    ) return
+    this.addItems(await ModsService.requestMods())
+  }
 
-    this.model.items = [
-      ...items,
-      {
-        name: mod.id,
-        path: mod.path
-      }
-    ]
+  async addManualFolder(): Promise<void> {
+    this.addItems(await ModsService.requestFromFolders())
   }
 
   private loadMods = (): void => {
@@ -71,5 +62,21 @@ export default class ModsPopupController extends ViewController<IModsPopupProps,
     return Object.values(Config.mods.items)
       .filter(value => keys.includes(value.path))
       .map(value => value.path)
+  }
+
+  private async addItems(items?: Awaited<ReturnType<typeof ModsService.requestFromFolders>>): Promise<void> {
+    const modelItems = this.model.items
+    if (!items || !modelItems) return
+
+    const result: IFindItem[] = [...modelItems]
+    for (const mod of items) {
+      if (modelItems.find(item => item.name === mod.id)) continue
+      result.push({
+        name: mod.id,
+        path: mod.path
+      })
+    }
+
+    this.model.items = result
   }
 }

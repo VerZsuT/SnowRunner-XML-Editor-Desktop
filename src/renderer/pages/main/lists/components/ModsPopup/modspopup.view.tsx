@@ -37,8 +37,11 @@ export default afcMemo<IModsPopupProps>(function ModsPopupView(props) {
               render={item => item.title}
               className='mods-transfer'
             />
-            <Button onClick={onManualBtnClick} className='mods-manual-button'>
+            <Button onClick={onManualPakClick} className='mods-manual-button'>
               {$.MANUAL_MOD}
+            </Button>
+            <Button onClick={onManualFolderClick} className='mods-manual-button'>
+              {$.MANUAL_MOD_FOLDER}
             </Button>
           </>
           : <Spin className='mods-spin' />
@@ -55,8 +58,12 @@ export default afcMemo<IModsPopupProps>(function ModsPopupView(props) {
     ctrlr.saveChanges()
   }
 
-  function onManualBtnClick(): void {
+  function onManualPakClick(): void {
     ctrlr.addManual()
+  }
+
+  function onManualFolderClick(): void {
+    ctrlr.addManualFolder()
   }
 
   function onChange(nextTarget: string[]): void {

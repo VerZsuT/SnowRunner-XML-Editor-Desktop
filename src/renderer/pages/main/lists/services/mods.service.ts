@@ -6,16 +6,25 @@ export default class ModsService {
   private static readonly preload = Preload.get<IListPreload>(PreloadType.lists)
 
   static async load(): Promise<IFindItem[]> {
-    return this.preload.findMods()
+    return this.preload.getMods()
   }
 
-  static async requestMod() {
-    const result = await this.preload.getModPak()
+  static async requestMods() {
+    const result = await this.preload.getModPaks()
     if (!result) return
-    return {
-      ...result,
-      id: result.name.replace('.pak', '')
-    }
+    return result.map(item => ({
+      ...item,
+      id: item.name.replace('.pak', '')
+    }))
+  }
+
+  static async requestFromFolders() {
+    const result = await this.preload.getFromFolders()
+    if (!result) return
+    return result.map(item => ({
+      ...item,
+      id: item.name.replace('.pak', '')
+    }))
   }
 
   static save(keys: string[], items: IFindItem[]): void {
