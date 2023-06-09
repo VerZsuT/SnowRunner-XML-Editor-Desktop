@@ -53,6 +53,9 @@ class Paths {
     /** Бэкап `initial.pak` */
     backupInitial: this.resolve('backups/initial.pak'),
 
+    /** Бэкап данных `initail.pak` перед распаковкой */
+    backupInitialData: this.resolve('backups/previous_initial'),
+
     /** Папка `WinRAR` */
     winrar: this.resolve('winrar'),
 

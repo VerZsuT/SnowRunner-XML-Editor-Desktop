@@ -6,7 +6,7 @@ import xmlFiles from './xmlFiles'
 
 import type { IExportedData, IXMLElement, IXMLTemplate } from '#g/types'
 import { isString } from '#g/utils'
-import bridge from '#r/scripts/bridge'
+import Bridge from '#r/scripts/bridge'
 import { System, XML } from '#r/services'
 
 type ImportHandler = () => void
@@ -24,7 +24,7 @@ export default class ImportService {
     let pathToImport = importPath
 
     if (!isString(importPath)) {
-      pathToImport = bridge.getEPF()
+      pathToImport = Bridge.getEPF()
     }
 
     if (!pathToImport) {

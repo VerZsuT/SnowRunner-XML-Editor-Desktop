@@ -12,6 +12,7 @@ export default interface IPaths {
   icon: string
   texts: string
   backupInitial: string
+  backupInitialData: string
   winrar: string
   mainTemp: string
   modsTemp: string

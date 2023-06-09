@@ -80,12 +80,12 @@ class Config {
     })
 
     Helpers.clearTemp()
-    if (!noReload) {
-      app.relaunch()
-      app.quit()
+    if (noReload) {
+      this.save()
     }
     else {
-      this.save()
+      app.relaunch()
+      app.quit()
     }
   }
 

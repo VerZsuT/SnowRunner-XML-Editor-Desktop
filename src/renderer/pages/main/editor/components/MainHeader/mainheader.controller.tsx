@@ -10,7 +10,7 @@ import type IMainHeaderProps from './mainheader.props'
 import { Page, PreloadType } from '#g/enums'
 import type { IEditorPreload } from '#g/types'
 import { ViewController, action } from '#r/model-ctrlr'
-import bridge from '#r/scripts/bridge'
+import Bridge from '#r/scripts/bridge'
 import { Config, Preload, System, XML } from '#r/services'
 
 export default class MainHeaderController extends ViewController<IMainHeaderProps, MainHeaderModel> {
@@ -42,9 +42,9 @@ export default class MainHeaderController extends ViewController<IMainHeaderProp
       })
 
       if (this.props.mod) {
-        await bridge.updateFiles(this.props.mod)
+        await Bridge.updateFiles(this.props.mod)
       }
-      await bridge.updateFiles()
+      await Bridge.updateFiles()
 
       XMLFiles.files.forEach(file => {
         if (!XMLFiles.edited.includes(file.path)) return
@@ -64,7 +64,7 @@ export default class MainHeaderController extends ViewController<IMainHeaderProp
   }
 
   exportFile(): void {
-    const pathToSave = bridge.saveEPF(System.basename(this.props.filePath, '.xml'))
+    const pathToSave = Bridge.saveEPF(System.basename(this.props.filePath, '.xml'))
     if (!pathToSave) {
       void message.error($.PATH_TO_SAVE_NOT_FOUND)
       return
@@ -85,7 +85,7 @@ export default class MainHeaderController extends ViewController<IMainHeaderProp
   }
 
   openXMLFile(file: typeof XMLFiles.files[number]): void {
-    void bridge.openPath(file.path)
+    void Bridge.openPath(file.path)
     MainHeaderController.preload.watchFile(file.path, () => window.location.reload())
   }
 

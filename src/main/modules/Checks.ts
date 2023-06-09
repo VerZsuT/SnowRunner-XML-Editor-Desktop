@@ -1,6 +1,6 @@
 import { resolve } from 'dns'
-import { app, shell } from 'electron'
-import { accessSync, constants, existsSync, writeFileSync } from 'fs'
+import { app } from 'electron'
+import { accessSync, constants, existsSync, renameSync, rmSync, writeFileSync } from 'fs'
 import { get } from 'https'
 import { join } from 'path'
 
@@ -62,7 +62,12 @@ export default class Checks {
     if (!existsSync(Paths.backupInitial)) {
       await Backup.save()
     }
+
+    if (existsSync(Paths.mainTemp)) {
+      if (existsSync(Paths.backupInitialData)) {
+        rmSync(Paths.backupInitialData, { recursive: true, force: true })
       }
+      renameSync(Paths.mainTemp, Paths.backupInitialData)
     }
 
     await Archive.unpackMain(false)

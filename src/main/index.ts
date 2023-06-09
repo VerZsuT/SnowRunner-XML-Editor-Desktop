@@ -33,18 +33,18 @@ class _App {
 
     await Checks.checkInitialChanges()
 
-    if (Checks.hasAllPaths()) {
-      await Promise.all([
-        Texts.getFromGame(),
-        this.initDLC(),
-        this.initMods()
-      ])
-      await WindowsManager.open(ProgramWindow.Main)
-      Checks.checkUpdate()
-    }
-    else {
+    if (!Checks.hasAllPaths()) {
       Config.reset()
+      return
     }
+
+    await Promise.all([
+      Texts.getFromGame(),
+      this.initDLC(),
+      this.initMods()
+    ])
+    await WindowsManager.open(ProgramWindow.Main)
+    Checks.checkUpdate()
   }
 
   static checkMultipleInstances(): void {

@@ -6,12 +6,12 @@ import '#r/scripts/root-preload.main'
 import $ from './texts'
 
 import type { IFolder, ISetupPreload } from '#g/types'
-import main from '#r/scripts/main'
+import Main from '#r/scripts/main'
 import { Preload } from '#r/services/interprocess'
 
 class _SetupPreload {
   static getGameFolder = (): IFolder | undefined => {
-    const result = main.getDir()
+    const result = Main.getDir()
     let existed = ''
 
     if (!result) {
@@ -48,7 +48,7 @@ class _SetupPreload {
   }
 
   static getInitialPak = (): IFolder | undefined => {
-    const result = main.getInitial()
+    const result = Main.getInitial()
 
     if (!result || basename(result) !== 'initial.pak' || !existsSync(result)) {
       window.handleErrorMessage?.($.INVALID_INITIAL_ERROR)
