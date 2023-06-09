@@ -33,6 +33,17 @@ export default {
         }
       }),
       Int({
+        attribute: 'WaterCapacity',
+        label: $.WATER_CAPACITY,
+        max: 64000,
+        step: 10,
+        default: 0,
+        areas: {
+          yellow: [1000, 5000],
+          red: [5001, Infinity]
+        }
+      }),
+      Int({
         attribute: 'RepairsCapacity',
         label: $.REPAIRS_CAPACITY,
         default: 0,

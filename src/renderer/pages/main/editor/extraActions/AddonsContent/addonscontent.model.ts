@@ -12,4 +12,5 @@ export default class AddonsContentModel extends ViewModel<IExtraActionProps> {
   @reactive wheels = ''
   @reactive repairs = ''
   @reactive fuel = ''
+  @reactive water = ''
 }

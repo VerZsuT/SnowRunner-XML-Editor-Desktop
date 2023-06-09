@@ -17,7 +17,7 @@ export default afcMemo<IExtraActionProps>(function AddonsContentComponent(props)
   const ctrlr = new AddonsContentController(props, model)
 
   return () => {
-    const { items, selectedAddon, wheels, repairs, fuel, options } = model
+    const { items, selectedAddon, wheels, water, repairs, fuel, options } = model
 
     if (!items) {
       return <Spin className='mods-spin' />
@@ -44,6 +44,7 @@ export default afcMemo<IExtraActionProps>(function AddonsContentComponent(props)
         <ContentField text={$.ADDON_WHEELS} value={wheels} onChange={onChangeWheels} />
         <ContentField text={$.ADDON_REPAIRS} value={repairs} onChange={onChangeRepairs} />
         <ContentField text={$.ADDON_FUEL} value={fuel} onChange={onChangeFuel} />
+        <ContentField text={$.ADDON_FUEL} value={water} onChange={onChangeWater} />
       </div>
 
       <Button
@@ -64,6 +65,9 @@ export default afcMemo<IExtraActionProps>(function AddonsContentComponent(props)
   }
   function onChangeFuel(fuel: string): void {
     ctrlr.changeFuel(fuel)
+  }
+  function onChangeWater(water: string): void {
+    ctrlr.changeWater(water)
   }
 
   function onBlurFilter(e: FocusEvent<HTMLInputElement>): void {

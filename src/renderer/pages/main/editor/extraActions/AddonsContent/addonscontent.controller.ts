@@ -32,6 +32,7 @@ export default class AddonsContentController extends ViewController<IExtraAction
         model.wheels = data.wheels
         model.repairs = data.repairs
         model.fuel = data.fuel
+        model.water = data.water
       }, 500)
     })
   }
@@ -46,6 +47,10 @@ export default class AddonsContentController extends ViewController<IExtraAction
 
   changeFuel(value: string): void {
     this.model.fuel = value
+  }
+
+  changeWater(value: string): void {
+    this.model.water = value
   }
 
   changeFilter(value: string): void {
@@ -66,7 +71,7 @@ export default class AddonsContentController extends ViewController<IExtraAction
   }
 
   save(): void {
-    const { selectedAddon, fuel, wheels, repairs } = this.model
+    const { selectedAddon, fuel, wheels, repairs, water } = this.model
 
     const pathToAddon = this.getItem(selectedAddon)?.path
     const DOM = this.getDOM(pathToAddon)
@@ -84,6 +89,13 @@ export default class AddonsContentController extends ViewController<IExtraAction
       TruckData?.removeAttr('FuelCapacity')
     }
 
+    if (water && water !== '0') {
+      TruckData?.setAttr('WaterCapacity', water)
+    }
+    else if (TruckData?.getAttr('WaterCapacity')) {
+      TruckData?.removeAttr('WaterCapacity')
+    }
+
     if (wheels && wheels !== '0') {
       TruckData?.setAttr('WheelRepairsCapacity', wheels)
     }
@@ -98,7 +110,7 @@ export default class AddonsContentController extends ViewController<IExtraAction
       TruckData?.removeAttr('RepairsCapacity')
     }
 
-    if ((!fuel || fuel === '0') && (!wheels || wheels === '0') && (!repairs || repairs === '0') && TruckData?.hasAttrs()) {
+    if ((!fuel || fuel === '0') && (!water || water === '0') && (!wheels || wheels === '0') && (!repairs || repairs === '0') && TruckData?.hasAttrs()) {
       TruckData?.remove()
     }
 
@@ -150,7 +162,8 @@ export default class AddonsContentController extends ViewController<IExtraAction
       return {
         wheels: '',
         repairs: '',
-        fuel: ''
+        fuel: '',
+        water: ''
       }
     }
 
@@ -163,11 +176,13 @@ export default class AddonsContentController extends ViewController<IExtraAction
     const wheels = TruckData.getAttr('WheelRepairsCapacity') ?? '0'
     const repairs = TruckData.getAttr('RepairsCapacity') ?? '0'
     const fuel = TruckData.getAttr('FuelCapacity') ?? '0'
+    const water = TruckData.getAttr('WaterCapacity') ?? '0'
 
     return {
-      wheels: wheels,
+      wheels,
       repairs,
-      fuel
+      fuel,
+      water
     }
   }
 
