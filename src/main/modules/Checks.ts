@@ -129,6 +129,7 @@ export default class Checks {
     if (Config.settings.DLC && !existsSync(Paths.dlc)) {
       Dialogs.error($.DLC_FOLDER_NOT_FOUND)
       Config.settings.DLC = false
+      Config.emitUpdate()
     }
 
     return true

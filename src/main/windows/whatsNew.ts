@@ -17,6 +17,7 @@ class WhatsNewWindow extends ModalWindow {
 
   protected onClose(): void {
     Config.settings.showWhatsNew = false
+    Config.emitUpdate()
   }
 }
 

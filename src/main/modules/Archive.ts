@@ -13,6 +13,9 @@ import WinRAR from '#m/archivers/winrar'
 import $ from '#m/texts'
 
 export default class Archive {
+  static get canRestoreChanges(): boolean {
+    return existsSync(Paths.backupInitialData) && !existsSync(join(Paths.mainTemp, 'edited'))
+  }
   private static archiver: IArchiver = WinRAR
 
   /**
@@ -23,11 +26,11 @@ export default class Archive {
    */
   static async update(source: string, direction: string, isMod?: boolean): Promise<void> {
     const markerPath = join(source, 'edited')
+    await this.archiver.update(source, direction)
     if (!existsSync(markerPath)) {
       writeFileSync(markerPath, '')
+      await this.archiver.add(markerPath, direction)
     }
-    await this.archiver.add(markerPath, direction)
-    await this.archiver.update(source, direction)
     this.saveSize(direction, isMod)
   }
 
@@ -103,6 +106,7 @@ export default class Archive {
     else {
       Config.sizes.initial = Hash.getSize(path)
     }
+    Config.emitUpdate()
   }
 
   /**

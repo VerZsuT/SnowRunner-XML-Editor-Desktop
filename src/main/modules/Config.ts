@@ -29,6 +29,10 @@ class Config {
     this.changeHandlers.forEach(handler => handler())
   }
 
+  static emitUpdate(): void {
+    this.changeHandlers.forEach(handler => handler())
+  }
+
   /** Сохранить изменения в `config.json` */
   static save(): void {
     try {
@@ -203,7 +207,10 @@ class Config {
     for (const key in this.obj) {
       Object.defineProperty(this, key, {
         get: () => this.obj[key],
-        set: value => this.obj[key] = value,
+        set: value => {
+          this.obj[key] = value
+          this.emitUpdate()
+        },
         enumerable: true,
         configurable: true
       })
