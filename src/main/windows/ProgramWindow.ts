@@ -19,7 +19,8 @@ abstract class ProgramWindow {
   private async create(...args: any[]): Promise<BrowserWindow> {
     this.wind = await this.creator(...args)
 
-    Config.addChangeHandler(() => this.onConfigChange())
+
+    Config.addChangeHandler(this.onConfigChange)
     this.wind.once('close', () => this.removeChangeHandler())
 
     this.wind.once('close', () => this.onClose(...args))
@@ -39,7 +40,7 @@ abstract class ProgramWindow {
   protected onClose(...args: any[]): void { }
   protected onShow(...args: any[]): void { }
 
-  private onConfigChange() {
+  private onConfigChange = () => {
     this.wind?.webContents.send(IPCChannel.changeConfig)
   }
 

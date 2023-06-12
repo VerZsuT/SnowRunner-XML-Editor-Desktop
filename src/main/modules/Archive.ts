@@ -61,10 +61,8 @@ export default class Archive {
   /** Распаковать основные XML файлы (+DLC) из `initial.pak` */
   @publicMethod()
   static async unpackMain(hideLoading = true): Promise<void> {
-    if (Windows.loading) {
-      await Windows.loading.showAndWait()
-      Windows.loading.setText($.UNPACKING)
-    }
+    await Windows.loading?.showAndWait()
+    Windows.loading?.setText($.UNPACKING)
 
     this.clearDir(Paths.mainTemp)
     this.rmFile(Paths.texts)
@@ -72,8 +70,8 @@ export default class Archive {
     await this.unpack(Config.initial, Paths.mainTemp, false)
     this.saveSize(Config.initial)
 
-    if (Windows.loading && hideLoading) {
-      Windows.loading.hide()
+    if (hideLoading) {
+      Windows.loading?.hide()
     }
   }
 

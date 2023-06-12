@@ -9,7 +9,15 @@ import { BuildType, IPCChannel } from '#g/enums'
 import type { ICreateWindowAttributes, IDownloadWindow } from '#g/types'
 
 export default class Windows {
-  static loading?: IDownloadWindow | null = null
+  private static _loading?: IDownloadWindow
+  static get loading(): IDownloadWindow | undefined {
+    if (!this._loading || this._loading.isDestroyed()) return undefined
+    return this._loading
+  }
+
+  static set loading(value) {
+    this._loading = value
+  }
 
   /** Открыть модальное окно */
   static openModal(args: ICreateWindowAttributes): BrowserWindow {

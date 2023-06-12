@@ -10,13 +10,13 @@ type WindowCreator = (...args: any[]) => Promise<BrowserWindow>
 export default class Manager {
   private static windows = {} as WindowsObject
 
-  private static _mainWindow: BrowserWindow | undefined
+  private static _mainWindow?: BrowserWindow
   static get mainWindow(): BrowserWindow | undefined {
     if (!this._mainWindow || this._mainWindow.isDestroyed()) return undefined
     return this._mainWindow
   }
 
-  private static _setupWindow: BrowserWindow | undefined
+  private static _setupWindow?: BrowserWindow
   static get setupWindow(): BrowserWindow | undefined {
     if (!this._setupWindow || this._setupWindow.isDestroyed()) return undefined
     return this._setupWindow
