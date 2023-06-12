@@ -1,5 +1,5 @@
 import { ipcRenderer } from 'electron'
-import { existsSync, lstatSync, readdirSync, readFileSync, writeFileSync } from 'fs'
+import { existsSync, lstatSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'fs'
 import { basename, join } from 'path'
 
 import { provideFromMain } from 'emr-bridge/preload'
@@ -37,6 +37,9 @@ class _RootPreload {
       },
       isDirectory(path: string): boolean {
         return lstatSync(path).isDirectory()
+      },
+      rmdirSync(path: string): void {
+        rmSync(path, { recursive: true, force: true })
       },
       writeFileSync,
       readdirSync,

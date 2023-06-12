@@ -75,7 +75,7 @@ export default class ParameterController extends ViewController<{}, ParameterMod
   }
 
   private getAttrValue(value: ParameterModel['paramValue']): string | undefined {
-    return value ? String(value) : undefined
+    return value !== undefined ? String(value) : undefined
   }
 
   private getAttrSelector(selector: string): string {
