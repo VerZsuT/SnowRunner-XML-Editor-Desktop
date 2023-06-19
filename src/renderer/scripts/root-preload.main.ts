@@ -1,21 +1,14 @@
 import { ipcRenderer } from 'electron'
-import { existsSync, lstatSync, readdirSync, readFileSync, writeFileSync } from 'fs'
+import { existsSync, lstatSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'fs'
 import { basename, join } from 'path'
 
 import { provideFromMain } from 'emr-bridge/preload'
 
-import { ipc, system } from '#r/services/interprocess'
+import { IPC, System } from '#r/services/interprocess'
 
-provideFromMain(false)
-
-class RootPreload {
-  constructor() {
-    this.addIPC()
-    this.addSystem()
-  }
-
-  private addIPC(): void {
-    ipc.register({
+class _RootPreload {
+  private static addIPC(): void {
+    IPC.register({
       sendSync<T = any>(channel: string, ...args: any[]): T {
         return <T>ipcRenderer.sendSync(channel, ...args)
       },
@@ -37,13 +30,16 @@ class RootPreload {
     })
   }
 
-  private addSystem(): void {
-    system.register({
+  private static addSystem(): void {
+    System.register({
       readFileSync(path: string): string {
         return readFileSync(path).toString()
       },
       isDirectory(path: string): boolean {
         return lstatSync(path).isDirectory()
+      },
+      rmdirSync(path: string): void {
+        rmSync(path, { recursive: true, force: true })
       },
       writeFileSync,
       readdirSync,
@@ -52,6 +48,10 @@ class RootPreload {
       join
     })
   }
-}
 
-new RootPreload()
+  static {
+    provideFromMain(false)
+    this.addIPC()
+    this.addSystem()
+  }
+}

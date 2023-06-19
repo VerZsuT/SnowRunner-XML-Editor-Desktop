@@ -1,6 +1,6 @@
 import { message } from 'antd'
 
-import { editorService } from '../../services'
+import { EditorService } from '../../services'
 import $ from '../../texts'
 import type ListItemModel from './listitem.model'
 import type IListItemProps from './listitem.props'
@@ -9,9 +9,9 @@ import { Page } from '#g/enums'
 import { handleLocale } from '#r/helpers'
 import { ViewController, action } from '#r/model-ctrlr'
 import { actions } from '#r/pages/main/store'
-import { xml } from '#r/services'
+import { XML } from '#r/services'
 
-class ListItemController extends ViewController<IListItemProps, ListItemModel> {
+export default class ListItemController extends ViewController<IListItemProps, ListItemModel> {
   @action(actions.toggleFavorite)
   private reduxToggleFavorite!: typeof actions.toggleFavorite
 
@@ -27,7 +27,7 @@ class ListItemController extends ViewController<IListItemProps, ListItemModel> {
   exportFile(): void {
     const { item, modId, dlc } = this.props
 
-    const isSuccess = xml.exportFile({
+    const isSuccess = XML.exportFile({
       filePath: item.path,
       shortMode: false,
       mod: modId,
@@ -43,7 +43,7 @@ class ListItemController extends ViewController<IListItemProps, ListItemModel> {
   openEditor(): void {
     const { item, type, listId } = this.props
 
-    editorService.setStorageValues(item, type, listId)
+    EditorService.setStorageValues(item, type, listId)
     this.model.contextMenu.hide()
     this.route(Page.editor)
   }
@@ -53,5 +53,3 @@ class ListItemController extends ViewController<IListItemProps, ListItemModel> {
     this.reduxToggleFavorite(this.props.item.name)
   }
 }
-
-export default ListItemController

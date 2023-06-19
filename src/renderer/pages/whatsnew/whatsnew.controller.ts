@@ -2,7 +2,7 @@ import { ProgramWindow } from '#g/enums'
 import { handleLocale, windowReady } from '#r/helpers'
 import { ViewController } from '#r/model-ctrlr'
 
-class WhatsNewController extends ViewController {
+export default class WhatsNewController extends ViewController {
   constructor() {
     super()
 
@@ -10,5 +10,3 @@ class WhatsNewController extends ViewController {
     handleLocale()
   }
 }
-
-export default WhatsNewController

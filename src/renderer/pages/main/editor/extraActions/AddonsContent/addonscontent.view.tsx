@@ -10,14 +10,14 @@ import AddonsContentModel from './addonscontent.model'
 
 import type { IExtraActionProps } from '#g/types'
 
-const { Text } = Typography
+export default afcMemo<IExtraActionProps>(function AddonsContentComponent(props) {
+  const Text = Typography.Text
 
-function AddonsContentComponent(props: IExtraActionProps) {
   const model = new AddonsContentModel(props)
   const ctrlr = new AddonsContentController(props, model)
 
   return () => {
-    const { items, selectedAddon, wheels, repairs, fuel, options } = model
+    const { items, selectedAddon, wheels, water, repairs, fuel, options } = model
 
     if (!items) {
       return <Spin className='mods-spin' />
@@ -44,6 +44,7 @@ function AddonsContentComponent(props: IExtraActionProps) {
         <ContentField text={$.ADDON_WHEELS} value={wheels} onChange={onChangeWheels} />
         <ContentField text={$.ADDON_REPAIRS} value={repairs} onChange={onChangeRepairs} />
         <ContentField text={$.ADDON_FUEL} value={fuel} onChange={onChangeFuel} />
+        <ContentField text={$.ADDON_FUEL} value={water} onChange={onChangeWater} />
       </div>
 
       <Button
@@ -65,6 +66,9 @@ function AddonsContentComponent(props: IExtraActionProps) {
   function onChangeFuel(fuel: string): void {
     ctrlr.changeFuel(fuel)
   }
+  function onChangeWater(water: string): void {
+    ctrlr.changeWater(water)
+  }
 
   function onBlurFilter(e: FocusEvent<HTMLInputElement>): void {
     ctrlr.changeFilter(e.target.value)
@@ -77,6 +81,4 @@ function AddonsContentComponent(props: IExtraActionProps) {
   function onSaveClick(): void | never {
     ctrlr.save()
   }
-}
-
-export default afcMemo(AddonsContentComponent)
+})

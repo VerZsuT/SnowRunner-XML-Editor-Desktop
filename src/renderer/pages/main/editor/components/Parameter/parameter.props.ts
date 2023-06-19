@@ -1,8 +1,6 @@
 import type { IInputParams } from '#g/types'
 
-interface IParameterProps {
+export default interface IParameterProps {
   item: IInputParams
   renderIt: boolean
 }
-
-export default IParameterProps

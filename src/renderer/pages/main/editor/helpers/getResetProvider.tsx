@@ -14,7 +14,7 @@ export const ResetContext = createContext(null as unknown as ContextType)
  *
  * @returns [список, контекст]
  */
-export function getResetProvider() {
+export default function getResetProvider() {
   const resetList: ResetList = new Set()
   const register = (onReset: () => void) => resetList.add(onReset)
   const unregister = (onReset: () => void) => resetList.delete(onReset)

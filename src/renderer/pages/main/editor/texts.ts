@@ -1,6 +1,6 @@
 import { compareWithGlobal } from '#g/texts/renderer'
 
-const $ = compareWithGlobal({
+export default compareWithGlobal({
   RU: {
     SAVING_MESSAGE: 'Сохранение...',
     SUCCESS_SAVE_FILES: 'Сохранено',
@@ -58,5 +58,3 @@ const $ = compareWithGlobal({
     ACTIONS_MENU: '锦上添花'
   }
 })
-
-export default $

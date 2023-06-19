@@ -5,17 +5,15 @@ import $ from './wheels.texts'
 
 import type { IXMLTemplate } from '#g/types'
 
-class Selectors {
-  @selector truckWheels = 'TruckWheels'
-  @selector truckTire = `${this.truckWheels}.TruckTires.TruckTire${forEach}`
-  @selector truckTireText = `${this.truckTire}.GameData.UiDesc`
-  @selector wheelFriction = `${this.truckTire}.WheelFriction`
-  @selector gameData = `${this.truckTire}.GameData`
-}
+const selectors = createSelectors(class {
+  @selector static truckWheels = 'TruckWheels' as const
+  @selector static truckTire = `${this.truckWheels}.TruckTires.TruckTire${forEach}` as const
+  @selector static truckTireText = `${this.truckTire}.GameData.UiDesc` as const
+  @selector static wheelFriction = `${this.truckTire}.WheelFriction` as const
+  @selector static gameData = `${this.truckTire}.GameData` as const
+})
 
-const selectors = createSelectors(Selectors)
-
-const wheelsTemplate: IXMLTemplate = {
+export default {
   selector: 'TruckWheels',
   template: Template({ ...selectors },
     ForEach(selectors.truckTire,
@@ -73,6 +71,4 @@ const wheelsTemplate: IXMLTemplate = {
       )
     )
   )
-}
-
-export default wheelsTemplate
+} satisfies IXMLTemplate

@@ -8,7 +8,6 @@ import { publicMethod } from 'emr-bridge'
 import Archive from './Archive'
 import Config from './Config'
 import Dialogs from './Dialogs'
-import ExitParams from './ExitParams'
 import Paths from './Paths'
 
 import { APP_NAME } from '#g/consts'
@@ -17,41 +16,39 @@ import $ from '#m/texts'
 import './EPF'
 import './Updates'
 
-class RendererPublicClass {
+export default class RendererPublic {
   @publicMethod()
-  openLink(url: string): Promise<void> {
+  static openLink(url: string): Promise<void> {
     return shell.openExternal(url)
   }
 
   @publicMethod()
-  openPath(path: string): Promise<string> {
+  static openPath(path: string): Promise<string> {
     return shell.openPath(path)
   }
 
   /** Перезапустить программу */
   @publicMethod('relaunchApp')
-  reload() {
-    ExitParams.quit = true
+  static reload() {
     app.relaunch()
     app.quit()
   }
 
   /** Закрыть программу */
   @publicMethod('quitApp')
-  quit() {
-    ExitParams.quit = true
+  static quit() {
     app.quit()
   }
 
   /** Управление `DevTools` */
   @publicMethod()
-  devTools() {
+  static devTools() {
     BrowserWindow.getFocusedWindow()?.webContents.toggleDevTools()
   }
 
   /** Запустить деинсталлятор */
   @publicMethod('runUninstall')
-  uninstall() {
+  static uninstall() {
     if (!existsSync(Paths.uninstall)) {
       Dialogs.alert({
         message: $.ONLY_MANUAL_UNINS,
@@ -60,13 +57,12 @@ class RendererPublicClass {
     }
     else {
       execFile(Paths.uninstall)
-      ExitParams.quit = true
       app.quit()
     }
   }
 
   @publicMethod()
-  exportConfig() {
+  static exportConfig() {
     if (Config.export()) {
       Dialogs.alert({
         message: $.SUCCESS_EXPORT_MESSAGE,
@@ -78,9 +74,8 @@ class RendererPublicClass {
   }
 
   @publicMethod()
-  importConfig() {
+  static importConfig() {
     if (Config.import()) {
-      ExitParams.quit = true
       app.relaunch()
       app.quit()
       return true
@@ -94,15 +89,15 @@ class RendererPublicClass {
   }
 
   @publicMethod()
-  updateFiles(modId?: string) {
+  static async updateFiles(modId?: string): Promise<void> {
     if (modId) {
       try {
-        Archive.update(join(Paths.modsTemp, modId), Config.mods.items[modId].path, true)
+        await Archive.update(join(Paths.modsTemp, modId), Config.mods.items[modId].path, true)
       }
       catch {
         try {
           chmodSync(Config.mods.items[modId].path, 0o777)
-          Archive.update(join(Paths.modsTemp, modId), Config.mods.items[modId].path, true)
+          await Archive.update(join(Paths.modsTemp, modId), Config.mods.items[modId].path, true)
         }
         catch {
           Dialogs.error($.SAVE_MOD_ERROR)
@@ -111,12 +106,12 @@ class RendererPublicClass {
     }
     else {
       try {
-        Archive.update(Paths.mainTemp, Config.initial)
+        await Archive.update(Paths.mainTemp, Config.initial)
       }
       catch {
         try {
           chmodSync(Config.initial, 0o777)
-          Archive.update(Paths.mainTemp, Config.initial)
+          await Archive.update(Paths.mainTemp, Config.initial)
         }
         catch {
           Dialogs.error($.SAVE_ORIGINAL_ERROR)
@@ -125,7 +120,3 @@ class RendererPublicClass {
     }
   }
 }
-
-const RendererPublic = new RendererPublicClass()
-
-export default RendererPublic

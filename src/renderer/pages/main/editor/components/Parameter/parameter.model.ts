@@ -2,15 +2,20 @@ import { useContext } from 'react-afc'
 
 import type { FileDataContextType } from '../../helpers/getFileData'
 import { FileDataContext } from '../../helpers/getFileData'
+import type { FileInfoContextType } from '../../helpers/getFileInfo'
+import { FileInfoContext } from '../../helpers/getFileInfo'
 import type IParameterProps from './parameter.props'
 
 import { isNullable } from '#g/utils'
 import { ViewModel, prop, reactive, unwrap } from '#r/model-ctrlr'
-import { xml } from '#r/services'
+import { XML } from '#r/services'
 
-class ParameterModel extends ViewModel<IParameterProps> {
+export default class ParameterModel extends ViewModel<IParameterProps> {
   @unwrap
   readonly fileData = useContext(FileDataContext) as unknown as FileDataContextType
+
+  @unwrap
+  readonly fileInfo = useContext(FileInfoContext) as unknown as FileInfoContextType
 
   readonly item = this.props.item
 
@@ -48,7 +53,7 @@ class ParameterModel extends ViewModel<IParameterProps> {
 
     if (isNullable(value)) {
       if (templates) {
-        value = xml.getFromTemplates(fileDOM, templates, globalTemplates, this.item) ?? defaultItemValue
+        value = XML.getFromTemplates(fileDOM, templates, globalTemplates, this.item) ?? defaultItemValue
       }
       else {
         value = defaultItemValue
@@ -58,5 +63,3 @@ class ParameterModel extends ViewModel<IParameterProps> {
     return value
   }
 }
-
-export default ParameterModel

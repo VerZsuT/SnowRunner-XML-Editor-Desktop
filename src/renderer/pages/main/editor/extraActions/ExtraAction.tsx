@@ -10,7 +10,7 @@ import './styles'
 
 type CreatedExtraActionData = IExtraActionData & Required<Pick<IExtraActionData, 'import' | 'export'>>
 
-abstract class ExtraAction {
+export default abstract class ExtraAction {
   data!: CreatedExtraActionData
   Component!: FC<IExtraActionProps>
 
@@ -82,5 +82,3 @@ abstract class ExtraAction {
   protected onExport(dom: IXMLElement): any { return null }
   protected isActive(dom: IXMLElement, fileName: string): boolean { return true }
 }
-
-export default ExtraAction

@@ -1,7 +1,7 @@
 import { useMemo } from 'react-afc'
 
 import { selectCategory, selectGroup } from '../store/listSlice'
-import { itemsService } from './services'
+import { ItemsService } from './services'
 
 import type { Category, GroupTab } from '#g/enums'
 import type { IItem } from '#g/types'
@@ -14,7 +14,7 @@ type Items = {
   all: IItem[]
 }
 
-class ListsModel extends ViewModel {
+export default class ListsModel extends ViewModel {
   @redux(selectCategory)
   readonly category!: Category
 
@@ -24,14 +24,12 @@ class ListsModel extends ViewModel {
   @unwrap
   readonly items = useMemo<Items>(
     () => {
-      const main = itemsService.getMain(this.category)
-      const dlc = itemsService.getDLC(this.category)
-      const mods = itemsService.getMods(this.category)
+      const main = ItemsService.getMain(this.category)
+      const dlc = ItemsService.getDLC(this.category)
+      const mods = ItemsService.getMods(this.category)
       const all = [...main, ...dlc, ...mods]
       return { main, dlc, mods, all }
     },
     () => [this.category]
   ) as unknown as Items
 }
-
-export default ListsModel

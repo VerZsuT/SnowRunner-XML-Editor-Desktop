@@ -3,10 +3,10 @@ import type { app, shell } from 'electron'
 import type { Archive, Backup, Checks, Config, Dialogs, EPF, Helpers, RendererPublic, Updates } from '#m/modules'
 import type { WindowsManager } from '#m/windows'
 
-interface IMainFunctions {
+export default interface IMainFunctions {
   updateFiles: typeof RendererPublic.updateFiles
   runUninstall: typeof RendererPublic.uninstall
-  unpack: typeof Archive.syncUnpack
+  unpack: typeof Archive.publicUnpack
 
   findInDir: typeof Helpers.findInDir
   joinEPF: typeof EPF.join
@@ -20,13 +20,14 @@ interface IMainFunctions {
 
   openWindow: typeof WindowsManager.open
   getDir: typeof Dialogs.getDir
+  getDirs: typeof Dialogs.getDirs
+  getPaks: typeof Dialogs.getPaks
   getXML: typeof Dialogs.getXML
   getInitial: typeof Dialogs.getInitial
   getEPF: typeof Dialogs.getEPF
   saveEPF: typeof Dialogs.saveEPF
 
   saveBackup: typeof Backup.save
-  copyBackup: typeof Backup.copy
   recoverFromBackup: typeof Backup.recoverFromIt
   resetConfig: typeof Config.reset
   checkUpdate: typeof Checks.checkUpdate
@@ -34,5 +35,3 @@ interface IMainFunctions {
   unpackMain: typeof Archive.unpackMain
   devTools: typeof RendererPublic.devTools
 }
-
-export default IMainFunctions

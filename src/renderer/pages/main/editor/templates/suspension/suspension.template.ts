@@ -5,16 +5,14 @@ import $ from './suspension.texts'
 
 import type { IXMLTemplate } from '#g/types'
 
-class Selectors {
-  @selector suspensionSet = `SuspensionSetVariants.SuspensionSet${forEach}`
-  @selector suspensionSetText = `${this.suspensionSet}.GameData.UiDesc`
-  @selector suspension = `${this.suspensionSet}.Suspension${forEachBy(2)}`
-  @selector gameData = `${this.suspensionSet}.GameData`
-}
+const selectors = createSelectors(class {
+  @selector static suspensionSet = `SuspensionSetVariants.SuspensionSet${forEach}` as const
+  @selector static suspensionSetText = `${this.suspensionSet}.GameData.UiDesc` as const
+  @selector static suspension = `${this.suspensionSet}.Suspension${forEachBy(2)}` as const
+  @selector static gameData = `${this.suspensionSet}.GameData` as const
+})
 
-const selectors = createSelectors(Selectors)
-
-const suspensionTemplate: IXMLTemplate = {
+export default {
   selector: 'SuspensionSetVariants',
   template: Template({ ...selectors },
     ForEach(selectors.suspensionSet,
@@ -142,6 +140,4 @@ const suspensionTemplate: IXMLTemplate = {
       )
     )
   )
-}
-
-export default suspensionTemplate
+} satisfies IXMLTemplate

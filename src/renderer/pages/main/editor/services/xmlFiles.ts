@@ -1,6 +1,7 @@
 import { useForceUpdate } from 'react-afc/compatible'
 
 import type { FileType } from '#g/enums'
+import { Config } from '#g/renderer/services'
 import type { IXMLElement } from '#g/types'
 
 interface IXMLFile {
@@ -11,12 +12,13 @@ interface IXMLFile {
   type: FileType
 }
 
-class XMLFilesService {
-  files: IXMLFile[] = []
+export default class XMLFilesService {
+  static files: IXMLFile[] = []
+  static edited: string[] = []
 
-  private readonly listeners = new Set<() => void>()
+  private static readonly listeners = new Set<() => void>()
 
-  subscribe() {
+  static subscribe() {
     const update = { isForced: false }
     const forceUpdate = useForceUpdate()
     setTimeout(() => {
@@ -28,7 +30,7 @@ class XMLFilesService {
     return update
   }
 
-  add(file: IXMLFile, clearPrev?: boolean): void {
+  static add(file: IXMLFile, clearPrev?: boolean): void {
     if (clearPrev) this.files = []
 
     for (let i = 0; i < this.files.length; ++i) {
@@ -38,8 +40,15 @@ class XMLFilesService {
     this.files.push(file)
     this.listeners.forEach(listener => listener())
   }
+
+  static markAsEdited(path: string): void {
+    if (this.edited.includes(path)) return
+    this.edited.push(path)
+  }
+
+  static removeFromEdited(path: string): void {
+    if (!this.edited.includes(path)) return
+    this.edited = this.edited.filter(item => item !== path)
+    Config.edited = Config.edited.filter(val => val.path !== path)
+  }
 }
-
-const xmlFiles = new XMLFilesService()
-
-export default xmlFiles

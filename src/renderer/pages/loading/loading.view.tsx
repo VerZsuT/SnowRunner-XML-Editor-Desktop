@@ -8,9 +8,9 @@ import LoadingModel from './loading.model'
 import '#r/templateScript'
 import './loading.styles'
 
-const { Title, Text } = Typography
+export default afc(function Loading() {
+  const { Title, Text } = Typography
 
-function Loading() {
   const model = new LoadingModel()
   new LoadingController(model)
 
@@ -40,6 +40,4 @@ function Loading() {
       </div>
     )
   }
-}
-
-export default afc(Loading)
+})

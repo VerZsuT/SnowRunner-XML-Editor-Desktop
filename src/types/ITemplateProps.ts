@@ -2,7 +2,7 @@ import type TemplateSelectors from './TemplateSelectors'
 
 import type { TemplateType } from '#g/enums'
 
-interface ITemplateProps {
+export default interface ITemplateProps {
   /**
    * Тип шаблона.
    *
@@ -22,5 +22,3 @@ interface ITemplateProps {
    */
   selectors?: TemplateSelectors
 }
-
-export default ITemplateProps

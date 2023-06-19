@@ -1,6 +1,6 @@
 import { compareWithGlobal } from '#g/texts/renderer'
 
-const $ = compareWithGlobal({
+export default compareWithGlobal({
   RU: {
     EXIT_MENU_ITEM_LABEL: 'Выход',
     SETTINGS_MENU_LABEL: 'Настройки',
@@ -50,5 +50,3 @@ const $ = compareWithGlobal({
   GITHUB_TITLE: 'Github',
   YOUTUBE_TITLE: 'YouTube(RU)'
 })
-
-export default $

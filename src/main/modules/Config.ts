@@ -14,34 +14,27 @@ import { hasItems, isNullable } from '#g/utils'
 
 type ConfigChangeHandler = () => void
 
-class ConfigClass {
-  private readonly changeHandlers = new Set<ConfigChangeHandler>()
-  private readonly obj = this.getConfig()
-
-  constructor() {
-    for (const key in this.obj) {
-      Object.defineProperty(this, key, {
-        get: () => this.obj[key],
-        set: value => this.obj[key] = value,
-        enumerable: true,
-        configurable: true
-      })
-    }
-  }
+class Config {
+  private static readonly changeHandlers = new Set<ConfigChangeHandler>()
+  private static readonly obj = this.getConfig()
 
   @publicGetter()
-  get config(): IConfig {
+  static get config(): IConfig {
     return this.obj
   }
 
   @publicSetter()
-  set config(value: IConfig) {
+  static set config(value: IConfig) {
     this.set(value)
     this.changeHandlers.forEach(handler => handler())
   }
 
+  static emitUpdate(): void {
+    this.changeHandlers.forEach(handler => handler())
+  }
+
   /** Сохранить изменения в `config.json` */
-  save(): void {
+  static save(): void {
     try {
       writeFileSync(Paths.config, JSON.stringify(this.obj, null, '\t'))
     }
@@ -51,7 +44,7 @@ class ConfigClass {
   }
 
   /** Установить настройки */
-  set(newObj: IConfig): void {
+  static set(newObj: IConfig): void {
     for (const key in newObj) {
       this.obj[key] = newObj[key]
     }
@@ -62,7 +55,7 @@ class ConfigClass {
    * @param noReload - отмена перезагрузки после завершения.
    */
   @publicMethod('resetConfig')
-  reset(noReload?: boolean): void {
+  static reset(noReload?: boolean): void {
     const { version, buildType } = this.obj
 
     this.set({
@@ -86,21 +79,22 @@ class ConfigClass {
         initial: 0,
         mods: {}
       },
-      lang: Lang.EN
+      lang: Lang.EN,
+      edited: []
     })
 
     Helpers.clearTemp()
-    if (!noReload) {
-      app.relaunch()
-      app.quit()
+    if (noReload) {
+      this.save()
     }
     else {
-      this.save()
+      app.relaunch()
+      app.quit()
     }
   }
 
   /** Экспортировать `config.json`. */
-  export(): boolean {
+  static export(): boolean {
     if (!existsSync(Paths.updateBackupFolder)) {
       mkdirSync(Paths.updateBackupFolder, { recursive: true })
     }
@@ -110,19 +104,23 @@ class ConfigClass {
   }
 
   /** Импортировать `config.json`. */
-  import(): boolean {
+  static import(): boolean {
     if (!existsSync(join(Paths.backupFolder, 'config.json'))) {
       return false
     }
 
-    const exportedConfig = JSON.parse(readFileSync(`${Paths.backupFolder}\\config.json`).toString())
+    const exportedConfig = JSON.parse(readFileSync(`${Paths.backupFolder}\\config.json`).toString()) as IConfigBefore067 | ConfigBefore068 | ConfigBefore074 | IConfig
+
+    if (exportedConfig.version < '0.6.6d') {
+      return false
+    }
 
     ExitParams.saveConfig = false
     exportedConfig.settings.showWhatsNew = true
 
-    this.before066d(exportedConfig)
-    this.before067(exportedConfig)
-    this.before068(exportedConfig)
+    this.to067(exportedConfig)
+    this.to068(exportedConfig)
+    this.to074(exportedConfig)
 
     exportedConfig.version = this.obj.version
     writeFileSync(Paths.config, JSON.stringify(exportedConfig))
@@ -131,67 +129,71 @@ class ConfigClass {
     return true
   }
 
-  addChangeHandler = (handler: ConfigChangeHandler): void => {
+  static addChangeHandler(handler: ConfigChangeHandler): void {
     this.changeHandlers.add(handler)
   }
 
-  removeChangeHandler(handler: ConfigChangeHandler): void {
+  static removeChangeHandler(handler: ConfigChangeHandler): void {
     this.changeHandlers.delete(handler)
   }
 
+  /** Преобразовать к версии 0.7.4. */
+  private static to074(exportedConfig: ConfigBefore074 | IConfig): asserts exportedConfig is IConfig {
+    if (exportedConfig.version < '0.7.4') {
+      const converted = exportedConfig as IConfig
+      converted.edited = []
+    }
+  }
+
   /** Преобразовать к версии 0.6.8. */
-  private before068(exportedConfig: any): void {
+  private static to068(exportedConfig: ConfigBefore068 | ConfigBefore074 | IConfig): asserts exportedConfig is ConfigBefore074 | IConfig {
     if (exportedConfig.version < '0.6.8') {
-      exportedConfig.settings.advancedMode = false
+      const converted = exportedConfig as Partial<ConfigBefore068> & ConfigBefore074
+      converted.settings.advancedMode = false
+      // @ts-expect-error
+      delete converted.settings.limits
     }
   }
 
   /** Преобразовать к версии 0.6.7. */
-  private before067(exportedConfig: any): void {
+  private static to067(exportedConfig: IConfigBefore067 | ConfigBefore068 | ConfigBefore074 | IConfig): asserts exportedConfig is ConfigBefore068 | ConfigBefore074 | IConfig {
     if (exportedConfig.version < '0.6.7') {
+      const original = exportedConfig as IConfigBefore067
+      const converted = exportedConfig as Partial<IConfigBefore067> & ConfigBefore068
       const mods: any = {}
       let length = 0
 
-      exportedConfig.initial = exportedConfig.paths.initial
-      exportedConfig.dlc = [...exportedConfig.dlcList]
+      converted.initial = original.paths.initial
+      converted.dlc = [...original.dlcList]
 
-      if (hasItems(exportedConfig.modsList)) {
-        for (const modName in exportedConfig.modsList) {
+      if (hasItems(original.modsList)) {
+        for (const modName in original.modsList) {
           if (modName !== 'length') {
-            mods[modName] = { ...exportedConfig.modsList[modName] }
+            mods[modName] = { ...original.modsList[modName] }
             ++length
           }
         }
       }
 
-      exportedConfig.mods = {
+      converted.mods = {
         length: length,
         items: mods
       }
-      exportedConfig.favorites = []
+      converted.favorites = []
 
-      delete exportedConfig.paths
-      delete exportedConfig.dlcList
-      delete exportedConfig.modsList
-      delete exportedConfig.ADV
-      delete exportedConfig.ETR
-      delete exportedConfig.settings.resetButton
-      delete exportedConfig.settings.devMode
+      delete converted.paths
+      delete converted.dlcList
+      delete converted.modsList
+      delete converted.ADV
+      delete converted.ETR
+      // @ts-expect-error
+      delete converted.settings.resetButton
+      // @ts-expect-error
+      delete converted.settings.devMode
     }
   }
 
-  /** Преобразовать к версии 0.6.6d. */
-  private before066d(exportedConfig: any): void {
-    if (exportedConfig.version < '0.6.6d') {
-      delete exportedConfig.sums
-      exportedConfig.sizes = {
-        initial: null,
-        mods: {}
-      }
-    }
-  }
-
-  private getConfig(): IConfig {
+  private static getConfig(): IConfig {
     const config: IConfig = JSON.parse(readFileSync(Paths.config).toString())
 
     if (isNullable(config.lang)) {
@@ -200,8 +202,85 @@ class ConfigClass {
     }
     return config
   }
+
+  static {
+    for (const key in this.obj) {
+      Object.defineProperty(this, key, {
+        get: () => this.obj[key],
+        set: value => {
+          this.obj[key] = value
+          this.emitUpdate()
+        },
+        enumerable: true,
+        configurable: true
+      })
+    }
+  }
 }
 
-const Config = new ConfigClass() as ConfigClass & IConfig
+export default Config as typeof Config & IConfig
 
-export default Config
+type ConfigBefore074 = Omit<ConfigBefore068, 'lang' | 'settings'> & {
+  lang: 'RU' | 'EN' | 'DE' | 'CH'
+  settings: Omit<ConfigBefore068['settings'], 'limits'> & {
+    advancedMode: boolean
+  }
+}
+
+type ConfigBefore068 = Omit<IConfigBefore067, 'settings' | 'modsList' | 'dlcList' | 'ADV' | 'ETR' | 'paths'> & {
+  initial: string
+  settings: Omit<IConfigBefore067['settings'], 'resetButton' | 'devMode'>
+  mods: IConfigBefore067['modsList']
+  dlc: IConfigBefore067['dlcList']
+  favorites: string[]
+}
+
+interface IConfigBefore067 {
+  version: string
+  lang: 'RU' | 'EN' | 'DE'
+  buildType: 'dev' | 'prod'
+  paths: {
+    initial: string
+    dlc: string
+    classes: string
+    mods: string
+  }
+  settings: {
+    updates: boolean
+    limits: boolean
+    DLC: boolean
+    mods: boolean
+    resetButton: boolean
+    devMode: boolean
+    showWhatsNew: boolean
+  }
+  sizes: {
+    initial: number
+    mods: {
+      [name: string]: number
+    }
+  }
+  modsList: {
+    length: number
+    items?: {
+      [modName: string]: {
+        name: string
+        path: string
+      }
+    }
+  }
+  dlcList: {
+    name: string
+    path: string
+  }[]
+  ADV: {
+    [filePath: string]: {
+      [selector: string]: {
+        [attrName: string]: string | 'ADV_NULL'
+      }
+    }
+  }
+  ETR: {
+    [filePath: string]: string[]
+  }
+}

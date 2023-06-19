@@ -1,6 +1,6 @@
 import { compareWithGlobal } from '#g/texts/renderer'
 
-const $ = compareWithGlobal({
+export default compareWithGlobal({
   RU: {
     WHATS_NEW_TITLE: 'Что нового в версии'
   },
@@ -14,5 +14,3 @@ const $ = compareWithGlobal({
     WHATS_NEW_TITLE: '该版本有什么新内容'
   }
 })
-
-export default $

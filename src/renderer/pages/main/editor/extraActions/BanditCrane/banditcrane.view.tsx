@@ -7,9 +7,9 @@ import BanditCraneModel from './banditcrane.model'
 
 import type { IExtraActionProps } from '#g/types'
 
-const { Paragraph } = Typography
+export default afcMemo<IExtraActionProps>(function BanditCraneComponent(props) {
+  const Paragraph = Typography.Paragraph
 
-function BanditCraneComponent(props: IExtraActionProps) {
   const model = new BanditCraneModel(props)
   const ctrlr = new BanditCraneController(props, model)
 
@@ -44,6 +44,4 @@ function BanditCraneComponent(props: IExtraActionProps) {
   function onRemove(): void {
     ctrlr.removeCrane()
   }
-}
-
-export default afcMemo(BanditCraneComponent)
+})

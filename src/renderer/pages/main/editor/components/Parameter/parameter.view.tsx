@@ -12,12 +12,11 @@ import type IParameterProps from './parameter.props'
 
 import { InputType } from '#g/enums'
 import $ from '#g/texts/renderer'
-import { isNullable } from '#g/utils'
 import { useContextMenu } from '#r/helpers'
 
-const { Text } = Typography
+export default afcMemo<IParameterProps>(function Parameter(props) {
+  const Text = Typography.Text
 
-function Parameter(props: IParameterProps) {
   const model = new ParameterModel(props)
   const ctrlr = new ParameterController(model, onReset)
 
@@ -71,9 +70,6 @@ function Parameter(props: IParameterProps) {
 
   function onReset(): void {
     contextMenu.hide()
-    if (isNullable(model.defaultValue)) return
-    ctrlr.setValue(model.defaultValue)
+    ctrlr.resetValue()
   }
-}
-
-export default afcMemo(Parameter)
+})

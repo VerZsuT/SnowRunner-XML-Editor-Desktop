@@ -1,6 +1,6 @@
 import { compareWithGlobal } from '#g/texts/main'
 
-const $ = compareWithGlobal({
+export default compareWithGlobal({
   RU: {
     DELETE_OLD_INITIAL_BACKUP_ERROR: 'Не удалось удалить старый бэкап initial.pak.',
     DELETE_CURRENT_INITIAL_BACKUP_ERROR: 'Не удалось удалить текущий бэкап initial.pak',
@@ -10,7 +10,7 @@ const $ = compareWithGlobal({
     SUCCESS: 'Успех',
     ERROR: 'Ошибка',
     ADMIN_REQUIRED_MESSAGE: 'Ошибка запуска. Программа должна быть запущена от имени администратора.',
-    ALLOW_NEW_VERSION: 'Доступна новая версия программы. Нажмите чтобы перейти на страницу скачивания.',
+    ALLOW_NEW_VERSION: 'Доступна новая версия программы.',
     NOTIFICATION: 'Уведомление',
     INITIAL_NOT_FOUND: 'initial.pak не найден.',
     CLASSES_NOT_FOUND: 'Папка classes не найдена.',
@@ -32,7 +32,7 @@ const $ = compareWithGlobal({
     SUCCESS: 'Success',
     ERROR: 'Error',
     ADMIN_REQUIRED_MESSAGE: 'Startup error. The program must be run as an administrator.',
-    ALLOW_NEW_VERSION: 'A new version of the program is available. Click to go to the download page.',
+    ALLOW_NEW_VERSION: 'A new version of the program is available.',
     NOTIFICATION: 'Notification',
     INITIAL_NOT_FOUND: 'initial.pak not found',
     CLASSES_NOT_FOUND: 'Folder classes not found',
@@ -54,7 +54,7 @@ const $ = compareWithGlobal({
     SUCCESS: 'Erfolg',
     ERROR: 'Fehler',
     ADMIN_REQUIRED_MESSAGE: 'Startfehler. Das Programm muss als administrator ausgeführt.',
-    ALLOW_NEW_VERSION: 'Eine neue Version des Programms ist verfügbar. Klicken Sie hier, um zur Download-Seite zu gelangen.',
+    ALLOW_NEW_VERSION: 'Eine neue Version des Programms ist verfügbar.',
     NOTIFICATION: 'Norifizierung',
     INITIAL_NOT_FOUND: 'initial.pak nicht gefunden',
     CLASSES_NOT_FOUND: 'Klassen nicht gefunden',
@@ -76,7 +76,7 @@ const $ = compareWithGlobal({
     SUCCESS: '成功',
     ERROR: '误差',
     ADMIN_REQUIRED_MESSAGE: '启动错误。该程序必须以管理员身份启动。',
-    ALLOW_NEW_VERSION: '新版本的软件已经问世。点击进入下载页面。',
+    ALLOW_NEW_VERSION: '新版本的软件已经问世。',
     NOTIFICATION: '通知书',
     INITIAL_NOT_FOUND: '没有找到initial.pak。',
     CLASSES_NOT_FOUND: '没有找到classes文件夹。',
@@ -90,5 +90,3 @@ const $ = compareWithGlobal({
     SAVE_ORIGINAL_ERROR: '更新initial.pak中的文件失败。没有写入权限'
   }
 })
-
-export default $

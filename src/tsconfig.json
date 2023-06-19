@@ -13,7 +13,6 @@
     "newLine": "LF",
     "baseUrl": ".",
     "strict": true,
-    "isolatedModules": true,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "sourceMap": true,

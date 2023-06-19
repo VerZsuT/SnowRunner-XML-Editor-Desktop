@@ -1,4 +1,4 @@
-interface IInputBaseProps {
+export default interface IInputBaseProps {
   /** Имя атрибута, который будет браться у элемента по селектору */
   attribute: string
   /** Название параметра в таблице */
@@ -24,5 +24,3 @@ interface IInputBaseProps {
    */
   addMissedTag?: boolean
 }
-
-export default IInputBaseProps

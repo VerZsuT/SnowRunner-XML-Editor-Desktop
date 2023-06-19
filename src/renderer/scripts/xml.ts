@@ -1,7 +1,7 @@
 import type { AnyNode, Cheerio, CheerioAPI } from 'cheerio'
 import { load } from 'cheerio'
 
-import system from '../services/system.service'
+import System from '../services/system.service'
 
 import type { IXMLElement } from '#g/types'
 import { hasItems, isString } from '#g/utils'
@@ -17,7 +17,7 @@ export class XMLDOM implements IXMLElement {
   private constructor(source: SourceType, content: string) {
     switch (source) {
       case SourceType.path:
-        this.DOM = load(system.readFileSync(content), { xmlMode: true })
+        this.DOM = load(System.readFileSync(content), { xmlMode: true })
         break
       case SourceType.xmlString:
         this.DOM = load(content, { xmlMode: true })

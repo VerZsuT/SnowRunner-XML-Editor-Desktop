@@ -10,41 +10,32 @@
 
 import { mkdirSync, rmSync } from 'fs'
 
-import { allPaths, checkPath, readFile, writeFile } from './helpers'
+import { allPaths, readFile, writeFile } from './helpers'
 import Log from './Log'
 
-class BeforeBuild {
-  paths = allPaths.before
+class _BeforeBuild {
+  static readonly paths = allPaths.before
+  static readonly isWin7 = process.argv.at(2) === 'win7'
 
-  config!: any
-  packageFile!: any
-  packageLockFile!: any
-  publicFile!: any
-  issConfig!: string
+  static config: any
+  static packageFile: any
+  static packageLockFile: any
+  static publicFile: any
+  static issConfig: string
 
-  run(): void {
-    this.printTitle()
-
-    this.clearOutFolder()
-    this.readFiles()
-    this.changeFiles()
-    this.writeFiles()
-  }
-
-  printTitle(): void {
+  static printTitle(): void {
     Log.print('Starting pre-build script', true)
   }
 
   @Log.stage
-  clearOutFolder() {
+  static clearOutFolder(): void {
     Log.print('Clearing out folder')
-    checkPath(this.paths.out)
-    rmSync(this.paths.out, { recursive: true })
+    rmSync(this.paths.out, { recursive: true, force: true })
     mkdirSync(this.paths.out)
   }
 
   @Log.stage
-  readFiles() {
+  static readFiles(): void {
     this.readFile('Reading config.json', 'config', this.paths.config)
     this.readFile('Reading package.json', 'packageFile', this.paths.package)
     this.readFile('Reading public.json', 'publicFile', this.paths.public)
@@ -52,9 +43,10 @@ class BeforeBuild {
   }
 
   @Log.stage
-  changeFiles() {
-    this.changeFile('Changing package version', this.packageFile)
+  static changeFiles(): void {
     this.changeFile('Changing public version', this.publicFile, 'latestVersion')
+    if (this.isWin7) this.config.version += '-win7'
+    this.changeFile('Changing package version', this.packageFile)
     this.changeFile(
       'Changing ISS config file',
       this,
@@ -67,26 +59,32 @@ class BeforeBuild {
   }
 
   @Log.stage
-  writeFiles() {
+  static writeFiles(): void {
     this.writeFile('Writing package.json', this.paths.package, this.packageFile)
     this.writeFile('Writing public.json', this.paths.public, this.publicFile)
     this.writeFile('Writing installer.config.iss', this.paths.issConfig, this.issConfig, false)
   }
 
-  readFile(message: string, key: string, path: string, fromJSON = true): void {
+  static readFile(message: string, key: string, path: string, fromJSON = true): void {
     Log.print(message)
     this[key] = readFile(path, fromJSON)
   }
 
-  changeFile(message: string, variable: any, key = 'version', value = this.config.version): void {
+  static changeFile(message: string, variable: any, key = 'version', value = this.config.version): void {
     Log.print(message)
     variable[key] = value
   }
 
-  writeFile(message: string, path: string, variable: any, stringify = true): void {
+  static writeFile(message: string, path: string, variable: any, stringify = true): void {
     Log.print(message)
     writeFile(path, stringify ? JSON.stringify(variable, null, '\t') : variable)
   }
-}
 
-new BeforeBuild().run()
+  static {
+    this.printTitle()
+    this.clearOutFolder()
+    this.readFiles()
+    this.changeFiles()
+    this.writeFiles()
+  }
+}

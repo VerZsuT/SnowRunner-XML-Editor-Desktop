@@ -10,7 +10,7 @@ import MenuModel from './menu.model'
 import { updateOnLangChange } from '#g/texts/renderer'
 
 /** Верхнее сервисное меню */
-function MenuView() {
+export default afcMemo(function MenuView() {
   const model = new MenuModel()
   const ctrlr = new MenuController(model)
 
@@ -63,6 +63,4 @@ function MenuView() {
   function onDev(...items: MenuItemType[]): MenuItemType[] {
     return model.isDev ? items : []
   }
-}
-
-export default afcMemo(MenuView)
+})

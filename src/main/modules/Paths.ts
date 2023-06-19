@@ -5,25 +5,15 @@ import { Access, publicProperty } from 'emr-bridge'
 import type { IPaths } from '#g/types'
 
 /** Пути, используемые в программе (в собранном виде) */
-class PathsClass {
-  private readonly UPDATER_URL = 'https://verzsut.github.io/sxmle_updater'
-  private readonly REPOS_URL = 'https://verzsut.github.io/SnowRunner-XML-Editor-Desktop'
-
-  constructor() {
-    for (const key in this.obj) {
-      Object.defineProperty(this, key, {
-        get: () => this.obj[key],
-        enumerable: true,
-        configurable: false
-      })
-    }
-  }
+class Paths {
+  private static readonly UPDATER_URL = 'https://verzsut.github.io/sxmle_updater'
+  private static readonly REPOS_URL = 'https://verzsut.github.io/SnowRunner-XML-Editor-Desktop'
 
   @publicProperty({
     name: 'paths',
     access: Access.get
   })
-  private readonly obj = <IPaths>{
+  private static readonly obj: IPaths = {
     /** URL json файла обновления */
     publicInfo: `${this.UPDATER_URL}/public.json`,
 
@@ -33,8 +23,14 @@ class PathsClass {
     /** URL папки с файлами обновления */
     updateFiles: `${this.UPDATER_URL}/files`,
 
+    /** URL папки с файлами обновления (win7) */
+    updateWin7Files: `${this.UPDATER_URL}/files_win7`,
+
     /** URL с hash-картой файлов обновления */
     updateMap: `${this.UPDATER_URL}/updateMap.json`,
+
+    /** URL с hash-картой файлов обновления */
+    updateMapWin7: `${this.UPDATER_URL}/updateMap_win7.json`,
 
     /** Папка `app` */
     root: this.resolve('../../'),
@@ -60,6 +56,9 @@ class PathsClass {
     /** Бэкап `initial.pak` */
     backupInitial: this.resolve('backups/initial.pak'),
 
+    /** Бэкап данных `initail.pak` перед распаковкой */
+    backupInitialData: this.resolve('backups/previous_initial'),
+
     /** Папка `WinRAR` */
     winrar: this.resolve('winrar'),
 
@@ -82,11 +81,19 @@ class PathsClass {
     dlc: this.resolve('mainTemp/[media]/_dlc')
   }
 
-  private resolve(...args: string[]) {
+  private static resolve(...args: string[]) {
     return res(__dirname, ...args)
+  }
+
+  static {
+    for (const key in this.obj) {
+      Object.defineProperty(this, key, {
+        get: () => this.obj[key],
+        enumerable: true,
+        configurable: false
+      })
+    }
   }
 }
 
-const Paths = new PathsClass() as unknown as IPaths
-
-export default Paths
+export default Paths as unknown as IPaths

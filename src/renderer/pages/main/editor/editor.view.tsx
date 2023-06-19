@@ -7,16 +7,16 @@ import EditorModel from './editor.model'
 import { FileDataContext } from './helpers/getFileData'
 import { FileInfoContext } from './helpers/getFileInfo'
 import { ResetContext } from './helpers/getResetProvider'
-import { template } from './services'
+import { Template } from './services'
 import $ from './texts'
 
 import { Menu } from '#r/components'
 
 import './styles'
 
-const { Text } = Typography
+export default afcMemo(function Editor() {
+  const Text = Typography.Text
 
-function Editor() {
   const model = new EditorModel()
   new EditorController(model)
 
@@ -48,7 +48,7 @@ function Editor() {
             <FileInfoContext.Provider value={fileInfoContext}>
               <div className='table'>
                 <Collapse accordion>
-                  {template.parseItems(tableItems, true)}
+                  {Template.parseItems(tableItems, true)}
                 </Collapse>
               </div>
             </FileInfoContext.Provider>
@@ -57,6 +57,4 @@ function Editor() {
       </>
     }
   </>
-}
-
-export default afcMemo(Editor)
+})

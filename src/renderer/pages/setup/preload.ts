@@ -6,19 +6,12 @@ import '#r/scripts/root-preload.main'
 import $ from './texts'
 
 import type { IFolder, ISetupPreload } from '#g/types'
-import main from '#r/scripts/main'
-import { preload } from '#r/services/interprocess'
+import Main from '#r/scripts/main'
+import { Preload } from '#r/services/interprocess'
 
-class SetupPreload {
-  constructor() {
-    preload.register<ISetupPreload>({
-      getGameFolder: this.getGameFolder,
-      getInitialPak: this.getInitialPak
-    })
-  }
-
-  getGameFolder = (): IFolder | undefined => {
-    const result = main.getDir()
+class _SetupPreload {
+  static getGameFolder = (): IFolder | undefined => {
+    const result = Main.getDir()
     let existed = ''
 
     if (!result) {
@@ -54,8 +47,8 @@ class SetupPreload {
     }
   }
 
-  getInitialPak = (): IFolder | undefined => {
-    const result = main.getInitial()
+  static getInitialPak = (): IFolder | undefined => {
+    const result = Main.getInitial()
 
     if (!result || basename(result) !== 'initial.pak' || !existsSync(result)) {
       window.handleErrorMessage?.($.INVALID_INITIAL_ERROR)
@@ -63,6 +56,11 @@ class SetupPreload {
     }
     return { initial: result }
   }
-}
 
-new SetupPreload()
+  static {
+    Preload.register<ISetupPreload>({
+      getGameFolder: this.getGameFolder,
+      getInitialPak: this.getInitialPak
+    })
+  }
+}

@@ -5,7 +5,7 @@ import { selectPage } from '../store/pageSlice'
 import { Page } from '#g/enums'
 import { ViewModel, redux } from '#r/model-ctrlr'
 
-class MainModel extends ViewModel {
+export default class MainModel extends ViewModel {
   get currentPage() {
     return this.pages[this.page]
   }
@@ -18,5 +18,3 @@ class MainModel extends ViewModel {
     [Page.editor]: Editor
   }
 }
-
-export default MainModel

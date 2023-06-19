@@ -1,12 +1,13 @@
 import { compareWithGlobal } from '#g/texts/renderer'
 
-const $ = compareWithGlobal({
+export default compareWithGlobal({
   RU: {
     QUANTITY: 'Кол-во груза',
     INNER: 'Полезное содержимое',
     MASS: 'Масса',
     OTHER: 'Прочее',
     PRICE: 'Цена',
+    WATER_CAPACITY: 'Объём воды',
     FUEL_CAPACITY: 'Объём топлива',
     REPAIRS_CAPACITY: 'Кол-во запчастей',
     WHEEL_REPAIRS_CAPACITY: 'Кол-во колёс для ремонта',
@@ -24,6 +25,7 @@ const $ = compareWithGlobal({
     OTHER: 'Other',
     PRICE: 'Price',
     FUEL_CAPACITY: 'Fuel capacity',
+    WATER_CAPACITY: 'Water capacity',
     REPAIRS_CAPACITY: 'Repairs capacity',
     WHEEL_REPAIRS_CAPACITY: 'Wheel repairs capacity',
     TRAILER_MASS: 'Trailer mass',
@@ -40,6 +42,7 @@ const $ = compareWithGlobal({
     OTHER: 'Ander',
     PRICE: 'Preis',
     FUEL_CAPACITY: 'Kraftstoffmenge',
+    WATER_CAPACITY: 'Wasser-Kapazität',
     REPAIRS_CAPACITY: 'Anzahl der Ersatzteile',
     WHEEL_REPAIRS_CAPACITY: 'Anzahl der Räder zu reparieren',
     TRAILER_MASS: 'Gewicht des Anhängers',
@@ -56,6 +59,7 @@ const $ = compareWithGlobal({
     OTHER: '其他',
     PRICE: '价格',
     FUEL_CAPACITY: '燃油容量',
+    WATER_CAPACITY: '水容量',
     REPAIRS_CAPACITY: '零部件的数量',
     WHEEL_REPAIRS_CAPACITY: '需要修复的车轮数量',
     TRAILER_MASS: '拖车重量',
@@ -66,5 +70,3 @@ const $ = compareWithGlobal({
     SUSP_STRENGTH: '悬架刚度'
   }
 })
-
-export default $

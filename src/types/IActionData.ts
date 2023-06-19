@@ -1,7 +1,7 @@
 import type IXMLElement from './IXMLElement'
 
 /** Параметры доп. сценария */
-interface IActionData {
+export default interface IActionData {
   /** Название в меню */
   name: string
 
@@ -22,5 +22,3 @@ interface IActionData {
   export?(dom: IXMLElement): any
   import?(dom: IXMLElement, data: any): void
 }
-
-export default IActionData

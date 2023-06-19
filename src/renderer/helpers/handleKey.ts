@@ -8,7 +8,7 @@ import { isString } from '#g/utils'
  * @param config - параметры
  * @param handler - обработчик события
  */
-function handleKey(config: ISetHotKeyParams | ISetHotKeyParams['key'], handler: (event: KeyboardEvent) => void): void {
+export default function handleKey(config: ISetHotKeyParams | ISetHotKeyParams['key'], handler: (event: KeyboardEvent) => void): void {
   let ctrlKey: boolean | undefined
   let shiftKey: boolean | undefined
   let prevent: boolean | undefined
@@ -44,5 +44,3 @@ function handleKey(config: ISetHotKeyParams | ISetHotKeyParams['key'], handler: 
   useOnMount(() => document.addEventListener(eventName, eventHandler))
   useOnDestroy(() => document.removeEventListener(eventName, eventHandler))
 }
-
-export default handleKey

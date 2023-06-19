@@ -1,13 +1,13 @@
 import { actions } from '../store'
 import type EditorModel from './editor.model'
-import { importService, xmlFiles } from './services'
+import { ImportService, XMLFiles } from './services'
 
 import { FileType, Page } from '#g/enums'
 import type { IXMLElement, IXMLTemplate } from '#g/types'
 import { addEventListener, handleIPC, handleKey } from '#r/helpers'
 import { ViewController, action } from '#r/model-ctrlr'
 
-class EditorController extends ViewController<{}, EditorModel> {
+export default class EditorController extends ViewController<{}, EditorModel> {
   @action(actions.route)
   private route!: typeof actions.route
 
@@ -22,7 +22,7 @@ class EditorController extends ViewController<{}, EditorModel> {
     handleKey('Escape', () => {
       this.route(Page.lists)
     })
-    xmlFiles.add({
+    XMLFiles.add({
       mod, dlc,
       path: filePath,
       dom: fileDOM,
@@ -33,12 +33,10 @@ class EditorController extends ViewController<{}, EditorModel> {
   private allowDropImport(filePath: string, fileDOM: IXMLElement, actions: IXMLTemplate['extraActions']): void {
     addEventListener(window, 'drop', event => {
       event.preventDefault()
-      importService.importFile(filePath, fileDOM, actions, event.dataTransfer?.files[0].path)
+      ImportService.importFile(filePath, fileDOM, actions, event.dataTransfer?.files[0].path)
     })
     addEventListener(window, 'dragover', event => {
       event.preventDefault()
     })
   }
 }
-
-export default EditorController

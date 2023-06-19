@@ -1,11 +1,12 @@
 import type IConfigDLC from './IConfigDLC'
+import type IConfigEditedFile from './IConfigEditedFile'
 import type IConfigFilesSizes from './IConfigFilesSizes'
 import type IConfigMods from './IConfigMods'
 import type IConfigSettings from './IConfigSettings'
 
 import type { BuildType, Lang } from '#g/enums'
 
-interface IConfig {
+export default interface IConfig {
   /** Версия программы. */
   version: string
   /** Текущий язык перевода программы. */
@@ -24,6 +25,6 @@ interface IConfig {
   dlc: IConfigDLC[]
   /** Список "избранных" автомобилей */
   favorites: string[]
+  /** Список редактированных файлов */
+  edited: IConfigEditedFile[]
 }
-
-export default IConfig

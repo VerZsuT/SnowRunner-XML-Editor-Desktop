@@ -1,5 +1,5 @@
 /** Позволяет использовать свойство без обращения к `val` (применимо с `localize`) */
-function unwrap<This, Type>(
+export default function unwrap<This, Type>(
   _: undefined,
   context: ClassFieldDecoratorContext<This, Type>
 ) {
@@ -17,5 +17,3 @@ function unwrap<This, Type>(
     return value
   }
 }
-
-export default unwrap

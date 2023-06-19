@@ -12,8 +12,8 @@ declare const LOADING_PRELOAD_WEBPACK_ENTRY: string
 declare const WHATSNEW_PRELOAD_WEBPACK_ENTRY: string
 declare const UPDATE_PRELOAD_WEBPACK_ENTRY: string
 
-class EntriesClass {
-  readonly general = {
+export default class Entries {
+  static readonly general = {
     setup: SETUP_WEBPACK_ENTRY,
     loading: LOADING_WEBPACK_ENTRY,
     settings: SETTINGS_WEBPACK_ENTRY,
@@ -22,7 +22,7 @@ class EntriesClass {
     main: MAIN_WEBPACK_ENTRY
   }
 
-  readonly preload = {
+  static readonly preload = {
     setup: SETUP_PRELOAD_WEBPACK_ENTRY,
     settings: SETTINGS_PRELOAD_WEBPACK_ENTRY,
     main: MAIN_PRELOAD_WEBPACK_ENTRY,
@@ -31,7 +31,3 @@ class EntriesClass {
     update: UPDATE_PRELOAD_WEBPACK_ENTRY
   }
 }
-
-const Entries = new EntriesClass()
-
-export default Entries

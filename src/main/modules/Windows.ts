@@ -8,11 +8,19 @@ import type { ProgramWindow } from '#g/enums'
 import { BuildType, IPCChannel } from '#g/enums'
 import type { ICreateWindowAttributes, IDownloadWindow } from '#g/types'
 
-class WindowsClass {
-  loading?: IDownloadWindow | null = null
+export default class Windows {
+  private static _loading?: IDownloadWindow
+  static get loading(): IDownloadWindow | undefined {
+    if (!this._loading || this._loading.isDestroyed()) return undefined
+    return this._loading
+  }
+
+  static set loading(value) {
+    this._loading = value
+  }
 
   /** Открыть модальное окно */
-  openModal(args: ICreateWindowAttributes): BrowserWindow {
+  static openModal(args: ICreateWindowAttributes): BrowserWindow {
     return this.create({
       ...args,
       modal: true,
@@ -21,7 +29,7 @@ class WindowsClass {
   }
 
   /** Создать окно с указанными атрибутами */
-  create(args: ICreateWindowAttributes): BrowserWindow {
+  static create(args: ICreateWindowAttributes): BrowserWindow {
     const {
       parent, preload, type,
       width = 800,
@@ -68,11 +76,11 @@ class WindowsClass {
     return wind
   }
 
-  private onWindowReady(type: ProgramWindow, listener: () => void): void {
+  private static onWindowReady(type: ProgramWindow, listener: () => void): void {
     ipcMain.once(IPCChannel.windowReady + type, listener)
   }
 
-  private showWindow(win: BrowserWindow): void {
+  private static showWindow(win: BrowserWindow): void {
     if (win && !win.isDestroyed()) {
       win.show()
       win.focus()
@@ -83,7 +91,3 @@ class WindowsClass {
     }
   }
 }
-
-const Windows = new WindowsClass()
-
-export default Windows

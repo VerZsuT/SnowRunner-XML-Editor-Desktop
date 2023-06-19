@@ -1,7 +1,7 @@
 import { PreloadType } from '#g/enums'
 
-class PreloadService {
-  register<T>(value: T, type = PreloadType.common): void {
+export default class Preload {
+  static register<T>(value: T, type = PreloadType.common): void {
     if (!window.preloads) {
       window.preloads = {}
     }
@@ -11,7 +11,7 @@ class PreloadService {
     window.preloads[type] = value
   }
 
-  get<T>(type = PreloadType.common): T | never {
+  static get<T>(type = PreloadType.common): T | never {
     if (!window.preloads) {
       throw new Error('Preloads not defined')
     }
@@ -25,7 +25,3 @@ class PreloadService {
     return preload
   }
 }
-
-const preload = new PreloadService()
-
-export default preload

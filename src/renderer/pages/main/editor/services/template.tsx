@@ -9,8 +9,8 @@ import { ParamType } from '#g/enums'
 import type { TemplateParams } from '#g/types'
 import { hasItems } from '#g/utils'
 
-class TemplateService {
-  parseItems = memoizee((items: TemplateParams, renderIt = false) => {
+export default class TemplateService {
+  static parseItems = memoizee((items: TemplateParams, renderIt = false) => {
     const children: ReactNode[] = []
 
     items.forEach(item => {
@@ -27,7 +27,3 @@ class TemplateService {
     return children
   })
 }
-
-const templates = new TemplateService()
-
-export default templates

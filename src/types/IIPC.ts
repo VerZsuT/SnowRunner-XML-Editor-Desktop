@@ -1,4 +1,4 @@
-interface IIPC {
+export default interface IIPC {
   on(channel: string, listener: (event: any, message: any) => void): void
   once: IIPC['on']
   sendSync<T = any>(channel: string, ...args: any[]): T
@@ -6,5 +6,3 @@ interface IIPC {
   remove(channel: string, listener: (event: any, message: any) => void): void
   removeAll(channel: string): void
 }
-
-export default IIPC

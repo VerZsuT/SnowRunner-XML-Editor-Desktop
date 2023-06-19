@@ -1,18 +1,14 @@
 import { createRoot } from 'react-dom/client'
 
 import { handleLangChange } from '#g/texts/renderer'
-import bridge from '#r/scripts/bridge'
+import Bridge from '#r/scripts/bridge'
 
-class HelpersService {
-  private texts = bridge.texts
-  private readonly ROOT = document.getElementById('main')
-
-  constructor() {
-    handleLangChange(() => this.texts = bridge.texts)
-  }
+export default class Helpers {
+  private static texts = Bridge.texts
+  private static readonly ROOT = document.getElementById('main')
 
   /** Заменяет `_` на пробелы и делает первую букву большой. */
-  prettyString(str: string): string {
+  static prettyString(str: string): string {
     const text = str.replaceAll('_', ' ')
     const firstChar = text[0].toUpperCase()
 
@@ -20,7 +16,7 @@ class HelpersService {
   }
 
   /** Рендерит компонент в `root` контейнер страницы */
-  renderComponent(element: JSX.Element): void | never {
+  static renderComponent(element: JSX.Element): void | never {
     if (!this.ROOT) throw new Error('Missing root element')
     createRoot(this.ROOT).render(element)
   }
@@ -30,7 +26,7 @@ class HelpersService {
    * @param key
    * @param modId - id модификации.
    */
-  getGameText(key: string | undefined, modId?: string): string | undefined {
+  static getGameText(key: string | undefined, modId?: string): string | undefined {
     let value: string | undefined
     const modsTexts = this.texts.mods
     const gameTexts = this.texts.main
@@ -46,8 +42,8 @@ class HelpersService {
 
     return value
   }
+
+  static {
+    handleLangChange(() => this.texts = Bridge.texts)
+  }
 }
-
-const helpers = new HelpersService()
-
-export default helpers

@@ -2,7 +2,7 @@ import type { MessageBoxSyncOptions } from 'electron'
 
 import type { DialogAlertType } from '#g/enums'
 
-interface IDialogAlertParams {
+export default interface IDialogAlertParams {
   title: string
   message: string
   dialogType?: DialogAlertType
@@ -10,5 +10,3 @@ interface IDialogAlertParams {
   noLink?: boolean
   buttons?: string[]
 }
-
-export default IDialogAlertParams

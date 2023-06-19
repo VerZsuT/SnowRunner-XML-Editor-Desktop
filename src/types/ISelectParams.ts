@@ -1,6 +1,6 @@
 import type { InputType, ParamType } from '#g/enums'
 
-interface ISelectParams {
+export default interface ISelectParams {
   attribute: string
   label: string
   value: string | undefined
@@ -13,5 +13,3 @@ interface ISelectParams {
   inputType: InputType
   default: string
 }
-
-export default ISelectParams

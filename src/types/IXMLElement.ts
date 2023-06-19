@@ -1,4 +1,4 @@
-interface IXMLElement {
+export default interface IXMLElement {
   /** Существует ли выбранный элемент */
   exists: boolean
 
@@ -44,5 +44,3 @@ interface IXMLElement {
   /** Возвращает копию элемента */
   clone(): IXMLElement
 }
-
-export default IXMLElement

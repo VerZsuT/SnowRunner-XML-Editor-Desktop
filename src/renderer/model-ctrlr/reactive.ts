@@ -1,7 +1,7 @@
 import { useState } from 'react-afc'
 
 /** Делает свойство реактивным */
-function reactive<This, Type>(
+export default function reactive<This, Type>(
   _: undefined,
   context: ClassFieldDecoratorContext<This, Type>
 ) {
@@ -19,5 +19,3 @@ function reactive<This, Type>(
     return value
   }
 }
-
-export default reactive

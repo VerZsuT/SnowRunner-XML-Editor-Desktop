@@ -7,11 +7,11 @@ import ListItemController from './listitem.contoller'
 import ListItemModel from './listitem.model'
 import type IListItemProps from './listitem.props'
 
-import { config } from '#r/services'
+import { Config } from '#r/services'
 
-const { Meta } = Card
+export default afcMemo<IListItemProps>(function ListItem(props) {
+  const { Meta } = Card
 
-function ListItem(props: IListItemProps) {
   const model = new ListItemModel(props)
   const ctrlr = new ListItemController(props, model)
 
@@ -27,7 +27,7 @@ function ListItem(props: IListItemProps) {
       key: 'export',
       onClick: onExportClick
     }
-  ], () => [model.isFavorite, config.lang])
+  ], () => [model.isFavorite, Config.lang])
 
   return () => {
     if (!model.isShow) return null
@@ -72,6 +72,4 @@ function ListItem(props: IListItemProps) {
   function onFavoriteClick(): void {
     ctrlr.toggleFavorite()
   }
-}
-
-export default afcMemo(ListItem)
+})

@@ -1,8 +1,10 @@
-interface IPaths {
+export default interface IPaths {
   publicInfo: string
   downloadPage: string
   updateFiles: string
+  updateWin7Files: string
   updateMap: string
+  updateMapWin7: string
   root: string
   updateRoot: string
   updateBackupFolder: string
@@ -11,6 +13,7 @@ interface IPaths {
   icon: string
   texts: string
   backupInitial: string
+  backupInitialData: string
   winrar: string
   mainTemp: string
   modsTemp: string
@@ -19,5 +22,3 @@ interface IPaths {
   classes: string
   uninstall: string
 }
-
-export default IPaths

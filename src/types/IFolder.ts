@@ -1,6 +1,4 @@
-interface IFolder {
+export default interface IFolder {
   folder?: string
   initial: string
 }
-
-export default IFolder

@@ -1,5 +1,5 @@
 import UpdateWindow from './update.view'
 
-import { helpers } from '#r/services'
+import { Helpers } from '#r/services'
 
-helpers.renderComponent(<UpdateWindow />)
+Helpers.renderComponent(<UpdateWindow />)

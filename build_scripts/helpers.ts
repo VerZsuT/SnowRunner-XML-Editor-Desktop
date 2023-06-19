@@ -29,7 +29,7 @@ export const allPaths = {
  */
 export function generateMap(rootPath: string): Record<string, string> {
   let map: Record<string, string> = {}
-  readdirSync(rootPath).forEach(item => {
+  for (const item of readdirSync(rootPath)) {
     const path = join(rootPath, item)
     const stats = statSync(path)
 
@@ -41,7 +41,7 @@ export function generateMap(rootPath: string): Record<string, string> {
       shaHash.update(readFileSync(path))
       map[path.replace(join(allPaths.after.renamed, 'resources/app/'), '')] = shaHash.digest('hex')
     }
-  })
+  }
 
   return map
 }
@@ -51,19 +51,27 @@ export function generateMap(rootPath: string): Record<string, string> {
  *
  * Если не существует, выбрасывает ошибку.
  */
-export function checkPath(path: string, callback?: () => void): string {
-  if (!existsSync(path)) {
-    if (!callback) {
-      throw new Error(`Path '${path}' not found`)
-    }
-    else {
-      Log.error(`Path '${path}' not found`)
-      return ''
-    }
+export function checkPaths(paths: string | string[], callback?: () => void): void | never {
+  const _paths: string[] = Array.isArray(paths) ? paths : [paths]
+  if (_paths.find(path => !existsSync(path))) {
+    throw new Error(`Path '${paths}' not found`)
   }
-
   callback?.()
-  return path
+}
+
+/**
+ * Проверяет путь на наличие.
+ *
+ * Возвращает путь в случае существования.
+ */
+export function hasPaths(paths: string | string[], callback?: () => void): boolean {
+  const _paths: string[] = Array.isArray(paths) ? paths : [paths]
+  if (_paths.find(path => !existsSync(path))) {
+    Log.error(`Path '${paths}' not found`)
+    return false
+  }
+  callback?.()
+  return true
 }
 
 /**
@@ -71,24 +79,17 @@ export function checkPath(path: string, callback?: () => void): string {
  *
  * В случае неудачи выбрасывает ошибку.
  */
-export function readFile<T>(path: string, fromJSON = true): typeof fromJSON extends true ? T : string {
+export function readFile<T>(path: string, fromJSON = true): (typeof fromJSON extends true ? T : string) | never {
   const fileName = basename(path)
+  if (!existsSync(path)) throw new Error(`${fileName} not found.`)
 
-  if (existsSync(path)) {
-    try {
-      if (fromJSON) {
-        return JSON.parse(readFileSync(path).toString())
-      }
-      else {
-        return readFileSync(path).toString()
-      }
-    }
-    catch {
-      throw new Error(`Error reading file ${fileName}`)
-    }
+  try {
+    return fromJSON
+      ? JSON.parse(readFileSync(path).toString())
+      : readFileSync(path).toString()
   }
-  else {
-    throw new Error(`${fileName} not found.`)
+  catch {
+    throw new Error(`Error reading file ${fileName}`)
   }
 }
 
@@ -97,16 +98,12 @@ export function readFile<T>(path: string, fromJSON = true): typeof fromJSON exte
  *
  * Если путь не существует, то выбрасывает ошибку.
  */
-export function writeFile(path: string, data: string): void {
-  if (existsSync(path)) {
-    try {
-      writeFileSync(path, data)
-    }
-    catch {
-      throw new Error(`Error writing ${basename(path)}`)
-    }
+export function writeFile(path: string, data: string): void | never {
+  if (!existsSync(path)) throw new Error(`${basename(path)} not found.`)
+  try {
+    writeFileSync(path, data)
   }
-  else {
-    throw new Error(`${basename(path)} not found.`)
+  catch {
+    throw new Error(`Error writing ${basename(path)}`)
   }
 }

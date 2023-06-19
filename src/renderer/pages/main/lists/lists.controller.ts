@@ -6,11 +6,11 @@ import { ProgramWindow } from '#g/enums'
 import { handleIPC, handleKey, handleLocale } from '#r/helpers'
 import { ViewController, action } from '#r/model-ctrlr'
 import bridge from '#r/scripts/bridge'
-import { config } from '#r/services'
+import { Config } from '#r/services'
 
-const { settings } = config
+export default class ListsController extends ViewController {
+  readonly settings = Config.settings
 
-class ListsController extends ViewController {
   @action(actions.setCategory)
   setCategory!: typeof actions.setCategory
 
@@ -25,16 +25,14 @@ class ListsController extends ViewController {
     handleKey('Escape', () => bridge.quitApp())
 
     useOnDraw(() => {
-      settings.showWhatsNew && this.openWhatsNew()
+      this.settings.showWhatsNew && this.openWhatsNew()
     })
   }
 
   private openWhatsNew(): void {
-    if (settings.showWhatsNew) {
+    if (this.settings.showWhatsNew) {
       void bridge.openWindow(ProgramWindow.WhatsNew)
-      settings.showWhatsNew = false
+      this.settings.showWhatsNew = false
     }
   }
 }
-
-export default ListsController

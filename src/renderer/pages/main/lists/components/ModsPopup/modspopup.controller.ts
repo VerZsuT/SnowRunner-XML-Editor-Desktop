@@ -1,15 +1,15 @@
 import { useOnRender } from 'react-afc'
 
-import { modsService } from '../../services'
+import { ModsService } from '../../services'
 import type ModsPopupModel from './modspopup.model'
 import type IModsPopupProps from './modspopup.props'
 
 import type { IFindItem } from '#g/types'
 import { handleLocale } from '#r/helpers'
 import { ViewController } from '#r/model-ctrlr'
-import { config } from '#r/services'
+import { Config } from '#r/services'
 
-class ModsPopupController extends ViewController<IModsPopupProps, ModsPopupModel> {
+export default class ModsPopupController extends ViewController<IModsPopupProps, ModsPopupModel> {
   constructor(props: IModsPopupProps, model: ModsPopupModel) {
     super(props, model)
 
@@ -27,7 +27,7 @@ class ModsPopupController extends ViewController<IModsPopupProps, ModsPopupModel
 
   saveChanges(): void {
     if (!this.model.items) return
-    modsService.save(this.model.targetKeys, this.model.items)
+    ModsService.save(this.model.targetKeys, this.model.items)
     this.props.hidePopup(true)
   }
 
@@ -37,27 +37,18 @@ class ModsPopupController extends ViewController<IModsPopupProps, ModsPopupModel
     this.props.hidePopup(false)
   }
 
-  addManual(): void {
-    const { items } = this.model
-    const mod = modsService.requestMod()
-    if (!mod
-      || !items
-      || items.find(item => item.name === mod.id)
-    ) return
+  async addManual(): Promise<void> {
+    this.addItems(await ModsService.requestMods())
+  }
 
-    this.model.items = [
-      ...items,
-      {
-        name: mod.id,
-        path: mod.path
-      }
-    ]
+  async addManualFolder(): Promise<void> {
+    this.addItems(await ModsService.requestFromFolders())
   }
 
   private loadMods = (): void => {
     if (this.model.show && !this.model.items) {
       setTimeout(() => {
-        modsService.load().then(items => {
+        ModsService.load().then(items => {
           this.model.items = items
           this.model.targetKeys = this.getTargetKeys(items)
         })
@@ -66,12 +57,26 @@ class ModsPopupController extends ViewController<IModsPopupProps, ModsPopupModel
   }
 
   private getTargetKeys(items: IFindItem[]): string[] {
-    const keys = modsService.itemToKeys(items)
+    const keys = ModsService.itemToKeys(items)
 
-    return Object.values(config.mods.items)
+    return Object.values(Config.mods.items)
       .filter(value => keys.includes(value.path))
       .map(value => value.path)
   }
-}
 
-export default ModsPopupController
+  private async addItems(items?: Awaited<ReturnType<typeof ModsService.requestFromFolders>>): Promise<void> {
+    const modelItems = this.model.items
+    if (!items || !modelItems) return
+
+    const result: IFindItem[] = [...modelItems]
+    for (const mod of items) {
+      if (modelItems.find(item => item.name === mod.id)) continue
+      result.push({
+        name: mod.id,
+        path: mod.path
+      })
+    }
+
+    this.model.items = result
+  }
+}

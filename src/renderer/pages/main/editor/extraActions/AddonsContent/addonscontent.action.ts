@@ -4,7 +4,7 @@ import type AddonsContentComponent from './addonscontent.view'
 import WrenchIcon from '#g/images/icons/wrench.png'
 import { localizeVal } from '#g/texts/renderer'
 
-class AddonsContentAction extends ExtraAction {
+export default class AddonsContentAction extends ExtraAction {
   protected name = localizeVal({
     RU: 'Содержимое аддонов',
     EN: 'Addons content',
@@ -18,5 +18,3 @@ class AddonsContentAction extends ExtraAction {
 
   constructor(component: typeof AddonsContentComponent) { super(component); this.init() }
 }
-
-export default AddonsContentAction

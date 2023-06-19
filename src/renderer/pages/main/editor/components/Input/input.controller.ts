@@ -3,9 +3,9 @@ import type InputModel from './input.model'
 import { InputType } from '#g/enums'
 import type { IParameterProps } from '#g/types'
 import { ViewController } from '#r/model-ctrlr'
-import { xml } from '#r/services'
+import { XML } from '#r/services'
 
-class InputController extends ViewController<IParameterProps, InputModel> {
+export default class InputController extends ViewController<IParameterProps, InputModel> {
   changeValue(value: string | null): void {
     const { item, onSetValue } = this.props
     const { min, max } = this.model
@@ -16,7 +16,7 @@ class InputController extends ViewController<IParameterProps, InputModel> {
       newValue = this.model.limit(item, Number(newValue), min, max).toString()
     }
 
-    xml.addTag(fileDOM, item)
+    XML.addTag(fileDOM, item)
     onSetValue(newValue)
   }
 
@@ -38,5 +38,3 @@ class InputController extends ViewController<IParameterProps, InputModel> {
     onSetValue(value)
   }
 }
-
-export default InputController

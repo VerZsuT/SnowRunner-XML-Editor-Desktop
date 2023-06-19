@@ -3,7 +3,7 @@ import type { CSSProperties } from 'react'
 import type { Category } from '#g/enums'
 import type { IItem } from '#g/types'
 
-interface IItemRendererProps {
+export default interface IItemRendererProps {
   style: CSSProperties
   rowIndex: number
   columnIndex: number
@@ -13,5 +13,3 @@ interface IItemRendererProps {
   gutter: number
   colCount: number
 }
-
-export default IItemRendererProps

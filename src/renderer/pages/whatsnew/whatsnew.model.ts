@@ -1,7 +1,53 @@
 import { localizeVal } from '#g/texts/renderer'
 import { ViewModel, unwrap } from '#r/model-ctrlr'
 
-class WhatsNewModel extends ViewModel {
+export default class WhatsNewModel extends ViewModel {
+  @unwrap readonly desc074 = localizeVal({
+    RU: [
+      'Добавлена функция переноса всех изменений при обновлении игры (только изменения сделанные в версии 0.7.4+)',
+      'Программа адаптирована под версию игры 23.0',
+      'Больше никаких фризов при сохранении',
+      'Оптимизация и устранение утечки памяти при перемещении окна',
+      'В папку программы возвращены LICENSE и README',
+      'Добавлен этап с лицензией в установщик программы',
+      'Большинство уведомлений теперь показывается в самой программе',
+      'Добавлены возможность выбора целой папки с модами',
+      'Добавлена возможность изменять объём воды в прицепах и аддонах'
+    ],
+    EN: [
+      'Added the function of transferring all changes when updating the game (only changes made in version 0.7.4+)',
+      'The program is adapted to the game version 23.0',
+      'No more friezes when saving',
+      'Optimizing and eliminating memory leaks when moving a window',
+      'LICENSE and README are returned to the program folder',
+      'Added a license stage to the program installer',
+      'Most notifications are now shown in the program itself',
+      'Added the ability to select an entire folder with mods',
+      'Added the ability to change the volume of water in trailers and addons'
+    ],
+    DE: [
+      'Es wurde eine Funktion hinzugefügt, um alle Änderungen beim Aktualisieren des Spiels zu übertragen (nur Änderungen, die in Version 0.7.4+ vorgenommen wurden)',
+      'Das Programm wurde für die Version 23.0 des Spiels angepasst',
+      'Keine Friesen mehr beim Speichern',
+      'Optimierung und Behebung von Speicherlecks beim Verschieben des Fensters',
+      'LIZENZ und README wurden in den Programmordner zurückgegeben',
+      'Schritt mit Lizenz zum Installationsprogramm hinzugefügt',
+      'Die meisten Benachrichtigungen werden jetzt im Programm selbst angezeigt',
+      'Option hinzugefügt, um einen ganzen Ordner mit Mods auszuwählen',
+      'Möglichkeit hinzugefügt, die Wassermenge in Anhängern und Addons zu ändern'
+    ],
+    CH: [
+      '增加了在更新游戏时传输所有更改的功能（仅在版本0.7.4+中进行更改）',
+      '该程序适应游戏版本23.0',
+      '保存时不再冻结',
+      '在移动窗口时优化和消除内存泄漏',
+      '许可证和自述文件返回到程序文件夹',
+      '在程序安装程序中添加了许可证阶段',
+      '大多数通知现在显示在程序本身',
+      '添加了使用mods选择整个文件夹的功能',
+      '增加了改变拖车和插件水量的能力'
+    ]
+  }) as unknown as string[]
   @unwrap readonly desc073c = localizeVal({
     RU: [
       'Меню программы открывается при нажатии, а не при наведении',
@@ -36,55 +82,4 @@ class WhatsNewModel extends ViewModel {
       '小优化'
     ]
   }) as unknown as string[]
-
-  @unwrap readonly desc073b = localizeVal({
-    RU: ['Исправлен баг с отрицательными значениями параметров'],
-    EN: ['Fixed a bug with negative parameter values'],
-    DE: ['Ein Fehler mit negativen Parameterwerten wurde behoben'],
-    CH: ['修正了参数值为负的错误']
-  }) as unknown as string[]
-
-  @unwrap readonly desc073a = localizeVal({
-    RU: ['Исправлен баг с изменением параметров во вложенных группах'],
-    EN: ['Fixed a bug with changing parameters in nested groups'],
-    DE: ['Ein Fehler beim Ändern von Parametern in verschachtelten Gruppen wurde behoben'],
-    CH: ['修复了嵌套组中更改参数的错误']
-  }) as unknown as string[]
-
-  @unwrap readonly desc073 = localizeVal({
-    RU: [
-      'Переписан код программы для возможности её дальнейшего улучшения',
-      'Обновлены компоненты программы (в том числе интерфейс)',
-      'Обновлены стандартные параметры автомобилей',
-      'Добавлены картинки автомобилей в новых DLC',
-      'Исправлена работа импорта/сброса',
-      'Исправлен баг в выборе страны (группа "Разблокировка")'
-    ],
-    EN: [
-      'The program code has been rewritten for the possibility of its further improvement',
-      'Updated program components (including interface)',
-      'Updated standard car parameters',
-      'Added pictures of cars in new DLC',
-      'Fixed import/reset operation',
-      'Fixed a bug in the country selection ("Unlock" group)'
-    ],
-    DE: [
-      'Der Programmcode wurde neu geschrieben, um es weiter zu verbessern',
-      'Programmkomponenten wurden aktualisiert (einschließlich der Benutzeroberfläche)',
-      'Standardeinstellungen für Fahrzeuge wurden aktualisiert',
-      'Autobilder in neuen DLC hinzugefügt',
-      'Import/Reset wurde behoben',
-      'Fehler bei der Länderauswahl behoben (Gruppe "Entsperren")'
-    ],
-    CH: [
-      '程序代码已被重写，以便进一步改进',
-      '更新的程序组件（包括接口）',
-      '更新的标准汽车参数',
-      '在新DLC中添加了汽车图片',
-      '固定导入/重置操作',
-      '修复了国家选择（"解锁"组）中的错误'
-    ]
-  }) as unknown as string[]
 }
-
-export default WhatsNewModel

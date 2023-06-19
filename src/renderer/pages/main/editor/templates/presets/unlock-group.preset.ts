@@ -37,7 +37,7 @@ const $ = compareWithGlobal({
   }
 })
 
-function unlockGroup(selector: string) {
+export default function unlockGroup(selector: string) {
   return Group({
     label: $.UNLOCK_GROUP_NAME,
     provided: selector
@@ -62,5 +62,3 @@ function unlockGroup(selector: string) {
     })
   )
 }
-
-export default unlockGroup

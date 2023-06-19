@@ -1,5 +1,5 @@
-export { default as editorService } from './editor.service'
-export { default as imagesService } from './images.service'
-export { default as itemsService } from './items.service'
-export { default as modsService } from './mods.service'
+export { default as EditorService } from './editor.service'
+export { default as ImagesService } from './images.service'
+export { default as ItemsService } from './items.service'
+export { default as ModsService } from './mods.service'
 

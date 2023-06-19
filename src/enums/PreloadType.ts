@@ -5,7 +5,9 @@ enum PreloadType {
   /** Preload списов */
   lists = 'lists',
   /** Preload таблицы */
-  editor = 'editor'
+  editor = 'editor',
+  /** Preload главного окна */
+  main = 'main'
 }
 
 export default PreloadType

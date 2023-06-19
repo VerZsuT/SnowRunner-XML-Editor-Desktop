@@ -12,7 +12,7 @@ interface ContextMenuProps {
   onClose?(): void
 }
 
-function useContextMenu() {
+export default function useContextMenu() {
   const state = useReactive({
     isShow: false,
     x: 0, y: 0
@@ -70,5 +70,3 @@ function useContextMenu() {
     isShow
   }
 }
-
-export default useContextMenu

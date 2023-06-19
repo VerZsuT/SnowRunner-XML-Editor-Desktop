@@ -9,7 +9,7 @@ import type { IInputParams, IParameterProps } from '#g/types'
 import { isNonNullable, isNullable } from '#g/utils'
 import { ViewModel, prop, unwrap } from '#r/model-ctrlr'
 
-class InputModel extends ViewModel<IParameterProps> {
+export default class InputModel extends ViewModel<IParameterProps> {
   private item = this.props.item
 
   readonly min = this.item.min ?? 0
@@ -75,5 +75,3 @@ class InputModel extends ViewModel<IParameterProps> {
     return number
   }
 }
-
-export default InputModel

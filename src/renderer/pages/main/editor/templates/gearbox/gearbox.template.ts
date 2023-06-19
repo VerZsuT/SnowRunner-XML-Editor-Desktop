@@ -6,19 +6,17 @@ import $ from './gearbox.texts'
 
 import type { IXMLTemplate } from '#g/types'
 
-class Selectors {
-  @selector gearbox = `GearboxVariants.Gearbox${forEach}`
-  @selector gearboxText = `${this.gearbox}.GameData.UiDesc`
-  @selector reverseGear = `${this.gearbox}.ReverseGear`
-  @selector highGear = `${this.gearbox}.HighGear`
-  @selector gearItem = `${this.gearbox}.Gear${forEachBy(2)}`
-  @selector gameData = `${this.gearbox}.GameData`
-  @selector gearboxParams = `${this.gameData}.GearboxParams`
-}
+const selectors = createSelectors(class {
+  @selector static gearbox = `GearboxVariants.Gearbox${forEach}` as const
+  @selector static gearboxText = `${this.gearbox}.GameData.UiDesc` as const
+  @selector static reverseGear = `${this.gearbox}.ReverseGear` as const
+  @selector static highGear = `${this.gearbox}.HighGear` as const
+  @selector static gearItem = `${this.gearbox}.Gear${forEachBy(2)}` as const
+  @selector static gameData = `${this.gearbox}.GameData` as const
+  @selector static gearboxParams = `${this.gameData}.GearboxParams` as const
+})
 
-const selectors = createSelectors(Selectors)
-
-const gearboxTemplate: IXMLTemplate = {
+export default {
   selector: 'GearboxVariants',
   template: Template({ ...selectors },
     ForEach(selectors.gearbox,
@@ -149,6 +147,4 @@ const gearboxTemplate: IXMLTemplate = {
       )
     )
   )
-}
-
-export default gearboxTemplate
+} satisfies IXMLTemplate
