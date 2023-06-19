@@ -4,6 +4,7 @@ export default interface IPaths {
   updateFiles: string
   updateWin7Files: string
   updateMap: string
+  updateMapWin7: string
   root: string
   updateRoot: string
   updateBackupFolder: string

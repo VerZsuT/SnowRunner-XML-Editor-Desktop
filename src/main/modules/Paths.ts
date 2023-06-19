@@ -24,10 +24,13 @@ class Paths {
     updateFiles: `${this.UPDATER_URL}/files`,
 
     /** URL папки с файлами обновления (win7) */
-    updateWin7Files: `${this.UPDATER_URL}/win7_files`,
+    updateWin7Files: `${this.UPDATER_URL}/files_win7`,
 
     /** URL с hash-картой файлов обновления */
     updateMap: `${this.UPDATER_URL}/updateMap.json`,
+
+    /** URL с hash-картой файлов обновления */
+    updateMapWin7: `${this.UPDATER_URL}/updateMap_win7.json`,
 
     /** Папка `app` */
     root: this.resolve('../../'),

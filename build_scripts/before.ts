@@ -15,6 +15,7 @@ import Log from './Log'
 
 class _BeforeBuild {
   static readonly paths = allPaths.before
+  static readonly isWin7 = process.argv.at(2) === 'win7'
 
   static config: any
   static packageFile: any
@@ -43,8 +44,9 @@ class _BeforeBuild {
 
   @Log.stage
   static changeFiles(): void {
-    this.changeFile('Changing package version', this.packageFile)
     this.changeFile('Changing public version', this.publicFile, 'latestVersion')
+    if (this.isWin7) this.config.version += '-win7'
+    this.changeFile('Changing package version', this.packageFile)
     this.changeFile(
       'Changing ISS config file',
       this,

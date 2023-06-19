@@ -18,6 +18,8 @@ import Log from './Log'
 class _AfterBuild {
   static readonly paths = allPaths.after
   static readonly isWin7 = process.argv.at(2) === 'win7'
+  static readonly postfix = this.isWin7 ? '_win7' : ''
+  static readonly archivePath = join(this.paths.out, `SnowRunnerXMLEditor_portable${this.postfix}.rar`)
   static config: any
 
   static printTitle(): void {
@@ -53,6 +55,7 @@ class _AfterBuild {
     this.config = readFile(this.paths.config)
     this.config.buildType = 'prod'
     this.config.settings.showWhatsNew = true
+    this.config.version += this.postfix.replace('_', '-')
     writeFile(this.paths.config, JSON.stringify(this.config, null, '\t'))
   }
 
@@ -61,7 +64,7 @@ class _AfterBuild {
     Log.print('Archiving the build')
     return Boolean(hasPaths(this.paths.winrar, () => {
       checkPaths(this.paths.winrar)
-      execSync(`WinRAR a -ibck -ep1 -m5 "${join(this.paths.out, 'SnowRunnerXMLEditor.rar')}" "${this.paths.renamed}"`, { cwd: this.paths.winrar })
+      execSync(`WinRAR a -ibck -ep1 -m5 "${this.archivePath}" "${this.paths.renamed}"`, { cwd: this.paths.winrar })
     }))
   }
 
@@ -69,11 +72,11 @@ class _AfterBuild {
   static createFileMap(): void {
     Log.print('Creating a file map for auto-updating')
     const appPath = join(this.paths.renamed, 'resources/app')
-    const filesFolder = this.isWin7 ? 'win7_files' : 'files'
+    const filesFolder = `files${this.postfix}`
     const updateFilesPath = join(this.paths.sxmleUpdater, filesFolder)
     hasPaths([this.paths.sxmleUpdater, appPath], () => {
       const map = generateMap(appPath)
-      writeFile(join(this.paths.sxmleUpdater, 'updateMap.json'), JSON.stringify(map))
+      writeFile(join(this.paths.sxmleUpdater, `updateMap${this.postfix}.json`), JSON.stringify(map))
       Log.print('Adding files for auto-update')
       rmSync(updateFilesPath, { recursive: true, force: true })
       renameSync(appPath, updateFilesPath)
@@ -93,7 +96,7 @@ class _AfterBuild {
     Log.print('Creating an installation file')
     if (!existsSync(this.paths.renamed)) {
       Log.print('Unpacking files for installation')
-      execSync(`WinRAR x -ibck -inul "${join(this.paths.out, 'SnowRunnerXMLEditor.rar')}" "${this.paths.out}\\"`, { cwd: this.paths.winrar })
+      execSync(`WinRAR x -ibck -inul "${this.archivePath}" "${this.paths.out}\\"`, { cwd: this.paths.winrar })
     }
   }
 
@@ -108,12 +111,12 @@ class _AfterBuild {
     let renamedPath = exePath
     hasPaths(exePath, () => {
       if (this.isWin7) {
-        renamedPath = join(this.paths.out, 'SnowRunnerXMLEditor_win7.exe')
+        renamedPath = join(this.paths.out, `SnowRunnerXMLEditor${this.postfix}.exe`)
         renameSync(exePath, renamedPath)
       }
       copyFileSync(
         join(renamedPath),
-        join(this.paths.out, `SnowRunnerXMLEditor_v${this.config.version}${this.isWin7 ? '_win7' : ''}.exe`)
+        join(this.paths.out, `SnowRunnerXMLEditor_v${this.config.version}.exe`)
       )
     })
   }
