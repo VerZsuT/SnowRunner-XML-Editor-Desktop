@@ -1,5 +1,3 @@
-interface ILanguageProps {
+export default interface ILanguageProps {
   isSetup?: boolean
 }
-
-export default ILanguageProps

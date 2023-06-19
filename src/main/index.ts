@@ -5,28 +5,18 @@ import { join } from 'path'
 import { APP_NAME } from '#g/consts'
 import { ProgramWindow } from '#g/enums'
 import $ from '#g/texts/main'
+import { hasItems } from '#g/utils'
 import { Archive, Checks, Config, ExitParams, Hash, Helpers, Paths, Texts, Windows } from '#m/modules'
 import { WindowsManager } from '#m/windows'
 
-import { hasItems } from '#g/utils'
 import '#m/modules/RendererPublic'
 
-class App {
-  constructor() {
-    this.checkMultipleInstances()
-    this.setName()
-    this.optimize()
-
-    this.handleQuit()
-    this.handleAllClosed()
-    this.start()
-  }
-
-  start(): void {
+class _App {
+  static start(): void {
     app.whenReady().then(() => this.openProgram())
   }
 
-  async openProgram(): Promise<void> {
+  static async openProgram(): Promise<void> {
     await WindowsManager.open(ProgramWindow.Loading)
     const loading = Windows.loading
 
@@ -43,38 +33,37 @@ class App {
 
     await Checks.checkInitialChanges()
 
-    if (Checks.hasAllPaths()) {
-      await Promise.all([
-        Texts.getFromGame(),
-        this.initDLC(),
-        this.initMods()
-      ])
-      await WindowsManager.open(ProgramWindow.Main)
-      Checks.checkUpdate()
-    }
-    else {
+    if (!Checks.hasAllPaths()) {
       Config.reset()
+      return
     }
+
+    await Promise.all([
+      Texts.getFromGame(),
+      this.initDLC(),
+      this.initMods()
+    ])
+    await WindowsManager.open(ProgramWindow.Main)
+    Checks.checkUpdate()
   }
 
-  checkMultipleInstances(): void {
+  static checkMultipleInstances(): void {
     if (!app.requestSingleInstanceLock()) {
       app.quit()
       process.exit(102)
     }
   }
 
-  optimize(): void {
+  static optimize(): void {
     app.disableHardwareAcceleration()
   }
 
-  setName(): void {
+  static setName(): void {
     app.setAppUserModelId(APP_NAME)
   }
 
-  handleQuit(): void {
+  static handleQuit(): void {
     app.on('before-quit', () => {
-      ExitParams.quit = true
       if (ExitParams.saveConfig) {
         Config.save()
       }
@@ -86,19 +75,19 @@ class App {
     })
   }
 
-  handleAllClosed(): void {
+  static handleAllClosed(): void {
     app.once('window-all-closed', () => app.exit())
   }
 
   /** Находит и инициализирует игровые DLC */
-  async initDLC(): Promise<void> {
+  static async initDLC(): Promise<void> {
     if (!Config.settings.DLC) return
 
     Config.dlc = Helpers.findInDir(Paths.dlc, true)
   }
 
   /** Инициализирует модификации, указанные в `config.json` */
-  async initMods(): Promise<void> {
+  static async initMods(): Promise<void> {
     if (!Config.settings.mods) return
     if (!hasItems(Config.mods)) return
 
@@ -147,6 +136,14 @@ class App {
       Texts.getFromMods()
     }
   }
-}
 
-new App()
+  static {
+    this.checkMultipleInstances()
+    this.setName()
+    this.optimize()
+
+    this.handleQuit()
+    this.handleAllClosed()
+    this.start()
+  }
+}

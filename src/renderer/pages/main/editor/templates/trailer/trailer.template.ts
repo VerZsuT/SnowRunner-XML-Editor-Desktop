@@ -4,19 +4,17 @@ import $ from './trailer.texts'
 
 import type { IXMLTemplate } from '#g/types'
 
-class Selectors {
-  @selector truckData = 'Truck.TruckData'
-  @selector wheels = `${this.truckData}.Wheels`
-  @selector wheel = `${this.wheels}.Wheel${forEach}`
-  @selector modelBody = 'Truck.PhysicsModel.Body'
-  @selector fuelMass = 'Truck.FuelMass.Body'
-  @selector gameData = 'Truck.GameData'
-  @selector addonSlots = `${this.gameData}.AddonSlots`
-}
+const selectors = createSelectors(class {
+  @selector static truckData = 'Truck.TruckData' as const
+  @selector static wheels = `${this.truckData}.Wheels` as const
+  @selector static wheel = `${this.wheels}.Wheel${forEach}` as const
+  @selector static modelBody = 'Truck.PhysicsModel.Body' as const
+  @selector static fuelMass = 'Truck.FuelMass.Body' as const
+  @selector static gameData = 'Truck.GameData' as const
+  @selector static addonSlots = `${this.gameData}.AddonSlots` as const
+})
 
-const selectors = createSelectors(Selectors)
-
-const trailerTemplate: IXMLTemplate = {
+export default {
   selector: 'Truck[Type="Trailer"]',
   template: Template({ ...selectors },
     Group({
@@ -26,6 +24,17 @@ const trailerTemplate: IXMLTemplate = {
       Int({
         attribute: 'FuelCapacity',
         label: $.FUEL_CAPACITY,
+        max: 64000,
+        step: 10,
+        default: 0,
+        areas: {
+          yellow: [1000, 5000],
+          red: [5001, Infinity]
+        }
+      }),
+      Int({
+        attribute: 'WaterCapacity',
+        label: $.WATER_CAPACITY,
         max: 64000,
         step: 10,
         default: 0,
@@ -98,6 +107,4 @@ const trailerTemplate: IXMLTemplate = {
       })
     )
   )
-}
-
-export default trailerTemplate
+} satisfies IXMLTemplate

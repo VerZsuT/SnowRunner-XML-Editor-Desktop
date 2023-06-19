@@ -1,8 +1,6 @@
 import type IConfigModsItems from './IConfigModsItems'
 
-interface IConfigMods {
+export default interface IConfigMods {
   length: number
   items: IConfigModsItems
 }
-
-export default IConfigMods

@@ -3,12 +3,12 @@ import type UpdateWindowModel from './update.model'
 import { ProgramWindow } from '#g/enums'
 import { handleLocale, windowReady } from '#r/helpers'
 import { ViewController } from '#r/model-ctrlr'
-import bridge from '#r/scripts/bridge'
-import { config, ipc } from '#r/services'
+import Bridge from '#r/scripts/bridge'
+import { Config, IPC } from '#r/services'
 
-const { settings } = config
+export default class UpdateWindowController extends ViewController<{}, UpdateWindowModel> {
+  private readonly settings = Config.settings
 
-class UpdateWindowController extends ViewController<{}, UpdateWindowModel> {
   constructor(model: UpdateWindowModel) {
     super({}, model)
 
@@ -22,17 +22,15 @@ class UpdateWindowController extends ViewController<{}, UpdateWindowModel> {
   }
 
   updateProgram = (): void => {
-    bridge.updateApp()
+    Bridge.updateApp()
   }
 
   ignoreUpdate = (): void => {
-    settings.updates = false
+    this.settings.updates = false
     window.close()
   }
 
   private handleIPC(): void {
-    ipc.on('content', (_event, data) => this.model.version = data)
+    IPC.on('content', (_event, data) => this.model.version = data)
   }
 }
-
-export default UpdateWindowController

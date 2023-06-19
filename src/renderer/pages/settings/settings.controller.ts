@@ -3,10 +3,10 @@ import type SettingsModel from './settings.model'
 import { ProgramWindow } from '#g/enums'
 import { handleIPC, handleLocale, windowReady } from '#r/helpers'
 import { ViewController } from '#r/model-ctrlr'
-import bridge from '#r/scripts/bridge'
-import { config } from '#r/services'
+import Bridge from '#r/scripts/bridge'
+import { Config } from '#r/services'
 
-class SettingsController extends ViewController<{}, SettingsModel> {
+export default class SettingsController extends ViewController<{}, SettingsModel> {
   constructor(model: SettingsModel) {
     super({}, model)
 
@@ -16,14 +16,14 @@ class SettingsController extends ViewController<{}, SettingsModel> {
   }
 
   saveSettings = (): void => {
-    config.settings = {
-      ...config.settings,
+    Config.settings = {
+      ...Config.settings,
       updates: this.model.updates,
       DLC: this.model.DLC,
       mods: this.model.mods,
       advancedMode: this.model.advancedMode
     }
-    bridge.relaunchApp()
+    Bridge.relaunchApp()
   }
 
   toggleUpdates = (): void => {
@@ -42,5 +42,3 @@ class SettingsController extends ViewController<{}, SettingsModel> {
     this.model.advancedMode = !this.model.advancedMode
   }
 }
-
-export default SettingsController

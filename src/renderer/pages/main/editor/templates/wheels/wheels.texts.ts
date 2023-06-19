@@ -1,6 +1,6 @@
 import { compareWithGlobal } from '#g/texts/renderer'
 
-const $ = compareWithGlobal({
+export default compareWithGlobal({
   RU: {
     BODY_FRICTION: 'Сцепление на бездорожье',
     BODY_FRICTION_ASPHALT: 'Сцепление на асфальте',
@@ -34,5 +34,3 @@ const $ = compareWithGlobal({
     NO: '没有'
   }
 })
-
-export default $

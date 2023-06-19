@@ -8,9 +8,9 @@ import TrailersModel from './trailers.model'
 
 import type { IExtraActionProps } from '#g/types'
 
-const { Text } = Typography
+export default afcMemo<IExtraActionProps>(function TrailersComponent(props) {
+  const { Text } = Typography
 
-function TrailersComponent(props: IExtraActionProps) {
   const model = new TrailersModel(props)
   const ctrlr = new TrailersController(props, model)
 
@@ -72,6 +72,4 @@ function TrailersComponent(props: IExtraActionProps) {
   function onRemoveTruck(): void {
     ctrlr.removeTrailer(Trailer.truck)
   }
-}
-
-export default afcMemo(TrailersComponent)
+})

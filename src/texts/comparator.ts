@@ -1,7 +1,7 @@
 import type { TextsToLocalize } from '#g/types'
 
 /** Объединяет глобальный перевод с локальным, сохраняя обработку изменений */
-function comparator<G extends {}>(globalTexts: TextsToLocalize<G>, localizator: (value: TextsToLocalize<any>) => any) {
+export default function comparator<G extends {}>(globalTexts: TextsToLocalize<G>, localizator: (value: TextsToLocalize<any>) => any) {
   return <T extends object, E extends { [key: string]: string } = {}>(localTexts: TextsToLocalize<T>, extra?: E) => {
     const obj = { ...globalTexts } as TextsToLocalize<G & T & E>
 
@@ -16,5 +16,3 @@ function comparator<G extends {}>(globalTexts: TextsToLocalize<G>, localizator: 
     return localizator(obj) as G & T & E
   }
 }
-
-export default comparator

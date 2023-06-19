@@ -2,7 +2,7 @@ import { handleLocale } from '#r/helpers'
 import { ViewController, action } from '#r/model-ctrlr'
 import { actions } from '#r/pages/main/store'
 
-class SearchController extends ViewController {
+export default class SearchController extends ViewController {
   @action(actions.changeFilter)
   changeFilter!: typeof actions.changeFilter
 
@@ -12,5 +12,3 @@ class SearchController extends ViewController {
     handleLocale()
   }
 }
-
-export default SearchController

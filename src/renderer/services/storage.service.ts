@@ -1,12 +1,12 @@
 /** Работа с `local storage` */
-class StorageService {
-  pop<T = string>(name: string): T {
+export default class Storage {
+  static pop<T = string>(name: string): T {
     const value = this.get<T>(name)
     localStorage.removeItem(name)
     return value
   }
 
-  get<T = string>(name: string): T {
+  static get<T = string>(name: string): T {
     const value = localStorage.getItem(name)
     switch (value) {
       case 'null':
@@ -18,11 +18,7 @@ class StorageService {
     }
   }
 
-  set(name: string, value: string): void {
+  static set(name: string, value: string): void {
     localStorage.setItem(name, value)
   }
 }
-
-const storage = new StorageService()
-
-export default storage

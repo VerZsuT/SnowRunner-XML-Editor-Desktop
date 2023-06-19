@@ -1,4 +1,4 @@
-export { default as importService } from './import'
-export { default as template } from './template'
-export { default as xmlFiles } from './xmlFiles'
+export { default as ImportService } from './import'
+export { default as Template } from './template'
+export { default as XMLFiles } from './xmlFiles'
 

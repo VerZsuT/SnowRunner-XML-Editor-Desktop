@@ -15,9 +15,9 @@ import Windows from './Windows'
 import type { IDownloadParams, UpdateMap } from '#g/types'
 import { hasItems } from '#g/utils'
 
-class UpdatesClass {
+export default class Updates {
   /** Загрузить файл(ы) из сети */
-  download(params: IDownloadParams, callback: (data?: any) => any): void {
+  static download(params: IDownloadParams, callback: (data?: any) => any): void {
     const { array, isRoot, inMemory, loadingPage, path, url, fromJSON } = params
 
     if (array) {
@@ -79,7 +79,7 @@ class UpdatesClass {
 
   /** Запустить процесс обновления программы */
   @publicMethod('updateApp')
-  update(): void {
+  static update(): void {
     const page = Windows.loading
     let flagToReload = false
 
@@ -111,21 +111,20 @@ class UpdatesClass {
       if (!hasItems(forCreateOrChange)) {
         ExitParams.saveConfig = false
         Config.export()
-        ExitParams.quit = true
         app.relaunch()
         app.quit()
       }
       const toDownload: { url: string, path: string }[] = []
       forCreateOrChange.forEach(relativePath => {
+        const updateFiles = Config.version.includes('-win7') ? Paths.updateWin7Files : Paths.updateFiles
         const path = join(Paths.updateRoot, relativePath)
         const webPath = relativePath.replaceAll('\\', '/').replace('.webpack', 'webpack')
-        const url = `${Paths.updateFiles}/${webPath}`
 
         if (!existsSync(dirname(path))) {
           mkdirSync(dirname(path), { recursive: true })
         }
 
-        toDownload.push({ url, path })
+        toDownload.push({ url: `${updateFiles}/${webPath}`, path })
       })
 
       this.download({
@@ -136,7 +135,6 @@ class UpdatesClass {
         forCreateOrChange = forCreateOrChange.slice(1)
         if (!hasItems(forCreateOrChange) && !flagToReload) {
           ExitParams.saveConfig = false
-          ExitParams.quit = true
           flagToReload = true
 
           Config.export()
@@ -152,7 +150,7 @@ class UpdatesClass {
    * @param map - карта обновления
    * @returns `[пути_для_удаления, для_обновления]`
    */
-  private processMap(map: UpdateMap): [string[], string[]] {
+  private static processMap(map: UpdateMap): [string[], string[]] {
     const toCreateOrChange: string[] = []
     const toCopy: string[] = []
 
@@ -177,7 +175,3 @@ class UpdatesClass {
     return [toCopy, toCreateOrChange]
   }
 }
-
-const Updates = new UpdatesClass()
-
-export default Updates

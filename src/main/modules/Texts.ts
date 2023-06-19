@@ -9,8 +9,8 @@ import Paths from './Paths'
 import { handleLangChange } from '#g/texts/main'
 import type { IGameTexts, Translation } from '#g/types'
 
-class TextsClass {
-  private readonly locals = {
+export default class Texts {
+  private static readonly locals = {
     RU: 'russian',
     EN: 'english',
     DE: 'german',
@@ -22,24 +22,15 @@ class TextsClass {
     name: 'texts',
     access: Access.get
   })
-  private readonly gameTexts = {
+  private static readonly gameTexts: IGameTexts = {
     /** Игровой из модификаций */
     mods: {},
     /** Игровой из `initial.pak` */
     main: {}
-  } as IGameTexts
-
-  constructor() {
-    handleLangChange(() => {
-      this.gameTexts.main = {}
-      this.gameTexts.mods = {}
-      this.getFromGame()
-      this.getFromMods()
-    })
   }
 
   /** Обработать файл с переводом из `initial.pak` (текущий выбранный язык в программе) */
-  async getFromGame(): Promise<void> {
+  static async getFromGame(): Promise<void> {
     if (existsSync(Paths.texts)) {
       this.gameTexts.main = JSON.parse(readFileSync(Paths.texts).toString())
     }
@@ -55,7 +46,7 @@ class TextsClass {
   }
 
   /** Обработать файл с переводом из `.pak` файлов модов (текущий выбранный язык в программе) */
-  getFromMods(): void {
+  static getFromMods(): void {
     const mods = {}
     for (const modId in Config.mods.items) {
       if (existsSync(join(Paths.modsTemp, modId, 'texts'))) {
@@ -69,12 +60,12 @@ class TextsClass {
   }
 
   /** Сохранить игровой перевод в файл (для оптимизации) */
-  saveFromGame(): void {
+  static saveFromGame(): void {
     writeFileSync(Paths.texts, JSON.stringify(this.gameTexts.main, null, '\t'))
   }
 
   /** Обработать файл игрового перевода */
-  private parseFile(data: string, parseAll?: boolean): Translation {
+  private static parseFile(data: string, parseAll?: boolean): Translation {
     const strings = {}
     const lines = data.match(/[^\r\n]+/g)
 
@@ -123,7 +114,7 @@ class TextsClass {
     return strings
   }
 
-  private startsWith(key: string, array: string[]): boolean {
+  private static startsWith(key: string, array: string[]): boolean {
     for (let i = 0; i < array.length; ++i) {
       if (key.startsWith(array[i])) {
         return true
@@ -132,8 +123,13 @@ class TextsClass {
 
     return false
   }
+
+  static {
+    handleLangChange(() => {
+      this.gameTexts.main = {}
+      this.gameTexts.mods = {}
+      this.getFromGame()
+      this.getFromMods()
+    })
+  }
 }
-
-const Texts = new TextsClass()
-
-export default Texts

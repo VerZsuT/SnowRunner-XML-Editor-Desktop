@@ -1,6 +1,6 @@
 import { compareWithGlobal } from '#g/texts/renderer'
 
-const $ = compareWithGlobal({
+export default compareWithGlobal({
   RU: {
     DLC_LABEL: 'Редактировать DLC',
     MODS_LABEL: 'Редактировать модификации',
@@ -26,5 +26,3 @@ const $ = compareWithGlobal({
     ADVANCED_MODE_LABEL: '高级模式'
   }
 })
-
-export default $

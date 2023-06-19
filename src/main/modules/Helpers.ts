@@ -7,7 +7,7 @@ import Paths from './Paths'
 
 import type { IFindItem } from '#g/types'
 
-class HelpersClass {
+export default class Helpers {
   /**
    * Найти в папке все соответствия
    * @param startPath - путь, с которого начинается поиск
@@ -17,7 +17,7 @@ class HelpersClass {
    * @returns массив путей
    */
   @publicMethod()
-  findInDir(startPath: string, onlyDirs?: boolean, ext = '.xml', recursive?: boolean): IFindItem[] {
+  static findInDir(startPath: string, onlyDirs?: boolean, ext = '.xml', recursive?: boolean): IFindItem[] {
     let array: IFindItem[] = []
     if (!existsSync(startPath)) return []
 
@@ -49,7 +49,7 @@ class HelpersClass {
   }
 
   /** Очистить папку для временных файлов программы */
-  clearTemp(): void {
+  static clearTemp(): void {
     rmSync(Paths.backupInitial, { force: true })
     rmSync(Paths.mainTemp, { recursive: true, force: true })
     rmSync(Paths.modsTemp, { recursive: true, force: true })
@@ -57,7 +57,3 @@ class HelpersClass {
     mkdirSync(Paths.modsTemp)
   }
 }
-
-const Helpers = new HelpersClass()
-
-export default Helpers

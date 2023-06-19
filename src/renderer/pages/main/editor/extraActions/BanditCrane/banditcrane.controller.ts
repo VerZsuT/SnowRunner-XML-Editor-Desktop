@@ -4,7 +4,7 @@ import type BanditCraneModel from './banditcrane.model'
 import type { IExtraActionProps } from '#g/types'
 import { ViewController } from '#r/model-ctrlr'
 
-class BanditCraneController extends ViewController<IExtraActionProps, BanditCraneModel> {
+export default class BanditCraneController extends ViewController<IExtraActionProps, BanditCraneModel> {
   addCrane(): void {
     BanditCraneAction.addCrane(this.props.dom)
     this.model.hasCrane = true
@@ -15,5 +15,3 @@ class BanditCraneController extends ViewController<IExtraActionProps, BanditCran
     this.model.hasCrane = false
   }
 }
-
-export default BanditCraneController

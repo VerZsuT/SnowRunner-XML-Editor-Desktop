@@ -5,15 +5,13 @@ import $ from './winch.texts'
 
 import type { IXMLTemplate } from '#g/types'
 
-class Selectors {
-  @selector winch = `WinchVariants.Winch${forEach}`
-  @selector winchText = `${this.winch}.GameData.UiDesc`
-  @selector gameData = `${this.winch}.GameData`
-}
+const selectors = createSelectors(class {
+  @selector static winch = `WinchVariants.Winch${forEach}` as const
+  @selector static winchText = `${this.winch}.GameData.UiDesc` as const
+  @selector static gameData = `${this.winch}.GameData` as const
+})
 
-const selectors = createSelectors(Selectors)
-
-const winchTemplate: IXMLTemplate = {
+export default {
   selector: 'WinchVariants',
   template: Template({ ...selectors },
     ForEach(selectors.winch,
@@ -57,6 +55,4 @@ const winchTemplate: IXMLTemplate = {
       )
     )
   )
-}
-
-export default winchTemplate
+} satisfies IXMLTemplate

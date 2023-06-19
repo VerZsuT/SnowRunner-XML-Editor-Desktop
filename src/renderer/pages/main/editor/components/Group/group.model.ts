@@ -1,15 +1,15 @@
 import { useContext } from 'react-afc'
 
 import { FileInfoContext } from '../../helpers/getFileInfo'
-import { getFileParser } from '../../helpers/getFileParser'
+import getFileParser from '../../helpers/getFileParser'
 import type IGroupProps from './group.props'
 
 import { InputType } from '#g/enums'
 import type { IGroupParams, IInputParams, ISelectParams, TemplateParams } from '#g/types'
 import { ViewModel, prop, reactive } from '#r/model-ctrlr'
-import { helpers } from '#r/services'
+import { Helpers } from '#r/services'
 
-class GroupModel extends ViewModel<IGroupProps> {
+export default class GroupModel extends ViewModel<IGroupProps> {
   private mod = useContext(FileInfoContext).val.mod
   private item = this.props.item
 
@@ -30,7 +30,7 @@ class GroupModel extends ViewModel<IGroupProps> {
   @reactive activeKey = ''
 
   readonly label = this.mod
-    ? helpers.getGameText(this.groupName, this.mod) ?? this.item.resGroupName ?? this.groupName
+    ? Helpers.getGameText(this.groupName, this.mod) ?? this.item.resGroupName ?? this.groupName
     : this.groupName
 
   readonly iconSRC = this.item.iconName ? require(`#g/images/icons/${this.item.iconName}`) : null
@@ -62,5 +62,3 @@ class GroupModel extends ViewModel<IGroupProps> {
     return { groups, params }
   }
 }
-
-export default GroupModel

@@ -1,7 +1,7 @@
 import type IXMLElement from './IXMLElement'
 import type TemplateSelectors from './TemplateSelectors'
 
-interface IItemGetterProps {
+export default interface IItemGetterProps {
   fileDOM: IXMLElement
   formattedSelectors?: TemplateSelectors
   providedSelector?: string
@@ -10,5 +10,3 @@ interface IItemGetterProps {
   tCount?: number
   counter?: number
 }
-
-export default IItemGetterProps

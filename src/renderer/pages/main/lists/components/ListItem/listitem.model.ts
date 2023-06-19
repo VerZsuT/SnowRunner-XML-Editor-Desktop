@@ -1,6 +1,6 @@
 import { useMemo } from 'react-afc'
 
-import { imagesService } from '../../services'
+import { ImagesService } from '../../services'
 import type IListItemProps from './listitem.props'
 
 import { updateOnLangChange } from '#g/texts/renderer'
@@ -8,7 +8,7 @@ import type { IXMLElement } from '#g/types'
 import { useContextMenu } from '#r/helpers'
 import { ViewModel, redux, unwrap } from '#r/model-ctrlr'
 import { selectFilter } from '#r/pages/main/store/filterSlice'
-import { config, xml } from '#r/services'
+import { Config, XML } from '#r/services'
 
 type Title = {
   first: string
@@ -16,11 +16,11 @@ type Title = {
   last: string
 }
 
-class ListItemModel extends ViewModel<IListItemProps> {
+export default class ListItemModel extends ViewModel<IListItemProps> {
   readonly contextMenu = useContextMenu()
 
   get isFavorite(): boolean {
-    return config.favorites.includes(this.props.item.name)
+    return Config.favorites.includes(this.props.item.name)
   }
 
   readonly fileDOM: IXMLElement
@@ -36,9 +36,9 @@ class ListItemModel extends ViewModel<IListItemProps> {
   constructor(props: IListItemProps) {
     super(props)
 
-    this.fileDOM = xml.getDOM(props.item.path)
-    this.name = updateOnLangChange(() => xml.getName(props.item, this.fileDOM)).cast()
-    this.imgSrc = imagesService.getSrc(props.type, props.item, this.fileDOM)
+    this.fileDOM = XML.getDOM(props.item.path)
+    this.name = updateOnLangChange(() => XML.getName(props.item, this.fileDOM)).cast()
+    this.imgSrc = ImagesService.getSrc(props.type, props.item, this.fileDOM)
 
     this.isShow = useMemo((): boolean => {
       if (!this.filter) return true
@@ -65,5 +65,3 @@ class ListItemModel extends ViewModel<IListItemProps> {
     }, () => [this.filter, this.name]) as unknown as Title
   }
 }
-
-export default ListItemModel

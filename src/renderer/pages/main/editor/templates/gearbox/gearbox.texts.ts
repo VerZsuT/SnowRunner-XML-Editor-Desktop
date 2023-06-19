@@ -1,6 +1,6 @@
 import { compareWithGlobal } from '#g/texts/renderer'
 
-const $ = compareWithGlobal({
+export default compareWithGlobal({
   RU: {
     LOWER_MANUAL_GEAR: 'Точная регулировка',
     AWD_CONSUMPTION_MODIFIER: 'Модификатор потребления топлива при полном приводе',
@@ -82,5 +82,3 @@ const $ = compareWithGlobal({
     GEARS: '标配挡位'
   }
 })
-
-export default $

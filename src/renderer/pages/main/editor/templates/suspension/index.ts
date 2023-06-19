@@ -1,2 +1,5 @@
 import suspensionTemplate from './suspension.template'
-export default suspensionTemplate
+
+import type { IXMLTemplate } from '#g/types'
+
+export default suspensionTemplate as IXMLTemplate

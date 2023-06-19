@@ -21,7 +21,7 @@ const $ = compareWithGlobal({
   }
 })
 
-const gearPreset = [
+export default [
   Float({
     attribute: 'AngVel',
     label: $.ANGEL_VELOCITY,
@@ -36,5 +36,3 @@ const gearPreset = [
     default: 1
   })
 ]
-
-export default gearPreset

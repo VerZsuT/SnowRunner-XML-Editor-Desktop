@@ -22,7 +22,7 @@ interface InnerItem {
   defaults: IDefaults[string]
 }
 
-export function getFileParser() {
+export default function getFileParser() {
   const fileData = useContext(FileDataContext)
   const fileInfo = useContext(FileInfoContext)
 

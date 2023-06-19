@@ -1,6 +1,6 @@
 import { compareWithGlobal } from '#g/texts/renderer'
 
-const $ = compareWithGlobal({
+export default compareWithGlobal({
   RU: {
     PHYSICS_WHEELS: 'Дополнительно',
     WHEEL: 'Колесо',
@@ -198,5 +198,3 @@ const $ = compareWithGlobal({
     UNLOCK_BY_RANK: '解锁级别'
   }
 })
-
-export default $

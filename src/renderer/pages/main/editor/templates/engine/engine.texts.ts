@@ -1,6 +1,6 @@
 import { compareWithGlobal } from '#g/texts/renderer'
 
-const $ = compareWithGlobal({
+export default compareWithGlobal({
   RU: {
     CRITICAL_DAMAGE_THRESHOLD: 'Порог критического повреждения',
     DAMAGE_CAPACITY: 'Прочность',
@@ -50,5 +50,3 @@ const $ = compareWithGlobal({
     MAX_DELTA_ANG_VEL: '加速的减速'
   }
 })
-
-export default $

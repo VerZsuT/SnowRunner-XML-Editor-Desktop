@@ -3,11 +3,11 @@ import { Provider } from 'react-redux'
 import Main from './Main'
 import { store } from './store'
 
-import { helpers } from '#r/services'
+import { Helpers } from '#r/services'
 
 import '#r/templateScript'
 
-helpers.renderComponent(
+Helpers.renderComponent(
   <Provider store={store}>
     <Main />
   </Provider>

@@ -3,7 +3,7 @@ import { memo } from 'react'
 import ListItem from '../../ListItem'
 import type IItemRendererProps from './itemrenderer.props'
 
-function ItemRendererView(props: IItemRendererProps) {
+export default memo<IItemRendererProps>(function ItemRendererView(props) {
   const { colCount, style, rowIndex, columnIndex, category, items, id, gutter } = props
   const index = columnIndex + colCount * (rowIndex)
 
@@ -28,6 +28,4 @@ function ItemRendererView(props: IItemRendererProps) {
       dlc={item.dlcName}
     />
   )
-}
-
-export default memo(ItemRendererView)
+})

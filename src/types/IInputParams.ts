@@ -2,7 +2,7 @@ import type IInputAreas from './IInputAreas'
 
 import type { FileType, InputType, NumberType, ParamType } from '#g/enums'
 
-interface IInputParams {
+export default interface IInputParams {
   attribute: string
   label: string
   value?: string | number
@@ -18,5 +18,3 @@ interface IInputParams {
   default?: string | number
   areas?: IInputAreas
 }
-
-export default IInputParams

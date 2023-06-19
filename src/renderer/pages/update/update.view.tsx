@@ -8,9 +8,9 @@ import UpdateWindowModel from './update.model'
 import '#r/templateScript'
 import './update.styles'
 
-const { Title } = Typography
+export default afc(function UpdateWindow() {
+  const Title = Typography.Title
 
-function UpdateWindow() {
   const model = new UpdateWindowModel()
   const ctrlr = new UpdateWindowController(model)
 
@@ -24,6 +24,4 @@ function UpdateWindow() {
       <Button onClick={ctrlr.closeWindow}>{$.CLOSE}</Button>
     </div>
   </>
-}
-
-export default afc(UpdateWindow)
+})

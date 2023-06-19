@@ -1,6 +1,6 @@
 import type IDownloadWindow from './IDownloadWindow'
 
-interface IDownloadParams {
+export default interface IDownloadParams {
   array?: {
     url: string
     path: string
@@ -12,5 +12,3 @@ interface IDownloadParams {
   url?: string
   path?: string
 }
-
-export default IDownloadParams

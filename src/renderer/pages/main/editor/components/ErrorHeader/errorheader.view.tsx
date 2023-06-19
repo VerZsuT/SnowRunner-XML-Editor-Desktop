@@ -5,7 +5,7 @@ import ErrorHeaderController from './errorheader.controller'
 import $ from '#g/texts/renderer'
 import { Header } from '#r/components'
 
-function ErrorHeader() {
+export default afcMemo(function ErrorHeader() {
   const ctrlr = new ErrorHeaderController()
 
   return () => (
@@ -18,6 +18,4 @@ function ErrorHeader() {
   function onBack(): void {
     ctrlr.goToLists()
   }
-}
-
-export default afcMemo(ErrorHeader)
+})

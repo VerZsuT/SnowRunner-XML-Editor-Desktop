@@ -8,21 +8,20 @@ import type IListProps from './list.props'
 import { handleLocale } from '#r/helpers'
 import { ViewController } from '#r/model-ctrlr'
 import bridge from '#r/scripts/bridge'
-import { windowResize } from '#r/services'
+import { WindowResize } from '#r/services'
 
-const { confirm } = Modal
-
-class ListController extends ViewController<IListProps, ListModel> {
+export default class ListController extends ViewController<IListProps, ListModel> {
   readonly reloadPromptTimeout = 200
+
   private forceUpdate = useForceUpdate()
 
   constructor(props: IListProps, model: ListModel) {
     super(props, model)
 
     useOnDestroy(() => {
-      windowResize.removeListener(this.update)
+      WindowResize.removeListener(this.update)
     })
-    windowResize.onResize(this.update)
+    WindowResize.onResize(this.update)
     handleLocale()
   }
 
@@ -34,7 +33,7 @@ class ListController extends ViewController<IListProps, ListModel> {
     this.model.isShowMods = false
     if (isReload) {
       setTimeout(() => {
-        confirm({
+        Modal.confirm({
           okText: $.OK, cancelText: $.CANCEL,
           title: $.RELAUNCH_PROMPT,
           onOk: () => bridge.relaunchApp()
@@ -49,5 +48,3 @@ class ListController extends ViewController<IListProps, ListModel> {
     }
   }
 }
-
-export default ListController

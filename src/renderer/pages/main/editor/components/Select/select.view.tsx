@@ -7,7 +7,7 @@ import SelectModel from './select.model'
 
 import type { IParameterProps } from '#g/types'
 
-function Select(props: IParameterProps) {
+export default afcMemo<IParameterProps>(function Select(props) {
   const model = new SelectModel(props)
 
   const style = {
@@ -24,6 +24,4 @@ function Select(props: IParameterProps) {
       onChange={props.onSetValue}
     />
   </>
-}
-
-export default afcMemo(Select)
+})

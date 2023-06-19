@@ -9,8 +9,8 @@ import { DialogAlertType, DialogSourceType, DialogType } from '#g/enums'
 import type { IDialogAlertParams, IDialogParams, IOpenDialogParams } from '#g/types'
 import $ from '#m/texts'
 
-class DialogsClass {
-  private readonly extNames = {
+export default class Dialogs {
+  private static readonly extNames = {
     epf: 'Editor params file',
     ecf: 'Editor configuration file',
     pak: 'Package file',
@@ -18,7 +18,7 @@ class DialogsClass {
   }
 
   /** Выводит ошибку на экран */
-  error(message: string): void {
+  static error(message: string): void {
     this.alert({
       type: 'warning',
       title: $.ERROR,
@@ -27,7 +27,7 @@ class DialogsClass {
   }
 
   /** Открыть окно с сообщением */
-  alert(params: IDialogAlertParams): number | Promise<MessageBoxReturnValue> {
+  static alert(params: IDialogAlertParams): number | Promise<MessageBoxReturnValue> {
     const {
       dialogType = DialogAlertType.sync,
       buttons = [$.OK],
@@ -53,35 +53,47 @@ class DialogsClass {
 
   /** Открыть окно выбора `.epf` файла */
   @publicMethod()
-  getEPF(): string {
-    return this.openDialog({ extention: 'epf' }) as string
+  static getEPF(): string | undefined {
+    return this.openDialog<string>({ extention: 'epf' })
   }
 
   /** Открыть окно сохранения `.epf` файла */
   @publicMethod()
-  saveEPF(defaultName: string): string {
-    return this.openDialog({
+  static saveEPF(defaultName: string): string | undefined {
+    return this.openDialog<string>({
       type: DialogType.save,
       defaultPath: defaultName,
       extention: 'epf'
-    }) as string
+    })
   }
 
   /** Открыть окно выбора `initial.pak` */
   @publicMethod()
-  getInitial(): string {
-    return this.openDialog({ extention: 'pak' }) as string
+  static getInitial(): string | undefined {
+    return this.openDialog<string>({ extention: 'pak' })
   }
 
   /** Открыть окно выбора папки */
   @publicMethod()
-  getDir(): string {
-    return this.openDialog({ source: DialogSourceType.dir }) as string
+  static getDir(): string | undefined {
+    return this.openDialog<string>({ source: DialogSourceType.dir })
+  }
+
+  /** Открыть окно выбора папки */
+  @publicMethod()
+  static getDirs(): string[] | undefined {
+    return this.openDialog<string[]>({ properties: ['multiSelections', 'openDirectory'] })
+  }
+
+  /** Открыть окно выбора папки */
+  @publicMethod()
+  static getPaks(): string[] | undefined {
+    return this.openDialog<string[]>({ properties: ['multiSelections', 'openFile'], extention: '.pak' })
   }
 
   /** Открыть окно выбора нескольких `.epf` файлов */
-  getMultiEPF(): string[] {
-    return this.openDialog({
+  static getMultiEPF(): string[] | undefined {
+    return this.openDialog<string[]>({
       properties: ['openFile', 'multiSelections'],
       extention: 'epf'
     }) as string[]
@@ -89,12 +101,12 @@ class DialogsClass {
 
   /** Открыть окно выбора `.xml` файла */
   @publicMethod()
-  getXML(): string {
-    return this.openDialog({ extention: 'xml' }) as string
+  static getXML(): string | undefined {
+    return this.openDialog<string>({ extention: 'xml' })
   }
 
   /** Открыть диалоговое окно */
-  openDialog(params: IOpenDialogParams): string | string[] | undefined {
+  static openDialog<T extends string | string[]>(params: IOpenDialogParams): T | undefined {
     const {
       type = DialogType.open,
       source = DialogSourceType.file,
@@ -116,10 +128,10 @@ class DialogsClass {
       const result = dialog.showOpenDialogSync(dialogParams)
       if (Array.isArray(result)) {
         if (!dialogParams.properties?.includes('multiSelections')) {
-          return result[0]
+          return result[0] as T
         }
         else {
-          return result
+          return result as T
         }
       }
       else {
@@ -133,15 +145,11 @@ class DialogsClass {
       })
 
       if (result) {
-        return result
+        return result as T
       }
       else {
-        return []
+        return undefined
       }
     }
   }
 }
-
-const Dialogs = new DialogsClass()
-
-export default Dialogs

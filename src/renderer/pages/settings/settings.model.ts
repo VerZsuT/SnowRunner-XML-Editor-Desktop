@@ -1,13 +1,11 @@
 import { ViewModel, reactive } from '#r/model-ctrlr'
-import { config } from '#r/services'
+import { Config } from '#r/services'
 
-const { settings } = config
+export default class SettingsModel extends ViewModel {
+  private readonly settings = Config.settings
 
-class SettingsModel extends ViewModel {
-  @reactive updates = settings.updates
-  @reactive DLC = settings.DLC
-  @reactive mods = settings.mods
-  @reactive advancedMode = settings.advancedMode
+  @reactive updates = this.settings.updates
+  @reactive DLC = this.settings.DLC
+  @reactive mods = this.settings.mods
+  @reactive advancedMode = this.settings.advancedMode
 }
-
-export default SettingsModel

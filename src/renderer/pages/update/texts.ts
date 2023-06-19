@@ -1,6 +1,6 @@
 import { compareWithGlobal } from '#g/texts/renderer'
 
-const $ = compareWithGlobal({
+export default compareWithGlobal({
   RU: {
     ALLOW_NEW_VERSION_AUTO: 'Доступна новая версия программы',
     IGNORE: 'Игнорировать',
@@ -26,5 +26,3 @@ const $ = compareWithGlobal({
     CLOSE: '关闭'
   }
 })
-
-export default $

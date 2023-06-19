@@ -3,7 +3,7 @@ import type { CSSProperties } from 'react'
 import type { Category } from '#g/enums'
 import type { IItem } from '#g/types'
 
-interface IListItemProps {
+export default interface IListItemProps {
   item: IItem
   type: Category
   style: CSSProperties
@@ -11,5 +11,3 @@ interface IListItemProps {
   modId?: string
   dlc?: string
 }
-
-export default IListItemProps

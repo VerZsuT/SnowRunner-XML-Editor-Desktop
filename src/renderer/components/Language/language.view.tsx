@@ -10,7 +10,7 @@ import type { Lang } from '#g/enums'
 import $ from '#g/texts/renderer'
 
 /** Выбор языка программы */
-function LanguageView(props: ILanguageProps) {
+export default afcMemo<ILanguageProps>(function LanguageView(props) {
   const model = new LanguageModel(props)
   const ctrlr = new LanguageController(model)
 
@@ -48,6 +48,4 @@ function LanguageView(props: ILanguageProps) {
   function onChangeSelect(value: Lang): void {
     ctrlr.changeLang(value)
   }
-}
-
-export default afcMemo(LanguageView)
+})

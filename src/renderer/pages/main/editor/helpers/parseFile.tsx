@@ -1,14 +1,10 @@
-import xmlFiles from '../services/xmlFiles'
+import XMLFiles from '../services/xmlFiles'
 
 import { FileType, PreloadType } from '#g/enums'
 import type { IDefaults, IEditorPreload, IInputParams, IXMLElement, TemplateParams } from '#g/types'
-import bridge from '#r/scripts/bridge'
+import Bridge from '#r/scripts/bridge'
 import paramsDefaults from '#r/scripts/defaults'
-import { preload, system, xml } from '#r/services'
-
-const paths = bridge.paths
-
-const { findFromDLC } = preload.get<IEditorPreload>(PreloadType.editor)
+import { Preload, System, XML } from '#r/services'
 
 interface InnerItem {
   filePath: string
@@ -29,7 +25,10 @@ interface Config {
   regFiles?: boolean
 }
 
-function parseFile(config: Config) {
+export default function parseFile(config: Config) {
+  const paths = Bridge.paths
+  const preload = Preload.get<IEditorPreload>(PreloadType.editor)
+
   const { dlc, mod, fileDOM, item, regFiles } = config
   const items: InnerItem[] = []
   const propsItem: IInputParams = item
@@ -62,23 +61,23 @@ function parseFile(config: Config) {
     }
 
     pathsToFiles.forEach(path => {
-      if (system.existsSync(path)) {
+      if (System.existsSync(path)) {
         mainPath = path
       }
     })
 
     if (!mainPath) {
-      const path = findFromDLC(fileName, propsItem.fileType!)
+      const path = preload.findFromDLC(fileName, propsItem.fileType!)
       if (!path) return
 
       mainPath = path
       itemMod = undefined
     }
 
-    const [fileDOM, tableItems] = xml.processFile(mainPath)
+    const [fileDOM, tableItems] = XML.processFile(mainPath)
 
     if (regFiles) {
-      xmlFiles.add({
+      XMLFiles.add({
         mod: itemMod!,
         dlc: itemDLC!,
         dom: fileDOM,
@@ -101,5 +100,3 @@ function parseFile(config: Config) {
 
   return items
 }
-
-export default parseFile

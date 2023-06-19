@@ -7,7 +7,7 @@ import { localizeVal } from '#g/texts/renderer'
 import type { IXMLElement } from '#g/types'
 
 /** Вкладка `Банан бандита`. */
-class BanditCraneAction extends ExtraAction {
+export default class BanditCraneAction extends ExtraAction {
   protected name = localizeVal({
     RU: 'Банан бандита',
     EN: 'Bandit banana',
@@ -62,5 +62,3 @@ class BanditCraneAction extends ExtraAction {
     return dom.has('Socket[Names="CraneKrs58Bandit"]')
   }
 }
-
-export default BanditCraneAction

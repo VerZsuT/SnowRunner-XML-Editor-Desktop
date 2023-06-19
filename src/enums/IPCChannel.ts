@@ -7,7 +7,9 @@ enum IPCChannel {
   /** Сигнал изменения ширины окна */
   windowResize = 'window-resize',
   /** Канал отслеживания ширины окна */
-  handleWindowSize = 'handle-window-size'
+  handleWindowSize = 'handle-window-size',
+  /** Сигнал об обновлении initial.pak */
+  updateInitial = 'update-initial'
 }
 
 export default IPCChannel

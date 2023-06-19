@@ -1,6 +1,6 @@
 import { compareWithGlobal } from '#g/texts/renderer'
 
-const $ = compareWithGlobal({
+export default compareWithGlobal({
   RU: {
     NEXT: 'Дальше',
     GAME_FOLDER_LABEL: 'Папка с игрой',
@@ -42,5 +42,3 @@ const $ = compareWithGlobal({
     INVALID_INITIAL_ERROR: '选择了错误的initial.pak'
   }
 })
-
-export default $

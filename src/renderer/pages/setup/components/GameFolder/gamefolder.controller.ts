@@ -3,11 +3,11 @@ import type GameFolderProps from './gamefolder.props'
 import type { ISetupPreload } from '#g/types'
 import { handleLocale } from '#r/helpers'
 import { ViewController } from '#r/model-ctrlr'
-import { preload } from '#r/services'
+import { Preload } from '#r/services'
 
-const { getInitialPak, getGameFolder } = preload.get<ISetupPreload>()
+export default class GameFolderController extends ViewController<GameFolderProps> {
+  private readonly preload = Preload.get<ISetupPreload>()
 
-class GameFolderController extends ViewController<GameFolderProps> {
   constructor(props: GameFolderProps) {
     super(props)
 
@@ -15,7 +15,7 @@ class GameFolderController extends ViewController<GameFolderProps> {
   }
 
   getPak(): void {
-    const data = getInitialPak()
+    const data = this.preload.getInitialPak()
     if (!data) return
 
     data.folder = data.initial
@@ -23,11 +23,9 @@ class GameFolderController extends ViewController<GameFolderProps> {
   }
 
   getFolder(): void {
-    const data = getGameFolder()
+    const data = this.preload.getGameFolder()
     if (!data) return
 
     this.props.onChange(data.initial)
   }
 }
-
-export default GameFolderController

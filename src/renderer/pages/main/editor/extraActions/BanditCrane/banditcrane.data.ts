@@ -1,5 +1,3 @@
-interface IBanditCraneData {
+export default interface IBanditCraneData {
   hasCrane: boolean
 }
-
-export default IBanditCraneData

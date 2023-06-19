@@ -6,9 +6,9 @@ import CoordinatesModel from './coordinates.model'
 
 import type { IParameterProps } from '#g/types'
 
-const { Text } = Typography
+export default afcMemo<IParameterProps>(function Coordinates(props) {
+  const Text = Typography.Text
 
-function Coordinates(props: IParameterProps) {
   const model = new CoordinatesModel(props)
   const ctrlr = new CoordinatesController(props, model)
 
@@ -48,6 +48,4 @@ function Coordinates(props: IParameterProps) {
   function onChangeZ(value: string | null): void {
     ctrlr.changeCoordinate({ z: value ?? 0 })
   }
-}
-
-export default afcMemo(Coordinates)
+})

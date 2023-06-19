@@ -1,6 +1,6 @@
 import { XMLDOM } from '../scripts/xml'
-import helpers from './helpers.service'
-import system from './system.service'
+import Helpers from './helpers.service'
+import System from './system.service'
 
 import { FileType, ParamType } from '#g/enums'
 import type {
@@ -12,8 +12,8 @@ import type {
   IXMLTemplate, TemplateParams
 } from '#g/types'
 import { hasItems, isNonNullable, isNullable } from '#g/utils'
-import xmlFiles from '#r/pages/main/editor/services/xmlFiles'
-import bridge from '#r/scripts/bridge'
+import XMLFiles from '#r/pages/main/editor/services/xmlFiles'
+import Bridge from '#r/scripts/bridge'
 import { extra, templates } from '#r_editor/templates'
 
 interface IHasSelector {
@@ -30,13 +30,12 @@ interface IConfig {
   actions?: IXMLTemplate['extraActions']
 }
 
-const paths = bridge.paths
-
-class XMLService {
-  private readonly EXPORTED_FILE_VERSION = '2.0'
+export default class XML {
+  private static readonly paths = Bridge.paths
+  private static readonly EXPORTED_FILE_VERSION = '2.0'
 
   /** Добавляет тег в DOM файла */
-  addTag(fileDOM: IXMLElement, item: IHasSelector): void {
+  static addTag(fileDOM: IXMLElement, item: IHasSelector): void {
     if (!fileDOM.has(item.selector)) {
       const array = item.selector.split('>').map(value => value.trim())
       const name = array.pop() as string
@@ -46,32 +45,32 @@ class XMLService {
     }
   }
 
-  getDOM(path: string): IXMLElement {
+  static getDOM(path: string): IXMLElement {
     return XMLDOM.fromPath(path)
   }
 
-  getName(item: IItem, fileDOM: IXMLElement): string {
-    let name = helpers.prettyString(item.name)
+  static getName(item: IItem, fileDOM: IXMLElement): string {
+    let name = Helpers.prettyString(item.name)
 
     if (fileDOM.has('GameData > UiDesc')) {
       const uiName = fileDOM.select('GameData > UiDesc').getAttr('UiName')
       if (uiName) {
-        name = helpers.getGameText(uiName, item.modId) || uiName
+        name = Helpers.getGameText(uiName, item.modId) || uiName
       }
     }
     return name
   }
 
-  exportFile(config: IConfig, saveName: string): boolean {
+  static exportFile(config: IConfig, saveName: string): boolean {
     const exported = this.exportToObject(config)
-    const path = bridge.saveEPF(saveName)
+    const path = Bridge.saveEPF(saveName)
     if (!path) return false
 
-    system.writeFileSync(path, JSON.stringify(exported, null, '\t'))
+    System.writeFileSync(path, JSON.stringify(exported, null, '\t'))
     return true
   }
 
-  exportToObject(config: IConfig): IExportedData | IExportedData['data'][string] {
+  static exportToObject(config: IConfig): IExportedData | IExportedData['data'][string] {
     const { filePath, mod, dlc, shortMode = false } = config
     let { fileDOM, templateItems, actions = undefined } = config
 
@@ -79,7 +78,7 @@ class XMLService {
       [fileDOM, templateItems, actions] = this.processFile(filePath)
     }
 
-    const fileName = system.basename(filePath)
+    const fileName = System.basename(filePath)
     const globalTemplates = this.getGlobalTemplates()
 
     const extraFiles: IExportedData['data'] = {}
@@ -131,19 +130,19 @@ class XMLService {
       }
 
       fileNames.forEach(fileName => {
-        const pathsToFiles = [`${paths.classes}\\${item.fileType}\\${fileName}.xml`]
+        const pathsToFiles = [`${this.paths.classes}\\${item.fileType}\\${fileName}.xml`]
         let mainPath: string | undefined
         let itemMod = mod
 
         if (dlc) {
-          pathsToFiles.push(`${paths.dlc}\\${dlc}\\classes\\${item.fileType}\\${fileName}.xml`)
+          pathsToFiles.push(`${this.paths.dlc}\\${dlc}\\classes\\${item.fileType}\\${fileName}.xml`)
         }
         else if (mod) {
-          pathsToFiles.push(`${paths.modsTemp}\\${mod}\\classes\\${item.fileType}\\${fileName}.xml`)
+          pathsToFiles.push(`${this.paths.modsTemp}\\${mod}\\classes\\${item.fileType}\\${fileName}.xml`)
         }
 
         pathsToFiles.forEach(path => {
-          if (system.existsSync(path)) {
+          if (System.existsSync(path)) {
             mainPath = path
           }
         })
@@ -157,7 +156,7 @@ class XMLService {
         const [_, templateItems, actions] = this.processFile(mainPath)
 
         let fileDOM: IXMLElement | undefined
-        xmlFiles.files.forEach(file => {
+        XMLFiles.files.forEach(file => {
           if (file.path === mainPath) {
             fileDOM = file.dom
           }
@@ -211,7 +210,7 @@ class XMLService {
     return main
   }
 
-  getValueInGlobal(
+  static getValueInGlobal(
     templateName: string,
     tagName: string,
     globalTemplates: IXMLElement,
@@ -232,14 +231,14 @@ class XMLService {
     return item.value
   }
 
-  getGlobalTemplates(): IXMLElement {
-    const filePath = system.join(paths.mainTemp, '[media]/_templates/trucks.xml')
+  static getGlobalTemplates(): IXMLElement {
+    const filePath = System.join(this.paths.mainTemp, '[media]/_templates/trucks.xml')
     return XMLDOM.fromPath(filePath)
   }
 
-  processFile(filePath: string): [IXMLElement, TemplateParams, IXMLTemplate['extraActions']] | never {
-    const fileData = system.readFileSync(filePath)
-    const fileName = system.basename(filePath, '.xml')
+  static processFile(filePath: string): [IXMLElement, TemplateParams, IXMLTemplate['extraActions']] | never {
+    const fileData = System.readFileSync(filePath)
+    const fileName = System.basename(filePath, '.xml')
     const actions: IXMLTemplate['extraActions'] = []
     let dom: IXMLElement
     let name: keyof typeof templates | undefined
@@ -276,7 +275,7 @@ class XMLService {
     return [dom, result.params, actions]
   }
 
-  getParameters(
+  static getParameters(
     domString: string,
     name: keyof typeof templates,
     fileName: string
@@ -316,7 +315,7 @@ class XMLService {
     }
   }
 
-  getFromTemplates(
+  static getFromTemplates(
     fileDOM: IXMLElement,
     templates: IXMLElement,
     globalTemplates: IXMLElement,
@@ -362,17 +361,17 @@ class XMLService {
     }
   }
 
-  private findFromDLC(fileName: string, type: string): string | undefined {
-    const dlcFolders = system.readdirSync(paths.dlc)
+  private static findFromDLC(fileName: string, type: string): string | undefined {
+    const dlcFolders = System.readdirSync(this.paths.dlc)
     for (let i = 0; i < dlcFolders.length; ++i) {
-      const path = system.join(paths.dlc, dlcFolders[i], 'classes', type, `${fileName}.xml`)
-      if (system.existsSync(path)) {
+      const path = System.join(this.paths.dlc, dlcFolders[i], 'classes', type, `${fileName}.xml`)
+      if (System.existsSync(path)) {
         return path
       }
     }
   }
 
-  private getValue(
+  private static getValue(
     fileDOM: IXMLElement,
     templates: IXMLElement,
     globalTemplates: IXMLElement,
@@ -391,7 +390,7 @@ class XMLService {
     return value
   }
 
-  private getParentTemplate(el: any): string | undefined {
+  private static getParentTemplate(el: any): string | undefined {
     if (el.parentElement) {
       const template = el.parentElement.getAttribute('_template')
       if (template) return template
@@ -400,7 +399,3 @@ class XMLService {
     }
   }
 }
-
-const xml = new XMLService()
-
-export default xml

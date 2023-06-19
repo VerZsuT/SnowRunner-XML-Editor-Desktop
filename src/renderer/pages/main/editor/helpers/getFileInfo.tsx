@@ -1,7 +1,7 @@
 import { createContext } from 'react'
 
 import { CURRENT_DLC, CURRENT_MOD, FILE_PATH } from '#g/consts'
-import { storage } from '#r/services'
+import { Storage } from '#r/services'
 
 export interface FileInfoContextType {
   filePath: string
@@ -11,10 +11,10 @@ export interface FileInfoContextType {
 
 export const FileInfoContext = createContext<FileInfoContextType>(null as unknown as FileInfoContextType)
 
-export function getFileInfo() {
-  const filePath = storage.get(FILE_PATH)
-  const mod = storage.get(CURRENT_MOD)
-  const dlc = storage.get(CURRENT_DLC)
+export default function getFileInfo() {
+  const filePath = Storage.get(FILE_PATH)
+  const mod = Storage.get(CURRENT_MOD)
+  const dlc = Storage.get(CURRENT_DLC)
 
   return {
     filePath, mod, dlc,

@@ -1,22 +1,17 @@
-import bridge from '#r/scripts/bridge'
-import { config } from '#r/services'
+import Bridge from '#r/scripts/bridge'
+import { Config } from '#r/services'
 
-class Template {
-  constructor() {
-    this.changeTitle()
-    this.handleKeys()
+class _Template {
+  static changeTitle(): void {
+    document.title = `SnowRunner XML Editor v${Config.version}`
   }
 
-  private changeTitle(): void {
-    document.title = `SnowRunner XML Editor v${config.version}`
-  }
-
-  private handleKeys(): void {
+  static handleKeys(): void {
     document.addEventListener('keydown', event => {
       const keyIs = (code: string) => event.code === `Key${code}`
       const shift = event.shiftKey
       const ctrl = event.ctrlKey
-      const dev = config.buildType === 'dev'
+      const dev = Config.buildType === 'dev'
 
       if (!ctrl) return
 
@@ -32,17 +27,20 @@ class Template {
     })
   }
 
-  private onSave(): void {
+  static onSave(): void {
     document.querySelector<HTMLInputElement>('#save')?.click()
   }
 
-  private onQuit(): void {
-    bridge.quitApp()
+  static onQuit(): void {
+    Bridge.quitApp()
   }
 
-  private onDevtools(): void {
-    bridge.devTools()
+  static onDevtools(): void {
+    Bridge.devTools()
+  }
+
+  static {
+    this.changeTitle()
+    this.handleKeys()
   }
 }
-
-new Template()

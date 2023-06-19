@@ -1,8 +1,6 @@
 import type IFolder from './IFolder'
 
-interface ISetupPreload {
+export default interface ISetupPreload {
   getGameFolder(): IFolder | undefined
   getInitialPak(): IFolder | undefined
 }
-
-export default ISetupPreload

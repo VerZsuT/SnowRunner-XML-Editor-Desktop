@@ -12,12 +12,13 @@ abstract class ProgramWindow {
   protected abstract readonly type: ProgramWindowEnum
   protected wind?: BrowserWindow
 
-  public register(): void {
+  register(): void {
     Manager.register(this.type, (...args: any[]) => this.create(...args))
   }
 
   private async create(...args: any[]): Promise<BrowserWindow> {
     this.wind = await this.creator(...args)
+
 
     Config.addChangeHandler(this.onConfigChange)
     this.wind.once('close', () => this.removeChangeHandler())

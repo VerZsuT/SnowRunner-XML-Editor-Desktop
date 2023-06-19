@@ -1,13 +1,26 @@
+import type { WebContents } from 'electron'
 import { Notification } from 'electron'
 
+import { WindowsManager } from '../windows'
 import Paths from './Paths'
 
-class NotificationsClass {
-  async show(title: string, message: string): Promise<void> {
+import $ from '#m/texts'
+
+export default class Notifications {
+  static async show(message: string, type: 'info' | 'warn' | 'error'): Promise<void> {
+    let webContents: WebContents | undefined
+    if (WindowsManager.mainWindow) webContents = WindowsManager.mainWindow.webContents
+    if (WindowsManager.setupWindow) webContents = WindowsManager.setupWindow.webContents
+
+    if (webContents) {
+      webContents.send('notification', { type, text: message })
+      return
+    }
+
     if (!Notification.isSupported()) return
 
     const notification = new Notification({
-      title,
+      title: $.NOTIFICATION,
       icon: Paths.icon,
       body: message
     })
@@ -16,7 +29,3 @@ class NotificationsClass {
     await new Promise(resolve => notification.once('click', resolve))
   }
 }
-
-const Notifications = new NotificationsClass()
-
-export default Notifications

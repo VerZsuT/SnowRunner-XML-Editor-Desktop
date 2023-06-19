@@ -6,7 +6,7 @@ import { ViewModel, prop, reactive, redux } from '#r/model-ctrlr'
 import { selectFilter } from '#r/pages/main/store/filterSlice'
 import { selectCategory, selectFavorites } from '#r/pages/main/store/listSlice'
 
-class ListModel extends ViewModel<IListProps> {
+export default class ListModel extends ViewModel<IListProps> {
   readonly colWidth = 250
   readonly rowHeight = 420
   readonly id: string
@@ -61,5 +61,3 @@ class ListModel extends ViewModel<IListProps> {
     this.id = `list-${props.srcType}`
   }
 }
-
-export default ListModel

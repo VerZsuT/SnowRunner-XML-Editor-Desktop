@@ -7,7 +7,7 @@ import type ICoordinates from './ICoordinates'
 import type { IInputParams, IParameterProps } from '#g/types'
 import { ViewModel, prop, unwrap } from '#r/model-ctrlr'
 
-class CoordinatesModel extends ViewModel<IParameterProps> {
+export default class CoordinatesModel extends ViewModel<IParameterProps> {
   @unwrap
   readonly fileData = useContext(FileDataContext) as unknown as FileDataContextType
 
@@ -38,5 +38,3 @@ class CoordinatesModel extends ViewModel<IParameterProps> {
     return { x: +x, y: +y, z: +z }
   }
 }
-
-export default CoordinatesModel

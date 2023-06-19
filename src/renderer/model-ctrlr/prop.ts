@@ -1,7 +1,7 @@
 import type ViewModel from './ViewModel'
 
 /** Инициализирует свойством из `props` */
-function prop<Props extends object>(key: keyof Props) {
+export default function prop<Props extends object>(key: keyof Props) {
   return <This extends ViewModel<any>, Type>(
     _: undefined,
     context: ClassFieldDecoratorContext<This, Type>
@@ -19,5 +19,3 @@ function prop<Props extends object>(key: keyof Props) {
     }
   }
 }
-
-export default prop

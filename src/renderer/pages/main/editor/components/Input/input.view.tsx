@@ -9,7 +9,7 @@ import InputModel from './input.model'
 import { InputType } from '#g/enums'
 import type { IParameterProps } from '#g/types'
 
-function Input(props: IParameterProps) {
+export default afcMemo<IParameterProps>(function Input(props) {
   const model = new InputModel(props)
   const ctrlr = new InputController(props, model)
 
@@ -47,6 +47,4 @@ function Input(props: IParameterProps) {
   function onStringChange(e: ChangeEvent<HTMLInputElement>): void {
     onChange(e.target.value)
   }
-}
-
-export default afcMemo(Input)
+})

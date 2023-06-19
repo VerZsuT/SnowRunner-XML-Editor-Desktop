@@ -1,2 +1,5 @@
 import gearboxTemplate from './gearbox.template'
-export default gearboxTemplate
+
+import type { IXMLTemplate } from '#g/types'
+
+export default gearboxTemplate as IXMLTemplate

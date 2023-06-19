@@ -1,5 +1,5 @@
 #define MyAppName "SnowRunnerXMLEditor"
-#define MyAppVersion "0.7.3c"
+#define MyAppVersion "0.7.4"
 #define MyAppPublisher "VerZsuT"
 #define MyAppURL "https://snowrunner.mod.io/guides/snowrunner-xml-editor/"
 #define MyAppExeName "SnowRunner XML Editor.exe"
@@ -17,22 +17,23 @@ DefaultGroupName={#MyAppName}
 OutputDir="..\out"
 OutputBaseFilename={#MyAppName}
 SetupIconFile="..\out\{#MyAppName}\resources\app\.webpack\main\favicon.ico"
-Compression=lzma
+AppReadmeFile="..\out\{#MyAppName}\resources\app\.webpack\README.md"
+LicenseFile="..\out\{#MyAppName}\resources\app\.webpack\LICENSE"
 SolidCompression=yes
 WizardStyle=modern
-PrivilegesRequired=lowest
+PrivilegesRequired=admin
 
 [Languages]
-Name: "english"; MessagesFile: "Default.isl"
-Name: "german"; MessagesFile: "German.isl"
-Name: "russian"; MessagesFile: "Russian.isl"
+Name: "en"; MessagesFile: "compiler:Default.isl"
+Name: "de"; MessagesFile: "compiler:Languages/German.isl"
+Name: "ru"; MessagesFile: "compiler:Languages/Russian.isl"
 
 [Files]
 Source: "..\out\{#MyAppName}\resources\app\.webpack\main\config.json"; DestDir: "{app}"; BeforeInstall: MigrateConfig; Flags: ignoreversion
 Source: "..\out\{#MyAppName}\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Icons]
-Name: "{userdesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; AfterInstall: SetElevationBit('{userdesktop}\{#MyAppName}.lnk')
+Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; AfterInstall: SetElevationBit('{autodesktop}\{#MyAppName}.lnk')
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; AfterInstall: SetElevationBit('{group}\{#MyAppName}.lnk')
 Name: "{group}\Uninstall {#MyAppName}"; Filename: "{uninstallexe}"
 
@@ -40,7 +41,7 @@ Name: "{group}\Uninstall {#MyAppName}"; Filename: "{uninstallexe}"
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent runascurrentuser
 
 [UninstallDelete]
-Name: "{app}\resources\app"; Type: filesandordirs
+Name: "{app}\resources"; Type: filesandordirs
 
 [Code]
 procedure SetElevationBit(Filename: string);

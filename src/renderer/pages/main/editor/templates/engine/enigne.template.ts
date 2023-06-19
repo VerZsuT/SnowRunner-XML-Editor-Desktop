@@ -5,15 +5,13 @@ import $ from './engine.texts'
 
 import type { IXMLTemplate } from '#g/types'
 
-class Selectors {
-  @selector engine = `EngineVariants.Engine${forEach}`
-  @selector engineText = `${this.engine}.GameData.UiDesc`
-  @selector engineGameData = `${this.engine}.GameData`
-}
+const selectors = createSelectors(class {
+  @selector static engine = `EngineVariants.Engine${forEach}` as const
+  @selector static engineText = `${this.engine}.GameData.UiDesc` as const
+  @selector static engineGameData = `${this.engine}.GameData` as const
+})
 
-const selectors = createSelectors(Selectors)
-
-const engineTemplate: IXMLTemplate = {
+export default {
   selector: 'EngineVariants',
   template: Template({ ...selectors },
     ForEach(selectors.engine,
@@ -112,6 +110,4 @@ const engineTemplate: IXMLTemplate = {
       )
     )
   )
-}
-
-export default engineTemplate
+} satisfies IXMLTemplate
