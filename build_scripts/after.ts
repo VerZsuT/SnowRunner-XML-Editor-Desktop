@@ -17,8 +17,8 @@ import Log from './Log'
 
 class _AfterBuild {
   static readonly paths = allPaths.after
-  static readonly isWin7 = process.argv.at(2) === 'win7'
-  static readonly postfix = this.isWin7 ? '_win7' : ''
+  static readonly isLegacy = process.argv.at(2) === 'legacy'
+  static readonly postfix = this.isLegacy ? '_legacy' : ''
   static readonly archivePath = join(this.paths.out, `SnowRunnerXMLEditor_portable${this.postfix}.rar`)
   static config: any
 
@@ -76,7 +76,7 @@ class _AfterBuild {
     const updateFilesPath = join(this.paths.sxmleUpdater, filesFolder)
     hasPaths([this.paths.sxmleUpdater, appPath], () => {
       const map = generateMap(appPath)
-      writeFile(join(this.paths.sxmleUpdater, `updateMap${this.postfix}.json`), JSON.stringify(map))
+      writeFile(join(this.paths.sxmleUpdater, 'updateMap_legacy.json'), JSON.stringify(map))
       Log.print('Adding files for auto-update')
       rmSync(updateFilesPath, { recursive: true, force: true })
       renameSync(appPath, updateFilesPath)
@@ -110,7 +110,7 @@ class _AfterBuild {
     const exePath = join(this.paths.out, 'SnowRunnerXMLEditor.exe')
     let renamedPath = exePath
     hasPaths(exePath, () => {
-      if (this.isWin7) {
+      if (this.isLegacy) {
         renamedPath = join(this.paths.out, `SnowRunnerXMLEditor${this.postfix}.exe`)
         renameSync(exePath, renamedPath)
       }

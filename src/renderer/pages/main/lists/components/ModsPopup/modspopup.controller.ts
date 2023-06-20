@@ -21,10 +21,6 @@ export default class ModsPopupController extends ViewController<IModsPopupProps,
     this.model.targetKeys = newKeys
   }
 
-  changeSelectedKeys(newKeys: string[]): void {
-    this.model.selectedKeys = newKeys
-  }
-
   saveChanges(): void {
     if (!this.model.items) return
     ModsService.save(this.model.targetKeys, this.model.items)

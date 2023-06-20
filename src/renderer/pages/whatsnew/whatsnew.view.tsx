@@ -1,3 +1,5 @@
+import { memo } from 'react'
+
 import { Divider, List } from 'antd'
 import { afc } from 'react-afc'
 
@@ -13,27 +15,21 @@ export default afc(function WhatsNew() {
   new WhatsNewController()
 
   return () => <>
-    <Divider className='title'>
-      {$.WHATS_NEW_TITLE} {' v0.7.4'}
-    </Divider>
-    <List
-      className='content'
-      size='small'
-      dataSource={model.desc074}
-      renderItem={item => (
-        <List.Item>
-          {item}
-        </List.Item>
-      )}
-    />
+    <VersionInfo version='0.7.4a' changes={model.desc074a} />
+    <VersionInfo version='0.7.4' changes={model.desc074} />
+    <VersionInfo version='0.7.3c' changes={model.desc073c} />
+  </>
+})
 
+const VersionInfo = memo(function VersionInfo(props: { version: string, changes: string[] }) {
+  return <>
     <Divider className='title'>
-      {$.WHATS_NEW_TITLE} {' v0.7.3c'}
+      {$.WHATS_NEW_TITLE} {` v${props.version}`}
     </Divider>
     <List
       className='content'
       size='small'
-      dataSource={model.desc073c}
+      dataSource={props.changes}
       renderItem={item => (
         <List.Item>
           {item}

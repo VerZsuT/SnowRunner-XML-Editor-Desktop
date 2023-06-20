@@ -2,6 +2,13 @@ import { localizeVal } from '#g/texts/renderer'
 import { ViewModel, unwrap } from '#r/model-ctrlr'
 
 export default class WhatsNewModel extends ViewModel {
+  @unwrap readonly desc074a = localizeVal({
+    RU: ['Исправлена ошибка в выборе модификаций'],
+    EN: ['Fixed a bug in the selection of modifications'],
+    DE: ['Ein Fehler bei der Auswahl von Änderungen wurde behoben'],
+    CH: ['修正了修改选择中的一个错误']
+  }) as unknown as string[]
+
   @unwrap readonly desc074 = localizeVal({
     RU: [
       'Добавлена функция переноса всех изменений при обновлении игры (только изменения сделанные в версии 0.7.4+)',

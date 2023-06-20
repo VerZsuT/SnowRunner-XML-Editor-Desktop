@@ -2,9 +2,9 @@ export default interface IPaths {
   publicInfo: string
   downloadPage: string
   updateFiles: string
-  updateWin7Files: string
+  updateLegacyFiles: string
   updateMap: string
-  updateMapWin7: string
+  updateMapLegacy: string
   root: string
   updateRoot: string
   updateBackupFolder: string
