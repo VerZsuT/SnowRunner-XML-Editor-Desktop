@@ -1,5 +1,5 @@
 #define MyAppName "SnowRunnerXMLEditor"
-#define MyAppVersion "0.7.4"
+#define MyAppVersion "0.7.4a"
 #define MyAppPublisher "VerZsuT"
 #define MyAppURL "https://snowrunner.mod.io/guides/snowrunner-xml-editor/"
 #define MyAppExeName "SnowRunner XML Editor.exe"

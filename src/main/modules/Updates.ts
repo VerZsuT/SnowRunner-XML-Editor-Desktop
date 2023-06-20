@@ -16,7 +16,7 @@ import type { IDownloadParams, UpdateMap } from '#g/types'
 import { hasItems } from '#g/utils'
 
 export default class Updates {
-  static readonly isWin7 = Config.version.includes('-win7')
+  static readonly isLegacy = Config.version.includes('-legacy')
 
   /** Загрузить файл(ы) из сети */
   static download(params: IDownloadParams, callback: (data?: any) => any): void {
@@ -90,7 +90,7 @@ export default class Updates {
     Helpers.clearTemp()
 
     this.download({
-      url: this.isWin7 ? Paths.updateMapWin7 : Paths.updateMap,
+      url: this.isLegacy ? Paths.updateMapLegacy : Paths.updateMap,
       fromJSON: true,
       inMemory: true
     }, updateMap => {
@@ -118,7 +118,7 @@ export default class Updates {
       }
       const toDownload: { url: string, path: string }[] = []
       forCreateOrChange.forEach(relativePath => {
-        const updateFiles = this.isWin7 ? Paths.updateWin7Files : Paths.updateFiles
+        const updateFiles = this.isLegacy ? Paths.updateLegacyFiles : Paths.updateFiles
         const path = join(Paths.updateRoot, relativePath)
         const webPath = relativePath.replaceAll('\\', '/').replace('.webpack', 'webpack')
 

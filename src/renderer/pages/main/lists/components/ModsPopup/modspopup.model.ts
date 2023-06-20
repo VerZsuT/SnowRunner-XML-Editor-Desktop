@@ -12,5 +12,4 @@ export default class ModsPopupModel extends ViewModel<IModsPopupProps> {
 
   @reactive items: IFindItem[] | undefined = undefined
   @reactive targetKeys: string[] = []
-  @reactive selectedKeys: string[] = []
 }

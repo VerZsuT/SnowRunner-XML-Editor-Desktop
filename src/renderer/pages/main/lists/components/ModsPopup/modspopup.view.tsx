@@ -11,7 +11,7 @@ export default afcMemo<IModsPopupProps>(function ModsPopupView(props) {
   const ctrlr = new ModsPopupController(props, model)
 
   return () => {
-    const { items, targetKeys, selectedKeys, show, titles } = model
+    const { items, targetKeys, show, titles } = model
 
     return (
       <Modal
@@ -30,9 +30,7 @@ export default afcMemo<IModsPopupProps>(function ModsPopupView(props) {
                 title: item.name
               }))}
               onChange={onChange}
-              onSelectChange={onSelectChange}
               targetKeys={targetKeys}
-              selectedKeys={selectedKeys}
               titles={titles}
               render={item => item.title}
               className='mods-transfer'
@@ -68,9 +66,5 @@ export default afcMemo<IModsPopupProps>(function ModsPopupView(props) {
 
   function onChange(nextTarget: string[]): void {
     ctrlr.changeTargetKeys(nextTarget)
-  }
-
-  function onSelectChange(source: string[], target: string[]): void {
-    ctrlr.changeSelectedKeys([...source, ...target])
   }
 })
