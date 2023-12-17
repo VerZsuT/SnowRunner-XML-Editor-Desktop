@@ -82,8 +82,7 @@ typings/
 # DynamoDB Local files
 .dynamodb/
 
-# Webpack
-.webpack/
+.vite
 
 # Electron-Forge
 out
@@ -93,8 +92,7 @@ src/backups/
 
 .vscode/
 .idea/
-build_scripts/out
-test-config.json
+build-scripts/out
 test.js
 dist
 package-lock.json

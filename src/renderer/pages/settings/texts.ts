@@ -1,28 +1,35 @@
-import { compareWithGlobal } from '#g/texts/renderer'
+import { Lang } from '/mods/renderer'
+import { localize } from '/utils/texts/renderer'
 
-export default compareWithGlobal({
-  RU: {
-    DLC_LABEL: 'Редактировать DLC',
-    MODS_LABEL: 'Редактировать модификации',
-    UPDATES_LABEL: 'Обновлять программу',
-    ADVANCED_MODE_LABEL: 'Продвинутый режим'
+export default localize({
+  dlcLabel: {
+    [Lang.ru]: 'Редактировать DLC',
+    [Lang.en]: 'Edit DLC',
+    [Lang.de]: 'DLC bearbeiten',
+    [Lang.ch]: '编辑DLC'
   },
-  EN: {
-    DLC_LABEL: 'Edit DLC',
-    MODS_LABEL: 'Edit Modifications',
-    UPDATES_LABEL: 'Update the program',
-    ADVANCED_MODE_LABEL: 'Advanced Mode'
+  modsLabel: {
+    [Lang.ru]: 'Редактировать модификации',
+    [Lang.en]: 'Edit Modifications',
+    [Lang.de]: 'Änderungen bearbeiten',
+    [Lang.ch]: '编辑修改'
   },
-  DE: {
-    DLC_LABEL: 'DLC bearbeiten',
-    MODS_LABEL: 'Änderungen bearbeiten',
-    UPDATES_LABEL: 'Aktualisieren Sie das Programm',
-    ADVANCED_MODE_LABEL: 'Fortgeschrittener Modus'
+  updatesLabel: {
+    [Lang.ru]: 'Обновлять программу',
+    [Lang.en]: 'Update the program',
+    [Lang.de]: 'Aktualisieren Sie das Programm',
+    [Lang.ch]: '更新方案'
   },
-  CH: {
-    DLC_LABEL: '编辑DLC',
-    MODS_LABEL: '编辑修改',
-    UPDATES_LABEL: '更新方案',
-    ADVANCED_MODE_LABEL: '高级模式'
+  advancedModeLabel: {
+    [Lang.ru]: 'Продвинутый режим',
+    [Lang.en]: 'Advanced Mode',
+    [Lang.de]: 'Fortgeschrittener Modus',
+    [Lang.ch]: '高级模式'
+  },
+  saveButton: {
+    [Lang.ru]: 'Сохранить',
+    [Lang.en]: 'Save',
+    [Lang.de]: 'Datei',
+    [Lang.ch]: '保存'
   }
 })

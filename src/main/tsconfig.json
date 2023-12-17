@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "moduleResolution": "Bundler",
+    "module": "ESNext",
+    "newLine": "LF",
+    "baseUrl": "..",
+    "strict": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "sourceMap": true,
+    "importHelpers": true,
+    "skipLibCheck": true,
+    "noImplicitAny": false,
+    "isolatedModules": true,
+    "paths": {
+      "/mods/*": ["modules/*"],
+      "/rend/*": ["renderer/*"],
+      "/utils/*": ["utils/*"],
+      "/consts": ["consts"]
+    }
+  }
+}

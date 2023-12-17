@@ -57,7 +57,7 @@ npm run package
 Значения каталогов проекта:
 
 ```text
-build_scripts      - скрипты, выполняемые перед и после prod сборки.
+build-scripts      - скрипты, выполняемые перед и после prod сборки.
 configs            - конфигурации 'Webpack' и 'Electron Forge'.
 docs               - страница 'GitHub Pages'.
 src:               - основные ресурсы программы.

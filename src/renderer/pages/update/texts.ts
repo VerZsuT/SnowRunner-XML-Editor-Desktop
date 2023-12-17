@@ -1,28 +1,41 @@
-import { compareWithGlobal } from '#g/texts/renderer'
+import { Lang } from '/mods/renderer'
+import { localize } from '/utils/texts/renderer'
 
-export default compareWithGlobal({
-  RU: {
-    ALLOW_NEW_VERSION_AUTO: 'Доступна новая версия программы',
-    IGNORE: 'Игнорировать',
-    UPDATE: 'Обновить',
-    CLOSE: 'Закрыть'
+export default localize({
+  allowNewVersion: {
+    [Lang.ru]: 'Доступна новая версия программы',
+    [Lang.en]: 'A new version of the program is available',
+    [Lang.de]: 'Eine neue Version des Programms ist verfügbar',
+    [Lang.ch]: '新版本的方案已经推出'
   },
-  EN: {
-    ALLOW_NEW_VERSION_AUTO: 'A new version of the program is available',
-    IGNORE: 'Ignore',
-    CLOSE: 'Close',
-    UPDATE: 'Update'
+  installer: {
+    [Lang.ru]: 'Установщик (.exe)',
+    [Lang.en]: 'Installer (.exe)',
+    [Lang.de]: 'Installer (.exe)',
+    [Lang.ch]: '安装程序（.exe)'
   },
-  DE: {
-    ALLOW_NEW_VERSION_AUTO: 'Eine neue Version des Programms ist verfügbar',
-    IGNORE: 'Ignorieren',
-    UPDATE: 'Aktualisieren',
-    CLOSE: 'Schließen'
+  portable: {
+    [Lang.ru]: 'Портативная (.rar)',
+    [Lang.en]: 'Portable (.rar)',
+    [Lang.de]: 'Portable (.rar)',
+    [Lang.ch]: '便携式（.rar)'
   },
-  CH: {
-    ALLOW_NEW_VERSION_AUTO: '新版本的方案已经推出',
-    IGNORE: '忽略不计',
-    UPDATE: '更新',
-    CLOSE: '关闭'
+  ignore: {
+    [Lang.ru]: 'Игнорировать',
+    [Lang.en]: 'Ignore',
+    [Lang.de]: 'Ignorieren',
+    [Lang.ch]: '忽略不计'
+  },
+  update: {
+    [Lang.ru]: 'Обновить',
+    [Lang.en]: 'Update',
+    [Lang.de]: 'Update',
+    [Lang.ch]: '更新资料'
+  },
+  close: {
+    [Lang.ru]: 'Закрыть',
+    [Lang.en]: 'Close',
+    [Lang.de]: 'Schließen',
+    [Lang.ch]: '关闭'
   }
 })

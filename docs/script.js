@@ -12,9 +12,9 @@ const RELEASES_URL = 'https://github.com/VerZsuT/SnowRunner-XML-Editor-Desktop/r
 const genLink = (version, type, legacy) => `${RELEASES_URL}/${version}/SnowRunnerXMLEditor${legacy ? '_legacy' : ''}.${type}`
 
 // Download buttons
-const buttons = document.querySelectorAll(`button[${DOWNLOAD}]`)
+const $$buttons = document.querySelectorAll(`button[${DOWNLOAD}]`)
 
-buttons.forEach($button => {
+for (const $button of $$buttons) {
   const $a = document.createElement('a')
   const version = $button.getAttribute(VERSION)
   const type = $button.getAttribute(SOURCE_TYPE)
@@ -24,10 +24,12 @@ buttons.forEach($button => {
   $a.style.display = 'none'
   $button.prepend($a)
 
-  if (source === GITHUB_SOURCE)
+  if (source === GITHUB_SOURCE) {
     $a.href = genLink(version, type, legacy)
-  else
+  }
+  else {
     $a.href = $button.getAttribute(LINK)
+  }
 
   $button.addEventListener('click', () => $a.click())
-})
+}

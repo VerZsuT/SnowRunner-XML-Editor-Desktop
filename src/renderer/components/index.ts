@@ -1,4 +1,6 @@
-export { default as Header } from './Header'
-export { default as Language } from './Language'
-export { default as Menu } from './Menu'
+export { default as ContextMenu } from './context-menu.vue'
+export { default as Header } from './header.vue'
+export { default as Language } from './language'
+export { default as Menu } from './menu'
+export { default as Spin } from './spin.vue'
 
