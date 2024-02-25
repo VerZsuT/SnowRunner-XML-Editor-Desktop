@@ -288,7 +288,7 @@ export function posUtils() {
       return {
         get: () => this[name],
         set: value => this[name] = value,
-        getStr: () => this[name].toString(),
+        getStr: () => this[name]?.toString() ?? '',
         setStr: value => this[name] = value ? Position.fromStr(value) : undefined,
         name, limit, selector
       } satisfies PosUtils

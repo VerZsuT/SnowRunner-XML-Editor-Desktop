@@ -11,6 +11,9 @@ export default {
       RepairsCapacity: 0,
       WheelRepairsCapacity: 0
     },
+    'Truck > GameData > AddonSlots': {
+      Quantity: 2
+    },
     'Truck > TruckData > Wheels > Wheel:nth-of-type(1)': {
       SuspensionHeight: 0.075,
       SuspensionStrength: 0.33
@@ -26,6 +29,9 @@ export default {
     'Truck > TruckData > Wheels > Wheel:nth-of-type(4)': {
       SuspensionHeight: 0.07,
       SuspensionStrength: 0.33
+    },
+    'Truck > PhysicsModel > Body': {
+      Mass: 900
     },
     'Truck > GameData': {
       Price: 3400
@@ -53,6 +59,9 @@ export default {
     'Truck > TruckData > Wheels > Wheel:nth-of-type(4)': {
       SuspensionHeight: 0.07,
       SuspensionStrength: 0.33
+    },
+    'Truck > PhysicsModel > Body': {
+      Mass: 5000
     },
     'Truck > GameData': {
       Price: 6400
@@ -88,6 +97,12 @@ export default {
     'Truck > TruckData > Wheels > Wheel:nth-of-type(6)': {
       SuspensionHeight: 0.07,
       SuspensionStrength: 0.33
+    },
+    'Truck > PhysicsModel > Body': {
+      Mass: 1300
+    },
+    'Truck > FuelMass > Body': {
+      Mass: 3700
     },
     'Truck > GameData': {
       Price: 4900
@@ -132,6 +147,9 @@ export default {
       SuspensionHeight: 0.07,
       SuspensionStrength: 0.33
     },
+    'Truck > PhysicsModel > Body': {
+      Mass: 1200
+    },
     'Truck > GameData': {
       Price: 3400
     }
@@ -142,6 +160,9 @@ export default {
       WaterCapacity: 0,
       RepairsCapacity: 0,
       WheelRepairsCapacity: 0
+    },
+    'Truck > GameData > AddonSlots': {
+      Quantity: 4
     },
     'Truck > TruckData > Wheels > Wheel:nth-of-type(1)': {
       SuspensionHeight: 0.075,
@@ -167,6 +188,9 @@ export default {
       SuspensionHeight: 0.07,
       SuspensionStrength: 0.33
     },
+    'Truck > PhysicsModel > Body': {
+      Mass: 700
+    },
     'Truck > GameData': {
       Price: 4200
     }
@@ -177,6 +201,9 @@ export default {
       WaterCapacity: 0,
       RepairsCapacity: 0,
       WheelRepairsCapacity: 0
+    },
+    'Truck > GameData > AddonSlots': {
+      Quantity: 2
     },
     'Truck > TruckData > Wheels > Wheel:nth-of-type(1)': {
       SuspensionHeight: 0.075,
@@ -210,6 +237,9 @@ export default {
       SuspensionHeight: 0.07,
       SuspensionStrength: 0.33
     },
+    'Truck > PhysicsModel > Body': {
+      Mass: 1400
+    },
     'Truck > GameData': {
       Price: 3800
     }
@@ -237,6 +267,9 @@ export default {
       SuspensionHeight: 0,
       SuspensionStrength: 0.15
     },
+    'Truck > PhysicsModel > Body': {
+      Mass: 900
+    },
     'Truck > GameData': {
       Price: 7500
     }
@@ -247,6 +280,9 @@ export default {
       WaterCapacity: 0,
       RepairsCapacity: 0,
       WheelRepairsCapacity: 0
+    },
+    'Truck > GameData > AddonSlots': {
+      Quantity: 5
     },
     'Truck > TruckData > Wheels > Wheel:nth-of-type(1)': {
       SuspensionHeight: 0.1,
@@ -263,6 +299,9 @@ export default {
     'Truck > TruckData > Wheels > Wheel:nth-of-type(4)': {
       SuspensionHeight: 0.1,
       SuspensionStrength: 0.01
+    },
+    'Truck > PhysicsModel > Body': {
+      Mass: 400
     },
     'Truck > GameData': {
       Price: 7200
@@ -275,6 +314,9 @@ export default {
       RepairsCapacity: 0,
       WheelRepairsCapacity: 0
     },
+    'Truck > GameData > AddonSlots': {
+      Quantity: 5
+    },
     'Truck > TruckData > Wheels > Wheel:nth-of-type(1)': {
       SuspensionHeight: 0.0244,
       SuspensionStrength: 0.0422
@@ -290,6 +332,9 @@ export default {
     'Truck > TruckData > Wheels > Wheel:nth-of-type(4)': {
       SuspensionHeight: 0.0244,
       SuspensionStrength: 0.0422
+    },
+    'Truck > PhysicsModel > Body': {
+      Mass: 1000
     },
     'Truck > GameData': {
       Price: 6800
@@ -342,9 +387,10 @@ export default {
       SuspensionHeight: 0.0244,
       SuspensionStrength: 0.1
     },
-    'Truck > GameData': {
-      Price: ''
-    }
+    'Truck > PhysicsModel > Body': {
+      Mass: 8000
+    },
+    'Truck > GameData': {}
   },
   semitrailer_oiltank_default: {
     'Truck > TruckData': {
@@ -377,6 +423,12 @@ export default {
       SuspensionHeight: 0.0244,
       SuspensionStrength: 0.0422
     },
+    'Truck > PhysicsModel > Body': {
+      Mass: 4000
+    },
+    'Truck > FuelMass > Body': {
+      Mass: 3700
+    },
     'Truck > GameData': {
       Price: 6000
     }
@@ -387,6 +439,9 @@ export default {
       WaterCapacity: 0,
       RepairsCapacity: 0,
       WheelRepairsCapacity: 0
+    },
+    'Truck > GameData > AddonSlots': {
+      Quantity: 3
     },
     'Truck > TruckData > Wheels > Wheel:nth-of-type(1)': {
       SuspensionHeight: 0.1,
@@ -419,6 +474,9 @@ export default {
     'Truck > TruckData > Wheels > Wheel:nth-of-type(8)': {
       SuspensionHeight: 0.1,
       SuspensionStrength: 0.2
+    },
+    'Truck > PhysicsModel > Body': {
+      Mass: 3000
     },
     'Truck > GameData': {
       Price: 6400
@@ -455,6 +513,12 @@ export default {
       SuspensionHeight: 0.1,
       SuspensionStrength: 0.035
     },
+    'Truck > PhysicsModel > Body': {
+      Mass: 11_000
+    },
+    'Truck > FuelMass > Body': {
+      Mass: 5000
+    },
     'Truck > GameData': {
       Price: 7200
     }
@@ -482,6 +546,9 @@ export default {
       SuspensionHeight: 0.04,
       SuspensionStrength: 0.04
     },
+    'Truck > PhysicsModel > Body': {
+      Mass: 10_000
+    },
     'Truck > GameData': {
       Price: 7500
     }
@@ -492,6 +559,9 @@ export default {
       WaterCapacity: 0,
       RepairsCapacity: 0,
       WheelRepairsCapacity: 0
+    },
+    'Truck > GameData > AddonSlots': {
+      Quantity: 4
     },
     'Truck > TruckData > Wheels > Wheel:nth-of-type(1)': {
       SuspensionHeight: 0.06,
@@ -525,6 +595,9 @@ export default {
       SuspensionHeight: 0.0244,
       SuspensionStrength: 0.35
     },
+    'Truck > PhysicsModel > Body': {
+      Mass: 1000
+    },
     'Truck > GameData': {
       Price: 5700
     }
@@ -535,6 +608,9 @@ export default {
       WaterCapacity: 0,
       RepairsCapacity: 0,
       WheelRepairsCapacity: 0
+    },
+    'Truck > GameData > AddonSlots': {
+      Quantity: 5
     },
     'Truck > TruckData > Wheels > Wheel:nth-of-type(1)': {
       SuspensionHeight: 0.0244,
@@ -551,6 +627,9 @@ export default {
     'Truck > TruckData > Wheels > Wheel:nth-of-type(4)': {
       SuspensionHeight: 0.0244,
       SuspensionStrength: 0.0422
+    },
+    'Truck > PhysicsModel > Body': {
+      Mass: 1000
     },
     'Truck > GameData': {
       Price: 6600
@@ -579,6 +658,9 @@ export default {
       SuspensionHeight: 0.04,
       SuspensionStrength: 0.04
     },
+    'Truck > PhysicsModel > Body': {
+      Mass: 10_000
+    },
     'Truck > GameData': {
       Price: 4700
     }
@@ -602,6 +684,12 @@ export default {
       SuspensionHeight: 0.01,
       SuspensionStrength: 0.33
     },
+    'Truck > PhysicsModel > Body': {
+      Mass: 2500
+    },
+    'Truck > FuelMass > Body': {
+      Mass: 900
+    },
     'Truck > GameData': {
       Price: 3800
     }
@@ -612,6 +700,9 @@ export default {
       WaterCapacity: 0,
       RepairsCapacity: 0,
       WheelRepairsCapacity: 0
+    },
+    'Truck > GameData > AddonSlots': {
+      Quantity: 2
     },
     'Truck > TruckData > Wheels > Wheel:nth-of-type(1)': {
       SuspensionHeight: 0.01,
@@ -633,6 +724,9 @@ export default {
       SuspensionHeight: 0.1,
       SuspensionStrength: 0.33
     },
+    'Truck > PhysicsModel > Body': {
+      Mass: 800
+    },
     'Truck > GameData': {
       Price: 3400
     }
@@ -643,6 +737,9 @@ export default {
       WaterCapacity: 0,
       RepairsCapacity: 0,
       WheelRepairsCapacity: 0
+    },
+    'Truck > GameData > AddonSlots': {
+      Quantity: 1
     },
     'Truck > TruckData > Wheels > Wheel:nth-of-type(1)': {
       SuspensionHeight: 0.01,
@@ -655,6 +752,9 @@ export default {
     'Truck > TruckData > Wheels > Wheel:nth-of-type(3)': {
       SuspensionHeight: 0.07,
       SuspensionStrength: 0.33
+    },
+    'Truck > PhysicsModel > Body': {
+      Mass: 800
     },
     'Truck > GameData': {
       Price: 2700
@@ -725,6 +825,9 @@ export default {
     },
     'Truck > TruckData > CompatibleWheels:nth-of-type(12)': {
       Scale: 0.6
+    },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(-1.4; 0; 0)'
     },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 50
@@ -1046,58 +1149,6 @@ export default {
       UnlockByRank: 1
     }
   },
-  s_zikz_5368_default: {
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
-      CriticalDamageThreshold: 0.4,
-      DamageCapacity: 140
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(1)': {
-      Height: 0.1,
-      Strength: 0.1,
-      Damping: 0.2,
-      SuspensionMin: -0.3,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.1
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
-      Height: 0.06,
-      Strength: 0.12,
-      Damping: 0.2,
-      SuspensionMin: -0.25,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.2
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
-      Price: 4200,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2)': {
-      CriticalDamageThreshold: 0.5,
-      DamageCapacity: 180
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(1)': {
-      Height: 0.3,
-      Strength: 0.05,
-      Damping: 0.4,
-      SuspensionMin: -0.3,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.1
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
-      Height: 0.26,
-      Strength: 0.04,
-      Damping: 0.4,
-      SuspensionMin: -0.28,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.2
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
-      Price: 6400,
-      UnlockByExploration: 'true',
-      UnlockByRank: 1
-    }
-  },
   wheels_medium_double_default: {
     'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
       BodyFriction: 1,
@@ -1209,10 +1260,64 @@ export default {
       UnlockByExploration: 'false',
       UnlockByRank: 12
     },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(11) > WheelFriction': {
+      BodyFriction: 3,
+      BodyFrictionAsphalt: 1.2,
+      SubstanceFriction: 1.3,
+      IsIgnoreIce: 'true'
+    },
     'TruckWheels > TruckTires > TruckTire:nth-of-type(11) > GameData': {
       Price: 6400,
       UnlockByExploration: 'false',
       UnlockByRank: 12
+    }
+  },
+  s_zikz_5368_default: {
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
+      CriticalDamageThreshold: 0.4,
+      DamageCapacity: 140
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(1)': {
+      Height: 0.1,
+      Strength: 0.1,
+      Damping: 0.2,
+      SuspensionMin: -0.3,
+      BrokenSuspensionMax: 0.1
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
+      Height: 0.06,
+      Strength: 0.12,
+      Damping: 0.2,
+      SuspensionMin: -0.25,
+      BrokenSuspensionMax: 0.2
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
+      Price: 4200,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2)': {
+      CriticalDamageThreshold: 0.5,
+      DamageCapacity: 180
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(1)': {
+      Height: 0.3,
+      Strength: 0.05,
+      Damping: 0.4,
+      SuspensionMin: -0.3,
+      BrokenSuspensionMax: 0.1
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
+      Height: 0.26,
+      Strength: 0.04,
+      Damping: 0.4,
+      SuspensionMin: -0.28,
+      BrokenSuspensionMax: 0.2
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
+      Price: 6400,
+      UnlockByExploration: 'true',
+      UnlockByRank: 1
     }
   },
   yar_87_default: {
@@ -1261,6 +1366,9 @@ export default {
     },
     'Truck > TruckData > CompatibleWheels:nth-of-type(3)': {
       Scale: 0.62
+    },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(-0.4; -0.2; 0)'
     },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 50
@@ -1567,57 +1675,6 @@ export default {
       UnlockByRank: 1
     }
   },
-  s_yar_87_default: {
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
-      CriticalDamageThreshold: 0.7,
-      DamageCapacity: 200
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(1)': {
-      Height: 0.35,
-      Strength: 0.02,
-      Damping: '',
-      SuspensionMin: -0.4,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.3
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
-      Height: 0.2,
-      Strength: 0.02,
-      Damping: '',
-      SuspensionMin: -0.35,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.3
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
-      Price: 4500,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    }
-  },
-  wheels_scout_yar_871_default: {
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
-      BodyFriction: 2.4,
-      BodyFrictionAsphalt: 0.5,
-      SubstanceFriction: 2,
-      IsIgnoreIce: 'false'
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > GameData': {
-      Price: 4900,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(2) > WheelFriction': {
-      BodyFriction: 2,
-      BodyFrictionAsphalt: 0.5,
-      SubstanceFriction: 2.4,
-      IsIgnoreIce: 'false'
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(2) > GameData': {
-      Price: 5300,
-      UnlockByExploration: 'false',
-      UnlockByRank: 12
-    }
-  },
   wheels_scout_yar_87_default: {
     'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
       BodyFriction: 1.5,
@@ -1664,6 +1721,53 @@ export default {
       UnlockByRank: 12
     }
   },
+  wheels_scout_yar_871_default: {
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
+      BodyFriction: 2.4,
+      BodyFrictionAsphalt: 0.5,
+      SubstanceFriction: 2,
+      IsIgnoreIce: 'false'
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > GameData': {
+      Price: 4900,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(2) > WheelFriction': {
+      BodyFriction: 2,
+      BodyFrictionAsphalt: 0.5,
+      SubstanceFriction: 2.4,
+      IsIgnoreIce: 'false'
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(2) > GameData': {
+      Price: 5300,
+      UnlockByExploration: 'false',
+      UnlockByRank: 12
+    }
+  },
+  s_yar_87_default: {
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
+      CriticalDamageThreshold: 0.7,
+      DamageCapacity: 200
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(1)': {
+      Height: 0.35,
+      Strength: 0.02,
+      SuspensionMin: -0.4,
+      BrokenSuspensionMax: 0.3
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
+      Height: 0.2,
+      Strength: 0.02,
+      SuspensionMin: -0.35,
+      BrokenSuspensionMax: 0.3
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
+      Price: 4500,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    }
+  },
   ws_6900xd_twin_default: {
     'Truck > GameData > UiDesc': {
       UiName: 'UI_VEHICLE_WS_6900XD_TWIN_NAME',
@@ -1687,11 +1791,9 @@ export default {
       SteeringAngle: 40
     },
     'Truck > TruckData > Wheels > Wheel:nth-of-type(3)': {
-      Torque: '',
       SteeringAngle: 32
     },
     'Truck > TruckData > Wheels > Wheel:nth-of-type(4)': {
-      Torque: '',
       SteeringAngle: 32
     },
     'Truck > TruckData > Wheels > Wheel:nth-of-type(5)': {
@@ -1749,11 +1851,14 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(13)': {
       Scale: 0.7
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(0; 0; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 100
     },
     'Truck > GameData': {
-      Country: 'US',
+      Country: 'US,NE',
       Price: 90_300,
       UnlockByExploration: 'false',
       UnlockByRank: 1
@@ -1761,9 +1866,9 @@ export default {
   },
   winches_heavy_trucks_default: {
     'WinchVariants > Winch:nth-of-type(1)': {
-      Length: 20,
+      Length: 14,
       StrengthMult: 1,
-      IsEngineIgnitionRequired: 'false'
+      IsEngineIgnitionRequired: 'true'
     },
     'WinchVariants > Winch:nth-of-type(1) > GameData': {
       Price: 1000,
@@ -1850,6 +1955,122 @@ export default {
     },
     'EngineVariants > Engine:nth-of-type(3) > GameData': {
       Price: 22_500,
+      UnlockByExploration: 'true',
+      UnlockByRank: 1
+    }
+  },
+  wheels_heavy_double1_default: {
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
+      BodyFriction: 1,
+      BodyFrictionAsphalt: 3,
+      SubstanceFriction: 0.4,
+      IsIgnoreIce: 'false'
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > GameData': {
+      Price: 3600,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(2) > WheelFriction': {
+      BodyFriction: 1.2,
+      BodyFrictionAsphalt: 3,
+      SubstanceFriction: 0.2,
+      IsIgnoreIce: 'false'
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(2) > GameData': {
+      Price: 4000,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(3) > WheelFriction': {
+      BodyFriction: 1,
+      BodyFrictionAsphalt: 3.2,
+      SubstanceFriction: 0.2,
+      IsIgnoreIce: 'false'
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(3) > GameData': {
+      Price: 4400,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(4) > WheelFriction': {
+      BodyFriction: 1.5,
+      BodyFrictionAsphalt: 1.9,
+      SubstanceFriction: 1,
+      IsIgnoreIce: 'false'
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(4) > GameData': {
+      Price: 4900,
+      UnlockByExploration: 'false',
+      UnlockByRank: 9
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(5) > WheelFriction': {
+      BodyFriction: 1.5,
+      BodyFrictionAsphalt: 1.5,
+      SubstanceFriction: 1.2,
+      IsIgnoreIce: 'false'
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(5) > GameData': {
+      Price: 5300,
+      UnlockByExploration: 'false',
+      UnlockByRank: 9
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(6) > WheelFriction': {
+      BodyFriction: 1.7,
+      BodyFrictionAsphalt: 1.5,
+      SubstanceFriction: 1,
+      IsIgnoreIce: 'false'
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(6) > GameData': {
+      Price: 5700,
+      UnlockByExploration: 'false',
+      UnlockByRank: 9
+    }
+  },
+  s_ws_6900xd_twin_default: {
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
+      CriticalDamageThreshold: 0.6,
+      DamageCapacity: 240
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(1)': {
+      Height: 0.1,
+      Strength: 0.025,
+      Damping: 0.2,
+      SuspensionMin: -0.25,
+      BrokenSuspensionMax: 0.15
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
+      Height: 0.15,
+      Strength: 0.025,
+      Damping: 0.2,
+      SuspensionMin: -0.3,
+      BrokenSuspensionMax: 0.15
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
+      Price: 6600,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2)': {
+      CriticalDamageThreshold: 0.7,
+      DamageCapacity: 260
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(1)': {
+      Height: 0.25,
+      Strength: 0.04,
+      Damping: 0.2,
+      SuspensionMin: -0.4,
+      BrokenSuspensionMax: 0.15
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
+      Height: 0.3,
+      Strength: 0.022,
+      Damping: 0.2,
+      SuspensionMin: -0.45,
+      BrokenSuspensionMax: 0.15
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
+      Price: 11_300,
       UnlockByExploration: 'true',
       UnlockByRank: 1
     }
@@ -1942,126 +2163,6 @@ export default {
       Price: 7500,
       UnlockByExploration: 'false',
       UnlockByRank: 14
-    }
-  },
-  s_ws_6900xd_twin_default: {
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
-      CriticalDamageThreshold: 0.6,
-      DamageCapacity: 240
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(1)': {
-      Height: 0.1,
-      Strength: 0.025,
-      Damping: 0.2,
-      SuspensionMin: -0.25,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.15
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
-      Height: 0.15,
-      Strength: 0.025,
-      Damping: 0.2,
-      SuspensionMin: -0.3,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.15
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
-      Price: 6600,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2)': {
-      CriticalDamageThreshold: 0.7,
-      DamageCapacity: 260
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(1)': {
-      Height: 0.25,
-      Strength: 0.04,
-      Damping: 0.2,
-      SuspensionMin: -0.4,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.15
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
-      Height: 0.3,
-      Strength: 0.022,
-      Damping: 0.2,
-      SuspensionMin: -0.45,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.15
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
-      Price: 11_300,
-      UnlockByExploration: 'true',
-      UnlockByRank: 1
-    }
-  },
-  wheels_heavy_double1_default: {
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
-      BodyFriction: 1,
-      BodyFrictionAsphalt: 3,
-      SubstanceFriction: 0.4,
-      IsIgnoreIce: 'false'
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > GameData': {
-      Price: 3600,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(2) > WheelFriction': {
-      BodyFriction: 1.2,
-      BodyFrictionAsphalt: 3,
-      SubstanceFriction: 0.2,
-      IsIgnoreIce: 'false'
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(2) > GameData': {
-      Price: 4000,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(3) > WheelFriction': {
-      BodyFriction: 1,
-      BodyFrictionAsphalt: 3.2,
-      SubstanceFriction: 0.2,
-      IsIgnoreIce: 'false'
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(3) > GameData': {
-      Price: 4400,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(4) > WheelFriction': {
-      BodyFriction: 1.5,
-      BodyFrictionAsphalt: 1.9,
-      SubstanceFriction: 1,
-      IsIgnoreIce: 'false'
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(4) > GameData': {
-      Price: 4900,
-      UnlockByExploration: 'false',
-      UnlockByRank: 9
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(5) > WheelFriction': {
-      BodyFriction: 1.5,
-      BodyFrictionAsphalt: 1.5,
-      SubstanceFriction: 1.2,
-      IsIgnoreIce: 'false'
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(5) > GameData': {
-      Price: 5300,
-      UnlockByExploration: 'false',
-      UnlockByRank: 9
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(6) > WheelFriction': {
-      BodyFriction: 1.7,
-      BodyFrictionAsphalt: 1.5,
-      SubstanceFriction: 1,
-      IsIgnoreIce: 'false'
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(6) > GameData': {
-      Price: 5700,
-      UnlockByExploration: 'false',
-      UnlockByRank: 9
     }
   },
   wheels_heavy_double2_default: {
@@ -2172,12 +2273,63 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(8)': {
       Scale: 0.6
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(-0.2; 0; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 50
     },
     'Truck > GameData': {
-      Country: 'US',
+      Country: 'US,NE',
       Price: 32_200,
+      UnlockByExploration: 'true',
+      UnlockByRank: 1
+    }
+  },
+  s_white_ws4964_default: {
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
+      CriticalDamageThreshold: 0.4,
+      DamageCapacity: 170
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(1)': {
+      Height: 0.15,
+      Strength: 0.04,
+      Damping: 0.2,
+      SuspensionMin: -0.25,
+      BrokenSuspensionMax: 0.1
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
+      Height: 0.1,
+      Strength: 0.04,
+      Damping: 0.2,
+      SuspensionMin: -0.18,
+      BrokenSuspensionMax: 0.2
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
+      Price: 4500,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2)': {
+      CriticalDamageThreshold: 0.5,
+      DamageCapacity: 200
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(1)': {
+      Height: 0.3,
+      Strength: 0.04,
+      Damping: 0.2,
+      SuspensionMin: -0.35,
+      BrokenSuspensionMax: 0.1
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
+      Height: 0.25,
+      Strength: 0.04,
+      Damping: 0.2,
+      SuspensionMin: -0.33,
+      BrokenSuspensionMax: 0.2
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
+      Price: 9400,
       UnlockByExploration: 'true',
       UnlockByRank: 1
     }
@@ -2233,58 +2385,6 @@ export default {
     },
     'EngineVariants > Engine:nth-of-type(1) > GameData': {
       Price: 8500,
-      UnlockByExploration: 'true',
-      UnlockByRank: 1
-    }
-  },
-  s_white_ws4964_default: {
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
-      CriticalDamageThreshold: 0.4,
-      DamageCapacity: 170
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(1)': {
-      Height: 0.15,
-      Strength: 0.04,
-      Damping: 0.2,
-      SuspensionMin: -0.25,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.1
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
-      Height: 0.1,
-      Strength: 0.04,
-      Damping: 0.2,
-      SuspensionMin: -0.18,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.2
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
-      Price: 4500,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2)': {
-      CriticalDamageThreshold: 0.5,
-      DamageCapacity: 200
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(1)': {
-      Height: 0.3,
-      Strength: 0.04,
-      Damping: 0.2,
-      SuspensionMin: -0.35,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.1
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
-      Height: 0.25,
-      Strength: 0.04,
-      Damping: 0.2,
-      SuspensionMin: -0.33,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.2
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
-      Price: 9400,
       UnlockByExploration: 'true',
       UnlockByRank: 1
     }
@@ -2387,6 +2487,9 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(20)': {
       Scale: 0.63
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(-0.5; 0; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 50
     },
@@ -2450,58 +2553,6 @@ export default {
       UnlockByRank: 1
     }
   },
-  s_voron_grad_default: {
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
-      CriticalDamageThreshold: 0.5,
-      DamageCapacity: 220
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(1)': {
-      Height: 0.1,
-      Strength: 0.05,
-      Damping: 0.3,
-      SuspensionMin: -0.3,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.15
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
-      Height: 0.1,
-      Strength: 0.05,
-      Damping: 0.3,
-      SuspensionMin: -0.15,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.15
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
-      Price: 6000,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2)': {
-      CriticalDamageThreshold: 0.6,
-      DamageCapacity: 260
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(1)': {
-      Height: 0.2,
-      Strength: 0.05,
-      Damping: 0.3,
-      SuspensionMin: -0.35,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.15
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
-      Height: 0.2,
-      Strength: 0.05,
-      Damping: 0.3,
-      SuspensionMin: -0.25,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.15
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
-      Price: 11_300,
-      UnlockByExploration: 'true',
-      UnlockByRank: 1
-    }
-  },
   wheels_heavy_single2_default: {
     'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
       BodyFriction: 2,
@@ -2524,6 +2575,54 @@ export default {
       Price: 7700,
       UnlockByExploration: 'false',
       UnlockByRank: 13
+    }
+  },
+  s_voron_grad_default: {
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
+      CriticalDamageThreshold: 0.5,
+      DamageCapacity: 220
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(1)': {
+      Height: 0.1,
+      Strength: 0.05,
+      Damping: 0.3,
+      SuspensionMin: -0.3,
+      BrokenSuspensionMax: 0.15
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
+      Height: 0.1,
+      Strength: 0.05,
+      Damping: 0.3,
+      SuspensionMin: -0.15,
+      BrokenSuspensionMax: 0.15
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
+      Price: 6000,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2)': {
+      CriticalDamageThreshold: 0.6,
+      DamageCapacity: 260
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(1)': {
+      Height: 0.2,
+      Strength: 0.05,
+      Damping: 0.3,
+      SuspensionMin: -0.35,
+      BrokenSuspensionMax: 0.15
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
+      Height: 0.2,
+      Strength: 0.05,
+      Damping: 0.3,
+      SuspensionMin: -0.25,
+      BrokenSuspensionMax: 0.15
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
+      Price: 11_300,
+      UnlockByExploration: 'true',
+      UnlockByRank: 1
     }
   },
   voron_d53233_default: {
@@ -2624,58 +2723,15 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(20)': {
       Scale: 0.63
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(0.5; 0; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 50
     },
     'Truck > GameData': {
       Country: 'RU,CAS',
       Price: 62_600,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    }
-  },
-  gearboxes_trucks_unique_offroad_default: {
-    'GearboxVariants > Gearbox:nth-of-type(1)': {
-      AWDConsumptionModifier: 1.4,
-      CriticalDamageThreshold: 0.5,
-      DamageCapacity: 160,
-      DamagedConsumptionModifier: 1.6,
-      FuelConsumption: 3,
-      IdleFuelModifier: 0.3
-    },
-    'GearboxVariants > Gearbox:nth-of-type(1) > GameData > GearboxParams': {
-      IsManualLowGear: 'true',
-      IsHighGearExists: 'true',
-      IsLowerGearExists: 'true',
-      IsLowerPlusGearExists: 'true',
-      IsLowerMinusGearExists: 'true'
-    },
-    'GearboxVariants > Gearbox:nth-of-type(1) > ReverseGear': {
-      AngVel: 0.5,
-      FuelModifier: 0.9
-    },
-    'GearboxVariants > Gearbox:nth-of-type(1) > HighGear': {
-      AngVel: 8,
-      FuelModifier: 1.7
-    },
-    'GearboxVariants > Gearbox:nth-of-type(1) > Gear:nth-of-type(1)': {
-      AngVel: 2,
-      FuelModifier: 1.6
-    },
-    'GearboxVariants > Gearbox:nth-of-type(1) > Gear:nth-of-type(2)': {
-      AngVel: 5,
-      FuelModifier: 1.4
-    },
-    'GearboxVariants > Gearbox:nth-of-type(1) > Gear:nth-of-type(3)': {
-      AngVel: 7,
-      FuelModifier: 1.3
-    },
-    'GearboxVariants > Gearbox:nth-of-type(1) > Gear:nth-of-type(4)': {
-      AngVel: 12,
-      FuelModifier: 1.1
-    },
-    'GearboxVariants > Gearbox:nth-of-type(1) > GameData': {
-      Price: 2300,
       UnlockByExploration: 'false',
       UnlockByRank: 1
     }
@@ -2733,6 +2789,52 @@ export default {
       UnlockByRank: 1
     }
   },
+  gearboxes_trucks_unique_offroad_default: {
+    'GearboxVariants > Gearbox:nth-of-type(1)': {
+      AWDConsumptionModifier: 1.4,
+      CriticalDamageThreshold: 0.5,
+      DamageCapacity: 160,
+      DamagedConsumptionModifier: 1.6,
+      FuelConsumption: 3,
+      IdleFuelModifier: 0.3
+    },
+    'GearboxVariants > Gearbox:nth-of-type(1) > GameData > GearboxParams': {
+      IsManualLowGear: 'true',
+      IsHighGearExists: 'true',
+      IsLowerGearExists: 'true',
+      IsLowerPlusGearExists: 'true',
+      IsLowerMinusGearExists: 'true'
+    },
+    'GearboxVariants > Gearbox:nth-of-type(1) > ReverseGear': {
+      AngVel: 0.5,
+      FuelModifier: 0.9
+    },
+    'GearboxVariants > Gearbox:nth-of-type(1) > HighGear': {
+      AngVel: 8,
+      FuelModifier: 1.7
+    },
+    'GearboxVariants > Gearbox:nth-of-type(1) > Gear:nth-of-type(1)': {
+      AngVel: 2,
+      FuelModifier: 1.6
+    },
+    'GearboxVariants > Gearbox:nth-of-type(1) > Gear:nth-of-type(2)': {
+      AngVel: 5,
+      FuelModifier: 1.4
+    },
+    'GearboxVariants > Gearbox:nth-of-type(1) > Gear:nth-of-type(3)': {
+      AngVel: 7,
+      FuelModifier: 1.3
+    },
+    'GearboxVariants > Gearbox:nth-of-type(1) > Gear:nth-of-type(4)': {
+      AngVel: 12,
+      FuelModifier: 1.1
+    },
+    'GearboxVariants > Gearbox:nth-of-type(1) > GameData': {
+      Price: 2300,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    }
+  },
   s_voron_d53233_default: {
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
       CriticalDamageThreshold: 0.4,
@@ -2743,7 +2845,6 @@ export default {
       Strength: 0.05,
       Damping: 0.2,
       SuspensionMin: -0.3,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.15
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
@@ -2751,7 +2852,6 @@ export default {
       Strength: 0.03,
       Damping: 0.2,
       SuspensionMin: -0.3,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.15
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
@@ -2768,7 +2868,6 @@ export default {
       Strength: 0.05,
       Damping: 0.2,
       SuspensionMin: -0.45,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.15
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
@@ -2776,7 +2875,6 @@ export default {
       Strength: 0.03,
       Damping: 0.2,
       SuspensionMin: -0.2,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.15
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
@@ -2883,6 +2981,9 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(20)': {
       Scale: 0.63
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(-0.5; 0; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 50
     },
@@ -2903,7 +3004,6 @@ export default {
       Strength: 0.05,
       Damping: 0.3,
       SuspensionMin: -0.35,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.15
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
@@ -2911,7 +3011,6 @@ export default {
       Strength: 0.05,
       Damping: 0.3,
       SuspensionMin: -0.15,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.15
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
@@ -2928,7 +3027,6 @@ export default {
       Strength: 0.05,
       Damping: 0.3,
       SuspensionMin: -0.45,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.15
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
@@ -2936,7 +3034,6 @@ export default {
       Strength: 0.05,
       Damping: 0.3,
       SuspensionMin: -0.25,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.15
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
@@ -2968,11 +3065,9 @@ export default {
       SteeringAngle: 32
     },
     'Truck > TruckData > Wheels > Wheel:nth-of-type(3)': {
-      Torque: '',
       SteeringAngle: 24
     },
     'Truck > TruckData > Wheels > Wheel:nth-of-type(4)': {
-      Torque: '',
       SteeringAngle: 24
     },
     'Truck > TruckData > Wheels > Wheel:nth-of-type(5)': {
@@ -2999,6 +3094,9 @@ export default {
     },
     'Truck > TruckData > CompatibleWheels:nth-of-type(3)': {
       Scale: 0.6
+    },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(-1.6; 0; 0)'
     },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 100
@@ -3171,6 +3269,19 @@ export default {
       UnlockByRank: 1
     }
   },
+  wheels_scout_btr_default: {
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
+      BodyFriction: 3,
+      BodyFrictionAsphalt: 0.5,
+      SubstanceFriction: 8,
+      IsIgnoreIce: 'false'
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > GameData': {
+      Price: 7200,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    }
+  },
   s_tuz_420_tatarin_default: {
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
       CriticalDamageThreshold: 0.99,
@@ -3181,7 +3292,6 @@ export default {
       Strength: 0.05,
       Damping: 0.2,
       SuspensionMin: -0.2,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.15
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
@@ -3189,24 +3299,10 @@ export default {
       Strength: 0.05,
       Damping: 0.2,
       SuspensionMin: -0.2,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.15
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
       Price: 6000,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    }
-  },
-  wheels_scout_btr_default: {
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
-      BodyFriction: 3,
-      BodyFrictionAsphalt: 0.5,
-      SubstanceFriction: 8,
-      IsIgnoreIce: 'false'
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > GameData': {
-      Price: 7200,
       UnlockByExploration: 'false',
       UnlockByRank: 1
     }
@@ -3280,12 +3376,187 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(13)': {
       Scale: 0.5
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(0; -0.4; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 50
     },
     'Truck > GameData': {
       Country: 'RU,CAS',
       Price: 7200,
+      UnlockByExploration: 'true',
+      UnlockByRank: 1
+    }
+  },
+  wheels_scout1_default: {
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
+      BodyFriction: 0.8,
+      BodyFrictionAsphalt: 2,
+      SubstanceFriction: 0.4,
+      IsIgnoreIce: 'false'
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > GameData': {
+      Price: 1000,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(2) > WheelFriction': {
+      BodyFriction: 1,
+      BodyFrictionAsphalt: 2,
+      SubstanceFriction: 0.2,
+      IsIgnoreIce: 'false'
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(2) > GameData': {
+      Price: 1200,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(3) > WheelFriction': {
+      BodyFriction: 0.8,
+      BodyFrictionAsphalt: 2.5,
+      SubstanceFriction: 0.2,
+      IsIgnoreIce: 'false'
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(3) > GameData': {
+      Price: 1400,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    }
+  },
+  wheels_scout2_default: {
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
+      BodyFriction: 1.4,
+      BodyFrictionAsphalt: 1,
+      SubstanceFriction: 1,
+      IsIgnoreIce: 'false'
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > GameData': {
+      Price: 2300,
+      UnlockByExploration: 'false',
+      UnlockByRank: 2
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(2) > WheelFriction': {
+      BodyFriction: 1,
+      BodyFrictionAsphalt: 1,
+      SubstanceFriction: 1.2,
+      IsIgnoreIce: 'false'
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(2) > GameData': {
+      Price: 2500,
+      UnlockByExploration: 'false',
+      UnlockByRank: 2
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(3) > WheelFriction': {
+      BodyFriction: 1,
+      BodyFrictionAsphalt: 1.2,
+      SubstanceFriction: 1,
+      IsIgnoreIce: 'false'
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(3) > GameData': {
+      Price: 2900,
+      UnlockByExploration: 'false',
+      UnlockByRank: 2
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(4) > WheelFriction': {
+      BodyFriction: 2,
+      BodyFrictionAsphalt: 1,
+      SubstanceFriction: 1.2,
+      IsIgnoreIce: 'false'
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(4) > GameData': {
+      Price: 4200,
+      UnlockByExploration: 'false',
+      UnlockByRank: 4
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(5) > WheelFriction': {
+      BodyFriction: 3,
+      BodyFrictionAsphalt: 0.5,
+      SubstanceFriction: 1.6,
+      IsIgnoreIce: 'false'
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(5) > GameData': {
+      Price: 5100,
+      UnlockByExploration: 'false',
+      UnlockByRank: 7
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(6) > WheelFriction': {
+      BodyFriction: 2,
+      BodyFrictionAsphalt: 0.9,
+      SubstanceFriction: 1.1,
+      IsIgnoreIce: 'true'
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(6) > GameData': {
+      Price: 5700,
+      UnlockByExploration: 'false',
+      UnlockByRank: 10
+    }
+  },
+  s_tuz_166_default: {
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
+      CriticalDamageThreshold: 0.7,
+      DamageCapacity: 80
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(1)': {
+      Height: 0.1,
+      Strength: 0.03,
+      Damping: 0.2,
+      SuspensionMin: -0.3,
+      BrokenSuspensionMax: 0.2
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
+      Height: 0.1,
+      Strength: 0.03,
+      Damping: 0.2,
+      SuspensionMin: -0.22,
+      BrokenSuspensionMax: 0.2
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
+      Price: 2300,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2)': {
+      CriticalDamageThreshold: 0.7,
+      DamageCapacity: 140
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(1)': {
+      Height: 0.15,
+      Strength: 0.03,
+      Damping: 0.2,
+      SuspensionMin: -0.3,
+      BrokenSuspensionMax: 0.2
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
+      Height: 0.15,
+      Strength: 0.03,
+      Damping: 0.2,
+      SuspensionMin: -0.22,
+      BrokenSuspensionMax: 0.2
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
+      Price: 5300,
+      UnlockByExploration: 'true',
+      UnlockByRank: 1
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(3)': {
+      CriticalDamageThreshold: 0.7,
+      DamageCapacity: 100
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(3) > Suspension:nth-of-type(1)': {
+      Height: 0.3,
+      Strength: 0.02,
+      SuspensionMin: -0.35,
+      BrokenSuspensionMax: 0.2
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(3) > Suspension:nth-of-type(2)': {
+      Height: 0.25,
+      Strength: 0.02,
+      SuspensionMin: -0.22,
+      BrokenSuspensionMax: 0.2
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(3) > GameData': {
+      Price: 6000,
       UnlockByExploration: 'true',
       UnlockByRank: 1
     }
@@ -3421,168 +3692,6 @@ export default {
       UnlockByRank: 1
     }
   },
-  s_tuz_166_default: {
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
-      CriticalDamageThreshold: 0.7,
-      DamageCapacity: 80
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(1)': {
-      Height: 0.1,
-      Strength: 0.03,
-      Damping: 0.2,
-      SuspensionMin: -0.3,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.2
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
-      Height: 0.1,
-      Strength: 0.03,
-      Damping: 0.2,
-      SuspensionMin: -0.22,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.2
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
-      Price: 2300,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2)': {
-      CriticalDamageThreshold: 0.7,
-      DamageCapacity: 140
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(1)': {
-      Height: 0.15,
-      Strength: 0.03,
-      Damping: 0.2,
-      SuspensionMin: -0.3,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.2
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
-      Height: 0.15,
-      Strength: 0.03,
-      Damping: 0.2,
-      SuspensionMin: -0.22,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.2
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
-      Price: 5300,
-      UnlockByExploration: 'true',
-      UnlockByRank: 1
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(3)': {
-      CriticalDamageThreshold: 0.7,
-      DamageCapacity: 100
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(3) > Suspension:nth-of-type(1)': {
-      Height: 0.3,
-      Strength: 0.02,
-      Damping: '',
-      SuspensionMin: -0.35,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.2
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(3) > Suspension:nth-of-type(2)': {
-      Height: 0.25,
-      Strength: 0.02,
-      Damping: '',
-      SuspensionMin: -0.22,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.2
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(3) > GameData': {
-      Price: 6000,
-      UnlockByExploration: 'true',
-      UnlockByRank: 1
-    }
-  },
-  wheels_scout1_default: {
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
-      BodyFriction: 0.8,
-      BodyFrictionAsphalt: 2,
-      SubstanceFriction: 0.4,
-      IsIgnoreIce: 'false'
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > GameData': {
-      Price: 1000,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(2) > WheelFriction': {
-      BodyFriction: 1,
-      BodyFrictionAsphalt: 2,
-      SubstanceFriction: 0.2,
-      IsIgnoreIce: 'false'
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(2) > GameData': {
-      Price: 1200,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(3) > WheelFriction': {
-      BodyFriction: 0.8,
-      BodyFrictionAsphalt: 2.5,
-      SubstanceFriction: 0.2,
-      IsIgnoreIce: 'false'
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(3) > GameData': {
-      Price: 1400,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    }
-  },
-  wheels_scout2_default: {
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
-      BodyFriction: 1.4,
-      BodyFrictionAsphalt: 1,
-      SubstanceFriction: 1,
-      IsIgnoreIce: 'false'
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > GameData': {
-      Price: 2300,
-      UnlockByExploration: 'false',
-      UnlockByRank: 2
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(2) > WheelFriction': {
-      BodyFriction: 1,
-      BodyFrictionAsphalt: 1,
-      SubstanceFriction: 1.2,
-      IsIgnoreIce: 'false'
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(2) > GameData': {
-      Price: 2500,
-      UnlockByExploration: 'false',
-      UnlockByRank: 2
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(3) > WheelFriction': {
-      BodyFriction: 1,
-      BodyFrictionAsphalt: 1.2,
-      SubstanceFriction: 1,
-      IsIgnoreIce: 'false'
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(3) > GameData': {
-      Price: 2900,
-      UnlockByExploration: 'false',
-      UnlockByRank: 2
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(4) > GameData': {
-      Price: 4200,
-      UnlockByExploration: 'false',
-      UnlockByRank: 4
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(5) > GameData': {
-      Price: 5100,
-      UnlockByExploration: 'false',
-      UnlockByRank: 7
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(6) > GameData': {
-      Price: 5700,
-      UnlockByExploration: 'false',
-      UnlockByRank: 10
-    }
-  },
   tayga_6436_default: {
     'Truck > GameData > UiDesc': {
       UiName: 'UI_VEHICLE_TAYGA_6436_NAME',
@@ -3687,6 +3796,9 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(22)': {
       Scale: 0.65
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(-0.3; 0; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 50
     },
@@ -3707,7 +3819,6 @@ export default {
       Strength: 0.04,
       Damping: 0.2,
       SuspensionMin: -0.4,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.3
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
@@ -3715,7 +3826,6 @@ export default {
       Strength: 0.025,
       Damping: 0.2,
       SuspensionMin: -0.3,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.3
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
@@ -3732,7 +3842,6 @@ export default {
       Strength: 0.04,
       Damping: 0.2,
       SuspensionMin: -0.4,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.3
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
@@ -3740,7 +3849,6 @@ export default {
       Strength: 0.025,
       Damping: 0.2,
       SuspensionMin: -0.3,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.3
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
@@ -3824,6 +3932,9 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(8)': {
       Scale: 0.55
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(0; 0; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 50
     },
@@ -3844,7 +3955,6 @@ export default {
       Strength: 0.05,
       Damping: 0.2,
       SuspensionMin: -0.3,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.1
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
@@ -3852,7 +3962,6 @@ export default {
       Strength: 0.04,
       Damping: 0.2,
       SuspensionMin: -0.28,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.2
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
@@ -3869,7 +3978,6 @@ export default {
       Strength: 0.05,
       Damping: 0.2,
       SuspensionMin: -0.25,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.1
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
@@ -3877,7 +3985,6 @@ export default {
       Strength: 0.04,
       Damping: 0.2,
       SuspensionMin: -0.28,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.2
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
@@ -3967,12 +4074,63 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(8)': {
       Scale: 0.65
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(-0.5; 0; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 120
     },
     'Truck > GameData': {
-      Country: 'US',
+      Country: 'US,NE',
       Price: 104_500,
+      UnlockByExploration: 'true',
+      UnlockByRank: 1
+    }
+  },
+  s_royal_bm17_default: {
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
+      CriticalDamageThreshold: 0.5,
+      DamageCapacity: 200
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(1)': {
+      Height: 0.09,
+      Strength: 0.1,
+      Damping: 0.2,
+      SuspensionMin: -0.22,
+      BrokenSuspensionMax: 0.1
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
+      Height: 0.03,
+      Strength: 0.07,
+      Damping: 0.2,
+      SuspensionMin: -0.15,
+      BrokenSuspensionMax: 0.2
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
+      Price: 6200,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2)': {
+      CriticalDamageThreshold: 0.6,
+      DamageCapacity: 220
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(1)': {
+      Height: 0.17,
+      Strength: 0.1,
+      Damping: 0.2,
+      SuspensionMin: -0.35,
+      BrokenSuspensionMax: 0.1
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
+      Height: 0.15,
+      Strength: 0.08,
+      Damping: 0.2,
+      SuspensionMin: -0.23,
+      BrokenSuspensionMax: 0.2
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
+      Price: 10_500,
       UnlockByExploration: 'true',
       UnlockByRank: 1
     }
@@ -4049,58 +4207,6 @@ export default {
       UnlockByRank: 1
     }
   },
-  s_royal_bm17_default: {
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
-      CriticalDamageThreshold: 0.5,
-      DamageCapacity: 200
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(1)': {
-      Height: 0.09,
-      Strength: 0.1,
-      Damping: 0.2,
-      SuspensionMin: -0.22,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.1
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
-      Height: 0.03,
-      Strength: 0.07,
-      Damping: 0.2,
-      SuspensionMin: -0.15,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.2
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
-      Price: 6200,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2)': {
-      CriticalDamageThreshold: 0.6,
-      DamageCapacity: 220
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(1)': {
-      Height: 0.17,
-      Strength: 0.1,
-      Damping: 0.2,
-      SuspensionMin: -0.35,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.1
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
-      Height: 0.15,
-      Strength: 0.08,
-      Damping: 0.2,
-      SuspensionMin: -0.23,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.2
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
-      Price: 10_500,
-      UnlockByExploration: 'true',
-      UnlockByRank: 1
-    }
-  },
   pacific_p16_default: {
     'Truck > GameData > UiDesc': {
       UiName: 'UI_VEHICLE_PACIFIC_P16_NAME',
@@ -4145,11 +4251,14 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(2)': {
       Scale: 0.73
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(-1; 0; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 50
     },
     'Truck > GameData': {
-      Country: 'US',
+      Country: 'US,NE',
       Price: 116_000,
       UnlockByExploration: 'true',
       UnlockByRank: 1
@@ -4208,6 +4317,19 @@ export default {
       UnlockByRank: 1
     }
   },
+  wheels_heavy_double_p16_default: {
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
+      BodyFriction: 3,
+      BodyFrictionAsphalt: 0.8,
+      SubstanceFriction: 3.5,
+      IsIgnoreIce: 'false'
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > GameData': {
+      Price: 5900,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    }
+  },
   s_pacific_p16_default: {
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
       CriticalDamageThreshold: 0.6,
@@ -4218,7 +4340,6 @@ export default {
       Strength: 0.08,
       Damping: 0.2,
       SuspensionMin: -0.3,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.2
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
@@ -4226,24 +4347,10 @@ export default {
       Strength: 0.08,
       Damping: 0.2,
       SuspensionMin: -0.3,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.3
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
       Price: 6600,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    }
-  },
-  wheels_heavy_double_p16_default: {
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
-      BodyFriction: 3,
-      BodyFrictionAsphalt: 0.8,
-      SubstanceFriction: 3.5,
-      IsIgnoreIce: 'false'
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > GameData': {
-      Price: 5900,
       UnlockByExploration: 'false',
       UnlockByRank: 1
     }
@@ -4310,12 +4417,28 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(8)': {
       Scale: 0.73
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(-0.5; 0; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 50
     },
     'Truck > GameData': {
-      Country: 'US',
+      Country: 'US,NE',
       Price: 104_400,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    }
+  },
+  wheels_heavy_offroad_p12_default: {
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
+      BodyFriction: 1.5,
+      BodyFrictionAsphalt: 1.9,
+      SubstanceFriction: 1,
+      IsIgnoreIce: 'false'
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > GameData': {
+      Price: 4900,
       UnlockByExploration: 'false',
       UnlockByRank: 1
     }
@@ -4330,7 +4453,6 @@ export default {
       Strength: 0.05,
       Damping: 0.2,
       SuspensionMin: -0.5,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.2
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
@@ -4338,24 +4460,10 @@ export default {
       Strength: 0.06,
       Damping: 0.2,
       SuspensionMin: -0.4,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.3
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
       Price: 6200,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    }
-  },
-  wheels_heavy_offroad_p12_default: {
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
-      BodyFriction: 1.5,
-      BodyFrictionAsphalt: 1.9,
-      SubstanceFriction: 1,
-      IsIgnoreIce: 'false'
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > GameData': {
-      Price: 4900,
       UnlockByExploration: 'false',
       UnlockByRank: 1
     }
@@ -4428,11 +4536,14 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(10)': {
       Scale: 0.62
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(-0.5; 0; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 100
     },
     'Truck > GameData': {
-      Country: 'US',
+      Country: 'US,NE',
       Price: 113_600,
       UnlockByExploration: 'false',
       UnlockByRank: 1
@@ -4484,7 +4595,6 @@ export default {
       Strength: 0.08,
       Damping: 0.27,
       SuspensionMin: -0.35,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.2
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
@@ -4492,7 +4602,6 @@ export default {
       Strength: 0.03,
       Damping: 0.2,
       SuspensionMin: -0.25,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.15
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
@@ -4509,7 +4618,6 @@ export default {
       Strength: 0.07,
       Damping: 0.15,
       SuspensionMin: -0.35,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.2
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
@@ -4517,7 +4625,6 @@ export default {
       Strength: 0.03,
       Damping: 0.15,
       SuspensionMin: -0.25,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.15
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
@@ -4549,11 +4656,9 @@ export default {
       SteeringAngle: 36
     },
     'Truck > TruckData > Wheels > Wheel:nth-of-type(3)': {
-      Torque: '',
       SteeringAngle: 24
     },
     'Truck > TruckData > Wheels > Wheel:nth-of-type(4)': {
-      Torque: '',
       SteeringAngle: 24
     },
     'Truck > TruckData > Wheels > Wheel:nth-of-type(5)': {
@@ -4577,6 +4682,9 @@ export default {
     },
     'Truck > TruckData > CompatibleWheels:nth-of-type(2)': {
       Scale: 0.745
+    },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(-1; -1.3; 0)'
     },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 100
@@ -4641,59 +4749,13 @@ export default {
       UnlockByRank: 1
     }
   },
-  s_kolob_74941_default: {
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
-      CriticalDamageThreshold: 0.6,
-      DamageCapacity: 280
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(1)': {
-      Height: 0.15,
-      Strength: 0.025,
-      Damping: '',
-      SuspensionMin: -0.35,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.2
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
-      Height: 0.15,
-      Strength: 0.022,
-      Damping: '',
-      SuspensionMin: -0.15,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.2
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
-      Price: 6600,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2)': {
-      CriticalDamageThreshold: 0.6,
-      DamageCapacity: 230
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(1)': {
-      Height: 0.15,
-      Strength: 0.025,
-      Damping: '',
-      SuspensionMin: -0.35,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.2
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
-      Height: 0.15,
-      Strength: 0.022,
-      Damping: '',
-      SuspensionMin: -0.25,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.2
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
-      Price: 11_700,
-      UnlockByExploration: 'true',
-      UnlockByRank: 1
-    }
-  },
   wheels_superheavy_single_default: {
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
+      BodyFriction: 1.7,
+      BodyFrictionAsphalt: 0.5,
+      SubstanceFriction: 3,
+      IsIgnoreIce: 'false'
+    },
     'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > GameData': {
       Price: 7500,
       UnlockByExploration: 'false',
@@ -4733,6 +4795,50 @@ export default {
       UnlockByRank: 1
     }
   },
+  s_kolob_74941_default: {
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
+      CriticalDamageThreshold: 0.6,
+      DamageCapacity: 280
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(1)': {
+      Height: 0.15,
+      Strength: 0.025,
+      SuspensionMin: -0.35,
+      BrokenSuspensionMax: 0.2
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
+      Height: 0.15,
+      Strength: 0.022,
+      SuspensionMin: -0.15,
+      BrokenSuspensionMax: 0.2
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
+      Price: 6600,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2)': {
+      CriticalDamageThreshold: 0.6,
+      DamageCapacity: 230
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(1)': {
+      Height: 0.15,
+      Strength: 0.025,
+      SuspensionMin: -0.35,
+      BrokenSuspensionMax: 0.2
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
+      Height: 0.15,
+      Strength: 0.022,
+      SuspensionMin: -0.25,
+      BrokenSuspensionMax: 0.2
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
+      Price: 11_700,
+      UnlockByExploration: 'true',
+      UnlockByRank: 1
+    }
+  },
   kolob_74760_default: {
     'Truck > GameData > UiDesc': {
       UiName: 'UI_VEHICLE_KOLOB_74760_NAME',
@@ -4756,11 +4862,9 @@ export default {
       SteeringAngle: 36
     },
     'Truck > TruckData > Wheels > Wheel:nth-of-type(3)': {
-      Torque: '',
       SteeringAngle: 24
     },
     'Truck > TruckData > Wheels > Wheel:nth-of-type(4)': {
-      Torque: '',
       SteeringAngle: 24
     },
     'Truck > TruckData > Wheels > Wheel:nth-of-type(5)': {
@@ -4785,6 +4889,9 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(2)': {
       Scale: 0.745
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(-1; -0.3; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 100
     },
@@ -4805,8 +4912,7 @@ export default {
       Strength: 0.05,
       Damping: 0.08,
       SuspensionMin: -0.15,
-      SuspensionMax: 0.3,
-      BrokenSuspensionMax: ''
+      SuspensionMax: 0.3
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
       Height: 0,
@@ -4830,8 +4936,7 @@ export default {
       Strength: 0.05,
       Damping: 0.08,
       SuspensionMin: -0.25,
-      SuspensionMax: 0.3,
-      BrokenSuspensionMax: ''
+      SuspensionMax: 0.3
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
       Height: 0,
@@ -4907,6 +5012,9 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(10)': {
       Scale: 0.42
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(0; -0.6; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 50
     },
@@ -4927,7 +5035,6 @@ export default {
       Strength: 0.06,
       Damping: 0.23,
       SuspensionMin: -0.3,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.2
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
@@ -4935,7 +5042,6 @@ export default {
       Strength: 0.08,
       Damping: 0.22,
       SuspensionMin: -0.3,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.2
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
@@ -4952,7 +5058,6 @@ export default {
       Strength: 0.05,
       Damping: 0.2,
       SuspensionMin: -0.3,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.2
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
@@ -4960,7 +5065,6 @@ export default {
       Strength: 0.07,
       Damping: 0.2,
       SuspensionMin: -0.3,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.2
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
@@ -5005,6 +5109,9 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(2)': {
       Scale: 0.56
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(-0.3; -0.3; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 50
     },
@@ -5025,7 +5132,6 @@ export default {
       Strength: 0.025,
       Damping: 0.15,
       SuspensionMin: -0.28,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.15
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
@@ -5033,7 +5139,6 @@ export default {
       Strength: 0.02,
       Damping: 0.15,
       SuspensionMin: -0.28,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.15
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
@@ -5104,14 +5209,61 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(8)': {
       Scale: 0.53
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(-1; 0; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 50
     },
     'Truck > GameData': {
-      Country: 'US',
+      Country: 'US,NE',
       Price: 17_900,
       UnlockByExploration: 'false',
       UnlockByRank: 6
+    }
+  },
+  s_international_transtar_4070a_default: {
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
+      CriticalDamageThreshold: 0.7,
+      DamageCapacity: 100
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(1)': {
+      Height: 0.23,
+      Strength: 0.07,
+      SuspensionMin: -0.25,
+      BrokenSuspensionMax: 0.25
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
+      Height: 0.23,
+      Strength: 0.04,
+      SuspensionMin: -0.25,
+      BrokenSuspensionMax: 0.15
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
+      Price: 3800,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2)': {
+      CriticalDamageThreshold: 0.7,
+      DamageCapacity: 100
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(1)': {
+      Height: 0.33,
+      Strength: 0.06,
+      SuspensionMin: -0.27,
+      BrokenSuspensionMax: 0.25
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
+      Height: 0.3,
+      Strength: 0.03,
+      SuspensionMin: -0.27,
+      BrokenSuspensionMax: 0.15
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
+      Price: 6200,
+      UnlockByExploration: 'true',
+      UnlockByRank: 1
     }
   },
   e_us_truck_old_4070_default: {
@@ -5129,58 +5281,6 @@ export default {
     },
     'EngineVariants > Engine:nth-of-type(1) > GameData': {
       Price: 8500,
-      UnlockByExploration: 'true',
-      UnlockByRank: 1
-    }
-  },
-  s_international_transtar_4070a_default: {
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
-      CriticalDamageThreshold: 0.7,
-      DamageCapacity: 100
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(1)': {
-      Height: 0.23,
-      Strength: 0.07,
-      Damping: '',
-      SuspensionMin: -0.25,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.25
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
-      Height: 0.23,
-      Strength: 0.04,
-      Damping: '',
-      SuspensionMin: -0.25,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.15
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
-      Price: 3800,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2)': {
-      CriticalDamageThreshold: 0.7,
-      DamageCapacity: 100
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(1)': {
-      Height: 0.33,
-      Strength: 0.06,
-      Damping: '',
-      SuspensionMin: -0.27,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.25
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
-      Height: 0.3,
-      Strength: 0.03,
-      Damping: '',
-      SuspensionMin: -0.27,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.15
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
-      Price: 6200,
       UnlockByExploration: 'true',
       UnlockByRank: 1
     }
@@ -5254,11 +5354,14 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(13)': {
       Scale: 0.5
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(-1.1; 0; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 50
     },
     'Truck > GameData': {
-      Country: 'US',
+      Country: 'US,NE',
       Price: 4800,
       UnlockByExploration: 'true',
       UnlockByRank: 1
@@ -5327,7 +5430,6 @@ export default {
       Strength: 0.05,
       Damping: 0.2,
       SuspensionMin: -0.25,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.15
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
@@ -5335,7 +5437,6 @@ export default {
       Strength: 0.055,
       Damping: 0.2,
       SuspensionMin: -0.2,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.15
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
@@ -5352,7 +5453,6 @@ export default {
       Strength: 0.04,
       Damping: 0.2,
       SuspensionMin: -0.3,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.15
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
@@ -5360,7 +5460,6 @@ export default {
       Strength: 0.045,
       Damping: 0.2,
       SuspensionMin: -0.25,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.15
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
@@ -5434,11 +5533,14 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(9)': {
       Scale: 0.58
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(-0.3; 0; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 50
     },
     'Truck > GameData': {
-      Country: 'US',
+      Country: 'US,NE',
       Price: 63_400,
       UnlockByExploration: 'false',
       UnlockByRank: 1
@@ -5473,7 +5575,6 @@ export default {
       Strength: 0.04,
       Damping: 0.2,
       SuspensionMin: -0.35,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.18
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
@@ -5481,7 +5582,6 @@ export default {
       Strength: 0.04,
       Damping: 0.2,
       SuspensionMin: -0.1,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.25
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
@@ -5498,7 +5598,6 @@ export default {
       Strength: 0.04,
       Damping: 0.2,
       SuspensionMin: -0.35,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.18
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
@@ -5506,7 +5605,6 @@ export default {
       Strength: 0.04,
       Damping: 0.2,
       SuspensionMin: -0.25,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.25
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
@@ -5569,11 +5667,14 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(8)': {
       Scale: 0.52
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(-0.4; 0; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 50
     },
     'Truck > GameData': {
-      Country: 'US',
+      Country: 'US,NE',
       Price: 28_200,
       UnlockByExploration: 'false',
       UnlockByRank: 1
@@ -5589,7 +5690,6 @@ export default {
       Strength: 0.042,
       Damping: 0.1,
       SuspensionMin: -0.3,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.15
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
@@ -5597,7 +5697,6 @@ export default {
       Strength: 0.06,
       Damping: 0.15,
       SuspensionMin: -0.25,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.15
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
@@ -5614,7 +5713,6 @@ export default {
       Strength: 0.035,
       Damping: 0.2,
       SuspensionMin: -0.45,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.15
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
@@ -5622,7 +5720,6 @@ export default {
       Strength: 0.045,
       Damping: 0.2,
       SuspensionMin: -0.4,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.15
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
@@ -5693,11 +5790,14 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(8)': {
       Scale: 0.57
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(-0.6; 0; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 50
     },
     'Truck > GameData': {
-      Country: 'US',
+      Country: 'US,NE',
       Price: 13_800,
       UnlockByExploration: 'false',
       UnlockByRank: 1
@@ -5711,17 +5811,13 @@ export default {
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(1)': {
       Height: 0.05,
       Strength: 0.05,
-      Damping: '',
       SuspensionMin: -0.3,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.25
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
       Height: 0.1,
       Strength: 0.08,
-      Damping: '',
       SuspensionMin: -0.2,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.25
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
@@ -5736,17 +5832,13 @@ export default {
     'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(1)': {
       Height: 0.18,
       Strength: 0.05,
-      Damping: '',
       SuspensionMin: -0.3,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.25
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
       Height: 0.23,
       Strength: 0.08,
-      Damping: '',
       SuspensionMin: -0.25,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.25
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
@@ -5815,11 +5907,14 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(10)': {
       Scale: 0.5
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(0; 0; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 50
     },
     'Truck > GameData': {
-      Country: 'US',
+      Country: 'US,NE',
       Price: 5100,
       UnlockByExploration: 'true',
       UnlockByRank: 1
@@ -5878,19 +5973,6 @@ export default {
       UnlockByRank: 1
     }
   },
-  wheels_scout_offroad2_hummer_h2_default: {
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
-      BodyFriction: 2,
-      BodyFrictionAsphalt: 3,
-      SubstanceFriction: 1.2,
-      IsIgnoreIce: 'false'
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > GameData': {
-      Price: 4500,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    }
-  },
   s_hummer_h2_default: {
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
       CriticalDamageThreshold: 0.7,
@@ -5901,7 +5983,6 @@ export default {
       Strength: 0.06,
       Damping: 0.2,
       SuspensionMin: -0.35,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.15
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
@@ -5909,7 +5990,6 @@ export default {
       Strength: 0.07,
       Damping: 0.2,
       SuspensionMin: -0.35,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.15
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
@@ -5926,7 +6006,6 @@ export default {
       Strength: 0.05,
       Damping: 0.2,
       SuspensionMin: -0.4,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.15
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
@@ -5934,12 +6013,24 @@ export default {
       Strength: 0.05,
       Damping: 0.2,
       SuspensionMin: -0.4,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.15
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
       Price: 5300,
       UnlockByExploration: 'true',
+      UnlockByRank: 1
+    }
+  },
+  wheels_scout_offroad2_hummer_h2_default: {
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
+      BodyFriction: 2,
+      BodyFrictionAsphalt: 3,
+      SubstanceFriction: 1.2,
+      IsIgnoreIce: 'false'
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > GameData': {
+      Price: 4500,
+      UnlockByExploration: 'false',
       UnlockByRank: 1
     }
   },
@@ -6005,12 +6096,63 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(8)': {
       Scale: 0.6
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(-1.5; 0; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 50
     },
     'Truck > GameData': {
-      Country: 'US',
+      Country: 'US,NE',
       Price: 10_600,
+      UnlockByExploration: 'true',
+      UnlockByRank: 1
+    }
+  },
+  s_gmc9500_default: {
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
+      CriticalDamageThreshold: 0.7,
+      DamageCapacity: 180
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(1)': {
+      Height: 0.2,
+      Strength: 0.04,
+      Damping: 0.3,
+      SuspensionMin: -0.4,
+      SuspensionMax: 0.2
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
+      Height: 0.15,
+      Strength: 0.04,
+      Damping: 0.3,
+      SuspensionMin: -0.25,
+      SuspensionMax: 0.2
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
+      Price: 4000,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2)': {
+      CriticalDamageThreshold: 0.7,
+      DamageCapacity: 210
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(1)': {
+      Height: 0.3,
+      Strength: 0.08,
+      Damping: 0.3,
+      SuspensionMin: -0.45,
+      SuspensionMax: 0.1
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
+      Height: 0.25,
+      Strength: 0.08,
+      Damping: 0.3,
+      SuspensionMin: -0.3,
+      SuspensionMax: 0.1
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
+      Price: 6400,
       UnlockByExploration: 'true',
       UnlockByRank: 1
     }
@@ -6031,58 +6173,6 @@ export default {
     'EngineVariants > Engine:nth-of-type(1) > GameData': {
       Price: 2700,
       UnlockByExploration: 'false',
-      UnlockByRank: 1
-    }
-  },
-  s_gmc9500_default: {
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
-      CriticalDamageThreshold: 0.7,
-      DamageCapacity: 180
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(1)': {
-      Height: 0.2,
-      Strength: 0.04,
-      Damping: 0.3,
-      SuspensionMin: -0.4,
-      SuspensionMax: 0.2,
-      BrokenSuspensionMax: ''
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
-      Height: 0.15,
-      Strength: 0.04,
-      Damping: 0.3,
-      SuspensionMin: -0.25,
-      SuspensionMax: 0.2,
-      BrokenSuspensionMax: ''
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
-      Price: 4000,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2)': {
-      CriticalDamageThreshold: 0.7,
-      DamageCapacity: 210
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(1)': {
-      Height: 0.3,
-      Strength: 0.08,
-      Damping: 0.3,
-      SuspensionMin: -0.45,
-      SuspensionMax: 0.1,
-      BrokenSuspensionMax: ''
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
-      Height: 0.25,
-      Strength: 0.08,
-      Damping: 0.3,
-      SuspensionMin: -0.3,
-      SuspensionMax: 0.1,
-      BrokenSuspensionMax: ''
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
-      Price: 6400,
-      UnlockByExploration: 'true',
       UnlockByRank: 1
     }
   },
@@ -6148,11 +6238,14 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(8)': {
       Scale: 0.6
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(-0.3; 0; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 50
     },
     'Truck > GameData': {
-      Country: 'US',
+      Country: 'US,NE',
       Price: 74_200,
       UnlockByExploration: 'false',
       UnlockByRank: 17
@@ -6168,7 +6261,6 @@ export default {
       Strength: 0.1,
       Damping: 0.2,
       SuspensionMin: -0.3,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.25
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
@@ -6176,7 +6268,6 @@ export default {
       Strength: 0.1,
       Damping: 0.2,
       SuspensionMin: -0.15,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.25
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
@@ -6193,7 +6284,6 @@ export default {
       Strength: 0.1,
       Damping: 0.2,
       SuspensionMin: -0.3,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.25
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
@@ -6201,7 +6291,6 @@ export default {
       Strength: 0.1,
       Damping: 0.2,
       SuspensionMin: -0.15,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.25
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
@@ -6272,11 +6361,14 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(8)': {
       Scale: 0.6
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(0; 0; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 50
     },
     'Truck > GameData': {
-      Country: 'US',
+      Country: 'US,NE',
       Price: 76_600,
       UnlockByExploration: 'false',
       UnlockByRank: 20
@@ -6292,7 +6384,6 @@ export default {
       Strength: 0.06,
       Damping: 0.2,
       SuspensionMin: -0.4,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.3
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
@@ -6300,7 +6391,6 @@ export default {
       Strength: 0.035,
       Damping: 0.2,
       SuspensionMin: -0.3,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.3
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
@@ -6317,7 +6407,6 @@ export default {
       Strength: 0.06,
       Damping: 0.2,
       SuspensionMin: -0.4,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.3
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
@@ -6325,7 +6414,6 @@ export default {
       Strength: 0.035,
       Damping: 0.2,
       SuspensionMin: -0.3,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.3
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
@@ -6335,10 +6423,7 @@ export default {
     }
   },
   ford_clt9000_default: {
-    'Truck > GameData > UiDesc': {
-      UiName: '',
-      UiDesc: ''
-    },
+    'Truck > GameData > UiDesc': {},
     'Truck > TruckData': {
       Responsiveness: 0.2,
       BackSteerSpeed: 0.01,
@@ -6396,13 +6481,64 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(8)': {
       Scale: 0.55
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(-0.8; 0; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 50
     },
     'Truck > GameData': {
-      Country: 'US',
+      Country: 'US,NE',
       Price: 26_300,
       UnlockByExploration: 'false',
+      UnlockByRank: 1
+    }
+  },
+  s_ford_clt9000_default: {
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
+      CriticalDamageThreshold: 0.7,
+      DamageCapacity: 110
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(1)': {
+      Height: 0.25,
+      Strength: 0.05,
+      Damping: 0.3,
+      SuspensionMin: -0.2,
+      BrokenSuspensionMax: 0.3
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
+      Height: 0.2,
+      Strength: 0.05,
+      Damping: 0.3,
+      SuspensionMin: -0.25,
+      BrokenSuspensionMax: 0.3
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
+      Price: 4900,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2)': {
+      CriticalDamageThreshold: 0.7,
+      DamageCapacity: 140
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(1)': {
+      Height: 0.4,
+      Strength: 0.04,
+      Damping: 0.3,
+      SuspensionMin: -0.45,
+      BrokenSuspensionMax: 0.05
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
+      Height: 0.3,
+      Strength: 0.04,
+      Damping: 0.3,
+      SuspensionMin: -0.35,
+      BrokenSuspensionMax: 0.05
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
+      Price: 7400,
+      UnlockByExploration: 'true',
       UnlockByRank: 1
     }
   },
@@ -6421,58 +6557,6 @@ export default {
     },
     'EngineVariants > Engine:nth-of-type(1) > GameData': {
       Price: 9400,
-      UnlockByExploration: 'true',
-      UnlockByRank: 1
-    }
-  },
-  s_ford_clt9000_default: {
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
-      CriticalDamageThreshold: 0.7,
-      DamageCapacity: 110
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(1)': {
-      Height: 0.25,
-      Strength: 0.05,
-      Damping: 0.3,
-      SuspensionMin: -0.2,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.3
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
-      Height: 0.2,
-      Strength: 0.05,
-      Damping: 0.3,
-      SuspensionMin: -0.25,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.3
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
-      Price: 4900,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2)': {
-      CriticalDamageThreshold: 0.7,
-      DamageCapacity: 140
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(1)': {
-      Height: 0.4,
-      Strength: 0.04,
-      Damping: 0.3,
-      SuspensionMin: -0.45,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.05
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
-      Height: 0.3,
-      Strength: 0.04,
-      Damping: 0.3,
-      SuspensionMin: -0.35,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.05
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
-      Price: 7400,
       UnlockByExploration: 'true',
       UnlockByRank: 1
     }
@@ -6552,6 +6636,9 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(15)': {
       Scale: 0.45
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(-1; 0; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 50
     },
@@ -6559,6 +6646,71 @@ export default {
       Country: 'RU,CAS',
       Price: 3600,
       UnlockByExploration: 'false',
+      UnlockByRank: 1
+    }
+  },
+  s_don_71_default: {
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
+      CriticalDamageThreshold: 0.7,
+      DamageCapacity: 120
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(1)': {
+      Height: 0.1,
+      Strength: 0.025,
+      SuspensionMin: -0.25,
+      BrokenSuspensionMax: 0.17
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
+      Height: 0.1,
+      Strength: 0.025,
+      SuspensionMin: -0.25,
+      BrokenSuspensionMax: 0.2
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
+      Price: 2100,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2)': {
+      CriticalDamageThreshold: 0.7,
+      DamageCapacity: 140
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(1)': {
+      Height: 0.15,
+      Strength: 0.025,
+      SuspensionMin: -0.3,
+      BrokenSuspensionMax: 0.17
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
+      Height: 0.15,
+      Strength: 0.025,
+      SuspensionMin: -0.25,
+      BrokenSuspensionMax: 0.2
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
+      Price: 4200,
+      UnlockByExploration: 'true',
+      UnlockByRank: 1
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(3)': {
+      CriticalDamageThreshold: 0.7,
+      DamageCapacity: 160
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(3) > Suspension:nth-of-type(1)': {
+      Height: 0.25,
+      Strength: 0.025,
+      SuspensionMin: -0.3,
+      BrokenSuspensionMax: 0.17
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(3) > Suspension:nth-of-type(2)': {
+      Height: 0.25,
+      Strength: 0.025,
+      SuspensionMin: -0.3,
+      BrokenSuspensionMax: 0.2
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(3) > GameData': {
+      Price: 5300,
+      UnlockByExploration: 'true',
       UnlockByRank: 1
     }
   },
@@ -6578,83 +6730,6 @@ export default {
     'EngineVariants > Engine:nth-of-type(1) > GameData': {
       Price: 1700,
       UnlockByExploration: 'false',
-      UnlockByRank: 1
-    }
-  },
-  s_don_71_default: {
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
-      CriticalDamageThreshold: 0.7,
-      DamageCapacity: 120
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(1)': {
-      Height: 0.1,
-      Strength: 0.025,
-      Damping: '',
-      SuspensionMin: -0.25,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.17
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
-      Height: 0.1,
-      Strength: 0.025,
-      Damping: '',
-      SuspensionMin: -0.25,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.2
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
-      Price: 2100,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2)': {
-      CriticalDamageThreshold: 0.7,
-      DamageCapacity: 140
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(1)': {
-      Height: 0.15,
-      Strength: 0.025,
-      Damping: '',
-      SuspensionMin: -0.3,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.17
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
-      Height: 0.15,
-      Strength: 0.025,
-      Damping: '',
-      SuspensionMin: -0.25,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.2
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
-      Price: 4200,
-      UnlockByExploration: 'true',
-      UnlockByRank: 1
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(3)': {
-      CriticalDamageThreshold: 0.7,
-      DamageCapacity: 160
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(3) > Suspension:nth-of-type(1)': {
-      Height: 0.25,
-      Strength: 0.025,
-      Damping: '',
-      SuspensionMin: -0.3,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.17
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(3) > Suspension:nth-of-type(2)': {
-      Height: 0.25,
-      Strength: 0.025,
-      Damping: '',
-      SuspensionMin: -0.3,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.2
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(3) > GameData': {
-      Price: 5300,
-      UnlockByExploration: 'true',
       UnlockByRank: 1
     }
   },
@@ -6722,11 +6797,14 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(6)': {
       Scale: 0.64
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(-1.5; -0.5; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 100
     },
     'Truck > GameData': {
-      Country: 'US',
+      Country: 'US,NE',
       Price: 125_500,
       UnlockByExploration: 'false',
       UnlockByRank: 24
@@ -6742,7 +6820,6 @@ export default {
       Strength: 0.06,
       Damping: 0.2,
       SuspensionMin: -0.25,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.2
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
@@ -6750,7 +6827,6 @@ export default {
       Strength: 0.05,
       Damping: 0.2,
       SuspensionMin: -0.3,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.15
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
@@ -6820,11 +6896,14 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(5)': {
       Scale: 0.66
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(-1; -0.3; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 100
     },
     'Truck > GameData': {
-      Country: 'US',
+      Country: 'US,NE',
       Price: 110_700,
       UnlockByExploration: 'true',
       UnlockByRank: 1
@@ -6840,7 +6919,6 @@ export default {
       Strength: 0.06,
       Damping: 0.2,
       SuspensionMin: -0.25,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.2
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
@@ -6848,7 +6926,6 @@ export default {
       Strength: 0.015,
       Damping: 0.2,
       SuspensionMin: -0.4,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.15
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(3)': {
@@ -6856,7 +6933,6 @@ export default {
       Strength: 0.1,
       Damping: 0.2,
       SuspensionMin: -0.3,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.15
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
@@ -6915,6 +6991,9 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(4)': {
       Scale: 0.65
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(2; 0; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 100
     },
@@ -6933,17 +7012,13 @@ export default {
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(1)': {
       Height: 0.2,
       Strength: 0.08,
-      Damping: '',
       SuspensionMin: -0.3,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.15
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
       Height: 0.1,
       Strength: 0.04,
-      Damping: '',
       SuspensionMin: -0.3,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.2
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
@@ -6958,7 +7033,6 @@ export default {
     'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(1)': {
       Height: 0.2,
       Strength: 0.08,
-      Damping: '',
       SuspensionMin: -0.3,
       SuspensionMax: 0.3,
       BrokenSuspensionMax: 0.2
@@ -6966,10 +7040,8 @@ export default {
     'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
       Height: 0.1,
       Strength: 0.04,
-      Damping: '',
       SuspensionMin: -0.3,
-      SuspensionMax: 0.3,
-      BrokenSuspensionMax: ''
+      SuspensionMax: 0.3
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
       Price: 9200,
@@ -7031,11 +7103,14 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(8)': {
       Scale: 0.55
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(-1.4; 0; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 50
     },
     'Truck > GameData': {
-      Country: 'US',
+      Country: 'US,NE',
       Price: 19_500,
       UnlockByExploration: 'false',
       UnlockByRank: 1
@@ -7051,7 +7126,6 @@ export default {
       Strength: 0.05,
       Damping: 0.2,
       SuspensionMin: -0.25,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.1
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
@@ -7059,7 +7133,6 @@ export default {
       Strength: 0.08,
       Damping: 0.2,
       SuspensionMin: -0.25,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.1
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
@@ -7076,7 +7149,6 @@ export default {
       Strength: 0.05,
       Damping: 0.3,
       SuspensionMin: -0.3,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.1
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
@@ -7084,7 +7156,6 @@ export default {
       Strength: 0.08,
       Damping: 0.3,
       SuspensionMin: -0.3,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.1
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
@@ -7162,13 +7233,64 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(13)': {
       Scale: 0.48
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(-0.1; 0; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 50
     },
     'Truck > GameData': {
-      Country: 'US',
+      Country: 'US,NE',
       Price: 3000,
       UnlockByExploration: 'false',
+      UnlockByRank: 1
+    }
+  },
+  s_chevrolet_ck1500_default: {
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
+      CriticalDamageThreshold: 0.4,
+      DamageCapacity: 100
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(1)': {
+      Height: 0.11,
+      Strength: 0.035,
+      Damping: 0.25,
+      SuspensionMin: -0.35,
+      BrokenSuspensionMax: 0.2
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
+      Height: 0.04,
+      Strength: 0.045,
+      Damping: 0.2,
+      SuspensionMin: -0.3,
+      BrokenSuspensionMax: 0.2
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
+      Price: 1900,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2)': {
+      CriticalDamageThreshold: 0.5,
+      DamageCapacity: 120
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(1)': {
+      Height: 0.3,
+      Strength: 0.03,
+      Damping: 0.3,
+      SuspensionMin: -0.35,
+      BrokenSuspensionMax: 0.2
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
+      Height: 0.2,
+      Strength: 0.04,
+      Damping: 0.3,
+      SuspensionMin: -0.3,
+      BrokenSuspensionMax: 0.2
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
+      Price: 4500,
+      UnlockByExploration: 'true',
       UnlockByRank: 1
     }
   },
@@ -7187,58 +7309,6 @@ export default {
     },
     'EngineVariants > Engine:nth-of-type(1) > GameData': {
       Price: 7500,
-      UnlockByExploration: 'true',
-      UnlockByRank: 1
-    }
-  },
-  s_chevrolet_ck1500_default: {
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
-      CriticalDamageThreshold: 0.4,
-      DamageCapacity: 100
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(1)': {
-      Height: 0.11,
-      Strength: 0.035,
-      Damping: 0.25,
-      SuspensionMin: -0.35,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.2
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
-      Height: 0.04,
-      Strength: 0.045,
-      Damping: 0.2,
-      SuspensionMin: -0.3,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.2
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
-      Price: 1900,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2)': {
-      CriticalDamageThreshold: 0.5,
-      DamageCapacity: 120
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(1)': {
-      Height: 0.3,
-      Strength: 0.03,
-      Damping: 0.3,
-      SuspensionMin: -0.35,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.2
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
-      Height: 0.2,
-      Strength: 0.04,
-      Damping: 0.3,
-      SuspensionMin: -0.3,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.2
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
-      Price: 4500,
       UnlockByExploration: 'true',
       UnlockByRank: 1
     }
@@ -7305,11 +7375,14 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(8)': {
       Scale: 0.6
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(0.8; 0; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 50
     },
     'Truck > GameData': {
-      Country: 'US',
+      Country: 'US,NE',
       Price: 37_000,
       UnlockByExploration: 'false',
       UnlockByRank: 12
@@ -7325,7 +7398,6 @@ export default {
       Strength: 0.06,
       Damping: 0.5,
       SuspensionMin: -0.35,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.2
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
@@ -7333,7 +7405,6 @@ export default {
       Strength: 0.07,
       Damping: 0.5,
       SuspensionMin: 0,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
@@ -7386,11 +7457,14 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(2)': {
       Scale: 0.9
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(0; -0.5; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 100
     },
     'Truck > GameData': {
-      Country: 'US',
+      Country: 'US,NE',
       Price: 100_500,
       UnlockByExploration: 'true',
       UnlockByRank: 1
@@ -7406,7 +7480,6 @@ export default {
       Strength: 0.1,
       Damping: 0.1,
       SuspensionMin: -0.2,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.2
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
@@ -7414,7 +7487,6 @@ export default {
       Strength: 0.7,
       Damping: 0.4,
       SuspensionMin: -0.1,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.1
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
@@ -7489,6 +7561,9 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(4)': {
       Scale: 0.63
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(-1.4; 0; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 100
     },
@@ -7509,7 +7584,6 @@ export default {
       Strength: 0.03,
       Damping: 0.4,
       SuspensionMin: -0.25,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.2
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
@@ -7517,7 +7591,6 @@ export default {
       Strength: 0.04,
       Damping: 0.4,
       SuspensionMin: -0.25,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.2
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
@@ -7534,7 +7607,6 @@ export default {
       Strength: 0.03,
       Damping: 0.4,
       SuspensionMin: -0.25,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.2
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
@@ -7542,7 +7614,6 @@ export default {
       Strength: 0.04,
       Damping: 0.4,
       SuspensionMin: -0.25,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.2
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
@@ -7609,6 +7680,9 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(4)': {
       Scale: 0.6
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(0; 0; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 100
     },
@@ -7629,7 +7703,6 @@ export default {
       Strength: 0.06,
       Damping: 0.4,
       SuspensionMin: -0.25,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.2
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
@@ -7637,7 +7710,6 @@ export default {
       Strength: 0.08,
       Damping: 0.4,
       SuspensionMin: -0.25,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.2
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
@@ -7704,6 +7776,9 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(4)': {
       Scale: 0.63
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(-0.5; 0; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 100
     },
@@ -7724,7 +7799,6 @@ export default {
       Strength: 0.07,
       Damping: 0.4,
       SuspensionMin: -0.19,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.2
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
@@ -7732,7 +7806,6 @@ export default {
       Strength: 0.08,
       Damping: 0.4,
       SuspensionMin: -0.19,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.2
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
@@ -7747,7 +7820,7 @@ export default {
       UiDesc: 'UI_VEHICLE_AZOV_4220_ANTARCTIC_DESC'
     },
     'Truck > TruckData': {
-      Responsiveness: 0.35,
+      Responsiveness: 0.4,
       BackSteerSpeed: 0.02,
       SteerSpeed: 0.03,
       DiffLockType: 'Installed',
@@ -7785,6 +7858,9 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(2)': {
       Scale: 0.9
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(1; -1; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 50
     },
@@ -7803,17 +7879,13 @@ export default {
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(1)': {
       Height: 0.1,
       Strength: 0.05,
-      Damping: '',
       SuspensionMin: -0.3,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.3
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
       Height: 0.1,
       Strength: 0.6,
-      Damping: '',
       SuspensionMin: -0.1,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.1
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
@@ -7899,11 +7971,14 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(13)': {
       Scale: 0.65
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(-0.3; 0; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 50
     },
     'Truck > GameData': {
-      Country: 'US',
+      Country: 'US,NE',
       Price: 51_100,
       UnlockByExploration: 'true',
       UnlockByRank: 1
@@ -7919,7 +7994,6 @@ export default {
       Strength: 0.05,
       Damping: 0.3,
       SuspensionMin: -0.3,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.25
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
@@ -7927,7 +8001,6 @@ export default {
       Strength: 0.03,
       Damping: 0.3,
       SuspensionMin: -0.3,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.25
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
@@ -7944,7 +8017,6 @@ export default {
       Strength: 0.05,
       Damping: 0.3,
       SuspensionMin: -0.3,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.25
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
@@ -7952,7 +8024,6 @@ export default {
       Strength: 0.03,
       Damping: 0.3,
       SuspensionMin: -0.25,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.25
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
@@ -7969,7 +8040,6 @@ export default {
       Strength: 0.05,
       Damping: 0.3,
       SuspensionMin: -0.3,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.25
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(3) > Suspension:nth-of-type(2)': {
@@ -7977,7 +8047,6 @@ export default {
       Strength: 0.03,
       Damping: 0.3,
       SuspensionMin: -0.25,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.25
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(3) > GameData': {
@@ -7994,7 +8063,6 @@ export default {
       Strength: 0.04,
       Damping: 0.2,
       SuspensionMin: -0.2,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.25
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(4) > Suspension:nth-of-type(2)': {
@@ -8002,7 +8070,6 @@ export default {
       Strength: 0.025,
       Damping: 0.2,
       SuspensionMin: -0.3,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.25
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(4) > GameData': {
@@ -8013,7 +8080,7 @@ export default {
   },
   wheels_medium_ank_mk38_default: {
     'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
-      BodyFriction: 2,
+      BodyFriction: 3,
       BodyFrictionAsphalt: 0.8,
       SubstanceFriction: 1.7,
       IsIgnoreIce: 'false'
@@ -8110,11 +8177,14 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(12)': {
       Scale: 0.58
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(-2.2; 0; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 50
     },
     'Truck > GameData': {
-      Country: 'US',
+      Country: 'US,NE',
       Price: 90_000,
       UnlockByExploration: 'false',
       UnlockByRank: 1
@@ -8122,9 +8192,9 @@ export default {
   },
   winches_medium_trucks_DLC_trial_6: {
     'WinchVariants > Winch:nth-of-type(1)': {
-      Length: 20,
+      Length: 14,
       StrengthMult: 1,
-      IsEngineIgnitionRequired: 'false'
+      IsEngineIgnitionRequired: 'true'
     },
     'WinchVariants > Winch:nth-of-type(1) > GameData': {
       Price: 1000,
@@ -8360,138 +8430,6 @@ export default {
       UnlockByRank: 1
     }
   },
-  e_us_truck_old_DLC_trial_6: {
-    'EngineVariants > Engine:nth-of-type(1)': {
-      CriticalDamageThreshold: 0.3,
-      DamageCapacity: 160,
-      DamagedConsumptionModifier: 1.6,
-      Responsiveness: 0.04,
-      FuelConsumption: 5.5,
-      Torque: 135_000,
-      DamagedMinTorqueMultiplier: 1,
-      DamagedMaxTorqueMultiplier: 0.6,
-      BrakesDelay: 0.5,
-      MaxDeltaAngVel: 0.01
-    },
-    'EngineVariants > Engine:nth-of-type(1) > GameData': {
-      Price: 2500,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    },
-    'EngineVariants > Engine:nth-of-type(2)': {
-      CriticalDamageThreshold: 0.4,
-      DamageCapacity: 190,
-      DamagedConsumptionModifier: 1.7,
-      Responsiveness: 0.04,
-      FuelConsumption: 6,
-      Torque: 145_000,
-      DamagedMinTorqueMultiplier: 1,
-      DamagedMaxTorqueMultiplier: 0.7,
-      BrakesDelay: 0.5,
-      MaxDeltaAngVel: 0.01
-    },
-    'EngineVariants > Engine:nth-of-type(2) > GameData': {
-      Price: 7500,
-      UnlockByExploration: 'true',
-      UnlockByRank: 1
-    }
-  },
-  e_us_truck_old_gmc8000_DLC_trial_6: {
-    'EngineVariants > Engine:nth-of-type(1)': {
-      CriticalDamageThreshold: 0.6,
-      DamageCapacity: 230,
-      DamagedConsumptionModifier: 1.9,
-      Responsiveness: 0.04,
-      FuelConsumption: 9.5,
-      Torque: 170_000,
-      DamagedMinTorqueMultiplier: 1,
-      DamagedMaxTorqueMultiplier: 0.8,
-      BrakesDelay: 0.5,
-      MaxDeltaAngVel: 0.01
-    },
-    'EngineVariants > Engine:nth-of-type(1) > GameData': {
-      Price: 11_300,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    }
-  },
-  s_gmc8000_DLC_trial_6: {
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
-      CriticalDamageThreshold: 0.7,
-      DamageCapacity: 160
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(1)': {
-      Height: 0.12,
-      Strength: 0.05,
-      Damping: 0.3,
-      SuspensionMin: -0.3,
-      SuspensionMax: 0.2,
-      BrokenSuspensionMax: ''
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
-      Height: 0.1,
-      Strength: 0.05,
-      Damping: 0.3,
-      SuspensionMin: -0.3,
-      SuspensionMax: 0.2,
-      BrokenSuspensionMax: ''
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
-      Price: 4900,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2)': {
-      CriticalDamageThreshold: 0.7,
-      DamageCapacity: 210
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(1)': {
-      Height: 0.22,
-      Strength: 0.05,
-      Damping: 0.4,
-      SuspensionMin: -0.3,
-      SuspensionMax: 0.1,
-      BrokenSuspensionMax: ''
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
-      Height: 0.2,
-      Strength: 0.05,
-      Damping: 0.4,
-      SuspensionMin: -0.3,
-      SuspensionMax: 0.1,
-      BrokenSuspensionMax: ''
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
-      Price: 7200,
-      UnlockByExploration: 'false',
-      UnlockByRank: 12
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(3)': {
-      CriticalDamageThreshold: 0.7,
-      DamageCapacity: 230
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(3) > Suspension:nth-of-type(1)': {
-      Height: 0.27,
-      Strength: 0.05,
-      Damping: 0.4,
-      SuspensionMin: -0.4,
-      SuspensionMax: 0.15,
-      BrokenSuspensionMax: ''
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(3) > Suspension:nth-of-type(2)': {
-      Height: 0.25,
-      Strength: 0.05,
-      Damping: 0.4,
-      SuspensionMin: -0.3,
-      SuspensionMax: 0.15,
-      BrokenSuspensionMax: ''
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(3) > GameData': {
-      Price: 9800,
-      UnlockByExploration: 'false',
-      UnlockByRank: 16
-    }
-  },
   wheels_medium_double_DLC_trial_6: {
     'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
       BodyFriction: 1,
@@ -8603,10 +8541,142 @@ export default {
       UnlockByExploration: 'false',
       UnlockByRank: 12
     },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(11) > WheelFriction': {
+      BodyFriction: 3,
+      BodyFrictionAsphalt: 1.2,
+      SubstanceFriction: 1.3,
+      IsIgnoreIce: 'true'
+    },
     'TruckWheels > TruckTires > TruckTire:nth-of-type(11) > GameData': {
       Price: 6400,
       UnlockByExploration: 'false',
       UnlockByRank: 12
+    }
+  },
+  s_gmc8000_DLC_trial_6: {
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
+      CriticalDamageThreshold: 0.7,
+      DamageCapacity: 160
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(1)': {
+      Height: 0.12,
+      Strength: 0.05,
+      Damping: 0.3,
+      SuspensionMin: -0.3,
+      SuspensionMax: 0.2
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
+      Height: 0.1,
+      Strength: 0.05,
+      Damping: 0.3,
+      SuspensionMin: -0.3,
+      SuspensionMax: 0.2
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
+      Price: 4900,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2)': {
+      CriticalDamageThreshold: 0.7,
+      DamageCapacity: 210
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(1)': {
+      Height: 0.22,
+      Strength: 0.05,
+      Damping: 0.4,
+      SuspensionMin: -0.3,
+      SuspensionMax: 0.1
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
+      Height: 0.2,
+      Strength: 0.05,
+      Damping: 0.4,
+      SuspensionMin: -0.3,
+      SuspensionMax: 0.1
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
+      Price: 7200,
+      UnlockByExploration: 'false',
+      UnlockByRank: 12
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(3)': {
+      CriticalDamageThreshold: 0.7,
+      DamageCapacity: 230
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(3) > Suspension:nth-of-type(1)': {
+      Height: 0.27,
+      Strength: 0.05,
+      Damping: 0.4,
+      SuspensionMin: -0.4,
+      SuspensionMax: 0.15
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(3) > Suspension:nth-of-type(2)': {
+      Height: 0.25,
+      Strength: 0.05,
+      Damping: 0.4,
+      SuspensionMin: -0.3,
+      SuspensionMax: 0.15
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(3) > GameData': {
+      Price: 9800,
+      UnlockByExploration: 'false',
+      UnlockByRank: 16
+    }
+  },
+  e_us_truck_old_DLC_trial_6: {
+    'EngineVariants > Engine:nth-of-type(1)': {
+      CriticalDamageThreshold: 0.3,
+      DamageCapacity: 160,
+      DamagedConsumptionModifier: 1.6,
+      Responsiveness: 0.04,
+      FuelConsumption: 5.5,
+      Torque: 135_000,
+      DamagedMinTorqueMultiplier: 1,
+      DamagedMaxTorqueMultiplier: 0.6,
+      BrakesDelay: 0.5,
+      MaxDeltaAngVel: 0.01
+    },
+    'EngineVariants > Engine:nth-of-type(1) > GameData': {
+      Price: 2500,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    },
+    'EngineVariants > Engine:nth-of-type(2)': {
+      CriticalDamageThreshold: 0.4,
+      DamageCapacity: 190,
+      DamagedConsumptionModifier: 1.7,
+      Responsiveness: 0.04,
+      FuelConsumption: 6,
+      Torque: 145_000,
+      DamagedMinTorqueMultiplier: 1,
+      DamagedMaxTorqueMultiplier: 0.7,
+      BrakesDelay: 0.5,
+      MaxDeltaAngVel: 0.01
+    },
+    'EngineVariants > Engine:nth-of-type(2) > GameData': {
+      Price: 7500,
+      UnlockByExploration: 'true',
+      UnlockByRank: 1
+    }
+  },
+  e_us_truck_old_gmc8000_DLC_trial_6: {
+    'EngineVariants > Engine:nth-of-type(1)': {
+      CriticalDamageThreshold: 0.6,
+      DamageCapacity: 230,
+      DamagedConsumptionModifier: 1.9,
+      Responsiveness: 0.04,
+      FuelConsumption: 9.5,
+      Torque: 170_000,
+      DamagedMinTorqueMultiplier: 1,
+      DamagedMaxTorqueMultiplier: 0.8,
+      BrakesDelay: 0.5,
+      MaxDeltaAngVel: 0.01
+    },
+    'EngineVariants > Engine:nth-of-type(1) > GameData': {
+      Price: 11_300,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
     }
   },
   trailer_watertank_dlc_9: {
@@ -8640,6 +8710,9 @@ export default {
       SuspensionHeight: 0.07,
       SuspensionStrength: 0.33
     },
+    'Truck > PhysicsModel > Body': {
+      Mass: 1300
+    },
     'Truck > GameData': {
       Price: 4900
     }
@@ -8666,6 +8739,9 @@ export default {
     'Truck > TruckData > Wheels > Wheel:nth-of-type(4)': {
       SuspensionHeight: 0.1,
       SuspensionStrength: 0.1
+    },
+    'Truck > PhysicsModel > Body': {
+      Mass: 100
     },
     'Truck > GameData': {
       Price: 14_100
@@ -8701,6 +8777,9 @@ export default {
     'Truck > TruckData > Wheels > Wheel:nth-of-type(6)': {
       SuspensionHeight: 0.0244,
       SuspensionStrength: 0.0422
+    },
+    'Truck > PhysicsModel > Body': {
+      Mass: 4000
     },
     'Truck > GameData': {
       Price: 6000
@@ -8764,6 +8843,9 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(4)': {
       Scale: 0.78
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(0; 0; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 180
     },
@@ -8776,9 +8858,9 @@ export default {
   },
   winches_heavy_trucks_dlc_9: {
     'WinchVariants > Winch:nth-of-type(1)': {
-      Length: 20,
+      Length: 14,
       StrengthMult: 1,
-      IsEngineIgnitionRequired: 'false'
+      IsEngineIgnitionRequired: 'true'
     },
     'WinchVariants > Winch:nth-of-type(1) > GameData': {
       Price: 1000,
@@ -9015,7 +9097,37 @@ export default {
       UnlockByRank: 1
     }
   },
+  wheels_heavy_single2_zikz_612h_dlc_9: {
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
+      BodyFriction: 2,
+      BodyFrictionAsphalt: 0.5,
+      SubstanceFriction: 2.4,
+      IsIgnoreIce: 'false'
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > GameData': {
+      Price: 7400,
+      UnlockByExploration: 'false',
+      UnlockByRank: 13
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(2) > WheelFriction': {
+      BodyFriction: 2.4,
+      BodyFrictionAsphalt: 0.5,
+      SubstanceFriction: 2,
+      IsIgnoreIce: 'false'
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(2) > GameData': {
+      Price: 7700,
+      UnlockByExploration: 'false',
+      UnlockByRank: 13
+    }
+  },
   wheels_zikz_612h_mastodont_dlc_9: {
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
+      BodyFriction: 1.7,
+      BodyFrictionAsphalt: 0.5,
+      SubstanceFriction: 3,
+      IsIgnoreIce: 'false'
+    },
     'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > GameData': {
       Price: 7500,
       UnlockByExploration: 'false',
@@ -9112,30 +9224,6 @@ export default {
       UnlockByRank: 14
     }
   },
-  wheels_heavy_single2_zikz_612h_dlc_9: {
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
-      BodyFriction: 2,
-      BodyFrictionAsphalt: 0.5,
-      SubstanceFriction: 2.4,
-      IsIgnoreIce: 'false'
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > GameData': {
-      Price: 7400,
-      UnlockByExploration: 'false',
-      UnlockByRank: 13
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(2) > WheelFriction': {
-      BodyFriction: 2.4,
-      BodyFrictionAsphalt: 0.5,
-      SubstanceFriction: 2,
-      IsIgnoreIce: 'false'
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(2) > GameData': {
-      Price: 7700,
-      UnlockByExploration: 'false',
-      UnlockByRank: 13
-    }
-  },
   s_zikz_612h_mastodont_dlc_9: {
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
       CriticalDamageThreshold: 0.4,
@@ -9230,6 +9318,9 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(7)': {
       Scale: 0.6
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(0; -0.2; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 100
     },
@@ -9242,9 +9333,9 @@ export default {
   },
   winches_medium_trucks_dlc_9: {
     'WinchVariants > Winch:nth-of-type(1)': {
-      Length: 20,
+      Length: 14,
       StrengthMult: 1,
-      IsEngineIgnitionRequired: 'false'
+      IsEngineIgnitionRequired: 'true'
     },
     'WinchVariants > Winch:nth-of-type(1) > GameData': {
       Price: 1000,
@@ -9468,95 +9559,6 @@ export default {
       UnlockByRank: 1
     }
   },
-  e_ru_truck_old_dlc_9: {
-    'EngineVariants > Engine:nth-of-type(1)': {
-      CriticalDamageThreshold: 0.8,
-      DamageCapacity: 180,
-      DamagedConsumptionModifier: 1.6,
-      Responsiveness: 0.04,
-      FuelConsumption: 4.5,
-      Torque: 130_000,
-      DamagedMinTorqueMultiplier: 1,
-      DamagedMaxTorqueMultiplier: 0.6,
-      BrakesDelay: 0.5,
-      MaxDeltaAngVel: 0.01
-    },
-    'EngineVariants > Engine:nth-of-type(1) > GameData': {
-      Price: 2500,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    },
-    'EngineVariants > Engine:nth-of-type(2)': {
-      CriticalDamageThreshold: 0.7,
-      DamageCapacity: 200,
-      DamagedConsumptionModifier: 1.7,
-      Responsiveness: 0.04,
-      FuelConsumption: 5.5,
-      Torque: 140_000,
-      DamagedMinTorqueMultiplier: 1,
-      DamagedMaxTorqueMultiplier: 0.7,
-      BrakesDelay: 0.5,
-      MaxDeltaAngVel: 0.01
-    },
-    'EngineVariants > Engine:nth-of-type(2) > GameData': {
-      Price: 7200,
-      UnlockByExploration: 'true',
-      UnlockByRank: 1
-    },
-    'EngineVariants > Engine:nth-of-type(3)': {
-      CriticalDamageThreshold: 0.7,
-      DamageCapacity: 240,
-      DamagedConsumptionModifier: 1.8,
-      Responsiveness: 0.04,
-      FuelConsumption: 6,
-      Torque: 160_000,
-      DamagedMinTorqueMultiplier: 1,
-      DamagedMaxTorqueMultiplier: 0.6,
-      BrakesDelay: 0.5,
-      MaxDeltaAngVel: 0.01
-    },
-    'EngineVariants > Engine:nth-of-type(3) > GameData': {
-      Price: 9000,
-      UnlockByExploration: 'true',
-      UnlockByRank: 1
-    },
-    'EngineVariants > Engine:nth-of-type(4)': {
-      CriticalDamageThreshold: 0.5,
-      DamageCapacity: 120,
-      DamagedConsumptionModifier: 2.1,
-      Responsiveness: 0.04,
-      FuelConsumption: 7.5,
-      Torque: 185_000,
-      DamagedMinTorqueMultiplier: 1,
-      DamagedMaxTorqueMultiplier: 0.6,
-      BrakesDelay: 0.5,
-      MaxDeltaAngVel: 0.01
-    },
-    'EngineVariants > Engine:nth-of-type(4) > GameData': {
-      Price: 11_300,
-      UnlockByExploration: 'true',
-      UnlockByRank: 1
-    }
-  },
-  e_ru_truck_old_zikz_566a_dlc_9: {
-    'EngineVariants > Engine:nth-of-type(1)': {
-      CriticalDamageThreshold: 0.7,
-      DamageCapacity: 100,
-      DamagedConsumptionModifier: 1.7,
-      Responsiveness: 0.04,
-      FuelConsumption: 8.5,
-      Torque: 200_000,
-      DamagedMinTorqueMultiplier: 1,
-      DamagedMaxTorqueMultiplier: 0.4,
-      BrakesDelay: 1,
-      MaxDeltaAngVel: 0.01
-    },
-    'EngineVariants > Engine:nth-of-type(1) > GameData': {
-      Price: 16_200,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    }
-  },
   wheels_zikz_566a_dlc_9: {
     'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
       BodyFriction: 3,
@@ -9567,58 +9569,6 @@ export default {
     'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > GameData': {
       Price: 7500,
       UnlockByExploration: 'false',
-      UnlockByRank: 1
-    }
-  },
-  s_zikz_566a_dlc_9: {
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
-      CriticalDamageThreshold: 0.4,
-      DamageCapacity: 180
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(1)': {
-      Height: 0.2,
-      Strength: 0.05,
-      Damping: 0.8,
-      SuspensionMin: -0.21,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.1
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
-      Height: 0.12,
-      Strength: 0.08,
-      Damping: 0.6,
-      SuspensionMin: -0.14,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.1
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
-      Price: 4200,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2)': {
-      CriticalDamageThreshold: 0.4,
-      DamageCapacity: 180
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(1)': {
-      Height: 0.26,
-      Strength: 0.05,
-      Damping: 0.8,
-      SuspensionMin: -0.27,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.1
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
-      Height: 0.24,
-      Strength: 0.08,
-      Damping: 0.6,
-      SuspensionMin: -0.21,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.1
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
-      Price: 4200,
-      UnlockByExploration: 'true',
       UnlockByRank: 1
     }
   },
@@ -9733,6 +9683,12 @@ export default {
       UnlockByExploration: 'false',
       UnlockByRank: 12
     },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(11) > WheelFriction': {
+      BodyFriction: 3,
+      BodyFrictionAsphalt: 1.2,
+      SubstanceFriction: 1.3,
+      IsIgnoreIce: 'true'
+    },
     'TruckWheels > TruckTires > TruckTire:nth-of-type(11) > GameData': {
       Price: 6400,
       UnlockByExploration: 'false',
@@ -9750,6 +9706,143 @@ export default {
       Price: 7400,
       UnlockByExploration: 'false',
       UnlockByRank: 13
+    }
+  },
+  s_zikz_566a_dlc_9: {
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
+      CriticalDamageThreshold: 0.4,
+      DamageCapacity: 180
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(1)': {
+      Height: 0.2,
+      Strength: 0.05,
+      Damping: 0.8,
+      SuspensionMin: -0.21,
+      BrokenSuspensionMax: 0.1
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
+      Height: 0.12,
+      Strength: 0.08,
+      Damping: 0.6,
+      SuspensionMin: -0.14,
+      BrokenSuspensionMax: 0.1
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
+      Price: 4200,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2)': {
+      CriticalDamageThreshold: 0.4,
+      DamageCapacity: 180
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(1)': {
+      Height: 0.26,
+      Strength: 0.05,
+      Damping: 0.8,
+      SuspensionMin: -0.27,
+      BrokenSuspensionMax: 0.1
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
+      Height: 0.24,
+      Strength: 0.08,
+      Damping: 0.6,
+      SuspensionMin: -0.21,
+      BrokenSuspensionMax: 0.1
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
+      Price: 4200,
+      UnlockByExploration: 'true',
+      UnlockByRank: 1
+    }
+  },
+  e_ru_truck_old_dlc_9: {
+    'EngineVariants > Engine:nth-of-type(1)': {
+      CriticalDamageThreshold: 0.8,
+      DamageCapacity: 180,
+      DamagedConsumptionModifier: 1.6,
+      Responsiveness: 0.04,
+      FuelConsumption: 4.5,
+      Torque: 130_000,
+      DamagedMinTorqueMultiplier: 1,
+      DamagedMaxTorqueMultiplier: 0.6,
+      BrakesDelay: 0.5,
+      MaxDeltaAngVel: 0.01
+    },
+    'EngineVariants > Engine:nth-of-type(1) > GameData': {
+      Price: 2500,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    },
+    'EngineVariants > Engine:nth-of-type(2)': {
+      CriticalDamageThreshold: 0.7,
+      DamageCapacity: 200,
+      DamagedConsumptionModifier: 1.7,
+      Responsiveness: 0.04,
+      FuelConsumption: 5.5,
+      Torque: 140_000,
+      DamagedMinTorqueMultiplier: 1,
+      DamagedMaxTorqueMultiplier: 0.7,
+      BrakesDelay: 0.5,
+      MaxDeltaAngVel: 0.01
+    },
+    'EngineVariants > Engine:nth-of-type(2) > GameData': {
+      Price: 7200,
+      UnlockByExploration: 'true',
+      UnlockByRank: 1
+    },
+    'EngineVariants > Engine:nth-of-type(3)': {
+      CriticalDamageThreshold: 0.7,
+      DamageCapacity: 240,
+      DamagedConsumptionModifier: 1.8,
+      Responsiveness: 0.04,
+      FuelConsumption: 6,
+      Torque: 160_000,
+      DamagedMinTorqueMultiplier: 1,
+      DamagedMaxTorqueMultiplier: 0.6,
+      BrakesDelay: 0.5,
+      MaxDeltaAngVel: 0.01
+    },
+    'EngineVariants > Engine:nth-of-type(3) > GameData': {
+      Price: 9000,
+      UnlockByExploration: 'true',
+      UnlockByRank: 1
+    },
+    'EngineVariants > Engine:nth-of-type(4)': {
+      CriticalDamageThreshold: 0.5,
+      DamageCapacity: 120,
+      DamagedConsumptionModifier: 2.1,
+      Responsiveness: 0.04,
+      FuelConsumption: 7.5,
+      Torque: 185_000,
+      DamagedMinTorqueMultiplier: 1,
+      DamagedMaxTorqueMultiplier: 0.6,
+      BrakesDelay: 0.5,
+      MaxDeltaAngVel: 0.01
+    },
+    'EngineVariants > Engine:nth-of-type(4) > GameData': {
+      Price: 11_300,
+      UnlockByExploration: 'true',
+      UnlockByRank: 1
+    }
+  },
+  e_ru_truck_old_zikz_566a_dlc_9: {
+    'EngineVariants > Engine:nth-of-type(1)': {
+      CriticalDamageThreshold: 0.7,
+      DamageCapacity: 100,
+      DamagedConsumptionModifier: 1.7,
+      Responsiveness: 0.04,
+      FuelConsumption: 8.5,
+      Torque: 200_000,
+      DamagedMinTorqueMultiplier: 1,
+      DamagedMaxTorqueMultiplier: 0.4,
+      BrakesDelay: 1,
+      MaxDeltaAngVel: 0.01
+    },
+    'EngineVariants > Engine:nth-of-type(1) > GameData': {
+      Price: 16_200,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
     }
   },
   derry_special_15c177_dlc_9: {
@@ -9816,13 +9909,29 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(6)': {
       Scale: 0.7
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(0; 0; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 100
     },
     'Truck > GameData': {
-      Country: 'US',
+      Country: 'US,NE',
       Price: 150_000,
       UnlockByExploration: 'true',
+      UnlockByRank: 1
+    }
+  },
+  wheels_derry_special_15c177_dlc_9: {
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
+      BodyFriction: 3,
+      BodyFrictionAsphalt: 1,
+      SubstanceFriction: 1.7,
+      IsIgnoreIce: 'false'
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > GameData': {
+      Price: 5500,
+      UnlockByExploration: 'false',
       UnlockByRank: 1
     }
   },
@@ -9968,91 +10077,6 @@ export default {
       UnlockByRank: 1
     }
   },
-  wheels_derry_special_15c177_dlc_9: {
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
-      BodyFriction: 3,
-      BodyFrictionAsphalt: 1,
-      SubstanceFriction: 1.7,
-      IsIgnoreIce: 'false'
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > GameData': {
-      Price: 5500,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    }
-  },
-  e_us_special_dlc_9: {
-    'EngineVariants > Engine:nth-of-type(1)': {
-      CriticalDamageThreshold: 0.6,
-      DamageCapacity: 240,
-      DamagedConsumptionModifier: 1.2,
-      Responsiveness: 0.04,
-      FuelConsumption: 9.5,
-      Torque: 200_000,
-      DamagedMinTorqueMultiplier: 1,
-      DamagedMaxTorqueMultiplier: 0.7,
-      BrakesDelay: 0.5,
-      MaxDeltaAngVel: 0.01
-    },
-    'EngineVariants > Engine:nth-of-type(1) > GameData': {
-      Price: 7500,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    },
-    'EngineVariants > Engine:nth-of-type(2)': {
-      CriticalDamageThreshold: 0.6,
-      DamageCapacity: 260,
-      DamagedConsumptionModifier: 1.4,
-      Responsiveness: 0.04,
-      FuelConsumption: 11,
-      Torque: 220_000,
-      DamagedMinTorqueMultiplier: 1,
-      DamagedMaxTorqueMultiplier: 0.8,
-      BrakesDelay: 0.5,
-      MaxDeltaAngVel: 0.01
-    },
-    'EngineVariants > Engine:nth-of-type(2) > GameData': {
-      Price: 18_800,
-      UnlockByExploration: 'true',
-      UnlockByRank: 1
-    },
-    'EngineVariants > Engine:nth-of-type(3)': {
-      CriticalDamageThreshold: 0.5,
-      DamageCapacity: 280,
-      DamagedConsumptionModifier: 1.5,
-      Responsiveness: 0.04,
-      FuelConsumption: 12.5,
-      Torque: 250_000,
-      DamagedMinTorqueMultiplier: 1,
-      DamagedMaxTorqueMultiplier: 0.7,
-      BrakesDelay: 0.5,
-      MaxDeltaAngVel: 0.01
-    },
-    'EngineVariants > Engine:nth-of-type(3) > GameData': {
-      Price: 22_500,
-      UnlockByExploration: 'true',
-      UnlockByRank: 1
-    }
-  },
-  e_us_truck_modern_derry_special_dlc_9: {
-    'EngineVariants > Engine:nth-of-type(1)': {
-      CriticalDamageThreshold: 0.4,
-      DamageCapacity: 300,
-      DamagedConsumptionModifier: 1.5,
-      Responsiveness: 0.04,
-      FuelConsumption: 12,
-      Torque: 280_000,
-      DamagedMinTorqueMultiplier: 1,
-      DamagedMaxTorqueMultiplier: 0.7,
-      BrakesDelay: 0.3,
-      MaxDeltaAngVel: 0.05
-    },
-    'EngineVariants > Engine:nth-of-type(1) > GameData': {
-      Price: 25_000,
-      UnlockByExploration: 'true',
-      UnlockByRank: 1
-    }
-  },
   s_derry_special_15c177_dlc_9: {
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
       CriticalDamageThreshold: 0.7,
@@ -10063,7 +10087,6 @@ export default {
       Strength: 0.15,
       Damping: 0.9,
       SuspensionMin: -0.22,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.2
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
@@ -10071,7 +10094,6 @@ export default {
       Strength: 0.1,
       Damping: 0.65,
       SuspensionMin: -0.09,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.2
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
@@ -10088,7 +10110,6 @@ export default {
       Strength: 0.1,
       Damping: 0.4,
       SuspensionMin: -0.15,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.2
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
@@ -10096,7 +10117,6 @@ export default {
       Strength: 0.15,
       Damping: 0.5,
       SuspensionMin: -0.1,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.2
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
@@ -10219,6 +10239,78 @@ export default {
       UnlockByRank: 13
     }
   },
+  e_us_special_dlc_9: {
+    'EngineVariants > Engine:nth-of-type(1)': {
+      CriticalDamageThreshold: 0.6,
+      DamageCapacity: 240,
+      DamagedConsumptionModifier: 1.2,
+      Responsiveness: 0.04,
+      FuelConsumption: 9.5,
+      Torque: 200_000,
+      DamagedMinTorqueMultiplier: 1,
+      DamagedMaxTorqueMultiplier: 0.7,
+      BrakesDelay: 0.5,
+      MaxDeltaAngVel: 0.01
+    },
+    'EngineVariants > Engine:nth-of-type(1) > GameData': {
+      Price: 7500,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    },
+    'EngineVariants > Engine:nth-of-type(2)': {
+      CriticalDamageThreshold: 0.6,
+      DamageCapacity: 260,
+      DamagedConsumptionModifier: 1.4,
+      Responsiveness: 0.04,
+      FuelConsumption: 11,
+      Torque: 220_000,
+      DamagedMinTorqueMultiplier: 1,
+      DamagedMaxTorqueMultiplier: 0.8,
+      BrakesDelay: 0.5,
+      MaxDeltaAngVel: 0.01
+    },
+    'EngineVariants > Engine:nth-of-type(2) > GameData': {
+      Price: 18_800,
+      UnlockByExploration: 'true',
+      UnlockByRank: 1
+    },
+    'EngineVariants > Engine:nth-of-type(3)': {
+      CriticalDamageThreshold: 0.5,
+      DamageCapacity: 280,
+      DamagedConsumptionModifier: 1.5,
+      Responsiveness: 0.04,
+      FuelConsumption: 12.5,
+      Torque: 250_000,
+      DamagedMinTorqueMultiplier: 1,
+      DamagedMaxTorqueMultiplier: 0.7,
+      BrakesDelay: 0.5,
+      MaxDeltaAngVel: 0.01
+    },
+    'EngineVariants > Engine:nth-of-type(3) > GameData': {
+      Price: 22_500,
+      UnlockByExploration: 'true',
+      UnlockByRank: 1
+    }
+  },
+  e_us_truck_modern_derry_special_dlc_9: {
+    'EngineVariants > Engine:nth-of-type(1)': {
+      CriticalDamageThreshold: 0.4,
+      DamageCapacity: 300,
+      DamagedConsumptionModifier: 1.5,
+      Responsiveness: 0.04,
+      FuelConsumption: 12,
+      Torque: 280_000,
+      DamagedMinTorqueMultiplier: 1,
+      DamagedMaxTorqueMultiplier: 0.7,
+      BrakesDelay: 0.3,
+      MaxDeltaAngVel: 0.05
+    },
+    'EngineVariants > Engine:nth-of-type(1) > GameData': {
+      Price: 25_000,
+      UnlockByExploration: 'true',
+      UnlockByRank: 1
+    }
+  },
   trailer_planter_dlc_8: {
     'Truck > TruckData': {
       FuelCapacity: 0,
@@ -10241,6 +10333,9 @@ export default {
     'Truck > TruckData > Wheels > Wheel:nth-of-type(4)': {
       SuspensionHeight: 0,
       SuspensionStrength: 0.9
+    },
+    'Truck > PhysicsModel > Body': {
+      Mass: 500
     },
     'Truck > GameData': {
       Price: 5700
@@ -10285,6 +10380,9 @@ export default {
       SuspensionHeight: 0.02,
       SuspensionStrength: 0.3
     },
+    'Truck > PhysicsModel > Body': {
+      Mass: 1000
+    },
     'Truck > GameData': {
       Price: 2900
     }
@@ -10303,6 +10401,9 @@ export default {
     'Truck > TruckData > Wheels > Wheel:nth-of-type(2)': {
       SuspensionHeight: 0,
       SuspensionStrength: 0.9
+    },
+    'Truck > PhysicsModel > Body': {
+      Mass: 500
     },
     'Truck > GameData': {
       Price: 4200
@@ -10377,11 +10478,14 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(5)': {
       Scale: 0.56
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(0; 0; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 100
     },
     'Truck > GameData': {
-      Country: 'US',
+      Country: 'US,NE',
       Price: 120_600,
       UnlockByExploration: 'false',
       UnlockByRank: 1
@@ -10389,9 +10493,9 @@ export default {
   },
   winches_heavy_trucks_dlc_8: {
     'WinchVariants > Winch:nth-of-type(1)': {
-      Length: 20,
+      Length: 14,
       StrengthMult: 1,
-      IsEngineIgnitionRequired: 'false'
+      IsEngineIgnitionRequired: 'true'
     },
     'WinchVariants > Winch:nth-of-type(1) > GameData': {
       Price: 1000,
@@ -10680,6 +10784,84 @@ export default {
       UnlockByRank: 1
     }
   },
+  s_western_star_nf1430_dlc_8: {
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
+      CriticalDamageThreshold: 0.6,
+      DamageCapacity: 280
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(1)': {
+      Height: 0.2,
+      Strength: 0.15,
+      Damping: 0.15,
+      SuspensionMin: -0.25,
+      BrokenSuspensionMax: 0.2
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
+      Height: 0.15,
+      Strength: 0.09,
+      Damping: 0.2,
+      SuspensionMin: -0.17,
+      BrokenSuspensionMax: 0.15
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(3)': {
+      Height: 0.09,
+      Strength: 0.07,
+      Damping: 0.6,
+      SuspensionMin: -0.17,
+      BrokenSuspensionMax: 0.2
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
+      Price: 7700,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    }
+  },
+  wheels_heavy_double2_dlc_8: {
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
+      BodyFriction: 3,
+      BodyFrictionAsphalt: 0.8,
+      SubstanceFriction: 1.9,
+      IsIgnoreIce: 'false'
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > GameData': {
+      Price: 5900,
+      UnlockByExploration: 'false',
+      UnlockByRank: 11
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(2) > WheelFriction': {
+      BodyFriction: 3.2,
+      BodyFrictionAsphalt: 0.8,
+      SubstanceFriction: 1.5,
+      IsIgnoreIce: 'false'
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(2) > GameData': {
+      Price: 6200,
+      UnlockByExploration: 'false',
+      UnlockByRank: 11
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(3) > WheelFriction': {
+      BodyFriction: 3,
+      BodyFrictionAsphalt: 1,
+      SubstanceFriction: 1.5,
+      IsIgnoreIce: 'false'
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(3) > GameData': {
+      Price: 6800,
+      UnlockByExploration: 'false',
+      UnlockByRank: 11
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(4) > WheelFriction': {
+      BodyFriction: 3,
+      BodyFrictionAsphalt: 1.2,
+      SubstanceFriction: 1.3,
+      IsIgnoreIce: 'true'
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(4) > GameData': {
+      Price: 6800,
+      UnlockByExploration: 'false',
+      UnlockByRank: 14
+    }
+  },
   wheels_heavy_double1_dlc_8: {
     'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
       BodyFriction: 1,
@@ -10748,87 +10930,6 @@ export default {
       UnlockByRank: 9
     }
   },
-  wheels_heavy_double2_dlc_8: {
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
-      BodyFriction: 3,
-      BodyFrictionAsphalt: 0.8,
-      SubstanceFriction: 1.9,
-      IsIgnoreIce: 'false'
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > GameData': {
-      Price: 5900,
-      UnlockByExploration: 'false',
-      UnlockByRank: 11
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(2) > WheelFriction': {
-      BodyFriction: 3.2,
-      BodyFrictionAsphalt: 0.8,
-      SubstanceFriction: 1.5,
-      IsIgnoreIce: 'false'
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(2) > GameData': {
-      Price: 6200,
-      UnlockByExploration: 'false',
-      UnlockByRank: 11
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(3) > WheelFriction': {
-      BodyFriction: 3,
-      BodyFrictionAsphalt: 1,
-      SubstanceFriction: 1.5,
-      IsIgnoreIce: 'false'
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(3) > GameData': {
-      Price: 6800,
-      UnlockByExploration: 'false',
-      UnlockByRank: 11
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(4) > WheelFriction': {
-      BodyFriction: 3,
-      BodyFrictionAsphalt: 1.2,
-      SubstanceFriction: 1.3,
-      IsIgnoreIce: 'true'
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(4) > GameData': {
-      Price: 6800,
-      UnlockByExploration: 'false',
-      UnlockByRank: 14
-    }
-  },
-  s_western_star_nf1430_dlc_8: {
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
-      CriticalDamageThreshold: 0.6,
-      DamageCapacity: 280
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(1)': {
-      Height: 0.2,
-      Strength: 0.15,
-      Damping: 0.15,
-      SuspensionMin: -0.25,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.2
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
-      Height: 0.15,
-      Strength: 0.09,
-      Damping: 0.2,
-      SuspensionMin: -0.17,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.15
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(3)': {
-      Height: 0.09,
-      Strength: 0.07,
-      Damping: 0.6,
-      SuspensionMin: -0.17,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.2
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
-      Price: 7700,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    }
-  },
   western_star_nf1424_dlc_8: {
     'Truck > GameData > UiDesc': {
       UiName: 'UI_VEHICLE_WESTERN_STAR_NF1424_NAME',
@@ -10891,89 +10992,15 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(8)': {
       Scale: 0.61
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(-0.9; 0; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 100
     },
     'Truck > GameData': {
-      Country: 'US',
+      Country: 'US,NE',
       Price: 113_500,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    }
-  },
-  s_western_star_nf1424_dlc_8: {
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
-      CriticalDamageThreshold: 0.6,
-      DamageCapacity: 280
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(1)': {
-      Height: 0.16,
-      Strength: 0.12,
-      Damping: 0.12,
-      SuspensionMin: -0.12,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.2
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
-      Height: 0.07,
-      Strength: 0.1,
-      Damping: 0.2,
-      SuspensionMin: -0.15,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.15
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
-      Price: 6800,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2)': {
-      CriticalDamageThreshold: 0.5,
-      DamageCapacity: 240
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(1)': {
-      Height: 0.3,
-      Strength: 0.07,
-      Damping: 0.3,
-      SuspensionMin: -0.3,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.25
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
-      Height: 0.23,
-      Strength: 0.08,
-      Damping: 0.3,
-      SuspensionMin: -0.25,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.25
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
-      Price: 7500,
-      UnlockByExploration: 'false',
-      UnlockByRank: 17
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(3)': {
-      CriticalDamageThreshold: 0.55,
-      DamageCapacity: 220
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(3) > Suspension:nth-of-type(1)': {
-      Height: 0.17,
-      Strength: 0.1,
-      Damping: '',
-      SuspensionMin: -0.2,
-      SuspensionMax: 0.3,
-      BrokenSuspensionMax: 0.2
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(3) > Suspension:nth-of-type(2)': {
-      Height: 0.1,
-      Strength: 0.1,
-      Damping: '',
-      SuspensionMin: -0.2,
-      SuspensionMax: 0.3,
-      BrokenSuspensionMax: ''
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(3) > GameData': {
-      Price: 8300,
       UnlockByExploration: 'false',
       UnlockByRank: 1
     }
@@ -11089,10 +11116,86 @@ export default {
       UnlockByExploration: 'false',
       UnlockByRank: 12
     },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(11) > WheelFriction': {
+      BodyFriction: 3,
+      BodyFrictionAsphalt: 1.2,
+      SubstanceFriction: 1.3,
+      IsIgnoreIce: 'true'
+    },
     'TruckWheels > TruckTires > TruckTire:nth-of-type(11) > GameData': {
       Price: 6400,
       UnlockByExploration: 'false',
       UnlockByRank: 12
+    }
+  },
+  s_western_star_nf1424_dlc_8: {
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
+      CriticalDamageThreshold: 0.6,
+      DamageCapacity: 280
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(1)': {
+      Height: 0.16,
+      Strength: 0.12,
+      Damping: 0.12,
+      SuspensionMin: -0.12,
+      BrokenSuspensionMax: 0.2
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
+      Height: 0.07,
+      Strength: 0.1,
+      Damping: 0.2,
+      SuspensionMin: -0.15,
+      BrokenSuspensionMax: 0.15
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
+      Price: 6800,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2)': {
+      CriticalDamageThreshold: 0.5,
+      DamageCapacity: 240
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(1)': {
+      Height: 0.3,
+      Strength: 0.07,
+      Damping: 0.3,
+      SuspensionMin: -0.3,
+      BrokenSuspensionMax: 0.25
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
+      Height: 0.23,
+      Strength: 0.08,
+      Damping: 0.3,
+      SuspensionMin: -0.25,
+      BrokenSuspensionMax: 0.25
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
+      Price: 7500,
+      UnlockByExploration: 'false',
+      UnlockByRank: 17
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(3)': {
+      CriticalDamageThreshold: 0.55,
+      DamageCapacity: 220
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(3) > Suspension:nth-of-type(1)': {
+      Height: 0.17,
+      Strength: 0.1,
+      SuspensionMin: -0.2,
+      SuspensionMax: 0.3,
+      BrokenSuspensionMax: 0.2
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(3) > Suspension:nth-of-type(2)': {
+      Height: 0.1,
+      Strength: 0.1,
+      SuspensionMin: -0.2,
+      SuspensionMax: 0.3
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(3) > GameData': {
+      Price: 8300,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
     }
   },
   step_39331_pike_dlc_8: {
@@ -11172,6 +11275,9 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(13)': {
       Scale: 0.55
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(-2.5; 0; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 50
     },
@@ -11184,9 +11290,9 @@ export default {
   },
   winches_medium_trucks_dlc_8: {
     'WinchVariants > Winch:nth-of-type(1)': {
-      Length: 20,
+      Length: 14,
       StrengthMult: 1,
-      IsEngineIgnitionRequired: 'false'
+      IsEngineIgnitionRequired: 'true'
     },
     'WinchVariants > Winch:nth-of-type(1) > GameData': {
       Price: 1000,
@@ -11341,7 +11447,6 @@ export default {
       Strength: 0.04,
       Damping: 0.2,
       SuspensionMin: -0.25,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.1
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
@@ -11349,7 +11454,6 @@ export default {
       Strength: 0.06,
       Damping: 0.3,
       SuspensionMin: -0.25,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.1
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
@@ -11366,7 +11470,6 @@ export default {
       Strength: 0.05,
       Damping: 0.3,
       SuspensionMin: -0.25,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.1
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
@@ -11374,7 +11477,6 @@ export default {
       Strength: 0.07,
       Damping: 0.3,
       SuspensionMin: -0.25,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.1
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
@@ -11457,11 +11559,14 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(12)': {
       Scale: 0.49
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(0; -0.3; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 50
     },
     'Truck > GameData': {
-      Country: 'US',
+      Country: 'US,NE',
       Price: 25_800,
       UnlockByExploration: 'false',
       UnlockByRank: 1
@@ -11516,6 +11621,59 @@ export default {
     'WinchVariants > Winch:nth-of-type(5) > GameData': {
       Price: 9400,
       UnlockByExploration: 'false',
+      UnlockByRank: 1
+    }
+  },
+  e_us_scout_modern_dlc_8: {
+    'EngineVariants > Engine:nth-of-type(1)': {
+      CriticalDamageThreshold: 0.7,
+      DamageCapacity: 100,
+      DamagedConsumptionModifier: 1.2,
+      Responsiveness: 0.04,
+      FuelConsumption: 0.9,
+      Torque: 90_000,
+      DamagedMinTorqueMultiplier: 1,
+      DamagedMaxTorqueMultiplier: 0.6,
+      BrakesDelay: 0.5,
+      MaxDeltaAngVel: 0.01
+    },
+    'EngineVariants > Engine:nth-of-type(1) > GameData': {
+      Price: 1900,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    },
+    'EngineVariants > Engine:nth-of-type(2)': {
+      CriticalDamageThreshold: 0.7,
+      DamageCapacity: 120,
+      DamagedConsumptionModifier: 1.3,
+      Responsiveness: 0.04,
+      FuelConsumption: 1.1,
+      Torque: 110_000,
+      DamagedMinTorqueMultiplier: 1,
+      DamagedMaxTorqueMultiplier: 0.7,
+      BrakesDelay: 0.5,
+      MaxDeltaAngVel: 0.01
+    },
+    'EngineVariants > Engine:nth-of-type(2) > GameData': {
+      Price: 5500,
+      UnlockByExploration: 'true',
+      UnlockByRank: 1
+    },
+    'EngineVariants > Engine:nth-of-type(3)': {
+      CriticalDamageThreshold: 0.7,
+      DamageCapacity: 140,
+      DamagedConsumptionModifier: 1.4,
+      Responsiveness: 0.04,
+      FuelConsumption: 1.3,
+      Torque: 120_000,
+      DamagedMinTorqueMultiplier: 1,
+      DamagedMaxTorqueMultiplier: 0.8,
+      BrakesDelay: 0.5,
+      MaxDeltaAngVel: 0.01
+    },
+    'EngineVariants > Engine:nth-of-type(3) > GameData': {
+      Price: 6600,
+      UnlockByExploration: 'true',
       UnlockByRank: 1
     }
   },
@@ -11709,59 +11867,6 @@ export default {
       UnlockByRank: 1
     }
   },
-  e_us_scout_modern_dlc_8: {
-    'EngineVariants > Engine:nth-of-type(1)': {
-      CriticalDamageThreshold: 0.7,
-      DamageCapacity: 100,
-      DamagedConsumptionModifier: 1.2,
-      Responsiveness: 0.04,
-      FuelConsumption: 0.9,
-      Torque: 90_000,
-      DamagedMinTorqueMultiplier: 1,
-      DamagedMaxTorqueMultiplier: 0.6,
-      BrakesDelay: 0.5,
-      MaxDeltaAngVel: 0.01
-    },
-    'EngineVariants > Engine:nth-of-type(1) > GameData': {
-      Price: 1900,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    },
-    'EngineVariants > Engine:nth-of-type(2)': {
-      CriticalDamageThreshold: 0.7,
-      DamageCapacity: 120,
-      DamagedConsumptionModifier: 1.3,
-      Responsiveness: 0.04,
-      FuelConsumption: 1.1,
-      Torque: 110_000,
-      DamagedMinTorqueMultiplier: 1,
-      DamagedMaxTorqueMultiplier: 0.7,
-      BrakesDelay: 0.5,
-      MaxDeltaAngVel: 0.01
-    },
-    'EngineVariants > Engine:nth-of-type(2) > GameData': {
-      Price: 5500,
-      UnlockByExploration: 'true',
-      UnlockByRank: 1
-    },
-    'EngineVariants > Engine:nth-of-type(3)': {
-      CriticalDamageThreshold: 0.7,
-      DamageCapacity: 140,
-      DamagedConsumptionModifier: 1.4,
-      Responsiveness: 0.04,
-      FuelConsumption: 1.3,
-      Torque: 120_000,
-      DamagedMinTorqueMultiplier: 1,
-      DamagedMaxTorqueMultiplier: 0.8,
-      BrakesDelay: 0.5,
-      MaxDeltaAngVel: 0.01
-    },
-    'EngineVariants > Engine:nth-of-type(3) > GameData': {
-      Price: 6600,
-      UnlockByExploration: 'true',
-      UnlockByRank: 1
-    }
-  },
   wheels_rezvani_hercules_6x6_dlc_8: {
     'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
       BodyFriction: 2,
@@ -11771,58 +11876,6 @@ export default {
     },
     'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > GameData': {
       Price: 4500,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    }
-  },
-  s_rezvani_hercules_6x6_dlc_8: {
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
-      CriticalDamageThreshold: 0.7,
-      DamageCapacity: 80
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(1)': {
-      Height: 0.06,
-      Strength: 0.06,
-      Damping: 0.17,
-      SuspensionMin: -0.19,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.15
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
-      Height: 0.08,
-      Strength: 0.05,
-      Damping: 0.17,
-      SuspensionMin: -0.25,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.15
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
-      Price: 2700,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2)': {
-      CriticalDamageThreshold: 0.7,
-      DamageCapacity: 120
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(1)': {
-      Height: 0.18,
-      Strength: 0.05,
-      Damping: 0.2,
-      SuspensionMin: -0.28,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.15
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
-      Height: 0.2,
-      Strength: 0.04,
-      Damping: 0.2,
-      SuspensionMin: -0.37,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.15
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
-      Price: 5300,
       UnlockByExploration: 'false',
       UnlockByRank: 1
     }
@@ -11862,6 +11915,54 @@ export default {
       UnlockByRank: 1
     }
   },
+  s_rezvani_hercules_6x6_dlc_8: {
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
+      CriticalDamageThreshold: 0.7,
+      DamageCapacity: 80
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(1)': {
+      Height: 0.06,
+      Strength: 0.06,
+      Damping: 0.17,
+      SuspensionMin: -0.19,
+      BrokenSuspensionMax: 0.15
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
+      Height: 0.08,
+      Strength: 0.05,
+      Damping: 0.17,
+      SuspensionMin: -0.25,
+      BrokenSuspensionMax: 0.15
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
+      Price: 2700,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2)': {
+      CriticalDamageThreshold: 0.7,
+      DamageCapacity: 120
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(1)': {
+      Height: 0.18,
+      Strength: 0.05,
+      Damping: 0.2,
+      SuspensionMin: -0.28,
+      BrokenSuspensionMax: 0.15
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
+      Height: 0.2,
+      Strength: 0.04,
+      Damping: 0.2,
+      SuspensionMin: -0.37,
+      BrokenSuspensionMax: 0.15
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
+      Price: 5300,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    }
+  },
   wheels_scout2_dlc_8: {
     'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
       BodyFriction: 1.4,
@@ -11896,15 +11997,33 @@ export default {
       UnlockByExploration: 'false',
       UnlockByRank: 2
     },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(4) > WheelFriction': {
+      BodyFriction: 2,
+      BodyFrictionAsphalt: 1,
+      SubstanceFriction: 1.2,
+      IsIgnoreIce: 'false'
+    },
     'TruckWheels > TruckTires > TruckTire:nth-of-type(4) > GameData': {
       Price: 4200,
       UnlockByExploration: 'false',
       UnlockByRank: 4
     },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(5) > WheelFriction': {
+      BodyFriction: 3,
+      BodyFrictionAsphalt: 0.5,
+      SubstanceFriction: 1.6,
+      IsIgnoreIce: 'false'
+    },
     'TruckWheels > TruckTires > TruckTire:nth-of-type(5) > GameData': {
       Price: 5100,
       UnlockByExploration: 'false',
       UnlockByRank: 7
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(6) > WheelFriction': {
+      BodyFriction: 2,
+      BodyFrictionAsphalt: 0.9,
+      SubstanceFriction: 1.1,
+      IsIgnoreIce: 'true'
     },
     'TruckWheels > TruckTires > TruckTire:nth-of-type(6) > GameData': {
       Price: 5700,
@@ -11947,6 +12066,9 @@ export default {
     },
     'Truck > TruckData > CompatibleWheels:nth-of-type(2)': {
       Scale: 1
+    },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(0.5; 1; 0)'
     },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 50
@@ -12181,6 +12303,12 @@ export default {
     }
   },
   wheels_base_kirovets_k7m_dlc_8: {
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
+      BodyFriction: 1.7,
+      BodyFrictionAsphalt: 0.5,
+      SubstanceFriction: 3,
+      IsIgnoreIce: 'false'
+    },
     'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > GameData': {
       Price: 7500,
       UnlockByExploration: 'false',
@@ -12188,6 +12316,12 @@ export default {
     }
   },
   wheels_extend_kirovets_k7m_dlc_8: {
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
+      BodyFriction: 1.7,
+      BodyFrictionAsphalt: 0.5,
+      SubstanceFriction: 3,
+      IsIgnoreIce: 'false'
+    },
     'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > GameData': {
       Price: 7500,
       UnlockByExploration: 'true',
@@ -12232,6 +12366,9 @@ export default {
     },
     'Truck > TruckData > CompatibleWheels:nth-of-type(3)': {
       Scale: 0.8
+    },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(-0.5; -0.5; 0)'
     },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 50
@@ -12296,6 +12433,19 @@ export default {
       UnlockByRank: 1
     }
   },
+  wheels_kirovets_k700_dlc_8: {
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
+      BodyFriction: 1.7,
+      BodyFrictionAsphalt: 0.5,
+      SubstanceFriction: 3,
+      IsIgnoreIce: 'false'
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > GameData': {
+      Price: 7500,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    }
+  },
   s_kirovets_k700_dlc_8: {
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
       CriticalDamageThreshold: 0.6,
@@ -12312,7 +12462,6 @@ export default {
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
       Height: 0,
       Strength: 0.9,
-      Damping: '',
       SuspensionMin: 0,
       SuspensionMax: 0,
       BrokenSuspensionMax: 0.1
@@ -12323,14 +12472,13 @@ export default {
       UnlockByRank: 1
     }
   },
-  wheels_kirovets_k700_dlc_8: {
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > GameData': {
-      Price: 7500,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    }
-  },
   wheels_superheavy_single_dlc_8: {
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
+      BodyFriction: 1.7,
+      BodyFrictionAsphalt: 0.5,
+      SubstanceFriction: 3,
+      IsIgnoreIce: 'false'
+    },
     'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > GameData': {
       Price: 7500,
       UnlockByExploration: 'false',
@@ -12432,11 +12580,14 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(8)': {
       Scale: 0.56
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(-1.5; -0.2; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 100
     },
     'Truck > GameData': {
-      Country: 'US',
+      Country: 'US,NE',
       Price: 115_700,
       UnlockByExploration: 'false',
       UnlockByRank: 1
@@ -12444,9 +12595,9 @@ export default {
   },
   winches_heavy_trucks_dlc_7: {
     'WinchVariants > Winch:nth-of-type(1)': {
-      Length: 20,
+      Length: 14,
       StrengthMult: 1,
-      IsEngineIgnitionRequired: 'false'
+      IsEngineIgnitionRequired: 'true'
     },
     'WinchVariants > Winch:nth-of-type(1) > GameData': {
       Price: 1000,
@@ -12846,6 +12997,12 @@ export default {
       UnlockByExploration: 'false',
       UnlockByRank: 12
     },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(11) > WheelFriction': {
+      BodyFriction: 3,
+      BodyFrictionAsphalt: 1.2,
+      SubstanceFriction: 1.3,
+      IsIgnoreIce: 'true'
+    },
     'TruckWheels > TruckTires > TruckTire:nth-of-type(11) > GameData': {
       Price: 6400,
       UnlockByExploration: 'false',
@@ -12862,7 +13019,6 @@ export default {
       Strength: 0.07,
       Damping: 0.15,
       SuspensionMin: -0.17,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.2
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
@@ -12870,7 +13026,6 @@ export default {
       Strength: 0.08,
       Damping: 0.2,
       SuspensionMin: -0.21,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.15
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
@@ -12887,7 +13042,6 @@ export default {
       Strength: 0.09,
       Damping: 0.05,
       SuspensionMin: -0.17,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.2
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
@@ -12895,7 +13049,6 @@ export default {
       Strength: 0.1,
       Damping: 0.5,
       SuspensionMin: -0.21,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.15
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
@@ -12969,6 +13122,9 @@ export default {
     },
     'Truck > TruckData > CompatibleWheels:nth-of-type(12)': {
       Scale: 0.39
+    },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(-0.3; -0.2; 0)'
     },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 50
@@ -13374,15 +13530,33 @@ export default {
       UnlockByExploration: 'false',
       UnlockByRank: 2
     },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(4) > WheelFriction': {
+      BodyFriction: 2,
+      BodyFrictionAsphalt: 1,
+      SubstanceFriction: 1.2,
+      IsIgnoreIce: 'false'
+    },
     'TruckWheels > TruckTires > TruckTire:nth-of-type(4) > GameData': {
       Price: 4200,
       UnlockByExploration: 'false',
       UnlockByRank: 4
     },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(5) > WheelFriction': {
+      BodyFriction: 3,
+      BodyFrictionAsphalt: 0.5,
+      SubstanceFriction: 1.6,
+      IsIgnoreIce: 'false'
+    },
     'TruckWheels > TruckTires > TruckTire:nth-of-type(5) > GameData': {
       Price: 5100,
       UnlockByExploration: 'false',
       UnlockByRank: 7
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(6) > WheelFriction': {
+      BodyFriction: 2,
+      BodyFrictionAsphalt: 0.9,
+      SubstanceFriction: 1.1,
+      IsIgnoreIce: 'true'
     },
     'TruckWheels > TruckTires > TruckTire:nth-of-type(6) > GameData': {
       Price: 5700,
@@ -13487,6 +13661,9 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(5)': {
       Scale: 0.6
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(0; 0; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 100
     },
@@ -13499,9 +13676,9 @@ export default {
   },
   winches_medium_trucks_dlc_7: {
     'WinchVariants > Winch:nth-of-type(1)': {
-      Length: 20,
+      Length: 14,
       StrengthMult: 1,
-      IsEngineIgnitionRequired: 'false'
+      IsEngineIgnitionRequired: 'true'
     },
     'WinchVariants > Winch:nth-of-type(1) > GameData': {
       Price: 1000,
@@ -13539,6 +13716,19 @@ export default {
       UnlockByRank: 16
     }
   },
+  wheels_azov_43_191_sprinter_dlc_7: {
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
+      BodyFriction: 1.5,
+      BodyFrictionAsphalt: 1.5,
+      SubstanceFriction: 2,
+      IsIgnoreIce: 'false'
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > GameData': {
+      Price: 4900,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    }
+  },
   s_azov_43_191_sprinter_dlc_7: {
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
       CriticalDamageThreshold: 0.6,
@@ -13549,7 +13739,6 @@ export default {
       Strength: 0.06,
       Damping: 0.4,
       SuspensionMin: -0.25,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.2
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
@@ -13557,150 +13746,10 @@ export default {
       Strength: 0.08,
       Damping: 0.4,
       SuspensionMin: -0.25,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.2
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
       Price: 6400,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    }
-  },
-  gearboxes_azov_sprinter_dlc_7: {
-    'GearboxVariants > Gearbox:nth-of-type(1)': {
-      AWDConsumptionModifier: 1,
-      CriticalDamageThreshold: 0.6,
-      DamageCapacity: 220,
-      DamagedConsumptionModifier: 1.6,
-      FuelConsumption: 5,
-      IdleFuelModifier: 0.3
-    },
-    'GearboxVariants > Gearbox:nth-of-type(1) > GameData > GearboxParams': {
-      IsManualLowGear: 'true',
-      IsHighGearExists: 'true',
-      IsLowerGearExists: 'true',
-      IsLowerPlusGearExists: 'false',
-      IsLowerMinusGearExists: 'false'
-    },
-    'GearboxVariants > Gearbox:nth-of-type(1) > ReverseGear': {
-      AngVel: 0.5,
-      FuelModifier: 1.9
-    },
-    'GearboxVariants > Gearbox:nth-of-type(1) > HighGear': {
-      AngVel: 7,
-      FuelModifier: 2.5
-    },
-    'GearboxVariants > Gearbox:nth-of-type(1) > Gear:nth-of-type(1)': {
-      AngVel: 2.1,
-      FuelModifier: 3
-    },
-    'GearboxVariants > Gearbox:nth-of-type(1) > Gear:nth-of-type(2)': {
-      AngVel: 3.5,
-      FuelModifier: 2.8
-    },
-    'GearboxVariants > Gearbox:nth-of-type(1) > Gear:nth-of-type(3)': {
-      AngVel: 5.1,
-      FuelModifier: 2.6
-    },
-    'GearboxVariants > Gearbox:nth-of-type(1) > Gear:nth-of-type(4)': {
-      AngVel: 7.3,
-      FuelModifier: 2.4
-    },
-    'GearboxVariants > Gearbox:nth-of-type(1) > Gear:nth-of-type(5)': {
-      AngVel: 9.2,
-      FuelModifier: 2.2
-    },
-    'GearboxVariants > Gearbox:nth-of-type(1) > Gear:nth-of-type(6)': {
-      AngVel: 11.6,
-      FuelModifier: 2.1
-    },
-    'GearboxVariants > Gearbox:nth-of-type(1) > GameData': {
-      Price: 5700,
-      UnlockByExploration: 'true',
-      UnlockByRank: 1
-    }
-  },
-  e_ru_truck_modern_dlc_7: {
-    'EngineVariants > Engine:nth-of-type(1)': {
-      CriticalDamageThreshold: 0.6,
-      DamageCapacity: 210,
-      DamagedConsumptionModifier: 1.2,
-      Responsiveness: 0.04,
-      FuelConsumption: 6,
-      Torque: 170_000,
-      DamagedMinTorqueMultiplier: 1,
-      DamagedMaxTorqueMultiplier: 0.8,
-      BrakesDelay: 0.5,
-      MaxDeltaAngVel: 0.01
-    },
-    'EngineVariants > Engine:nth-of-type(1) > GameData': {
-      Price: 3000,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    },
-    'EngineVariants > Engine:nth-of-type(2)': {
-      CriticalDamageThreshold: 0.6,
-      DamageCapacity: 230,
-      DamagedConsumptionModifier: 1.3,
-      Responsiveness: 0.04,
-      FuelConsumption: 7,
-      Torque: 190_000,
-      DamagedMinTorqueMultiplier: 1,
-      DamagedMaxTorqueMultiplier: 0.8,
-      BrakesDelay: 0.5,
-      MaxDeltaAngVel: 0.01
-    },
-    'EngineVariants > Engine:nth-of-type(2) > GameData': {
-      Price: 10_200,
-      UnlockByExploration: 'true',
-      UnlockByRank: 1
-    },
-    'EngineVariants > Engine:nth-of-type(3)': {
-      CriticalDamageThreshold: 0.6,
-      DamageCapacity: 250,
-      DamagedConsumptionModifier: 1.1,
-      Responsiveness: 0.04,
-      FuelConsumption: 8.5,
-      Torque: 210_000,
-      DamagedMinTorqueMultiplier: 1,
-      DamagedMaxTorqueMultiplier: 0.8,
-      BrakesDelay: 0.5,
-      MaxDeltaAngVel: 0.01
-    },
-    'EngineVariants > Engine:nth-of-type(3) > GameData': {
-      Price: 11_100,
-      UnlockByExploration: 'true',
-      UnlockByRank: 1
-    }
-  },
-  e_ru_azov_sprinter_dlc_7: {
-    'EngineVariants > Engine:nth-of-type(1)': {
-      CriticalDamageThreshold: 0.6,
-      DamageCapacity: 210,
-      DamagedConsumptionModifier: 1.2,
-      Responsiveness: 0.04,
-      FuelConsumption: 6,
-      Torque: 250_000,
-      DamagedMinTorqueMultiplier: 1,
-      DamagedMaxTorqueMultiplier: 0.8,
-      BrakesDelay: 0.5,
-      MaxDeltaAngVel: 0.1
-    },
-    'EngineVariants > Engine:nth-of-type(1) > GameData': {
-      Price: 10_900,
-      UnlockByExploration: 'true',
-      UnlockByRank: 1
-    }
-  },
-  wheels_azov_43_191_sprinter_dlc_7: {
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
-      BodyFriction: 1.5,
-      BodyFrictionAsphalt: 1.5,
-      SubstanceFriction: 2,
-      IsIgnoreIce: 'false'
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > GameData': {
-      Price: 4900,
       UnlockByExploration: 'false',
       UnlockByRank: 1
     }
@@ -13795,6 +13844,132 @@ export default {
       UnlockByRank: 14
     }
   },
+  e_ru_truck_modern_dlc_7: {
+    'EngineVariants > Engine:nth-of-type(1)': {
+      CriticalDamageThreshold: 0.6,
+      DamageCapacity: 210,
+      DamagedConsumptionModifier: 1.2,
+      Responsiveness: 0.04,
+      FuelConsumption: 6,
+      Torque: 170_000,
+      DamagedMinTorqueMultiplier: 1,
+      DamagedMaxTorqueMultiplier: 0.8,
+      BrakesDelay: 0.5,
+      MaxDeltaAngVel: 0.01
+    },
+    'EngineVariants > Engine:nth-of-type(1) > GameData': {
+      Price: 3000,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    },
+    'EngineVariants > Engine:nth-of-type(2)': {
+      CriticalDamageThreshold: 0.6,
+      DamageCapacity: 230,
+      DamagedConsumptionModifier: 1.3,
+      Responsiveness: 0.04,
+      FuelConsumption: 7,
+      Torque: 190_000,
+      DamagedMinTorqueMultiplier: 1,
+      DamagedMaxTorqueMultiplier: 0.8,
+      BrakesDelay: 0.5,
+      MaxDeltaAngVel: 0.01
+    },
+    'EngineVariants > Engine:nth-of-type(2) > GameData': {
+      Price: 10_200,
+      UnlockByExploration: 'true',
+      UnlockByRank: 1
+    },
+    'EngineVariants > Engine:nth-of-type(3)': {
+      CriticalDamageThreshold: 0.6,
+      DamageCapacity: 250,
+      DamagedConsumptionModifier: 1.1,
+      Responsiveness: 0.04,
+      FuelConsumption: 8.5,
+      Torque: 210_000,
+      DamagedMinTorqueMultiplier: 1,
+      DamagedMaxTorqueMultiplier: 0.8,
+      BrakesDelay: 0.5,
+      MaxDeltaAngVel: 0.01
+    },
+    'EngineVariants > Engine:nth-of-type(3) > GameData': {
+      Price: 11_100,
+      UnlockByExploration: 'true',
+      UnlockByRank: 1
+    }
+  },
+  e_ru_azov_sprinter_dlc_7: {
+    'EngineVariants > Engine:nth-of-type(1)': {
+      CriticalDamageThreshold: 0.6,
+      DamageCapacity: 210,
+      DamagedConsumptionModifier: 1.2,
+      Responsiveness: 0.04,
+      FuelConsumption: 6,
+      Torque: 250_000,
+      DamagedMinTorqueMultiplier: 1,
+      DamagedMaxTorqueMultiplier: 0.8,
+      BrakesDelay: 0.5,
+      MaxDeltaAngVel: 0.1
+    },
+    'EngineVariants > Engine:nth-of-type(1) > GameData': {
+      Price: 10_900,
+      UnlockByExploration: 'true',
+      UnlockByRank: 1
+    }
+  },
+  gearboxes_azov_sprinter_dlc_7: {
+    'GearboxVariants > Gearbox:nth-of-type(1)': {
+      AWDConsumptionModifier: 1,
+      CriticalDamageThreshold: 0.6,
+      DamageCapacity: 220,
+      DamagedConsumptionModifier: 1.6,
+      FuelConsumption: 5,
+      IdleFuelModifier: 0.3
+    },
+    'GearboxVariants > Gearbox:nth-of-type(1) > GameData > GearboxParams': {
+      IsManualLowGear: 'true',
+      IsHighGearExists: 'true',
+      IsLowerGearExists: 'true',
+      IsLowerPlusGearExists: 'false',
+      IsLowerMinusGearExists: 'false'
+    },
+    'GearboxVariants > Gearbox:nth-of-type(1) > ReverseGear': {
+      AngVel: 0.5,
+      FuelModifier: 1.9
+    },
+    'GearboxVariants > Gearbox:nth-of-type(1) > HighGear': {
+      AngVel: 7,
+      FuelModifier: 2.5
+    },
+    'GearboxVariants > Gearbox:nth-of-type(1) > Gear:nth-of-type(1)': {
+      AngVel: 2.1,
+      FuelModifier: 3
+    },
+    'GearboxVariants > Gearbox:nth-of-type(1) > Gear:nth-of-type(2)': {
+      AngVel: 3.5,
+      FuelModifier: 2.8
+    },
+    'GearboxVariants > Gearbox:nth-of-type(1) > Gear:nth-of-type(3)': {
+      AngVel: 5.1,
+      FuelModifier: 2.6
+    },
+    'GearboxVariants > Gearbox:nth-of-type(1) > Gear:nth-of-type(4)': {
+      AngVel: 7.3,
+      FuelModifier: 2.4
+    },
+    'GearboxVariants > Gearbox:nth-of-type(1) > Gear:nth-of-type(5)': {
+      AngVel: 9.2,
+      FuelModifier: 2.2
+    },
+    'GearboxVariants > Gearbox:nth-of-type(1) > Gear:nth-of-type(6)': {
+      AngVel: 11.6,
+      FuelModifier: 2.1
+    },
+    'GearboxVariants > Gearbox:nth-of-type(1) > GameData': {
+      Price: 5700,
+      UnlockByExploration: 'true',
+      UnlockByRank: 1
+    }
+  },
   scout_trailer_offroad_tent_dlc_6: {
     'Truck > TruckData': {
       FuelCapacity: 0,
@@ -13817,6 +13992,9 @@ export default {
     'Truck > TruckData > Wheels > Wheel:nth-of-type(4)': {
       SuspensionHeight: 0.1,
       SuspensionStrength: 0.33
+    },
+    'Truck > PhysicsModel > Body': {
+      Mass: 600
     },
     'Truck > GameData': {
       Price: 3400
@@ -13845,6 +14023,9 @@ export default {
       SuspensionHeight: 0.1,
       SuspensionStrength: 0.33
     },
+    'Truck > PhysicsModel > Body': {
+      Mass: 800
+    },
     'Truck > GameData': {
       Price: 3400
     }
@@ -13855,6 +14036,9 @@ export default {
       WaterCapacity: 0,
       RepairsCapacity: 0,
       WheelRepairsCapacity: 0
+    },
+    'Truck > GameData > AddonSlots': {
+      Quantity: 2
     },
     'Truck > TruckData > Wheels > Wheel:nth-of-type(1)': {
       SuspensionHeight: 0.1,
@@ -13871,6 +14055,9 @@ export default {
     'Truck > TruckData > Wheels > Wheel:nth-of-type(4)': {
       SuspensionHeight: 0.1,
       SuspensionStrength: 0.33
+    },
+    'Truck > PhysicsModel > Body': {
+      Mass: 600
     },
     'Truck > GameData': {
       Price: 3400
@@ -13947,6 +14134,9 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(11)': {
       Scale: 0.64
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(-2.4; 0; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 50
     },
@@ -13959,9 +14149,9 @@ export default {
   },
   winches_medium_trucks_dlc_6: {
     'WinchVariants > Winch:nth-of-type(1)': {
-      Length: 20,
+      Length: 14,
       StrengthMult: 1,
-      IsEngineIgnitionRequired: 'false'
+      IsEngineIgnitionRequired: 'true'
     },
     'WinchVariants > Winch:nth-of-type(1) > GameData': {
       Price: 1000,
@@ -14250,58 +14440,6 @@ export default {
       UnlockByRank: 1
     }
   },
-  s_tayga_6455b_dlc_6: {
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
-      CriticalDamageThreshold: 0.5,
-      DamageCapacity: 200
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(1)': {
-      Height: 0.13,
-      Strength: 0.05,
-      Damping: 0.1,
-      SuspensionMin: -0.4,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.3
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
-      Height: 0.086,
-      Strength: 0.063,
-      Damping: 0.15,
-      SuspensionMin: -0.18,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.3
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
-      Price: 4700,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2)': {
-      CriticalDamageThreshold: 0.6,
-      DamageCapacity: 240
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(1)': {
-      Height: 0.2,
-      Strength: 0.04,
-      Damping: 0.2,
-      SuspensionMin: -0.4,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.3
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
-      Height: 0.2,
-      Strength: 0.025,
-      Damping: 0.2,
-      SuspensionMin: -0.3,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.3
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
-      Price: 9400,
-      UnlockByExploration: 'true',
-      UnlockByRank: 1
-    }
-  },
   wheels_heavy_single_dlc_6: {
     'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
       BodyFriction: 1.5,
@@ -14416,6 +14554,54 @@ export default {
       UnlockByRank: 13
     }
   },
+  s_tayga_6455b_dlc_6: {
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
+      CriticalDamageThreshold: 0.5,
+      DamageCapacity: 200
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(1)': {
+      Height: 0.13,
+      Strength: 0.05,
+      Damping: 0.1,
+      SuspensionMin: -0.4,
+      BrokenSuspensionMax: 0.3
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
+      Height: 0.086,
+      Strength: 0.063,
+      Damping: 0.15,
+      SuspensionMin: -0.18,
+      BrokenSuspensionMax: 0.3
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
+      Price: 4700,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2)': {
+      CriticalDamageThreshold: 0.6,
+      DamageCapacity: 240
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(1)': {
+      Height: 0.2,
+      Strength: 0.04,
+      Damping: 0.2,
+      SuspensionMin: -0.4,
+      BrokenSuspensionMax: 0.3
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
+      Height: 0.2,
+      Strength: 0.025,
+      Damping: 0.2,
+      SuspensionMin: -0.3,
+      BrokenSuspensionMax: 0.3
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
+      Price: 9400,
+      UnlockByExploration: 'true',
+      UnlockByRank: 1
+    }
+  },
   wheels_heavy_mudtires_tayga_dlc_6: {
     'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
       BodyFriction: 2,
@@ -14494,6 +14680,9 @@ export default {
     },
     'Truck > TruckData > CompatibleWheels:nth-of-type(12)': {
       Scale: 0.53
+    },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(-0.2; 0; -0.2)'
     },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 50
@@ -14598,7 +14787,6 @@ export default {
       Strength: 0.04,
       Damping: 0.2,
       SuspensionMin: -0.25,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.1
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
@@ -14606,7 +14794,6 @@ export default {
       Strength: 0.06,
       Damping: 0.3,
       SuspensionMin: -0.25,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.1
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
@@ -14623,7 +14810,6 @@ export default {
       Strength: 0.03,
       Damping: 0.3,
       SuspensionMin: -0.25,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.1
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
@@ -14631,7 +14817,6 @@ export default {
       Strength: 0.05,
       Damping: 0.4,
       SuspensionMin: -0.25,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.1
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
@@ -14751,6 +14936,12 @@ export default {
       UnlockByExploration: 'false',
       UnlockByRank: 12
     },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(11) > WheelFriction': {
+      BodyFriction: 3,
+      BodyFrictionAsphalt: 1.2,
+      SubstanceFriction: 1.3,
+      IsIgnoreIce: 'true'
+    },
     'TruckWheels > TruckTires > TruckTire:nth-of-type(11) > GameData': {
       Price: 6400,
       UnlockByExploration: 'false',
@@ -14814,11 +15005,14 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(9)': {
       Scale: 0.42
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(-1; 0; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 50
     },
     'Truck > GameData': {
-      Country: 'US',
+      Country: 'US,NE',
       Price: 2500,
       UnlockByExploration: 'false',
       UnlockByRank: 1
@@ -15132,58 +15326,6 @@ export default {
       UnlockByRank: 1
     }
   },
-  s_land_rover_defender_90_dlc_6: {
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
-      CriticalDamageThreshold: 0.7,
-      DamageCapacity: 80
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(1)': {
-      Height: 0.03,
-      Strength: 0.03,
-      Damping: 0.2,
-      SuspensionMin: -0.27,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.15
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
-      Height: 0.07,
-      Strength: 0.03,
-      Damping: 0.2,
-      SuspensionMin: -0.27,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.15
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
-      Price: 2700,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2)': {
-      CriticalDamageThreshold: 0.7,
-      DamageCapacity: 100
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(1)': {
-      Height: 0.14,
-      Strength: 0.03,
-      Damping: 0.2,
-      SuspensionMin: -0.26,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.15
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
-      Height: 0.18,
-      Strength: 0.03,
-      Damping: 0.2,
-      SuspensionMin: -0.26,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.15
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
-      Price: 5300,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    }
-  },
   wheels_scout1_dlc_6: {
     'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
       BodyFriction: 0.8,
@@ -15253,20 +15395,86 @@ export default {
       UnlockByExploration: 'false',
       UnlockByRank: 2
     },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(4) > WheelFriction': {
+      BodyFriction: 2,
+      BodyFrictionAsphalt: 1,
+      SubstanceFriction: 1.2,
+      IsIgnoreIce: 'false'
+    },
     'TruckWheels > TruckTires > TruckTire:nth-of-type(4) > GameData': {
       Price: 4200,
       UnlockByExploration: 'false',
       UnlockByRank: 4
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(5) > WheelFriction': {
+      BodyFriction: 3,
+      BodyFrictionAsphalt: 0.5,
+      SubstanceFriction: 1.6,
+      IsIgnoreIce: 'false'
     },
     'TruckWheels > TruckTires > TruckTire:nth-of-type(5) > GameData': {
       Price: 5100,
       UnlockByExploration: 'false',
       UnlockByRank: 7
     },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(6) > WheelFriction': {
+      BodyFriction: 2,
+      BodyFrictionAsphalt: 0.9,
+      SubstanceFriction: 1.1,
+      IsIgnoreIce: 'true'
+    },
     'TruckWheels > TruckTires > TruckTire:nth-of-type(6) > GameData': {
       Price: 5700,
       UnlockByExploration: 'false',
       UnlockByRank: 10
+    }
+  },
+  s_land_rover_defender_90_dlc_6: {
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
+      CriticalDamageThreshold: 0.7,
+      DamageCapacity: 80
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(1)': {
+      Height: 0.03,
+      Strength: 0.03,
+      Damping: 0.2,
+      SuspensionMin: -0.27,
+      BrokenSuspensionMax: 0.15
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
+      Height: 0.07,
+      Strength: 0.03,
+      Damping: 0.2,
+      SuspensionMin: -0.27,
+      BrokenSuspensionMax: 0.15
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
+      Price: 2700,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2)': {
+      CriticalDamageThreshold: 0.7,
+      DamageCapacity: 100
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(1)': {
+      Height: 0.14,
+      Strength: 0.03,
+      Damping: 0.2,
+      SuspensionMin: -0.26,
+      BrokenSuspensionMax: 0.15
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
+      Height: 0.18,
+      Strength: 0.03,
+      Damping: 0.2,
+      SuspensionMin: -0.26,
+      BrokenSuspensionMax: 0.15
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
+      Price: 5300,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
     }
   },
   land_rover_defender_110_dlc_6: {
@@ -15326,11 +15534,14 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(9)': {
       Scale: 0.41
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(-0.8; 0.1; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 50
     },
     'Truck > GameData': {
-      Country: 'US',
+      Country: 'US,NE',
       Price: 2500,
       UnlockByExploration: 'false',
       UnlockByRank: 1
@@ -15359,7 +15570,6 @@ export default {
       Strength: 0.04,
       Damping: 0.2,
       SuspensionMin: -0.17,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.15
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
@@ -15367,7 +15577,6 @@ export default {
       Strength: 0.04,
       Damping: 0.2,
       SuspensionMin: -0.17,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.15
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
@@ -15384,7 +15593,6 @@ export default {
       Strength: 0.055,
       Damping: 0.35,
       SuspensionMin: -0.2,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.15
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
@@ -15392,7 +15600,6 @@ export default {
       Strength: 0.055,
       Damping: 0.35,
       SuspensionMin: -0.2,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.15
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
@@ -15456,11 +15663,14 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(3)': {
       Scale: 0.66
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(0; -0.5; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 100
     },
     'Truck > GameData': {
-      Country: 'US',
+      Country: 'US,NE',
       Price: 3500,
       UnlockByExploration: 'true',
       UnlockByRank: 1
@@ -15468,9 +15678,9 @@ export default {
   },
   winches_heavy_trucks_dlc_6: {
     'WinchVariants > Winch:nth-of-type(1)': {
-      Length: 20,
+      Length: 14,
       StrengthMult: 1,
-      IsEngineIgnitionRequired: 'false'
+      IsEngineIgnitionRequired: 'true'
     },
     'WinchVariants > Winch:nth-of-type(1) > GameData': {
       Price: 1000,
@@ -15713,7 +15923,6 @@ export default {
       Strength: 0.1,
       Damping: 0.1,
       SuspensionMin: 0,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.001
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
@@ -15721,7 +15930,6 @@ export default {
       Strength: 0.7,
       Damping: 0.4,
       SuspensionMin: 0,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.001
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
@@ -15807,11 +16015,14 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(13)': {
       Scale: 0.65
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(-0.3; 0; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 50
     },
     'Truck > GameData': {
-      Country: 'US',
+      Country: 'US,NE',
       Price: 51_100,
       UnlockByExploration: 'false',
       UnlockByRank: 1
@@ -15870,6 +16081,19 @@ export default {
       UnlockByRank: 1
     }
   },
+  wheels_medium_ank_mk38_dlc_6: {
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
+      BodyFriction: 3,
+      BodyFrictionAsphalt: 0.8,
+      SubstanceFriction: 1.7,
+      IsIgnoreIce: 'false'
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > GameData': {
+      Price: 5700,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    }
+  },
   s_ank_mk38_ht_dlc_6: {
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
       CriticalDamageThreshold: 0.4,
@@ -15880,7 +16104,6 @@ export default {
       Strength: 0.05,
       Damping: 0.35,
       SuspensionMin: -0.3,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.25
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
@@ -15888,7 +16111,6 @@ export default {
       Strength: 0.03,
       Damping: 0.3,
       SuspensionMin: -0.3,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.25
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
@@ -15905,7 +16127,6 @@ export default {
       Strength: 0.05,
       Damping: 0.4,
       SuspensionMin: -0.3,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.25
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
@@ -15913,7 +16134,6 @@ export default {
       Strength: 0.03,
       Damping: 0.3,
       SuspensionMin: -0.25,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.25
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
@@ -15930,7 +16150,6 @@ export default {
       Strength: 0.04,
       Damping: 0.4,
       SuspensionMin: -0.2,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.25
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(3) > Suspension:nth-of-type(2)': {
@@ -15938,24 +16157,10 @@ export default {
       Strength: 0.02,
       Damping: 0.3,
       SuspensionMin: -0.3,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.25
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(3) > GameData': {
       Price: 11_300,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    }
-  },
-  wheels_medium_ank_mk38_dlc_6: {
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
-      BodyFriction: 2,
-      BodyFrictionAsphalt: 0.8,
-      SubstanceFriction: 1.7,
-      IsIgnoreIce: 'false'
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > GameData': {
-      Price: 5700,
       UnlockByExploration: 'false',
       UnlockByRank: 1
     }
@@ -15983,11 +16188,9 @@ export default {
       SteeringAngle: 18
     },
     'Truck > TruckData > Wheels > Wheel:nth-of-type(3)': {
-      Torque: '',
       SteeringAngle: 16
     },
     'Truck > TruckData > Wheels > Wheel:nth-of-type(4)': {
-      Torque: '',
       SteeringAngle: 16
     },
     'Truck > TruckData > Wheels > Wheel:nth-of-type(5)': {
@@ -15999,11 +16202,9 @@ export default {
       SteeringAngle: -8
     },
     'Truck > TruckData > Wheels > Wheel:nth-of-type(7)': {
-      Torque: '',
       SteeringAngle: -14
     },
     'Truck > TruckData > Wheels > Wheel:nth-of-type(8)': {
-      Torque: '',
       SteeringAngle: -14
     },
     'Truck > TruckData > CompatibleWheels:nth-of-type(1)': {
@@ -16021,11 +16222,14 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(5)': {
       Scale: 0.58
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(-2.5; 0; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 100
     },
     'Truck > GameData': {
-      Country: 'RU,CAS',
+      Country: 'RU,CAS,NE',
       Price: 72_800,
       UnlockByExploration: 'true',
       UnlockByRank: 1
@@ -16033,9 +16237,9 @@ export default {
   },
   winches_medium_trucks_dlc_5: {
     'WinchVariants > Winch:nth-of-type(1)': {
-      Length: 20,
+      Length: 14,
       StrengthMult: 1,
-      IsEngineIgnitionRequired: 'false'
+      IsEngineIgnitionRequired: 'true'
     },
     'WinchVariants > Winch:nth-of-type(1) > GameData': {
       Price: 1000,
@@ -16271,6 +16475,19 @@ export default {
       UnlockByRank: 1
     }
   },
+  wheels_tatra_phoenix_dlc_5: {
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
+      BodyFriction: 1.7,
+      BodyFrictionAsphalt: 0.5,
+      SubstanceFriction: 3,
+      IsIgnoreIce: 'false'
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > GameData': {
+      Price: 7500,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    }
+  },
   e_ru_truck_modern_dlc_5: {
     'EngineVariants > Engine:nth-of-type(1)': {
       CriticalDamageThreshold: 0.6,
@@ -16321,13 +16538,6 @@ export default {
     'EngineVariants > Engine:nth-of-type(3) > GameData': {
       Price: 11_100,
       UnlockByExploration: 'true',
-      UnlockByRank: 1
-    }
-  },
-  wheels_tatra_phoenix_dlc_5: {
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > GameData': {
-      Price: 7500,
-      UnlockByExploration: 'false',
       UnlockByRank: 1
     }
   },
@@ -16471,11 +16681,9 @@ export default {
       SteeringAngle: 24
     },
     'Truck > TruckData > Wheels > Wheel:nth-of-type(3)': {
-      Torque: '',
       SteeringAngle: 18
     },
     'Truck > TruckData > Wheels > Wheel:nth-of-type(4)': {
-      Torque: '',
       SteeringAngle: 18
     },
     'Truck > TruckData > Wheels > Wheel:nth-of-type(5)': {
@@ -16509,11 +16717,14 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(5)': {
       Scale: 0.64
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(1; 0; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 100
     },
     'Truck > GameData': {
-      Country: 'RU,CAS',
+      Country: 'RU,CAS,NE',
       Price: 182_600,
       UnlockByExploration: 'true',
       UnlockByRank: 1
@@ -16521,9 +16732,9 @@ export default {
   },
   winches_heavy_trucks_dlc_5: {
     'WinchVariants > Winch:nth-of-type(1)': {
-      Length: 20,
+      Length: 14,
       StrengthMult: 1,
-      IsEngineIgnitionRequired: 'false'
+      IsEngineIgnitionRequired: 'true'
     },
     'WinchVariants > Winch:nth-of-type(1) > GameData': {
       Price: 1000,
@@ -16611,6 +16822,19 @@ export default {
     'EngineVariants > Engine:nth-of-type(3) > GameData': {
       Price: 24_400,
       UnlockByExploration: 'true',
+      UnlockByRank: 1
+    }
+  },
+  wheels_tatra_force_815_7_dlc_5: {
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
+      BodyFriction: 1.7,
+      BodyFrictionAsphalt: 0.5,
+      SubstanceFriction: 3,
+      IsIgnoreIce: 'false'
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > GameData': {
+      Price: 7500,
+      UnlockByExploration: 'false',
       UnlockByRank: 1
     }
   },
@@ -16756,13 +16980,6 @@ export default {
       UnlockByRank: 1
     }
   },
-  wheels_tatra_force_815_7_dlc_5: {
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > GameData': {
-      Price: 7500,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    }
-  },
   s_tatra_force_t815_7_dlc_5: {
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
       CriticalDamageThreshold: 0.6,
@@ -16847,11 +17064,14 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(9)': {
       Scale: 0.46
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(1; -0.5; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 50
     },
     'Truck > GameData': {
-      Country: 'US',
+      Country: 'US,NE',
       Price: 2900,
       UnlockByExploration: 'false',
       UnlockByRank: 1
@@ -16906,6 +17126,59 @@ export default {
     'WinchVariants > Winch:nth-of-type(5) > GameData': {
       Price: 9400,
       UnlockByExploration: 'false',
+      UnlockByRank: 1
+    }
+  },
+  e_us_scout_modern_dlc_5: {
+    'EngineVariants > Engine:nth-of-type(1)': {
+      CriticalDamageThreshold: 0.7,
+      DamageCapacity: 100,
+      DamagedConsumptionModifier: 1.2,
+      Responsiveness: 0.04,
+      FuelConsumption: 0.9,
+      Torque: 90_000,
+      DamagedMinTorqueMultiplier: 1,
+      DamagedMaxTorqueMultiplier: 0.6,
+      BrakesDelay: 0.5,
+      MaxDeltaAngVel: 0.01
+    },
+    'EngineVariants > Engine:nth-of-type(1) > GameData': {
+      Price: 1900,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    },
+    'EngineVariants > Engine:nth-of-type(2)': {
+      CriticalDamageThreshold: 0.7,
+      DamageCapacity: 120,
+      DamagedConsumptionModifier: 1.3,
+      Responsiveness: 0.04,
+      FuelConsumption: 1.1,
+      Torque: 110_000,
+      DamagedMinTorqueMultiplier: 1,
+      DamagedMaxTorqueMultiplier: 0.7,
+      BrakesDelay: 0.5,
+      MaxDeltaAngVel: 0.01
+    },
+    'EngineVariants > Engine:nth-of-type(2) > GameData': {
+      Price: 5500,
+      UnlockByExploration: 'true',
+      UnlockByRank: 1
+    },
+    'EngineVariants > Engine:nth-of-type(3)': {
+      CriticalDamageThreshold: 0.7,
+      DamageCapacity: 140,
+      DamagedConsumptionModifier: 1.4,
+      Responsiveness: 0.04,
+      FuelConsumption: 1.3,
+      Torque: 120_000,
+      DamagedMinTorqueMultiplier: 1,
+      DamagedMaxTorqueMultiplier: 0.8,
+      BrakesDelay: 0.5,
+      MaxDeltaAngVel: 0.01
+    },
+    'EngineVariants > Engine:nth-of-type(3) > GameData': {
+      Price: 6600,
+      UnlockByExploration: 'true',
       UnlockByRank: 1
     }
   },
@@ -17099,59 +17372,6 @@ export default {
       UnlockByRank: 1
     }
   },
-  e_us_scout_modern_dlc_5: {
-    'EngineVariants > Engine:nth-of-type(1)': {
-      CriticalDamageThreshold: 0.7,
-      DamageCapacity: 100,
-      DamagedConsumptionModifier: 1.2,
-      Responsiveness: 0.04,
-      FuelConsumption: 0.9,
-      Torque: 90_000,
-      DamagedMinTorqueMultiplier: 1,
-      DamagedMaxTorqueMultiplier: 0.6,
-      BrakesDelay: 0.5,
-      MaxDeltaAngVel: 0.01
-    },
-    'EngineVariants > Engine:nth-of-type(1) > GameData': {
-      Price: 1900,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    },
-    'EngineVariants > Engine:nth-of-type(2)': {
-      CriticalDamageThreshold: 0.7,
-      DamageCapacity: 120,
-      DamagedConsumptionModifier: 1.3,
-      Responsiveness: 0.04,
-      FuelConsumption: 1.1,
-      Torque: 110_000,
-      DamagedMinTorqueMultiplier: 1,
-      DamagedMaxTorqueMultiplier: 0.7,
-      BrakesDelay: 0.5,
-      MaxDeltaAngVel: 0.01
-    },
-    'EngineVariants > Engine:nth-of-type(2) > GameData': {
-      Price: 5500,
-      UnlockByExploration: 'true',
-      UnlockByRank: 1
-    },
-    'EngineVariants > Engine:nth-of-type(3)': {
-      CriticalDamageThreshold: 0.7,
-      DamageCapacity: 140,
-      DamagedConsumptionModifier: 1.4,
-      Responsiveness: 0.04,
-      FuelConsumption: 1.3,
-      Torque: 120_000,
-      DamagedMinTorqueMultiplier: 1,
-      DamagedMaxTorqueMultiplier: 0.8,
-      BrakesDelay: 0.5,
-      MaxDeltaAngVel: 0.01
-    },
-    'EngineVariants > Engine:nth-of-type(3) > GameData': {
-      Price: 6600,
-      UnlockByExploration: 'true',
-      UnlockByRank: 1
-    }
-  },
   wheels_scout_offroad2_jeep_wrangler_dlc_5: {
     'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
       BodyFriction: 2,
@@ -17161,6 +17381,100 @@ export default {
     },
     'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > GameData': {
       Price: 4500,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    }
+  },
+  s_jeep_wrangler_dlc_5: {
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
+      CriticalDamageThreshold: 0.7,
+      DamageCapacity: 80
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(1)': {
+      Height: 0.03,
+      Strength: 0.03,
+      Damping: 0.2,
+      SuspensionMin: -0.27,
+      BrokenSuspensionMax: 0.15
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
+      Height: 0.07,
+      Strength: 0.03,
+      Damping: 0.2,
+      SuspensionMin: -0.27,
+      BrokenSuspensionMax: 0.15
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
+      Price: 2700,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2)': {
+      CriticalDamageThreshold: 0.7,
+      DamageCapacity: 100
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(1)': {
+      Height: 0.08,
+      Strength: 0.03,
+      Damping: 0.2,
+      SuspensionMin: -0.27,
+      BrokenSuspensionMax: 0.15
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
+      Height: 0.12,
+      Strength: 0.03,
+      Damping: 0.2,
+      SuspensionMin: -0.27,
+      BrokenSuspensionMax: 0.15
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
+      Price: 5300,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(3)': {
+      CriticalDamageThreshold: 0.7,
+      DamageCapacity: 120
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(3) > Suspension:nth-of-type(1)': {
+      Height: 0.13,
+      Strength: 0.03,
+      Damping: 0.2,
+      SuspensionMin: -0.3,
+      BrokenSuspensionMax: 0.15
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(3) > Suspension:nth-of-type(2)': {
+      Height: 0.17,
+      Strength: 0.03,
+      Damping: 0.2,
+      SuspensionMin: -0.3,
+      BrokenSuspensionMax: 0.15
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(3) > GameData': {
+      Price: 7900,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(4)': {
+      CriticalDamageThreshold: 0.7,
+      DamageCapacity: 70
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(4) > Suspension:nth-of-type(1)': {
+      Height: 0.3,
+      Strength: 0.012,
+      Damping: 0.2,
+      SuspensionMin: -0.47,
+      BrokenSuspensionMax: 0.15
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(4) > Suspension:nth-of-type(2)': {
+      Height: 0.35,
+      Strength: 0.012,
+      Damping: 0.2,
+      SuspensionMin: -0.47,
+      BrokenSuspensionMax: 0.15
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(4) > GameData': {
+      Price: 7900,
       UnlockByExploration: 'false',
       UnlockByRank: 1
     }
@@ -17200,108 +17514,6 @@ export default {
       UnlockByRank: 1
     }
   },
-  s_jeep_wrangler_dlc_5: {
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
-      CriticalDamageThreshold: 0.7,
-      DamageCapacity: 80
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(1)': {
-      Height: 0.03,
-      Strength: 0.03,
-      Damping: 0.2,
-      SuspensionMin: -0.27,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.15
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
-      Height: 0.07,
-      Strength: 0.03,
-      Damping: 0.2,
-      SuspensionMin: -0.27,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.15
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
-      Price: 2700,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2)': {
-      CriticalDamageThreshold: 0.7,
-      DamageCapacity: 100
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(1)': {
-      Height: 0.08,
-      Strength: 0.03,
-      Damping: 0.2,
-      SuspensionMin: -0.27,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.15
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
-      Height: 0.12,
-      Strength: 0.03,
-      Damping: 0.2,
-      SuspensionMin: -0.27,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.15
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
-      Price: 5300,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(3)': {
-      CriticalDamageThreshold: 0.7,
-      DamageCapacity: 120
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(3) > Suspension:nth-of-type(1)': {
-      Height: 0.13,
-      Strength: 0.03,
-      Damping: 0.2,
-      SuspensionMin: -0.3,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.15
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(3) > Suspension:nth-of-type(2)': {
-      Height: 0.17,
-      Strength: 0.03,
-      Damping: 0.2,
-      SuspensionMin: -0.3,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.15
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(3) > GameData': {
-      Price: 7900,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(4)': {
-      CriticalDamageThreshold: 0.7,
-      DamageCapacity: 70
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(4) > Suspension:nth-of-type(1)': {
-      Height: 0.3,
-      Strength: 0.012,
-      Damping: 0.2,
-      SuspensionMin: -0.47,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.15
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(4) > Suspension:nth-of-type(2)': {
-      Height: 0.35,
-      Strength: 0.012,
-      Damping: 0.2,
-      SuspensionMin: -0.47,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.15
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(4) > GameData': {
-      Price: 7900,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    }
-  },
   wheels_scout2_dlc_5: {
     'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
       BodyFriction: 1.4,
@@ -17336,15 +17548,33 @@ export default {
       UnlockByExploration: 'false',
       UnlockByRank: 2
     },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(4) > WheelFriction': {
+      BodyFriction: 2,
+      BodyFrictionAsphalt: 1,
+      SubstanceFriction: 1.2,
+      IsIgnoreIce: 'false'
+    },
     'TruckWheels > TruckTires > TruckTire:nth-of-type(4) > GameData': {
       Price: 4200,
       UnlockByExploration: 'false',
       UnlockByRank: 4
     },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(5) > WheelFriction': {
+      BodyFriction: 3,
+      BodyFrictionAsphalt: 0.5,
+      SubstanceFriction: 1.6,
+      IsIgnoreIce: 'false'
+    },
     'TruckWheels > TruckTires > TruckTire:nth-of-type(5) > GameData': {
       Price: 5100,
       UnlockByExploration: 'false',
       UnlockByRank: 7
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(6) > WheelFriction': {
+      BodyFriction: 2,
+      BodyFrictionAsphalt: 0.9,
+      SubstanceFriction: 1.1,
+      IsIgnoreIce: 'true'
     },
     'TruckWheels > TruckTires > TruckTire:nth-of-type(6) > GameData': {
       Price: 5700,
@@ -17409,11 +17639,14 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(9)': {
       Scale: 0.4
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(0; 0; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 50
     },
     'Truck > GameData': {
-      Country: 'US',
+      Country: 'US,NE',
       Price: 2500,
       UnlockByExploration: 'false',
       UnlockByRank: 1
@@ -17482,7 +17715,6 @@ export default {
       Strength: 0.03,
       Damping: 0.2,
       SuspensionMin: -0.27,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.15
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
@@ -17490,7 +17722,6 @@ export default {
       Strength: 0.03,
       Damping: 0.2,
       SuspensionMin: -0.27,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.15
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
@@ -17507,7 +17738,6 @@ export default {
       Strength: 0.03,
       Damping: 0.2,
       SuspensionMin: -0.3,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.15
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
@@ -17515,673 +17745,10 @@ export default {
       Strength: 0.03,
       Damping: 0.2,
       SuspensionMin: -0.3,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.15
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
       Price: 5300,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    }
-  },
-  international_hx_520_dlc_4_1: {
-    'Truck > GameData > UiDesc': {
-      UiName: 'UI_VEHICLE_INTERNATIONAL_HX_520_NAME',
-      UiDesc: 'UI_VEHICLE_INTERNATIONAL_HX_520_DESC'
-    },
-    'Truck > TruckData': {
-      Responsiveness: 0.3,
-      BackSteerSpeed: 0.015,
-      SteerSpeed: 0.025,
-      DiffLockType: 'Installed',
-      EngineStartDelay: 0.8,
-      ExhaustStartTime: 0.9,
-      FuelCapacity: 280
-    },
-    'Truck > TruckData > Wheels > Wheel:nth-of-type(1)': {
-      Torque: 'connectable',
-      SteeringAngle: 30
-    },
-    'Truck > TruckData > Wheels > Wheel:nth-of-type(2)': {
-      Torque: 'connectable',
-      SteeringAngle: 30
-    },
-    'Truck > TruckData > Wheels > Wheel:nth-of-type(3)': {
-      Torque: 'default',
-      SteeringAngle: 0
-    },
-    'Truck > TruckData > Wheels > Wheel:nth-of-type(4)': {
-      Torque: 'default',
-      SteeringAngle: 0
-    },
-    'Truck > TruckData > Wheels > Wheel:nth-of-type(5)': {
-      Torque: 'default',
-      SteeringAngle: 0
-    },
-    'Truck > TruckData > Wheels > Wheel:nth-of-type(6)': {
-      Torque: 'default',
-      SteeringAngle: 0
-    },
-    'Truck > TruckData > CompatibleWheels:nth-of-type(1)': {
-      Scale: 0.55
-    },
-    'Truck > TruckData > CompatibleWheels:nth-of-type(2)': {
-      Scale: 0.6
-    },
-    'Truck > TruckData > CompatibleWheels:nth-of-type(3)': {
-      Scale: 0.55
-    },
-    'Truck > TruckData > CompatibleWheels:nth-of-type(4)': {
-      Scale: 0.55
-    },
-    'Truck > TruckData > CompatibleWheels:nth-of-type(5)': {
-      Scale: 0.55
-    },
-    'Truck > TruckData > CompatibleWheels:nth-of-type(6)': {
-      Scale: 0.6
-    },
-    'Truck > TruckData > CompatibleWheels:nth-of-type(7)': {
-      Scale: 0.6
-    },
-    'Truck > TruckData > CompatibleWheels:nth-of-type(8)': {
-      Scale: 0.6
-    },
-    'Truck > TruckData > FuelTank': {
-      DamageCapacity: 50
-    },
-    'Truck > GameData': {
-      Country: 'US',
-      Price: 151_900,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    }
-  },
-  winches_medium_trucks_dlc_4_1: {
-    'WinchVariants > Winch:nth-of-type(1)': {
-      Length: 20,
-      StrengthMult: 1,
-      IsEngineIgnitionRequired: 'false'
-    },
-    'WinchVariants > Winch:nth-of-type(1) > GameData': {
-      Price: 1000,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    },
-    'WinchVariants > Winch:nth-of-type(2)': {
-      Length: 18,
-      StrengthMult: 1,
-      IsEngineIgnitionRequired: 'true'
-    },
-    'WinchVariants > Winch:nth-of-type(2) > GameData': {
-      Price: 11_300,
-      UnlockByExploration: 'false',
-      UnlockByRank: 8
-    },
-    'WinchVariants > Winch:nth-of-type(3)': {
-      Length: 14,
-      StrengthMult: 1.3,
-      IsEngineIgnitionRequired: 'true'
-    },
-    'WinchVariants > Winch:nth-of-type(3) > GameData': {
-      Price: 15_000,
-      UnlockByExploration: 'false',
-      UnlockByRank: 12
-    },
-    'WinchVariants > Winch:nth-of-type(4)': {
-      Length: 18,
-      StrengthMult: 1.3,
-      IsEngineIgnitionRequired: 'true'
-    },
-    'WinchVariants > Winch:nth-of-type(4) > GameData': {
-      Price: 18_800,
-      UnlockByExploration: 'false',
-      UnlockByRank: 16
-    }
-  },
-  gearboxes_trucks_dlc_4_1: {
-    'GearboxVariants > Gearbox:nth-of-type(1)': {
-      AWDConsumptionModifier: 1.2,
-      CriticalDamageThreshold: 0.4,
-      DamageCapacity: 180,
-      DamagedConsumptionModifier: 1.5,
-      FuelConsumption: 2.5,
-      IdleFuelModifier: 0.3
-    },
-    'GearboxVariants > Gearbox:nth-of-type(1) > GameData > GearboxParams': {
-      IsManualLowGear: 'true',
-      IsHighGearExists: 'false',
-      IsLowerGearExists: 'true',
-      IsLowerPlusGearExists: 'false',
-      IsLowerMinusGearExists: 'false'
-    },
-    'GearboxVariants > Gearbox:nth-of-type(1) > ReverseGear': {
-      AngVel: 1.5,
-      FuelModifier: 1.1
-    },
-    'GearboxVariants > Gearbox:nth-of-type(1) > HighGear': {
-      AngVel: 7.5,
-      FuelModifier: 1.8
-    },
-    'GearboxVariants > Gearbox:nth-of-type(1) > Gear:nth-of-type(1)': {
-      AngVel: 1.5,
-      FuelModifier: 1.7
-    },
-    'GearboxVariants > Gearbox:nth-of-type(1) > Gear:nth-of-type(2)': {
-      AngVel: 4,
-      FuelModifier: 1.5
-    },
-    'GearboxVariants > Gearbox:nth-of-type(1) > Gear:nth-of-type(3)': {
-      AngVel: 6,
-      FuelModifier: 1.3
-    },
-    'GearboxVariants > Gearbox:nth-of-type(1) > Gear:nth-of-type(4)': {
-      AngVel: 8,
-      FuelModifier: 1.1
-    },
-    'GearboxVariants > Gearbox:nth-of-type(1) > Gear:nth-of-type(5)': {
-      AngVel: 10,
-      FuelModifier: 0.9
-    },
-    'GearboxVariants > Gearbox:nth-of-type(1) > GameData': {
-      Price: 1900,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    },
-    'GearboxVariants > Gearbox:nth-of-type(2)': {
-      AWDConsumptionModifier: 1.3,
-      CriticalDamageThreshold: 0.4,
-      DamageCapacity: 150,
-      DamagedConsumptionModifier: 1.7,
-      FuelConsumption: 2,
-      IdleFuelModifier: 0.3
-    },
-    'GearboxVariants > Gearbox:nth-of-type(2) > GameData > GearboxParams': {
-      IsManualLowGear: 'true',
-      IsHighGearExists: 'true',
-      IsLowerGearExists: 'true',
-      IsLowerPlusGearExists: 'false',
-      IsLowerMinusGearExists: 'false'
-    },
-    'GearboxVariants > Gearbox:nth-of-type(2) > ReverseGear': {
-      AngVel: 1,
-      FuelModifier: 1
-    },
-    'GearboxVariants > Gearbox:nth-of-type(2) > HighGear': {
-      AngVel: 14,
-      FuelModifier: 1.8
-    },
-    'GearboxVariants > Gearbox:nth-of-type(2) > Gear:nth-of-type(1)': {
-      AngVel: 1.5,
-      FuelModifier: 2
-    },
-    'GearboxVariants > Gearbox:nth-of-type(2) > Gear:nth-of-type(2)': {
-      AngVel: 4,
-      FuelModifier: 1.9
-    },
-    'GearboxVariants > Gearbox:nth-of-type(2) > Gear:nth-of-type(3)': {
-      AngVel: 8,
-      FuelModifier: 1.7
-    },
-    'GearboxVariants > Gearbox:nth-of-type(2) > Gear:nth-of-type(4)': {
-      AngVel: 12,
-      FuelModifier: 1.6
-    },
-    'GearboxVariants > Gearbox:nth-of-type(2) > Gear:nth-of-type(5)': {
-      AngVel: 15,
-      FuelModifier: 1.5
-    },
-    'GearboxVariants > Gearbox:nth-of-type(2) > Gear:nth-of-type(6)': {
-      AngVel: 18,
-      FuelModifier: 1.4
-    },
-    'GearboxVariants > Gearbox:nth-of-type(2) > Gear:nth-of-type(7)': {
-      AngVel: 21,
-      FuelModifier: 1.3
-    },
-    'GearboxVariants > Gearbox:nth-of-type(2) > Gear:nth-of-type(8)': {
-      AngVel: 24,
-      FuelModifier: 1.1
-    },
-    'GearboxVariants > Gearbox:nth-of-type(2) > GameData': {
-      Price: 3800,
-      UnlockByExploration: 'true',
-      UnlockByRank: 1
-    },
-    'GearboxVariants > Gearbox:nth-of-type(3)': {
-      AWDConsumptionModifier: 1.4,
-      CriticalDamageThreshold: 0.4,
-      DamageCapacity: 220,
-      DamagedConsumptionModifier: 1.6,
-      FuelConsumption: 3,
-      IdleFuelModifier: 0.3
-    },
-    'GearboxVariants > Gearbox:nth-of-type(3) > GameData > GearboxParams': {
-      IsManualLowGear: 'true',
-      IsHighGearExists: 'true',
-      IsLowerGearExists: 'true',
-      IsLowerPlusGearExists: 'true',
-      IsLowerMinusGearExists: 'true'
-    },
-    'GearboxVariants > Gearbox:nth-of-type(3) > ReverseGear': {
-      AngVel: 0.5,
-      FuelModifier: 0.9
-    },
-    'GearboxVariants > Gearbox:nth-of-type(3) > HighGear': {
-      AngVel: 8,
-      FuelModifier: 1.7
-    },
-    'GearboxVariants > Gearbox:nth-of-type(3) > Gear:nth-of-type(1)': {
-      AngVel: 2,
-      FuelModifier: 1.6
-    },
-    'GearboxVariants > Gearbox:nth-of-type(3) > Gear:nth-of-type(2)': {
-      AngVel: 6,
-      FuelModifier: 1.4
-    },
-    'GearboxVariants > Gearbox:nth-of-type(3) > Gear:nth-of-type(3)': {
-      AngVel: 8,
-      FuelModifier: 1.3
-    },
-    'GearboxVariants > Gearbox:nth-of-type(3) > Gear:nth-of-type(4)': {
-      AngVel: 12,
-      FuelModifier: 1.1
-    },
-    'GearboxVariants > Gearbox:nth-of-type(3) > GameData': {
-      Price: 5300,
-      UnlockByExploration: 'true',
-      UnlockByRank: 1
-    },
-    'GearboxVariants > Gearbox:nth-of-type(4)': {
-      AWDConsumptionModifier: 1.6,
-      CriticalDamageThreshold: 0.4,
-      DamageCapacity: 130,
-      DamagedConsumptionModifier: 1.5,
-      FuelConsumption: 3.2,
-      IdleFuelModifier: 0.3
-    },
-    'GearboxVariants > Gearbox:nth-of-type(4) > GameData > GearboxParams': {
-      IsManualLowGear: 'true',
-      IsHighGearExists: 'true',
-      IsLowerGearExists: 'true',
-      IsLowerPlusGearExists: 'true',
-      IsLowerMinusGearExists: 'true'
-    },
-    'GearboxVariants > Gearbox:nth-of-type(4) > ReverseGear': {
-      AngVel: 0.7,
-      FuelModifier: 0.9
-    },
-    'GearboxVariants > Gearbox:nth-of-type(4) > HighGear': {
-      AngVel: 9,
-      FuelModifier: 1.8
-    },
-    'GearboxVariants > Gearbox:nth-of-type(4) > Gear:nth-of-type(1)': {
-      AngVel: 2,
-      FuelModifier: 1.6
-    },
-    'GearboxVariants > Gearbox:nth-of-type(4) > Gear:nth-of-type(2)': {
-      AngVel: 5,
-      FuelModifier: 1.5
-    },
-    'GearboxVariants > Gearbox:nth-of-type(4) > Gear:nth-of-type(3)': {
-      AngVel: 7.5,
-      FuelModifier: 1.4
-    },
-    'GearboxVariants > Gearbox:nth-of-type(4) > Gear:nth-of-type(4)': {
-      AngVel: 10,
-      FuelModifier: 1.2
-    },
-    'GearboxVariants > Gearbox:nth-of-type(4) > GameData': {
-      Price: 4700,
-      UnlockByExploration: 'true',
-      UnlockByRank: 1
-    }
-  },
-  s_international_hx_520_dlc_4_1: {
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
-      CriticalDamageThreshold: 0.7,
-      DamageCapacity: 220
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(1)': {
-      Height: 0.15,
-      Strength: 0.05,
-      Damping: 0.5,
-      SuspensionMin: -0.4,
-      SuspensionMax: 0.3,
-      BrokenSuspensionMax: 0.2
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
-      Height: 0,
-      Strength: 0.07,
-      Damping: 0.5,
-      SuspensionMin: 0,
-      SuspensionMax: 0,
-      BrokenSuspensionMax: 0
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
-      Price: 5300,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    }
-  },
-  e_us_truck_modern_dlc_4_1: {
-    'EngineVariants > Engine:nth-of-type(1)': {
-      CriticalDamageThreshold: 0.5,
-      DamageCapacity: 160,
-      DamagedConsumptionModifier: 1.2,
-      Responsiveness: 0.04,
-      FuelConsumption: 6,
-      Torque: 160_000,
-      DamagedMinTorqueMultiplier: 1,
-      DamagedMaxTorqueMultiplier: 0.8,
-      BrakesDelay: 0.5,
-      MaxDeltaAngVel: 0.01
-    },
-    'EngineVariants > Engine:nth-of-type(1) > GameData': {
-      Price: 3000,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    },
-    'EngineVariants > Engine:nth-of-type(2)': {
-      CriticalDamageThreshold: 0.6,
-      DamageCapacity: 180,
-      DamagedConsumptionModifier: 1.3,
-      Responsiveness: 0.04,
-      FuelConsumption: 6.5,
-      Torque: 180_000,
-      DamagedMinTorqueMultiplier: 1,
-      DamagedMaxTorqueMultiplier: 0.7,
-      BrakesDelay: 0.5,
-      MaxDeltaAngVel: 0.01
-    },
-    'EngineVariants > Engine:nth-of-type(2) > GameData': {
-      Price: 10_400,
-      UnlockByExploration: 'true',
-      UnlockByRank: 1
-    },
-    'EngineVariants > Engine:nth-of-type(3)': {
-      CriticalDamageThreshold: 0.7,
-      DamageCapacity: 220,
-      DamagedConsumptionModifier: 1.1,
-      Responsiveness: 0.04,
-      FuelConsumption: 7.5,
-      Torque: 192_000,
-      DamagedMinTorqueMultiplier: 1,
-      DamagedMaxTorqueMultiplier: 0.8,
-      BrakesDelay: 0.5,
-      MaxDeltaAngVel: 0.01
-    },
-    'EngineVariants > Engine:nth-of-type(3) > GameData': {
-      Price: 11_300,
-      UnlockByExploration: 'true',
-      UnlockByRank: 1
-    }
-  },
-  e_us_truck_modern_catroyal_dlc_4_1: {
-    'EngineVariants > Engine:nth-of-type(1)': {
-      CriticalDamageThreshold: 0.5,
-      DamageCapacity: 150,
-      DamagedConsumptionModifier: 1.2,
-      Responsiveness: 0.04,
-      FuelConsumption: 5,
-      Torque: 160_000,
-      DamagedMinTorqueMultiplier: 1,
-      DamagedMaxTorqueMultiplier: 0.6,
-      BrakesDelay: 0.5,
-      MaxDeltaAngVel: 0.01
-    },
-    'EngineVariants > Engine:nth-of-type(1) > GameData': {
-      Price: 3200,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    }
-  },
-  wheels_medium_double_dlc_4_1: {
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
-      BodyFriction: 1,
-      BodyFrictionAsphalt: 3,
-      SubstanceFriction: 0.4,
-      IsIgnoreIce: 'false'
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > GameData': {
-      Price: 2300,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(2) > WheelFriction': {
-      BodyFriction: 1.2,
-      BodyFrictionAsphalt: 3,
-      SubstanceFriction: 0.2,
-      IsIgnoreIce: 'false'
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(2) > GameData': {
-      Price: 2500,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(3) > WheelFriction': {
-      BodyFriction: 1,
-      BodyFrictionAsphalt: 3.2,
-      SubstanceFriction: 0.2,
-      IsIgnoreIce: 'false'
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(3) > GameData': {
-      Price: 2900,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(4) > WheelFriction': {
-      BodyFriction: 1.5,
-      BodyFrictionAsphalt: 1.9,
-      SubstanceFriction: 1,
-      IsIgnoreIce: 'false'
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(4) > GameData': {
-      Price: 3800,
-      UnlockByExploration: 'false',
-      UnlockByRank: 6
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(5) > WheelFriction': {
-      BodyFriction: 1.5,
-      BodyFrictionAsphalt: 1.5,
-      SubstanceFriction: 1.2,
-      IsIgnoreIce: 'false'
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(5) > GameData': {
-      Price: 4200,
-      UnlockByExploration: 'false',
-      UnlockByRank: 6
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(6) > WheelFriction': {
-      BodyFriction: 1.7,
-      BodyFrictionAsphalt: 1.5,
-      SubstanceFriction: 1,
-      IsIgnoreIce: 'false'
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(6) > GameData': {
-      Price: 4500,
-      UnlockByExploration: 'false',
-      UnlockByRank: 6
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(7) > WheelFriction': {
-      BodyFriction: 3,
-      BodyFrictionAsphalt: 1,
-      SubstanceFriction: 1.5,
-      IsIgnoreIce: 'false'
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(7) > GameData': {
-      Price: 4900,
-      UnlockByExploration: 'false',
-      UnlockByRank: 8
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(8) > WheelFriction': {
-      BodyFriction: 3,
-      BodyFrictionAsphalt: 0.8,
-      SubstanceFriction: 1.9,
-      IsIgnoreIce: 'false'
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(8) > GameData': {
-      Price: 5100,
-      UnlockByExploration: 'false',
-      UnlockByRank: 8
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(9) > WheelFriction': {
-      BodyFriction: 3.2,
-      BodyFrictionAsphalt: 0.8,
-      SubstanceFriction: 1.5,
-      IsIgnoreIce: 'false'
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(9) > GameData': {
-      Price: 5700,
-      UnlockByExploration: 'false',
-      UnlockByRank: 8
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(10) > WheelFriction': {
-      BodyFriction: 3,
-      BodyFrictionAsphalt: 1.2,
-      SubstanceFriction: 1.3,
-      IsIgnoreIce: 'true'
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(10) > GameData': {
-      Price: 6100,
-      UnlockByExploration: 'false',
-      UnlockByRank: 12
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(11) > GameData': {
-      Price: 6400,
-      UnlockByExploration: 'false',
-      UnlockByRank: 12
-    }
-  },
-  cat_ct681_dlc_4_1: {
-    'Truck > GameData > UiDesc': {
-      UiName: 'UI_VEHICLE_CAT_CT681_NAME',
-      UiDesc: 'UI_VEHICLE_CAT_CT681_DESC'
-    },
-    'Truck > TruckData': {
-      Responsiveness: 0.3,
-      BackSteerSpeed: 0.015,
-      SteerSpeed: 0.025,
-      DiffLockType: 'Installed',
-      EngineStartDelay: 0.8,
-      ExhaustStartTime: 0.9,
-      FuelCapacity: 260
-    },
-    'Truck > TruckData > Wheels > Wheel:nth-of-type(1)': {
-      Torque: 'connectable',
-      SteeringAngle: 30
-    },
-    'Truck > TruckData > Wheels > Wheel:nth-of-type(2)': {
-      Torque: 'connectable',
-      SteeringAngle: 30
-    },
-    'Truck > TruckData > Wheels > Wheel:nth-of-type(3)': {
-      Torque: 'default',
-      SteeringAngle: 0
-    },
-    'Truck > TruckData > Wheels > Wheel:nth-of-type(4)': {
-      Torque: 'default',
-      SteeringAngle: 0
-    },
-    'Truck > TruckData > Wheels > Wheel:nth-of-type(5)': {
-      Torque: 'default',
-      SteeringAngle: 0
-    },
-    'Truck > TruckData > Wheels > Wheel:nth-of-type(6)': {
-      Torque: 'default',
-      SteeringAngle: 0
-    },
-    'Truck > TruckData > ExtraWheels > Wheel:nth-of-type(1)': {
-      Torque: 'none',
-      SteeringAngle: 0
-    },
-    'Truck > TruckData > ExtraWheels > Wheel:nth-of-type(2)': {
-      Torque: 'none',
-      SteeringAngle: 0
-    },
-    'Truck > TruckData > CompatibleWheels:nth-of-type(1)': {
-      Scale: 0.55
-    },
-    'Truck > TruckData > CompatibleWheels:nth-of-type(2)': {
-      Scale: 0.6
-    },
-    'Truck > TruckData > CompatibleWheels:nth-of-type(3)': {
-      Scale: 0.55
-    },
-    'Truck > TruckData > CompatibleWheels:nth-of-type(4)': {
-      Scale: 0.55
-    },
-    'Truck > TruckData > CompatibleWheels:nth-of-type(5)': {
-      Scale: 0.55
-    },
-    'Truck > TruckData > CompatibleWheels:nth-of-type(6)': {
-      Scale: 0.6
-    },
-    'Truck > TruckData > CompatibleWheels:nth-of-type(7)': {
-      Scale: 0.6
-    },
-    'Truck > TruckData > CompatibleWheels:nth-of-type(8)': {
-      Scale: 0.6
-    },
-    'Truck > TruckData > FuelTank': {
-      DamageCapacity: 50
-    },
-    'Truck > GameData': {
-      Country: 'US',
-      Price: 59_800,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    }
-  },
-  s_cat_ct681_dlc_4_1: {
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
-      CriticalDamageThreshold: 0.7,
-      DamageCapacity: 220
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(1)': {
-      Height: 0.15,
-      Strength: 0.06,
-      Damping: 0.5,
-      SuspensionMin: -0.3,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.2
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
-      Height: 0.04,
-      Strength: 0.02,
-      Damping: 0.6,
-      SuspensionMin: -0.18,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.2
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(3)': {
-      Height: 0,
-      Strength: 0.07,
-      Damping: 0.5,
-      SuspensionMin: 0,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
-      Price: 5300,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    }
-  },
-  e_us_truck_modern_cathx_dlc_4_1: {
-    'EngineVariants > Engine:nth-of-type(1)': {
-      CriticalDamageThreshold: 0.5,
-      DamageCapacity: 200,
-      DamagedConsumptionModifier: 1.1,
-      Responsiveness: 0.04,
-      FuelConsumption: 6.5,
-      Torque: 210_000,
-      DamagedMinTorqueMultiplier: 1,
-      DamagedMaxTorqueMultiplier: 0.8,
-      BrakesDelay: 0.5,
-      MaxDeltaAngVel: 0.01
-    },
-    'EngineVariants > Engine:nth-of-type(1) > GameData': {
-      Price: 11_300,
       UnlockByExploration: 'false',
       UnlockByRank: 1
     }
@@ -18273,6 +17840,9 @@ export default {
       SuspensionHeight: 0.01,
       SuspensionStrength: 0.6
     },
+    'Truck > PhysicsModel > Body': {
+      Mass: 120_000
+    },
     'Truck > GameData': {
       Price: 18_800
     }
@@ -18353,6 +17923,9 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(2)': {
       Scale: 0.68
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(0; -0.25; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 100
     },
@@ -18365,9 +17938,9 @@ export default {
   },
   winches_heavy_trucks_dlc_4: {
     'WinchVariants > Winch:nth-of-type(1)': {
-      Length: 20,
+      Length: 14,
       StrengthMult: 1,
-      IsEngineIgnitionRequired: 'false'
+      IsEngineIgnitionRequired: 'true'
     },
     'WinchVariants > Winch:nth-of-type(1) > GameData': {
       Price: 1000,
@@ -18600,6 +18173,19 @@ export default {
       UnlockByRank: 1
     }
   },
+  wheels_zikz_605r_1_dlc_4: {
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
+      BodyFriction: 1.7,
+      BodyFrictionAsphalt: 0.5,
+      SubstanceFriction: 3,
+      IsIgnoreIce: 'false'
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > GameData': {
+      Price: 7500,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    }
+  },
   s_zikz_605r_dlc_4: {
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
       CriticalDamageThreshold: 0.6,
@@ -18610,26 +18196,17 @@ export default {
       Strength: 0.03,
       Damping: 0.2,
       SuspensionMin: -0.25,
-      SuspensionMax: 0.3,
-      BrokenSuspensionMax: ''
+      SuspensionMax: 0.3
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
       Height: 0.001,
       Strength: 0.8,
       Damping: 0.8,
       SuspensionMin: 0,
-      SuspensionMax: 0.01,
-      BrokenSuspensionMax: ''
+      SuspensionMax: 0.01
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
       Price: 7000,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    }
-  },
-  wheels_zikz_605r_1_dlc_4: {
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > GameData': {
-      Price: 7500,
       UnlockByExploration: 'false',
       UnlockByRank: 1
     }
@@ -18657,11 +18234,9 @@ export default {
       SteeringAngle: 24
     },
     'Truck > TruckData > Wheels > Wheel:nth-of-type(3)': {
-      Torque: '',
       SteeringAngle: 18
     },
     'Truck > TruckData > Wheels > Wheel:nth-of-type(4)': {
-      Torque: '',
       SteeringAngle: 18
     },
     'Truck > TruckData > Wheels > Wheel:nth-of-type(5)': {
@@ -18695,46 +18270,28 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(5)': {
       Scale: 0.64
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(-2.2; -0.5; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 100
     },
     'Truck > GameData': {
-      Country: 'RU,CAS',
+      Country: 'RU,CAS,NE',
       Price: 177_100,
       UnlockByExploration: 'false',
       UnlockByRank: 1
     }
   },
   wheels_tatra_t813_dlc_4: {
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
+      BodyFriction: 1.7,
+      BodyFrictionAsphalt: 0.5,
+      SubstanceFriction: 3,
+      IsIgnoreIce: 'false'
+    },
     'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > GameData': {
       Price: 7500,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    }
-  },
-  s_tatra_t813_dlc_4: {
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
-      CriticalDamageThreshold: 0.6,
-      DamageCapacity: 300
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(1)': {
-      Height: 0.2,
-      Strength: 0.035,
-      Damping: 0.3,
-      SuspensionMin: -0.35,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.3
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
-      Height: 0.12,
-      Strength: 0.032,
-      Damping: 0.3,
-      SuspensionMin: -0.35,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.3
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
-      Price: 6000,
       UnlockByExploration: 'false',
       UnlockByRank: 1
     }
@@ -18829,6 +18386,31 @@ export default {
       UnlockByRank: 14
     }
   },
+  s_tatra_t813_dlc_4: {
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
+      CriticalDamageThreshold: 0.6,
+      DamageCapacity: 300
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(1)': {
+      Height: 0.2,
+      Strength: 0.035,
+      Damping: 0.3,
+      SuspensionMin: -0.35,
+      BrokenSuspensionMax: 0.3
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
+      Height: 0.12,
+      Strength: 0.032,
+      Damping: 0.3,
+      SuspensionMin: -0.35,
+      BrokenSuspensionMax: 0.3
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
+      Price: 6000,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    }
+  },
   tatra_805_dlc_4: {
     'Truck > GameData > UiDesc': {
       UiName: 'UI_VEHICLE_TATRA_805_NAME',
@@ -18874,11 +18456,14 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(5)': {
       Scale: 0.47
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(-1.5; 0; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 50
     },
     'Truck > GameData': {
-      Country: 'RU,CAS',
+      Country: 'RU,CAS,NE',
       Price: 22_500,
       UnlockByExploration: 'false',
       UnlockByRank: 1
@@ -18886,9 +18471,9 @@ export default {
   },
   winches_medium_trucks_dlc_4: {
     'WinchVariants > Winch:nth-of-type(1)': {
-      Length: 20,
+      Length: 14,
       StrengthMult: 1,
-      IsEngineIgnitionRequired: 'false'
+      IsEngineIgnitionRequired: 'true'
     },
     'WinchVariants > Winch:nth-of-type(1) > GameData': {
       Price: 1000,
@@ -19204,7 +18789,6 @@ export default {
       Strength: 0.035,
       Damping: 0.3,
       SuspensionMin: -0.27,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.1
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
@@ -19212,7 +18796,6 @@ export default {
       Strength: 0.055,
       Damping: 0.3,
       SuspensionMin: -0.2,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.2
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
@@ -19321,6 +18904,12 @@ export default {
       UnlockByExploration: 'false',
       UnlockByRank: 8
     },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(10) > WheelFriction': {
+      BodyFriction: 3,
+      BodyFrictionAsphalt: 1.2,
+      SubstanceFriction: 1.3,
+      IsIgnoreIce: 'true'
+    },
     'TruckWheels > TruckTires > TruckTire:nth-of-type(10) > GameData': {
       Price: 6400,
       UnlockByExploration: 'false',
@@ -19396,6 +18985,9 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(13)': {
       Scale: 0.52
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(0; 0; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 50
     },
@@ -19455,6 +19047,59 @@ export default {
     'WinchVariants > Winch:nth-of-type(5) > GameData': {
       Price: 9400,
       UnlockByExploration: 'false',
+      UnlockByRank: 1
+    }
+  },
+  e_ru_scout_modern_dlc_4: {
+    'EngineVariants > Engine:nth-of-type(1)': {
+      CriticalDamageThreshold: 0.7,
+      DamageCapacity: 120,
+      DamagedConsumptionModifier: 1.2,
+      Responsiveness: 0.04,
+      FuelConsumption: 1.5,
+      Torque: 70_000,
+      DamagedMinTorqueMultiplier: 1,
+      DamagedMaxTorqueMultiplier: 0.6,
+      BrakesDelay: 0.5,
+      MaxDeltaAngVel: 0.01
+    },
+    'EngineVariants > Engine:nth-of-type(1) > GameData': {
+      Price: 1900,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    },
+    'EngineVariants > Engine:nth-of-type(2)': {
+      CriticalDamageThreshold: 0.7,
+      DamageCapacity: 150,
+      DamagedConsumptionModifier: 1.3,
+      Responsiveness: 0.04,
+      FuelConsumption: 1.7,
+      Torque: 80_000,
+      DamagedMinTorqueMultiplier: 1,
+      DamagedMaxTorqueMultiplier: 0.7,
+      BrakesDelay: 0.5,
+      MaxDeltaAngVel: 0.01
+    },
+    'EngineVariants > Engine:nth-of-type(2) > GameData': {
+      Price: 5500,
+      UnlockByExploration: 'true',
+      UnlockByRank: 1
+    },
+    'EngineVariants > Engine:nth-of-type(3)': {
+      CriticalDamageThreshold: 0.7,
+      DamageCapacity: 170,
+      DamagedConsumptionModifier: 1.4,
+      Responsiveness: 0.04,
+      FuelConsumption: 1.9,
+      Torque: 90_000,
+      DamagedMinTorqueMultiplier: 1,
+      DamagedMaxTorqueMultiplier: 0.8,
+      BrakesDelay: 0.5,
+      MaxDeltaAngVel: 0.01
+    },
+    'EngineVariants > Engine:nth-of-type(3) > GameData': {
+      Price: 6600,
+      UnlockByExploration: 'true',
       UnlockByRank: 1
     }
   },
@@ -19648,136 +19293,6 @@ export default {
       UnlockByRank: 1
     }
   },
-  e_ru_scout_modern_dlc_4: {
-    'EngineVariants > Engine:nth-of-type(1)': {
-      CriticalDamageThreshold: 0.7,
-      DamageCapacity: 120,
-      DamagedConsumptionModifier: 1.2,
-      Responsiveness: 0.04,
-      FuelConsumption: 1.5,
-      Torque: 70_000,
-      DamagedMinTorqueMultiplier: 1,
-      DamagedMaxTorqueMultiplier: 0.6,
-      BrakesDelay: 0.5,
-      MaxDeltaAngVel: 0.01
-    },
-    'EngineVariants > Engine:nth-of-type(1) > GameData': {
-      Price: 1900,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    },
-    'EngineVariants > Engine:nth-of-type(2)': {
-      CriticalDamageThreshold: 0.7,
-      DamageCapacity: 150,
-      DamagedConsumptionModifier: 1.3,
-      Responsiveness: 0.04,
-      FuelConsumption: 1.7,
-      Torque: 80_000,
-      DamagedMinTorqueMultiplier: 1,
-      DamagedMaxTorqueMultiplier: 0.7,
-      BrakesDelay: 0.5,
-      MaxDeltaAngVel: 0.01
-    },
-    'EngineVariants > Engine:nth-of-type(2) > GameData': {
-      Price: 5500,
-      UnlockByExploration: 'true',
-      UnlockByRank: 1
-    },
-    'EngineVariants > Engine:nth-of-type(3)': {
-      CriticalDamageThreshold: 0.7,
-      DamageCapacity: 170,
-      DamagedConsumptionModifier: 1.4,
-      Responsiveness: 0.04,
-      FuelConsumption: 1.9,
-      Torque: 90_000,
-      DamagedMinTorqueMultiplier: 1,
-      DamagedMaxTorqueMultiplier: 0.8,
-      BrakesDelay: 0.5,
-      MaxDeltaAngVel: 0.01
-    },
-    'EngineVariants > Engine:nth-of-type(3) > GameData': {
-      Price: 6600,
-      UnlockByExploration: 'true',
-      UnlockByRank: 1
-    }
-  },
-  s_khan_317_sentinel_dlc_4: {
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
-      CriticalDamageThreshold: 0.7,
-      DamageCapacity: 80
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(1)': {
-      Height: 0.12,
-      Strength: 0.04,
-      Damping: 0.3,
-      SuspensionMin: -0.3,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.15
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
-      Height: 0.12,
-      Strength: 0.04,
-      Damping: 0.3,
-      SuspensionMin: -0.3,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.15
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
-      Price: 3800,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2)': {
-      CriticalDamageThreshold: 0.7,
-      DamageCapacity: 120
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(1)': {
-      Height: 0.25,
-      Strength: 0.03,
-      Damping: 0.3,
-      SuspensionMin: -0.35,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.15
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
-      Height: 0.25,
-      Strength: 0.03,
-      Damping: 0.3,
-      SuspensionMin: -0.35,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.15
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
-      Price: 6000,
-      UnlockByExploration: 'true',
-      UnlockByRank: 1
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(3)': {
-      CriticalDamageThreshold: 0.7,
-      DamageCapacity: 100
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(3) > Suspension:nth-of-type(1)': {
-      Height: 0.37,
-      Strength: 0.02,
-      Damping: 0.3,
-      SuspensionMin: -0.38,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.15
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(3) > Suspension:nth-of-type(2)': {
-      Height: 0.37,
-      Strength: 0.02,
-      Damping: 0.3,
-      SuspensionMin: -0.38,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.15
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(3) > GameData': {
-      Price: 7200,
-      UnlockByExploration: 'true',
-      UnlockByRank: 1
-    }
-  },
   wheels_scout1_dlc_4: {
     'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
       BodyFriction: 0.8,
@@ -19847,20 +19362,109 @@ export default {
       UnlockByExploration: 'false',
       UnlockByRank: 2
     },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(4) > WheelFriction': {
+      BodyFriction: 2,
+      BodyFrictionAsphalt: 1,
+      SubstanceFriction: 1.2,
+      IsIgnoreIce: 'false'
+    },
     'TruckWheels > TruckTires > TruckTire:nth-of-type(4) > GameData': {
       Price: 4200,
       UnlockByExploration: 'false',
       UnlockByRank: 4
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(5) > WheelFriction': {
+      BodyFriction: 3,
+      BodyFrictionAsphalt: 0.5,
+      SubstanceFriction: 1.6,
+      IsIgnoreIce: 'false'
     },
     'TruckWheels > TruckTires > TruckTire:nth-of-type(5) > GameData': {
       Price: 5100,
       UnlockByExploration: 'false',
       UnlockByRank: 7
     },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(6) > WheelFriction': {
+      BodyFriction: 2,
+      BodyFrictionAsphalt: 0.9,
+      SubstanceFriction: 1.1,
+      IsIgnoreIce: 'true'
+    },
     'TruckWheels > TruckTires > TruckTire:nth-of-type(6) > GameData': {
       Price: 5700,
       UnlockByExploration: 'false',
       UnlockByRank: 10
+    }
+  },
+  s_khan_317_sentinel_dlc_4: {
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
+      CriticalDamageThreshold: 0.7,
+      DamageCapacity: 80
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(1)': {
+      Height: 0.12,
+      Strength: 0.04,
+      Damping: 0.3,
+      SuspensionMin: -0.3,
+      BrokenSuspensionMax: 0.15
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
+      Height: 0.12,
+      Strength: 0.04,
+      Damping: 0.3,
+      SuspensionMin: -0.3,
+      BrokenSuspensionMax: 0.15
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
+      Price: 3800,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2)': {
+      CriticalDamageThreshold: 0.7,
+      DamageCapacity: 120
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(1)': {
+      Height: 0.25,
+      Strength: 0.03,
+      Damping: 0.3,
+      SuspensionMin: -0.35,
+      BrokenSuspensionMax: 0.15
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
+      Height: 0.25,
+      Strength: 0.03,
+      Damping: 0.3,
+      SuspensionMin: -0.35,
+      BrokenSuspensionMax: 0.15
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
+      Price: 6000,
+      UnlockByExploration: 'true',
+      UnlockByRank: 1
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(3)': {
+      CriticalDamageThreshold: 0.7,
+      DamageCapacity: 100
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(3) > Suspension:nth-of-type(1)': {
+      Height: 0.37,
+      Strength: 0.02,
+      Damping: 0.3,
+      SuspensionMin: -0.38,
+      BrokenSuspensionMax: 0.15
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(3) > Suspension:nth-of-type(2)': {
+      Height: 0.37,
+      Strength: 0.02,
+      Damping: 0.3,
+      SuspensionMin: -0.38,
+      BrokenSuspensionMax: 0.15
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(3) > GameData': {
+      Price: 7200,
+      UnlockByExploration: 'true',
+      UnlockByRank: 1
     }
   },
   train_dlc_3: {
@@ -19918,6 +19522,9 @@ export default {
       SuspensionHeight: 0,
       SuspensionStrength: 0.6
     },
+    'Truck > PhysicsModel > Body': {
+      Mass: 140_000
+    },
     'Truck > GameData': {
       Price: 18_800
     }
@@ -19945,6 +19552,9 @@ export default {
       SuspensionHeight: 0.1,
       SuspensionStrength: 0.1
     },
+    'Truck > PhysicsModel > Body': {
+      Mass: 100
+    },
     'Truck > GameData': {
       Price: 14_100
     }
@@ -19955,6 +19565,9 @@ export default {
       WaterCapacity: 0,
       RepairsCapacity: 0,
       WheelRepairsCapacity: 0
+    },
+    'Truck > GameData > AddonSlots': {
+      Quantity: 1
     },
     'Truck > TruckData > Wheels > Wheel:nth-of-type(1)': {
       SuspensionHeight: 0.1,
@@ -19971,6 +19584,9 @@ export default {
     'Truck > TruckData > Wheels > Wheel:nth-of-type(4)': {
       SuspensionHeight: 0.1,
       SuspensionStrength: 0.08
+    },
+    'Truck > PhysicsModel > Body': {
+      Mass: 600
     },
     'Truck > GameData': {
       Price: 14_100
@@ -20015,6 +19631,9 @@ export default {
       SuspensionHeight: 0.07,
       SuspensionStrength: 0.33
     },
+    'Truck > PhysicsModel > Body': {
+      Mass: 2000
+    },
     'Truck > GameData': {
       Price: 13_200
     }
@@ -20042,11 +19661,9 @@ export default {
       SteeringAngle: 35
     },
     'Truck > TruckData > Wheels > Wheel:nth-of-type(3)': {
-      Torque: '',
       SteeringAngle: 28
     },
     'Truck > TruckData > Wheels > Wheel:nth-of-type(4)': {
-      Torque: '',
       SteeringAngle: 28
     },
     'Truck > TruckData > Wheels > Wheel:nth-of-type(5)': {
@@ -20133,11 +19750,14 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(20)': {
       Scale: 0.63
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(0.5; 0; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 100
     },
     'Truck > GameData': {
-      Country: 'US',
+      Country: 'US,NE',
       Price: 102_600,
       UnlockByExploration: 'true',
       UnlockByRank: 1
@@ -20145,9 +19765,9 @@ export default {
   },
   winches_heavy_trucks_dlc_3: {
     'WinchVariants > Winch:nth-of-type(1)': {
-      Length: 20,
+      Length: 14,
       StrengthMult: 1,
-      IsEngineIgnitionRequired: 'false'
+      IsEngineIgnitionRequired: 'true'
     },
     'WinchVariants > Winch:nth-of-type(1) > GameData': {
       Price: 1000,
@@ -20436,6 +20056,54 @@ export default {
       UnlockByRank: 1
     }
   },
+  s_paystar_5600ts_dlc_3: {
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
+      CriticalDamageThreshold: 0.6,
+      DamageCapacity: 200
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(1)': {
+      Height: 0.08,
+      Strength: 0.08,
+      Damping: 0.3,
+      SuspensionMin: -0.25,
+      BrokenSuspensionMax: 0.15
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
+      Height: 0.08,
+      Strength: 0.025,
+      Damping: 0.2,
+      SuspensionMin: -0.3,
+      BrokenSuspensionMax: 0.15
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
+      Price: 4500,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2)': {
+      CriticalDamageThreshold: 0.7,
+      DamageCapacity: 240
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(1)': {
+      Height: 0.18,
+      Strength: 0.07,
+      Damping: 0.3,
+      SuspensionMin: -0.4,
+      BrokenSuspensionMax: 0.15
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
+      Height: 0.2,
+      Strength: 0.022,
+      Damping: 0.2,
+      SuspensionMin: -0.45,
+      BrokenSuspensionMax: 0.15
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
+      Price: 9400,
+      UnlockByExploration: 'true',
+      UnlockByRank: 1
+    }
+  },
   wheels_heavy_double1_dlc_3: {
     'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
       BodyFriction: 1,
@@ -20502,104 +20170,6 @@ export default {
       Price: 5700,
       UnlockByExploration: 'false',
       UnlockByRank: 9
-    }
-  },
-  wheels_heavy_double2_dlc_3: {
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
-      BodyFriction: 3,
-      BodyFrictionAsphalt: 0.8,
-      SubstanceFriction: 1.9,
-      IsIgnoreIce: 'false'
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > GameData': {
-      Price: 5900,
-      UnlockByExploration: 'false',
-      UnlockByRank: 11
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(2) > WheelFriction': {
-      BodyFriction: 3.2,
-      BodyFrictionAsphalt: 0.8,
-      SubstanceFriction: 1.5,
-      IsIgnoreIce: 'false'
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(2) > GameData': {
-      Price: 6200,
-      UnlockByExploration: 'false',
-      UnlockByRank: 11
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(3) > WheelFriction': {
-      BodyFriction: 3,
-      BodyFrictionAsphalt: 1,
-      SubstanceFriction: 1.5,
-      IsIgnoreIce: 'false'
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(3) > GameData': {
-      Price: 6800,
-      UnlockByExploration: 'false',
-      UnlockByRank: 11
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(4) > WheelFriction': {
-      BodyFriction: 3,
-      BodyFrictionAsphalt: 1.2,
-      SubstanceFriction: 1.3,
-      IsIgnoreIce: 'true'
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(4) > GameData': {
-      Price: 6800,
-      UnlockByExploration: 'false',
-      UnlockByRank: 14
-    }
-  },
-  s_paystar_5600ts_dlc_3: {
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
-      CriticalDamageThreshold: 0.6,
-      DamageCapacity: 200
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(1)': {
-      Height: 0.08,
-      Strength: 0.08,
-      Damping: 0.3,
-      SuspensionMin: -0.25,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.15
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
-      Height: 0.08,
-      Strength: 0.025,
-      Damping: 0.2,
-      SuspensionMin: -0.3,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.15
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
-      Price: 4500,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2)': {
-      CriticalDamageThreshold: 0.7,
-      DamageCapacity: 240
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(1)': {
-      Height: 0.18,
-      Strength: 0.07,
-      Damping: 0.3,
-      SuspensionMin: -0.4,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.15
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
-      Height: 0.2,
-      Strength: 0.022,
-      Damping: 0.2,
-      SuspensionMin: -0.45,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.15
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
-      Price: 9400,
-      UnlockByExploration: 'true',
-      UnlockByRank: 1
     }
   },
   wheels_heavy_single_dlc_3: {
@@ -20692,6 +20262,52 @@ export default {
       UnlockByRank: 14
     }
   },
+  wheels_heavy_double2_dlc_3: {
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
+      BodyFriction: 3,
+      BodyFrictionAsphalt: 0.8,
+      SubstanceFriction: 1.9,
+      IsIgnoreIce: 'false'
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > GameData': {
+      Price: 5900,
+      UnlockByExploration: 'false',
+      UnlockByRank: 11
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(2) > WheelFriction': {
+      BodyFriction: 3.2,
+      BodyFrictionAsphalt: 0.8,
+      SubstanceFriction: 1.5,
+      IsIgnoreIce: 'false'
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(2) > GameData': {
+      Price: 6200,
+      UnlockByExploration: 'false',
+      UnlockByRank: 11
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(3) > WheelFriction': {
+      BodyFriction: 3,
+      BodyFrictionAsphalt: 1,
+      SubstanceFriction: 1.5,
+      IsIgnoreIce: 'false'
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(3) > GameData': {
+      Price: 6800,
+      UnlockByExploration: 'false',
+      UnlockByRank: 11
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(4) > WheelFriction': {
+      BodyFriction: 3,
+      BodyFrictionAsphalt: 1.2,
+      SubstanceFriction: 1.3,
+      IsIgnoreIce: 'true'
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(4) > GameData': {
+      Price: 6800,
+      UnlockByExploration: 'false',
+      UnlockByRank: 14
+    }
+  },
   wheels_heavy_single2_dlc_3: {
     'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
       BodyFriction: 2,
@@ -20760,56 +20376,17 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(2)': {
       Scale: 0.646
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(-0.5; 0; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 50
     },
     'Truck > GameData': {
-      Country: 'US',
+      Country: 'US,NE',
       Price: 108_300,
       UnlockByExploration: 'true',
       UnlockByRank: 1
-    }
-  },
-  winches_medium_trucks_dlc_3: {
-    'WinchVariants > Winch:nth-of-type(1)': {
-      Length: 20,
-      StrengthMult: 1,
-      IsEngineIgnitionRequired: 'false'
-    },
-    'WinchVariants > Winch:nth-of-type(1) > GameData': {
-      Price: 1000,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    },
-    'WinchVariants > Winch:nth-of-type(2)': {
-      Length: 18,
-      StrengthMult: 1,
-      IsEngineIgnitionRequired: 'true'
-    },
-    'WinchVariants > Winch:nth-of-type(2) > GameData': {
-      Price: 11_300,
-      UnlockByExploration: 'false',
-      UnlockByRank: 8
-    },
-    'WinchVariants > Winch:nth-of-type(3)': {
-      Length: 14,
-      StrengthMult: 1.3,
-      IsEngineIgnitionRequired: 'true'
-    },
-    'WinchVariants > Winch:nth-of-type(3) > GameData': {
-      Price: 15_000,
-      UnlockByExploration: 'false',
-      UnlockByRank: 12
-    },
-    'WinchVariants > Winch:nth-of-type(4)': {
-      Length: 18,
-      StrengthMult: 1.3,
-      IsEngineIgnitionRequired: 'true'
-    },
-    'WinchVariants > Winch:nth-of-type(4) > GameData': {
-      Price: 18_800,
-      UnlockByExploration: 'false',
-      UnlockByRank: 16
     }
   },
   e_us_truck_old_heavy_dlc_3: {
@@ -20865,31 +20442,46 @@ export default {
       UnlockByRank: 1
     }
   },
-  s_pacific_p512_dlc_3: {
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
-      CriticalDamageThreshold: 0.4,
-      DamageCapacity: 200
+  winches_medium_trucks_dlc_3: {
+    'WinchVariants > Winch:nth-of-type(1)': {
+      Length: 14,
+      StrengthMult: 1,
+      IsEngineIgnitionRequired: 'true'
     },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(1)': {
-      Height: 0.09,
-      Strength: 0.06,
-      Damping: 0.3,
-      SuspensionMin: -0.3,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.25
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
-      Height: 0.11,
-      Strength: 0.04,
-      Damping: 0.3,
-      SuspensionMin: -0.3,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.25
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
-      Price: 6400,
+    'WinchVariants > Winch:nth-of-type(1) > GameData': {
+      Price: 1000,
       UnlockByExploration: 'false',
       UnlockByRank: 1
+    },
+    'WinchVariants > Winch:nth-of-type(2)': {
+      Length: 18,
+      StrengthMult: 1,
+      IsEngineIgnitionRequired: 'true'
+    },
+    'WinchVariants > Winch:nth-of-type(2) > GameData': {
+      Price: 11_300,
+      UnlockByExploration: 'false',
+      UnlockByRank: 8
+    },
+    'WinchVariants > Winch:nth-of-type(3)': {
+      Length: 14,
+      StrengthMult: 1.3,
+      IsEngineIgnitionRequired: 'true'
+    },
+    'WinchVariants > Winch:nth-of-type(3) > GameData': {
+      Price: 15_000,
+      UnlockByExploration: 'false',
+      UnlockByRank: 12
+    },
+    'WinchVariants > Winch:nth-of-type(4)': {
+      Length: 18,
+      StrengthMult: 1.3,
+      IsEngineIgnitionRequired: 'true'
+    },
+    'WinchVariants > Winch:nth-of-type(4) > GameData': {
+      Price: 18_800,
+      UnlockByExploration: 'false',
+      UnlockByRank: 16
     }
   },
   wheels_heavy_offroad_p512_dlc_3: {
@@ -20901,6 +20493,31 @@ export default {
     },
     'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > GameData': {
       Price: 6800,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    }
+  },
+  s_pacific_p512_dlc_3: {
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
+      CriticalDamageThreshold: 0.4,
+      DamageCapacity: 200
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(1)': {
+      Height: 0.09,
+      Strength: 0.06,
+      Damping: 0.3,
+      SuspensionMin: -0.3,
+      BrokenSuspensionMax: 0.25
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
+      Height: 0.11,
+      Strength: 0.04,
+      Damping: 0.3,
+      SuspensionMin: -0.3,
+      BrokenSuspensionMax: 0.25
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
+      Price: 6400,
       UnlockByExploration: 'false',
       UnlockByRank: 1
     }
@@ -20969,6 +20586,9 @@ export default {
     },
     'Truck > TruckData > CompatibleWheels:nth-of-type(9)': {
       Scale: 0.74
+    },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(-0.55; 0; 0)'
     },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 120
@@ -21043,7 +20663,6 @@ export default {
       Strength: 0.1,
       Damping: 0.3,
       SuspensionMin: -0.3,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.1
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
@@ -21051,7 +20670,6 @@ export default {
       Strength: 0.08,
       Damping: 0.3,
       SuspensionMin: -0.25,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.2
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
@@ -21068,7 +20686,6 @@ export default {
       Strength: 0.2,
       Damping: 0.3,
       SuspensionMin: -0.35,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.1
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
@@ -21076,7 +20693,6 @@ export default {
       Strength: 0.08,
       Damping: 0.3,
       SuspensionMin: -0.35,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.2
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
@@ -21196,6 +20812,12 @@ export default {
       UnlockByExploration: 'false',
       UnlockByRank: 12
     },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(11) > WheelFriction': {
+      BodyFriction: 3,
+      BodyFrictionAsphalt: 1.2,
+      SubstanceFriction: 1.3,
+      IsIgnoreIce: 'true'
+    },
     'TruckWheels > TruckTires > TruckTire:nth-of-type(11) > GameData': {
       Price: 6400,
       UnlockByExploration: 'false',
@@ -21263,6 +20885,9 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(5)': {
       Scale: 0.65
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(0.3; 0; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 100
     },
@@ -21275,9 +20900,9 @@ export default {
   },
   winches_medium_trucks_dlc_2_2: {
     'WinchVariants > Winch:nth-of-type(1)': {
-      Length: 20,
+      Length: 14,
       StrengthMult: 1,
-      IsEngineIgnitionRequired: 'false'
+      IsEngineIgnitionRequired: 'true'
     },
     'WinchVariants > Winch:nth-of-type(1) > GameData': {
       Price: 1000,
@@ -21593,7 +21218,6 @@ export default {
       Strength: 0.06,
       Damping: 0.2,
       SuspensionMin: -0.3,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.2
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
@@ -21601,7 +21225,6 @@ export default {
       Strength: 0.06,
       Damping: 0.2,
       SuspensionMin: -0.3,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.2
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
@@ -21710,6 +21333,12 @@ export default {
       UnlockByExploration: 'false',
       UnlockByRank: 8
     },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(10) > WheelFriction': {
+      BodyFriction: 3,
+      BodyFrictionAsphalt: 1.2,
+      SubstanceFriction: 1.3,
+      IsIgnoreIce: 'true'
+    },
     'TruckWheels > TruckTires > TruckTire:nth-of-type(10) > GameData': {
       Price: 6400,
       UnlockByExploration: 'false',
@@ -21754,6 +21383,9 @@ export default {
     'Truck > TruckData > Wheels > Wheel:nth-of-type(8)': {
       SuspensionHeight: 0.0244,
       SuspensionStrength: 0.35
+    },
+    'Truck > PhysicsModel > Body': {
+      Mass: 9000
     },
     'Truck > GameData': {
       Price: 11_700
@@ -21806,6 +21438,9 @@ export default {
       SuspensionHeight: 0.0244,
       SuspensionStrength: 0.1
     },
+    'Truck > PhysicsModel > Body': {
+      Mass: 8000
+    },
     'Truck > GameData': {
       Price: 12_200
     }
@@ -21816,6 +21451,9 @@ export default {
       WaterCapacity: 0,
       RepairsCapacity: 0,
       WheelRepairsCapacity: 0
+    },
+    'Truck > GameData > AddonSlots': {
+      Quantity: 8
     },
     'Truck > TruckData > Wheels > Wheel:nth-of-type(1)': {
       SuspensionHeight: 0.0244,
@@ -21857,6 +21495,9 @@ export default {
       SuspensionHeight: 0.0244,
       SuspensionStrength: 0.1
     },
+    'Truck > PhysicsModel > Body': {
+      Mass: 750
+    },
     'Truck > GameData': {
       Price: 9400
     }
@@ -21875,6 +21516,9 @@ export default {
     'Truck > TruckData > Wheels > Wheel:nth-of-type(2)': {
       SuspensionHeight: 0.0244,
       SuspensionStrength: 0.0422
+    },
+    'Truck > PhysicsModel > Body': {
+      Mass: 20_000
     },
     'Truck > GameData': {
       Price: 10_400
@@ -21938,11 +21582,14 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(4)': {
       Scale: 0.6
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(0; 0; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 100
     },
     'Truck > GameData': {
-      Country: 'US',
+      Country: 'US,NE',
       Price: 121_500,
       UnlockByExploration: 'false',
       UnlockByRank: 1
@@ -21950,9 +21597,9 @@ export default {
   },
   winches_heavy_trucks_dlc_2_1: {
     'WinchVariants > Winch:nth-of-type(1)': {
-      Length: 20,
+      Length: 14,
       StrengthMult: 1,
-      IsEngineIgnitionRequired: 'false'
+      IsEngineIgnitionRequired: 'true'
     },
     'WinchVariants > Winch:nth-of-type(1) > GameData': {
       Price: 1000,
@@ -22188,78 +21835,6 @@ export default {
       UnlockByRank: 1
     }
   },
-  e_us_truck_modern_dlc_2_1: {
-    'EngineVariants > Engine:nth-of-type(1)': {
-      CriticalDamageThreshold: 0.5,
-      DamageCapacity: 160,
-      DamagedConsumptionModifier: 1.2,
-      Responsiveness: 0.04,
-      FuelConsumption: 6,
-      Torque: 160_000,
-      DamagedMinTorqueMultiplier: 1,
-      DamagedMaxTorqueMultiplier: 0.8,
-      BrakesDelay: 0.5,
-      MaxDeltaAngVel: 0.01
-    },
-    'EngineVariants > Engine:nth-of-type(1) > GameData': {
-      Price: 3000,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    },
-    'EngineVariants > Engine:nth-of-type(2)': {
-      CriticalDamageThreshold: 0.6,
-      DamageCapacity: 180,
-      DamagedConsumptionModifier: 1.3,
-      Responsiveness: 0.04,
-      FuelConsumption: 6.5,
-      Torque: 180_000,
-      DamagedMinTorqueMultiplier: 1,
-      DamagedMaxTorqueMultiplier: 0.7,
-      BrakesDelay: 0.5,
-      MaxDeltaAngVel: 0.01
-    },
-    'EngineVariants > Engine:nth-of-type(2) > GameData': {
-      Price: 10_400,
-      UnlockByExploration: 'true',
-      UnlockByRank: 1
-    },
-    'EngineVariants > Engine:nth-of-type(3)': {
-      CriticalDamageThreshold: 0.7,
-      DamageCapacity: 220,
-      DamagedConsumptionModifier: 1.1,
-      Responsiveness: 0.04,
-      FuelConsumption: 7.5,
-      Torque: 192_000,
-      DamagedMinTorqueMultiplier: 1,
-      DamagedMaxTorqueMultiplier: 0.8,
-      BrakesDelay: 0.5,
-      MaxDeltaAngVel: 0.01
-    },
-    'EngineVariants > Engine:nth-of-type(3) > GameData': {
-      Price: 11_300,
-      UnlockByExploration: 'true',
-      UnlockByRank: 1
-    }
-  },
-  e_us_truck_modern_ws_49x_dlc_2_1: {
-    'EngineVariants > Engine:nth-of-type(1)': {
-      CriticalDamageThreshold: 0.4,
-      DamageCapacity: 170,
-      DamagedConsumptionModifier: 1.2,
-      Responsiveness: 0.04,
-      FuelConsumption: 8.5,
-      Torque: 220_000,
-      DamagedMinTorqueMultiplier: 1,
-      DamagedMaxTorqueMultiplier: 0.6,
-      BrakesDelay: 0.5,
-      MaxDeltaAngVel: 0.01
-    },
-    'EngineVariants > Engine:nth-of-type(1) > GameData': {
-      Price: 12_800,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    }
-  },
   s_western_star_49x_dlc_2_1: {
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
       CriticalDamageThreshold: 0.6,
@@ -22270,7 +21845,6 @@ export default {
       Strength: 0.12,
       Damping: 0.15,
       SuspensionMin: -0.25,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.2
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
@@ -22278,7 +21852,6 @@ export default {
       Strength: 0.015,
       Damping: 0.2,
       SuspensionMin: -0.3,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.15
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(3)': {
@@ -22286,7 +21859,6 @@ export default {
       Strength: 0.017,
       Damping: 0.6,
       SuspensionMin: -0.3,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.2
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
@@ -22406,10 +21978,88 @@ export default {
       UnlockByExploration: 'false',
       UnlockByRank: 12
     },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(11) > WheelFriction': {
+      BodyFriction: 3,
+      BodyFrictionAsphalt: 1.2,
+      SubstanceFriction: 1.3,
+      IsIgnoreIce: 'true'
+    },
     'TruckWheels > TruckTires > TruckTire:nth-of-type(11) > GameData': {
       Price: 6400,
       UnlockByExploration: 'false',
       UnlockByRank: 12
+    }
+  },
+  e_us_truck_modern_dlc_2_1: {
+    'EngineVariants > Engine:nth-of-type(1)': {
+      CriticalDamageThreshold: 0.5,
+      DamageCapacity: 160,
+      DamagedConsumptionModifier: 1.2,
+      Responsiveness: 0.04,
+      FuelConsumption: 6,
+      Torque: 160_000,
+      DamagedMinTorqueMultiplier: 1,
+      DamagedMaxTorqueMultiplier: 0.8,
+      BrakesDelay: 0.5,
+      MaxDeltaAngVel: 0.01
+    },
+    'EngineVariants > Engine:nth-of-type(1) > GameData': {
+      Price: 3000,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    },
+    'EngineVariants > Engine:nth-of-type(2)': {
+      CriticalDamageThreshold: 0.6,
+      DamageCapacity: 180,
+      DamagedConsumptionModifier: 1.3,
+      Responsiveness: 0.04,
+      FuelConsumption: 6.5,
+      Torque: 180_000,
+      DamagedMinTorqueMultiplier: 1,
+      DamagedMaxTorqueMultiplier: 0.7,
+      BrakesDelay: 0.5,
+      MaxDeltaAngVel: 0.01
+    },
+    'EngineVariants > Engine:nth-of-type(2) > GameData': {
+      Price: 10_400,
+      UnlockByExploration: 'true',
+      UnlockByRank: 1
+    },
+    'EngineVariants > Engine:nth-of-type(3)': {
+      CriticalDamageThreshold: 0.7,
+      DamageCapacity: 220,
+      DamagedConsumptionModifier: 1.1,
+      Responsiveness: 0.04,
+      FuelConsumption: 7.5,
+      Torque: 192_000,
+      DamagedMinTorqueMultiplier: 1,
+      DamagedMaxTorqueMultiplier: 0.8,
+      BrakesDelay: 0.5,
+      MaxDeltaAngVel: 0.01
+    },
+    'EngineVariants > Engine:nth-of-type(3) > GameData': {
+      Price: 11_300,
+      UnlockByExploration: 'true',
+      UnlockByRank: 1
+    }
+  },
+  e_us_truck_modern_ws_49x_dlc_2_1: {
+    'EngineVariants > Engine:nth-of-type(1)': {
+      CriticalDamageThreshold: 0.4,
+      DamageCapacity: 170,
+      DamagedConsumptionModifier: 1.2,
+      Responsiveness: 0.04,
+      FuelConsumption: 8.5,
+      Torque: 220_000,
+      DamagedMinTorqueMultiplier: 1,
+      DamagedMaxTorqueMultiplier: 0.6,
+      BrakesDelay: 0.5,
+      MaxDeltaAngVel: 0.01
+    },
+    'EngineVariants > Engine:nth-of-type(1) > GameData': {
+      Price: 12_800,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
     }
   },
   cat_th357_dlc_2_1: {
@@ -22445,11 +22095,14 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(1)': {
       Scale: 0.648
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(0.7; -0.4; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 50
     },
     'Truck > GameData': {
-      Country: 'US',
+      Country: 'US,NE',
       Price: 85_200,
       UnlockByExploration: 'true',
       UnlockByRank: 1
@@ -22668,6 +22321,19 @@ export default {
       UnlockByRank: 1
     }
   },
+  wheels_cat_th357_single_dlc_2_1: {
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
+      BodyFriction: 1.7,
+      BodyFrictionAsphalt: 0.5,
+      SubstanceFriction: 3,
+      IsIgnoreIce: 'false'
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > GameData': {
+      Price: 8300,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    }
+  },
   s_cat_th357_dlc_2_1: {
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
       CriticalDamageThreshold: 0.7,
@@ -22691,13 +22357,6 @@ export default {
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
       Price: 7200,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    }
-  },
-  wheels_cat_th357_single_dlc_2_1: {
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > GameData': {
-      Price: 8300,
       UnlockByExploration: 'false',
       UnlockByRank: 1
     }
@@ -22738,11 +22397,14 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(2)': {
       Scale: 0.94
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(-1.5; 0; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 100
     },
     'Truck > GameData': {
-      Country: 'US',
+      Country: 'US,NE',
       Price: 143_500,
       UnlockByExploration: 'true',
       UnlockByRank: 1
@@ -22801,33 +22463,6 @@ export default {
       UnlockByRank: 1
     }
   },
-  s_cat_770g_dlc_2_1: {
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
-      CriticalDamageThreshold: 0.7,
-      DamageCapacity: 300
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(1)': {
-      Height: 0.05,
-      Strength: 0.1,
-      Damping: 0.3,
-      SuspensionMin: -0.2,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.2
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
-      Height: 0.05,
-      Strength: 0.05,
-      Damping: 0.05,
-      SuspensionMin: -0.1,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.1
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
-      Price: 7000,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    }
-  },
   wheels_superheavy_cat770g_double_dlc_2_1: {
     'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
       BodyFriction: 2,
@@ -22841,12 +22476,40 @@ export default {
       UnlockByRank: 1
     }
   },
+  s_cat_770g_dlc_2_1: {
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
+      CriticalDamageThreshold: 0.7,
+      DamageCapacity: 300
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(1)': {
+      Height: 0.05,
+      Strength: 0.1,
+      Damping: 0.3,
+      SuspensionMin: -0.2,
+      BrokenSuspensionMax: 0.2
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
+      Height: 0.05,
+      Strength: 0.05,
+      Damping: 0.05,
+      SuspensionMin: -0.1,
+      BrokenSuspensionMax: 0.1
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
+      Price: 7000,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    }
+  },
   semitrailer_stepdeck_plane_01_dlc_1_2: {
     'Truck > TruckData': {
       FuelCapacity: 0,
       WaterCapacity: 0,
       RepairsCapacity: 0,
       WheelRepairsCapacity: 0
+    },
+    'Truck > GameData > AddonSlots': {
+      Quantity: 5
     },
     'Truck > TruckData > Wheels > Wheel:nth-of-type(1)': {
       SuspensionHeight: 0.04,
@@ -22863,6 +22526,9 @@ export default {
     'Truck > TruckData > Wheels > Wheel:nth-of-type(4)': {
       SuspensionHeight: 0.04,
       SuspensionStrength: 0.04
+    },
+    'Truck > PhysicsModel > Body': {
+      Mass: 1000
     },
     'Truck > GameData': {
       Price: 7500
@@ -22952,6 +22618,9 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(18)': {
       Scale: 0.6
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(-0.3; 0.1; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 120
     },
@@ -22964,9 +22633,9 @@ export default {
   },
   winches_medium_trucks_dlc_1_2: {
     'WinchVariants > Winch:nth-of-type(1)': {
-      Length: 20,
+      Length: 14,
       StrengthMult: 1,
-      IsEngineIgnitionRequired: 'false'
+      IsEngineIgnitionRequired: 'true'
     },
     'WinchVariants > Winch:nth-of-type(1) > GameData': {
       Price: 1000,
@@ -23265,7 +22934,6 @@ export default {
       Strength: 0.06,
       Damping: 0.6,
       SuspensionMin: -0.3,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.1
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
@@ -23273,7 +22941,6 @@ export default {
       Strength: 0.08,
       Damping: 0.6,
       SuspensionMin: -0.3,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.2
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
@@ -23290,7 +22957,6 @@ export default {
       Strength: 0.06,
       Damping: 0.6,
       SuspensionMin: -0.3,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.1
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
@@ -23298,7 +22964,6 @@ export default {
       Strength: 0.08,
       Damping: 0.6,
       SuspensionMin: -0.3,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.2
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
@@ -23315,7 +22980,6 @@ export default {
       Strength: 0.06,
       Damping: 0.4,
       SuspensionMin: -0.3,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.1
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(3) > Suspension:nth-of-type(2)': {
@@ -23323,7 +22987,6 @@ export default {
       Strength: 0.08,
       Damping: 0.4,
       SuspensionMin: -0.15,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.2
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(3) > GameData': {
@@ -23432,6 +23095,12 @@ export default {
       UnlockByExploration: 'false',
       UnlockByRank: 8
     },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(10) > WheelFriction': {
+      BodyFriction: 3,
+      BodyFrictionAsphalt: 1.2,
+      SubstanceFriction: 1.3,
+      IsIgnoreIce: 'true'
+    },
     'TruckWheels > TruckTires > TruckTire:nth-of-type(10) > GameData': {
       Price: 6400,
       UnlockByExploration: 'false',
@@ -23485,11 +23154,14 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(3)': {
       Scale: 0.56
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(0.1; -0.2; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 50
     },
     'Truck > GameData': {
-      Country: 'US',
+      Country: 'US,NE',
       Price: 29_300,
       UnlockByExploration: 'false',
       UnlockByRank: 1
@@ -23737,6 +23409,74 @@ export default {
       UnlockByRank: 1
     }
   },
+  wheels_scout_apache_1_dlc_1_2: {
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
+      BodyFriction: 2,
+      BodyFrictionAsphalt: 1,
+      SubstanceFriction: 1.2,
+      IsIgnoreIce: 'false'
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > GameData': {
+      Price: 4700,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(2) > WheelFriction': {
+      BodyFriction: 1.4,
+      BodyFrictionAsphalt: 1,
+      SubstanceFriction: 1,
+      IsIgnoreIce: 'false'
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(2) > GameData': {
+      Price: 2700,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(3) > WheelFriction': {
+      BodyFriction: 1,
+      BodyFrictionAsphalt: 1,
+      SubstanceFriction: 1.2,
+      IsIgnoreIce: 'false'
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(3) > GameData': {
+      Price: 3000,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(4) > WheelFriction': {
+      BodyFriction: 1,
+      BodyFrictionAsphalt: 1.2,
+      SubstanceFriction: 1,
+      IsIgnoreIce: 'false'
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(4) > GameData': {
+      Price: 3400,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(5) > WheelFriction': {
+      BodyFriction: 3,
+      BodyFrictionAsphalt: 0.5,
+      SubstanceFriction: 1.6,
+      IsIgnoreIce: 'false'
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(5) > GameData': {
+      Price: 5300,
+      UnlockByExploration: 'false',
+      UnlockByRank: 7
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(6) > WheelFriction': {
+      BodyFriction: 2,
+      BodyFrictionAsphalt: 0.9,
+      SubstanceFriction: 1.1,
+      IsIgnoreIce: 'true'
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(6) > GameData': {
+      Price: 6000,
+      UnlockByExploration: 'false',
+      UnlockByRank: 10
+    }
+  },
   s_chevy_apache_dlc_1_2: {
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
       CriticalDamageThreshold: 0.7,
@@ -23745,7 +23485,6 @@ export default {
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(1)': {
       Height: 0.15,
       Strength: 0.02,
-      Damping: '',
       SuspensionMin: -0.4,
       SuspensionMax: 0,
       BrokenSuspensionMax: 0.3
@@ -23753,9 +23492,7 @@ export default {
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
       Height: 0,
       Strength: 0.02,
-      Damping: '',
       SuspensionMin: -0.2,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.3
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
@@ -23836,56 +23573,6 @@ export default {
       UnlockByRank: 1
     }
   },
-  wheels_scout_apache_1_dlc_1_2: {
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > GameData': {
-      Price: 4700,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(2) > WheelFriction': {
-      BodyFriction: 1.4,
-      BodyFrictionAsphalt: 1,
-      SubstanceFriction: 1,
-      IsIgnoreIce: 'false'
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(2) > GameData': {
-      Price: 2700,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(3) > WheelFriction': {
-      BodyFriction: 1,
-      BodyFrictionAsphalt: 1,
-      SubstanceFriction: 1.2,
-      IsIgnoreIce: 'false'
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(3) > GameData': {
-      Price: 3000,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(4) > WheelFriction': {
-      BodyFriction: 1,
-      BodyFrictionAsphalt: 1.2,
-      SubstanceFriction: 1,
-      IsIgnoreIce: 'false'
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(4) > GameData': {
-      Price: 3400,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(5) > GameData': {
-      Price: 5300,
-      UnlockByExploration: 'false',
-      UnlockByRank: 7
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(6) > GameData': {
-      Price: 6000,
-      UnlockByExploration: 'false',
-      UnlockByRank: 10
-    }
-  },
   scout_trailer_radar_dlc_1_1: {
     'Truck > TruckData': {
       FuelCapacity: 120,
@@ -23908,6 +23595,9 @@ export default {
     'Truck > TruckData > Wheels > Wheel:nth-of-type(4)': {
       SuspensionHeight: 0.05,
       SuspensionStrength: 0.1
+    },
+    'Truck > PhysicsModel > Body': {
+      Mass: 600
     },
     'Truck > GameData': {
       Price: 5800
@@ -23936,9 +23626,10 @@ export default {
       SuspensionHeight: 0,
       SuspensionStrength: 0.01
     },
-    'Truck > GameData': {
-      Price: ''
-    }
+    'Truck > PhysicsModel > Body': {
+      Mass: 1700
+    },
+    'Truck > GameData': {}
   },
   tuz_16_actaeon_dlc_1_1: {
     'Truck > GameData > UiDesc': {
@@ -24024,12 +23715,85 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(18)': {
       Scale: 0.6
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(0; 0; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 120
     },
     'Truck > GameData': {
       Country: 'RU,CAS',
       Price: 54_400,
+      UnlockByExploration: 'true',
+      UnlockByRank: 1
+    }
+  },
+  e_ru_truck_old_dlc_1_1: {
+    'EngineVariants > Engine:nth-of-type(1)': {
+      CriticalDamageThreshold: 0.8,
+      DamageCapacity: 180,
+      DamagedConsumptionModifier: 1.6,
+      Responsiveness: 0.04,
+      FuelConsumption: 4.5,
+      Torque: 130_000,
+      DamagedMinTorqueMultiplier: 1,
+      DamagedMaxTorqueMultiplier: 0.6,
+      BrakesDelay: 0.5,
+      MaxDeltaAngVel: 0.01
+    },
+    'EngineVariants > Engine:nth-of-type(1) > GameData': {
+      Price: 2500,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    },
+    'EngineVariants > Engine:nth-of-type(2)': {
+      CriticalDamageThreshold: 0.7,
+      DamageCapacity: 200,
+      DamagedConsumptionModifier: 1.7,
+      Responsiveness: 0.04,
+      FuelConsumption: 5.5,
+      Torque: 140_000,
+      DamagedMinTorqueMultiplier: 1,
+      DamagedMaxTorqueMultiplier: 0.7,
+      BrakesDelay: 0.5,
+      MaxDeltaAngVel: 0.01
+    },
+    'EngineVariants > Engine:nth-of-type(2) > GameData': {
+      Price: 7200,
+      UnlockByExploration: 'true',
+      UnlockByRank: 1
+    },
+    'EngineVariants > Engine:nth-of-type(3)': {
+      CriticalDamageThreshold: 0.7,
+      DamageCapacity: 240,
+      DamagedConsumptionModifier: 1.8,
+      Responsiveness: 0.04,
+      FuelConsumption: 6,
+      Torque: 160_000,
+      DamagedMinTorqueMultiplier: 1,
+      DamagedMaxTorqueMultiplier: 0.6,
+      BrakesDelay: 0.5,
+      MaxDeltaAngVel: 0.01
+    },
+    'EngineVariants > Engine:nth-of-type(3) > GameData': {
+      Price: 9000,
+      UnlockByExploration: 'true',
+      UnlockByRank: 1
+    },
+    'EngineVariants > Engine:nth-of-type(4)': {
+      CriticalDamageThreshold: 0.5,
+      DamageCapacity: 120,
+      DamagedConsumptionModifier: 2.1,
+      Responsiveness: 0.04,
+      FuelConsumption: 7.5,
+      Torque: 185_000,
+      DamagedMinTorqueMultiplier: 1,
+      DamagedMaxTorqueMultiplier: 0.6,
+      BrakesDelay: 0.5,
+      MaxDeltaAngVel: 0.01
+    },
+    'EngineVariants > Engine:nth-of-type(4) > GameData': {
+      Price: 11_300,
       UnlockByExploration: 'true',
       UnlockByRank: 1
     }
@@ -24232,130 +23996,6 @@ export default {
       UnlockByRank: 1
     }
   },
-  e_ru_truck_old_dlc_1_1: {
-    'EngineVariants > Engine:nth-of-type(1)': {
-      CriticalDamageThreshold: 0.8,
-      DamageCapacity: 180,
-      DamagedConsumptionModifier: 1.6,
-      Responsiveness: 0.04,
-      FuelConsumption: 4.5,
-      Torque: 130_000,
-      DamagedMinTorqueMultiplier: 1,
-      DamagedMaxTorqueMultiplier: 0.6,
-      BrakesDelay: 0.5,
-      MaxDeltaAngVel: 0.01
-    },
-    'EngineVariants > Engine:nth-of-type(1) > GameData': {
-      Price: 2500,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    },
-    'EngineVariants > Engine:nth-of-type(2)': {
-      CriticalDamageThreshold: 0.7,
-      DamageCapacity: 200,
-      DamagedConsumptionModifier: 1.7,
-      Responsiveness: 0.04,
-      FuelConsumption: 5.5,
-      Torque: 140_000,
-      DamagedMinTorqueMultiplier: 1,
-      DamagedMaxTorqueMultiplier: 0.7,
-      BrakesDelay: 0.5,
-      MaxDeltaAngVel: 0.01
-    },
-    'EngineVariants > Engine:nth-of-type(2) > GameData': {
-      Price: 7200,
-      UnlockByExploration: 'true',
-      UnlockByRank: 1
-    },
-    'EngineVariants > Engine:nth-of-type(3)': {
-      CriticalDamageThreshold: 0.7,
-      DamageCapacity: 240,
-      DamagedConsumptionModifier: 1.8,
-      Responsiveness: 0.04,
-      FuelConsumption: 6,
-      Torque: 160_000,
-      DamagedMinTorqueMultiplier: 1,
-      DamagedMaxTorqueMultiplier: 0.6,
-      BrakesDelay: 0.5,
-      MaxDeltaAngVel: 0.01
-    },
-    'EngineVariants > Engine:nth-of-type(3) > GameData': {
-      Price: 9000,
-      UnlockByExploration: 'true',
-      UnlockByRank: 1
-    },
-    'EngineVariants > Engine:nth-of-type(4)': {
-      CriticalDamageThreshold: 0.5,
-      DamageCapacity: 120,
-      DamagedConsumptionModifier: 2.1,
-      Responsiveness: 0.04,
-      FuelConsumption: 7.5,
-      Torque: 185_000,
-      DamagedMinTorqueMultiplier: 1,
-      DamagedMaxTorqueMultiplier: 0.6,
-      BrakesDelay: 0.5,
-      MaxDeltaAngVel: 0.01
-    },
-    'EngineVariants > Engine:nth-of-type(4) > GameData': {
-      Price: 11_300,
-      UnlockByExploration: 'true',
-      UnlockByRank: 1
-    }
-  },
-  winches_medium_trucks_dlc_1_1: {
-    'WinchVariants > Winch:nth-of-type(1)': {
-      Length: 20,
-      StrengthMult: 1,
-      IsEngineIgnitionRequired: 'false'
-    },
-    'WinchVariants > Winch:nth-of-type(1) > GameData': {
-      Price: 1000,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    },
-    'WinchVariants > Winch:nth-of-type(2)': {
-      Length: 18,
-      StrengthMult: 1,
-      IsEngineIgnitionRequired: 'true'
-    },
-    'WinchVariants > Winch:nth-of-type(2) > GameData': {
-      Price: 11_300,
-      UnlockByExploration: 'false',
-      UnlockByRank: 8
-    },
-    'WinchVariants > Winch:nth-of-type(3)': {
-      Length: 14,
-      StrengthMult: 1.3,
-      IsEngineIgnitionRequired: 'true'
-    },
-    'WinchVariants > Winch:nth-of-type(3) > GameData': {
-      Price: 15_000,
-      UnlockByExploration: 'false',
-      UnlockByRank: 12
-    },
-    'WinchVariants > Winch:nth-of-type(4)': {
-      Length: 18,
-      StrengthMult: 1.3,
-      IsEngineIgnitionRequired: 'true'
-    },
-    'WinchVariants > Winch:nth-of-type(4) > GameData': {
-      Price: 18_800,
-      UnlockByExploration: 'false',
-      UnlockByRank: 16
-    }
-  },
-  winches_actaeon_dlc_1_1: {
-    'WinchVariants > Winch:nth-of-type(1)': {
-      Length: 14,
-      StrengthMult: 0.8,
-      IsEngineIgnitionRequired: 'false'
-    },
-    'WinchVariants > Winch:nth-of-type(1) > GameData': {
-      Price: 15_000,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    }
-  },
   wheels_medium_mudtires_actaeon_dlc_1_1: {
     'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
       BodyFriction: 2,
@@ -24367,83 +24007,6 @@ export default {
       Price: 7000,
       UnlockByExploration: 'false',
       UnlockByRank: 12
-    }
-  },
-  s_tuz_16_actaeon_dlc_1_1: {
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
-      CriticalDamageThreshold: 0.5,
-      DamageCapacity: 160
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(1)': {
-      Height: 0.1,
-      Strength: 0.05,
-      Damping: 0.3,
-      SuspensionMin: -0.3,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.1
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
-      Height: 0.1,
-      Strength: 0.05,
-      Damping: 0.3,
-      SuspensionMin: -0.13,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.2
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
-      Price: 4400,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2)': {
-      CriticalDamageThreshold: 0.6,
-      DamageCapacity: 180
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(1)': {
-      Height: 0.2,
-      Strength: 0.04,
-      Damping: 0.3,
-      SuspensionMin: -0.3,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.1
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
-      Height: 0.2,
-      Strength: 0.04,
-      Damping: 0.3,
-      SuspensionMin: -0.16,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.2
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
-      Price: 7900,
-      UnlockByExploration: 'true',
-      UnlockByRank: 1
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(3)': {
-      CriticalDamageThreshold: 0.6,
-      DamageCapacity: 140
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(3) > Suspension:nth-of-type(1)': {
-      Height: 0.1,
-      Strength: 0.04,
-      Damping: 0.4,
-      SuspensionMin: -0.3,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.1
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(3) > Suspension:nth-of-type(2)': {
-      Height: 0.1,
-      Strength: 0.04,
-      Damping: 0.4,
-      SuspensionMin: -0.13,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.2
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(3) > GameData': {
-      Price: 9800,
-      UnlockByExploration: 'false',
-      UnlockByRank: 26
     }
   },
   wheels_medium_double_front_dlc_1_1: {
@@ -24546,17 +24109,145 @@ export default {
       UnlockByExploration: 'false',
       UnlockByRank: 8
     },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(10) > WheelFriction': {
+      BodyFriction: 3,
+      BodyFrictionAsphalt: 1.2,
+      SubstanceFriction: 1.3,
+      IsIgnoreIce: 'true'
+    },
     'TruckWheels > TruckTires > TruckTire:nth-of-type(10) > GameData': {
       Price: 6400,
       UnlockByExploration: 'false',
       UnlockByRank: 12
     }
   },
-  ford_f750_dlc_1_1: {
-    'Truck > GameData > UiDesc': {
-      UiName: '',
-      UiDesc: ''
+  winches_medium_trucks_dlc_1_1: {
+    'WinchVariants > Winch:nth-of-type(1)': {
+      Length: 14,
+      StrengthMult: 1,
+      IsEngineIgnitionRequired: 'true'
     },
+    'WinchVariants > Winch:nth-of-type(1) > GameData': {
+      Price: 1000,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    },
+    'WinchVariants > Winch:nth-of-type(2)': {
+      Length: 18,
+      StrengthMult: 1,
+      IsEngineIgnitionRequired: 'true'
+    },
+    'WinchVariants > Winch:nth-of-type(2) > GameData': {
+      Price: 11_300,
+      UnlockByExploration: 'false',
+      UnlockByRank: 8
+    },
+    'WinchVariants > Winch:nth-of-type(3)': {
+      Length: 14,
+      StrengthMult: 1.3,
+      IsEngineIgnitionRequired: 'true'
+    },
+    'WinchVariants > Winch:nth-of-type(3) > GameData': {
+      Price: 15_000,
+      UnlockByExploration: 'false',
+      UnlockByRank: 12
+    },
+    'WinchVariants > Winch:nth-of-type(4)': {
+      Length: 18,
+      StrengthMult: 1.3,
+      IsEngineIgnitionRequired: 'true'
+    },
+    'WinchVariants > Winch:nth-of-type(4) > GameData': {
+      Price: 18_800,
+      UnlockByExploration: 'false',
+      UnlockByRank: 16
+    }
+  },
+  winches_actaeon_dlc_1_1: {
+    'WinchVariants > Winch:nth-of-type(1)': {
+      Length: 14,
+      StrengthMult: 0.8,
+      IsEngineIgnitionRequired: 'false'
+    },
+    'WinchVariants > Winch:nth-of-type(1) > GameData': {
+      Price: 15_000,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    }
+  },
+  s_tuz_16_actaeon_dlc_1_1: {
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
+      CriticalDamageThreshold: 0.5,
+      DamageCapacity: 160
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(1)': {
+      Height: 0.1,
+      Strength: 0.05,
+      Damping: 0.3,
+      SuspensionMin: -0.3,
+      BrokenSuspensionMax: 0.1
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
+      Height: 0.1,
+      Strength: 0.05,
+      Damping: 0.3,
+      SuspensionMin: -0.13,
+      BrokenSuspensionMax: 0.2
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
+      Price: 4400,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2)': {
+      CriticalDamageThreshold: 0.6,
+      DamageCapacity: 180
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(1)': {
+      Height: 0.2,
+      Strength: 0.04,
+      Damping: 0.3,
+      SuspensionMin: -0.3,
+      BrokenSuspensionMax: 0.1
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
+      Height: 0.2,
+      Strength: 0.04,
+      Damping: 0.3,
+      SuspensionMin: -0.16,
+      BrokenSuspensionMax: 0.2
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
+      Price: 7900,
+      UnlockByExploration: 'true',
+      UnlockByRank: 1
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(3)': {
+      CriticalDamageThreshold: 0.6,
+      DamageCapacity: 140
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(3) > Suspension:nth-of-type(1)': {
+      Height: 0.1,
+      Strength: 0.04,
+      Damping: 0.4,
+      SuspensionMin: -0.3,
+      BrokenSuspensionMax: 0.1
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(3) > Suspension:nth-of-type(2)': {
+      Height: 0.1,
+      Strength: 0.04,
+      Damping: 0.4,
+      SuspensionMin: -0.13,
+      BrokenSuspensionMax: 0.2
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(3) > GameData': {
+      Price: 9800,
+      UnlockByExploration: 'false',
+      UnlockByRank: 26
+    }
+  },
+  ford_f750_dlc_1_1: {
+    'Truck > GameData > UiDesc': {},
     'Truck > TruckData': {
       Responsiveness: 0.6,
       BackSteerSpeed: 0.06,
@@ -24609,11 +24300,14 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(9)': {
       Scale: 0.57
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(-1.7; 0; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 50
     },
     'Truck > GameData': {
-      Country: 'US',
+      Country: 'US,NE',
       Price: 43_600,
       UnlockByExploration: 'true',
       UnlockByRank: 1
@@ -24725,83 +24419,6 @@ export default {
       UnlockByRank: 1
     }
   },
-  s_ford_f750_dlc_1_1: {
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
-      CriticalDamageThreshold: 0.7,
-      DamageCapacity: 120
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(1)': {
-      Height: 0.2,
-      Strength: 0.042,
-      Damping: 0.2,
-      SuspensionMin: -0.35,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.15
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
-      Height: 0.1,
-      Strength: 0.1,
-      Damping: 0.25,
-      SuspensionMin: -0.15,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.15
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
-      Price: 2300,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2)': {
-      CriticalDamageThreshold: 0.7,
-      DamageCapacity: 100
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(1)': {
-      Height: 0.27,
-      Strength: 0.042,
-      Damping: 0.3,
-      SuspensionMin: -0.37,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.15
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
-      Height: 0.17,
-      Strength: 0.08,
-      Damping: 0.3,
-      SuspensionMin: -0.15,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.15
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
-      Price: 5300,
-      UnlockByExploration: 'true',
-      UnlockByRank: 1
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(3)': {
-      CriticalDamageThreshold: 0.7,
-      DamageCapacity: 75
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(3) > Suspension:nth-of-type(1)': {
-      Height: 0.32,
-      Strength: 0.05,
-      Damping: 0.3,
-      SuspensionMin: -0.5,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.15
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(3) > Suspension:nth-of-type(2)': {
-      Height: 0.22,
-      Strength: 0.08,
-      Damping: 0.3,
-      SuspensionMin: -0.25,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.15
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(3) > GameData': {
-      Price: 6000,
-      UnlockByExploration: 'true',
-      UnlockByRank: 1
-    }
-  },
   wheels_ford_f750_dlc_1_1: {
     'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
       BodyFriction: 1,
@@ -24847,10 +24464,87 @@ export default {
       UnlockByExploration: 'false',
       UnlockByRank: 10
     },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(5) > WheelFriction': {
+      BodyFriction: 3,
+      BodyFrictionAsphalt: 1.2,
+      SubstanceFriction: 1.3,
+      IsIgnoreIce: 'true'
+    },
     'TruckWheels > TruckTires > TruckTire:nth-of-type(5) > GameData': {
       Price: 6000,
       UnlockByExploration: 'false',
       UnlockByRank: 10
+    }
+  },
+  s_ford_f750_dlc_1_1: {
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
+      CriticalDamageThreshold: 0.7,
+      DamageCapacity: 120
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(1)': {
+      Height: 0.2,
+      Strength: 0.042,
+      Damping: 0.2,
+      SuspensionMin: -0.35,
+      BrokenSuspensionMax: 0.15
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
+      Height: 0.1,
+      Strength: 0.1,
+      Damping: 0.25,
+      SuspensionMin: -0.15,
+      BrokenSuspensionMax: 0.15
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
+      Price: 2300,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2)': {
+      CriticalDamageThreshold: 0.7,
+      DamageCapacity: 100
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(1)': {
+      Height: 0.27,
+      Strength: 0.042,
+      Damping: 0.3,
+      SuspensionMin: -0.37,
+      BrokenSuspensionMax: 0.15
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
+      Height: 0.17,
+      Strength: 0.08,
+      Damping: 0.3,
+      SuspensionMin: -0.15,
+      BrokenSuspensionMax: 0.15
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
+      Price: 5300,
+      UnlockByExploration: 'true',
+      UnlockByRank: 1
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(3)': {
+      CriticalDamageThreshold: 0.7,
+      DamageCapacity: 75
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(3) > Suspension:nth-of-type(1)': {
+      Height: 0.32,
+      Strength: 0.05,
+      Damping: 0.3,
+      SuspensionMin: -0.5,
+      BrokenSuspensionMax: 0.15
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(3) > Suspension:nth-of-type(2)': {
+      Height: 0.22,
+      Strength: 0.08,
+      Damping: 0.3,
+      SuspensionMin: -0.25,
+      BrokenSuspensionMax: 0.15
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(3) > GameData': {
+      Price: 6000,
+      UnlockByExploration: 'true',
+      UnlockByRank: 1
     }
   },
   e_us_scout_old_dlc_1_1: {
@@ -24932,6 +24626,9 @@ export default {
       RepairsCapacity: 0,
       WheelRepairsCapacity: 0
     },
+    'Truck > GameData > AddonSlots': {
+      Quantity: 5
+    },
     'Truck > TruckData > Wheels > Wheel:nth-of-type(1)': {
       SuspensionHeight: 0.04,
       SuspensionStrength: 0.04
@@ -24955,6 +24652,9 @@ export default {
     'Truck > TruckData > Wheels > Wheel:nth-of-type(6)': {
       SuspensionHeight: 0.04,
       SuspensionStrength: 0.04
+    },
+    'Truck > PhysicsModel > Body': {
+      Mass: 1000
     },
     'Truck > GameData': {
       Price: 7500
@@ -24990,6 +24690,9 @@ export default {
     'Truck > TruckData > Wheels > Wheel:nth-of-type(6)': {
       SuspensionHeight: -0.08,
       SuspensionStrength: 0.1
+    },
+    'Truck > PhysicsModel > Body': {
+      Mass: 6500
     },
     'Truck > GameData': {
       Price: 12_200
@@ -25055,65 +24758,16 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(10)': {
       Scale: 0.46
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(-0.32; 0.1; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 50
     },
     'Truck > GameData': {
-      Country: 'US',
+      Country: 'US,NE',
       Price: 4100,
       UnlockByExploration: 'true',
-      UnlockByRank: 1
-    }
-  },
-  winches_scouts_dlc_12: {
-    'WinchVariants > Winch:nth-of-type(1)': {
-      Length: 14,
-      StrengthMult: 1,
-      IsEngineIgnitionRequired: 'true'
-    },
-    'WinchVariants > Winch:nth-of-type(1) > GameData': {
-      Price: 1000,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    },
-    'WinchVariants > Winch:nth-of-type(2)': {
-      Length: 21,
-      StrengthMult: 1,
-      IsEngineIgnitionRequired: 'true'
-    },
-    'WinchVariants > Winch:nth-of-type(2) > GameData': {
-      Price: 7500,
-      UnlockByExploration: 'false',
-      UnlockByRank: 6
-    },
-    'WinchVariants > Winch:nth-of-type(3)': {
-      Length: 14,
-      StrengthMult: 1.4,
-      IsEngineIgnitionRequired: 'true'
-    },
-    'WinchVariants > Winch:nth-of-type(3) > GameData': {
-      Price: 9400,
-      UnlockByExploration: 'false',
-      UnlockByRank: 10
-    },
-    'WinchVariants > Winch:nth-of-type(4)': {
-      Length: 21,
-      StrengthMult: 1.4,
-      IsEngineIgnitionRequired: 'true'
-    },
-    'WinchVariants > Winch:nth-of-type(4) > GameData': {
-      Price: 12_200,
-      UnlockByExploration: 'false',
-      UnlockByRank: 14
-    },
-    'WinchVariants > Winch:nth-of-type(5)': {
-      Length: 14,
-      StrengthMult: 0.9,
-      IsEngineIgnitionRequired: 'false'
-    },
-    'WinchVariants > Winch:nth-of-type(5) > GameData': {
-      Price: 9400,
-      UnlockByExploration: 'false',
       UnlockByRank: 1
     }
   },
@@ -25307,6 +24961,232 @@ export default {
       UnlockByRank: 1
     }
   },
+  winches_scouts_dlc_12: {
+    'WinchVariants > Winch:nth-of-type(1)': {
+      Length: 14,
+      StrengthMult: 1,
+      IsEngineIgnitionRequired: 'true'
+    },
+    'WinchVariants > Winch:nth-of-type(1) > GameData': {
+      Price: 1000,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    },
+    'WinchVariants > Winch:nth-of-type(2)': {
+      Length: 21,
+      StrengthMult: 1,
+      IsEngineIgnitionRequired: 'true'
+    },
+    'WinchVariants > Winch:nth-of-type(2) > GameData': {
+      Price: 7500,
+      UnlockByExploration: 'false',
+      UnlockByRank: 6
+    },
+    'WinchVariants > Winch:nth-of-type(3)': {
+      Length: 14,
+      StrengthMult: 1.4,
+      IsEngineIgnitionRequired: 'true'
+    },
+    'WinchVariants > Winch:nth-of-type(3) > GameData': {
+      Price: 9400,
+      UnlockByExploration: 'false',
+      UnlockByRank: 10
+    },
+    'WinchVariants > Winch:nth-of-type(4)': {
+      Length: 21,
+      StrengthMult: 1.4,
+      IsEngineIgnitionRequired: 'true'
+    },
+    'WinchVariants > Winch:nth-of-type(4) > GameData': {
+      Price: 12_200,
+      UnlockByExploration: 'false',
+      UnlockByRank: 14
+    },
+    'WinchVariants > Winch:nth-of-type(5)': {
+      Length: 14,
+      StrengthMult: 0.9,
+      IsEngineIgnitionRequired: 'false'
+    },
+    'WinchVariants > Winch:nth-of-type(5) > GameData': {
+      Price: 9400,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    }
+  },
+  s_mtb_8106_dlc_12: {
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
+      CriticalDamageThreshold: 0.7,
+      DamageCapacity: 80
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(1)': {
+      Height: 0.23,
+      Strength: 0.03,
+      Damping: 0.55,
+      SuspensionMin: -0.2,
+      BrokenSuspensionMax: 0.15
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
+      Height: 0.24,
+      Strength: 0.04,
+      Damping: 0.55,
+      SuspensionMin: -0.23,
+      BrokenSuspensionMax: 0.15
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
+      Price: 3800,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2)': {
+      CriticalDamageThreshold: 0.7,
+      DamageCapacity: 100
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(1)': {
+      Height: 0.33,
+      Strength: 0.03,
+      Damping: 0.55,
+      SuspensionMin: -0.27,
+      BrokenSuspensionMax: 0.15
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
+      Height: 0.34,
+      Strength: 0.035,
+      Damping: 0.55,
+      SuspensionMin: -0.29,
+      BrokenSuspensionMax: 0.15
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
+      Price: 5200,
+      UnlockByExploration: 'true',
+      UnlockByRank: 1
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(3)': {
+      CriticalDamageThreshold: 0.7,
+      DamageCapacity: 80
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(3) > Suspension:nth-of-type(1)': {
+      Height: 0.43,
+      Strength: 0.014,
+      Damping: 0.55,
+      SuspensionMin: -0.35,
+      BrokenSuspensionMax: 0.15
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(3) > Suspension:nth-of-type(2)': {
+      Height: 0.44,
+      Strength: 0.015,
+      Damping: 0.55,
+      SuspensionMin: -0.4,
+      BrokenSuspensionMax: 0.15
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(3) > GameData': {
+      Price: 6600,
+      UnlockByExploration: 'true',
+      UnlockByRank: 1
+    }
+  },
+  wheels_scout1_dlc_12: {
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
+      BodyFriction: 0.8,
+      BodyFrictionAsphalt: 2,
+      SubstanceFriction: 0.4,
+      IsIgnoreIce: 'false'
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > GameData': {
+      Price: 1000,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(2) > WheelFriction': {
+      BodyFriction: 1,
+      BodyFrictionAsphalt: 2,
+      SubstanceFriction: 0.2,
+      IsIgnoreIce: 'false'
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(2) > GameData': {
+      Price: 1200,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(3) > WheelFriction': {
+      BodyFriction: 0.8,
+      BodyFrictionAsphalt: 2.5,
+      SubstanceFriction: 0.2,
+      IsIgnoreIce: 'false'
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(3) > GameData': {
+      Price: 1400,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    }
+  },
+  wheels_scout2_dlc_12: {
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
+      BodyFriction: 1.4,
+      BodyFrictionAsphalt: 1,
+      SubstanceFriction: 1,
+      IsIgnoreIce: 'false'
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > GameData': {
+      Price: 2300,
+      UnlockByExploration: 'false',
+      UnlockByRank: 2
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(2) > WheelFriction': {
+      BodyFriction: 1,
+      BodyFrictionAsphalt: 1,
+      SubstanceFriction: 1.2,
+      IsIgnoreIce: 'false'
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(2) > GameData': {
+      Price: 2500,
+      UnlockByExploration: 'false',
+      UnlockByRank: 2
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(3) > WheelFriction': {
+      BodyFriction: 1,
+      BodyFrictionAsphalt: 1.2,
+      SubstanceFriction: 1,
+      IsIgnoreIce: 'false'
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(3) > GameData': {
+      Price: 2900,
+      UnlockByExploration: 'false',
+      UnlockByRank: 2
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(4) > WheelFriction': {
+      BodyFriction: 2,
+      BodyFrictionAsphalt: 1,
+      SubstanceFriction: 1.2,
+      IsIgnoreIce: 'false'
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(4) > GameData': {
+      Price: 4200,
+      UnlockByExploration: 'false',
+      UnlockByRank: 4
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(5) > WheelFriction': {
+      BodyFriction: 3,
+      BodyFrictionAsphalt: 0.5,
+      SubstanceFriction: 1.6,
+      IsIgnoreIce: 'false'
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(5) > GameData': {
+      Price: 5100,
+      UnlockByExploration: 'false',
+      UnlockByRank: 7
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(6) > WheelFriction': {
+      BodyFriction: 2,
+      BodyFrictionAsphalt: 0.9,
+      SubstanceFriction: 1.1,
+      IsIgnoreIce: 'true'
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(6) > GameData': {
+      Price: 5700,
+      UnlockByExploration: 'false',
+      UnlockByRank: 10
+    }
+  },
   e_us_scout_old_dlc_12: {
     'EngineVariants > Engine:nth-of-type(1)': {
       CriticalDamageThreshold: 0.6,
@@ -25379,168 +25259,6 @@ export default {
       UnlockByRank: 1
     }
   },
-  s_mtb_8106_dlc_12: {
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
-      CriticalDamageThreshold: 0.7,
-      DamageCapacity: 80
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(1)': {
-      Height: 0.23,
-      Strength: 0.03,
-      Damping: 0.55,
-      SuspensionMin: -0.2,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.15
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
-      Height: 0.24,
-      Strength: 0.04,
-      Damping: 0.55,
-      SuspensionMin: -0.23,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.15
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
-      Price: 3800,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2)': {
-      CriticalDamageThreshold: 0.7,
-      DamageCapacity: 100
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(1)': {
-      Height: 0.33,
-      Strength: 0.03,
-      Damping: 0.55,
-      SuspensionMin: -0.27,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.15
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
-      Height: 0.34,
-      Strength: 0.035,
-      Damping: 0.55,
-      SuspensionMin: -0.29,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.15
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
-      Price: 5200,
-      UnlockByExploration: 'true',
-      UnlockByRank: 1
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(3)': {
-      CriticalDamageThreshold: 0.7,
-      DamageCapacity: 80
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(3) > Suspension:nth-of-type(1)': {
-      Height: 0.43,
-      Strength: 0.014,
-      Damping: 0.55,
-      SuspensionMin: -0.35,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.15
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(3) > Suspension:nth-of-type(2)': {
-      Height: 0.44,
-      Strength: 0.015,
-      Damping: 0.55,
-      SuspensionMin: -0.4,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.15
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(3) > GameData': {
-      Price: 6600,
-      UnlockByExploration: 'true',
-      UnlockByRank: 1
-    }
-  },
-  wheels_scout2_dlc_12: {
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
-      BodyFriction: 1.4,
-      BodyFrictionAsphalt: 1,
-      SubstanceFriction: 1,
-      IsIgnoreIce: 'false'
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > GameData': {
-      Price: 2300,
-      UnlockByExploration: 'false',
-      UnlockByRank: 2
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(2) > WheelFriction': {
-      BodyFriction: 1,
-      BodyFrictionAsphalt: 1,
-      SubstanceFriction: 1.2,
-      IsIgnoreIce: 'false'
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(2) > GameData': {
-      Price: 2500,
-      UnlockByExploration: 'false',
-      UnlockByRank: 2
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(3) > WheelFriction': {
-      BodyFriction: 1,
-      BodyFrictionAsphalt: 1.2,
-      SubstanceFriction: 1,
-      IsIgnoreIce: 'false'
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(3) > GameData': {
-      Price: 2900,
-      UnlockByExploration: 'false',
-      UnlockByRank: 2
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(4) > GameData': {
-      Price: 4200,
-      UnlockByExploration: 'false',
-      UnlockByRank: 4
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(5) > GameData': {
-      Price: 5100,
-      UnlockByExploration: 'false',
-      UnlockByRank: 7
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(6) > GameData': {
-      Price: 5700,
-      UnlockByExploration: 'false',
-      UnlockByRank: 10
-    }
-  },
-  wheels_scout1_dlc_12: {
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
-      BodyFriction: 0.8,
-      BodyFrictionAsphalt: 2,
-      SubstanceFriction: 0.4,
-      IsIgnoreIce: 'false'
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > GameData': {
-      Price: 1000,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(2) > WheelFriction': {
-      BodyFriction: 1,
-      BodyFrictionAsphalt: 2,
-      SubstanceFriction: 0.2,
-      IsIgnoreIce: 'false'
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(2) > GameData': {
-      Price: 1200,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(3) > WheelFriction': {
-      BodyFriction: 0.8,
-      BodyFrictionAsphalt: 2.5,
-      SubstanceFriction: 0.2,
-      IsIgnoreIce: 'false'
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(3) > GameData': {
-      Price: 1400,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    }
-  },
   femm_37at_dlc_12: {
     'Truck > GameData > UiDesc': {
       UiName: 'UI_VEHICLE_FEMM_37AT_NAME',
@@ -25585,6 +25303,9 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(2)': {
       Scale: 0.9
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(0.7; 0; -0.1)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 100
     },
@@ -25597,9 +25318,9 @@ export default {
   },
   winches_heavy_trucks_dlc_12: {
     'WinchVariants > Winch:nth-of-type(1)': {
-      Length: 20,
+      Length: 14,
       StrengthMult: 1,
-      IsEngineIgnitionRequired: 'false'
+      IsEngineIgnitionRequired: 'true'
     },
     'WinchVariants > Winch:nth-of-type(1) > GameData': {
       Price: 1000,
@@ -25789,7 +25510,6 @@ export default {
       Strength: 0.06,
       Damping: 0.7,
       SuspensionMin: -0.3,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.2
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
@@ -25802,6 +25522,52 @@ export default {
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
       Price: 5700,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    }
+  },
+  wheels_superheavy_single_dlc_12: {
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
+      BodyFriction: 1.7,
+      BodyFrictionAsphalt: 0.5,
+      SubstanceFriction: 3,
+      IsIgnoreIce: 'false'
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > GameData': {
+      Price: 7500,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(2) > WheelFriction': {
+      BodyFriction: 1.7,
+      BodyFrictionAsphalt: 0.5,
+      SubstanceFriction: 3.2,
+      IsIgnoreIce: 'false'
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(2) > GameData': {
+      Price: 8100,
+      UnlockByExploration: 'false',
+      UnlockByRank: 15
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(3) > WheelFriction': {
+      BodyFriction: 2,
+      BodyFrictionAsphalt: 0.5,
+      SubstanceFriction: 3,
+      IsIgnoreIce: 'false'
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(3) > GameData': {
+      Price: 9000,
+      UnlockByExploration: 'false',
+      UnlockByRank: 15
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(4) > WheelFriction': {
+      BodyFriction: 1.7,
+      BodyFrictionAsphalt: 0.7,
+      SubstanceFriction: 3,
+      IsIgnoreIce: 'false'
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(4) > GameData': {
+      Price: 7500,
       UnlockByExploration: 'false',
       UnlockByRank: 1
     }
@@ -25895,46 +25661,6 @@ export default {
       UnlockByRank: 1
     }
   },
-  wheels_superheavy_single_dlc_12: {
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > GameData': {
-      Price: 7500,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(2) > WheelFriction': {
-      BodyFriction: 1.7,
-      BodyFrictionAsphalt: 0.5,
-      SubstanceFriction: 3.2,
-      IsIgnoreIce: 'false'
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(2) > GameData': {
-      Price: 8100,
-      UnlockByExploration: 'false',
-      UnlockByRank: 15
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(3) > WheelFriction': {
-      BodyFriction: 2,
-      BodyFrictionAsphalt: 0.5,
-      SubstanceFriction: 3,
-      IsIgnoreIce: 'false'
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(3) > GameData': {
-      Price: 9000,
-      UnlockByExploration: 'false',
-      UnlockByRank: 15
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(4) > WheelFriction': {
-      BodyFriction: 1.7,
-      BodyFrictionAsphalt: 0.7,
-      SubstanceFriction: 3,
-      IsIgnoreIce: 'false'
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(4) > GameData': {
-      Price: 7500,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    }
-  },
   semitrailer_star_dlc_11: {
     'Truck > TruckData': {
       FuelCapacity: 0,
@@ -25958,6 +25684,9 @@ export default {
       SuspensionHeight: 0.15,
       SuspensionStrength: 0.0422
     },
+    'Truck > PhysicsModel > Body': {
+      Mass: 10_000
+    },
     'Truck > GameData': {
       Price: 6800
     }
@@ -25980,6 +25709,9 @@ export default {
     'Truck > TruckData > Wheels > Wheel:nth-of-type(3)': {
       SuspensionHeight: 0.07,
       SuspensionStrength: 0.065
+    },
+    'Truck > PhysicsModel > Body': {
+      Mass: 900
     },
     'Truck > GameData': {
       Price: 3400
@@ -26011,6 +25743,9 @@ export default {
     'Truck > TruckData > Wheels > Wheel:nth-of-type(5)': {
       SuspensionHeight: 0.03,
       SuspensionStrength: 0.03
+    },
+    'Truck > PhysicsModel > Body': {
+      Mass: 800
     },
     'Truck > GameData': {
       Price: 4300
@@ -26076,11 +25811,14 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(10)': {
       Scale: 0.48
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(0.5; -0.3; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 150
     },
     'Truck > GameData': {
-      Country: 'US',
+      Country: 'US,NE',
       Price: 2600,
       UnlockByExploration: 'true',
       UnlockByRank: 1
@@ -26135,6 +25873,59 @@ export default {
     'WinchVariants > Winch:nth-of-type(5) > GameData': {
       Price: 9400,
       UnlockByExploration: 'false',
+      UnlockByRank: 1
+    }
+  },
+  e_us_scout_old_dlc_11: {
+    'EngineVariants > Engine:nth-of-type(1)': {
+      CriticalDamageThreshold: 0.6,
+      DamageCapacity: 100,
+      DamagedConsumptionModifier: 1.2,
+      Responsiveness: 0.04,
+      FuelConsumption: 1.3,
+      Torque: 35_000,
+      DamagedMinTorqueMultiplier: 1,
+      DamagedMaxTorqueMultiplier: 0.6,
+      BrakesDelay: 0.5,
+      MaxDeltaAngVel: 0.01
+    },
+    'EngineVariants > Engine:nth-of-type(1) > GameData': {
+      Price: 1500,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    },
+    'EngineVariants > Engine:nth-of-type(2)': {
+      CriticalDamageThreshold: 0.4,
+      DamageCapacity: 100,
+      DamagedConsumptionModifier: 1.5,
+      Responsiveness: 0.04,
+      FuelConsumption: 1.7,
+      Torque: 42_000,
+      DamagedMinTorqueMultiplier: 1,
+      DamagedMaxTorqueMultiplier: 0.5,
+      BrakesDelay: 0.5,
+      MaxDeltaAngVel: 0.01
+    },
+    'EngineVariants > Engine:nth-of-type(2) > GameData': {
+      Price: 4700,
+      UnlockByExploration: 'true',
+      UnlockByRank: 1
+    },
+    'EngineVariants > Engine:nth-of-type(3)': {
+      CriticalDamageThreshold: 0.7,
+      DamageCapacity: 150,
+      DamagedConsumptionModifier: 1.5,
+      Responsiveness: 0.04,
+      FuelConsumption: 2,
+      Torque: 50_000,
+      DamagedMinTorqueMultiplier: 1,
+      DamagedMaxTorqueMultiplier: 0.7,
+      BrakesDelay: 0.5,
+      MaxDeltaAngVel: 0.01
+    },
+    'EngineVariants > Engine:nth-of-type(3) > GameData': {
+      Price: 6000,
+      UnlockByExploration: 'true',
       UnlockByRank: 1
     }
   },
@@ -26328,59 +26119,6 @@ export default {
       UnlockByRank: 1
     }
   },
-  e_us_scout_old_dlc_11: {
-    'EngineVariants > Engine:nth-of-type(1)': {
-      CriticalDamageThreshold: 0.6,
-      DamageCapacity: 100,
-      DamagedConsumptionModifier: 1.2,
-      Responsiveness: 0.04,
-      FuelConsumption: 1.3,
-      Torque: 35_000,
-      DamagedMinTorqueMultiplier: 1,
-      DamagedMaxTorqueMultiplier: 0.6,
-      BrakesDelay: 0.5,
-      MaxDeltaAngVel: 0.01
-    },
-    'EngineVariants > Engine:nth-of-type(1) > GameData': {
-      Price: 1500,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    },
-    'EngineVariants > Engine:nth-of-type(2)': {
-      CriticalDamageThreshold: 0.4,
-      DamageCapacity: 100,
-      DamagedConsumptionModifier: 1.5,
-      Responsiveness: 0.04,
-      FuelConsumption: 1.7,
-      Torque: 42_000,
-      DamagedMinTorqueMultiplier: 1,
-      DamagedMaxTorqueMultiplier: 0.5,
-      BrakesDelay: 0.5,
-      MaxDeltaAngVel: 0.01
-    },
-    'EngineVariants > Engine:nth-of-type(2) > GameData': {
-      Price: 4700,
-      UnlockByExploration: 'true',
-      UnlockByRank: 1
-    },
-    'EngineVariants > Engine:nth-of-type(3)': {
-      CriticalDamageThreshold: 0.7,
-      DamageCapacity: 150,
-      DamagedConsumptionModifier: 1.5,
-      Responsiveness: 0.04,
-      FuelConsumption: 2,
-      Torque: 50_000,
-      DamagedMinTorqueMultiplier: 1,
-      DamagedMaxTorqueMultiplier: 0.7,
-      BrakesDelay: 0.5,
-      MaxDeltaAngVel: 0.01
-    },
-    'EngineVariants > Engine:nth-of-type(3) > GameData': {
-      Price: 6000,
-      UnlockByExploration: 'true',
-      UnlockByRank: 1
-    }
-  },
   wheels_scout_highway_dlc_11: {
     'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
       BodyFriction: 0.7,
@@ -26486,58 +26224,6 @@ export default {
       UnlockByRank: 1
     }
   },
-  s_neo_falcon_2000_dlc_11: {
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
-      CriticalDamageThreshold: 0.7,
-      DamageCapacity: 80
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(1)': {
-      Height: 0.125,
-      Strength: 0.025,
-      Damping: 0.2,
-      SuspensionMin: -0.18,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.15
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
-      Height: 0.14,
-      Strength: 0.025,
-      Damping: 0.2,
-      SuspensionMin: -0.14,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.15
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
-      Price: 2700,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2)': {
-      CriticalDamageThreshold: 0.7,
-      DamageCapacity: 100
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(1)': {
-      Height: 0.25,
-      Strength: 0.03,
-      Damping: 0.3,
-      SuspensionMin: -0.3,
-      SuspensionMax: 1.5,
-      BrokenSuspensionMax: 0.15
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
-      Height: 0.25,
-      Strength: 0.03,
-      Damping: 0.3,
-      SuspensionMin: -0.25,
-      SuspensionMax: 1.5,
-      BrokenSuspensionMax: 0.15
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
-      Price: 5700,
-      UnlockByExploration: 'true',
-      UnlockByRank: 1
-    }
-  },
   wheels_scout2_dlc_11: {
     'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
       BodyFriction: 1.4,
@@ -26572,15 +26258,33 @@ export default {
       UnlockByExploration: 'false',
       UnlockByRank: 2
     },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(4) > WheelFriction': {
+      BodyFriction: 2,
+      BodyFrictionAsphalt: 1,
+      SubstanceFriction: 1.2,
+      IsIgnoreIce: 'false'
+    },
     'TruckWheels > TruckTires > TruckTire:nth-of-type(4) > GameData': {
       Price: 4200,
       UnlockByExploration: 'false',
       UnlockByRank: 4
     },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(5) > WheelFriction': {
+      BodyFriction: 3,
+      BodyFrictionAsphalt: 0.5,
+      SubstanceFriction: 1.6,
+      IsIgnoreIce: 'false'
+    },
     'TruckWheels > TruckTires > TruckTire:nth-of-type(5) > GameData': {
       Price: 5100,
       UnlockByExploration: 'false',
       UnlockByRank: 7
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(6) > WheelFriction': {
+      BodyFriction: 2,
+      BodyFrictionAsphalt: 0.9,
+      SubstanceFriction: 1.1,
+      IsIgnoreIce: 'true'
     },
     'TruckWheels > TruckTires > TruckTire:nth-of-type(6) > GameData': {
       Price: 5700,
@@ -26620,6 +26324,56 @@ export default {
     'TruckWheels > TruckTires > TruckTire:nth-of-type(3) > GameData': {
       Price: 1400,
       UnlockByExploration: 'false',
+      UnlockByRank: 1
+    }
+  },
+  s_neo_falcon_2000_dlc_11: {
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
+      CriticalDamageThreshold: 0.7,
+      DamageCapacity: 80
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(1)': {
+      Height: 0.125,
+      Strength: 0.025,
+      Damping: 0.2,
+      SuspensionMin: -0.18,
+      BrokenSuspensionMax: 0.15
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
+      Height: 0.14,
+      Strength: 0.025,
+      Damping: 0.2,
+      SuspensionMin: -0.14,
+      BrokenSuspensionMax: 0.15
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
+      Price: 2700,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2)': {
+      CriticalDamageThreshold: 0.7,
+      DamageCapacity: 100
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(1)': {
+      Height: 0.25,
+      Strength: 0.03,
+      Damping: 0.3,
+      SuspensionMin: -0.3,
+      SuspensionMax: 1.5,
+      BrokenSuspensionMax: 0.15
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
+      Height: 0.25,
+      Strength: 0.03,
+      Damping: 0.3,
+      SuspensionMin: -0.25,
+      SuspensionMax: 1.5,
+      BrokenSuspensionMax: 0.15
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
+      Price: 5700,
+      UnlockByExploration: 'true',
       UnlockByRank: 1
     }
   },
@@ -26664,11 +26418,14 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(1)': {
       Scale: 0.875
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(0.8; 0; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 100
     },
     'Truck > GameData': {
-      Country: 'RU,CAS',
+      Country: 'RU,CAS,NE',
       Price: 97_500,
       UnlockByExploration: 'true',
       UnlockByRank: 1
@@ -26874,6 +26631,9 @@ export default {
       SuspensionHeight: 0.26,
       SuspensionStrength: 0.35
     },
+    'Truck > PhysicsModel > Body': {
+      Mass: 9000
+    },
     'Truck > GameData': {
       Price: 11_700
     }
@@ -26939,11 +26699,14 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(5)': {
       Scale: 0.6
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(0; -0.4; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 110
     },
     'Truck > GameData': {
-      Country: 'US',
+      Country: 'US,NE',
       Price: 95_500,
       UnlockByExploration: 'true',
       UnlockByRank: 1
@@ -26951,9 +26714,9 @@ export default {
   },
   winches_medium_trucks_dlc_10: {
     'WinchVariants > Winch:nth-of-type(1)': {
-      Length: 20,
+      Length: 14,
       StrengthMult: 1,
-      IsEngineIgnitionRequired: 'false'
+      IsEngineIgnitionRequired: 'true'
     },
     'WinchVariants > Winch:nth-of-type(1) > GameData': {
       Price: 1000,
@@ -26989,6 +26752,59 @@ export default {
       Price: 18_800,
       UnlockByExploration: 'false',
       UnlockByRank: 16
+    }
+  },
+  e_us_truck_modern_mack_defense_m917_dlc_10: {
+    'EngineVariants > Engine:nth-of-type(1)': {
+      CriticalDamageThreshold: 0.6,
+      DamageCapacity: 180,
+      DamagedConsumptionModifier: 1.5,
+      Responsiveness: 0.04,
+      FuelConsumption: 8,
+      Torque: 176_500,
+      DamagedMinTorqueMultiplier: 1,
+      DamagedMaxTorqueMultiplier: 0.6,
+      BrakesDelay: 0.6,
+      MaxDeltaAngVel: 0.01
+    },
+    'EngineVariants > Engine:nth-of-type(1) > GameData': {
+      Price: 15_000,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    },
+    'EngineVariants > Engine:nth-of-type(2)': {
+      CriticalDamageThreshold: 0.8,
+      DamageCapacity: 300,
+      DamagedConsumptionModifier: 1.4,
+      Responsiveness: 0.04,
+      FuelConsumption: 10,
+      Torque: 232_000,
+      DamagedMinTorqueMultiplier: 1,
+      DamagedMaxTorqueMultiplier: 0.75,
+      BrakesDelay: 0.5,
+      MaxDeltaAngVel: 0.015
+    },
+    'EngineVariants > Engine:nth-of-type(2) > GameData': {
+      Price: 19_700,
+      UnlockByExploration: 'true',
+      UnlockByRank: 1
+    },
+    'EngineVariants > Engine:nth-of-type(3)': {
+      CriticalDamageThreshold: 0.75,
+      DamageCapacity: 280,
+      DamagedConsumptionModifier: 1.3,
+      Responsiveness: 0.04,
+      FuelConsumption: 9.5,
+      Torque: 222_000,
+      DamagedMinTorqueMultiplier: 0.9,
+      DamagedMaxTorqueMultiplier: 0.7,
+      BrakesDelay: 0.4,
+      MaxDeltaAngVel: 0.02
+    },
+    'EngineVariants > Engine:nth-of-type(3) > GameData': {
+      Price: 24_400,
+      UnlockByExploration: 'true',
+      UnlockByRank: 1
     }
   },
   gearboxes_special_mack_defense_dlc_10: {
@@ -27193,59 +27009,6 @@ export default {
       UnlockByRank: 1
     }
   },
-  e_us_truck_modern_mack_defense_m917_dlc_10: {
-    'EngineVariants > Engine:nth-of-type(1)': {
-      CriticalDamageThreshold: 0.6,
-      DamageCapacity: 180,
-      DamagedConsumptionModifier: 1.5,
-      Responsiveness: 0.04,
-      FuelConsumption: 8,
-      Torque: 176_500,
-      DamagedMinTorqueMultiplier: 1,
-      DamagedMaxTorqueMultiplier: 0.6,
-      BrakesDelay: 0.6,
-      MaxDeltaAngVel: 0.01
-    },
-    'EngineVariants > Engine:nth-of-type(1) > GameData': {
-      Price: 15_000,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    },
-    'EngineVariants > Engine:nth-of-type(2)': {
-      CriticalDamageThreshold: 0.8,
-      DamageCapacity: 300,
-      DamagedConsumptionModifier: 1.4,
-      Responsiveness: 0.04,
-      FuelConsumption: 10,
-      Torque: 232_000,
-      DamagedMinTorqueMultiplier: 1,
-      DamagedMaxTorqueMultiplier: 0.75,
-      BrakesDelay: 0.5,
-      MaxDeltaAngVel: 0.015
-    },
-    'EngineVariants > Engine:nth-of-type(2) > GameData': {
-      Price: 19_700,
-      UnlockByExploration: 'true',
-      UnlockByRank: 1
-    },
-    'EngineVariants > Engine:nth-of-type(3)': {
-      CriticalDamageThreshold: 0.75,
-      DamageCapacity: 280,
-      DamagedConsumptionModifier: 1.3,
-      Responsiveness: 0.04,
-      FuelConsumption: 9.5,
-      Torque: 222_000,
-      DamagedMinTorqueMultiplier: 0.9,
-      DamagedMaxTorqueMultiplier: 0.7,
-      BrakesDelay: 0.4,
-      MaxDeltaAngVel: 0.02
-    },
-    'EngineVariants > Engine:nth-of-type(3) > GameData': {
-      Price: 24_400,
-      UnlockByExploration: 'true',
-      UnlockByRank: 1
-    }
-  },
   wheels_mack_defense_m917_dlc_10: {
     'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
       BodyFriction: 2.8,
@@ -27384,7 +27147,6 @@ export default {
       Strength: 0.05,
       Damping: 0.3,
       SuspensionMin: -0.3,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.25
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
@@ -27392,7 +27154,6 @@ export default {
       Strength: 0.03,
       Damping: 0.3,
       SuspensionMin: -0.25,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.25
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
@@ -27409,7 +27170,6 @@ export default {
       Strength: 0.04,
       Damping: 0.4,
       SuspensionMin: -0.2,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.25
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(3) > Suspension:nth-of-type(2)': {
@@ -27417,7 +27177,6 @@ export default {
       Strength: 0.02,
       Damping: 0.3,
       SuspensionMin: -0.3,
-      SuspensionMax: '',
       BrokenSuspensionMax: 0.25
     },
     'SuspensionSetVariants > SuspensionSet:nth-of-type(3) > GameData': {
@@ -27508,11 +27267,14 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(12)': {
       Scale: 0.66
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(0; -0.4; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 50
     },
     'Truck > GameData': {
-      Country: 'US',
+      Country: 'US,NE',
       Price: 100_800,
       UnlockByExploration: 'false',
       UnlockByRank: 1
@@ -27520,9 +27282,9 @@ export default {
   },
   winches_heavy_trucks_dlc_10: {
     'WinchVariants > Winch:nth-of-type(1)': {
-      Length: 20,
+      Length: 14,
       StrengthMult: 1,
-      IsEngineIgnitionRequired: 'false'
+      IsEngineIgnitionRequired: 'true'
     },
     'WinchVariants > Winch:nth-of-type(1) > GameData': {
       Price: 1000,
@@ -27758,6 +27520,197 @@ export default {
       UnlockByRank: 1
     }
   },
+  wheels_kenworth_990_dlc_10: {
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
+      BodyFriction: 3.1,
+      BodyFrictionAsphalt: 0.8,
+      SubstanceFriction: 3.4,
+      IsIgnoreIce: 'false'
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > GameData': {
+      Price: 6000,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    }
+  },
+  wheels_heavy_double2_dlc_10: {
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
+      BodyFriction: 3,
+      BodyFrictionAsphalt: 0.8,
+      SubstanceFriction: 1.9,
+      IsIgnoreIce: 'false'
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > GameData': {
+      Price: 5900,
+      UnlockByExploration: 'false',
+      UnlockByRank: 11
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(2) > WheelFriction': {
+      BodyFriction: 3.2,
+      BodyFrictionAsphalt: 0.8,
+      SubstanceFriction: 1.5,
+      IsIgnoreIce: 'false'
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(2) > GameData': {
+      Price: 6200,
+      UnlockByExploration: 'false',
+      UnlockByRank: 11
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(3) > WheelFriction': {
+      BodyFriction: 3,
+      BodyFrictionAsphalt: 1,
+      SubstanceFriction: 1.5,
+      IsIgnoreIce: 'false'
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(3) > GameData': {
+      Price: 6800,
+      UnlockByExploration: 'false',
+      UnlockByRank: 11
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(4) > WheelFriction': {
+      BodyFriction: 3,
+      BodyFrictionAsphalt: 1.2,
+      SubstanceFriction: 1.3,
+      IsIgnoreIce: 'true'
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(4) > GameData': {
+      Price: 6800,
+      UnlockByExploration: 'false',
+      UnlockByRank: 14
+    }
+  },
+  wheels_heavy_double1_dlc_10: {
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
+      BodyFriction: 1,
+      BodyFrictionAsphalt: 3,
+      SubstanceFriction: 0.4,
+      IsIgnoreIce: 'false'
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > GameData': {
+      Price: 3600,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(2) > WheelFriction': {
+      BodyFriction: 1.2,
+      BodyFrictionAsphalt: 3,
+      SubstanceFriction: 0.2,
+      IsIgnoreIce: 'false'
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(2) > GameData': {
+      Price: 4000,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(3) > WheelFriction': {
+      BodyFriction: 1,
+      BodyFrictionAsphalt: 3.2,
+      SubstanceFriction: 0.2,
+      IsIgnoreIce: 'false'
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(3) > GameData': {
+      Price: 4400,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(4) > WheelFriction': {
+      BodyFriction: 1.5,
+      BodyFrictionAsphalt: 1.9,
+      SubstanceFriction: 1,
+      IsIgnoreIce: 'false'
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(4) > GameData': {
+      Price: 4900,
+      UnlockByExploration: 'false',
+      UnlockByRank: 9
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(5) > WheelFriction': {
+      BodyFriction: 1.5,
+      BodyFrictionAsphalt: 1.5,
+      SubstanceFriction: 1.2,
+      IsIgnoreIce: 'false'
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(5) > GameData': {
+      Price: 5300,
+      UnlockByExploration: 'false',
+      UnlockByRank: 9
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(6) > WheelFriction': {
+      BodyFriction: 1.7,
+      BodyFrictionAsphalt: 1.5,
+      SubstanceFriction: 1,
+      IsIgnoreIce: 'false'
+    },
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(6) > GameData': {
+      Price: 5700,
+      UnlockByExploration: 'false',
+      UnlockByRank: 9
+    }
+  },
+  s_kenworth_w990_dlc_10: {
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
+      CriticalDamageThreshold: 0.8,
+      DamageCapacity: 280
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(1)': {
+      Height: 0.18,
+      Strength: 0.12,
+      Damping: 0.15,
+      SuspensionMin: -0.25,
+      SuspensionMax: 1.4,
+      BrokenSuspensionMax: 0.2
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
+      Height: 0.2,
+      Strength: 0.015,
+      Damping: 0.2,
+      SuspensionMin: -0.3,
+      SuspensionMax: 1.4,
+      BrokenSuspensionMax: 0.15
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(3)': {
+      Height: 0,
+      Strength: 0.017,
+      Damping: 0.6,
+      SuspensionMin: -0.1,
+      BrokenSuspensionMax: 0.2
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
+      Price: 6600,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2)': {
+      CriticalDamageThreshold: 0.6,
+      DamageCapacity: 230
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(1)': {
+      Height: 0.32,
+      Strength: 0.1,
+      Damping: 0.15,
+      SuspensionMin: -0.35,
+      BrokenSuspensionMax: 0.2
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
+      Height: 0.32,
+      Strength: 0.013,
+      Damping: 0.2,
+      SuspensionMin: -0.2,
+      BrokenSuspensionMax: 0.15
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(3)': {
+      Height: 0,
+      Strength: 0.017,
+      Damping: 0.6,
+      SuspensionMin: -0.1,
+      BrokenSuspensionMax: 0.2
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
+      Price: 7500,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    }
+  },
   e_us_truck_modern_dlc_10: {
     'EngineVariants > Engine:nth-of-type(1)': {
       CriticalDamageThreshold: 0.5,
@@ -27830,201 +27783,6 @@ export default {
       UnlockByRank: 1
     }
   },
-  wheels_kenworth_990_dlc_10: {
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
-      BodyFriction: 3.1,
-      BodyFrictionAsphalt: 0.8,
-      SubstanceFriction: 3.4,
-      IsIgnoreIce: 'false'
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > GameData': {
-      Price: 6000,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    }
-  },
-  s_kenworth_w990_dlc_10: {
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
-      CriticalDamageThreshold: 0.8,
-      DamageCapacity: 280
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(1)': {
-      Height: 0.18,
-      Strength: 0.12,
-      Damping: 0.15,
-      SuspensionMin: -0.25,
-      SuspensionMax: 1.4,
-      BrokenSuspensionMax: 0.2
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
-      Height: 0.2,
-      Strength: 0.015,
-      Damping: 0.2,
-      SuspensionMin: -0.3,
-      SuspensionMax: 1.4,
-      BrokenSuspensionMax: 0.15
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(3)': {
-      Height: 0,
-      Strength: 0.017,
-      Damping: 0.6,
-      SuspensionMin: -0.1,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.2
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
-      Price: 6600,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2)': {
-      CriticalDamageThreshold: 0.6,
-      DamageCapacity: 230
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(1)': {
-      Height: 0.32,
-      Strength: 0.1,
-      Damping: 0.15,
-      SuspensionMin: -0.35,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.2
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(2)': {
-      Height: 0.32,
-      Strength: 0.013,
-      Damping: 0.2,
-      SuspensionMin: -0.2,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.15
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > Suspension:nth-of-type(3)': {
-      Height: 0,
-      Strength: 0.017,
-      Damping: 0.6,
-      SuspensionMin: -0.1,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.2
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(2) > GameData': {
-      Price: 7500,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    }
-  },
-  wheels_heavy_double1_dlc_10: {
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
-      BodyFriction: 1,
-      BodyFrictionAsphalt: 3,
-      SubstanceFriction: 0.4,
-      IsIgnoreIce: 'false'
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > GameData': {
-      Price: 3600,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(2) > WheelFriction': {
-      BodyFriction: 1.2,
-      BodyFrictionAsphalt: 3,
-      SubstanceFriction: 0.2,
-      IsIgnoreIce: 'false'
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(2) > GameData': {
-      Price: 4000,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(3) > WheelFriction': {
-      BodyFriction: 1,
-      BodyFrictionAsphalt: 3.2,
-      SubstanceFriction: 0.2,
-      IsIgnoreIce: 'false'
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(3) > GameData': {
-      Price: 4400,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(4) > WheelFriction': {
-      BodyFriction: 1.5,
-      BodyFrictionAsphalt: 1.9,
-      SubstanceFriction: 1,
-      IsIgnoreIce: 'false'
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(4) > GameData': {
-      Price: 4900,
-      UnlockByExploration: 'false',
-      UnlockByRank: 9
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(5) > WheelFriction': {
-      BodyFriction: 1.5,
-      BodyFrictionAsphalt: 1.5,
-      SubstanceFriction: 1.2,
-      IsIgnoreIce: 'false'
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(5) > GameData': {
-      Price: 5300,
-      UnlockByExploration: 'false',
-      UnlockByRank: 9
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(6) > WheelFriction': {
-      BodyFriction: 1.7,
-      BodyFrictionAsphalt: 1.5,
-      SubstanceFriction: 1,
-      IsIgnoreIce: 'false'
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(6) > GameData': {
-      Price: 5700,
-      UnlockByExploration: 'false',
-      UnlockByRank: 9
-    }
-  },
-  wheels_heavy_double2_dlc_10: {
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
-      BodyFriction: 3,
-      BodyFrictionAsphalt: 0.8,
-      SubstanceFriction: 1.9,
-      IsIgnoreIce: 'false'
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > GameData': {
-      Price: 5900,
-      UnlockByExploration: 'false',
-      UnlockByRank: 11
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(2) > WheelFriction': {
-      BodyFriction: 3.2,
-      BodyFrictionAsphalt: 0.8,
-      SubstanceFriction: 1.5,
-      IsIgnoreIce: 'false'
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(2) > GameData': {
-      Price: 6200,
-      UnlockByExploration: 'false',
-      UnlockByRank: 11
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(3) > WheelFriction': {
-      BodyFriction: 3,
-      BodyFrictionAsphalt: 1,
-      SubstanceFriction: 1.5,
-      IsIgnoreIce: 'false'
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(3) > GameData': {
-      Price: 6800,
-      UnlockByExploration: 'false',
-      UnlockByRank: 11
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(4) > WheelFriction': {
-      BodyFriction: 3,
-      BodyFrictionAsphalt: 1.2,
-      SubstanceFriction: 1.3,
-      IsIgnoreIce: 'true'
-    },
-    'TruckWheels > TruckTires > TruckTire:nth-of-type(4) > GameData': {
-      Price: 6800,
-      UnlockByExploration: 'false',
-      UnlockByRank: 14
-    }
-  },
   kenworth_963_dlc_10: {
     'Truck > GameData > UiDesc': {
       UiName: 'UI_VEHICLE_KENWORTH_963_NAME',
@@ -28072,11 +27830,14 @@ export default {
     'Truck > TruckData > CompatibleWheels:nth-of-type(3)': {
       Scale: 0.87
     },
+    'Truck > PhysicsModel > Body': {
+      CenterOfMassOffset: '(0; 0; 0)'
+    },
     'Truck > TruckData > FuelTank': {
       DamageCapacity: 50
     },
     'Truck > GameData': {
-      Country: 'US',
+      Country: 'US,NE',
       Price: 121_200,
       UnlockByExploration: 'true',
       UnlockByRank: 1
@@ -28346,34 +28107,13 @@ export default {
       UnlockByRank: 1
     }
   },
-  s_kenworth_963_dlc_10: {
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
-      CriticalDamageThreshold: 0.6,
-      DamageCapacity: 260
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(1)': {
-      Height: 0.15,
-      Strength: 0.06,
-      Damping: 0.7,
-      SuspensionMin: -0.3,
-      SuspensionMax: '',
-      BrokenSuspensionMax: 0.2
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(2)': {
-      Height: 0,
-      Strength: 0,
-      Damping: 0,
-      SuspensionMin: 0,
-      SuspensionMax: 0,
-      BrokenSuspensionMax: 0
-    },
-    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
-      Price: 6200,
-      UnlockByExploration: 'false',
-      UnlockByRank: 1
-    }
-  },
   wheels_superheavy_single_dlc_10: {
+    'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > WheelFriction': {
+      BodyFriction: 1.7,
+      BodyFrictionAsphalt: 0.5,
+      SubstanceFriction: 3,
+      IsIgnoreIce: 'false'
+    },
     'TruckWheels > TruckTires > TruckTire:nth-of-type(1) > GameData': {
       Price: 7500,
       UnlockByExploration: 'false',
@@ -28409,6 +28149,24 @@ export default {
     },
     'TruckWheels > TruckTires > TruckTire:nth-of-type(4) > GameData': {
       Price: 7500,
+      UnlockByExploration: 'false',
+      UnlockByRank: 1
+    }
+  },
+  s_kenworth_963_dlc_10: {
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1)': {
+      CriticalDamageThreshold: 0.6,
+      DamageCapacity: 260
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > Suspension:nth-of-type(1)': {
+      Height: 0.15,
+      Strength: 0.06,
+      Damping: 0.7,
+      SuspensionMin: -0.3,
+      BrokenSuspensionMax: 0.2
+    },
+    'SuspensionSetVariants > SuspensionSet:nth-of-type(1) > GameData': {
+      Price: 6200,
       UnlockByExploration: 'false',
       UnlockByRank: 1
     }
