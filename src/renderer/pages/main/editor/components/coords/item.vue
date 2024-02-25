@@ -36,11 +36,11 @@ const {
 } = props
 const value = readonly(toRefs(props).value)
 
-const defaultVal = Position.fromStr(String(value.value))
-const coords = ref(defaultVal)
+const defaultVal = value.value
+const coords = ref(defaultVal ?? new Position())
 
 watch(value, () => {
-  coords.value = Position.fromStr(String(value.value))
+  coords.value = value.value ?? new Position()
 })
 
 function changeCoordinate(newCoord: Partial<Position>) {

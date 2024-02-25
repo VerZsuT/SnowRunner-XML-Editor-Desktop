@@ -8,7 +8,7 @@ export default class Position {
   static fromStr(str: string, limits?: PosLimits): Position {
     const [
       x = '0.0', y = '0.0', z = '0.0'
-    ] = str.replaceAll(',', ';').replaceAll(/[()]/g, '').split(';')
+    ] = str.replaceAll(/[()]/g, '').split(/[,;]/gi)
     return new Position(
       Number.parseFloat(x),
       Number.parseFloat(y),

@@ -7,6 +7,7 @@ import type Limit from './limit'
 import type { PosLimits } from './position'
 import Position from './position'
 
+import DLCs from '/mods/dlcs/renderer'
 import { boolToStr, hasItems, strToBool } from '/utils/renderer'
 
 export type FileInfo = {
@@ -21,47 +22,23 @@ export default class GameXML extends XMLElement {
   }
 
   protected files(folder: string, nameGetter: () => string | undefined) {
-    const getter = async ({ dlc, isBackup, mod }: FileInfo): Promise<File[]> => {
+    const getter = async (info: FileInfo): Promise<File[]> => {
       const names = nameGetter()?.split(',')
       if (!names || !hasItems(names)) return []
       if (names.at(-1) === '') names.pop()
-
-      const files: File[] = []
-      for (const name of names) {
-        const classesDir = isBackup ? Dirs.backupInitialData.dir('[media]\\classes') : Dirs.classes
-        const dlcDir = isBackup ? Dirs.backupInitialData.dir('[media]\\_dlc') : Dirs.dlc
-        const trimmed = name.trim()
-        const maybe = [
-          ...(mod ? [Dirs.modsTemp.file(mod, `classes/${folder}/${trimmed}.xml`)] : []),
-          ...(dlc ? [dlcDir.file(dlc, `classes/${folder}/${trimmed}.xml`)] : []),
-          classesDir.file(`${folder}/${trimmed}.xml`)
-        ]
-        for (const file of maybe) {
-          if (await file.exists()) files.push(file)
-        }
-      }
-
-      return files
+      return (await Promise.all(
+        names.map(async name => await this.getFile(folder, name, info))
+      )).filter(Boolean) as File[]
     }
 
     return getter
   }
 
   protected file(folder: string, nameGetter: () => string | undefined) {
-    const getter = async ({ dlc, isBackup, mod }: FileInfo): Promise<File | undefined> => {
+    const getter = async (info: FileInfo): Promise<File | undefined> => {
       const name = nameGetter()?.trim()
       if (!name) return
-  
-      const classesDir = isBackup ? Dirs.backupInitialData.dir('[media]\\classes') : Dirs.classes
-      const dlcDir = isBackup ? Dirs.backupInitialData.dir('[media]\\_dlc') : Dirs.dlc
-      const maybe = [
-        ...(mod ? [Dirs.modsTemp.file(mod, `classes/${folder}/${name}.xml`)] : []),
-        ...(dlc ? [dlcDir.file(dlc, `classes/${folder}/${name}.xml`)] : []),
-        classesDir.file(`${folder}/${name}.xml`)
-      ]
-      for (const file of maybe) {
-        if (await file.exists()) return file
-      }
+      return this.getFile(folder, name, info)
     }
 
     return getter
@@ -106,6 +83,22 @@ export default class GameXML extends XMLElement {
       default: {
         this.setAttr(attrName, limit?.lim(Number.parseFloat(String(value)) ?? value))
       }
+    }
+  }
+
+  private async getFile(folder: string, name: string, { isBackup, mod }: FileInfo): Promise<File | undefined> {
+    const classesDir = isBackup ? Dirs.backupInitialData.dir('[media]\\classes') : Dirs.classes
+    const dlcDir = isBackup ? Dirs.backupInitialData.dir('[media]\\_dlc') : Dirs.dlc
+    const maybe = [
+      ...(mod ? [Dirs.modsTemp.file(mod, `classes/${folder}/${name}.xml`)] : []),
+      classesDir.file(`${folder}/${name}.xml`)
+    ]
+    for (const dlc of DLCs.get()) {
+      if (!await dlcDir.dir(dlc.name).exists()) continue
+      maybe.push(dlcDir.file(dlc.name, `classes/${folder}/${name}.xml`))
+    }
+    for (const file of maybe) {
+      if (await file.exists()) return file
     }
   }
 }
