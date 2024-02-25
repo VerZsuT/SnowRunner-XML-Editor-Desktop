@@ -1,8 +1,7 @@
 import type { InputType, NumberType } from './enums'
 
-import type { File, Limit, Position, TruckXML } from '/mods/renderer'
+import type { File, Position, TruckXML } from '/mods/renderer'
 import type { StrConvertUtils, Utils } from '/mods/xml/game/game-xml'
-import type { PosLimits } from '/mods/xml/game/position'
 
 /** Параметры доп. сценария */
 export interface IActionData {
@@ -35,16 +34,15 @@ export interface IParameterProps<T = any, U = StrConvertUtils<T> | Utils<T>> {
   utils: U
 }
 
-export interface IInputProps<L = Limit> {
+export interface IInputProps {
   type: InputType
   value: string | number
   numberType?: NumberType
   step?: number
   areas?: IInputAreas
-  limit?: L
 }
 
-export type PositionProps = Omit<IInputProps<PosLimits>, 'value' | 'areas' | 'type'> & {
+export type PositionProps = Omit<IInputProps, 'value' | 'areas' | 'type'> & {
   value: Position
 }
 

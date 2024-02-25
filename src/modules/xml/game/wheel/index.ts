@@ -24,7 +24,7 @@ export default class Wheel extends XMLWithTemplates {
   }
 
   /** Масса колеса */
-  @intAttr(Limit.Positive.fixed)
+  @intAttr(Limit.Positive.fixed())
   get Mass(): number | undefined { return undefined }
   set Mass(_) {}
   @numUtils()

@@ -1,5 +1,6 @@
 <template>
   <div class='container'>
+    <VersionInfo version='0.8.1' :changes='desc081.texts' />
     <VersionInfo version='0.8.0' :changes='desc080.texts' />
   </div>
 </template>
@@ -12,6 +13,26 @@ import { localize } from '/utils/texts/renderer'
 
 useWindowReady(ProgramWindow.whatsNew)
 
+const desc081 = localize({
+  texts: {
+    [Lang.ru]: [
+      'Исправлен баг с редактированием некоторых дробных параметров',
+      'Исправлен баг с параметром "Точная регулировка"'
+    ],
+    [Lang.en]: [
+      'Fixed a bug with editing some Float parameters',
+      'Fixed a bug with the "Precise adjustment" parameter'
+    ],
+    [Lang.de]: [
+      'Fehler beim Bearbeiten einiger Fraktionsparameter behoben',
+      'Fehler mit der Option "Feinabstimmung" behoben'
+    ],
+    [Lang.ch]: [
+      "修正了编辑一些分数参数的错误",
+      '修复了"精细调整"参数的错误'
+    ],
+  }
+})
 const desc080 = localize({
   texts: {
     [Lang.ru]: [

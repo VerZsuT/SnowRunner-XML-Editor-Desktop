@@ -17,7 +17,7 @@ export default class TruckTire extends XMLWithTemplates {
   get $Name() { return {} as StrUtils }
 
   /** Масса колеса */
-  @intAttr(Limit.Positive.fixed)
+  @intAttr(Limit.Positive.fixed())
   get Mass(): number | undefined { return undefined }
   set Mass(_) {}
   @numUtils()

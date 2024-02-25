@@ -6,8 +6,6 @@
     :status='status'
     :value='value'
     :step='step'
-    :min='limit.minValue !== Number.NEGATIVE_INFINITY ? limit.minValue : undefined'
-    :max='limit.maxValue !== Number.POSITIVE_INFINITY ? limit.maxValue : undefined'
     @change='changeValue'
     @blur='setValue'
   />
@@ -28,7 +26,6 @@ import { computed, readonly, ref, toRefs, watch } from 'vue'
 
 import { InputType, NumberType } from '../../enums'
 import { IInputProps, ParameterEmits } from '../../types'
-import { Limit } from '/mods/renderer'
 import { isNullable } from '/utils/renderer'
 
 type Status = '' | 'error' | 'warning'
@@ -38,8 +35,7 @@ const props = defineProps<IInputProps>()
 
 const {
   type, numberType, areas,
-  step = numberType === NumberType.float ? 0.1 : 1,
-  limit = new Limit()
+  step = numberType === NumberType.float ? 0.1 : 1
 } = props
 const propValue = readonly(toRefs(props).value)
 const value = ref(props.value)
@@ -52,12 +48,12 @@ function changeValue(newVal: string | number) {
   if (newVal === '') {
     value.value = ''; return
   }
-  value.value = type === InputType.number ? limit.lim(+newVal) : newVal
+  value.value = newVal
 }
 
 function setValue() {
   if (value.value === '') return
-  emit('change', String(value.value))
+  emit('change', value.value)
 }
 
 function getStatus(): Status {
