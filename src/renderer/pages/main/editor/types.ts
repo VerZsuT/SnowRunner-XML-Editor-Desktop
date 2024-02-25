@@ -43,7 +43,7 @@ export interface IInputProps {
 }
 
 export type PositionProps = Omit<IInputProps, 'value' | 'areas' | 'type'> & {
-  value: Position
+  value?: Position
 }
 
 export type InputArea = [start: number, end: number]

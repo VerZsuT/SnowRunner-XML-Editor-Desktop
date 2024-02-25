@@ -1,5 +1,6 @@
 <template>
   <div class='container'>
+    <VersionInfo version='0.8.2' :changes='desc082.texts' />
     <VersionInfo version='0.8.1' :changes='desc081.texts' />
     <VersionInfo version='0.8.0' :changes='desc080.texts' />
   </div>
@@ -13,6 +14,14 @@ import { localize } from '/utils/texts/renderer'
 
 useWindowReady(ProgramWindow.whatsNew)
 
+const desc082 = localize({
+  texts: {
+    [Lang.ru]: ['Исправлен баг при котором нельзя было редактировать колёса из DLC'],
+    [Lang.en]: ['Fixed a bug where it was impossible to edit the wheels from the DLC'],
+    [Lang.de]: ['Es wurde ein Fehler behoben, bei dem Räder aus dem DLC nicht bearbeitet werden konnten'],
+    [Lang.ch]: ['修正了一个无法从DLC中编辑轮子的错误']
+  }
+})
 const desc081 = localize({
   texts: {
     [Lang.ru]: [
