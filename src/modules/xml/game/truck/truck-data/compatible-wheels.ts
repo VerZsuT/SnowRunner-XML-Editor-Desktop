@@ -1,6 +1,7 @@
 import type { NumUtils, StrUtils } from '../../game-xml'
 import { floatAttr, numUtils, strAttr, strUtils } from '../../game-xml'
 import Limit from '../../limit'
+import Wheel from '../../wheel'
 import Wheels from '../../wheels'
 import XMLWithTemplates from '../../xml-with-templates'
 
@@ -21,5 +22,6 @@ export default class CompatibleWheels extends XMLWithTemplates {
   get $Scale() { return {} as NumUtils }
 
   readonly wheelsFile = this.file('wheels', () => this.Type)
-  readonly wheels = this.fileElementWithTemplates(Wheels, this.wheelsFile)
+  readonly wheelSet = this.fileElementWithTemplates(Wheels, this.wheelsFile)
+  readonly wheel = this.fileElementWithTemplates(Wheel, this.wheelsFile)
 }

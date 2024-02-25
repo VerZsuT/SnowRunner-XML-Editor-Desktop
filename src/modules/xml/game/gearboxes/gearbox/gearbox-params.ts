@@ -27,7 +27,7 @@ export default class GearboxParams extends XMLWithTemplates {
   get $IsLowerGearExists() { return {} as BoolUtils }
 
   @boolAttr()
-  get IsManualLowGear() { return true }
+  get IsManualLowGear() { return false }
   set IsManualLowGear(_: boolean | undefined) {}
   @boolUtils()
   get $IsManualLowGear() { return {} as BoolUtils }

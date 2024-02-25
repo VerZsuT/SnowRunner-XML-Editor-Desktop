@@ -105,8 +105,8 @@
       <Wheels
         v-for='Wheel of filterCompat(xml.TruckData.CompatibleWheels)'
         v-files='`${ReadyType.wheels}_${Wheel.Type}`'
-        :getter='Wheel.wheels'
-        :files-getter='Wheel.wheelsFile'
+        :getter='Wheel.wheelSet'
+        :file-getter='Wheel.wheelsFile'
         @ready='ready(`${ReadyType.wheels}_${Wheel.Type}`)'
       />
     </Group>

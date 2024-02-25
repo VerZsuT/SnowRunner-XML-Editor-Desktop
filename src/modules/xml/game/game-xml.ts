@@ -256,7 +256,7 @@ export function posAttr(limit?: PosLimits) {
   type Value = Position | undefined
 
   return <This extends GameXML>(
-    target: This,
+    _: This,
     key: string,
     descriptor: PropertyDescriptor
   ) => {
@@ -270,19 +270,16 @@ export function posAttr(limit?: PosLimits) {
     descriptor.set = function(this: This, value: Value) {
       this.procAttr(key, value?.toString() ?? null)
     }
-    
-    setLimit(target, key, limit)
   }
 }
 
 export function posUtils() {
   return <This extends GameXML>(
-    target: This,
+    _: This,
     key: string,
     descriptor: PropertyDescriptor
   ) => {
     const name = key.split('$')[1]
-    const limit = getLimit<PosLimits>(target, name)
 
     descriptor.get = function(this: This) {
       const selector = this.selector
@@ -291,7 +288,7 @@ export function posUtils() {
         set: value => this[name] = value,
         getStr: () => this[name]?.toString() ?? '',
         setStr: value => this[name] = value ? Position.fromStr(value) : undefined,
-        name, limit, selector
+        name, selector
       } satisfies PosUtils
     }
   }
@@ -301,7 +298,7 @@ export function intAttr(limit?: Limit) {
   type Value = number | undefined
 
   return <This extends GameXML>(
-    target: This,
+    _: This,
     key: string,
     descriptor: PropertyDescriptor
   ) => {
@@ -313,23 +310,20 @@ export function intAttr(limit?: Limit) {
     descriptor.set = function(this: This, value: Value) {
       this.procAttr(key, value ?? null, limit)
     }
-
-    setLimit(target, key, limit)
   }
 }
 
 export function numUtils() {
   return <This extends GameXML>(
-    target: This,
+    _: This,
     key: string,
     descriptor: PropertyDescriptor
   ) => {
     const name = key.split('$')[1]
-    const limit = getLimit(target, name)
 
     descriptor.get = function(this: This) {
       return {
-        name, limit, selector: this.selector,
+        name, selector: this.selector,
         get: () => this[name],
         set: value => this[name] = value
       } satisfies NumUtils
@@ -341,7 +335,7 @@ export function floatAttr(limit?: Limit) {
   type Value = number | undefined
 
   return <This extends GameXML>(
-    target: This,
+    _: This,
     key: string,
     descriptor: PropertyDescriptor
   ) => {
@@ -353,8 +347,6 @@ export function floatAttr(limit?: Limit) {
     descriptor.set = function(this: This, value: Value) {
       this.procAttr(key, value ?? null, limit)
     }
-
-    setLimit(target, key, limit)
   }
 }
 
@@ -398,25 +390,11 @@ export function boolUtils() {
   }
 }
 
-const LIMITS_KEY = '__ATTR_LIMITS__'
-type LimitsMap = Record<string, Limit | PosLimits | undefined>
-
-function getLimit<L = Limit>(target: any, name: string): L | undefined {
-  return target[LIMITS_KEY]?.[name]
-}
-function setLimit(target: any, name: string, limit?: Limit | PosLimits) {
-  (<LimitsMap>(target[LIMITS_KEY] ??= {}))[name] = limit
-}
-
 export type Utils<T> = {
   get(): T | undefined
   set(value?: T): void
   name: string
   selector: string
-}
-
-export type UtilsWithLimit<T, L> = Utils<T> & {
-  limit?: L
 }
 
 export type StrConvertUtils<T> = Utils<T> & {
@@ -431,6 +409,6 @@ export type PosUtils = StrConvertUtils<Position> & {
   limit?: PosLimits
 }
 
-export type NumUtils = UtilsWithLimit<number, Limit>
+export type NumUtils = Utils<number>
 
 export type BoolUtils = StrConvertUtils<boolean>

@@ -22,11 +22,9 @@
 import { IInputProps, IParameterProps, ParameterEmits } from '../../types'
 import Parameter from '../parameter.vue'
 import InputItem from './item.vue'
-import { Limit } from '/mods/renderer'
-import { UtilsWithLimit } from '/mods/xml/game/game-xml'
 
 type Value = string | number
-type Props = IParameterProps<Value, UtilsWithLimit<Value, Limit>> & Omit<IInputProps, 'value'>
+type Props = IParameterProps<Value> & Omit<IInputProps, 'value'>
 
 const props = defineProps<Props>()
 const emit = defineEmits<ParameterEmits>()
