@@ -44,7 +44,7 @@ const setter = (value: ParameterValue) => {
   else {
     (props.setter ?? utils.set)(value)
   }
-  emit('change', getter()!)
+  emit('change', getter())
 }
 
 const defaultValue = getter()
@@ -79,7 +79,7 @@ async function resetValue() {
 function changeValue(newValue: ParameterValue) {
   if (value.value === newValue) return
   setValue(newValue)
-  value.value = getter()!
+  value.value = getter()
 }
 
 function setValue(newValue: ParameterValue) {

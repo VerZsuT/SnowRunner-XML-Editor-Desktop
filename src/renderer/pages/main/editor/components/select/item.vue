@@ -23,7 +23,7 @@ const options = computed(() => props.options.map(option => {
   return {
     label,
     value: String(value),
-    key: value
+    key: String(value)
   }
 }))
 
