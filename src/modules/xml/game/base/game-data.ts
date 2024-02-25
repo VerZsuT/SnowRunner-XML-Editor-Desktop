@@ -7,7 +7,7 @@ import BaseUiDesc from './ui-desc'
 /** Информация о взаимодействии двигателя с окружающим миром */
 export default class GameData extends XMLWithTemplates {
   /** Цена */
-  @intAttr(Limit.Positive.fixed)
+  @intAttr(Limit.Positive.fixed())
   get Price(): number | undefined { return undefined }
   set Price(_) {}
   @numUtils()

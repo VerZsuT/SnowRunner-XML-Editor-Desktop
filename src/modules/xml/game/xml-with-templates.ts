@@ -44,12 +44,8 @@ export default class XMLWithTemplates extends GameXML {
       case undefined: {
         return this.getAttrWT(attrName)
       }
-      case null: {
-        this.removeAttr(attrName)
-        break
-      }
       default: {
-        this.setAttr(attrName, limit?.lim(value as number) ?? value)
+        super.procAttr(attrName, value, limit)
       }
     }
   }
