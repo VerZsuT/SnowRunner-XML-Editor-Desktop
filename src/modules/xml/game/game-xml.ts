@@ -81,7 +81,7 @@ export default class GameXML extends XMLElement {
         break
       }
       default: {
-        this.setAttr(attrName, limit?.lim(Number.parseFloat(String(value)) ?? value))
+        this.setAttr(attrName, limit?.lim(Number.parseFloat(String(value))) ?? value)
       }
     }
   }

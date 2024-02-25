@@ -38,8 +38,12 @@ function useEvents() {
   Windows.onLoadingSuccess(() => {
     state.percent = 0
     state.isDownload = false
+    state.title = texts.loading
   })
-  Windows.onLoadingDownload(() => state.isDownload = true)
+  Windows.onLoadingDownload(() => {
+    state.isDownload = true
+    state.title = texts.download
+  })
   Windows.onLoadingText(title => state.title = title)
   Windows.onLoadingPercent(percent => state.percent = Number(percent))
 }
