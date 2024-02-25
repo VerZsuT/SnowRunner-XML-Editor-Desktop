@@ -1,5 +1,6 @@
-import type { File } from '../../renderer'
-import { Dirs } from '../../renderer'
+import type { File } from '/mods/files/renderer'
+import { Dirs } from '/mods/files/renderer'
+
 import type { AttrValue } from '../xml-element'
 import XMLElement from '../xml-element'
 import type Limit from './limit'
@@ -103,7 +104,7 @@ export default class GameXML extends XMLElement {
         break
       }
       default: {
-        this.setAttr(attrName, limit?.lim(value as number) ?? value)
+        this.setAttr(attrName, limit?.lim(Number.parseFloat(String(value)) ?? value))
       }
     }
   }

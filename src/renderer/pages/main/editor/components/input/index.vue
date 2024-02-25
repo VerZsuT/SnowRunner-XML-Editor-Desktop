@@ -9,7 +9,6 @@
       <InputItem
         :type='props.type'
         :number-type='props.numberType'
-        :limit='props.limit ?? props.utils?.limit'
         :areas='props.areas'
         :step='props.step'
         :value='<string | number> value'

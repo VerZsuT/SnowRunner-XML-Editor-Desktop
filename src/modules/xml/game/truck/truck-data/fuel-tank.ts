@@ -6,7 +6,7 @@ import XMLWithTemplates from '../../xml-with-templates'
 /** Свойства бензeобака */
 export default class FuelTank extends XMLWithTemplates {
   /** Размер допустимого ущерба */
-  @intAttr(Limit.Positive.fixed)
+  @intAttr(Limit.Positive.fixed())
   get DamageCapacity() { return 0 }
   set DamageCapacity(_: number | undefined) {}
   @numUtils()

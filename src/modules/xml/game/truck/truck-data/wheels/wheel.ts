@@ -50,8 +50,8 @@ export default class Wheel extends XMLWithTemplates {
 
   /** Минимальное значение просадки подвески */
   @floatAttr(new Limit({ min: -1000.0, max: 1000.0 }))
-  get SuspensionMi() { return 0.0 }
-  set SuspensionMi(_: number | undefined) {}
+  get SuspensionMin() { return 0.0 }
+  set SuspensionMin(_: number | undefined) {}
   @numUtils()
   get $SuspensionMin() { return {} as NumUtils }
 
