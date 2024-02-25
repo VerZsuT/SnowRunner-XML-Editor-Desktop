@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "moduleResolution": "Bundler",
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "outDir": "../dist",
+    "newLine": "LF",
+    "baseUrl": "..",
+    "strict": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "sourceMap": true,
+    "importHelpers": true,
+    "noImplicitAny": false,
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    "experimentalDecorators": true,
+    "paths": {
+      "/mods/*": ["modules/*"],
+      "/rend/*": ["renderer/*"],
+      "/utils/*": ["utils/*"],
+      "/consts": ["consts"]
+    }
+  }
+}

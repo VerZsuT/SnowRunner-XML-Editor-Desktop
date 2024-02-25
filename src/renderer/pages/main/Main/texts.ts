@@ -1,16 +1,23 @@
-import { compareWithGlobal } from '#g/texts/renderer'
+import { Lang } from '/mods/renderer'
+import { localize } from '/utils/texts/renderer'
 
-export default compareWithGlobal({
-  RU: {
-    RESTORE_INITIAL_CHANGES: 'Обнаружено обновление initial.pak, применить предыдущие изменения?'
+export default localize({
+  export: {
+    [Lang.ru]: 'Экспорт',
+    [Lang.en]: 'Export',
+    [Lang.de]: 'Export',
+    [Lang.ch]: '导出'
   },
-  EN: {
-    RESTORE_INITIAL_CHANGES: 'Initial.pak update detected, apply previous changes?'
+  import: {
+    [Lang.ru]: 'Импорт',
+    [Lang.en]: 'Import',
+    [Lang.de]: 'Import',
+    [Lang.ch]: '导入'
   },
-  DE: {
-    RESTORE_INITIAL_CHANGES: 'Ein initial-Update wurde gefunden.pak, übernehmen Sie die vorherigen Änderungen?'
-  },
-  CH: {
-    RESTORE_INITIAL_CHANGES: 'initial.pak更新检测到，应用以前的更改？'
+  restoreInitialChanges: {
+    [Lang.ru]: 'Обнаружено обновление initial.pak, применить предыдущие изменения?',
+    [Lang.en]: 'Initial.pak update detected, apply previous changes?',
+    [Lang.de]: 'Ein initial-Update wurde gefunden.pak, übernehmen Sie die vorherigen Änderungen?',
+    [Lang.ch]: 'initial.pak更新检测到，应用以前的更改？'
   }
 })

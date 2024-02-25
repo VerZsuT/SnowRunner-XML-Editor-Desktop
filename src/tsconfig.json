@@ -1,13 +1,8 @@
 {
   "compilerOptions": {
-    "target": "ES2021",
-    "moduleResolution": "bundler",
-    "lib": [
-      "ESNext",
-      "DOM",
-      "DOM.Iterable"
-    ],
-    "jsx": "react-jsx",
+    "target": "ESNext",
+    "moduleResolution": "Bundler",
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "outDir": "../dist",
     "newLine": "LF",
@@ -18,24 +13,15 @@
     "sourceMap": true,
     "importHelpers": true,
     "noImplicitAny": false,
-    "resolveJsonModule": true,
     "skipLibCheck": true,
+    "isolatedModules": true,
+    "experimentalDecorators": true,
     "paths": {
-      "#g/*": [
-        "./*"
-      ],
-      "#m/*": [
-        "main/*"
-      ],
-      "#r/*": [
-        "renderer/*"
-      ],
-      "#r_editor/*": [
-        "renderer/pages/main/editor/*"
-      ]
+      "/mods/*": ["modules/*"],
+      "/rend/*": ["renderer/*"],
+      "/utils/*": ["utils/*"],
+      "/consts": ["consts"]
     }
   },
-  "exclude": [
-    "node_modules"
-  ]
+  "exclude": ["node_modules"]
 }

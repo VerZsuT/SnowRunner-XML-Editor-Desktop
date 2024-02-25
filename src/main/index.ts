@@ -1,149 +1,118 @@
 import { app } from 'electron'
-import { existsSync, renameSync, rmSync } from 'fs'
-import { join } from 'path'
 
-import { APP_NAME } from '#g/consts'
-import { ProgramWindow } from '#g/enums'
-import $ from '#g/texts/main'
-import { hasItems } from '#g/utils'
-import { Archive, Checks, Config, ExitParams, Hash, Helpers, Paths, Texts, Windows } from '#m/modules'
-import { WindowsManager } from '#m/windows'
+import { APP_NAME } from '/consts'
+import { Checks, Config, DLCs, Edited, ExitParams, Favorites, Mods, ProgramWindow, Sizes, Texts, Windows } from '/mods/main'
 
-import '#m/modules/RendererPublic'
+import '/mods/epf/main'
+import '/mods/updates/main'
 
-class _App {
-  static start(): void {
-    app.whenReady().then(() => this.openProgram())
+/** Статический класс программы */
+class App {
+  /** Инициализация программы */
+  async init() {
+    this.handleExceptions()
+    this.handleQuit()
+    this.disableNavigation()
+    this.disableSecurityWarns()
+
+    this.checkMultipleInstances()
+    this.setName()
+    this.optimize()
+    await this.start()
   }
 
-  static async openProgram(): Promise<void> {
-    await WindowsManager.open(ProgramWindow.Loading)
-    const loading = Windows.loading
+  /** Запуск */
+  async start() {
+    await app.whenReady()
+    await this.openProgram()
+  }
 
-    await loading?.showAndWait()
-    loading?.setText($.LOADING)
+  /** Запуск программы */
+  async openProgram() {
+    await Windows.openWindow(ProgramWindow.loading)
 
-    if (!Checks.hasAdminPrivileges()) return
+    if (!await Checks.hasAdminPrivileges()) return
 
-    if (!Config.initial) {
-      await WindowsManager.open(ProgramWindow.Setup)
+    if (!Config.initialPath) {
+      await Windows.openWindow(ProgramWindow.setup)
       Checks.checkUpdate()
       return
     }
 
     await Checks.checkInitialChanges()
 
-    if (!Checks.hasAllPaths()) {
-      Config.reset()
+    if (!await Checks.hasAllPaths()) {
+      await Config.reset()
       return
     }
 
     await Promise.all([
-      Texts.getFromGame(),
-      this.initDLC(),
-      this.initMods()
+      Texts.initFromInitial(),
+      DLCs.init(),
+      Mods.procMods()
     ])
-    await WindowsManager.open(ProgramWindow.Main)
+    await Windows.openWindow(ProgramWindow.main)
     Checks.checkUpdate()
   }
 
-  static checkMultipleInstances(): void {
+  /** Проверка других открытых экземпляров программы */
+  checkMultipleInstances() {
     if (!app.requestSingleInstanceLock()) {
       app.quit()
       process.exit(102)
     }
   }
 
-  static optimize(): void {
+  /** Оптимизация */
+  optimize() {
     app.disableHardwareAcceleration()
   }
 
-  static setName(): void {
+  /** Изменение стандартного названия */
+  setName() {
     app.setAppUserModelId(APP_NAME)
   }
 
-  static handleQuit(): void {
-    app.on('before-quit', () => {
-      if (ExitParams.saveConfig) {
-        Config.save()
+  /** Установка действия при закрытии приложения */
+  handleQuit() {
+    app.once('before-quit', async event => {
+      event.preventDefault()
+      if (ExitParams.saveJSONs) {
+        await Promise.all([
+          Config.save(),
+          Edited.save(),
+          Sizes.save(),
+          Favorites.save(),
+          Mods.save()
+        ])
       }
+      app.quit()
+    })
+    app.once('window-all-closed', app.exit)
+  }
 
-      if (existsSync(Paths.updateRoot)) {
-        rmSync(Paths.root, { recursive: true })
-        renameSync(Paths.updateRoot, Paths.root)
-      }
+  /** Установка действия при исплючениях */
+  handleExceptions() {
+    function onError(error: Error) {
+      console.log(error.stack || error)
+      throw new Error(error.stack || String(error))
+    }
+    process.once('uncaughtException', onError)
+    process.once('unhandledRejection', onError)
+  }
+
+  /** Отключение возможности навигации */
+  disableNavigation() {
+    app.on('web-contents-created', (_, contents) => {
+      contents.on('will-navigate', event => {
+        event.preventDefault()
+      })
     })
   }
 
-  static handleAllClosed(): void {
-    app.once('window-all-closed', () => app.exit())
-  }
-
-  /** Находит и инициализирует игровые DLC */
-  static async initDLC(): Promise<void> {
-    if (!Config.settings.DLC) return
-
-    Config.dlc = Helpers.findInDir(Paths.dlc, true)
-  }
-
-  /** Инициализирует модификации, указанные в `config.json` */
-  static async initMods(): Promise<void> {
-    if (!Config.settings.mods) return
-    if (!hasItems(Config.mods)) return
-
-    let counter = Config.mods.length
-
-    function deleteFromList(name: string) {
-      const modName = name.replace('.pak', '')
-      delete Config.mods.items[modName]
-      --Config.mods.length
-      --counter
-    }
-
-    for (const modName in Config.mods.items) {
-      const mod = Config.mods.items[modName]
-
-      if (!existsSync(mod.path)) {
-        deleteFromList(Config.mods.items[modName].name)
-        continue
-      }
-      else if (!Checks.hasPermissions(mod.path)) {
-        deleteFromList(Config.mods.items[modName].name)
-        continue
-      }
-
-      if (Hash.getSize(mod.path) === Config.sizes.mods[modName] && existsSync(Paths.modsTemp[modName])) {
-        --counter
-      }
-      else {
-        await Archive.unpackMod(mod.path)
-
-        if (!existsSync(join(Paths.modsTemp, modName, 'classes'))) {
-          deleteFromList(Config.mods.items[modName].name)
-        }
-        else {
-          --counter
-        }
-
-        if (counter === 0) {
-          Texts.getFromMods()
-          return
-        }
-      }
-    }
-
-    if (counter <= 0) {
-      Texts.getFromMods()
-    }
-  }
-
-  static {
-    this.checkMultipleInstances()
-    this.setName()
-    this.optimize()
-
-    this.handleQuit()
-    this.handleAllClosed()
-    this.start()
+  disableSecurityWarns() {
+    process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = 'true'
   }
 }
+
+new App().init().catch(error => { throw new Error(error) })
