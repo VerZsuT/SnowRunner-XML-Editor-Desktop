@@ -23,7 +23,7 @@ export default class GameXML extends XMLElement {
 
   protected files(folder: string, nameGetter: () => string | undefined) {
     const getter = async (info: FileInfo): Promise<File[]> => {
-      const names = nameGetter()?.split(',')
+      const names = nameGetter()?.split(',').map(item => item.trim())
       if (!names || !hasItems(names)) return []
       if (names.at(-1) === '') names.pop()
       return (await Promise.all(

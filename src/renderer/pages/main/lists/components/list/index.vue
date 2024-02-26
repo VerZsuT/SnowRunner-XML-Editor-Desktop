@@ -74,7 +74,8 @@ function useFilteredItems() {
 .list {
   display: flex;
   justify-content: space-evenly;
-  overflow: auto;
+  overflow-y: auto;
+  height: 100%;
   flex-grow: 1;
   flex-direction: row;
   flex-wrap: wrap;
