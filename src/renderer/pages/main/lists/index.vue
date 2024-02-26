@@ -1,61 +1,80 @@
 <template>
-  <Header :text='category === Category.trucks ? texts.trucksListTitle : texts.trailersListTitle'>
-    <template #extra>
-      <Search />
-    </template>
-  </Header>
-
-  <Tabs class='tabs' :active-key='category' @change='setCategory($event as Category)'>
-    <TabPane :key='Category.trucks'>
-      <template #tab>
-        <Text>{{ texts.trucksCategoryTitle }}</Text>
+  <div class='lists'>
+    <Header :text='category === Category.trucks ? texts.trucksListTitle : texts.trailersListTitle'>
+      <template #extra>
+        <Search />
       </template>
-    </TabPane>
-    <TabPane :key='Category.trailers'>
-      <template #tab>
-        <Text>{{ texts.trailersCategoryTitle }}</Text>
-      </template>
-    </TabPane>
-  </Tabs>
+    </Header>
   
-  <Tabs class='tabs' :active-key='source' @change='setSource($event as SourceType)'>
-    <TabPane :key='SourceType.main'>
-      <template #tab>
-        <AppstoreOutlined class='tab-icon' />
-        <Text>{{ texts.mainListTitle }}</Text>
-      </template>
-    </TabPane>
-    <TabPane :key='SourceType.dlc'>
-      <template #tab>
-        <AppstoreAddOutlined class='tab-icon' />
-        <Text>{{ texts.dlcListTitle }}</Text>
-      </template>
-    </TabPane>
-    <TabPane :key='SourceType.mods' :disabled='!Config.ref.useMods'>
-      <template #tab>
-        <ApiOutlined class='tab-icon' />
-        <Text>{{ texts.modsListTitle }}</Text>
-      </template>
-    </TabPane>
-    <TabPane :key='SourceType.favorites'>
-      <template #tab>
-        <StarFilled class='tab-icon' />
-        <Text>{{ texts.favoritesListTitle }}</Text>
-      </template>
-    </TabPane>
-  </Tabs>
-
-  <List
-    v-if='files'
-    :src-type='source'
-    :files='currentFiles'
-  />
-  <Spin v-else center />
+    <Tabs class='tabs' :active-key='category' @change='setCategory($event as Category)'>
+      <TabPane :key='Category.trucks'>
+        <template #tab>
+          <Text>{{ texts.trucksCategoryTitle }}</Text>
+        </template>
+      </TabPane>
+      <TabPane :key='Category.trailers'>
+        <template #tab>
+          <Text>{{ texts.trailersCategoryTitle }}</Text>
+        </template>
+      </TabPane>
+    </Tabs>
+    
+    <Tabs class='tabs' :active-key='source' @change='setSource($event as SourceType)'>
+      <TabPane :key='SourceType.main'>
+        <template #tab>
+          <AppstoreOutlined class='tab-icon' />
+          <Text>{{ texts.mainListTitle }}</Text>
+        </template>
+      </TabPane>
+      <TabPane :key='SourceType.dlc'>
+        <template #tab>
+          <AppstoreAddOutlined class='tab-icon' />
+          <Text>{{ texts.dlcListTitle }}</Text>
+        </template>
+      </TabPane>
+      <TabPane :key='SourceType.mods' :disabled='!Config.ref.useMods'>
+        <template #tab>
+          <ApiOutlined class='tab-icon' />
+          <Text>{{ texts.modsListTitle }}</Text>
+        </template>
+      </TabPane>
+      <TabPane :key='SourceType.favorites'>
+        <template #tab>
+          <StarFilled class='tab-icon' />
+          <Text>{{ texts.favoritesListTitle }}</Text>
+        </template>
+      </TabPane>
+    </Tabs>
+  
+    <template v-if='files'>
+      <List
+        v-show='source === SourceType.main'
+        :src-type='SourceType.main'
+        :files='files[SourceType.main]'
+      />
+      <List
+        v-show='source === SourceType.dlc'
+        :src-type='SourceType.dlc'
+        :files='files[SourceType.dlc]'
+      />
+      <List
+        v-show='source === SourceType.mods'
+        :src-type='SourceType.mods'
+        :files='files[SourceType.mods]'
+      />
+      <List
+        v-show='source === SourceType.favorites'
+        :src-type='SourceType.favorites'
+        :files='files[SourceType.favorites]'
+      />
+    </template>
+    <Spin v-else center />
+  </div>
 </template>
 
 <script lang='ts' setup>
 import { TabPane, Tabs, Typography } from 'ant-design-vue'
-import { computed, onMounted, ref, watch, watchEffect } from 'vue'
+import { onMounted, ref, watch, watchEffect } from 'vue'
 
 import { ApiOutlined, AppstoreAddOutlined, AppstoreOutlined, StarFilled } from '@ant-design/icons-vue'
 
@@ -81,7 +100,6 @@ interface IFiles {
 
 const { category, source, setCategory, setSource } = useListStore()
 const files = ref<IFiles | null>(null)
-const currentFiles = computed<File[]>(() => files.value ? files.value[source.value] : [])
 
 watch(category, () => files.value = null)
 watchEffect(async () => {
@@ -121,6 +139,13 @@ body {
 </style>
 
 <style lang='scss' scoped>
+.lists {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  height: calc(100vh - 100px);
+}
+
 .tabs {
   background-color: white;
   height: 54px;
