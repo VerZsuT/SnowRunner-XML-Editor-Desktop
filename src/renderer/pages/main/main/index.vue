@@ -3,8 +3,8 @@
   <EditorActions />
   <GameUpdate v-model='openGameUpdate' />
   
-  <Lists v-show='page === Page.lists' />
-  <Editor v-if='page === Page.editor' />
+  <Lists v-if='page === Page.lists' />
+  <Editor v-else-if='page === Page.editor' />
 </template>
 
 <script lang='ts' setup>
