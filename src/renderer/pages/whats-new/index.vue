@@ -1,5 +1,6 @@
 <template>
   <div class='container'>
+    <VersionInfo version='0.8.4' :changes='desc084.texts' />
     <VersionInfo version='0.8.3' :changes='desc083.texts' />
     <VersionInfo version='0.8.2' :changes='desc082.texts' />
     <VersionInfo version='0.8.1' :changes='desc081.texts' />
@@ -15,6 +16,26 @@ import { localize } from '/utils/texts/renderer'
 
 useWindowReady(ProgramWindow.whatsNew)
 
+const desc084 = localize({
+  texts: {
+    [Lang.ru]: [
+      'Исправлен баг с отсутствием некоторых двигателей',
+      'Оптимизирован список'
+    ],
+    [Lang.en]: [
+      'Fixed a bug with missing some engines',
+      'The list has been optimized'
+    ],
+    [Lang.de]: [
+      'Fehler behoben, bei dem einige Motoren fehlten',
+      'Liste wurde optimiert'
+    ],
+    [Lang.ch]: [
+      '修正了一个缺少一些引擎的错误',
+      '列表已优化'
+    ]
+  }
+})
 const desc083 = localize({
   texts: {
     [Lang.ru]: [
