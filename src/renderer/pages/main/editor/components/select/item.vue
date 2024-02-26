@@ -4,7 +4,7 @@
     size='large'
     :mode='props.multiple ? "multiple" : undefined'
     :options='options'
-    :value='getValue()'
+    :value='value'
     @change='onChange($event as string | string[])'
   />
 </template>
@@ -27,7 +27,7 @@ const options = computed(() => props.options.map(option => {
   }
 }))
 
-function getValue() {
+const value = computed(() => {
   if (props.multiple && Array.isArray(props.value)) {
     if (props.value.length === 0 && props.emptyIsAll) {
       return options.value.map(option => option.value)
@@ -35,7 +35,7 @@ function getValue() {
     return props.value.map(item => String(item))
   }
   return String(props.value)
-}
+})
 
 function onChange(value: string | string[]) {
   if (props.emptyIsAll && value.length === options.value.length) {

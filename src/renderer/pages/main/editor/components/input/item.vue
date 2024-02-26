@@ -22,7 +22,7 @@
 
 <script lang='ts' setup>
 import { Input, InputNumber } from 'ant-design-vue'
-import { computed, readonly, ref, toRefs, watch } from 'vue'
+import { computed, nextTick, ref, toRefs, watch } from 'vue'
 
 import { InputType, NumberType } from '../../enums'
 import { IInputProps, ParameterEmits } from '../../types'
@@ -37,12 +37,16 @@ const {
   type, numberType, areas,
   step = numberType === NumberType.float ? 0.1 : 1
 } = props
-const propValue = readonly(toRefs(props).value)
+const propValue = toRefs(props).value
 const value = ref(props.value)
 
 const status = computed<Status>(getStatus)
 
-watch(propValue, () => value.value = propValue.value)
+watch(propValue, () => {
+  if (value.value !== propValue.value) {
+    value.value = propValue.value
+  }
+})
 
 function changeValue(newVal: string | number) {
   if (newVal === '') {
@@ -51,9 +55,13 @@ function changeValue(newVal: string | number) {
   value.value = newVal
 }
 
-function setValue() {
+async function setValue() {
   if (value.value === '') return
   emit('change', value.value)
+  await nextTick()
+  if (value.value !== propValue.value) {
+    value.value = propValue.value
+  }
 }
 
 function getStatus(): Status {
