@@ -37,15 +37,23 @@ export default class Position {
 
   compare(other: Partial<Position>) {
     const newPos = new Position(
-      other.x ?? this.x,
-      other.y ?? this.y,
-      other.z ?? this.z
+      other.x ?? this._x,
+      other.y ?? this._y,
+      other.z ?? this._z
     )
     return newPos
   }
+  
+  equals(other: Position) {
+    return (
+      this._x === other.x &&
+      this._y === other.y &&
+      this._z === other.z
+    )
+  }
 
   toString() {
-    return `(${String(this.x)}; ${String(this.y)}; ${String(this.z)})`
+    return `(${String(this._x)}; ${String(this._y)}; ${String(this._z)})`
   }
 
   constructor(x = 0, y = 0, z = 0, limits?: PosLimits) {

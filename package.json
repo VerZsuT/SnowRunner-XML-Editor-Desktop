@@ -1,7 +1,7 @@
 {
 	"name": "snowrunner-xml-editor-desktop",
 	"productName": "SnowRunner-XML-Editor",
-	"version": "0.8.4",
+	"version": "0.8.5",
 	"description": "Allows you to visually edit the game's XML files.",
 	"type": "module",
 	"repository": {
@@ -31,15 +31,15 @@
 		"@electron-forge/cli": "^7.3.0",
 		"@electron-forge/plugin-vite": "^7.3.0",
 		"@types/memoizee": "^0.4.11",
-		"@typescript-eslint/eslint-plugin": "^7.0.2",
-		"@typescript-eslint/parser": "^7.0.2",
+		"@typescript-eslint/eslint-plugin": "^7.1.0",
+		"@typescript-eslint/parser": "^7.1.0",
 		"@vitejs/plugin-vue": "^5.0.4",
 		"ant-design-vue": "^4.1.2",
 		"cheerio": "^1.0.0-rc.12",
 		"cross-env": "^7.0.3",
 		"electron": "^29.0.1",
 		"emr-bridge": "^1.7.1",
-		"eslint": "^8.56.0",
+		"eslint": "^8.57.0",
 		"eslint-import-resolver-typescript": "^3.6.1",
 		"eslint-plugin-import": "^2.29.1",
 		"eslint-plugin-unicorn": "^51.0.1",
@@ -51,7 +51,7 @@
 		"typescript": "^5.3.3",
 		"vite": "^5.1.4",
 		"vite-plugin-static-copy": "^1.0.1",
-		"vue": "^3.4.19",
+		"vue": "^3.4.20",
 		"vue-tsc": "^1.8.27"
 	}
 }

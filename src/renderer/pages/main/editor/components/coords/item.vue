@@ -21,7 +21,7 @@
 
 <script lang='ts' setup>
 import { InputNumber, Typography } from 'ant-design-vue'
-import { readonly, ref, toRefs, watch } from 'vue'
+import { ref, shallowReadonly, toRefs, watch } from 'vue'
 import { NumberType } from '../../enums'
 import { ParameterEmits, PositionProps } from '../../types'
 import { Position } from '/mods/renderer'
@@ -34,13 +34,16 @@ const emit = defineEmits<ParameterEmits>()
 const {
   step = props.numberType === NumberType.integer ? 1 : 0.1
 } = props
-const value = readonly(toRefs(props).value)
+const propValue = shallowReadonly(toRefs(props).value)
 
-const defaultVal = value.value
+const defaultVal = propValue.value
 const coords = ref(defaultVal ?? new Position())
 
-watch(value, () => {
-  coords.value = value.value ?? new Position()
+watch(propValue, () => {
+  const newPos = propValue.value ?? new Position()
+  if (!coords.value.equals(newPos)) {
+    coords.value = newPos
+  }
 })
 
 function changeCoordinate(newCoord: Partial<Position>) {
