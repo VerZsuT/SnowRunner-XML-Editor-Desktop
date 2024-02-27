@@ -91,30 +91,33 @@ class Checks {
    * @param whateverCheck игнорировать настройку `updates` в `Config`
    */
   checkUpdate(whateverCheck?: boolean) {
-    if (!Config.checkUpdates && !whateverCheck) return
+    return new Promise<void>((res, rej) => {
+      if (!Config.checkUpdates && !whateverCheck) return
 
-    resolve(this.GITHUB_URL, error => {
-      if (error) throw new ProgramError(ErrorText.gitHubConnectError, error.message)
+      resolve(this.GITHUB_URL, error => {
+        if (error) rej(new ProgramError(ErrorText.gitHubConnectError, error.message))
 
-      get(Paths.publicInfo, response => {
-        let rawData = ''
+        get(Paths.publicInfo, response => {
+          let rawData = ''
 
-        response
-          .setEncoding('utf8')
-          .on('data', chunk => rawData += chunk)
-          .on('end', async () => {
-            const data: IPublicFile = JSON.parse(rawData)
-            const version = Config.version
-            const hasNewVersion = version < data.latestVersion
-            const isBetaNewVersion = version.includes('-beta') && version.split('-beta')[0] === data.latestVersion
+          response
+            .setEncoding('utf8')
+            .on('data', chunk => rawData += chunk)
+            .on('end', async () => {
+              const data: IPublicFile = JSON.parse(rawData)
+              const version = Config.version
+              const hasNewVersion = version < data.latestVersion
+              const isBetaNewVersion = version.includes('-beta') && version.split('-beta')[0] === data.latestVersion
 
-            if (hasNewVersion || isBetaNewVersion) {
-              await Windows.openWindow(ProgramWindow.update)
-              Windows.updateWindow?.setVersion(data.latestVersion)
-            }
-          })
-      }).on('error', error => {
-        throw new ProgramError(ErrorText.gitHubConnectError, error.message)
+              if (hasNewVersion || isBetaNewVersion) {
+                await Windows.openWindow(ProgramWindow.update)
+                Windows.updateWindow?.setVersion(data.latestVersion)
+              }
+              res()
+            })
+        }).on('error', error => {
+          rej(new ProgramError(ErrorText.gitHubConnectError, error.message))
+        })
       })
     })
   }

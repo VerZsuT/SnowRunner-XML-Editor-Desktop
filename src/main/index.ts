@@ -35,7 +35,7 @@ class App {
 
     if (!Config.initialPath) {
       await Windows.openWindow(ProgramWindow.setup)
-      Checks.checkUpdate()
+      void Checks.checkUpdate()
       return
     }
 
@@ -52,7 +52,7 @@ class App {
       Mods.procMods()
     ])
     await Windows.openWindow(ProgramWindow.main)
-    Checks.checkUpdate()
+    void Checks.checkUpdate()
   }
 
   /** Проверка других открытых экземпляров программы */
@@ -94,8 +94,7 @@ class App {
   /** Установка действия при исплючениях */
   handleExceptions() {
     function onError(error: Error) {
-      console.log(error.stack || error)
-      throw new Error(error.stack || String(error))
+      console.error(error.stack || error)
     }
     process.once('uncaughtException', onError)
     process.once('unhandledRejection', onError)
