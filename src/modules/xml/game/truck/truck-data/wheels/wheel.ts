@@ -56,7 +56,7 @@ export default class Wheel extends XMLWithTemplates {
   get $SuspensionMin() { return {} as NumUtils }
 
   /** Высота подвески */
-  @floatAttr(Limit.Positive)
+  @floatAttr(new Limit({ min: -1000.0, max: 1000.0 }))
   get SuspensionHeight() { return 0.0 }
   set SuspensionHeight(_: number | undefined) {}
   @numUtils()
