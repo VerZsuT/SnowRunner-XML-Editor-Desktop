@@ -1,13 +1,13 @@
 <template>
-  <Divider class='title'>
+  <Divider class="title">
     {{ texts.whatsNewTitle }} {{ ` v${props.version}` }}
   </Divider>
   <List
-    class='content'
-    size='small'
-    :data-source='props.changes'
+    class="content"
+    size="small"
+    :data-source="props.changes"
   >
-    <template #renderItem='{ item }'>
+    <template #renderItem="{ item }">
       <List.Item>
         <Text>{{ item }}</Text>
       </List.Item>

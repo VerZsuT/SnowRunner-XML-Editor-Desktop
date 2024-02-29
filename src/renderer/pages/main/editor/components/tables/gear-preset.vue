@@ -1,20 +1,21 @@
 <template>
-  <template v-if='element'>
+  <template v-if="element">
     <Float
-      :label='texts.angelVelocity'
-      :utils='element.$AngVel'
+      :label="texts.angelVelocity"
+      :utils="element.$AngVel"
     />
     <Float
-      :label='texts.fuelModifier'
-      :utils='element.$FuelModifier'
+      :label="texts.fuelModifier"
+      :utils="element.$FuelModifier"
     />
   </template>
 </template>
 
 <script lang='ts' setup>
 import { Float } from '../input'
+
 import { Lang } from '/mods/renderer'
-import { NumUtils } from '/mods/xml/game/game-xml'
+import type { NumUtils } from '/mods/xml/game/game-xml'
 import { localize } from '/utils/texts/renderer'
 
 const texts = localize({

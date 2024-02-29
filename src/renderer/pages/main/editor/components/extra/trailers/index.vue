@@ -1,46 +1,47 @@
 <template>
   <Group
-    v-if='isActive'
-    :label='Action.name.value'
-    :icon='Action.icon'
+    v-if="isActive"
+    key="trailers"
+    :label="Action.name.value"
+    :icon="Action.icon"
   >
-    <div class='grid trailers-grid'>
-      <div class='buttons'>
-        <Text>{{ texts.scoutTrailers }}</Text><br />
+    <div class="grid trailers-grid">
+      <div class="buttons">
+        <Text>{{ texts.scoutTrailers }}</Text><br>
         <Button
-          v-if='hasScout'
-          :disabled='!(hasScout && hasTruck)'
-          @click='removeTrailer(Trailer.scout)'
-          type='primary'
+          v-if="hasScout"
+          :disabled="!(hasScout && hasTruck)"
+          type="primary"
           danger
+          @click="removeTrailer(Trailer.scout)"
         >
           {{ texts.remove }}
         </Button>
         <Button
           v-else
-          :disabled='!(hasTruck && !hasScout)'
-          @click='addTrailer(Trailer.scout)'
-          type='primary'
+          :disabled="!(hasTruck && !hasScout)"
+          type="primary"
+          @click="addTrailer(Trailer.scout)"
         >
           {{ texts.add }}
         </Button>
       </div>
-      <div class='buttons'>
-        <Text>{{ texts.truckTrailers }}</Text><br />
+      <div class="buttons">
+        <Text>{{ texts.truckTrailers }}</Text><br>
         <Button
-          v-if='hasTruck'
-          :disabled='!(hasScout && hasTruck)'
-          @click='removeTrailer(Trailer.truck)'
-          type='primary'
+          v-if="hasTruck"
+          :disabled="!(hasScout && hasTruck)"
+          type="primary"
           danger
+          @click="removeTrailer(Trailer.truck)"
         >
           {{ texts.remove }}
         </Button>
         <Button
           v-else
-          :disabled='!(hasScout && !hasTruck)'
-          @click='addTrailer(Trailer.truck)'
-          type='primary'
+          :disabled="!(hasScout && !hasTruck)"
+          type="primary"
+          @click="addTrailer(Trailer.truck)"
         >
           {{ texts.add }}
         </Button>
@@ -53,15 +54,16 @@
 import { Button, Typography } from 'ant-design-vue'
 import { ref } from 'vue'
 
+import type { IActionProps } from '../../../types'
+import { ExportUtils, ImportUtils } from '../../../utils'
 import Group from '../../group'
+import type { ReadyEmits } from '../../utils'
+import { useReady } from '../../utils'
 import texts from '../texts'
 import Action from './action'
 import Trailer from './trailer'
 
-import type { IActionProps } from '../../../types'
-import { ExportUtils, ImportUtils } from '../../../utils'
-import { ReadyEmits, useReady } from '../../utils'
-import { IExportedData } from '/mods/renderer'
+import type { IExportedData } from '/mods/renderer'
 import { useEditorStore } from '/rend/pages/main/store'
 
 const { Text } = Typography

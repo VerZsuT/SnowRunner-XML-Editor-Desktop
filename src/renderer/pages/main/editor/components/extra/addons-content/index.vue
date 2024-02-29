@@ -1,35 +1,56 @@
 <template>
   <Group
-    :label='label.value'
-    icon='wrench'
-    @click='open = true'
+    key="addons-content"
+    :label="label.value"
+    icon="wrench"
+    @click="open = true"
   >
-    <Spin v-if='!state.items' />
+    <Spin v-if="!state.items" />
     <template v-else>
-      <div class='main'>
+      <div class="main">
         <Text>
           {{ texts.addonName }}
-        </Text><br />
+        </Text><br>
         <Input
-          type='text'
-          :placeholder='texts.addonFilter'
-          @blur='changeFilter($event.target?.["value"])'
-        /><br />
+          type="text"
+          :placeholder="texts.addonFilter"
+          @blur="changeFilter($event.target?.['value'])"
+        /><br>
         <Select
-          class='addon-select'
-          :value='state.addon'
-          :options='options'
-          @change='value => select(String(value))'
+          class="addon-select"
+          :value="state.addon"
+          :options="options"
+          @change="value => select(String(value))"
         />
       </div>
-      <div class='grid ac-grid'>
-        <ContentField :text='texts.addonWheels' :value='state.wheels' @change='wheels => state.wheels = wheels' />
-        <ContentField :text='texts.addonRepairs' :value='state.repairs' @change='repairs => state.repairs = repairs' />
-        <ContentField :text='texts.addonFuel' :value='state.fuel' @change='fuel => state.fuel = fuel' />
-        <ContentField :text='texts.addonWater' :value='state.water' @change='water => state.water = water' />
+      <div class="grid ac-grid">
+        <ContentField
+          :text="texts.addonWheels"
+          :value="state.wheels"
+          @change="wheels => state.wheels = wheels"
+        />
+        <ContentField
+          :text="texts.addonRepairs"
+          :value="state.repairs"
+          @change="repairs => state.repairs = repairs"
+        />
+        <ContentField
+          :text="texts.addonFuel"
+          :value="state.fuel"
+          @change="fuel => state.fuel = fuel"
+        />
+        <ContentField
+          :text="texts.addonWater"
+          :value="state.water"
+          @change="water => state.water = water"
+        />
       </div>
 
-      <Button class='save' @click='save' type='primary'>
+      <Button
+        class="save"
+        type="primary"
+        @click="save"
+      >
         {{ texts.saveButton }}
       </Button>
     </template>
@@ -41,14 +62,16 @@ import type { SelectProps } from 'ant-design-vue'
 import { Button, Input, Select, Typography } from 'ant-design-vue'
 import { reactive, ref, watch } from 'vue'
 
-import texts from '../texts'
-import ContentField from './content-field.vue'
-
 import { useEditorStore } from '../../../../store'
 import type { IActionProps } from '../../../types'
 import Group from '../../group'
-import { ReadyEmits, useReady } from '../../utils'
-import { AddonXML, DLCs, Dirs, File, GameTexts, Lang, Messages, XMLElement } from '/mods/renderer'
+import type { ReadyEmits } from '../../utils'
+import { useReady } from '../../utils'
+import texts from '../texts'
+import ContentField from './content-field.vue'
+
+import type { File } from '/mods/renderer'
+import { AddonXML, DLCs, Dirs, GameTexts, Lang, Messages, XMLElement } from '/mods/renderer'
 import { Spin } from '/rend/components'
 import { localize } from '/utils/texts/renderer'
 

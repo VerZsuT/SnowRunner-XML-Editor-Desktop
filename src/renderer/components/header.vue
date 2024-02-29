@@ -1,16 +1,22 @@
 <template>
-  <PageHeader class='header' @back='onBack'>
+  <PageHeader
+    class="header"
+    @back="onBack"
+  >
     <template #title>
-      <h3 class='header-title'>{{ props.text }}</h3>
+      <h3 class="header-title">
+        {{ props.text }}
+      </h3>
     </template>
     <template #extra>
-      <slot name='extra'/>
+      <slot name="extra" />
     </template>
   </PageHeader>
 </template>
 
 <script lang='ts' setup>
-import { PageHeader, PageHeaderProps } from 'ant-design-vue'
+import type { PageHeaderProps } from 'ant-design-vue'
+import { PageHeader } from 'ant-design-vue'
 
 type Props = PageHeaderProps & {
   text: string
@@ -24,7 +30,7 @@ type Emits = {
 const props = defineProps<Props>()
 const emit = defineEmits<Emits>()
 
-const onBack = props.withBack ? () => emit("back") : undefined
+const onBack = props.withBack ? () => emit('back') : undefined
 </script>
 
 <style lang='scss' scoped>

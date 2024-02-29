@@ -1,13 +1,13 @@
 <template>
   <div
-    v-if='show'
-    class='context'
-    @click='hide'
+    v-if="show"
+    class="context"
+    @click="hide"
   >
     <Menu
-      class='context-menu'
-      :style='{ top: pos.y + "px", left: pos.x + "px" }'
+      class="context-menu"
       :items="menuItems"
+      :style="{ top: pos.y + 'px', left: pos.x + 'px' }"
     />
   </div>
 </template>
@@ -15,7 +15,8 @@
 <script lang='ts' setup>
 import type { ItemType } from 'ant-design-vue'
 import { Menu } from 'ant-design-vue'
-import { ComponentPublicInstance, computed, ref, toRefs, watch } from 'vue'
+import type { ComponentPublicInstance } from 'vue'
+import { computed, ref, toRefs, watch } from 'vue'
 
 type Props = {
   items: ItemType[]

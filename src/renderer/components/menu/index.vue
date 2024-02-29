@@ -1,15 +1,16 @@
 <template>
   <Menu
-    class='menu'
-    trigger-sub-menu-action='click'
-    mode='horizontal'
-    :selectable='false'
-    :items='items'
+    class="menu"
+    trigger-sub-menu-action="click"
+    mode="horizontal"
+    :selectable="false"
+    :items="items"
   />
 </template>
 
 <script lang='ts' setup>
 import { Menu } from 'ant-design-vue'
+
 import items from './items'
 </script>
 

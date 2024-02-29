@@ -1,8 +1,8 @@
 <template>
   <Header
-    :text='texts.error'
+    :text="texts.error"
     with-back
-    @back='route(Page.lists)'
+    @back="route(Page.lists)"
   />
 </template>
 
@@ -10,6 +10,7 @@
 import { Page } from '../../enums'
 import { usePageStore } from '../../store'
 import texts from '../texts'
+
 import { Header } from '/rend/components'
 
 const { route } = usePageStore()

@@ -47,7 +47,6 @@
     "semi": ["warn", "never"],
     "eqeqeq": ["warn", "always"],
     "camelcase": ["warn", { "properties": "always" }],
-    "jsx-quotes": ["error", "prefer-single"],
     "no-async-promise-executor": "warn",
     "no-extra-bind": "warn",
     "no-extra-label": "warn",
@@ -65,14 +64,14 @@
     "comma-style": "warn",
     "eol-last": "warn",
     "func-call-spacing": "warn",
-    "no-tabs": "error",
-    "no-whitespace-before-property": "error",
-    "keyword-spacing": "error",
-    "implicit-arrow-linebreak": "error",
-    "computed-property-spacing": "error",
-    "brace-style": ["error", "stroustrup", { "allowSingleLine": true }],
-    "comma-dangle": ["error", "never"],
-    "quote-props": ["error", "as-needed"],
+    "no-tabs": "warn",
+    "no-whitespace-before-property": "warn",
+    "keyword-spacing": "warn",
+    "implicit-arrow-linebreak": "warn",
+    "computed-property-spacing": "warn",
+    "brace-style": ["warn", "stroustrup", { "allowSingleLine": true }],
+    "comma-dangle": ["warn", "never"],
+    "quote-props": ["warn", "as-needed"],
     "prefer-rest-params": "error",
     "one-var": ["error", "never"],
     "no-useless-rename": "error",
@@ -99,13 +98,6 @@
           "internal",
           ["parent", "sibling"]
         ],
-        "pathGroups": [
-          {
-            "pattern": "react",
-            "group": "external",
-            "position": "before"
-          }
-        ],
         "newlines-between": "always",
         "alphabetize": {
           "order": "asc",
@@ -113,7 +105,7 @@
         }
       }
     ],
-    "@typescript-eslint/consistent-type-imports": "warn",
+    "@typescript-eslint/consistent-type-imports": "error",
     "@typescript-eslint/no-floating-promises": "warn",
     "@typescript-eslint/no-unused-vars": ["warn", {
       "vars": "all",

@@ -1,35 +1,38 @@
 <template>
   <Editor
-    v-if='exportArgs'
-    v-show='false'
-    ref='exportEditor'
-    :file='exportArgs.source'
-    @vue:unmounted='exportArgs = forExport.pop() ?? null'
-    @ready.on='exportFile(exportArgs.toExport)'
+    v-if="exportArgs"
+    v-show="false"
+    ref="exportEditor"
+    :file="exportArgs.source"
+    @vue:unmounted="exportArgs = forExport.pop() ?? null"
+    @ready="exportFile(exportArgs.toExport)"
   />
   <Editor
-    v-else-if='importArgs'
-    v-show='false'
-    ref='importEditor'
-    :file='importArgs.file'
-    @vue:unmounted='importArgs = forImport.pop() ?? null'
-    @ready.on='importFile(importArgs.toImport)'
+    v-else-if="importArgs"
+    v-show="false"
+    ref="importEditor"
+    :file="importArgs.file"
+    @vue:unmounted="importArgs = forImport.pop() ?? null"
+    @ready="importFile(importArgs.toImport)"
   />
   <Editor
-    v-else-if='resetArgs'
-    v-show='false'
-    ref='resetEditor'
-    :file='resetArgs'
-    @vue:unmounted='resetArgs = forReset.pop() ?? null'
-    @ready.on='resetFile()'
+    v-else-if="resetArgs"
+    v-show="false"
+    ref="resetEditor"
+    :file="resetArgs"
+    @vue:unmounted="resetArgs = forReset.pop() ?? null"
+    @ready="resetFile()"
   />
 </template>
 
 <script lang='ts' setup>
 import { shallowRef, watch } from 'vue'
+
 import Editor from '../editor'
-import { EditorUtils, EveryCallback } from '../lists/utils'
-import { File } from '/mods/renderer'
+import type { EveryCallback } from '../lists/utils'
+import { EditorUtils } from '../lists/utils'
+
+import type { File } from '/mods/renderer'
 
 const { forAction: forExport, args: exportArgs, editor: exportEditor } = useAction(EditorUtils.onExport)
 const { forAction: forImport, args: importArgs, editor: importEditor } = useAction(EditorUtils.onImport)
@@ -65,7 +68,7 @@ function useAction<L extends (args: any[], every?: EveryCallback) => Promise<voi
     return new Promise<void>(resolve => {
       forAction.value = args
       const inervalID = setInterval(() => {
-        if (!actionArgs.value && forAction.value.length < 1) {
+        if (!actionArgs.value && forAction.value.length === 0) {
           clearInterval(inervalID)
           resolve()
         }
@@ -77,7 +80,7 @@ function useAction<L extends (args: any[], every?: EveryCallback) => Promise<voi
     actionArgs.value = forAction.value.pop()!
   })
   watch(actionArgs, async () => {
-    if (actionArgs.value !== null) every?.()
+    if (actionArgs.value !== null) await every?.()
   })
 
   return { forAction, args: actionArgs, editor }

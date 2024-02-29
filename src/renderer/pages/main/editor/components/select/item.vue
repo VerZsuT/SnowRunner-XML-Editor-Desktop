@@ -1,18 +1,19 @@
 <template>
   <Select
-    class='select'
-    size='large'
-    :mode='props.multiple ? "multiple" : undefined'
-    :options='options'
-    :value='value'
-    @change='onChange($event as string | string[])'
+    class="select"
+    size="large"
+    :mode="props.multiple ? 'multiple' : undefined"
+    :options="options"
+    :value="value"
+    @change="onChange($event as string | string[])"
   />
 </template>
 
 <script lang='ts' setup>
 import { Select } from 'ant-design-vue'
 import { computed } from 'vue'
-import { ISelectProps, SelectEmits } from '../../types'
+
+import type { ISelectProps, SelectEmits } from '../../types'
 
 const emit = defineEmits<SelectEmits>()
 const props = defineProps<ISelectProps>()
@@ -32,7 +33,7 @@ const value = computed(() => {
     if (props.value.length === 0 && props.emptyIsAll) {
       return options.value.map(option => option.value)
     }
-    return props.value.map(item => String(item))
+    return props.value.map(String)
   }
   return String(props.value)
 })

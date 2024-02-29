@@ -1,32 +1,32 @@
 <template>
   <Language />
-  <div class='checkboxes'>
+  <div class="checkboxes">
     <Switch
-      size='small'
-      @click='settings.updates = !settings.updates'
-      :checked='settings.updates'
+      size="small"
+      :checked="settings.updates"
+      @click="settings.updates = !settings.updates"
     />
-    <Text class='label'>
+    <Text class="label">
       {{ texts.updatesLabel }}
     </Text>
-    <br />
+    <br>
 
     <Switch
-      size='small'
-      @click='settings.mods = !settings.mods'
-      :checked='settings.mods'
+      size="small"
+      :checked="settings.mods"
+      @click="settings.mods = !settings.mods"
     />
-    <Text class='label'>
+    <Text class="label">
       {{ texts.modsLabel }}
     </Text>
-    <br />
+    <br>
 
     <Switch
-      size='small'
-      @click='settings.advancedMode = !settings.advancedMode'
-      :checked='settings.advancedMode'
+      size="small"
+      :checked="settings.advancedMode"
+      @click="settings.advancedMode = !settings.advancedMode"
     />
-    <Text class='label'>
+    <Text class="label">
       {{ texts.advancedModeLabel }}
     </Text>
   </div>
@@ -37,6 +37,7 @@ import { Switch, Typography } from 'ant-design-vue'
 import { reactive, watch } from 'vue'
 
 import texts from './texts'
+
 import { Config, ProgramWindow } from '/mods/renderer'
 import { Language } from '/rend/components'
 import { useWindowReady } from '/rend/utils'

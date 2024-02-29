@@ -1,20 +1,20 @@
 <template>
-  <div class='grid content'>
-    <Text class='text'>
+  <div class="grid content">
+    <Text class="text">
       {{ props.text }}
     </Text>
     <Input
-      class='input'
-      type='number'
-      @change='onChange'
-      :value='props.value'
+      class="input"
+      type="number"
+      :value="props.value"
+      @change="onChange"
     />
   </div>
 </template>
 
 <script lang='ts' setup>
+import type { InputProps } from 'ant-design-vue'
 import { Input, Typography } from 'ant-design-vue'
-import type { ChangeEvent } from 'ant-design-vue/es/_util/EventInterface'
 
 type Props = {
   text: string
@@ -29,7 +29,7 @@ const Text = Typography.Text
 const props = defineProps<Props>()
 const emit = defineEmits<Emits>()
 
-function onChange(event: ChangeEvent) {
+const onChange: InputProps['onChange'] = event => {
   const value = event.target.value
   if (!value) return
 

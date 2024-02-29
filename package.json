@@ -37,7 +37,7 @@
 		"ant-design-vue": "^4.1.2",
 		"cheerio": "^1.0.0-rc.12",
 		"cross-env": "^7.0.3",
-		"electron": "^29.0.1",
+		"electron": "^29.1.0",
 		"emr-bridge": "^1.7.1",
 		"eslint": "^8.57.0",
 		"eslint-import-resolver-typescript": "^3.6.1",
@@ -52,7 +52,7 @@
 		"typescript": "^5.3.3",
 		"vite": "^5.1.4",
 		"vite-plugin-static-copy": "^1.0.1",
-		"vue": "^3.4.20",
+		"vue": "^3.4.21",
 		"vue-eslint-parser": "^9.4.2",
 		"vue-tsc": "^1.8.27"
 	}

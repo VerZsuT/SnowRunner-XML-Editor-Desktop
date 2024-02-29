@@ -1,13 +1,22 @@
 <template>
-  <div ref='contextTarget' class='grid parameter'>
-    <ContextMenu :items='contextItems' :target='contextTarget' />
-    <div class='label'>
+  <div
+    ref="contextTarget"
+    class="grid parameter"
+  >
+    <ContextMenu
+      :items="contextItems"
+      :target="contextTarget"
+    />
+    <div class="label">
       <Text>{{ label }}</Text>
     </div>
-    <div class='content'>
+    <div
+      v-if="isActive"
+      class="content"
+    >
       <slot
-        :value='value'
-        :on-change='changeValue'
+        :value="value"
+        :on-change="changeValue"
       />
     </div>
   </div>
@@ -16,12 +25,15 @@
 <script lang='ts' setup>
 import { Typography } from 'ant-design-vue'
 import { ref } from 'vue'
+
 import { useEditorStore } from '../../store'
 import texts from '../texts'
-import { IParameterProps, ParameterEmits, ParameterValue } from '../types'
+import type { IParameterProps, ParameterEmits, ParameterValue } from '../types'
 import { ExportUtils, ImportUtils, ResetUtils } from '../utils'
 import { injectFile } from '../utils/import'
-import { IExportedData } from '/mods/renderer'
+import { useActive } from './utils'
+
+import type { IExportedData } from '/mods/renderer'
 import { ContextMenu } from '/rend/components'
 import { isNullable } from '/utils/renderer'
 
@@ -49,6 +61,7 @@ const setter = (value: ParameterValue) => {
 
 const defaultValue = getter()
 const value = ref(defaultValue ?? '')
+const { isActive } = useActive()
 
 ResetUtils.onReset(resetValue)
 ImportUtils.onImport(data => {

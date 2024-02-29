@@ -1,27 +1,28 @@
 <template>
   <Group
-    v-if='isActive'
-    :label='Action.name.value'
-    :icon='Action.icon'
+    v-if="isActive"
+    key="bandit-crane"
+    :label="Action.name.value"
+    :icon="Action.icon"
   >
-    <div class='content'>
-      <Paragraph class='warn-title'>
+    <div class="content">
+      <Paragraph class="warn-title">
         {{ texts.cranesWarnTitle }}
       </Paragraph>
       <Paragraph>{{ texts.banditWarnMessage }}</Paragraph>
-      <div class='buttons'>
+      <div class="buttons">
         <Button
-          v-if='hasCrane'
-          type='primary'
-          @click='removeCrane'
+          v-if="hasCrane"
+          type="primary"
           danger
+          @click="removeCrane"
         >
           {{ texts.remove }}
         </Button>
         <Button
           v-else
-          @click='addCrane'
-          type='primary'
+          type="primary"
+          @click="addCrane"
         >
           {{ texts.add }}
         </Button>
@@ -34,14 +35,15 @@
 import { Button, Typography } from 'ant-design-vue'
 import { ref } from 'vue'
 
+import type { IActionProps } from '../../../types'
+import { ExportUtils, ImportUtils } from '../../../utils'
 import Group from '../../group'
+import type { ReadyEmits } from '../../utils'
+import { useReady } from '../../utils'
 import texts from '../texts'
 import Action from './action'
 
-import type { IActionProps } from '../../../types'
-import { ExportUtils, ImportUtils } from '../../../utils'
-import { ReadyEmits, useReady } from '../../utils'
-import { IExportedData } from '/mods/renderer'
+import type { IExportedData } from '/mods/renderer'
 import { useEditorStore } from '/rend/pages/main/store'
 
 const { Paragraph } = Typography

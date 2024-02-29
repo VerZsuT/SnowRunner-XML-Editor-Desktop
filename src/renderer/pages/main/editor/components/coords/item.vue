@@ -1,29 +1,31 @@
 <template>
   <Text> X: </Text>
   <InputNumber
-    :step='step'
-    :value='coords.x'
-    @change='value => changeCoordinate({ x: Number.parseFloat(String(value)) })'
+    :step="step"
+    :value="coords.x"
+    @change="value => changeCoordinate({ x: Number.parseFloat(String(value)) })"
   />
   <Text> Y: </Text>
   <InputNumber
-    :step='step'
-    :value='coords.y'
-    @change='value => changeCoordinate({ y: Number.parseFloat(String(value)) })'
+    :step="step"
+    :value="coords.y"
+    @change="value => changeCoordinate({ y: Number.parseFloat(String(value)) })"
   />
   <Text> Z: </Text>
   <InputNumber
-    :step='step'
-    :value='coords.z'
-    @change='value => changeCoordinate({ z: Number.parseFloat(String(value)) })'
+    :step="step"
+    :value="coords.z"
+    @change="value => changeCoordinate({ z: Number.parseFloat(String(value)) })"
   />
 </template>
 
 <script lang='ts' setup>
 import { InputNumber, Typography } from 'ant-design-vue'
 import { ref, shallowReadonly, toRefs, watch } from 'vue'
+
 import { NumberType } from '../../enums'
-import { ParameterEmits, PositionProps } from '../../types'
+import type { ParameterEmits, PositionProps } from '../../types'
+
 import { Position } from '/mods/renderer'
 
 const Text = Typography.Text

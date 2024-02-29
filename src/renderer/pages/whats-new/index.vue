@@ -1,16 +1,35 @@
 <template>
-  <div class='container'>
-    <VersionInfo version='0.8.5' :changes='descs["0.8.5"]' />
-    <VersionInfo version='0.8.4' :changes='descs["0.8.4"]' />
-    <VersionInfo version='0.8.3' :changes='descs["0.8.3"]' />
-    <VersionInfo version='0.8.2' :changes='descs["0.8.2"]' />
-    <VersionInfo version='0.8.1' :changes='descs["0.8.1"]' />
-    <VersionInfo version='0.8.0' :changes='descs["0.8.0"]' />
+  <div class="container">
+    <VersionInfo
+      version="0.8.5"
+      :changes="descs['0.8.5']"
+    />
+    <VersionInfo
+      version="0.8.4"
+      :changes="descs['0.8.4']"
+    />
+    <VersionInfo
+      version="0.8.3"
+      :changes="descs['0.8.3']"
+    />
+    <VersionInfo
+      version="0.8.2"
+      :changes="descs['0.8.2']"
+    />
+    <VersionInfo
+      version="0.8.1"
+      :changes="descs['0.8.1']"
+    />
+    <VersionInfo
+      version="0.8.0"
+      :changes="descs['0.8.0']"
+    />
   </div>
 </template>
 
 <script lang='ts' setup>
 import VersionInfo from './version-info.vue'
+
 import { Lang, ProgramWindow } from '/mods/renderer'
 import { useWindowReady } from '/rend/utils'
 import { localize } from '/utils/texts/renderer'
@@ -92,9 +111,9 @@ const descs = localize({
       'Fehler mit der Option "Feinabstimmung" behoben'
     ],
     [Lang.ch]: [
-      "修正了编辑一些分数参数的错误",
+      '修正了编辑一些分数参数的错误',
       '修复了"精细调整"参数的错误'
-    ],
+    ]
   },
   '0.8.0': {
     [Lang.ru]: [

@@ -1,28 +1,34 @@
 <template>
   <Modal
-    :title='items ? texts.modsPopupTitle : texts.loading'
-    :open='show'
-    :ok-text='texts.ok'
-    :cancel-text='texts.cancel'
-    @ok='saveChanges'
-    @cancel='hidePopup'
+    :title="items ? texts.modsPopupTitle : texts.loading"
+    :open="show"
+    :ok-text="texts.ok"
+    :cancel-text="texts.cancel"
+    @ok="saveChanges"
+    @cancel="hidePopup"
   >
-    <template v-if='items'>
+    <template v-if="items">
       <Transfer
-        class='mods-transfer'
-        :data-source='items.map(([file, name]) => ({
+        class="mods-transfer"
+        :data-source="items.map(([file, name]) => ({
           key: file.path,
           title: name
-        }))'
-        :target-keys='targetKeys'
-        :titles='[texts.foundItems, texts.addedItems]'
-        :render='item => item.title'
-        @change='newKeys => targetKeys = newKeys'
+        }))"
+        :target-keys="targetKeys"
+        :titles="[texts.foundItems, texts.addedItems]"
+        :render="item => item.title"
+        @change="newKeys => targetKeys = newKeys"
       />
-      <Button @click='async () => addItems(await Mods.request())' class='mods-manual-button'>
+      <Button
+        class="mods-manual-button"
+        @click="async () => addItems(await Mods.request())"
+      >
         {{ texts.manualMod }}
       </Button>
-      <Button @click='async () => addItems(await Mods.requestDirs())' class='mods-manual-button'>
+      <Button
+        class="mods-manual-button"
+        @click="async () => addItems(await Mods.requestDirs())"
+      >
         {{ texts.manualModFolder }}
       </Button>
     </template>
@@ -37,7 +43,8 @@ import { ref, toRefs, watch } from 'vue'
 
 import texts from '../texts'
 
-import { File, Mods } from '/mods/renderer'
+import type { File } from '/mods/renderer'
+import { Mods } from '/mods/renderer'
 import { Spin } from '/rend/components'
 
 type Props = {

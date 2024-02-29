@@ -1,35 +1,45 @@
 <template>
-  <Header :text='title' with-back @back='route(Page.lists)'>
+  <Header
+    :text="title"
+    with-back
+    @back="route(Page.lists)"
+  >
     <template #extra>
-      <Dropdown class='menu-button' trigger='click'>
-        <MenuOutlined style='font-size: 25px'/>
+      <Dropdown
+        class="menu-button"
+        trigger="click"
+      >
+        <MenuOutlined style="font-size: 25px" />
         <template #overlay>
-          <Menu mode='vertical'>
-            <Menu.Item @click='onReset()'>
+          <Menu mode="vertical">
+            <Menu.Item @click="onReset()">
               <Text>{{ texts.resetMenuItemLabel }}</Text>
-              <UndoOutlined class='item-icon' />
+              <UndoOutlined class="item-icon" />
             </Menu.Item>
-            <Menu.Item @click='exportFile()'>
+            <Menu.Item @click="exportFile()">
               <Text>{{ texts.export }}</Text>
-              <ExportOutlined class='item-icon' />
+              <ExportOutlined class="item-icon" />
             </Menu.Item>
-            <Menu.Item @click='importFile()'>
+            <Menu.Item @click="importFile()">
               <Text>{{ texts.import }}</Text>
-              <ImportOutlined class='item-icon' />
+              <ImportOutlined class="item-icon" />
             </Menu.Item>
           </Menu>
         </template>
       </Dropdown>
-      <Tooltip :title='texts.saveButton' key='save'>
+      <Tooltip
+        key="save"
+        :title="texts.saveButton"
+      >
         <Button
-          id='save'
-          class='save-button'
-          type='text'
-          shape='circle'
-          @click='onSave()'
+          id="save"
+          class="save-button"
+          type="text"
+          shape="circle"
+          @click="onSave()"
         >
           <template #icon>
-            <SaveOutlined style='font-size: 25px' />
+            <SaveOutlined style="font-size: 25px" />
           </template>
         </Button>
       </Tooltip> 
@@ -38,13 +48,14 @@
 </template>
 
 <script lang='ts' setup>
+import { ExportOutlined, ImportOutlined, MenuOutlined, SaveOutlined, UndoOutlined } from '@ant-design/icons-vue'
 import { Button, Dropdown, Menu, Modal, Tooltip, Typography } from 'ant-design-vue'
 
-import { ExportOutlined, ImportOutlined, MenuOutlined, SaveOutlined, UndoOutlined } from '@ant-design/icons-vue'
 import { Page } from '../../enums'
 import { EditedAction, useEditorStore, usePageStore } from '../../store'
 import texts from '../texts'
 import { ExportUtils, ImportUtils, ResetUtils, SaveUtils } from '../utils'
+
 import type { TruckXML } from '/mods/renderer'
 import { Archive, Edited, File, GameTexts, Messages, Mods, TruckFileType } from '/mods/renderer'
 import { Header } from '/rend/components'
@@ -119,7 +130,8 @@ async function importFile(toImport?: File) {
   try {
     await ImportUtils.importFile(file, toImport)
     if (showMessages.value) Messages.success(texts.wasImported)
-  } catch (error) {
+  }
+  catch (error) {
     Messages.error(String(error))
   }
 }
@@ -128,7 +140,8 @@ async function exportFile(toExport?: File) {
   try {
     await ExportUtils.exportFile(file, toExport)
     if (showMessages.value) Messages.success(texts.wasExported)
-  } catch (error) {
+  }
+  catch (error) {
     Messages.error(String(error))
   }
 }
@@ -138,7 +151,8 @@ async function reset() {
     await ResetUtils.emit(ResetUtils.globalID)
     setEditedAction(EditedAction.remove)
     if (showMessages.value) Messages.success(texts.successReset)
-  } catch (error) {
+  }
+  catch (error) {
     Messages.error(String(error))
   }
 }

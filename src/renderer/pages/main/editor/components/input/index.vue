@@ -1,25 +1,25 @@
 <template>
   <Parameter
-    :label='props.label'
-    :getter='props.getter'
-    :utils='props.utils'
-    @change='emit("change", $event)'
+    :label="props.label"
+    :getter="props.getter"
+    :utils="props.utils"
+    @change="emit('change', $event)"
   >
-    <template #default='{ onChange, value }'>
+    <template #default="{ onChange, value }">
       <InputItem
-        :type='props.type'
-        :number-type='props.numberType'
-        :areas='props.areas'
-        :step='props.step'
-        :value='<string | number> value'
-        @change='onChange'
+        :type="props.type"
+        :number-type="props.numberType"
+        :areas="props.areas"
+        :step="props.step"
+        :value="<any> value"
+        @change="onChange"
       />
     </template>
   </Parameter>
 </template>
 
 <script lang='ts' setup>
-import { IInputProps, IParameterProps, ParameterEmits } from '../../types'
+import type { IInputProps, IParameterProps, ParameterEmits } from '../../types'
 import Parameter from '../parameter.vue'
 import InputItem from './item.vue'
 
