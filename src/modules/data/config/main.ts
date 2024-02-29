@@ -40,7 +40,7 @@ class Config {
       version: PROGRAM_VERSION,
       buildType: process.env.NODE_ENV === 'development' ? BuildType.dev : BuildType.prod,
       lang: Lang.en,
-      initialPath: undefined,
+      initialPath: null,
       advancedMode: false,
       useMods: true,
       openWhatsNew: true,
@@ -158,7 +158,12 @@ class Config {
 
   private async convertToNewest(data: any): Promise<IConfig> {
     const converted = data as IConfig
+
     converted.openWhatsNew = true
+    if (converted.initialPath === undefined) {
+      converted.initialPath = null
+    }
+
     return converted
   }
 

@@ -8,7 +8,7 @@ export interface IConfig {
   /** Тип билда, при dev доступны некоторые функции для отладки. */
   buildType: BuildType
   /** Путь к `initial.pak` */
-  initialPath?: string
+  initialPath: string | null
   /** Проверять обновления */
   checkUpdates: boolean
   /** Использовать моды */
