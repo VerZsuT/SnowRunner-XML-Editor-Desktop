@@ -6,8 +6,8 @@
   >
     <Menu
       class='context-menu'
-      :items='items'
       :style='{ top: pos.y + "px", left: pos.x + "px" }'
+      :items="menuItems"
     />
   </div>
 </template>
@@ -29,13 +29,13 @@ type Emits = {
 }
 
 const props = defineProps<Props>()
-const { target, items: propItems } = toRefs(props)
+const { target, items } = toRefs(props)
 const emit = defineEmits<Emits>()
 
 const show = ref(false)
 const pos = ref({ x: 50, y: 50 })
 
-const items = computed(() => propItems.value.map(item => {
+const menuItems = computed(() => items.value.map(item => {
   return {
     ...item,
     onClick() {
@@ -59,7 +59,8 @@ watch(target, () => {
   })
 })
 
-function hide() {
+function hide(event?: MouseEvent) {
+  event?.stopPropagation()
   show.value = false
   emit('close')
 }
@@ -73,11 +74,12 @@ function hide() {
   top: 0;
   left: 0;
   z-index: 30;
-  border: 1px gray;
-
+  
   &-menu {
+    border: 1px solid lightgray;
     position: absolute;
     border-radius: 5px;
+    border-inline-end-color: lightgray !important;
   }
 }
 </style>

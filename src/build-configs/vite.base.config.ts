@@ -31,7 +31,7 @@ export function getBuildConfig(env: any): UserConfig {
       emptyOutDir: false,
       outDir: join(_dirname, '../../.vite/build'),
       watch: command === 'serve' ? {} : null,
-      minify: command === 'build'
+      minify: ['package', 'build'].includes(command)
     },
     resolve: { alias },
     clearScreen: false

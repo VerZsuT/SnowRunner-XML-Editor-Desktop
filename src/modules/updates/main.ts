@@ -69,7 +69,13 @@ class Updates {
     const file = Dirs.updateTemp.file(`SnowRunnerXMLEditor_${postfix}`)
     await this.download(url, file.path)
 
-    await shell.openPath(file.root.path)
+    if (portable) {
+      shell.showItemInFolder(file.path)
+    }
+    else {
+      const err = await shell.openPath(file.path)
+      if (err) shell.showItemInFolder(file.path)
+    }
     app.quit()
   }
 

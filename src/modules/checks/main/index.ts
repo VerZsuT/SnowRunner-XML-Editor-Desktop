@@ -1,5 +1,5 @@
 import { app } from 'electron'
-import { resolve } from 'node:dns'
+import dns from 'node:dns'
 import { get } from 'node:https'
 
 import { publicFunction } from 'emr-bridge'
@@ -91,11 +91,14 @@ class Checks {
    * @param whateverCheck игнорировать настройку `updates` в `Config`
    */
   checkUpdate(whateverCheck?: boolean) {
-    return new Promise<void>((res, rej) => {
+    return new Promise<void>((resolve, reject) => {
       if (!Config.checkUpdates && !whateverCheck) return
 
-      resolve(this.GITHUB_URL, error => {
-        if (error) rej(new ProgramError(ErrorText.gitHubConnectError, error.message))
+      dns.resolve(this.GITHUB_URL, error => {
+        if (error) {
+          reject(new ProgramError(ErrorText.gitHubConnectError, error.message))
+          return
+        }
 
         get(Paths.publicInfo, response => {
           let rawData = ''
@@ -113,10 +116,10 @@ class Checks {
                 await Windows.openWindow(ProgramWindow.update)
                 Windows.updateWindow?.setVersion(data.latestVersion)
               }
-              res()
+              resolve()
             })
         }).on('error', error => {
-          rej(new ProgramError(ErrorText.gitHubConnectError, error.message))
+          reject(new ProgramError(ErrorText.gitHubConnectError, error.message))
         })
       })
     })

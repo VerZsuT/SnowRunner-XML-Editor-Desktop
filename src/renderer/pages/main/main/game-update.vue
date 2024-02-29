@@ -1,12 +1,12 @@
 <template>
   <Modal
     v-model:open='open'
-    title='Восстановление'
     :confirm-loading='loading'
     @ok='onOk'
+    :title="texts.recovery"
   >
-    <p><Text>Обнаружено обновление initial.pak. Восстановить изменённые параметры?</Text></p>
     <Text v-if='action'>{{ action }}: {{ current }} / {{ allCount }}</Text>
+    <p><Text>{{ texts.restoreInitialChanges }}</Text></p>
   </Modal>
 </template>
 
