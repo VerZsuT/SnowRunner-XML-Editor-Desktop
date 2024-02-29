@@ -22,5 +22,10 @@
       "/utils/*": ["utils/*"],
       "/consts": ["consts"]
     }
-  }
+  },
+  "include": [
+    "**/*.ts",
+    "**/*.d.ts",
+    "**/*.vue"
+  ]
 }

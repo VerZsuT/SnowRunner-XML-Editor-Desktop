@@ -11,28 +11,34 @@
     "plugin:import/recommended",
     "plugin:import/electron",
     "plugin:import/typescript",
-    "plugin:unicorn/recommended"
+    "plugin:unicorn/recommended",
+    "plugin:vue/vue3-recommended"
   ],
   "settings": {
     "import/parsers": {
-      "@typescript-eslint/parser": [".ts"]
+      "@typescript-eslint/parser": [".ts"],
+      "vue-eslint-parser": [".vue"]
     },
     "import/resolver": {
       "typescript": { "project": "src/**/tsconfig.json" }
     }
   },
-  "parser": "@typescript-eslint/parser",
+  "parser": "vue-eslint-parser",
   "parserOptions": {
+    "parser": "@typescript-eslint/parser",
     "ecmaVersion": "latest",
     "sourceType": "module",
     "project": [
       "src/tsconfig.json",
       "src/main/tsconfig.json",
       "src/renderer/tsconfig.json"
-    ]
+    ],
+    "extraFileExtensions": [".vue"]
+
   },
   "plugins": [
     "import",
+    "vue",
     "@typescript-eslint",
     "unicorn"
   ],
@@ -144,6 +150,7 @@
     "unicorn/no-await-expression-member": "off",
     "unicorn/consistent-function-scoping": "off",
     "unicorn/consistent-destructuring": "off",
+    "vue/multi-word-component-names": "off",
     "@typescript-eslint/no-namespace": "off",
     "@typescript-eslint/ban-types": "off",
     "@typescript-eslint/ban-ts-comment": "off",
@@ -166,7 +173,6 @@
     "*.scss",
     "*.css",
     "*.json",
-    "*.html",
-    "*.vue"
+    "*.html"
   ]
 }
