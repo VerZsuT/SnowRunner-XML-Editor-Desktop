@@ -1,6 +1,10 @@
 <template>
   <div class="container">
     <VersionInfo
+      version="0.8.6"
+      :changes="descs['0.8.6']"
+    />
+    <VersionInfo
       version="0.8.5"
       :changes="descs['0.8.5']"
     />
@@ -37,6 +41,40 @@ import { localize } from '/utils/texts/renderer'
 useWindowReady(ProgramWindow.whatsNew)
 
 const descs = localize({
+  '0.8.6': {
+    [Lang.ru]: [
+      'Исправлено ограничение высоты и минимальной высоты подвески',
+      'Исправлено дублирование ошибки сети',
+      'Исправлен показ контекстного меню в таблице',
+      'Исправлен баг при выборе initial.pak',
+      'Оптимизация таблицы',
+      'Добавлено автоматическое открытие установщика обновления'
+    ],
+    [Lang.en]: [
+      'Fixed height restriction and minimum suspension height',
+      'Fixed duplicate network error',
+      'Fixed the display of the context menu in the table',
+      'Fixed a bug when selecting initial.pak',
+      'Table optimization',
+      'Added automatic opening of the update installer'
+    ],
+    [Lang.de]: [
+      'Höhenbegrenzung und minimale Aufhängungshöhe wurden korrigiert',
+      'Doppelte Netzwerkfehler behoben',
+      'Die Anzeige des Kontextmenüs in der Tabelle wurde korrigiert',
+      'Ein Fehler wurde bei der Auswahl von initial behoben.pak',
+      'Tabellenoptimierung',
+      'Das automatische Öffnen des Update-Installationsprogramms wurde hinzugefügt'
+    ],
+    [Lang.ch]: [
+      '固定高度限制和最小悬挂高度',
+      '修正重复网络错误',
+      '修正了上下文菜单在表格中的显示',
+      '修正了选择初始时的错误.朴',
+      '表优化',
+      '新增自动开启更新安装程式'
+    ]
+  },
   '0.8.5': {
     [Lang.ru]: [
       'Исправлена неправильная работа ограничителей значений',
