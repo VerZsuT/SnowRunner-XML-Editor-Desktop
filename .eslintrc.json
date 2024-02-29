@@ -11,28 +11,34 @@
     "plugin:import/recommended",
     "plugin:import/electron",
     "plugin:import/typescript",
-    "plugin:unicorn/recommended"
+    "plugin:unicorn/recommended",
+    "plugin:vue/vue3-recommended"
   ],
   "settings": {
     "import/parsers": {
-      "@typescript-eslint/parser": [".ts"]
+      "@typescript-eslint/parser": [".ts"],
+      "vue-eslint-parser": [".vue"]
     },
     "import/resolver": {
       "typescript": { "project": "src/**/tsconfig.json" }
     }
   },
-  "parser": "@typescript-eslint/parser",
+  "parser": "vue-eslint-parser",
   "parserOptions": {
+    "parser": "@typescript-eslint/parser",
     "ecmaVersion": "latest",
     "sourceType": "module",
     "project": [
       "src/tsconfig.json",
       "src/main/tsconfig.json",
       "src/renderer/tsconfig.json"
-    ]
+    ],
+    "extraFileExtensions": [".vue"]
+
   },
   "plugins": [
     "import",
+    "vue",
     "@typescript-eslint",
     "unicorn"
   ],
@@ -41,7 +47,6 @@
     "semi": ["warn", "never"],
     "eqeqeq": ["warn", "always"],
     "camelcase": ["warn", { "properties": "always" }],
-    "jsx-quotes": ["error", "prefer-single"],
     "no-async-promise-executor": "warn",
     "no-extra-bind": "warn",
     "no-extra-label": "warn",
@@ -59,14 +64,14 @@
     "comma-style": "warn",
     "eol-last": "warn",
     "func-call-spacing": "warn",
-    "no-tabs": "error",
-    "no-whitespace-before-property": "error",
-    "keyword-spacing": "error",
-    "implicit-arrow-linebreak": "error",
-    "computed-property-spacing": "error",
-    "brace-style": ["error", "stroustrup", { "allowSingleLine": true }],
-    "comma-dangle": ["error", "never"],
-    "quote-props": ["error", "as-needed"],
+    "no-tabs": "warn",
+    "no-whitespace-before-property": "warn",
+    "keyword-spacing": "warn",
+    "implicit-arrow-linebreak": "warn",
+    "computed-property-spacing": "warn",
+    "brace-style": ["warn", "stroustrup", { "allowSingleLine": true }],
+    "comma-dangle": ["warn", "never"],
+    "quote-props": ["warn", "as-needed"],
     "prefer-rest-params": "error",
     "one-var": ["error", "never"],
     "no-useless-rename": "error",
@@ -93,13 +98,6 @@
           "internal",
           ["parent", "sibling"]
         ],
-        "pathGroups": [
-          {
-            "pattern": "react",
-            "group": "external",
-            "position": "before"
-          }
-        ],
         "newlines-between": "always",
         "alphabetize": {
           "order": "asc",
@@ -107,7 +105,7 @@
         }
       }
     ],
-    "@typescript-eslint/consistent-type-imports": "warn",
+    "@typescript-eslint/consistent-type-imports": "error",
     "@typescript-eslint/no-floating-promises": "warn",
     "@typescript-eslint/no-unused-vars": ["warn", {
       "vars": "all",
@@ -144,6 +142,7 @@
     "unicorn/no-await-expression-member": "off",
     "unicorn/consistent-function-scoping": "off",
     "unicorn/consistent-destructuring": "off",
+    "vue/multi-word-component-names": "off",
     "@typescript-eslint/no-namespace": "off",
     "@typescript-eslint/ban-types": "off",
     "@typescript-eslint/ban-ts-comment": "off",
@@ -166,7 +165,6 @@
     "*.scss",
     "*.css",
     "*.json",
-    "*.html",
-    "*.vue"
+    "*.html"
   ]
 }

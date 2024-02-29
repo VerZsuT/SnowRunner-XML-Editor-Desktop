@@ -12,11 +12,10 @@ const useStore = defineStore('filter', () => {
   }
 })
 
-export const useFilterStore = () => {
+export function useFilterStore() {
   const store = useStore()
-  const { setFilter } = store
   return {
-    setFilter,
-    get filter() { return computed(() => store.filter) }
+    ...store,
+    filter: computed(() => store.filter)
   }
 }

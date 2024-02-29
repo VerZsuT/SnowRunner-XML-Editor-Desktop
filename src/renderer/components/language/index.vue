@@ -1,23 +1,26 @@
 <template>
   <div>
     <Radio.Group
-      v-if='props.isSetup'
-      :value='Config.ref.lang'
-      :options='options'
-      @change='changeLang($event.target.value)'
-      option-type='button'
-      button-style='solid'
+      v-if="props.isSetup"
+      :value="Config.ref.lang"
+      :options="options"
+      option-type="button"
+      button-style="solid"
+      @change="changeLang($event.target.value)"
     />
     <template v-else>
-      <label for='lang-select' class='lang-label'>
+      <label
+        for="lang-select"
+        class="lang-label"
+      >
         {{ texts.languageLabel }}
       </label>
       <Select
-        id='lang-select'
-        @change='value => changeLang(parseStrToLang(value?.toString() || ""))'
-        :value='Config.ref.lang'
-        :options='options'
-        size='large'
+        id="lang-select"
+        :value="Config.ref.lang"
+        :options="options"
+        size="large"
+        @change="value => changeLang(parseStrToLang(value?.toString() || ''))"
       />
     </template>
   </div>
@@ -25,8 +28,10 @@
 
 <script lang='ts' setup>
 import { Radio, Select } from 'ant-design-vue'
+
 import texts from './texts'
 import { useLangToOptions } from './utils'
+
 import { Config, Lang, parseStrToLang } from '/mods/renderer'
 
 type Props = {

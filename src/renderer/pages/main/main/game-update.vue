@@ -1,22 +1,27 @@
 <template>
   <Modal
-    v-model:open='open'
-    title='Восстановление'
-    :confirm-loading='loading'
-    @ok='onOk'
+    v-model:open="open"
+    :title="texts.recovery"
+    :confirm-loading="loading"
+    @ok="onOk"
   >
-    <p><Text>Обнаружено обновление initial.pak. Восстановить изменённые параметры?</Text></p>
-    <Text v-if='action'>{{ action }}: {{ current }} / {{ allCount }}</Text>
+    <p><Text>{{ texts.restoreInitialChanges }}</Text></p>
+    <Text v-if="action">
+      {{ action }}: {{ current }} / {{ allCount }}
+    </Text>
   </Modal>
 </template>
 
 <script lang='ts' setup>
 import { Modal, Typography } from 'ant-design-vue'
 import { ref } from 'vue'
+
 import { EditorUtils } from '../lists/utils'
 import { useEditorStore } from '../store'
 import texts from './texts'
-import { Dirs, Edited, File, Files } from '/mods/renderer'
+
+import type { File } from '/mods/renderer'
+import { Dirs, Edited, Files } from '/mods/renderer'
 
 const { Text } = Typography
 
@@ -44,7 +49,7 @@ async function onOk() {
   setShowMessages(false)
   action.value = texts.export
   allCount.value = files.length
-  EditorUtils.export(
+  void EditorUtils.export(
     files.map(file => ({ source: file, toExport: Files.exported })),
     () => { current.value++ }
   ).then(() => {
@@ -60,7 +65,7 @@ async function onOk() {
     setShowMessages(true)
     loading.value = false
     open.value = false
-    Dirs.backupInitialData.remove()
+    void Dirs.backupInitialData.remove()
   })
 }
 </script>

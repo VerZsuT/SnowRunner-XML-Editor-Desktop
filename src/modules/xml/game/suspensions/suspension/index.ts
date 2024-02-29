@@ -35,7 +35,7 @@ export default class Suspension extends XMLWithTemplates {
   get $Damping() { return {} as NumUtils }
 
   /** Минимальный ход подвески */
-  @floatAttr(new Limit({ min: 0.0, max: 1000.0 }))
+  @floatAttr(new Limit({ min: -1000.0, max: 1000.0 }))
   get SuspensionMin(): number | undefined { return undefined }
   set SuspensionMin(_) {}
   @numUtils()

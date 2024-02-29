@@ -1,10 +1,10 @@
 <template>
-  <div class='game-folder'>
+  <div class="game-folder">
     <Button
-      class='folder-button'
-      type='primary'
-      size='large'
-      @click='onFolderClick'
+      class="folder-button"
+      type="primary"
+      size="large"
+      @click="onFolderClick"
     >
       <template #icon>
         <FolderFilled />
@@ -12,9 +12,9 @@
       {{ texts.gameFolderLabel }}
     </Button>
     <Button
-      type='primary'
-      size='large'
-      @click='onFileClick'
+      type="primary"
+      size="large"
+      @click="onFileClick"
     >
       <template #icon>
         <FileFilled />
@@ -30,7 +30,9 @@ import { Button } from 'ant-design-vue'
 
 import texts from './texts'
 import type { IFolder } from './types'
-import { Dialogs, Dir, File, Messages } from '/mods/renderer'
+
+import type { Dir, File } from '/mods/renderer'
+import { Dialogs, Messages } from '/mods/renderer'
 
 type Emits = {
   change: [path: string]
@@ -62,13 +64,12 @@ async function getInitialPak(): Promise<IFolder | undefined> {
 
 async function getGameFolder(): Promise<IFolder | undefined> {
   const requested = Dialogs.getDir()
-  let existed: File | undefined
 
   if (!requested) {
     Messages.error(texts.invalidFolderError)
     return
   }
-  existed = await findInitial(requested)
+  const existed = await findInitial(requested)
 
   if (!existed) {
     Messages.error(texts.invalidFolderError)

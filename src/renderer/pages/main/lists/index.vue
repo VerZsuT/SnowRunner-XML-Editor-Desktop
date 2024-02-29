@@ -1,82 +1,95 @@
 <template>
-  <div class='lists'>
-    <Header :text='category === Category.trucks ? texts.trucksListTitle : texts.trailersListTitle'>
+  <div class="lists">
+    <Header :text="category === Category.trucks ? texts.trucksListTitle : texts.trailersListTitle">
       <template #extra>
         <Search />
       </template>
     </Header>
   
-    <Tabs class='tabs' :active-key='category' @change='setCategory($event as Category)'>
-      <TabPane :key='Category.trucks'>
+    <Tabs
+      class="tabs"
+      :active-key="category"
+      @change="setCategory($event as Category)"
+    >
+      <TabPane :key="Category.trucks">
         <template #tab>
           <Text>{{ texts.trucksCategoryTitle }}</Text>
         </template>
       </TabPane>
-      <TabPane :key='Category.trailers'>
+      <TabPane :key="Category.trailers">
         <template #tab>
           <Text>{{ texts.trailersCategoryTitle }}</Text>
         </template>
       </TabPane>
     </Tabs>
     
-    <Tabs class='tabs' :active-key='source' @change='setSource($event as SourceType)'>
-      <TabPane :key='SourceType.main'>
+    <Tabs
+      class="tabs"
+      :active-key="source"
+      @change="setSource($event as SourceType)"
+    >
+      <TabPane :key="SourceType.main">
         <template #tab>
-          <AppstoreOutlined class='tab-icon' />
+          <AppstoreOutlined class="tab-icon" />
           <Text>{{ texts.mainListTitle }}</Text>
         </template>
       </TabPane>
-      <TabPane :key='SourceType.dlc'>
+      <TabPane :key="SourceType.dlc">
         <template #tab>
-          <AppstoreAddOutlined class='tab-icon' />
+          <AppstoreAddOutlined class="tab-icon" />
           <Text>{{ texts.dlcListTitle }}</Text>
         </template>
       </TabPane>
-      <TabPane :key='SourceType.mods' :disabled='!Config.ref.useMods'>
+      <TabPane
+        :key="SourceType.mods"
+        :disabled="!Config.ref.useMods"
+      >
         <template #tab>
-          <ApiOutlined class='tab-icon' />
+          <ApiOutlined class="tab-icon" />
           <Text>{{ texts.modsListTitle }}</Text>
         </template>
       </TabPane>
-      <TabPane :key='SourceType.favorites'>
+      <TabPane :key="SourceType.favorites">
         <template #tab>
-          <StarFilled class='tab-icon' />
+          <StarFilled class="tab-icon" />
           <Text>{{ texts.favoritesListTitle }}</Text>
         </template>
       </TabPane>
     </Tabs>
   
-    <template v-if='files'>
+    <template v-if="files">
       <List
-        v-show='source === SourceType.main'
-        :src-type='SourceType.main'
-        :files='files[SourceType.main]'
+        v-show="source === SourceType.main"
+        :src-type="SourceType.main"
+        :files="files[SourceType.main]"
       />
       <List
-        v-show='source === SourceType.dlc'
-        :src-type='SourceType.dlc'
-        :files='files[SourceType.dlc]'
+        v-show="source === SourceType.dlc"
+        :src-type="SourceType.dlc"
+        :files="files[SourceType.dlc]"
       />
       <List
-        v-show='source === SourceType.mods'
-        :src-type='SourceType.mods'
-        :files='files[SourceType.mods]'
+        v-show="source === SourceType.mods"
+        :src-type="SourceType.mods"
+        :files="files[SourceType.mods]"
       />
       <List
-        v-show='source === SourceType.favorites'
-        :src-type='SourceType.favorites'
-        :files='files[SourceType.favorites]'
+        v-show="source === SourceType.favorites"
+        :src-type="SourceType.favorites"
+        :files="files[SourceType.favorites]"
       />
     </template>
-    <Spin v-else center />
+    <Spin
+      v-else
+      center
+    />
   </div>
 </template>
 
 <script lang='ts' setup>
+import { ApiOutlined, AppstoreAddOutlined, AppstoreOutlined, StarFilled } from '@ant-design/icons-vue'
 import { TabPane, Tabs, Typography } from 'ant-design-vue'
 import { onMounted, ref, watch, watchEffect } from 'vue'
-
-import { ApiOutlined, AppstoreAddOutlined, AppstoreOutlined, StarFilled } from '@ant-design/icons-vue'
 
 import { Category, SourceType } from '../enums'
 import { useListStore } from '../store/list'

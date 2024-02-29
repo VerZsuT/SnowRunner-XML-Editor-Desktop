@@ -1,43 +1,52 @@
 <template>
-  <div style='width: 100%; height: 100%;'>
-    <template v-if='xml'>
-      <template v-if='hasError'>
+  <div style="width: 100%; height: 100%;">
+    <template v-if="xml">
+      <template v-if="hasError">
         <ErrorHeader />
-        <div class='error-container'>
+        <div class="error-container">
           <Text>{{ texts.procFileError }}</Text>
         </div>
       </template>
       <template v-else>
-        <MainHeader :xml='xml' :file='file' ref='header' />
-        <div class='table'>
+        <MainHeader
+          ref="header"
+          :xml="xml"
+          :file="file"
+        />
+        <div class="table">
           <TrailerTable
-            v-if='xml.Type === TruckFileType.trailer'
-            :xml='xml'
-            :file='file'
-            @vue:mounted='emit("ready")'
+            v-if="xml.Type === TruckFileType.trailer"
+            :xml="xml"
+            :file="file"
+            @ready="emit('ready')"
           />
           <TruckTable
             v-else
-            :xml='xml'
-            :file='file'
-            @ready='emit("ready")'
+            :xml="xml"
+            :file="file"
+            @ready="emit('ready')"
           />
         </div>
       </template>
     </template>
-    <Spin v-else center />
+    <Spin
+      v-else
+      center
+    />
   </div>
 </template>
 
 <script lang='ts' setup>
 import { Typography } from 'ant-design-vue'
 import { onMounted, ref, shallowRef } from 'vue'
-import { ErrorHeader, MainHeader, TrailerTable, TruckTable } from './components'
-import texts from './texts'
 
 import { useEditorStore } from '../store'
+import { ErrorHeader, MainHeader, TrailerTable, TruckTable } from './components'
+import texts from './texts'
 import { ResetUtils, provideFile } from './utils'
-import { DLCs, Dirs, File, Mods, TruckFileType, TruckXML } from '/mods/renderer'
+
+import type { File } from '/mods/renderer'
+import { DLCs, Dirs, Mods, TruckFileType, TruckXML } from '/mods/renderer'
 import { Spin } from '/rend/components'
 
 const { Text } = Typography

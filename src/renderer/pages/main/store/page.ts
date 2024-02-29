@@ -14,11 +14,10 @@ const useStore = defineStore('page', () => {
   }
 })
 
-export const usePageStore = () => {
+export function usePageStore() {
   const store = useStore()
-  const { route } = store
   return {
-    route,
-    get page() { return computed(() => store.page) }
+    ...store,
+    page: computed(() => store.page)
   }
 }

@@ -1,8 +1,15 @@
 <template>
-  <div v-if='props.center' class='spin-container'>
-    <Spin size='large' />
+  <div
+    v-if="props.center"
+    class="spin-container"
+  >
+    <Spin size="large" />
   </div>
-  <Spin v-else class='spin' size='large' />
+  <Spin
+    v-else
+    class="spin"
+    size="large"
+  />
 </template>
 
 <script lang='ts' setup>

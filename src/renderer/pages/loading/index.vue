@@ -1,13 +1,16 @@
 <template>
-  <div class='main'>
-    <Title class='title' :level='4'>
+  <div class="main">
+    <Title
+      class="title"
+      :level="4"
+    >
       {{ state.title }}
     </Title>
 
     <Progress
-      v-if='state.isDownload'
-      class='progress'
-      :percent='state.percent'
+      v-if="state.isDownload"
+      class="progress"
+      :percent="state.percent"
     />
     <Spin v-else />
   </div>
@@ -18,6 +21,7 @@ import { Progress, Typography } from 'ant-design-vue'
 import { reactive } from 'vue'
 
 import texts from './texts'
+
 import { ProgramWindow, Windows } from '/mods/renderer'
 import { Spin } from '/rend/components'
 import { useWindowReady } from '/rend/utils'

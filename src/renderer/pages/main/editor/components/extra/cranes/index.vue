@@ -1,58 +1,59 @@
 <template>
   <Group
-    v-if='isActive'
-    :label='Action.name.value'
-    :icon='Action.icon'
+    v-if="isActive"
+    key="cranes"
+    :label="Action.name.value"
+    :icon="Action.icon"
   >
-    <div class='content'>
-      <Paragraph class='warn-title'>
+    <div class="content">
+      <Paragraph class="warn-title">
         {{ texts.cranesWarnTitle }}
       </Paragraph>
-      <Paragraph class='warn-content'>
+      <Paragraph class="warn-content">
         {{ texts.cranesWarnMessage }}
       </Paragraph>
 
-      <div class='grid cranes-grid'>
-        <div class='buttons'>
+      <div class="grid cranes-grid">
+        <div class="buttons">
           <Text>
             US {{ texts.crane }}
-          </Text><br />
+          </Text><br>
           <Button
-            v-if='hasUS'
-            :disabled='!(hasRU && hasUS)'
-            @click='removeCrane(Crane.US)'
-            type='primary'
+            v-if="hasUS"
+            :disabled="!(hasRU && hasUS)"
+            type="primary"
             danger
+            @click="removeCrane(Crane.US)"
           >
             {{ texts.remove }}
           </Button>
           <Button
             v-else
-            :disabled='!(hasRU && !hasUS)'
-            @click='addCrane(Crane.US)'
-            type='primary'
+            :disabled="!(hasRU && !hasUS)"
+            type="primary"
+            @click="addCrane(Crane.US)"
           >
             {{ texts.add }}
           </Button>
         </div>
-        <div class='buttons'>
+        <div class="buttons">
           <Text>
             RU {{ texts.crane }}
-          </Text><br />
+          </Text><br>
           <Button
-            v-if='hasRU'
-            :disabled='!(hasRU && hasUS)'
-            @click='removeCrane(Crane.RU)'
-            type='primary'
+            v-if="hasRU"
+            :disabled="!(hasRU && hasUS)"
+            type="primary"
             danger
+            @click="removeCrane(Crane.RU)"
           >
             {{ texts.remove }}
           </Button>
           <Button
             v-else
-            :disabled='!(hasUS && !hasRU)'
-            @click='addCrane(Crane.RU)'
-            type='primary'
+            :disabled="!(hasUS && !hasRU)"
+            type="primary"
+            @click="addCrane(Crane.RU)"
           >
             {{ texts.add }}
           </Button>
@@ -67,13 +68,14 @@ import { Button, Typography } from 'ant-design-vue'
 import { ref } from 'vue'
 
 import type { IActionProps } from '../../../types'
-
 import { ExportUtils, ImportUtils } from '../../../utils'
 import Group from '../../group'
-import { ReadyEmits, useReady } from '../../utils'
+import type { ReadyEmits } from '../../utils'
+import { useReady } from '../../utils'
 import texts from '../texts'
 import Action from './action'
 import Crane from './crane'
+
 import type { IExportedData } from '/mods/renderer'
 import { useEditorStore } from '/rend/pages/main/store'
 

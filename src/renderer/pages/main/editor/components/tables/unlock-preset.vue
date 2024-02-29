@@ -1,20 +1,24 @@
 <template>
-  <Group v-if='element' :label='texts.unlockGroupName'>
+  <Group
+    v-if="element"
+    key="unlock"
+    :label="texts.unlockGroupName"
+  >
     <Int
-      :label='texts.price'
-      :utils='element.$Price'
+      :label="texts.price"
+      :utils="element.$Price"
     />
     <Select
-      :label='texts.byExploration'
-      :utils='element.$UnlockByExploration'
-      :options='[
+      :label="texts.byExploration"
+      :utils="element.$UnlockByExploration"
+      :options="[
         [true, texts.findOnMap],
         [false, texts.byRank]
-      ]'
+      ]"
     />
     <Int
-      :label='texts.unlockByRank'
-      :utils='element.$UnlockByRank'
+      :label="texts.unlockByRank"
+      :utils="element.$UnlockByRank"
     />
   </Group>
 </template>
@@ -23,8 +27,9 @@
 import Group from '../group'
 import { Int } from '../input'
 import Select from '../select'
+
 import { Lang } from '/mods/renderer'
-import { BoolUtils, NumUtils } from '/mods/xml/game/game-xml'
+import type { BoolUtils, NumUtils } from '/mods/xml/game/game-xml'
 import { localize } from '/utils/texts/renderer'
 
 type Props = {

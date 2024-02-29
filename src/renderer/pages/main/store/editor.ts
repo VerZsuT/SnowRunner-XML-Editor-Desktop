@@ -26,21 +26,17 @@ const useStore = defineStore('editor', () => {
   }
 })
 
+export function useEditorStore() {
+  const store = useStore()
+  return {
+    ...store,
+    file: computed(() => store.file),
+    editedAction: computed(() => store.editedAction),
+    showMessages: computed(() => store.showMessages)
+  }
+}
+
 export enum EditedAction {
   add = 'add',
   remove = 'remove'
-}
-
-export const useEditorStore = () => {
-  const store = useStore()
-  return {
-    setFile: store.setFile,
-    setEditedAction: store.setEditedAction,
-    setShowMessages: store.setShowMessages,
-    setInfo: store.setInfo,
-    get info() { return store.info },
-    get file() { return computed(() => store.file) },
-    get editedAction() { return computed(() => store.editedAction) },
-    get showMessages() { return computed(() => store.showMessages) }
-  }
 }

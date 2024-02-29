@@ -1,42 +1,56 @@
 <template>
-  <div class='card-container' v-show='isShow'>
+  <div
+    v-show="isShow"
+    class="card-container"
+  >
     <Card
-      class='card'
-      :loading='!xml || !imgSRC'
+      class="card"
+      :loading="!xml || !imgSRC"
       hoverable
     >
-      <template #cover v-if='imgSRC'>
+      <template
+        v-if="imgSRC"
+        #cover
+      >
         <img
-          @click='openEditor'
-          width='250'
-          height='350'
-          :src='imgSRC'
-          ref='contextTarget'
-        />
+          ref="contextTarget"
+          width="250"
+          height="350"
+          :src="imgSRC"
+          @click="openEditor"
+        >
       </template>
-      <Card.Meta class='card-title'>
+      <Card.Meta class="card-title">
         <template #title>
-          {{ title.first }}<span class='red'>{{ title.second }}</span>{{ title.last }}
+          {{ title.first }}<span class="red">{{ title.second }}</span>{{ title.last }}
         </template>
       </Card.Meta>
-      <StarFilled v-if='isFavorite' class='fav-star' />
-      <ContextMenu :target='contextTarget' :items='contextMenuItems' />
+      <StarFilled
+        v-if="isFavorite"
+        class="fav-star"
+      />
+      <ContextMenu
+        :target="contextTarget"
+        :items="contextMenuItems"
+      />
     </Card>
   </div>
 </template>
 
 <script lang='ts' setup>
+import { StarFilled } from '@ant-design/icons-vue'
 import { Card } from 'ant-design-vue'
+import memoizee from 'memoizee'
 import { computed, ref, shallowRef, toRefs, watchEffect } from 'vue'
 
-import { StarFilled } from '@ant-design/icons-vue'
-
-import memoizee from 'memoizee'
-import { Category, Page } from '../../../enums'
+import type { Category } from '../../../enums'
+import { Page } from '../../../enums'
 import { useEditorStore, useFilterStore, useListStore, usePageStore } from '../../../store'
 import texts from '../../texts'
 import { EditorUtils } from '../../utils'
-import { Favorites, File, GameTexts, Images, Messages, Mods, TruckXML } from '/mods/renderer'
+
+import type { File } from '/mods/renderer'
+import { Favorites, GameTexts, Images, Messages, Mods, TruckXML } from '/mods/renderer'
 import { ContextMenu } from '/rend/components'
 import { prettyString } from '/utils/renderer'
 
@@ -124,17 +138,17 @@ const contextMenuItems = computed(() => [
 
 async function exportFile() {
   const hideLoading = Messages.loading(texts.processing)
-  EditorUtils.export([{ source: file.value }]).finally(hideLoading)
+  void EditorUtils.export([{ source: file.value }]).finally(hideLoading)
 }
 
 async function importFile() {
   const hideLoading = Messages.loading(texts.processing)
-  EditorUtils.import([{ file: file.value }]).finally(hideLoading)
+  void EditorUtils.import([{ file: file.value }]).finally(hideLoading)
 }
 
 function resetFile() {
   const hideLoading = Messages.loading(texts.processing)
-  EditorUtils.reset([file.value]).finally(hideLoading)
+  void EditorUtils.reset([file.value]).finally(hideLoading)
 }
 
 function openEditor() {

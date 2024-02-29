@@ -1,20 +1,22 @@
 <template>
-  <div>
-    <template v-for='(xml, i) of list'>
-      <WinchSet
-        :xml='xml'
-        :file='files[i]'
-        @vue:mounted='ready(files[i].path)'
-      />
-    </template>
-  </div>
+  <WinchSet
+    v-for="(xml, i) of list"
+    :key="files[i].path"
+    :xml="xml"
+    :file="files[i]"
+    @mount="inProgress(files[i].path)"
+    @ready="ready(files[i].path)"
+  />
 </template>
 
 <script lang='ts' setup>
 import { onMounted, shallowRef } from 'vue'
-import { ReadyEmits, useFilesReady } from '../../utils'
+
+import type { ReadyEmits } from '../../utils'
+import { useFilesReady } from '../../utils'
 import WinchSet from './set.vue'
-import { File, FileInfo, WinchesXML } from '/mods/renderer'
+
+import type { File, FileInfo, WinchesXML } from '/mods/renderer'
 import { useEditorStore } from '/rend/pages/main/store'
 import { hasItems } from '/utils/renderer'
 
@@ -35,6 +37,5 @@ onMounted(async () => {
   files.value = await props.filesGetter?.(info) || []
   list.value = await props.getter?.(info) || []
   if (!hasItems(files.value)) emit('ready')
-  for (const file of files.value) inProgress(file.path)
 })
 </script>

@@ -1,19 +1,30 @@
 <template>
-  <Title class='version-title' :level='4'>
+  <Title
+    class="version-title"
+    :level="4"
+  >
     {{ texts.allowNewVersion }} (v{{ version }})
   </Title>
-  <div class='buttons'>
-    <Button type='primary' danger @click='onIgnoreClick'>
+  <div class="buttons">
+    <Button
+      type="primary"
+      danger
+      @click="onIgnoreClick"
+    >
       {{ texts.ignore }}
     </Button>
     <Dropdown>
       <template #overlay>
-        <Menu @click='onUpdateClick'>
-          <Menu.Item key='installer'>{{ texts.installer }}</Menu.Item>
-          <Menu.Item key='portable'>{{ texts.portable }}</Menu.Item>
+        <Menu @click="onUpdateClick">
+          <Menu.Item key="installer">
+            {{ texts.installer }}
+          </Menu.Item>
+          <Menu.Item key="portable">
+            {{ texts.portable }}
+          </Menu.Item>
         </Menu>
       </template>
-      <Button type='primary'>
+      <Button type="primary">
         {{ texts.update }}<DownOutlined />
       </Button>
     </Dropdown>
@@ -22,9 +33,12 @@
 
 <script lang='ts' setup>
 import { DownOutlined } from '@ant-design/icons-vue'
-import { Button, Dropdown, Menu, MenuProps, Typography } from 'ant-design-vue'
+import type { MenuProps } from 'ant-design-vue'
+import { Button, Dropdown, Menu, Typography } from 'ant-design-vue'
 import { ref } from 'vue'
+
 import texts from './texts'
+
 import { Config, ProgramWindow, Updates, Windows } from '/mods/renderer'
 import { useWindowReady } from '/rend/utils'
 
@@ -40,7 +54,7 @@ function useEvents() {
 
 const onUpdateClick: MenuProps['onClick'] = ({ key }) => {
   if (!version.value) return
-  Updates.updateApp(key === 'portable')
+  void Updates.updateApp(key === 'portable')
 }
 
 function onIgnoreClick() {

@@ -1,12 +1,12 @@
 <template>
-  <div class='search'>
+  <div class="search">
     <Input
-      :placeholder='texts.search'
-      :bordered='false'
-      :value='filter'
-      @change='setFilter($event.target.value || "")'
+      :placeholder="texts.search"
+      :bordered="false"
+      :value="filter"
+      @change="setFilter($event.target.value || '')"
     />
-    <SearchOutlined class='search-icon' />
+    <SearchOutlined class="search-icon" />
   </div>
 </template>
 

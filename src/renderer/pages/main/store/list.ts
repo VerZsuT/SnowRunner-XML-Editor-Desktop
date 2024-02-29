@@ -29,12 +29,11 @@ const useStore = defineStore('list', () => {
   }
 })
 
-export const useListStore = () => {
+export function useListStore() {
   const store = useStore()
-  const { setCategory, setSource, toggleFavorite } = store
   return {
-    setCategory, setSource, toggleFavorite,
-    get source() { return computed(() => store.source) },
-    get category() { return computed(() => store.category) }
+    ...store,
+    source: computed(() => store.source),
+    category: computed(() => store.category)
   }
 }

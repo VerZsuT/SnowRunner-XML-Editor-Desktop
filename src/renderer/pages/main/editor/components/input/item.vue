@@ -1,22 +1,22 @@
 <template>
   <InputNumber
-    v-if='type === InputType.number'
-    class='input'
-    size='large'
-    :status='status'
-    :value='value'
-    :step='step'
-    @change='changeValue'
-    @blur='setValue'
+    v-if="type === InputType.number"
+    class="input"
+    size="large"
+    :status="status"
+    :value="value"
+    :step="step"
+    @change="changeValue"
+    @blur="setValue"
   />
   <Input
     v-else
-    class='input'
-    size='large'
-    :status='status'
-    :value='value'
-    @change='changeValue($event.target.value || "")'
-    @blur='setValue'
+    class="input"
+    size="large"
+    :status="status"
+    :value="value"
+    @change="changeValue($event.target.value || '')"
+    @blur="setValue"
   />
 </template>
 
@@ -25,7 +25,8 @@ import { Input, InputNumber } from 'ant-design-vue'
 import { computed, nextTick, ref, toRefs, watch } from 'vue'
 
 import { InputType, NumberType } from '../../enums'
-import { IInputProps, ParameterEmits } from '../../types'
+import type { IInputProps, ParameterEmits } from '../../types'
+
 import { isNullable } from '/utils/renderer'
 
 type Status = '' | 'error' | 'warning'

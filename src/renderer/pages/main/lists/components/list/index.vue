@@ -1,16 +1,26 @@
 <template>
-  <div class='list'>
-    <div class='mods-button-cont' v-if='srcType === SourceType.mods'>
-      <Button type='primary' class='mods-button' @click='isShowMods = true'>
+  <div class="list">
+    <div
+      v-if="srcType === SourceType.mods"
+      class="mods-button-cont"
+    >
+      <Button
+        type="primary"
+        class="mods-button"
+        @click="isShowMods = true"
+      >
         {{ texts.modsChangeButton }}
       </Button>
     </div>
-    <ModsPopup :show='isShowMods' @hide='hideModsPopup' />
+    <ModsPopup
+      :show="isShowMods"
+      @hide="hideModsPopup"
+    />
     <ListItem
-      v-for='item of listItems'
-      :key='item.file.name'
-      :file='item.file'
-      :category='item.category'
+      v-for="item of listItems"
+      :key="item.file.name"
+      :file="item.file"
+      :category="item.category"
     />
   </div>
 </template>
@@ -19,12 +29,13 @@
 import { Button, Modal } from 'ant-design-vue'
 import { ref, toRefs, watchEffect } from 'vue'
 
+import type { Category } from '../../../enums'
+import { SourceType } from '../../../enums'
 import { useListStore } from '../../../store/list'
 import texts from '../../texts'
 import ModsPopup from '../mods-popup.vue'
 import ListItem from './item.vue'
 
-import { Category, SourceType } from '../../../enums'
 import type { File } from '/mods/renderer'
 import { Favorites, Helpers } from '/mods/renderer'
 

@@ -19,5 +19,11 @@ export default localize({
     [Lang.en]: 'Initial.pak update detected, apply previous changes?',
     [Lang.de]: 'Ein initial-Update wurde gefunden.pak, übernehmen Sie die vorherigen Änderungen?',
     [Lang.ch]: 'initial.pak更新检测到，应用以前的更改？'
+  },
+  recovery: {
+    [Lang.ru]: 'Восстановление',
+    [Lang.en]: 'Recovery',
+    [Lang.de]: 'Wiederherstellung',
+    [Lang.ch]: '复苏'
   }
 })

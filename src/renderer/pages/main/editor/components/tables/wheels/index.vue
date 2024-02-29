@@ -1,19 +1,21 @@
 <template>
-  <div v-if='file'>
-    <WheelsSet
-      v-if='wheelsSet'
-      :xml='wheelsSet'
-      :file='file'
-      @vue:mounted='ready(file.path)'
-    />
-  </div>
+  <WheelsSet
+    v-if="file && wheelsSet"
+    :xml="wheelsSet"
+    :file="file"
+    @mount="inProgress(file.path)"
+    @ready="ready(file.path)"
+  />
 </template>
 
 <script lang='ts' setup>
 import { onMounted, shallowRef } from 'vue'
-import { ReadyEmits, useFilesReady } from '../../utils'
+
+import type { ReadyEmits } from '../../utils'
+import { useFilesReady } from '../../utils'
 import WheelsSet from './set.vue'
-import { File, FileInfo, WheelsXML } from '/mods/renderer'
+
+import type { File, FileInfo, WheelsXML } from '/mods/renderer'
 import { useEditorStore } from '/rend/pages/main/store'
 
 type Props = {
@@ -28,14 +30,12 @@ const { info } = useEditorStore()
 const { ready, inProgress } = useFilesReady(emit, true)
 
 const wheelsSet = shallowRef<WheelsXML | null>(null)
-
 const file = shallowRef<File | null>(null)
 
 onMounted(async () => {
   file.value = await props.fileGetter?.(info) || null
   wheelsSet.value = await props.getter?.(info) || null
 
-  if (!file.value) { emit('ready'); return }
-  inProgress(file.value.path)
+  if (!file.value) emit('ready')
 })
 </script>
