@@ -25,7 +25,7 @@
       />
       <Float
         :label="texts.responsiveness"
-        :utils="Engine.$Responsiveness"
+        :utils="Engine.$EngineResponsiveness"
         :step="0.01"
         :areas="{
           yellow: [0.1, 0.5],
