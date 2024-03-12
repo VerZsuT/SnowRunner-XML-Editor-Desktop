@@ -21,5 +21,5 @@ export default class TruckWheels extends XMLWithTemplates {
   get Wheels(): Wheel[] { return [] }
   
   readonly defaultWheelFile = this.file('wheels', () => this.DefaultWheelType)
-  readonly defaultWheel = this.fileElementWithTemplates(Wheels, this.defaultWheelFile)
+  readonly defaultWheel = this.fileElementWithTemplates<Wheels>(Wheels, this.defaultWheelFile)
 }

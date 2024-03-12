@@ -2,10 +2,10 @@
   <Select
     class="select"
     size="large"
-    :mode="props.multiple ? 'multiple' : undefined"
+    :mode="multiple ? 'multiple' : undefined"
     :options="options"
     :value="value"
-    @change="onChange($event as string | string[])"
+    @change="onSelect($event as string | string[])"
   />
 </template>
 
@@ -15,8 +15,12 @@ import { computed } from 'vue'
 
 import type { ISelectProps, SelectEmits } from '../../types'
 
-const emit = defineEmits<SelectEmits>()
+import type { EmitsToProps } from '/rend/types'
+
+export type SelectItemProps = ISelectProps & EmitsToProps<SelectEmits>
+
 const props = defineProps<ISelectProps>()
+const emit = defineEmits<SelectEmits>()
 
 const options = computed(() => props.options.map(option => {
   const [value, label] = option
@@ -38,7 +42,7 @@ const value = computed(() => {
   return String(props.value)
 })
 
-function onChange(value: string | string[]) {
+function onSelect(value: string | string[]) {
   if (props.emptyIsAll && value.length === options.value.length) {
     emit('change', [])
   }

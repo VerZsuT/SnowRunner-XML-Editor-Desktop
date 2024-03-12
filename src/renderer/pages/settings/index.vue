@@ -1,10 +1,11 @@
 <template>
   <Language />
+  
   <div class="checkboxes">
     <Switch
       size="small"
-      :checked="settings.updates"
-      @click="settings.updates = !settings.updates"
+      :checked="updates"
+      @click="updates = !updates"
     />
     <Text class="label">
       {{ texts.updatesLabel }}
@@ -13,8 +14,8 @@
 
     <Switch
       size="small"
-      :checked="settings.mods"
-      @click="settings.mods = !settings.mods"
+      :checked="mods"
+      @click="mods = !mods"
     />
     <Text class="label">
       {{ texts.modsLabel }}
@@ -23,8 +24,8 @@
 
     <Switch
       size="small"
-      :checked="settings.advancedMode"
-      @click="settings.advancedMode = !settings.advancedMode"
+      :checked="advanced"
+      @click="advanced = !advanced"
     />
     <Text class="label">
       {{ texts.advancedModeLabel }}
@@ -34,7 +35,7 @@
 
 <script lang='ts' setup>
 import { Switch, Typography } from 'ant-design-vue'
-import { reactive, watch } from 'vue'
+import { ref, watch } from 'vue'
 
 import texts from './texts'
 
@@ -43,21 +44,16 @@ import { Language } from '/rend/components'
 import { useWindowReady } from '/rend/utils'
 
 const { Text } = Typography
+
+const updates = ref(Config.checkUpdates)
+const mods = ref(Config.useMods)
+const advanced = ref(Config.advancedMode)
+
 useWindowReady(ProgramWindow.settings)
 
-const settings = reactive({
-  updates: Config.checkUpdates,
-  mods: Config.useMods,
-  advancedMode: Config.advancedMode
-})
-
-watch(settings, () => {
-  Config.set({
-    checkUpdates: settings.updates,
-    useMods: settings.mods,
-    advancedMode: settings.advancedMode
-  })
-})
+watch(updates, () => Config.checkUpdates = updates.value)
+watch(mods, () => Config.useMods = mods.value)
+watch(advanced, () => Config.advancedMode = advanced.value)
 </script>
 
 <style lang='scss'>

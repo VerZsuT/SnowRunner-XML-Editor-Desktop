@@ -12,13 +12,15 @@
 <script lang='ts' setup>
 import { onMounted, shallowRef } from 'vue'
 
-import type { ReadyEmits } from '../../utils'
+import type { ReadyEmits, ReadyProps } from '../../utils'
 import { useFilesReady } from '../../utils'
 import SuspensionSet from './set.vue'
 
 import type { File, FileInfo, SuspensionsXML } from '/mods/renderer'
 import { useEditorStore } from '/rend/pages/main/store'
 import { hasItems } from '/utils/renderer'
+
+export type SuspensionsProps = ReadyProps & Props
 
 type Props = {
   getter?(info: FileInfo): Promise<SuspensionsXML[]>
@@ -29,9 +31,10 @@ const props = defineProps<Props>()
 const emit = defineEmits<ReadyEmits>()
 
 const { info } = useEditorStore()
-const { ready, inProgress } = useFilesReady(emit, true)
 const list = shallowRef<SuspensionsXML[]>([])
 const files = shallowRef<File[]>([])
+
+const { ready, inProgress } = useFilesReady(emit, true)
 
 onMounted(async () => {
   files.value = await props.filesGetter?.(info) || []

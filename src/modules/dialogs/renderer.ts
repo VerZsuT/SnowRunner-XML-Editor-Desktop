@@ -3,27 +3,29 @@ import { Bridge } from 'emr-bridge/renderer'
 import { Dir, File } from '/mods/files/renderer'
 
 import type _MainDialogs from './main'
-import type { IPublic } from './public'
-import { Keys } from './public'
+import type { PubType } from './public'
+import { PubKeys } from './public'
+
+import { hasItems } from '/utils/renderer'
 
 export * from './enums'
 export type * from './types'
+
+/** Мост main-rend */
+const Main = Bridge.as<PubType>()
 
 /**
  * Вывод системных диалогов  
  * _renderer process_
  */
 class Dialogs {
-  /** Мост main-rend */
-  private readonly Bridge = Bridge.as<IPublic>()
-
   /**
    * Открыть окно выбора `.epf` файла  
    * {@link _MainDialogs.getEPF|Перейти к методу}
    */
   getEPF(): File | undefined {
-    const path = this.Bridge[Keys.getEPF]()
-    return path ? new File(path) : undefined
+    const path = Main[PubKeys.getEPF]()
+    if (path) return new File(path)
   }
 
   /**
@@ -31,8 +33,8 @@ class Dialogs {
    * {@link _MainDialogs.saveEPF|Перейти к методу}
    */
   saveEPF(defaultName: string): File | undefined {
-    const path = this.Bridge[Keys.saveEPF](defaultName)
-    return path ? new File(path) : undefined
+    const path = Main[PubKeys.saveEPF](defaultName)
+    if (path) return new File(path)
   }
 
   /**
@@ -40,8 +42,8 @@ class Dialogs {
    * {@link _MainDialogs.getInitial|Перейти к методу}
    */
   getInitial(): File | undefined {
-    const path = this.Bridge[Keys.getInitial]()
-    return path ? new File(path) : undefined
+    const path = Main[PubKeys.getInitial]()
+    if (path) return new File(path)
   }
 
   /**
@@ -49,8 +51,8 @@ class Dialogs {
    * {@link _MainDialogs.getDir|Перейти к методу}
    */
   getDir(): Dir | undefined {
-    const path = this.Bridge[Keys.getDir]()
-    return path ? new Dir(path) : undefined
+    const path = Main[PubKeys.getDir]()
+    if (path) return new Dir(path)
   }
 
   /**
@@ -58,8 +60,8 @@ class Dialogs {
    * {@link _MainDialogs.getDirs|Перейти к методу}
    */
   getDirs(): Dir[] | undefined {
-    const paths = this.Bridge[Keys.getDirs]()
-    return paths ? paths.map(path => new Dir(path)) : undefined
+    const paths = Main[PubKeys.getDirs]()
+    if (paths && hasItems(paths)) return paths.map(path => new Dir(path))
   }
 
   /**
@@ -67,8 +69,8 @@ class Dialogs {
    * {@link _MainDialogs.getPaks|Перейти к методу}
    */
   getPaks(): File[] | undefined {
-    const paths = this.Bridge[Keys.getPaks]()
-    return paths ? paths.map(path => new File(path)) : undefined
+    const paths = Main[PubKeys.getPaks]()
+    if (paths && hasItems(paths)) return paths.map(path => new File(path))
   }
 
   /**
@@ -76,8 +78,8 @@ class Dialogs {
    * {@link _MainDialogs.getXML|Перейти к методу}
    */
   getXML(): File | undefined {
-    const path = this.Bridge[Keys.getXML]()
-    return path ? new File(path) : undefined
+    const path = Main[PubKeys.getXML]()
+    if (path) return new File(path)
   }
 }
 

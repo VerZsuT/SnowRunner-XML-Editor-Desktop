@@ -15,6 +15,7 @@ import Paths from '/mods/paths/main'
  * _main process_
 */
 export class FSEntry {
+  /** Путь к сущности */
   readonly path: string
 
   constructor(path: string, ...partsToJoin: string[]) {
@@ -22,31 +23,49 @@ export class FSEntry {
   }
 
   /** Имя базовой папки */
-  get dirname(): string { return dirname(this.path) }
+  get dirname() {
+    return dirname(this.path)
+  }
 
   /** Базовая папка */
-  get root() { return new Dir(this.dirname) }
+  get root() {
+    return new Dir(this.dirname)
+  }
 
   /** Полное имя файла/папки */
-  basename(extname?: string): string { return basename(this.path, extname) }
+  basename(extname?: string) {
+    return basename(this.path, extname)
+  }
 
   /** Проверяет существует ли файл/папка */
-  exists(): Promise<boolean> { return exists(this.path) }
+  exists(): Promise<boolean> {
+    return exists(this.path)
+  }
 
   /** Проверяет можно ли прочитать файл/папку */
-  canRead() { return canRead(this.path) }
+  canRead() {
+    return canRead(this.path)
+  }
 
   /** Проверяет можно ли записать файл/папку */
-  canWrite() { return canWrite(this.path) }
+  canWrite() {
+    return canWrite(this.path)
+  }
 
   /** Преобразует объект в файл */
-  asFile() { return new File(this.path) }
+  asFile() {
+    return new File(this.path)
+  }
 
   /** Преобразует объект в папку */
-  asDir() { return new Dir(this.path) }
+  asDir() {
+    return new Dir(this.path)
+  }
 
   /** Изменяет права доступа файла/папки */
-  chmod(mod: number) { return chmod(this.path, mod) }
+  chmod(mod: number) {
+    return chmod(this.path, mod)
+  }
 
   /** Является ли точка папкой */
   async isDir(): Promise<boolean> {
@@ -66,11 +85,12 @@ export class FSEntry {
    */
   async remove() {
     if (!await this.exists()) return
+    
     try {
       await rm(this.path, { recursive: await this.isDir(), force: true })
     }
-    catch (error) {
-      throw new ProgramError(ErrorText.removeError, this.path, (error as Error).message)
+    catch (error: any) {
+      throw new ProgramError(ErrorText.removeError, error, this.path)
     }
   }
 
@@ -83,8 +103,8 @@ export class FSEntry {
     try {
       await rename(this.path, path)
     }
-    catch (error) {
-      throw new ProgramError(ErrorText.moveError, this.path, path, (error as Error).message)
+    catch (error: any) {
+      throw new ProgramError(ErrorText.moveError, error, this.path, path)
     }
   }
 
@@ -97,8 +117,8 @@ export class FSEntry {
     try {
       await this.move(join(this.dirname, newName))
     }
-    catch {
-      throw new ProgramError(ErrorText.renameError, this.basename(), newName)
+    catch (error: any) {
+      throw new ProgramError(ErrorText.renameError, error, this.basename(), newName)
     }
   }
 }
@@ -109,10 +129,14 @@ export class FSEntry {
 */
 class FSEntryArray extends Array<FSEntry> {
   /** Возвращает в виде массива файлов */
-  asFiles(): File[] { return this.map(entry => entry.asFile()) }
+  asFiles(): File[] {
+    return this.map(entry => entry.asFile())
+  }
 
   /** Возвращает в виде массива папок */
-  asDirs(): Dir[] { return this.map(entry => entry.asDir()) }
+  asDirs(): Dir[] {
+    return this.map(entry => entry.asDir())
+  }
 }
 
 /**
@@ -124,16 +148,24 @@ export class Dir extends FSEntry {
    * Имя папки.  
    * То же самое что и `basename`
    */
-  get name() { return this.basename() }
+  get name() {
+    return this.basename()
+  }
 
   /** Возвращает объект папки в текущей папке */
-  dir(...path: string[]) { return new Dir(join(this.path, join(...path))) }
+  dir(...path: string[]) {
+    return new Dir(join(this.path, join(...path)))
+  }
 
   /** Возвращает объект файла в текущей папке */
-  file(...path: string[]) { return new File(join(this.path, join(...path))) }
+  file(...path: string[]) {
+    return new File(join(this.path, join(...path)))
+  }
 
   /** Возвращает объект точки в текущей папке */
-  entry(...path: string[]) { return new FSEntry(join(this.path, join(...path))) }
+  entry(...path: string[]) {
+    return new FSEntry(join(this.path, join(...path)))
+  }
 
   /** Считывает содержимое папки */
   async read(): Promise<FSEntryArray> {
@@ -143,8 +175,8 @@ export class Dir extends FSEntry {
       const inner = await readdir(this.path)
       return new FSEntryArray(...inner.map(name => this.entry(name)))
     }
-    catch (error) {
-      throw new ProgramError(ErrorText.readDirError, this.path, (error as Error).message)
+    catch (error: any) {
+      throw new ProgramError(ErrorText.readDirError, error, this.path)
     }
   }
 
@@ -158,8 +190,8 @@ export class Dir extends FSEntry {
     try {
       await mkdir(this.path, { recursive: true })
     }
-    catch (error) {
-      throw new ProgramError(ErrorText.makeDirError, this.path, (error as Error).message)
+    catch (error: any) {
+      throw new ProgramError(ErrorText.makeDirError, error, this.path)
     }
   }
 
@@ -221,13 +253,19 @@ export class Dir extends FSEntry {
 */
 export class File extends FSEntry {
   /** Расширение файла */
-  get extname(): string { return extname(this.path) }
+  get extname(): string {
+    return extname(this.path)
+  }
 
   /** Имя файла без расширения */
-  get name(): string { return basename(this.path, this.extname) }
+  get name(): string {
+    return basename(this.path, this.extname)
+  }
 
   /** Имеет ли файл такое расширение */
-  isExt(extension: string): boolean { return this.extname.split('.')[1] === extension }
+  isExt(extension: string): boolean {
+    return this.extname.split('.')[1] === extension
+  }
 
   /** Отслеживает изменения файла */
   watch(listener: (event: WatchEventType) => void) {
@@ -236,9 +274,9 @@ export class File extends FSEntry {
 
   /** Исполняет файл */
   async exec() {
-    let executeError: ICheckResult
-    if (!(executeError = await canExecute(this.path)).result) {
-      throw new ProgramError(ErrorText.executeFileError, this.path, executeError.error!)
+    let execResult: ICheckResult
+    if (!(execResult = await canExecute(this.path)).result) {
+      throw new ProgramError(ErrorText.executeFileError, execResult.error, this.path)
     }
 
     return execFile(this.path)
@@ -254,7 +292,7 @@ export class File extends FSEntry {
   async read(encoding?: BufferEncoding): Promise<string> {
     let readResult: ICheckResult
     if (!(readResult = await canRead(this.path)).result) {
-      throw new ProgramError(ErrorText.readFileError, this.path, readResult.error!)
+      throw new ProgramError(ErrorText.readFileError, readResult.error, this.path)
     }
 
     const data = await readFile(this.path, { encoding })
@@ -262,7 +300,9 @@ export class File extends FSEntry {
   }
 
   /** Считывает содержимое файла (парсит из JSON). */
-  async readFromJSON<T = any>() { return <T>JSON.parse(await this.read()) }
+  async readFromJSON<T = any>() {
+    return <T>JSON.parse(await this.read())
+  }
 
   /**
    * Записывает данные в файл.  
@@ -273,7 +313,7 @@ export class File extends FSEntry {
 
     let writeResult: ICheckResult
     if (!(writeResult = await canWrite(this.path)).result) {
-      throw new ProgramError(ErrorText.writeFileError, this.path, writeResult.error!)
+      throw new ProgramError(ErrorText.writeFileError, writeResult.error, this.path)
     }
 
     await writeFile(this.path, data, encoding)
@@ -281,8 +321,7 @@ export class File extends FSEntry {
 
   /** Записывает данные в файл в формате JSON. */
   async writeToJSON(data: any) {
-    const json = JSON.stringify(data, undefined, '\t')
-    await this.write(json)
+    await this.write(JSON.stringify(data, undefined, '\t'))
   }
 
   /**
@@ -297,8 +336,8 @@ export class File extends FSEntry {
     try {
       await copyFile(this.path, path)
     }
-    catch (error) {
-      throw new ProgramError(ErrorText.copyFileError, this.path, path, (error as Error).message)
+    catch (error: any) {
+      throw new ProgramError(ErrorText.copyFileError, error, this.path, path)
     }
   }
 
@@ -315,7 +354,7 @@ export class File extends FSEntry {
       await writeFile(this.path, '')
     }
     catch (error: any) {
-      throw new ProgramError(ErrorText.makeFileError, this.path, error?.message)
+      throw new ProgramError(ErrorText.makeFileError, error, this.path)
     }
   }
 
@@ -364,12 +403,16 @@ export const Files = {
 export const Dirs = {
   /** Папка `app` */
   root: new Dir(Paths.root),
-  /** Папка с бэкапами */
-  backupFolder: new Dir(Paths.backupFolder),
   /** Папка `WinRAR` */
   winrar: new Dir(Paths.winrar),
+  /** Папка со страницами */
+  pages: new Dir(Paths.pages),
+
+  /** Папка с бэкапами */
+  backupFolder: new Dir(Paths.backupFolder),
   /** Бэкап данных `initail.pak` перед распаковкой */
   backupInitialData: new Dir(Paths.backupInitialData),
+
   /** Временная папка для основных файлов */
   mainTemp: new Dir(Paths.mainTemp),
   /** Временная папка для файлов модификаций */
@@ -383,9 +426,7 @@ export const Dirs = {
   /** Временная папка `_templates` */
   templates: new Dir(Paths.templates),
   /** Временная папка `_dlc` */
-  dlc: new Dir(Paths.dlc),
-  /** Папка со страницами */
-  pages: new Dir(Paths.pages)
+  dlc: new Dir(Paths.dlc)
 }
 
 /** Проверяет существует ли путь */
@@ -408,7 +449,7 @@ async function canRead(path: string): Promise<ICheckResult> {
   catch (error: any) {
     return {
       result: false,
-      error: error?.message
+      error
     }
   }
 }
@@ -422,7 +463,7 @@ async function canWrite(path: string): Promise<ICheckResult> {
   catch (error: any) {
     return {
       result: false,
-      error: error?.message
+      error
     }
   }
 }
@@ -436,7 +477,7 @@ async function canExecute(path: string): Promise<ICheckResult> {
   catch (error: any) {
     return {
       result: false,
-      error: error?.message
+      error
     }
   }
 }

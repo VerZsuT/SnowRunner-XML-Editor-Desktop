@@ -2,7 +2,7 @@ import type { IDefaults } from './types'
 
 export type * from './types'
 
-/** Стандартные значения таблицы */
+/** Стандартные значения параметров таблицы */
 export default {
   trailer_sideboard_2_default: {
     'Truck > TruckData': {

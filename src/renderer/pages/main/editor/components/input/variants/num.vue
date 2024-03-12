@@ -2,8 +2,8 @@
   <Input
     v-bind="props"
     :type="InputType.number"
-    :number-type="props.numberType ?? NumberType.float"
-    @change="emit('change', +$event)"
+    :number-type="numberType ?? NumberType.float"
+    @change="$emit('change', +$event)"
   />
 </template>
 
@@ -13,9 +13,12 @@ import type { IInputProps, IParameterProps, NumberEmits } from '../../../types'
 import Input from '../index.vue'
 
 import type { NumUtils } from '/mods/xml/game/game-xml'
+import type { EmitsToProps } from '/rend/types'
+
+export type NumProps = Props & EmitsToProps<NumberEmits>
 
 type Props = IParameterProps<number, NumUtils> & Omit<IInputProps, 'type' | 'value'>
 
 const props = defineProps<Props>()
-const emit = defineEmits<NumberEmits>()
+defineEmits<NumberEmits>()
 </script>

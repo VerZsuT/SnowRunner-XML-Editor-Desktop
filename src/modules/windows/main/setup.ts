@@ -3,6 +3,8 @@ import { app } from 'electron'
 import { ProgramWindow, WindowType } from '../enums'
 import { getDevPage, getRenderer, newWindow } from './utils'
 
+import Checks from '/mods/checks/main'
+
 /** Окно первоначальной настройки */
 export default newWindow({
   windowType: WindowType.default,
@@ -14,6 +16,12 @@ export default newWindow({
   height: 290,
   minHeight: 310,
 
-  onClose() { app.quit() },
-  onShow(_, Manager) { Manager.loadingWindow?.hide() }
+  onClose() {
+    app.quit()
+  },
+
+  onShow(_, Manager) {
+    Manager.loadingWindow?.hide()
+    void Checks.checkUpdate()
+  }
 })

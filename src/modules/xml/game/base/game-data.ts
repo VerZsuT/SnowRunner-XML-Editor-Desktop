@@ -4,7 +4,7 @@ import Limit from '../limit'
 import XMLWithTemplates, { innerElement } from '../xml-with-templates'
 import BaseUiDesc from './ui-desc'
 
-/** Информация о взаимодействии двигателя с окружающим миром */
+/** Информация о взаимодействии сущности с окружающим миром */
 export default class GameData extends XMLWithTemplates {
   /** Цена */
   @intAttr(Limit.Positive.fixed())

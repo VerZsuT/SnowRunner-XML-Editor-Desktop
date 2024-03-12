@@ -2,31 +2,31 @@
   <div class="container">
     <VersionInfo
       version="0.8.6"
-      :changes="descs['0.8.6']"
+      :changes="v086.desc"
     />
     <VersionInfo
       version="0.8.5"
-      :changes="descs['0.8.5']"
+      :changes="v085.desc"
     />
     <VersionInfo
       version="0.8.4"
-      :changes="descs['0.8.4']"
+      :changes="v084.desc"
     />
     <VersionInfo
       version="0.8.3"
-      :changes="descs['0.8.3']"
+      :changes="v083.desc"
     />
     <VersionInfo
       version="0.8.2"
-      :changes="descs['0.8.2']"
+      :changes="v082.desc"
     />
     <VersionInfo
       version="0.8.1"
-      :changes="descs['0.8.1']"
+      :changes="v081.desc"
     />
     <VersionInfo
       version="0.8.0"
-      :changes="descs['0.8.0']"
+      :changes="v080.desc"
     />
   </div>
 </template>
@@ -40,8 +40,8 @@ import { localize } from '/utils/texts/renderer'
 
 useWindowReady(ProgramWindow.whatsNew)
 
-const descs = localize({
-  '0.8.6': {
+const v086 = localize({
+  desc: {
     [Lang.ru]: [
       'Исправлено ограничение высоты и минимальной высоты подвески',
       'Исправлено дублирование ошибки сети',
@@ -74,8 +74,11 @@ const descs = localize({
       '表优化',
       '新增自动开启更新安装程式'
     ]
-  },
-  '0.8.5': {
+  }
+})
+
+const v085 = localize({
+  desc: {
     [Lang.ru]: [
       'Исправлена неправильная работа ограничителей значений',
       'Исправлен вылет при отсутствии интернет соединения'
@@ -92,8 +95,11 @@ const descs = localize({
       '数值限制器的错误操作已被修复',
       '固定崩溃时，没有互联网连接'
     ]
-  },
-  '0.8.4': {
+  }
+})
+
+const v084 = localize({
+  desc: {
     [Lang.ru]: [
       'Исправлен баг с отсутствием некоторых двигателей',
       'Оптимизирован список'
@@ -110,8 +116,11 @@ const descs = localize({
       '修正了一个缺少一些引擎的错误',
       '列表已优化'
     ]
-  },
-  '0.8.3': {
+  }
+})
+
+const v083 = localize({
+  desc: {
     [Lang.ru]: [
       'Исправлен баг с редактированием параметров на выбор',
       'Исправлен текст при скачивании обновления'
@@ -128,14 +137,20 @@ const descs = localize({
       '修正了编辑可供选择的参数的错误',
       '下载更新时已更正文本'
     ]
-  },
-  '0.8.2': {
+  }
+})
+
+const v082 = localize({
+  desc: {
     [Lang.ru]: ['Исправлен баг при котором нельзя было редактировать колёса из DLC'],
     [Lang.en]: ['Fixed a bug where it was impossible to edit the wheels from the DLC'],
     [Lang.de]: ['Es wurde ein Fehler behoben, bei dem Räder aus dem DLC nicht bearbeitet werden konnten'],
     [Lang.ch]: ['修正了一个无法从DLC中编辑轮子的错误']
-  },
-  '0.8.1': {
+  }
+})
+
+const v081 = localize({
+  desc: {
     [Lang.ru]: [
       'Исправлен баг с редактированием некоторых дробных параметров',
       'Исправлен баг с параметром "Точная регулировка"'
@@ -152,8 +167,11 @@ const descs = localize({
       '修正了编辑一些分数参数的错误',
       '修复了"精细调整"参数的错误'
     ]
-  },
-  '0.8.0': {
+  }
+})
+
+const v080 = localize({
+  desc: {
     [Lang.ru]: [
       'Переход с React на Vue.',
       'Переход с Webpack на Vite.',

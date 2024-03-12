@@ -27,18 +27,21 @@ import { computed, nextTick, ref, toRefs, watch } from 'vue'
 import { InputType, NumberType } from '../../enums'
 import type { IInputProps, ParameterEmits } from '../../types'
 
+import type { EmitsToProps } from '/rend/types'
 import { isNullable } from '/utils/renderer'
 
 type Status = '' | 'error' | 'warning'
 
-const emit = defineEmits<ParameterEmits>()
+export type InputItemProps = IInputProps & EmitsToProps<ParameterEmits>
+
 const props = defineProps<IInputProps>()
+const emit = defineEmits<ParameterEmits>()
 
 const {
   type, numberType, areas,
   step = numberType === NumberType.float ? 0.1 : 1
 } = props
-const propValue = toRefs(props).value
+const { value: propValue } = toRefs(props)
 const value = ref(props.value)
 
 const status = computed<Status>(getStatus)
@@ -58,8 +61,10 @@ function changeValue(newVal: string | number) {
 
 async function setValue() {
   if (value.value === '') return
+
   emit('change', value.value)
   await nextTick()
+  
   if (value.value !== propValue.value) {
     value.value = propValue.value
   }

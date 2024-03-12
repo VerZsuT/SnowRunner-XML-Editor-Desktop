@@ -21,24 +21,44 @@ export enum Lang {
 /**
  * Преобразует строку в `Lang`
  * 
- * _Если невозможно, возвращает `undefined`_
+ * _Если преобразование невозможно, возвращает `undefined`_
  */
-export function convertStrToLang(str?: string): Lang | undefined {
-  if (!str) return undefined
+export function strToLang(str?: string): Lang | undefined {
+  if (!str) return
 
   for (const value of Object.values(Lang)) {
-    if (str === value) return str as Lang
+    if (str === value) {
+      return str as Lang
+    }
   }
-  return undefined
+}
+
+/**
+ * Преобразует `locale` в `Lang`
+ * 
+ * _Если преобразование невозможно, возвращает `undefined`_
+ */
+export function localeToLang(locale?: string): Lang | undefined {
+  if (!locale) return
+
+  const langStr = locale.split('-')[1].toLowerCase()
+  if (!langStr) return
+
+  for (const value of Object.values(Lang)) {
+    if (langStr.includes(value.toLowerCase())) {
+      return locale as Lang
+    }
+  }
 }
 
 /**
  * Преобразует строку в `Lang`
  * 
- * _Если невозможно, бросает ошибку `Error` _
+ * _Если преобразование невозможно, бросает ошибку `Error`_
  */
 export function parseStrToLang(str: string): Lang | never {
-  const value = convertStrToLang(str)
+  const value = strToLang(str)
   if (!value) throw new Error(`Cannot parse '${str}' into Lang`)
+  
   return value
 }

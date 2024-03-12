@@ -45,7 +45,7 @@ import { computed, ref, shallowRef, toRefs, watchEffect } from 'vue'
 
 import type { Category } from '../../../enums'
 import { Page } from '../../../enums'
-import { useEditorStore, useFilterStore, useListStore, usePageStore } from '../../../store'
+import { useEditorStore, useListStore, usePageStore } from '../../../store'
 import texts from '../../texts'
 import { EditorUtils } from '../../utils'
 
@@ -54,27 +54,26 @@ import { Favorites, GameTexts, Images, Messages, Mods, TruckXML } from '/mods/re
 import { ContextMenu } from '/rend/components'
 import { prettyString } from '/utils/renderer'
 
-type Props = {
+export type ListItemProps = {
   file: File
   category: Category
 }
 
-const props = defineProps<Props>()
-const { file, category } = toRefs(props)
+const props = defineProps<ListItemProps>()
 
-const { filter } = useFilterStore()
+const { file, category } = toRefs(props)
 const { setFile } = useEditorStore()
 const { route } = usePageStore()
-const { toggleFavorite } = useListStore()
+const { toggleFavorite, filter } = useListStore()
 
 const contextTarget = shallowRef<HTMLImageElement | null>(null)
-
 const xml = shallowRef<TruckXML | null>(null)
 const imgSRC = ref<string | null>(null)
 const name = ref<string>('')
 
 watchEffect(async () => {
-  const xmlRes = await TruckXML.fromFile(file.value)
+  const xmlRes = await TruckXML.from(file.value)
+  
   if (!xmlRes) {
     console.log(`Error on loading xml file ${file.value.path}`)
     name.value = 'ERROR'
@@ -93,6 +92,7 @@ const isShow = computed<boolean>(() => {
   if (!filter.value) return true
   return name.value.toLowerCase().includes(filter.value.toLowerCase())
 })
+
 const title = computed(() => {
   if (!filter.value) {
     return {
@@ -111,6 +111,7 @@ const title = computed(() => {
     last: name.value.slice(lastIndex, name.value.length)
   }
 })
+
 const isFavorite = computed(() => Favorites.ref.includes(file.value.name))
 
 const contextMenuItems = computed(() => [

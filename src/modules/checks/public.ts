@@ -1,9 +1,9 @@
 import type Checks from './main'
 
-export enum Keys {
-  checkUpdate = 'checks.check-update'
+export enum PubKeys {
+  checkUpdate = 'checks/check-update'
 }
 
-export interface IPublic {
-  [Keys.checkUpdate]: typeof Checks.checkUpdate
+export type PubType = {
+  [PubKeys.checkUpdate]: typeof Checks.checkUpdate
 }

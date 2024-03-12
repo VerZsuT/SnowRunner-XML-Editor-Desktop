@@ -78,7 +78,7 @@ import { SaveUtils, provideFile } from '../../../utils'
 import Accordion from '../../accordion.vue'
 import Group from '../../group'
 import { Float, Int } from '../../input'
-import type { ReadyEmits } from '../../utils'
+import type { ReadyEmits, ReadyProps } from '../../utils'
 import { getGameText, useReady } from '../../utils'
 import UnlockPreset from '../unlock-preset.vue'
 import texts from './texts'
@@ -86,13 +86,16 @@ import texts from './texts'
 import type { EnginesXML, File } from '/mods/renderer'
 import { useEditorStore } from '/rend/pages/main/store'
 
+export type EngineSetProps = ReadyProps & Props
+
 type Props = {
   xml: EnginesXML
   file: File
 }
 
-const emit = defineEmits<ReadyEmits>()
 const { xml, file } = defineProps<Props>()
+const emit = defineEmits<ReadyEmits>()
+
 const { info } = useEditorStore()
 
 useReady(emit)

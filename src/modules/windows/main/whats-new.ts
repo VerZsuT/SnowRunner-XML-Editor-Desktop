@@ -14,5 +14,7 @@ export default newWindow({
   height: 500,
   minHeight: 520,
 
-  onClose() { Config.openWhatsNew = false }
+  onClose() {
+    Config.openWhatsNew = false
+  }
 })

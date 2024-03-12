@@ -1,11 +1,12 @@
 import { publicFunction } from 'emr-bridge'
 
-import type { IPublic } from '../public'
-import { Keys } from '../public'
+import type { PubType } from '../public'
+import { PubKeys } from '../public'
 import texts from './texts'
 
 import { APP_NAME } from '/consts'
 import Dialogs from '/mods/dialogs/main'
+import { HasPublic } from '/utils/bridge/main'
 
 export type * from '../types'
 
@@ -13,11 +14,9 @@ export type * from '../types'
  * Работа с файлами `.epf`  
  * _main process_
 */
-class EPF {
+class EPF extends HasPublic {
   /** Название объединённого файла по умолчанию */
-  private readonly DEFAULT_NAME = 'joined'
-
-  constructor() { this.initPublic() }
+  private readonly defaultFilename = 'joined'
 
   /**
    * Открыть окно выбора `.epf` файлов.  
@@ -47,7 +46,7 @@ class EPF {
         }
       }
 
-      const fileToSave = Dialogs.saveEPF(this.DEFAULT_NAME)
+      const fileToSave = Dialogs.saveEPF(this.defaultFilename)
       if (fileToSave) {
         await fileToSave.writeToJSON(result)
         void Dialogs.alert({
@@ -85,9 +84,9 @@ class EPF {
   }
 
   /** Инициализация публичных объектов/методов */
-  private initPublic() {
-    publicFunction<IPublic[Keys.join]>(Keys.join, this.join.bind(this))
-    publicFunction<IPublic[Keys.see]>(Keys.see, this.see.bind(this))
+  protected initPublic() {
+    publicFunction<PubType[PubKeys.join]>(PubKeys.join, this.join.bind(this))
+    publicFunction<PubType[PubKeys.see]>(PubKeys.see, this.see.bind(this))
   }
 }
 

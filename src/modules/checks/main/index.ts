@@ -4,9 +4,9 @@ import { get } from 'node:https'
 
 import { publicFunction } from 'emr-bridge'
 
-import type { IPublic } from '../public'
-import { Keys } from '../public'
-import type { IPublicFile } from '../types'
+import type { PubType } from '../public'
+import { PubKeys } from '../public'
+import type { PubFile } from '../types'
 import texts from './texts'
 
 import Archive from '/mods/archive/main'
@@ -19,6 +19,7 @@ import type { FSEntry, ICheckResult } from '/mods/files/main'
 import { Dirs, Files } from '/mods/files/main'
 import Paths from '/mods/paths/main'
 import Windows, { ProgramWindow } from '/mods/windows/main'
+import { HasPublic } from '/utils/bridge/main'
 
 export type * from '../types'
 
@@ -26,13 +27,11 @@ export type * from '../types'
  * Разного рода проверки  
  * _main process_
 */
-class Checks {
+class Checks extends HasPublic {
   /** Папка с xml файлами из initial.pak */
-  private readonly MEDIA_FOLDER = '[media]'
+  private readonly mediaFolder = '[media]'
   /** Сайт GitHub */
-  private readonly GITHUB_URL = 'github.com'
-
-  constructor() { this.initPublic() }
+  private readonly githubURL = 'github.com'
 
   /**
    * Проверить наличие прав администратора у программы (требуется для чтения/записи файлов).  
@@ -42,9 +41,11 @@ class Checks {
     try {
       await Files.config.make()
 
-      const { result: canRead } = await Files.config.canRead()
-      const { result: canWrite } = await Files.config.canWrite()
-      if (!canRead || !canWrite) throw new Error('Cannot read/write json file')
+      const readResult = await Files.config.canRead()
+      const writeResult = await Files.config.canWrite()
+      if (!readResult.result || !writeResult.result) {
+        throw new Error('Cannot read/write json file', { cause: readResult.error ?? writeResult.error })
+      }
 
       return true
     }
@@ -55,20 +56,21 @@ class Checks {
         buttons: ['Exit'],
         title: 'Error'
       }).then(app.quit)
+
       return false
     }
   }
 
   /**
    * Проверить на стороннее изменение `initial.pak`.  
-   * Если изменения присутствуют, то обновляет файлы в программе
+   * Если изменения присутствуют, то обновляет игровые файлы в программе
    */
   async checkInitialChanges() {
-    const pakIsMissed = !await Config.initial.exists()
-    const hasContent = await Dirs.mainTemp.dir(this.MEDIA_FOLDER).exists()
+    const hasInitial = await Config.initial.exists()
+    const hasContent = await Dirs.mainTemp.dir(this.mediaFolder).exists()
     const withoutChanges = await Config.initial.getSize() === Sizes.initial
 
-    if (pakIsMissed || (hasContent && withoutChanges)) return
+    if (!hasInitial || (hasContent && withoutChanges)) return
 
     if (!await Files.backupInitial.exists()) {
       await Backup.save()
@@ -87,16 +89,15 @@ class Checks {
   /**
    * Проверить наличие обновления.  
    * Выводит оповещение при наличии
-   * 
    * @param whateverCheck игнорировать настройку `updates` в `Config`
    */
   checkUpdate(whateverCheck?: boolean) {
     return new Promise<void>((resolve, reject) => {
       if (!Config.checkUpdates && !whateverCheck) return
 
-      dns.resolve(this.GITHUB_URL, error => {
+      dns.resolve(this.githubURL, error => {
         if (error) {
-          reject(new ProgramError(ErrorText.gitHubConnectError, error.message))
+          reject(new ProgramError(ErrorText.gitHubConnectError, error))
           return
         }
 
@@ -107,7 +108,7 @@ class Checks {
             .setEncoding('utf8')
             .on('data', chunk => rawData += chunk)
             .on('end', async () => {
-              const data: IPublicFile = JSON.parse(rawData)
+              const data: PubFile = JSON.parse(rawData)
               const version = Config.version
               const hasNewVersion = version < data.latestVersion
               const isBetaNewVersion = version.includes('-beta') && version.split('-beta')[0] === data.latestVersion
@@ -119,7 +120,7 @@ class Checks {
               resolve()
             })
         }).on('error', error => {
-          reject(new ProgramError(ErrorText.gitHubConnectError, error.message))
+          reject(new ProgramError(ErrorText.gitHubConnectError, error))
         })
       })
     })
@@ -150,26 +151,27 @@ class Checks {
 
   /**
    * Проверить наличие у программы прав на чтение/запись файла/папки по переданному пути
-   * 
    * @param entry - файл/папка
    */
   async hasPermissions(entry: FSEntry): Promise<boolean> {
+    if (!await entry.exists()) return false
+
     let readResult: ICheckResult
     if (!(readResult = await entry.canRead()).result) {
-      throw new ProgramError(ErrorText.readFileError, entry.path, readResult.error!)
+      throw new ProgramError(ErrorText.readFileError, readResult.error, entry.path)
     }
 
     let writeResult: ICheckResult
     if (!(writeResult = await entry.canWrite()).result) {
-      throw new ProgramError(ErrorText.writeFileError, entry.path, writeResult.error!)
+      throw new ProgramError(ErrorText.writeFileError, writeResult.error, entry.path)
     }
 
     return true
   }
 
   /** Инициализация публичных объектов/методов */
-  private initPublic() {
-    publicFunction<IPublic[Keys.checkUpdate]>(Keys.checkUpdate, this.checkUpdate.bind(this))
+  protected initPublic() {
+    publicFunction<PubType[PubKeys.checkUpdate]>(PubKeys.checkUpdate, this.checkUpdate.bind(this))
   }
 }
 

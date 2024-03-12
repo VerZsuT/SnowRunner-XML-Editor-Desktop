@@ -4,13 +4,13 @@
       class="title"
       :level="4"
     >
-      {{ state.title }}
+      {{ title }}
     </Title>
 
     <Progress
-      v-if="state.isDownload"
+      v-if="isDownload"
       class="progress"
-      :percent="state.percent"
+      :percent="percent"
     />
     <Spin v-else />
   </div>
@@ -18,7 +18,7 @@
 
 <script lang='ts' setup>
 import { Progress, Typography } from 'ant-design-vue'
-import { reactive } from 'vue'
+import { ref } from 'vue'
 
 import texts from './texts'
 
@@ -29,27 +29,26 @@ import { useWindowReady } from '/rend/utils'
 import '/rend/template-script'
 
 const { Title } = Typography
+
+const isDownload = ref(false)
+const percent = ref(0)
+const title = ref(texts.loading)
+
 useWindowReady(ProgramWindow.loading)
 useEvents()
 
-const state = reactive({
-  isDownload: false,
-  percent: 0,
-  title: texts.loading
-})
-
 function useEvents() {
   Windows.onLoadingSuccess(() => {
-    state.percent = 0
-    state.isDownload = false
-    state.title = texts.loading
+    percent.value = 0
+    isDownload.value = false
+    title.value = texts.loading
   })
   Windows.onLoadingDownload(() => {
-    state.isDownload = true
-    state.title = texts.download
+    isDownload.value = true
+    title.value = texts.download
   })
-  Windows.onLoadingText(title => state.title = title)
-  Windows.onLoadingPercent(percent => state.percent = Number(percent))
+  Windows.onLoadingText(value => title.value = value)
+  Windows.onLoadingPercent(value => percent.value = Number(value))
 }
 </script>
 

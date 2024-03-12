@@ -39,20 +39,22 @@ import ListItem from './item.vue'
 import type { File } from '/mods/renderer'
 import { Favorites, Helpers } from '/mods/renderer'
 
-type Props = {
+export type ListProps = {
   srcType: SourceType
   files: File[]
 }
 
-const props = defineProps<Props>()
+const props = defineProps<ListProps>()
+
 const { files, srcType } = toRefs(props)
 const { category } = useListStore()
-
 const isShowMods = ref(false)
+
 const listItems = useFilteredItems()
 
 function hideModsPopup(isReload?: boolean) {
   isShowMods.value = false
+
   if (isReload) {
     setTimeout(() => {
       Modal.confirm({
@@ -67,6 +69,7 @@ function hideModsPopup(isReload?: boolean) {
 function useFilteredItems() {
   function filterFiles(files: File[]): File[] {
     let filtered = files
+
     if (srcType.value === SourceType.favorites) {
       filtered = filtered.filter(value => Favorites.ref.includes(value.name))
     }
@@ -74,9 +77,11 @@ function useFilteredItems() {
   }
 
   const items = ref<{ file: File, category: Category }[]>([])
+  
   watchEffect(() => {
     items.value = filterFiles(files.value).map(file => ({ file, category: category.value }))
   })
+
   return items
 }
 </script>

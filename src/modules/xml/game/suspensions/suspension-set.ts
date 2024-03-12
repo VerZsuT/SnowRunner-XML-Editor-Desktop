@@ -7,6 +7,7 @@ import Suspension from './suspension'
 
 export { default as Suspension } from './suspension'
 
+/** Набор подвесок */
 export default class SuspensionSet extends XMLWithTemplates {
   /** Имя набора подвесок */
   @strAttr()

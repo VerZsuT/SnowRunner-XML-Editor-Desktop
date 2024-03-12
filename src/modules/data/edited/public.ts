@@ -3,20 +3,20 @@ import type { MainEvent, RendererEvent } from 'emr-bridge'
 import type Edited from './main'
 import type { EditedFile } from './types'
 
-export enum Keys {
-  array = 'edited.obj',
-  reset = 'edited.reset',
-  save = 'edited.save',
-  mainChangeEvent = 'edited.main-change-event',
-  onMainChange = 'onEdited.main-change-event',
-  rendererChangeEvent = 'edited.renderer-change-event',
-  onRendererChange = 'onEdited.renderer-change-event'
+export enum PubKeys {
+  array = 'edited/obj',
+  reset = 'edited/reset',
+  save = 'edited/save',
+  mainChangeEvent = '-edited/main-change-event',
+  rendererChangeEvent = '-edited/renderer-change-event',
+  onMainChange = `on${PubKeys.mainChangeEvent}`,
+  onRendererChange = `on${PubKeys.rendererChangeEvent}`
 }
 
-export interface IPublic {
-  [Keys.array]: EditedFile[]
-  [Keys.reset]: typeof Edited.reset
-  [Keys.save]: typeof Edited.save
-  [Keys.onMainChange]: MainEvent<EditedFile[]>
-  [Keys.rendererChangeEvent]: RendererEvent<EditedFile[]>
+export type PubType = {
+  [PubKeys.array]: EditedFile[]
+  [PubKeys.reset]: typeof Edited.reset
+  [PubKeys.save]: typeof Edited.save
+  [PubKeys.onMainChange]: MainEvent<EditedFile[]>
+  [PubKeys.rendererChangeEvent]: RendererEvent<EditedFile[]>
 }

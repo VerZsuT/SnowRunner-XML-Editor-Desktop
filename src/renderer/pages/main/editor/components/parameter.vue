@@ -35,44 +35,52 @@ import { useActive } from './utils'
 
 import type { IExportedData } from '/mods/renderer'
 import { ContextMenu } from '/rend/components'
-import { isNullable } from '/utils/renderer'
+import type { EmitsToProps } from '/rend/types'
+import { isNullable, isString } from '/utils/renderer'
 
 const { Text } = Typography
+
+export type ParameterProps = IParameterProps & EmitsToProps<ParameterEmits>
+
+const props = defineProps<IParameterProps>()
+const emit = defineEmits<ParameterEmits>()
 
 defineSlots<{
   default(props: { value: ParameterValue; onChange(v: ParameterValue): void }): any
 }>()
-const emit = defineEmits<ParameterEmits>()
-const props = defineProps<IParameterProps>()
 
-const { label, utils } = props
 const { info } = useEditorStore()
 const file = injectFile()
-const getter = props.getter ?? utils.get
-const setter = (value: ParameterValue) => {
-  if (typeof value === 'string' && utils['setStr']) {
+
+const { label, utils } = props
+const { isActive } = useActive()
+
+const getValue = props.getter ?? utils.get
+const setValue = (value: ParameterValue) => {
+  if (isString(value) && utils['setStr']) {
     utils['setStr'](value)
   }
   else {
     (props.setter ?? utils.set)(value)
   }
-  emit('change', getter())
+  emit('change', getValue())
 }
 
-const defaultValue = getter()
+const defaultValue = getValue()
 const value = ref(defaultValue ?? '')
-const { isActive } = useActive()
 
 ResetUtils.onReset(resetValue)
 ImportUtils.onImport(data => {
   const exportedValue = getExportedValue(data.data)
   if (isNullable(exportedValue)) return
+
   changeValue(exportedValue)
 })
 ExportUtils.onExport(data => {
   const fileName = ExportUtils.getName(file, info.dlc, info.mod)
   const fileData = data.data[fileName] ??= {}
   const selectorData = fileData[utils.selector] ??= {}
+
   selectorData[utils.name] = utils['getStr']?.() ?? utils.get()
 })
 
@@ -86,17 +94,15 @@ const contextItems = [{
 async function resetValue() {
   const defaultVal = await getDefaultValue()
   if (!defaultVal) return
+
   changeValue(defaultVal)
 }
 
 function changeValue(newValue: ParameterValue) {
   if (value.value === newValue) return
+  
   setValue(newValue)
-  value.value = getter()
-}
-
-function setValue(newValue: ParameterValue) {
-  setter(newValue)
+  value.value = getValue()
 }
 
 async function getDefaultValue() {

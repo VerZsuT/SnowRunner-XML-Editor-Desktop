@@ -1,14 +1,14 @@
 <template>
   <Parameter
-    :getter="props.getter"
-    :label="props.label"
-    :utils="props.utils"
-    @change="emit('change', $event)"
+    :getter="getter"
+    :label="label"
+    :utils="utils"
+    @change="$emit('change', $event)"
   >
     <template #default="{ onChange, value }">
       <CoordsItem
-        :number-type="props.numberType"
-        :step="props.step"
+        :number-type="numberType"
+        :step="step"
         :value="<Position><unknown> value"
         @change="onChange"
       />
@@ -23,9 +23,12 @@ import CoordsItem from './item.vue'
 
 import type { PosUtils } from '/mods/xml/game/game-xml'
 import type Position from '/mods/xml/game/position'
+import type { EmitsToProps } from '/rend/types'
+
+export type CoordsProps = Props & EmitsToProps<ParameterEmits>
 
 type Props = IParameterProps<Position, PosUtils> & Omit<IInputProps, 'value' | 'type'>
 
-const props = defineProps<Props>()
-const emit = defineEmits<ParameterEmits>()
+defineProps<Props>()
+defineEmits<ParameterEmits>()
 </script>

@@ -1,5 +1,5 @@
-import type { IPublic } from './public'
-import { Keys } from './public'
+import type { PubType } from './public'
+import { PubKeys } from './public'
 
 import { providePubFunc } from '/utils/bridge/renderer'
 
@@ -14,13 +14,13 @@ class EPF {
    * Открыть окно выбора `.epf` файлов.  
    * После выбора объединяет их и сохраняет по выбранному пользователем пути
    */
-  join = providePubFunc<IPublic[Keys.join]>(Keys.join)
+  join = providePubFunc<PubType[PubKeys.join]>(PubKeys.join)
 
   /**
    * Вывести содержимое `.epf` файла.  
    * Анализирует выбранный .epf файл и выводит окно с его содержимым в более удобном формате
    */
-  see = providePubFunc<IPublic[Keys.see]>(Keys.see)
+  see = providePubFunc<PubType[PubKeys.see]>(PubKeys.see)
 }
 
 export default new EPF()

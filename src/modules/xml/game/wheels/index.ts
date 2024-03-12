@@ -15,15 +15,16 @@ export { default as TruckTires } from './tires'
 
 /** Рутовый тег файла класса типа колес (набор взаимозаменяемых шин и дисков) */
 export default class Wheels extends XMLWithTemplates {
-  static override async fromFile(file: File): Promise<Wheels | undefined> {
+  static override async from(str: string): Promise<Wheels | undefined>
+  static override async from(file: File): Promise<Wheels | undefined>
+  static override async from(source: string | File): Promise<Wheels | undefined> {
     const rootSelector = 'TruckWheels'
-    const root = await XMLElement.fromFile(file)
+    const root = await XMLElement.from(source as File)
     const element = root?.select(rootSelector)
-    if (!root || !element) return
 
-    return new this(
+    if (root && element) return new this(
       element,
-      await XMLTemplates.fromXML(root),
+      await XMLTemplates.from(root),
       rootSelector,
       root
     )

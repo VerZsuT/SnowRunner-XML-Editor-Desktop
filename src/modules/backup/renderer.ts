@@ -1,6 +1,6 @@
 import type _MainBackup from './main'
-import type { IPublic } from './public'
-import { Keys } from './public'
+import type { PubType } from './public'
+import { PubKeys } from './public'
 
 import { providePubFunc } from '/utils/bridge/renderer'
 
@@ -13,13 +13,13 @@ class Backup {
    * Сохранить бэкап `initial.pak`  
    * {@link _MainBackup.save|Перейти к методу}
    */
-  save = providePubFunc<IPublic[Keys.save]>(Keys.save)
+  save = providePubFunc<PubType[PubKeys.save]>(PubKeys.save)
 
   /**
    * Заменить оригинальный `initial.pak` на сохранённый  
    * {@link _MainBackup.recoverFromIt|Перейти к методу}
    */
-  recoverFromIt = providePubFunc<IPublic[Keys.recoverFromIt]>(Keys.recoverFromIt)
+  recoverFromIt = providePubFunc<PubType[PubKeys.recoverFromIt]>(PubKeys.recoverFromIt)
 }
 
 export default new Backup()

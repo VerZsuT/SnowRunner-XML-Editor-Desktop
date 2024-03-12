@@ -1,7 +1,7 @@
 import { app } from 'electron'
 
 import { APP_NAME } from '/consts'
-import { Checks, Config, DLCs, Edited, ExitParams, Favorites, Mods, ProgramWindow, Sizes, Texts, Windows } from '/mods/main'
+import { Checks, Config, DLCs, Edited, Favorites, Mods, ProgramWindow, QuitParams, Sizes, Texts, Windows } from '/mods/main'
 
 import '/mods/epf/main'
 import '/mods/updates/main'
@@ -11,11 +11,11 @@ class App {
   /** Инициализация программы */
   async init() {
     this.handleExceptions()
+    this.checkMultipleInstances()
     this.handleQuit()
     this.disableNavigation()
     this.disableSecurityWarns()
 
-    this.checkMultipleInstances()
     this.setName()
     this.optimize()
     await this.start()
@@ -32,13 +32,12 @@ class App {
     await Windows.openWindow(ProgramWindow.loading)
 
     if (!await Checks.hasAdminPrivileges()) return
-
+    
     if (!Config.initialPath) {
       await Windows.openWindow(ProgramWindow.setup)
-      void Checks.checkUpdate()
       return
     }
-
+    
     await Checks.checkInitialChanges()
 
     if (!await Checks.hasAllPaths()) {
@@ -51,8 +50,8 @@ class App {
       DLCs.init(),
       Mods.procMods()
     ])
+
     await Windows.openWindow(ProgramWindow.main)
-    void Checks.checkUpdate()
   }
 
   /** Проверка других открытых экземпляров программы */
@@ -77,7 +76,7 @@ class App {
   handleQuit() {
     app.once('before-quit', async event => {
       event.preventDefault()
-      if (ExitParams.saveJSONs) {
+      if (QuitParams.saveJSONs) {
         await Promise.all([
           Config.save(),
           Edited.save(),
@@ -91,7 +90,7 @@ class App {
     app.once('window-all-closed', app.exit)
   }
 
-  /** Установка действия при исплючениях */
+  /** Установка действия при исключениях */
   handleExceptions() {
     function onError(error: Error) {
       console.error(error.stack || error)
@@ -109,9 +108,11 @@ class App {
     })
   }
 
+  /** Отключение предупреждений Electron */
   disableSecurityWarns() {
     process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = 'true'
   }
 }
 
-new App().init().catch(error => { throw new Error(error) })
+new App().init()
+  .catch(error => { throw new Error(error) })

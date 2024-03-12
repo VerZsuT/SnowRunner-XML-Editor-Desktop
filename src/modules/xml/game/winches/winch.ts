@@ -4,25 +4,30 @@ import { boolAttr, boolUtils, floatAttr, numUtils } from '../game-xml'
 import Limit from '../limit'
 import XMLWithTemplates, { innerElement } from '../xml-with-templates'
 
+/** Лебёдка */
 export default class Winch extends XMLWithTemplates {
+  /** Длина лебёдки */
   @floatAttr(new Limit({ min: 0.0, max: 100.0 }))
   get Length() { return 14.0 }
   set Length(_: number | undefined) {}
   @numUtils()
   get $Length() { return {} as NumUtils }
 
+  /** Сила лебёдки */
   @floatAttr(new Limit({ min: 0.0, max: 10.0 }))
   get StrengthMult() { return 1.0 }
   set StrengthMult(_: number | undefined) {}
   @numUtils()
   get $StrengthMult() { return {} as NumUtils }
 
+  /** Автономная ли лебёдка */
   @boolAttr()
   get IsEngineIgnitionRequired() { return true }
   set IsEngineIgnitionRequired(_: boolean | undefined) {}
   @boolUtils()
   get $IsEngineIgnitionRequired() { return {} as BoolUtils }
 
+  /** Информация о взаимодействии лебёдки с окружающим миром */
   @innerElement(BaseGameData)
   get GameData(): BaseGameData | undefined { return undefined }
 }

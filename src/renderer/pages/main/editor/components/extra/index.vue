@@ -36,7 +36,7 @@
 import type { IActionProps } from '../../types'
 import Accordion from '../accordion.vue'
 import Group from '../group'
-import type { ReadyEmits } from '../utils'
+import type { ReadyEmits, ReadyProps } from '../utils'
 import { useFilesReady } from '../utils'
 import AddonsContent from './addons-content'
 import BanditCrane from './bandit-crane'
@@ -51,7 +51,10 @@ enum ReadyType {
   trailers = 'trailers'
 }
 
-const emit = defineEmits<ReadyEmits>()
+export type ExtraActionsProps = IActionProps & ReadyProps
+
 const { file, xml } = defineProps<IActionProps>()
+const emit = defineEmits<ReadyEmits>()
+
 const { ready, inProgress } = useFilesReady(emit, true)
 </script>

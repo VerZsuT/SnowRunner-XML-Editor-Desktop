@@ -2,19 +2,25 @@ import { onMounted, onUnmounted } from 'vue'
 
 import { isString } from '/utils/renderer'
 
+/** Название события клавиши */
 export type KeyEventName = 'keypress' | 'keyup' | 'keydown'
 
+/** Параметры горячей клавиши */
 export interface IHotKeysParams {
+  /** Клавиша */
   key: string
+  /** Название события */
   eventName?: KeyEventName
+  /** Требуется ли нажатия `CTRL` */
   ctrlKey?: boolean
+  /** Требуется ли нажатие `SHIFT` */
   shiftKey?: boolean
+  /** Убрать поведение по умолчанию */
   prevent?: boolean
 }
 
 /**
  * Устанавливает обработчик события нажатия кнопки
- * 
  * @param params - параметры
  * @param handler - обработчик события
  */

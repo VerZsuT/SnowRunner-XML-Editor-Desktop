@@ -1,11 +1,11 @@
 <template>
   <Divider class="title">
-    {{ texts.whatsNewTitle }} {{ ` v${props.version}` }}
+    {{ texts.whatsNewTitle }} {{ ` v${version}` }}
   </Divider>
   <List
     class="content"
     size="small"
-    :data-source="props.changes"
+    :data-source="changes"
   >
     <template #renderItem="{ item }">
       <List.Item>
@@ -22,12 +22,14 @@ import texts from './texts'
 
 const { Text } = Typography
 
-type Props = {
+export type VersionInfoProps = {
+  /** Версия, для которой показывать изменения */
   version: string,
+  /** Изменения в данной версии */
   changes: string[]
 }
 
-const props = defineProps<Props>()
+defineProps<VersionInfoProps>()
 </script>
 
 <style scoped lang='scss'>

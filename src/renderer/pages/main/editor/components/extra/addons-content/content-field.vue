@@ -1,12 +1,12 @@
 <template>
   <div class="grid content">
     <Text class="text">
-      {{ props.text }}
+      {{ text }}
     </Text>
     <Input
       class="input"
       type="number"
-      :value="props.value"
+      :default-value="value"
       @change="onChange"
     />
   </div>
@@ -16,27 +16,24 @@
 import type { InputProps } from 'ant-design-vue'
 import { Input, Typography } from 'ant-design-vue'
 
-type Props = {
+const { Text } = Typography
+
+export type ContentFieldProps = {
+  /** Заголовок поля для ввода */
   text: string
-  value: number
 }
 
-type Emits = {
-  change: [value: number]
-}
-
-const Text = Typography.Text
-const props = defineProps<Props>()
-const emit = defineEmits<Emits>()
+const value = defineModel<number>({ required: true })
+defineProps<ContentFieldProps>()
 
 const onChange: InputProps['onChange'] = event => {
-  const value = event.target.value
-  if (!value) return
+  const inputVal = event.target.value
+  if (!inputVal) return
 
-  const num = Number.parseInt(value)
+  const num = Number.parseInt(inputVal)
   if (Number.isNaN(num)) return
 
-  emit('change', num)
+  value.value = num
 }
 </script>
 

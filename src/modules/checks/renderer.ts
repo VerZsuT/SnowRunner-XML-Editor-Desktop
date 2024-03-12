@@ -1,6 +1,6 @@
 import type _MainChecks from './main'
-import type { IPublic } from './public'
-import { Keys } from './public'
+import type { PubType } from './public'
+import { PubKeys } from './public'
 
 import { providePubFunc } from '/utils/bridge/renderer'
 
@@ -14,11 +14,10 @@ class Checks {
   /**
    * Проверить наличие обновления.  
    * Выводит оповещение при наличии
-   * 
-   * @param whateverCheck - игнорировать настройку `settings.updates` в `config.json`  
+   * @param whateverCheck - игнорировать настройку `settings.updates` в `Config`  
    * {@link _MainChecks.checkUpdate|Перейти к методу}
    */
-  checkUpdate = providePubFunc<IPublic[Keys.checkUpdate]>(Keys.checkUpdate)
+  checkUpdate = providePubFunc<PubType[PubKeys.checkUpdate]>(PubKeys.checkUpdate)
 }
 
 export default new Checks()

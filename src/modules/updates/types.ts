@@ -1,29 +1,21 @@
 import type { BrowserWindow } from 'electron'
 
-export interface IDownloadParams {
-  array?: {
-    url: string
-    path: string
-  }[]
-  isRoot?: boolean
-  inMemory?: boolean
-  fromJSON?: boolean
-  loadingPage?: IDownloadWindow | null
-  url?: string
-  path?: string
-}
-
+/** Окно загрузки */
 export interface IDownloadWindow extends BrowserWindow {
+  /** Установить текст (заголовок) */
   setText(text: string): void
-  setCount(count: number): void
+  /** Установить процент */
   setPercent(percent: number | string): void
-  showAndWait(): Promise<void>
+  /** Установить флаг "успешно" */
   success(): void
+  /** Установить флаг "загрузка" */
   download(): void
+  /** Показать и подождать открытия */
+  showAndWait(): Promise<void>
 }
 
+/** Окно обновления */
 export interface IUpdateWindow extends BrowserWindow {
+  /** Установить версию обновления */
   setVersion(version: string): void
 }
-
-export type UpdateMap = Record<string, string>

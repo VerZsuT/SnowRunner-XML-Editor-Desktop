@@ -3,19 +3,19 @@ import type { MainEvent } from 'emr-bridge'
 import type Favorites from './main'
 import type { FavoriteTruck } from './types'
 
-export enum Keys {
-  array = 'favorites.array',
-  mainChangeEvent = 'favorites.main-change-event',
-  rendererChangeEvent = 'favorites.renderer-change-event',
-  onMainChange = 'onFavorites.main-change-event',
-  onRendererChange = 'onFavorites.renderer-change-event',
-  reset = 'favorites.reset',
-  save = 'favorites.save'
+export enum PubKeys {
+  array = 'favs/array',
+  reset = 'favs/reset',
+  save = 'favs/save',
+  mainChangeEvent = '-favs/main-change-event',
+  rendererChangeEvent = '-favs/renderer-change-event',
+  onMainChange = `on${PubKeys.mainChangeEvent}`,
+  onRendererChange = `on${PubKeys.rendererChangeEvent}`
 }
 
-export interface IPublic {
-  [Keys.array]: FavoriteTruck[]
-  [Keys.onMainChange]: MainEvent<FavoriteTruck[]>
-  [Keys.reset]: typeof Favorites.reset
-  [Keys.save]: typeof Favorites.save
+export type PubType = {
+  [PubKeys.array]: FavoriteTruck[]
+  [PubKeys.onMainChange]: MainEvent<FavoriteTruck[]>
+  [PubKeys.reset]: typeof Favorites.reset
+  [PubKeys.save]: typeof Favorites.save
 }

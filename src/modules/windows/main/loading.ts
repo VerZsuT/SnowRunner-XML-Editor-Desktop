@@ -5,13 +5,17 @@ import type { IDownloadWindow } from '/mods/updates/types'
 import { publicMainEvent } from 'emr-bridge'
 
 import { ProgramWindow, WindowType } from '../enums'
-import { Keys } from '../public'
+import { PubKeys } from '../public'
 import { getDevPage, getRenderer, newWindow } from './utils'
 
-const emitSetFileName = publicMainEvent<string>(Keys.loadingTextEvent)
-const emitSetPercent = publicMainEvent<string | number>(Keys.loadingPercentEvent)
-const emitSetSuccess = publicMainEvent<boolean>(Keys.loadingSuccessEvent)
-const emitSetDownload = publicMainEvent<boolean>(Keys.loadingDownloadEvent)
+/** Вызвать событие текста */
+const emitSetText = publicMainEvent<string>(PubKeys.loadingTextEvent)
+/** Вызвать событие процента */
+const emitSetPercent = publicMainEvent<string | number>(PubKeys.loadingPercentEvent)
+/** Вызвать событие успеха */
+const emitSetSuccess = publicMainEvent<boolean>(PubKeys.loadingSuccessEvent)
+/** Вызвать событие загрузки */
+const emitSetDownload = publicMainEvent<boolean>(PubKeys.loadingDownloadEvent)
 
 /** Окно загрузки */
 export default newWindow({
@@ -27,7 +31,7 @@ export default newWindow({
   async create(superCreate): Promise<BrowserWindow> {
     const win = await superCreate() as IDownloadWindow
 
-    win.setText = emitSetFileName
+    win.setText = emitSetText
     win.setPercent = emitSetPercent
     win.success = () => emitSetSuccess(true)
     win.download = () => emitSetDownload(true)
@@ -38,5 +42,8 @@ export default newWindow({
 
     return win
   },
-  onClose() { app.quit() }
+
+  onClose() {
+    app.quit()
+  }
 })

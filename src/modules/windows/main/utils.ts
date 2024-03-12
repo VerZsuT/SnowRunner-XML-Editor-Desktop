@@ -11,16 +11,20 @@ export function newWindow(params: WindowParams) {
 }
 
 /** Получить путь к html */
-export function getRenderer(path: string) { return Dirs.pages.file(path).path }
+export function getRenderer(path: string) {
+  return Dirs.pages.file(path).path
+}
 
 /** Получить путь к dev странице */
-export function getDevPage(name: string) { return `${RENDERER_VITE_DEV_SERVER_URL}/src/renderer/pages/${name}/index.html` }
+export function getDevPage(name: string) {
+  return `${RENDERER_VITE_DEV_SERVER_URL}/src/renderer/pages/${name}/index.html`
+}
 
 /** Класс объекта окна программы */
 export class ProgramWin {
   constructor(
     readonly params: WindowParams
-  ) { false }
+  ) {}
 
   /** Зарегистрировать окно */
   register(Windows: typeof WindowsType) {

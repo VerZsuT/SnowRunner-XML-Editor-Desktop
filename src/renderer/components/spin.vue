@@ -1,6 +1,6 @@
 <template>
   <div
-    v-if="props.center"
+    v-if="center"
     class="spin-container"
   >
     <Spin size="large" />
@@ -15,11 +15,12 @@
 <script lang='ts' setup>
 import { Spin } from 'ant-design-vue'
 
-type Props = {
+export type SpinProps = {
+  /** Разместить по центру доступного места */
   center?: boolean
 }
 
-const props = defineProps<Props>()
+defineProps<SpinProps>()
 </script>
 
 <style lang='scss' scoped>

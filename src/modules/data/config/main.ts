@@ -2,9 +2,9 @@ import { app } from 'electron'
 
 import { publicFunction, publicMainEvent, publicVariable } from 'emr-bridge'
 
-import { BuildType, Lang, convertStrToLang } from './enums'
-import type { IPublic } from './public'
-import { Keys } from './public'
+import { BuildType, Lang, localeToLang, strToLang } from './enums'
+import type { PubType } from './public'
+import { PubKeys } from './public'
 import type { IConfig } from './types'
 
 import { PROGRAM_VERSION } from '/consts'
@@ -15,6 +15,7 @@ import Sizes from '/mods/data/sizes/main'
 import { ErrorText, ProgramError } from '/mods/errors/main'
 import { File, Files } from '/mods/files/main'
 import Helpers from '/mods/helpers/main'
+import { HasPublic } from '/utils/bridge/main'
 import { isNullable } from '/utils/checks/main'
 
 export * from './enums'
@@ -24,41 +25,39 @@ export type * from './types'
  * Работа с конфигурацией программы  
  * _main process_
 */
-class Config {
+class Config extends HasPublic {
+  /** Файл initial.pak */
+  get initial() {
+    return new File(this.object.initialPath || '')
+  }
+
+  /** Программа в режиме разработки */
+  get isDev() {
+    return this.object.buildType === BuildType.dev
+  }
+
+  /** Стандартное значение конфига */
+  readonly default: IConfig = {
+    version: PROGRAM_VERSION,
+    buildType: process.env.NODE_ENV === 'development' ? BuildType.dev : BuildType.prod,
+    lang: Lang.en,
+    initialPath: null,
+    advancedMode: false,
+    useMods: true,
+    openWhatsNew: true,
+    checkUpdates: true
+  }
+
   /** Объект конфига */
   private object!: IConfig
 
-  /** Файл initial.pak */
-  get initial() { return new File(this.object.initialPath || '') }
-
-  /** Программа в режиме разработки */
-  get isDev() { return this.object.buildType === BuildType.dev }
-
-  /** Стандартное значение конфига */
-  get default(): IConfig {
-    return {
-      version: PROGRAM_VERSION,
-      buildType: process.env.NODE_ENV === 'development' ? BuildType.dev : BuildType.prod,
-      lang: Lang.en,
-      initialPath: null,
-      advancedMode: false,
-      useMods: true,
-      openWhatsNew: true,
-      checkUpdates: true
-    }
+  /** Стандартное значение конфига в `dev` режиме */
+  private readonly devDefault: IConfig = {
+    ...this.default,
+    lang: strToLang(process.env.DEV_LANG) || this.default.lang,
+    initialPath: process.env.DEV_INITIAL_PATH || this.default.initialPath,
+    openWhatsNew: false
   }
-
-  private get devDefault(): IConfig {
-    const defaultConfig = this.default
-    return {
-      ...defaultConfig,
-      lang: convertStrToLang(process.env.DEV_LANG) || defaultConfig.lang,
-      initialPath: process.env.DEV_INITIAL_PATH || defaultConfig.initialPath,
-      openWhatsNew: false
-    }
-  }
-
-  constructor() { this.initPublic() }
 
   /** Получить объект конфига */
   get(): IConfig { return { ...this.object } }
@@ -72,7 +71,7 @@ class Config {
     for (const key in this.object) {
       Object.defineProperty(this, key, {
         get: () => this.object[key],
-        set: value => { this.set({ [key]: value }) },
+        set: value => this.set({ [key]: value }),
         enumerable: true
       })
     }
@@ -84,8 +83,8 @@ class Config {
     try {
       await Files.config.writeToJSON(this.object)
     }
-    catch (error) {
-      throw new ProgramError(ErrorText.saveConfigError, (error as Error).message)
+    catch (error: any) {
+      throw new ProgramError(ErrorText.saveConfigError, error)
     }
   }
 
@@ -99,16 +98,17 @@ class Config {
 
   /**
    * Сбросить `config.json` на "заводскую" версию
-   * 
    * @param noReload - отмена перезагрузки после завершения.
    */
-  async reset(noReload?: boolean) {
+  async reset(noReload = false) {
     this.set(this.default)
+
     await Helpers.clearTemp()
     await Sizes.reset()
     await Edited.reset()
     await Favorites.reset()
     await Mods.reset()
+    
     if (noReload) {
       await this.save()
     }
@@ -118,24 +118,40 @@ class Config {
     }
   }
 
-  private emitChangeConfig = publicMainEvent<IConfig>(Keys.changeEvent)
+  /** Инициализация публичных объектов/методов */
+  protected initPublic() {
+    publicVariable<PubType[PubKeys.object]>(PubKeys.object, {
+      get: this.get.bind(this),
+      set: this.set.bind(this)
+    })
+    publicFunction<PubType[PubKeys.reset]>(PubKeys.reset, this.reset.bind(this))
+    publicFunction<PubType[PubKeys.save]>(PubKeys.save, this.save.bind(this))
+  }
+
+  /** Вызвать событие изменения */
+  private emitChangeConfig = publicMainEvent<IConfig>(PubKeys.changeEvent)
 
   /** Получить объект конфига */
   private async getConfig(): Promise<IConfig> {
     const defaultConfig = this.default.buildType === BuildType.dev ? this.devDefault : this.default
+
     if (await Files.config.exists()) {
-      try { return await this.getFromJSON(defaultConfig) }
-      catch { return defaultConfig }
+      try {
+        return await this.getFromJSON(defaultConfig)
+      }
+      catch {
+        return defaultConfig
+      }
     }
-    else {
-      return defaultConfig
-    }
+
+    return defaultConfig
   }
 
   /** Получить объект конфига из JSON */
   private async getFromJSON(defaultConfig: IConfig): Promise<IConfig> {
     const data = await Files.config.readFromJSON<{ version: string }>()
-    const version = data.version.includes('-beta') ? data.version.split('-beta')[0] : data.version
+    const version = this.getVersion(data.version)
+
     let config: IConfig
 
     if (version === this.default.version) {
@@ -150,12 +166,14 @@ class Config {
 
     config.version = this.default.version
     if (isNullable(config.lang)) {
-      const locale = Intl.DateTimeFormat().resolvedOptions().locale.split('-')[1]!
-      config.lang = convertStrToLang(locale.toUpperCase()) || this.default.lang
+      const locale = Intl.DateTimeFormat().resolvedOptions().locale
+      config.lang = localeToLang(locale) || this.default.lang
     }
+    
     return config
   }
 
+  /** Привести старую версию конфига к текущей */
   private async convertToNewest(data: any): Promise<IConfig> {
     const converted = data as IConfig
 
@@ -167,14 +185,9 @@ class Config {
     return converted
   }
 
-  /** Инициализация публичных объектов/методов */
-  private initPublic() {
-    publicVariable<IPublic[Keys.object]>(Keys.object, {
-      get: this.get.bind(this),
-      set: this.set.bind(this)
-    })
-    publicFunction<IPublic[Keys.reset]>(Keys.reset, this.reset.bind(this))
-    publicFunction<IPublic[Keys.save]>(Keys.save, this.save.bind(this))
+  /** Получает версию без `-beta` постфикса */
+  private getVersion(version: string) {
+    return version.includes('-beta') ? version.split('-beta')[0] : version
   }
 }
 

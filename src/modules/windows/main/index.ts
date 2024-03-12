@@ -18,14 +18,15 @@ import { Files } from '/mods/files/main'
 import type { IDownloadWindow, IUpdateWindow } from '/mods/updates/types'
 
 import { ProgramWindow } from '../enums'
-import type { IPublic } from '../public'
-import { Keys } from '../public'
+import type { PubType } from '../public'
+import { PubKeys } from '../public'
 import type { WindowParams } from '../types'
 
 export * from '../enums'
 export type * from '../types'
 
-const __dirname = dirname(fileURLToPath(import.meta.url))
+/** Папка, в которой находится текущий исполняемый скрипт */
+const _dirname = dirname(fileURLToPath(import.meta.url))
 
 type WindowsObject = Record<keyof ProgramWindow, [WindowParams, WindowCreator]>
 type WindowCreator = (...args: any[]) => Promise<BrowserWindow>
@@ -41,37 +42,49 @@ class Windows {
   /** Главное окно */
   private _mainWindow?: BrowserWindow
   /** Главное окно */
-  get mainWindow(): BrowserWindow | undefined { return this._mainWindow?.isDestroyed() ? undefined : this._mainWindow }
+  get mainWindow(): BrowserWindow | undefined {
+    if (!this._mainWindow?.isDestroyed()) return this._mainWindow
+  }
   set mainWindow(win: BrowserWindow) { this._mainWindow = win }
 
   /** Окно первичной настройки */
   private _setupWindow?: BrowserWindow
   /** Окно первичной настройки */
-  get setupWindow(): BrowserWindow | undefined { return this._setupWindow?.isDestroyed() ? undefined : this._setupWindow }
+  get setupWindow(): BrowserWindow | undefined {
+    if (!this._setupWindow?.isDestroyed()) return this._setupWindow
+  }
   set setupWindow(win: BrowserWindow) { this._setupWindow = win }
 
   /** Окно загрузки */
   private _loadingWindow?: IDownloadWindow
   /** Окно загрузки */
-  get loadingWindow(): IDownloadWindow | undefined { return this._loadingWindow?.isDestroyed() ? undefined : this._loadingWindow }
+  get loadingWindow(): IDownloadWindow | undefined {
+    if (!this._loadingWindow?.isDestroyed()) return this._loadingWindow
+  }
   set loadingWindow(win: IDownloadWindow) { this._loadingWindow = win }
 
   /** Окно настроек */
   private _settingsWindow?: BrowserWindow
   /** Окно настроек */
-  get settingsWindow(): BrowserWindow | undefined { return this._settingsWindow?.isDestroyed() ? undefined : this._settingsWindow }
+  get settingsWindow(): BrowserWindow | undefined {
+    if (!this._settingsWindow?.isDestroyed()) return this._settingsWindow
+  }
   set settingsWindow(win: BrowserWindow) { this._settingsWindow = win }
 
   /** Окно об обновлении */
   private _updateWindow?: IUpdateWindow
   /** Окно об обновлении */
-  get updateWindow(): IUpdateWindow | undefined { return this._updateWindow?.isDestroyed() ? undefined : this._updateWindow }
+  get updateWindow(): IUpdateWindow | undefined {
+    if (!this._updateWindow?.isDestroyed()) return this._updateWindow
+  }
   set updateWindow(win: IUpdateWindow) { this._updateWindow = win }
 
   /** Окно "что нового" */
   private _whatsNewWindow?: BrowserWindow
   /** Окно "что нового" */
-  get whatsNewWindow(): BrowserWindow | undefined { return this._whatsNewWindow?.isDestroyed() ? undefined : this._whatsNewWindow }
+  get whatsNewWindow(): BrowserWindow | undefined {
+    if (!this._whatsNewWindow?.isDestroyed()) return this._whatsNewWindow
+  }
   set whatsNewWindow(win: BrowserWindow) { this._whatsNewWindow = win }
 
   constructor() { this.initWindows(); this.initPublic() }
@@ -91,8 +104,7 @@ class Windows {
       parent, devURL, name: type, path,
       width = 800,
       height = 600,
-      maxHeight = undefined,
-      maxWidth = undefined,
+      maxHeight, maxWidth,
       minWidth = 0,
       minHeight = 0,
       resizable = true,
@@ -110,7 +122,7 @@ class Windows {
       icon: Files.icon.path,
       paintWhenInitiallyHidden: false,
       webPreferences: {
-        preload: join(__dirname, 'preload.cjs'),
+        preload: join(_dirname, 'preload.cjs'),
         contextIsolation: false,
         sandbox: false,
         nodeIntegration: false,
@@ -127,6 +139,7 @@ class Windows {
       this.showWindow(win, params)
       unsub()
     })
+
     if (Config.isDev) {
       await win.loadURL(devURL)
       setTimeout(() => hasError && this.showWindow(win, params), 3000)
@@ -139,7 +152,9 @@ class Windows {
   }
 
   /** Зарегистрировать окно программы */
-  regWindow(window: WindowParams, creator: WindowCreator) { this.windows[window.name] = [window, creator] }
+  regWindow(window: WindowParams, creator: WindowCreator) {
+    this.windows[window.name] = [window, creator]
+  }
 
   /** Открыть окно программы */
   async openWindow(windowName: ProgramWindow, ...args: any[]) {
@@ -169,7 +184,8 @@ class Windows {
     await new Promise<void>(resolve => window.once('ready-to-show', resolve))
   }
 
-  private onWindowReady = publicRendererEvent<ProgramWindow>(Keys.windowReadyEvent)
+  /** Подписаться на событие готовности окна */
+  private onWindowReady = publicRendererEvent<ProgramWindow>(PubKeys.windowReadyEvent)
 
   /** Показать окно */
   private showWindow(window: BrowserWindow, params: WindowParams) {
@@ -202,7 +218,7 @@ class Windows {
 
   /** Инициализация публичных объектов/методов */
   private initPublic() {
-    publicFunction<IPublic[Keys.openWindow]>(Keys.openWindow, this.openWindow.bind(this))
+    publicFunction<PubType[PubKeys.openWindow]>(PubKeys.openWindow, this.openWindow.bind(this))
   }
 }
 

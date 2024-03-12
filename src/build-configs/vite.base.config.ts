@@ -4,16 +4,19 @@ import { fileURLToPath } from 'node:url'
 
 import type { Plugin, UserConfig } from 'vite'
 
-
+/** Папка, в которой находится текущий исполняемый скрипт */
 const _dirname = dirname(fileURLToPath(import.meta.url))
 
-export const builtins = [
+/** Встроенные модули приложения */
+const builtins = [
   'electron',
   ...builtinModules.flatMap(m => [m, `node:${m}`])
 ]
 
+/** Модули, которые пакуются вместе с приложением */
 export const external = [...builtins]
 
+/** Алиасы путей */
 export const alias = {
   '/mods': join(_dirname, '../modules'),
   '/rend': join(_dirname, '../renderer'),

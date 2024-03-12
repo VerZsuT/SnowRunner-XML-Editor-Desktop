@@ -5,12 +5,18 @@ export interface IPaths {
   downloadPage: string
   /** URL релизов программы */
   update: string,
+
   /** Папка `app` */
   root: string
   /** Папка с страницами */
   pages: string
+  /** Иконка программы */
+  icon: string
+  /** Папка `WinRAR` */
+  winrar: string
+  /** Деинсталлятор */
+  uninstall: string
 
-  // jsons
   /** Файл конфигурации программы */
   config: string
   /** Объект изменений в файлах игры */
@@ -32,10 +38,7 @@ export interface IPaths {
   backupInitial: string
   /** Бэкап данных `initail.pak` перед распаковкой */
   backupInitialData: string
-  /** Иконка программы */
-  icon: string
-  /** Папка `WinRAR` */
-  winrar: string
+
   /** Временная папка для основных файлов */
   mainTemp: string
   /** Временная папка для файлов модификаций */
@@ -50,6 +53,4 @@ export interface IPaths {
   templates: string
   /** Временная папка `classes` */
   classes: string
-  /** Деинсталлятор */
-  uninstall: string
 }

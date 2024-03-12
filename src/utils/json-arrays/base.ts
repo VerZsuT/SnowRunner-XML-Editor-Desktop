@@ -1,23 +1,33 @@
 import { shallowRef, triggerRef } from 'vue'
 
 /** Базовый класс для массива */
-export default abstract class ArrayBase<Item, Extended = Item> {
+export default abstract class ArrayBase<Item, Converted = Item> {
+  /** Исходный массив */
   protected arr: Item[] = []
+  /** Реактивная ссылка на объект */
   protected thisRef = shallowRef(this)
 
   /** Значение по умолчанию */
   get default(): Item[] { return [] }
 
+  /** Реактивная ссылка */
   get ref() { return this.thisRef.value }
 
+  /** Длина массива */
   get length(): number { return this.arr.length }
 
-  *[Symbol.iterator](): IterableIterator<Extended> {
+  /** Преобразованный массив */
+  get converted(): Converted[] {
+    return this.arr.map(item => this.convert(item))
+  }
+
+  *[Symbol.iterator](): IterableIterator<Converted> {
     for (const item of this.arr) {
       yield this.convert(item)
     }
   }
 
+  /** Отследить изменение */
   protected handleChange() {
     this.onChangeEvent(newArray => {
       this.rawSet(newArray)
@@ -25,8 +35,8 @@ export default abstract class ArrayBase<Item, Extended = Item> {
   }
 
   /** Преобразователь типа */
-  protected convert(item: Item): Extended {
-    return item as unknown as Extended
+  protected convert(item: Item): Converted {
+    return item as unknown as Converted
   }
 
   /** Возвращает массив */
@@ -59,10 +69,12 @@ export default abstract class ArrayBase<Item, Extended = Item> {
     return this.arr.filter(predicate)
   }
 
+  /** Возаращает первый элемент, соответвующий условию в переданной функции */
   find(predicate: (value: Item, index: number, arr: Item[]) => unknown) {
     return this.arr.find(predicate)
   }
 
+  /** Имеется ли элемент, соответствующий условию в переданной функции */
   some(predicate: (value: Item, index: number, arr: Item[]) => unknown) {
     return this.arr.some(predicate)
   }
@@ -72,6 +84,7 @@ export default abstract class ArrayBase<Item, Extended = Item> {
     return this.arr.includes(item)
   }
 
+  /** Входные точки */
   entries() {
     return this.arr.entries()
   }
@@ -91,5 +104,6 @@ export default abstract class ArrayBase<Item, Extended = Item> {
 
   /** Функция вызова события изменения массива */
   protected abstract emitChangeEvent(newArray: Item[]): void
+  /** Функция подписки на событие изменения массива */
   protected abstract onChangeEvent(handler: (newArray: Item[]) => void): void
 }

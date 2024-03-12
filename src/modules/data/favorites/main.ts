@@ -1,8 +1,8 @@
 import { publicMainEvent, publicRendererEvent } from 'emr-bridge'
 
-import MainArrayBase, { initArrayPublic } from '/utils/json-arrays/main'
+import MainArrayBase from '/utils/json-arrays/main'
 
-import { Keys } from './public'
+import { PubKeys } from './public'
 import type { FavoriteTruck } from './types'
 
 import { Files } from '/mods/files/main'
@@ -13,16 +13,13 @@ export type * from './types'
  * Работа с массивом избранных авто  
  * _main process_
 */
-class FavoritesClass extends MainArrayBase<FavoriteTruck> {
-  protected override emitChangeEvent = publicMainEvent<[FavoriteTruck[]]>(Keys.mainChangeEvent)
-  protected override onChangeEvent = publicRendererEvent<FavoriteTruck[]>(Keys.onRendererChange)
+class Favorites extends MainArrayBase<FavoriteTruck> {
+  protected override emitChangeEvent = publicMainEvent<[FavoriteTruck[]]>(PubKeys.mainChangeEvent)
+  protected override onChangeEvent = publicRendererEvent<FavoriteTruck[]>(PubKeys.onRendererChange)
 
   protected override jsonFile = Files.favorites
+
+  constructor() { super(PubKeys.array, PubKeys.reset, PubKeys.save) }
 }
 
-const Favorites = new FavoritesClass()
-await Favorites._init()
-
-initArrayPublic(Favorites, Keys.array, Keys.reset, Keys.save)
-
-export default Favorites
+export default (await new Favorites()._init())

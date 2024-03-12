@@ -3,7 +3,7 @@ export interface ICheckResult {
   /** Успешно или нет */
   result: boolean
   /** Ошибка (если имеется) */
-  error?: string
+  error?: Error
 }
 
 /** Аргументы поиска файлов в папке */

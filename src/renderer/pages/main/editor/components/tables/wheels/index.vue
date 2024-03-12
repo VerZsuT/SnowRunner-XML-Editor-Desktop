@@ -11,12 +11,14 @@
 <script lang='ts' setup>
 import { onMounted, shallowRef } from 'vue'
 
-import type { ReadyEmits } from '../../utils'
+import type { ReadyEmits, ReadyProps } from '../../utils'
 import { useFilesReady } from '../../utils'
 import WheelsSet from './set.vue'
 
 import type { File, FileInfo, WheelsXML } from '/mods/renderer'
 import { useEditorStore } from '/rend/pages/main/store'
+
+export type WheelsProps = ReadyProps & Props
 
 type Props = {
   getter?(info: FileInfo): Promise<WheelsXML | undefined>
@@ -27,10 +29,10 @@ const props = defineProps<Props>()
 const emit = defineEmits<ReadyEmits>()
 
 const { info } = useEditorStore()
-const { ready, inProgress } = useFilesReady(emit, true)
-
 const wheelsSet = shallowRef<WheelsXML | null>(null)
 const file = shallowRef<File | null>(null)
+
+const { ready, inProgress } = useFilesReady(emit, true)
 
 onMounted(async () => {
   file.value = await props.fileGetter?.(info) || null

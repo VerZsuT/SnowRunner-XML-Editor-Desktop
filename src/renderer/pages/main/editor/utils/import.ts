@@ -22,7 +22,7 @@ class ImportUtils {
     const chosed = toImport ?? Dialogs.getEPF()
     if (!chosed) return
 
-    const xml = await TruckXML.fromFile(source)
+    const xml = await TruckXML.from(source)
     if (!xml) return
 
     const data = await chosed.readFromJSON<IExportedData>()

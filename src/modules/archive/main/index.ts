@@ -1,7 +1,7 @@
 import { publicFunction } from 'emr-bridge'
 
-import type { IPublic } from '../public'
-import { Keys } from '../public'
+import type { PubType } from '../public'
+import { PubKeys } from '../public'
 import WinRAR from './archiver'
 import texts from './texts'
 
@@ -11,17 +11,15 @@ import Sizes from '/mods/data/sizes/main'
 import { Dir, Dirs, File, Files } from '/mods/files/main'
 import Messages from '/mods/messages/main'
 import Windows from '/mods/windows/main'
+import { HasPublic } from '/utils/bridge/main'
 
 /**
  * Работа с архивами  
  * _main process_
 */
-class Archive {
-  constructor() { this.initPublic() }
-
+class Archive extends HasPublic {
   /**
    * Обновить файлы в архиве
-   * 
    * @param dir - папка с файлами
    * @param archive - обновляемый архив
    */
@@ -29,7 +27,7 @@ class Archive {
     const marker = dir.file('edited')
 
     await WinRAR.update(dir, archive)
-    await marker.write('')
+    await marker.make()
     await WinRAR.add(marker, archive)
 
     await this.saveSize(archive)
@@ -37,7 +35,6 @@ class Archive {
 
   /**
    * Распаковать файлы из архива в папку
-   * 
    * @param archive - распаковываемый архив
    * @param dir - папка, в которую будет распаковываться архив
    */
@@ -48,7 +45,6 @@ class Archive {
 
   /**
    * Распаковать основные XML файлы (+DLC) из `initial.pak`
-   * 
    * @param hideLoading - скрывать окно загрузки после окончания (default - `true`)
    */
   async unpackMain(hideLoading = true) {
@@ -61,12 +57,11 @@ class Archive {
     await this.unpack(Config.initial, Dirs.mainTemp)
     await this.saveSize(Config.initial)
 
-    if (hideLoading) Windows.loadingWindow?.hide()
+    hideLoading && Windows.loadingWindow?.hide()
   }
 
   /**
    * Распаковать XML файлы из архива модификации
-   * 
    * @param archive - архив модификации
    * @param name - название модификации
    */
@@ -82,7 +77,6 @@ class Archive {
 
   /**
    * Сохранить размер архива для фиксации изменений извне
-   * 
    * @param archive - архив, размер которого будет сохранён
    */
   private async saveSize(archive: File) {
@@ -95,19 +89,19 @@ class Archive {
   }
 
   /** Инициализация публичных объектов/методов */
-  private initPublic() {
-    publicFunction<IPublic[Keys.unpack]>(Keys.unpack, (archive, dir) => this.unpack(new File(archive), new Dir(dir)))
-    publicFunction<IPublic[Keys.unpackMain]>(Keys.unpackMain, this.unpackMain.bind(this))
-    publicFunction<IPublic[Keys.updateFiles]>(Keys.updateFiles, modName => {
+  protected initPublic() {
+    publicFunction<PubType[PubKeys.unpack]>(PubKeys.unpack, (archive, dir) => this.unpack(new File(archive), new Dir(dir)))
+    publicFunction<PubType[PubKeys.unpackMain]>(PubKeys.unpackMain, this.unpackMain.bind(this))
+    publicFunction<PubType[PubKeys.updateFiles]>(PubKeys.updateFiles, modName => {
       if (!modName) return this.update(Dirs.mainTemp, Config.initial)
 
       const mod = Mods.find(mod => mod.name === modName)
-      if (mod) {
-        return this.update(Dirs.modsTemp.dir(modName), new File(mod.path))
-      }
-      else {
+      if (!mod) {
         Messages.error(`Mod '${modName}' not found`)
+        return
       }
+
+      return this.update(Dirs.modsTemp.dir(modName), new File(mod.path))
     })
   }
 }

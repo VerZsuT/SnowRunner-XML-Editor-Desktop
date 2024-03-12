@@ -1,5 +1,5 @@
-import type { IPublic } from './public'
-import { Keys } from './public'
+import type { PubType } from './public'
+import { PubKeys } from './public'
 
 import { providePubFunc } from '/utils/bridge/renderer'
 
@@ -11,7 +11,7 @@ export type * from './types'
 */
 class Updates {
   /** Запустить процесс обновления программы */
-  updateApp = providePubFunc<IPublic[Keys.updateApp]>(Keys.updateApp)
+  updateApp = providePubFunc<PubType[PubKeys.updateApp]>(PubKeys.updateApp)
 }
 
 export default new Updates()

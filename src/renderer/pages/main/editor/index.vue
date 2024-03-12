@@ -1,5 +1,5 @@
 <template>
-  <div style="width: 100%; height: 100%;">
+  <div style="width: 100%; height: 100%">
     <template v-if="xml">
       <template v-if="hasError">
         <ErrorHeader />
@@ -18,13 +18,13 @@
             v-if="xml.Type === TruckFileType.trailer"
             :xml="xml"
             :file="file"
-            @ready="emit('ready')"
+            @ready="$emit('ready')"
           />
           <TruckTable
             v-else
             :xml="xml"
             :file="file"
-            @ready="emit('ready')"
+            @ready="$emit('ready')"
           />
         </div>
       </template>
@@ -40,8 +40,8 @@
 import { Typography } from 'ant-design-vue'
 import { onMounted, ref, shallowRef } from 'vue'
 
-import { useEditorStore } from '../store'
 import { ErrorHeader, MainHeader, TrailerTable, TruckTable } from './components'
+import type { ReadyEmits, ReadyProps } from './components/utils'
 import texts from './texts'
 import { ResetUtils, provideFile } from './utils'
 
@@ -49,38 +49,56 @@ import type { File } from '/mods/renderer'
 import { DLCs, Dirs, Mods, TruckFileType, TruckXML } from '/mods/renderer'
 import { Spin } from '/rend/components'
 
+import { useEditorStore } from '../store'
+
 const { Text } = Typography
 
+type MainHeaderExpose = InstanceType<typeof MainHeader>
+
+export type EditorProps = Props & ReadyProps
+
 type Props = {
+  /** Файл для редактирования */
   file?: File
-}
-type Emits = {
-  ready: []
 }
 
 const props = defineProps<Props>()
-const emit = defineEmits<Emits>()
+const emit = defineEmits<ReadyEmits>()
+
+defineExpose({
+  async save(...args: Parameters<MainHeaderExpose['save']>) {
+    await header.value?.save(...args)
+  },
+  async export(...args: Parameters<MainHeaderExpose['export']>) {
+    await header.value?.export(...args)
+  },
+  async reset(updateFiles = true) {
+    await header.value?.reset()
+    await header.value?.save(updateFiles)
+  },
+  async import(updateFiles = true, ...args: Parameters<MainHeaderExpose['import']>) {
+    await header.value?.import(...args)
+    await header.value?.save(updateFiles)
+  }
+})
+
 const { file: storeFile, setInfo } = useEditorStore()
-const file = (props.file ?? storeFile.value)!
 
 const xml = shallowRef<TruckXML | null>(null)
 const header = ref<InstanceType<typeof MainHeader> | null>(null)
 const hasError = ref<boolean>(false)
 
-type SaveArgs = Parameters<InstanceType<typeof MainHeader>['save']>
-type ExportArgs = Parameters<InstanceType<typeof MainHeader>['export']>
-type ImportArgs = Parameters<InstanceType<typeof MainHeader>['import']>
+const file = (props.file ?? storeFile.value)!
 
-defineExpose({
-  save: (...args: SaveArgs) => header.value?.save(...args),
-  export: (...args: ExportArgs) => header.value?.export(...args),
-  reset: async (updateFiles = true) => {
-    await header.value?.reset()
-    await header.value?.save(updateFiles)
-  },
-  import: async (updateFiles = true, ...args: ImportArgs) => {
-    await header.value?.import(...args)
-    await header.value?.save(updateFiles)
+onMounted(async () => {
+  const result = await TruckXML.from(file)
+  
+  if (result) {
+    xml.value = result
+  }
+  else {
+    hasError.value = true
+    emit('ready')
   }
 })
 
@@ -92,17 +110,6 @@ setInfo({
 
 provideFile(file)
 ResetUtils.provide(ResetUtils.globalID)
-
-onMounted(async () => {
-  const result = await TruckXML.fromFile(file)
-  if (result) {
-    xml.value = result
-  }
-  else {
-    hasError.value = true
-    emit('ready')
-  }
-})
 </script>
 
 <style lang='scss'>

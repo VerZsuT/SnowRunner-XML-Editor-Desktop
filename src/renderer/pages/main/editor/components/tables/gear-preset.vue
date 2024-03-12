@@ -18,6 +18,15 @@ import { Lang } from '/mods/renderer'
 import type { NumUtils } from '/mods/xml/game/game-xml'
 import { localize } from '/utils/texts/renderer'
 
+export type GearPresetProps = {
+  element?: {
+    $AngVel: NumUtils
+    $FuelModifier: NumUtils
+  }
+}
+
+defineProps<GearPresetProps>()
+
 const texts = localize({
   angelVelocity: {
     [Lang.ru]: 'Макс. угловая скорость колеса',
@@ -32,12 +41,4 @@ const texts = localize({
     [Lang.ch]: '燃油消耗改性剂'
   }
 })
-type Props = {
-  element?: {
-    $AngVel: NumUtils
-    $FuelModifier: NumUtils
-  }
-}
-
-const { element } = defineProps<Props>()
 </script>

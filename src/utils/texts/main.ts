@@ -8,11 +8,13 @@ import type { ITextsToLocalize, LocalizedTexts } from './types'
  */
 export function localize<T extends ITextsToLocalize<string>>(texts: T): LocalizedTexts<T> {
   const result = {} as LocalizedTexts<T>
+
   for (const key in texts) {
     Object.defineProperty(result, key, {
       get: () => texts[key][Config.lang],
       enumerable: true
     })
   }
+  
   return result
 }
