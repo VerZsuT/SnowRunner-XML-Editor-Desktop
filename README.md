@@ -1,17 +1,16 @@
-# SnowRunner XML Editor Desktop (RU, then EN)
+# SnowRunner XML Editor Desktop
 
 Данная программа позволяет редактировать XML файлы игры SnowRunner с помощью редактирования визуальной таблицы
 параметров.  
-Редактор распаковывает нужные файлы из _initial.pak_ во временную папку, после чего идёт работает с ними. При сохранении
-изменения вносятся в архив.  
+Редактор распаковывает нужные файлы из _initial.pak_ во временную папку, после чего идёт работает с ними. При сохранении изменения вносятся в архив.  
 Для работы с _initial.pak_ программа использует портативную версию _WinRar_ для 32х разрядных систем.  
-Всё работает с применением **Electron**, **Webpack** и **Typescript**.
+Всё работает с применением **Electron**, **Vite**, **Vue**, **Typescript**.
 
-Редактор имеет модули:
+Редактор имеет следующий функционал:
 
 - _обновление_
 - _сброс программы и параметров_
-- _импорт/экспорт настроек и параметров_
+- _импорт / экспорт настроек и параметров_
 - _редактирование XML_
 
 ## Установка
@@ -25,20 +24,19 @@
 
 ## Как пользоваться
 
-О том как работать в программе можете
-почитать [в гайде по ссылке](https://snowrunner.mod.io/guides/snowrunner-xml-editor).
+О том как пользоваться программой можете почитать [в гайде по ссылке](https://snowrunner.mod.io/guides/snowrunner-xml-editor).
 
 ## Разработка
 
 _Подразумевается, что у вас есть всё необходимое для работы с NodeJS._
 
-Установите все необходимые зависимости:
+Установите зависимости:
 
 ```cmd
 npm i
 ```
 
-Для запуска dev сервера
+Для запуска dev сервера:
 
 ```cmd
 npm start
@@ -51,85 +49,65 @@ npm run package
 ```
 
 В папке _out_ появится собранная тестовая сборка под 32х-битную систему.  
-В данной сборке вам доступен сброс программы, обновление окна, инструменты разработчика (Ctrl+Shift+I), а также не
-сохраняется бэкап `initial.pak`.
+В данной сборке вам доступен сброс программы, обновление окна, инструменты разработчика (Ctrl+Shift+I), а также не сохраняется бэкап `initial.pak`.
 
 Значения каталогов проекта:
 
 ```text
-build-scripts      - скрипты, выполняемые перед и после prod сборки.
-configs            - конфигурации 'Webpack' и 'Electron Forge'.
-docs               - страница 'GitHub Pages'.
-src:               - основные ресурсы программы.
-   enums               - TS перечисления.
-   images:             - графические ресурсы.
-      icons                - прочие картинки.
-      trailers             - картинки прицепов.
-      trucks               - картинки авто.
-      favicon.ico          - иконка программы.
-   main:               - 'main' процесс.
-      archivers            - архиваторы
-      configs:             - конфигурации
-         config.json           - основной конфиг программы.
-         test-config.json      - конфигурация для 'npm start'.
-      modules              - модули главного процесса.
-      windows              - инициализаторы окон программы.
-      index.ts             - стартовый файл.
-      texts.ts             - тексты главного процесса.
-   renderer:           - 'renderer' процесс.
-      components           - общие компоненты.
-      helpers              - скрипты-помощники.
-      pages                - скрипты страниц.
-      scripts              - прочие скрипты.
-      services             - сервисы.
-      model-ctrlr          - утилиты для модель-контроллер.
-      styles.scss          - глобальные стили.
-      template.html        - шаблон всех страниц.
-      templateScript.ts    - скрипт шаблона.
-   texts               - глобальные строки перевода.
-   types               - TS типы.
-   consts.ts           - полезные флаги.
-   utils.ts            - утилиты.
-   tsconfig.json       - TS конфигурация проекта.
+/docs               страница GitHub Pages.
+/inno-setup         конфигурация InnoSetup.
+/src:               основные ресурсы программы.
+   /build-configs       конфигурации Vite и Electron Forge.
+   /images:             графические ресурсы.
+      /icons                прочие картинки.
+      /trailers             картинки прицепов.
+      /trucks               картинки авто.
+      favicon.ico           иконка программы.
+   /main:               main процесс.
+      index.ts              стартовый файл.
+      tsconfig.json         TS конфигурация для main процесса.
+   /modules:            разного рода модули.
+      /archive              работа с архиватором.
+      /backup               работа с бэкапом.
+      /checks               основные проверки.
+      /data                 сохраняемые данные.
+      /dialogs              системные диалоги.
+      /dlcs                 обработка игровых DLC.
+      /epf                  экспорт параметров.
+      /errors               выброс ошибок.
+      /files                работа с файловой системой.
+      /game-texts           обработка игровых текстов.
+      /helpers              утилиты.
+      /images               работа с картинками.
+      /messages             вывод сообщений в renderer процесс.
+      /paths                различные пути.
+      /quit-params          параметры закрытия программы.
+      /updates              обновление программы.
+      /xml                  работа с XML.
+   /renderer:           renderer процесс.
+      /components           общие компоненты.
+      /pages                окна программы.
+         /loading               окно загрузки.
+         /main                  основное окно.
+            /editor                 страница редактора (таблицы).
+            /lists                  страница списков авто / прицепов.
+            /main                   основная страница.
+         /settings              окно настроек.
+         /setup                 окно первой настройки.
+         /update                окно обновления.
+         /whats-new             окно "что нового".
+      /utils                скрипты-помощники.
+      style.scss            глобальные стили.
+      preload.ts            preload скрипт.
+      template-script.ts    скрипт шаблона.
+      tsconfig.json         TS конфигурация для renderer процесса.
+      types.ts              общие типы для renderer процесса.
+   /utils               общие утилиты.
+   consts.ts            полезные флаги.
+   tsconfig.json        основная TS конфигурация.
 ```
 
 ## Картинки
 
-![список авто](https://image.modcdn.io/members/4a97/2992192/profile/2022-08-27_13450002.png)
-![таблица параметров](https://image.modcdn.io/members/4a97/2992192/profile/2022-08-27_13462314.png)
-
-# SnowRunner XML Editor Desktop (EN)
-
-This program allows you to edit the XML files of the SnowRunner game by editing the visual parameter table.  
-The editor unpacks the necessary files from _initial.pak_ to a temporary folder, after which it goes to work with them.
-When saving, changes are made to the archive.  
-To work with _initial.pak_, the program uses a portable version of _WinRar_ for 32-bit systems.  
-Everything works using **Electron**, **Webpack** and **Typescript**.
-
-The editor has modules:
-
-- _update_
-- _setting the program and parameters_
-- _import/export settings and parameters_
-- _console_
-- _editing XML_
-
-## Installation
-
-There are two versions in the releases:
-
-- _installer_. Installs the program into the system (.exe).
-- _archive_. Portable version of the program (.rar).
-
-The difference between the versions is only in the installation method.
-
-## How to use
-
-You can read about how to work in the
-program [in the guide at the link](https://snowrunner.mod.io/guides/snowrunner-xml-editor).
-
-## Images
-
-![categories](https://image.modcdn.io/members/4a97/2992192/profile/2022-01-1.13.png)
-![list of trucks](https://image.modcdn.io/members/4a97/2992192/profile/2022-01-1.14.png)
-![table](https://image.modcdn.io/members/4a97/2992192/profile/2022-01-1.15.png)
+![список авто](https://thumb.modcdn.io/mods/71c4/3056663/thumb_1020x2000/screenshot2024-03-04131955.png)
+![таблица параметров](https://thumb.modcdn.io/mods/71c4/3056663/thumb_1020x2000/screenshot2024-03-04132039.png)
