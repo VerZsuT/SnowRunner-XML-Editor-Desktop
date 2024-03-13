@@ -1,7 +1,7 @@
 import { providePubFunc } from '/utils/bridge/renderer'
 
-import type { IPublic } from './public'
-import { Keys } from './public'
+import type { PubType } from './public'
+import { PubKeys } from './public'
 
 export * from './enums'
 export type * from './types'
@@ -12,25 +12,25 @@ export type * from './types'
 */
 class Windows {
   /** Открыть окно программы */
-  openWindow = providePubFunc<IPublic[Keys.openWindow]>(Keys.openWindow)
+  openWindow = providePubFunc<PubType[PubKeys.openWindow]>(PubKeys.openWindow)
 
   /** Отследить событие контента окна обновления */
-  onUpdateContent = providePubFunc<IPublic[Keys.onUpdateContent]>(Keys.onUpdateContent)
+  onUpdateContent = providePubFunc<PubType[PubKeys.onUpdateContent]>(PubKeys.onUpdateContent)
 
   /** Отследить событие текста окна загрузки */
-  onLoadingText = providePubFunc<IPublic[Keys.onLoadingText]>(Keys.onLoadingText)
+  onLoadingText = providePubFunc<PubType[PubKeys.onLoadingText]>(PubKeys.onLoadingText)
 
   /** Отследить событие успешности операции окна загрузки */
-  onLoadingSuccess = providePubFunc<IPublic[Keys.onLoadingSuccess]>(Keys.onLoadingSuccess)
+  onLoadingSuccess = providePubFunc<PubType[PubKeys.onLoadingSuccess]>(PubKeys.onLoadingSuccess)
 
   /** Отследить событие статуса загрузки из интернета окна загрузки программы */
-  onLoadingDownload = providePubFunc<IPublic[Keys.onLoadingDownload]>(Keys.onLoadingDownload)
+  onLoadingDownload = providePubFunc<PubType[PubKeys.onLoadingDownload]>(PubKeys.onLoadingDownload)
 
   /** Отследить событие процента окна загрузки */
-  onLoadingPercent = providePubFunc<IPublic[Keys.onLoadingPercent]>(Keys.onLoadingPercent)
+  onLoadingPercent = providePubFunc<PubType[PubKeys.onLoadingPercent]>(PubKeys.onLoadingPercent)
 
   /** Событие готовкности контента окна */
-  windowReady = providePubFunc<IPublic[Keys.windowReadyEvent]>(Keys.windowReadyEvent)
+  windowReady = providePubFunc<PubType[PubKeys.windowReadyEvent]>(PubKeys.windowReadyEvent)
 }
 
 export default new Windows()

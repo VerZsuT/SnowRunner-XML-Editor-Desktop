@@ -57,7 +57,7 @@ import { ref } from 'vue'
 import type { IActionProps } from '../../../types'
 import { ExportUtils, ImportUtils } from '../../../utils'
 import Group from '../../group'
-import type { ReadyEmits } from '../../utils'
+import type { ReadyEmits, ReadyProps } from '../../utils'
 import { useReady } from '../../utils'
 import texts from '../texts'
 import Action from './action'
@@ -68,14 +68,17 @@ import { useEditorStore } from '/rend/pages/main/store'
 
 const { Text } = Typography
 
-const emit = defineEmits<ReadyEmits>()
-const { xml, file } = defineProps<IActionProps>()
-const { info } = useEditorStore()
+export type TrailersProps = ReadyProps & IActionProps
 
-const isActive = Action.isActive(xml)
+const { xml, file } = defineProps<IActionProps>()
+const emit = defineEmits<ReadyEmits>()
+
 const hasTrailers = Action.hasTrailers(xml)
+const { info } = useEditorStore()
 const hasScout = ref(hasTrailers[0])
 const hasTruck = ref(hasTrailers[1])
+
+const isActive = Action.isActive(xml)
 
 useReady(emit)
 if (isActive) {

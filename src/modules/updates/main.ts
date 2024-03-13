@@ -4,13 +4,14 @@ import { get } from 'node:https'
 
 import { publicFunction } from 'emr-bridge'
 
-import type { IPublic } from './public'
-import { Keys } from './public'
+import type { PubType } from './public'
+import { PubKeys } from './public'
 
 import { Dirs } from '/mods/files/main'
 import Helpers from '/mods/helpers/main'
 import Paths from '/mods/paths/main'
 import Windows from '/mods/windows/main'
+import { HasPublic } from '/utils/bridge/main'
 
 export type * from './types'
 
@@ -18,9 +19,7 @@ export type * from './types'
  * Работа с обновлениями программы  
  * _main process_
  */
-class Updates {
-  constructor() { this.initPublic() }
-
+class Updates extends HasPublic {
   /** Загрузить файл из сети */
   download(url: string, path?: string, inMemory = false): Promise<string | void> {
     return new Promise((resolve, reject) => {
@@ -67,6 +66,7 @@ class Updates {
     const postfix = portable ? 'portable.rar' : 'update.exe'
     const url = `${Paths.update}/SnowRunnerXMLEditor_${postfix}`
     const file = Dirs.updateTemp.file(`SnowRunnerXMLEditor_${postfix}`)
+    
     await this.download(url, file.path)
 
     if (portable) {
@@ -80,8 +80,8 @@ class Updates {
   }
 
   /** Инициализация публичных объектов/методов */
-  private initPublic() {
-    publicFunction<IPublic[Keys.updateApp]>(Keys.updateApp, this.update.bind(this))
+  protected initPublic() {
+    publicFunction<PubType[PubKeys.updateApp]>(PubKeys.updateApp, this.update.bind(this))
   }
 }
 

@@ -10,7 +10,7 @@
       />
       <div
         ref="contextTarget"
-        @click="emit('click')"
+        @click="$emit('click')"
       >
         {{ label }}
       </div>
@@ -44,19 +44,23 @@ import { provideGroupActive } from '../utils'
 
 import { Images } from '/mods/renderer'
 import { ContextMenu } from '/rend/components'
+import type { EmitsToProps } from '/rend/types'
 
 const { Panel } = Collapse
 
-type Emits = {
+export type GroupProps = IGroupProps & EmitsToProps<GroupEmits>
+
+type GroupEmits = {
   click: []
 }
 
-const emit = defineEmits<Emits>()
 const { icon, label } = defineProps<IGroupProps>()
-const attrs = useAttrs()
-const panelKey = String(attrs['panelKey']) ?? ''
+defineEmits<GroupEmits>()
 
 const contextTarget = ref<HTMLDivElement | null>(null)
+
+const attrs = useAttrs()
+const panelKey = String(attrs['panelKey']) ?? ''
 const contextItems = [{
   key: 'reset-group',
   label: `${texts.resetMenuItemLabel} ${label}`,
@@ -65,6 +69,7 @@ const contextItems = [{
 
 const { isParentActive } = provideGroupActive(panelKey)
 const resetID = ResetUtils.provide()
+
 ResetUtils.onReset(onReset)
 
 function onReset() {

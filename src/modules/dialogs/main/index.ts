@@ -4,14 +4,14 @@ import { dialog, nativeImage } from 'electron'
 import { publicFunction } from 'emr-bridge'
 
 import { DialogSourceType, DialogType } from '../enums'
-import type { IPublic } from '../public'
-import { Keys } from '../public'
+import type { PubType } from '../public'
+import { PubKeys } from '../public'
 import type { IDialogAlertParams, IDialogParams, IOpenDialogParams } from '../types'
 import texts from './texts'
 
 import { Dir, File, Files } from '/mods/files/main'
+import { HasPublic } from '/utils/bridge/main'
 import { hasItems } from '/utils/checks/main'
-
 
 export * from '../enums'
 export type * from '../types'
@@ -20,7 +20,7 @@ export type * from '../types'
  * Вывод системных диалогов  
  * _main process_
 */
-class Dialogs {
+class Dialogs extends HasPublic {
   /** Описания расширений файлов программы (для диалогов) */
   private readonly extNames = {
     epf: 'Editor params file',
@@ -28,8 +28,6 @@ class Dialogs {
     pak: 'Package file',
     xml: 'XML file'
   }
-
-  constructor() { this.initPublic() }
 
   /** Выводит ошибку на экран */
   error(message: string): Promise<MessageBoxReturnValue> {
@@ -50,11 +48,7 @@ class Dialogs {
     } = params
     const dialogParams = {
       icon: nativeImage.createFromPath(Files.icon.path),
-      title,
-      message,
-      buttons,
-      noLink,
-      type
+      title, message, buttons, noLink, type
     }
 
     return dialog.showMessageBox(dialogParams)
@@ -62,8 +56,10 @@ class Dialogs {
 
   /** Открыть окно выбора `.epf` файла */
   getEPF(): File | undefined {
-    const path = this.openDialog<string>({ extention: 'epf' })
-    return path ? new File(path) : undefined
+    const path = this.openDialog<string>({
+      extention: 'epf'
+    })
+    if (path) return new File(path)
   }
 
   /** Открыть окно сохранения `.epf` файла */
@@ -73,31 +69,44 @@ class Dialogs {
       defaultPath: defaultName,
       extention: 'epf'
     })
-    return path ? new File(path) : undefined
+    if (path) return new File(path)
   }
 
   /** Открыть окно выбора `initial.pak` */
   getInitial(): File | undefined {
-    const path = this.openDialog<string>({ extention: 'pak' })
-    return path ? new File(path) : undefined
+    const path = this.openDialog<string>({
+      extention: 'pak'
+    })
+    if (path) return new File(path)
   }
 
   /** Открыть окно выбора папки */
   getDir(): Dir | undefined {
-    const path = this.openDialog<string>({ source: DialogSourceType.dir })
-    return path ? new Dir(path) : undefined
+    const path = this.openDialog<string>({
+      source: DialogSourceType.dir
+    })
+    if (path) return new Dir(path)
   }
 
   /** Открыть окно выбора папки */
   getDirs(): Dir[] | undefined {
-    const paths = this.openDialog<string[]>({ properties: ['multiSelections', 'openDirectory'] })
-    return paths && hasItems(paths) ? paths.map(path => new Dir(path)) : undefined
+    const paths = this.openDialog<string[]>({
+      properties: ['multiSelections', 'openDirectory']
+    })
+    if (paths && hasItems(paths)) {
+      return paths.map(path => new Dir(path))
+    }
   }
 
   /** Открыть окно выбора папки */
   getPaks(): File[] | undefined {
-    const paths = this.openDialog<string[]>({ properties: ['multiSelections', 'openFile'], extention: '.pak' })
-    return paths && hasItems(paths) ? paths.map(path => new File(path)) : undefined
+    const paths = this.openDialog<string[]>({
+      properties: ['multiSelections', 'openFile'],
+      extention: '.pak'
+    })
+    if (paths && hasItems(paths)) {
+      return paths.map(path => new File(path))
+    }
   }
 
   /** Открыть окно выбора нескольких `.epf` файлов */
@@ -106,13 +115,17 @@ class Dialogs {
       properties: ['openFile', 'multiSelections'],
       extention: 'epf'
     })
-    return paths && hasItems(paths) ? paths.map(path => new File(path)) : undefined
+    if (paths && hasItems(paths)) {
+      return paths.map(path => new File(path))
+    }
   }
 
   /** Открыть окно выбора `.xml` файла */
   getXML(): File | undefined {
-    const path = this.openDialog<string>({ extention: 'xml' })
-    return path ? new File(path) : undefined
+    const path = this.openDialog<string>({
+      extention: 'xml'
+    })
+    if (path) return new File(path)
   }
 
   /** Открыть диалоговое окно */
@@ -120,9 +133,11 @@ class Dialogs {
     const {
       type = DialogType.open,
       source = DialogSourceType.file,
-      properties = (source === DialogSourceType.file
-        ? ['openFile']
-        : ['openDirectory']),
+      properties = (
+        source === DialogSourceType.file
+          ? ['openFile']
+          : ['openDirectory']
+        ),
       defaultPath, extention
     } = params
     const dialogParams: IDialogParams = { properties }
@@ -136,11 +151,11 @@ class Dialogs {
 
     if (type === DialogType.open) {
       const result = dialog.showOpenDialogSync(dialogParams)
-      return Array.isArray(result)
-        ? (dialogParams.properties?.includes('multiSelections')
+      if (Array.isArray(result)) {
+        return properties.includes('multiSelections')
           ? result as T
-          : result[0] as T)
-        : undefined
+          : result[0] as T
+      }
     }
     else {
       const result = dialog.showSaveDialogSync({
@@ -148,19 +163,19 @@ class Dialogs {
         filters: dialogParams.filters
       })
 
-      return result ? result as T : undefined
+      if (result) return result as T
     }
   }
 
   /** Инициализация публичных объектов/методов */
-  private initPublic() {
-    publicFunction<IPublic[Keys.getEPF]>(Keys.getEPF, () => this.getEPF()?.path)
-    publicFunction<IPublic[Keys.saveEPF]>(Keys.saveEPF, name => this.saveEPF(name)?.path)
-    publicFunction<IPublic[Keys.getInitial]>(Keys.getInitial, () => this.getInitial()?.path)
-    publicFunction<IPublic[Keys.getDir]>(Keys.getDir, () => this.getDir()?.path)
-    publicFunction<IPublic[Keys.getXML]>(Keys.getXML, () => this.getXML()?.path)
-    publicFunction<IPublic[Keys.getDirs]>(Keys.getDirs, () => this.getDirs()?.map(dir => dir.path))
-    publicFunction<IPublic[Keys.getPaks]>(Keys.getPaks, () => this.getPaks()?.map(pak => pak.path))
+  protected initPublic() {
+    publicFunction<PubType[PubKeys.getEPF]>(PubKeys.getEPF, () => this.getEPF()?.path)
+    publicFunction<PubType[PubKeys.saveEPF]>(PubKeys.saveEPF, name => this.saveEPF(name)?.path)
+    publicFunction<PubType[PubKeys.getInitial]>(PubKeys.getInitial, () => this.getInitial()?.path)
+    publicFunction<PubType[PubKeys.getDir]>(PubKeys.getDir, () => this.getDir()?.path)
+    publicFunction<PubType[PubKeys.getXML]>(PubKeys.getXML, () => this.getXML()?.path)
+    publicFunction<PubType[PubKeys.getDirs]>(PubKeys.getDirs, () => this.getDirs()?.map(dir => dir.path))
+    publicFunction<PubType[PubKeys.getPaks]>(PubKeys.getPaks, () => this.getPaks()?.map(pak => pak.path))
   }
 }
 

@@ -22,7 +22,7 @@ class ExportUtils {
     const chosed = toExport ?? Dialogs.saveEPF(file.name)
     if (!chosed) return
 
-    const xml = await TruckXML.fromFile(file)
+    const xml = await TruckXML.from(file)
     if (!xml) return
 
     let additionData: IExportedData = {

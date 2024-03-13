@@ -9,15 +9,16 @@ export { default as Gearbox } from './gearbox'
 
 /** Рутовый тег файла класса коробки передач */
 export default class Gearboxes extends XMLWithTemplates {
-  static override async fromFile(file: File): Promise<Gearboxes | undefined> {
+  static override async from(str: string): Promise<Gearboxes | undefined>
+  static override async from(file: File): Promise<Gearboxes | undefined>
+  static override async from(source: string | File): Promise<Gearboxes | undefined> {
     const rootSelector = 'GearboxVariants'
-    const root = await XMLElement.fromFile(file)
+    const root = await XMLElement.from(source as File)
     const element = root?.select(rootSelector)
-    if (!root || !element) return
-
-    return new this(
+    
+    if (root && element) return new this(
       element,
-      await XMLTemplates.fromXML(root),
+      await XMLTemplates.from(root),
       rootSelector,
       root
     )

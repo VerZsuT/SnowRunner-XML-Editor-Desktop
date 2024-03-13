@@ -1,9 +1,7 @@
-import { reactive } from 'vue'
-
 import type { File, IFindDirsArgs, IFindFilesArgs } from '/mods/files/renderer'
 import { Dir, Dirs } from '/mods/files/renderer'
 
-import { Keys } from './public'
+import { PubKeys } from './public'
 import type { IDLC } from './types'
 
 import { RendArrayBase } from '/utils/renderer'
@@ -15,13 +13,15 @@ export type * from './types'
  * _renderer process_
 */
 class DLCs extends RendArrayBase<IDLC, IDLC & { dir: Dir }> {
-  protected override arrayKey = Keys.array
-  protected override onChangeKey = Keys.onMainChange
-  protected override emitChangeKey = Keys.rendererChangeEvent
-  protected override resetKey = Keys.reset
-  protected override saveKey = 'unavailable'
-
-  constructor() { super(); this.init() }
+  constructor() {
+    super(
+      PubKeys.array,
+      PubKeys.onMainChange,
+      PubKeys.rendererChangeEvent,
+      PubKeys.reset,
+      'unavailable'
+    )
+  }
 
   protected override convert(item: IDLC): IDLC & { dir: Dir } {
     return { ...item, dir: new Dir(item.path) }
@@ -29,6 +29,7 @@ class DLCs extends RendArrayBase<IDLC, IDLC & { dir: Dir }> {
 
   override async save() {}
 
+  /** Возвращает название DLC */
   getDLC(file: File): string | undefined {
     if (!file.path.includes(Dirs.dlc.name)) return
     return file.path.split(Dirs.dlc.name).at(1)?.split('\\').at(1)
@@ -45,4 +46,4 @@ class DLCs extends RendArrayBase<IDLC, IDLC & { dir: Dir }> {
   }
 }
 
-export default reactive(new DLCs()) as DLCs
+export default new DLCs()

@@ -1,13 +1,13 @@
 <template>
   <div
-    v-if="show"
+    v-if="isShow"
     class="context"
     @click="hide"
   >
     <Menu
       class="context-menu"
       :items="menuItems"
-      :style="{ top: pos.y + 'px', left: pos.x + 'px' }"
+      :style="{ top: position.y + 'px', left: position.x + 'px' }"
     />
   </div>
 </template>
@@ -18,23 +18,30 @@ import { Menu } from 'ant-design-vue'
 import type { ComponentPublicInstance } from 'vue'
 import { computed, ref, toRefs, watch } from 'vue'
 
+import type { EmitsToProps } from '../types'
+
+export type ContextMenuProps = Props & EmitsToProps<Emits>
+
 type Props = {
+  /** Элементы меню */
   items: ItemType[]
-  class?: string
+  /** Таргет контекстного меню */
   target: ComponentPublicInstance | HTMLElement | null
 }
 
 type Emits = {
+  /** Событие закрытия меню */
   close: []
+  /** Событие показа меню */
   show: []
 }
 
 const props = defineProps<Props>()
-const { target, items } = toRefs(props)
 const emit = defineEmits<Emits>()
 
-const show = ref(false)
-const pos = ref({ x: 50, y: 50 })
+const { target, items } = toRefs(props)
+const isShow = ref(false)
+const position = ref({ x: 50, y: 50 })
 
 const menuItems = computed(() => items.value.map(item => {
   return {
@@ -51,18 +58,22 @@ watch(target, () => {
   if (!value) return
 
   const element = '$el' in value ? value.$el : value
+
   element.addEventListener('contextmenu', (event: MouseEvent) => {
     event.preventDefault()
     event.stopPropagation()
-    pos.value = { x: event.clientX, y: event.clientY }
-    show.value = true
+
+    position.value = { x: event.clientX, y: event.clientY }
+    isShow.value = true
+
     emit('show')
   })
 })
 
 function hide(event?: MouseEvent) {
   event?.stopPropagation()
-  show.value = false
+  isShow.value = false
+
   emit('close')
 }
 </script>

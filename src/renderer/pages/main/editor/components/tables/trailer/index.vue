@@ -105,19 +105,21 @@ import { SaveUtils } from '../../../utils'
 import Accordion from '../../accordion.vue'
 import Group from '../../group'
 import { Float, Int } from '../../input'
-import type { ReadyEmits } from '../../utils'
+import type { ReadyEmits, ReadyProps } from '../../utils'
 import { useReady } from '../../utils'
 import texts from './texts'
 
 import type { File, TruckXML } from '/mods/renderer'
+
+export type TrailerProps = ReadyProps & Props
 
 type Props = {
   xml: TruckXML
   file: File
 }
 
-const emit = defineEmits<ReadyEmits>()
 const { xml, file } = defineProps<Props>()
+const emit = defineEmits<ReadyEmits>()
 
 useReady(emit)
 SaveUtils.useOnSave(() => file.write(xml.baseXML))

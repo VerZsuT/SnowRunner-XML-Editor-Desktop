@@ -43,10 +43,10 @@ export default class Engine extends XMLWithTemplates {
 
   /** Отзывчивость двигателя */
   @floatAttr(new Limit({ min: 0.01, max: 1.0 }))
-  get Responsiveness() { return 0.04 }
-  set Responsiveness(_: number | undefined) {}
+  get EngineResponsiveness() { return 0.04 }
+  set EngineResponsiveness(_: number | undefined) {}
   @numUtils()
-  get $Responsiveness() { return {} as NumUtils }
+  get $EngineResponsiveness() { return {} as NumUtils }
 
   /** Мощность */
   @intAttr(new Limit({ min: 0, max: 1_000_000, fixed: true }))

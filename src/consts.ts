@@ -1,5 +1,9 @@
+/** Название программы  */
 export const APP_NAME = 'SnowRunner XML Editor'
-export const PROGRAM_VERSION = '0.8.6'
-// В любом случае показать devtools
+/** Версия программы */
+export const PROGRAM_VERSION = '0.8.7'
+
+/** В любом случае показать devtools */
 export const FORCE_DEVTOOLS = false
+/** Показывать WinRAR окно */
 export const DEBUG_ARCHIVER = false

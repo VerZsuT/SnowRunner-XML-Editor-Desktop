@@ -55,8 +55,10 @@ function isLast() {
   return (forExport.value.length + forImport.value.length + forReset.value.length) === 0
 }
 
-function useAction<L extends (args: any[], every?: EveryCallback) => Promise<void>>(handleAction: (listener: L) => void) {
-  type Args = Parameters<L>[0]
+function useAction<
+  Listener extends (args: any[], every?: EveryCallback) => Promise<void>
+>(handleAction: (listener: Listener) => void) {
+  type Args = Parameters<Listener>[0]
 
   const forAction = shallowRef<Args>([] as unknown as Args)
   const actionArgs = shallowRef<Args[number] | null>(null)
@@ -65,6 +67,7 @@ function useAction<L extends (args: any[], every?: EveryCallback) => Promise<voi
 
   handleAction(((args: Args, callback?: EveryCallback) => {
     every = callback
+    
     return new Promise<void>(resolve => {
       forAction.value = args
       const inervalID = setInterval(() => {
@@ -74,13 +77,16 @@ function useAction<L extends (args: any[], every?: EveryCallback) => Promise<voi
         }
       }, 100)
     })
-  }) as L)
+  }) as Listener)
 
-  watch(forAction, async () => {
-    actionArgs.value = forAction.value.pop()!
+  watch(forAction, () => {
+    actionArgs.value = forAction.value.pop()
   })
+  
   watch(actionArgs, async () => {
-    if (actionArgs.value !== null) await every?.()
+    if (actionArgs.value !== null) {
+      await every?.()
+    }
   })
 
   return { forAction, args: actionArgs, editor }

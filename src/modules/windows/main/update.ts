@@ -1,14 +1,15 @@
 import { publicMainEvent } from 'emr-bridge'
 
 import { ProgramWindow, WindowType } from '../enums'
-import { Keys } from '../public'
+import { PubKeys } from '../public'
 import { getDevPage, getRenderer, newWindow } from './utils'
 
 import type { BrowserWindow } from 'electron'
 
 import type { IUpdateWindow } from '/mods/updates/types'
 
-export const emitContentEvent = publicMainEvent<string>(Keys.updateContentEvent)
+/** Вызвать событие контента */
+const emitContentEvent = publicMainEvent<string>(PubKeys.updateContentEvent)
 
 /** Окно обновления программы */
 export default newWindow({

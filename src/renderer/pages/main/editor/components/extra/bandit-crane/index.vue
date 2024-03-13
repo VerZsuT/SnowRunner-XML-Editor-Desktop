@@ -38,7 +38,7 @@ import { ref } from 'vue'
 import type { IActionProps } from '../../../types'
 import { ExportUtils, ImportUtils } from '../../../utils'
 import Group from '../../group'
-import type { ReadyEmits } from '../../utils'
+import type { ReadyEmits, ReadyProps } from '../../utils'
 import { useReady } from '../../utils'
 import texts from '../texts'
 import Action from './action'
@@ -48,18 +48,21 @@ import { useEditorStore } from '/rend/pages/main/store'
 
 const { Paragraph } = Typography
 
-const emit = defineEmits<ReadyEmits>()
-const { file, xml } = defineProps<IActionProps>()
-const { info } = useEditorStore()
+export type BanditCraneProps = ReadyProps & IActionProps
 
-const isActive = Action.isActive(file)
+const { file, xml } = defineProps<IActionProps>()
+const emit = defineEmits<ReadyEmits>()
+
+const { info } = useEditorStore()
 const hasCrane = ref(Action.hasCrane(xml))
 
-useReady(emit)
+const isActive = Action.isActive(file)
+
 if (isActive) {
   ExportUtils.onExport(exportData)
   ImportUtils.onImport(importData)
 }
+useReady(emit)
 
 function exportData(data: IExportedData) {
   const actionsData = data.actionsData[ExportUtils.getName(file, info.dlc, info.mod)] ??= {}

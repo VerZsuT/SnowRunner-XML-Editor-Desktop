@@ -25,24 +25,20 @@
       </div>
       <div class="grid ac-grid">
         <ContentField
+          v-model="state.wheels"
           :text="texts.addonWheels"
-          :value="state.wheels"
-          @change="wheels => state.wheels = wheels"
         />
         <ContentField
+          v-model="state.repairs"
           :text="texts.addonRepairs"
-          :value="state.repairs"
-          @change="repairs => state.repairs = repairs"
         />
         <ContentField
+          v-model="state.fuel"
           :text="texts.addonFuel"
-          :value="state.fuel"
-          @change="fuel => state.fuel = fuel"
         />
         <ContentField
+          v-model="state.water"
           :text="texts.addonWater"
-          :value="state.water"
-          @change="water => state.water = water"
         />
       </div>
 
@@ -65,7 +61,7 @@ import { reactive, ref, watch } from 'vue'
 import { useEditorStore } from '../../../../store'
 import type { IActionProps } from '../../../types'
 import Group from '../../group'
-import type { ReadyEmits } from '../../utils'
+import type { ReadyEmits, ReadyProps } from '../../utils'
 import { useReady } from '../../utils'
 import texts from '../texts'
 import ContentField from './content-field.vue'
@@ -79,38 +75,26 @@ const { Text } = Typography
 
 type OptionsType = SelectProps['options']
 
-const emit = defineEmits<ReadyEmits>()
+export type AddonsContentProps = ReadyProps & IActionProps
+
 const { file, xml } = defineProps<IActionProps>()
+const emit = defineEmits<ReadyEmits>()
+
 const { mod } = useEditorStore().info
 const open = ref(false)
-
 const options = ref<OptionsType>([])
-let allOptions: OptionsType = []
 
-const state = reactive({
-  items: null as File[] | null,
-  addon: '',
+const defaultVal = {
   wheels: 0,
   repairs: 0,
   fuel: 0,
   water: 0
-})
+}
 
-useReady(emit)
-
-// EXPORT: addons content
-
-watch(open, async() => {
-  if (state.items) return
-  const items = await getAddons(file.name, mod, isInstalled)
-  const data = await getAddonData(items[0])
-  allOptions = options.value = await initOptions(items)
-  state.items = items
-  state.addon = items[0].name
-  state.wheels = data.wheels
-  state.repairs = data.repairs
-  state.fuel = data.fuel
-  state.water = data.water
+const state = reactive({
+  ...defaultVal,
+  items: null as File[] | null,
+  addon: ''
 })
 
 const label = localize({
@@ -122,6 +106,25 @@ const label = localize({
   }
 })
 
+let allOptions: OptionsType = []
+
+useReady(emit)
+
+watch(open, async () => {
+  if (state.items) return
+
+  const items = await getAddons(file.name, mod, isInstalled)
+  const data = await getAddonData(items[0])
+
+  allOptions = options.value = await initOptions(items)
+  state.items = items
+  state.addon = items[0].name
+  state.wheels = data.wheels
+  state.repairs = data.repairs
+  state.fuel = data.fuel
+  state.water = data.water
+})
+
 async function changeFilter(value = '') {
   if (!state.items || !allOptions) return
   options.value = allOptions.filter(({ label }) => label.toLowerCase().includes(value.toLowerCase()))
@@ -129,6 +132,7 @@ async function changeFilter(value = '') {
 
 async function select(addonName: string) {
   const data = await getAddonData(getItem(addonName))
+
   state.addon = addonName
   state.wheels = data.wheels
   state.repairs = data.repairs
@@ -139,50 +143,51 @@ async function select(addonName: string) {
 async function save() {
   const addon = getItem(state.addon)
   const xml = await getAddonXML(addon)
+
   if (!xml) throw new Error('DOM is undefined')
   if (!addon) throw new Error('Path to addon not found')
   
   let TruckData = xml.TruckData
-
-  let hasFuel = false
-  let hasWater = false
-  let hasWheels = false
-  let hasRepairs = false
+  let hasAny = false
 
   if (!TruckData) {
     xml.appendTag('TruckData')
     TruckData = xml.TruckData!
   }
 
-  if (state.fuel && state.fuel !== 0 && (hasFuel = true)) {
-    TruckData.FuelCapacity = state.fuel
-  }
-  else if (TruckData.FuelCapacity) {
+  if (state.fuel === 0) {
     TruckData.FuelCapacity = undefined
   }
-
-  if (state.water && state.water !== 0 && (hasWater = true)) {
-    TruckData.WaterCapacity = state.water
+  else {
+    TruckData.FuelCapacity = state.fuel
+    hasAny = true
   }
-  else if (TruckData.WaterCapacity) {
+
+  if (state.water === 0) {
     TruckData.WaterCapacity = undefined
   }
-
-  if (state.wheels && state.wheels !== 0 && (hasWheels = true)) {
-    TruckData.WheelRepairsCapacity = state.wheels
+  else {
+    TruckData.WaterCapacity = state.water
+    hasAny = true
   }
-  else if (TruckData.WheelRepairsCapacity) {
+
+  if (state.wheels === 0) {
     TruckData.WheelRepairsCapacity = undefined
   }
-
-  if (state.repairs && state.repairs !== 0 && (hasRepairs = true)) {
-    TruckData.RepairsCapacity = state.repairs
+  else {
+    TruckData.WheelRepairsCapacity = state.wheels
+    hasAny = true
   }
-  else if (TruckData.RepairsCapacity) {
+
+  if (state.repairs === 0) {
     TruckData.RepairsCapacity = undefined
   }
+  else {
+    TruckData.RepairsCapacity = state.repairs
+    hasAny = true
+  }
 
-  if (!hasFuel && !hasWater && !hasWheels && !hasRepairs && TruckData.hasAttrs()) {
+  if (!hasAny && !TruckData.hasAttrs()) {
     TruckData.remove()
   }
 
@@ -195,21 +200,22 @@ function isInstalled(addonXML: AddonXML): boolean {
   if (!InstallSocket) return false
 
   const type = InstallSocket.Type || 'no-type'
-  return Boolean(xml.GameData?.AddonSockets?.some(({ Sockets }) => Sockets.some(({ Names }) => Names.includes(type))))
+  return Boolean(
+    xml.GameData?.AddonSockets?.some(
+      ({ Sockets }) => Sockets.some(
+        ({ Names }) => Names.includes(type)
+      )
+    )
+  )
 }
 
 async function initOptions(items: File[]): Promise<OptionsType> {
-  if (!items) return []
-  const result: OptionsType = []
-
-  for (const addon of items) {
-    result.push({
+  return await Promise.all(
+    items.map(async addon => ({
       value: addon.name,
       label: await getAddonName(addon)
-    })
-  }
-
-  return result
+    }))
+  )
 }
 
 async function getAddonName(addon: File): Promise<string | undefined> {
@@ -221,22 +227,14 @@ async function getAddonName(addon: File): Promise<string | undefined> {
 }
 
 function getItem(name?: string): File | undefined {
-  const itemName = name ?? state.addon
-  return state.items?.filter(item => item.name === itemName)[0]
+  return state.items?.filter(item => item.name === name ?? state.addon)[0]
 }
 
 async function getAddonData(file?: File) {
-  const defaultVal = {
-    wheels: 0,
-    repairs: 0,
-    fuel: 0,
-    water: 0
-  }
-
   if (!file) return defaultVal
 
-  const addonXML = await AddonXML.fromFile(file)
-  if (!addonXML?.exists()) return defaultVal
+  const addonXML = await AddonXML.from(file)
+  if (!addonXML) return defaultVal
 
   let TruckData = addonXML.TruckData
   if (!TruckData) {
@@ -244,19 +242,26 @@ async function getAddonData(file?: File) {
     TruckData = addonXML.TruckData!
   }
 
-  const wheels = TruckData.WheelRepairsCapacity ?? 0
-  const repairs = TruckData.RepairsCapacity ?? 0
-  const fuel = TruckData.FuelCapacity ?? 0
-  const water = TruckData.WaterCapacity ?? 0
+  const wheels = TruckData.WheelRepairsCapacity
+  const repairs = TruckData.RepairsCapacity
+  const fuel = TruckData.FuelCapacity
+  const water = TruckData.WaterCapacity
 
-  return { wheels, repairs, fuel, water }
+  return {
+    ...defaultVal,
+
+    ...wheels ? { wheels } : {},
+    ...repairs ? { repairs } : {},
+    ...fuel ? { fuel } : {},
+    ...water ? { water } : {}
+  }
 }
 
 async function getAddonXML(file?: File): Promise<AddonXML | undefined> {
   const addonFile = file ?? getItem()
   if (!await addonFile?.exists()) return
 
-  return await AddonXML.fromFile(addonFile!)
+  return await AddonXML.from(addonFile!)
 }
 
 async function getAddons(truckName: string, mod?: string, filter?: (xml: AddonXML) => boolean): Promise<File[]> {
@@ -281,8 +286,10 @@ async function getAddons(truckName: string, mod?: string, filter?: (xml: AddonXM
 
   for (const dlc of DLCs) {
     const DLCTrucks = dlc.dir.dir('classes/trucks')
+
     if (await DLCTrucks.exists()) {
       const DLCBasic = DLCTrucks.dir('addons')
+
       if (await DLCBasic.exists()) {
         for (const entry of await DLCBasic.read()) {
           if (await entry.isDir()) continue
@@ -303,7 +310,8 @@ async function getAddons(truckName: string, mod?: string, filter?: (xml: AddonXM
 
   if (mod) {
     for (const item of await Dirs.modsTemp.dir(mod, 'classes').findFiles({ ext: 'xml', recursive: true })) {
-      const element = await XMLElement.fromFile(item)
+      const element = await XMLElement.from(item)
+      
       if (element?.has('TruckAddon')) {
         allAddons.push(item)
       }
@@ -312,7 +320,7 @@ async function getAddons(truckName: string, mod?: string, filter?: (xml: AddonXM
 
   for (const addon of allAddons) {
     if (filter) {
-      const xml = await AddonXML.fromFile(addon)
+      const xml = await AddonXML.from(addon)
       if (xml && filter(xml)) out.push(addon)
     }
     else {

@@ -2,6 +2,7 @@ import { BaseWheelFriction } from '../../base'
 import type { StrUtils } from '../../game-xml'
 import { strAttr, strUtils } from '../../game-xml'
 
+/** Сцепление колеса с дорогой */
 export default class WheelFriction extends BaseWheelFriction {
   /** Имя типа резины */
   @strAttr<WheelName>()

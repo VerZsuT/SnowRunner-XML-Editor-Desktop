@@ -13,11 +13,11 @@
   <div class="steps-content">
     <Language
       v-if="step === 0"
-      :is-setup="true"
+      radio-mode
     />
-    <GameFolder
+    <InitialSelect
       v-else-if="step === 1"
-      @change="onChangeGameFolder"
+      @update:model-value="onChangeGameFolder"
     />
   </div>
   <div class="steps-actions">
@@ -35,21 +35,24 @@
 import { Button, Steps } from 'ant-design-vue'
 import { ref } from 'vue'
 
-import GameFolder from './game-folder.vue'
+import InitialSelect from './initial-select.vue'
 import texts from './texts'
 
+import type { File } from '/mods/renderer'
 import { Archive, Backup, Config, Helpers, ProgramWindow } from '/mods/renderer'
 import { Header, Language, Menu } from '/rend/components'
 import { useWindowReady } from '/rend/utils'
 
-useWindowReady(ProgramWindow.setup)
-
 const step = ref(0)
 
-async function onChangeGameFolder(path: string) {
-  Config.initialPath = path
+useWindowReady(ProgramWindow.setup)
+
+async function onChangeGameFolder(file: File) {
+  Config.initialPath = file.path
+
   await Backup.save()
   await Archive.unpackMain()
+  
   Helpers.reloadApp()
 }
 </script>

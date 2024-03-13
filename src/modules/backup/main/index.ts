@@ -1,21 +1,20 @@
 import { publicFunction } from 'emr-bridge'
 
-import type { IPublic } from '../public'
-import { Keys } from '../public'
+import type { PubType } from '../public'
+import { PubKeys } from '../public'
 import texts from './texts'
 
 import Archive from '/mods/archive/main'
 import Config, { BuildType } from '/mods/data/config/main'
 import { Dirs, Files } from '/mods/files/main'
 import Messages from '/mods/messages/main'
+import { HasPublic } from '/utils/bridge/main'
 
 /**
  * Работа с бэкапом  
  * _main process_
 */
-class Backup {
-  constructor() { this.initPublic() }
-
+class Backup extends HasPublic {
   /** Сохранить бэкап `initial.pak` */
   async save() {
     await Dirs.backupFolder.make()
@@ -25,6 +24,7 @@ class Backup {
     if (Config.buildType === BuildType.dev) return
 
     await Config.initial.copyTo(Files.backupInitial)
+    
     Messages.info(texts.successBackupSave)
   }
 
@@ -35,13 +35,14 @@ class Backup {
     await Config.initial.remove()
     await Files.backupInitial.copyTo(Config.initial)
     await Archive.unpackMain()
+
     Messages.info(texts.successInitialRestore)
   }
 
   /** Инициализация публичных объектов/методов */
-  private initPublic() {
-    publicFunction<IPublic[Keys.save]>(Keys.save, this.save.bind(this))
-    publicFunction<IPublic[Keys.recoverFromIt]>(Keys.recoverFromIt, this.recoverFromIt.bind(this))
+  protected initPublic() {
+    publicFunction<PubType[PubKeys.save]>(PubKeys.save, this.save.bind(this))
+    publicFunction<PubType[PubKeys.recoverFromIt]>(PubKeys.recoverFromIt, this.recoverFromIt.bind(this))
   }
 }
 

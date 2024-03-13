@@ -288,7 +288,7 @@ import Extra from '../../extra'
 import Group from '../../group'
 import { Float, Int, Text } from '../../input'
 import Select from '../../select'
-import type { ReadyEmits } from '../../utils'
+import type { ReadyEmits, ReadyProps } from '../../utils'
 import { useFilesReady } from '../../utils'
 import Engines from '../engines'
 import Gearboxes from '../gearboxes'
@@ -301,6 +301,8 @@ import { ReadyType } from './utils'
 import type { File, TruckCompatibleWheels, TruckXML } from '/mods/renderer'
 import { Country, DiffLockType, WheelTorque } from '/mods/renderer'
 
+export type TruckProps = ReadyProps & Props
+
 type Props = {
   xml: TruckXML
   file: File
@@ -310,12 +312,15 @@ const { xml, file } = defineProps<Props>()
 const emit = defineEmits<ReadyEmits>()
 
 const { ready, inProgress } = useFilesReady(emit)
+
 SaveUtils.useOnSave(() => file.write(xml.baseXML))
 
 function filterCompat(wheels: TruckCompatibleWheels[]) {
   const set = new Set<string>()
+
   return wheels.filter(item => {
     if (!item.Type || set.has(item.Type!)) return false
+    
     set.add(item.Type)
     return true
   })

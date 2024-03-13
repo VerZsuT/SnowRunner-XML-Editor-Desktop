@@ -13,16 +13,18 @@ export { default as TruckGameData } from './game-data'
 export * from './truck-data'
 export { default as TruckData } from './truck-data'
 
+/** XML автомобиля / прицепа */
 export default class TruckXML extends XMLWithTemplates {
-  static override async fromFile(file: File): Promise<TruckXML | undefined> {
+  static override async from(str: string): Promise<TruckXML | undefined>
+  static override async from(file: File): Promise<TruckXML | undefined>
+  static override async from(source: string | File): Promise<TruckXML | undefined> {
     const rootSelector = 'Truck'
-    const root = await XMLElement.fromFile(file)
+    const root = await XMLElement.from(source as File)
     const element = root?.select(rootSelector)
-    if (!root || !element) return
 
-    return new this(
+    if (root && element) return new this(
       element,
-      await XMLTemplates.fromXML(root),
+      await XMLTemplates.from(root),
       rootSelector,
       root
     )
@@ -49,6 +51,9 @@ export default class TruckXML extends XMLWithTemplates {
 
   @innerElement(BasePhysicsModel)
   get FuelMass(): BasePhysicsModel | undefined { return undefined }
+
+  @innerElement(BasePhysicsModel)
+  get WaterMass(): BasePhysicsModel | undefined { return undefined }
 }
 
 export enum TruckFileType {

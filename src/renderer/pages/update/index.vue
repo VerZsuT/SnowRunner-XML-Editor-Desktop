@@ -5,6 +5,7 @@
   >
     {{ texts.allowNewVersion }} (v{{ version }})
   </Title>
+
   <div class="buttons">
     <Button
       type="primary"
@@ -33,7 +34,7 @@
 
 <script lang='ts' setup>
 import { DownOutlined } from '@ant-design/icons-vue'
-import type { MenuProps } from 'ant-design-vue'
+import type { ButtonProps, MenuProps } from 'ant-design-vue'
 import { Button, Dropdown, Menu, Typography } from 'ant-design-vue'
 import { ref } from 'vue'
 
@@ -43,10 +44,11 @@ import { Config, ProgramWindow, Updates, Windows } from '/mods/renderer'
 import { useWindowReady } from '/rend/utils'
 
 const { Title } = Typography
-useWindowReady(ProgramWindow.update)
-useEvents()
 
 const version = ref('')
+
+useWindowReady(ProgramWindow.update)
+useEvents()
 
 function useEvents() {
   Windows.onUpdateContent(data => version.value = data)
@@ -57,7 +59,7 @@ const onUpdateClick: MenuProps['onClick'] = ({ key }) => {
   void Updates.updateApp(key === 'portable')
 }
 
-function onIgnoreClick() {
+const onIgnoreClick: ButtonProps['onClick'] = () => {
   Config.checkUpdates = false
   window.close()
 }

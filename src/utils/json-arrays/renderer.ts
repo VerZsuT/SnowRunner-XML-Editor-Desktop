@@ -2,42 +2,48 @@ import { Bridge } from 'emr-bridge/renderer'
 
 import ArrayBase from './base'
 
+const Main = Bridge.as<any>()
+
 /** Базовый класс для массива в renderer-process */
 export default abstract class RendArrayBase<Item, Extended = Item> extends ArrayBase<Item, Extended> {
-  /** Мост main-rend */
-  private readonly _Bridge = Bridge.as<any>()
-
-  /** Ключ получения массива */
-  protected abstract arrayKey: string
-  /** Ключ подписки на событие изменения массива */
-  protected abstract onChangeKey: string
-  /** Ключ вызова события изменения массива */
-  protected abstract emitChangeKey: string
-  /** Ключ функции сброса массива */
-  protected abstract resetKey: string
-  /** Ключ функции сохранения массива */
-  protected abstract saveKey: string
+  constructor(
+    /** Ключ получения массива */
+    protected readonly arrayKey: string,
+    /** Ключ подписки на событие изменения массива */
+    protected readonly onChangeKey: string,
+    /** Ключ вызова события изменения массива */
+    protected readonly emitChangeKey: string,
+    /** Ключ функции сброса массива */
+    protected readonly resetKey: string,
+    /** Ключ функции сохранения массива */
+    protected readonly saveKey: string
+  ) {
+    super()
+    this.init()
+  }
 
   /** Инициализация объекта */
   protected init() {
-    this.rawSet(this._Bridge[this.arrayKey])
+    this.rawSet(Main[this.arrayKey])
     this.handleChange()
   }
 
   /** Возвращает массив в исходное состояние */
-  async reset() { await this._Bridge[this.resetKey]() }
+  async reset() { await Main[this.resetKey]() }
 
   /** Сохраняет изменения в json */
   async save() {
     this.emitChangeEvent()
-    await this._Bridge[this.saveKey]()
+    await Main[this.saveKey]()
   }
 
+  /** Вызвать событие изменения */
   protected override emitChangeEvent() {
-    this._Bridge[this.emitChangeKey](this.get())
+    Main[this.emitChangeKey](this.get())
   }
 
+  /** Отследить событие изменения */
   protected override onChangeEvent(handler: (newArray: Item[]) => void) {
-    this._Bridge[this.onChangeKey](handler)
+    Main[this.onChangeKey](handler)
   }
 }

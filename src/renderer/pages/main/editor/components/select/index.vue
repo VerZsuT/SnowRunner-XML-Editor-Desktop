@@ -1,16 +1,16 @@
 <template>
   <Parameter
-    :getter="props.getter"
-    :setter="props.setter"
-    :label="props.label"
-    :utils="props.utils"
-    @change="emit('change', $event)"
+    :getter="getter"
+    :setter="setter"
+    :label="label"
+    :utils="utils"
+    @change="$emit('change', $event)"
   >
     <template #default="{ onChange, value }">
       <SelectItem
-        :multiple="props.multiple"
-        :empty-is-all="props.emptyIsAll"
-        :options="props.options"
+        :multiple="multiple"
+        :empty-is-all="emptyIsAll"
+        :options="options"
         :value="<ArrOrNot<Value>> value"
         @change="onChange"
       />
@@ -24,10 +24,13 @@ import Parameter from '../parameter.vue'
 import SelectItem from './item.vue'
 
 import type { StrConvertUtils, Utils } from '/mods/xml/game/game-xml'
+import type { EmitsToProps } from '/rend/types'
+
+export type SelectProps = Props & EmitsToProps<ParameterEmits>  
 
 type Value = string | boolean
 type Props = IParameterProps<Value, Utils<Value> | StrConvertUtils<Value[] | boolean>> & Omit<ISelectProps, 'value'>
 
-const emit = defineEmits<ParameterEmits>()
-const props = defineProps<Props>()
+defineProps<Props>()
+defineEmits<ParameterEmits>()
 </script>

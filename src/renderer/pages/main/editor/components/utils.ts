@@ -5,6 +5,7 @@ import { GameTexts } from '/mods/renderer'
 
 import type { CollapseProps } from 'ant-design-vue'
 
+import type { EmitsToProps } from '/rend/types'
 import { hasItems } from '/utils/renderer'
 
 /**
@@ -21,8 +22,11 @@ export function getGameText(key?: string, preset?: string, mod?: string): string
   return modValue ?? gameValue ?? `${preset}: ${key}`
 }
 
+export type ReadyProps = EmitsToProps<ReadyEmits>
 export type ReadyEmits = {
+  /** Событие готовности таблицы */
   ready: []
+  /** Событие `onMount` компонента */
   mount: []
 }
 export type EmitFn =

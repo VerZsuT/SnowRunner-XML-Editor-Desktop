@@ -20,7 +20,7 @@ class ItemsUtils {
   private async filterByCategory(array: File[], category: Category): Promise<File[]> {
     const result: File[] = []
     for (const file of array) {
-      const xml = await TruckXML.fromFile(file)
+      const xml = await TruckXML.from(file)
       if (!xml?.exists()) continue
 
       if (
@@ -57,7 +57,13 @@ class ItemsUtils {
           array.push(...await modClasses.dir('trucks').findFiles({ ext: 'xml' }))
         }
         else if (category === Category.trailers) {
-          array.push(...await modClasses.dir('trucks/trailers').findFiles({ ext: 'xml' }))
+          const files = await modClasses.dir('trucks').findFiles({ ext: 'xml', recursive: true })
+          for (const file of files) {
+            const xml = await TruckXML.from(file)
+            if (xml && xml.Type === TruckFileType.trailer) {
+              array.push(file)
+            }
+          }
         }
       }
 

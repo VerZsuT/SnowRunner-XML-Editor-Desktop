@@ -22,6 +22,6 @@ export default class CompatibleWheels extends XMLWithTemplates {
   get $Scale() { return {} as NumUtils }
 
   readonly wheelsFile = this.file('wheels', () => this.Type)
-  readonly wheelSet = this.fileElementWithTemplates(Wheels, this.wheelsFile)
-  readonly wheel = this.fileElementWithTemplates(Wheel, this.wheelsFile)
+  readonly wheelSet = this.fileElementWithTemplates<Wheels>(Wheels, this.wheelsFile)
+  readonly wheel = this.fileElementWithTemplates<Wheel>(Wheel, this.wheelsFile)
 }

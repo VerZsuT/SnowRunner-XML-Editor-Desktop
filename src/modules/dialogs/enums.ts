@@ -8,7 +8,7 @@ export enum DialogSourceType {
 
 /** Тип диалога */
 export enum DialogType {
-  /** Диалог открытия */
+  /** Диалог выбора */
   open = 'open',
   /** Диалог сохранения */
   save = 'save'

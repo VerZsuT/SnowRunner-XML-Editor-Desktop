@@ -1,7 +1,7 @@
 import { providePubFunc } from '/utils/bridge/renderer'
 
-import type { IPublic } from './public'
-import { Keys } from './public'
+import type { PubType } from './public'
+import { PubKeys } from './public'
 
 export type * from './types'
 
@@ -12,38 +12,37 @@ export type * from './types'
 class Helpers {
   /**
    * Найти в папке все соответствия
-   * 
    * @param startPath - путь, с которого начинается поиск
    * @param onlyDirs - искать только папки, игнорируя файлы (default = `false`)
    * @param extname - расширение, по которому ведётся поиск файлов (default = `xml`)
    * @param recursive - рекурсивный поиск (default = `false`)
    * @returns массив путей
    */
-  findInDir = providePubFunc<IPublic[Keys.findInDir]>(Keys.findInDir)
+  findInDir = providePubFunc<PubType[PubKeys.findInDir]>(PubKeys.findInDir)
 
   /** Получить папку пользователя */
-  homedir = providePubFunc<IPublic[Keys.homedir]>(Keys.homedir)
+  homedir = providePubFunc<PubType[PubKeys.homedir]>(PubKeys.homedir)
 
   /** Получить информацию о пользователе */
-  userInfo = providePubFunc<IPublic[Keys.userInfo]>(Keys.userInfo)
+  userInfo = providePubFunc<PubType[PubKeys.userInfo]>(PubKeys.userInfo)
 
   /** Соединяет путь */
-  join = providePubFunc<IPublic[Keys.join]>(Keys.join)
+  join = providePubFunc<PubType[PubKeys.join]>(PubKeys.join)
 
   /** Открывает ссылку в браузере */
-  openLink = providePubFunc<IPublic[Keys.openLink]>(Keys.openLink)
+  openLink = providePubFunc<PubType[PubKeys.openLink]>(PubKeys.openLink)
 
   /** Открывает путь в проводнике */
-  openPath = providePubFunc<IPublic[Keys.openPath]>(Keys.openPath)
+  openPath = providePubFunc<PubType[PubKeys.openPath]>(PubKeys.openPath)
 
   /** Перезагружает программу */
-  reloadApp = providePubFunc<IPublic[Keys.reloadApp]>(Keys.reloadApp)
+  reloadApp = providePubFunc<PubType[PubKeys.reloadApp]>(PubKeys.reloadApp)
 
   /** Закрывает программу */
-  quitApp = providePubFunc<IPublic[Keys.quitApp]>(Keys.quitApp)
+  quitApp = providePubFunc<PubType[PubKeys.quitApp]>(PubKeys.quitApp)
 
   /** Показывает/скрывает devtools */
-  devTools = providePubFunc<IPublic[Keys.devtools]>(Keys.devtools)
+  devTools = providePubFunc<PubType[PubKeys.devtools]>(PubKeys.devtools)
 }
 
 export default new Helpers()

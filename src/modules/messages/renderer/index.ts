@@ -2,25 +2,26 @@ import { message, notification } from 'ant-design-vue'
 import { Bridge } from 'emr-bridge/renderer'
 
 import { MainMessageType } from '../enums'
-import type { IPublic } from '../public'
-import { Keys } from '../public'
+import type { PubType } from '../public'
+import { PubKeys } from '../public'
 
 export * from '../enums'
 export type * from '../types'
+
+/** Мост main-rend */
+const Main = Bridge.as<PubType>()
 
 /**
  * Работа с сообщениями программы  
  * _renderer process_
 */
 class Messages {
-  private loadingStopper?: ReturnType<typeof message.loading>
-
-  /** Мост main-rend */
-  private readonly Bridge = Bridge.as<IPublic>()
+  /** Остановить загрузку */
+  private stopLoading?: ReturnType<typeof message.loading>
 
   /** Прослушать сообщения из main процесса */
   handleMessages() {
-    this.Bridge[Keys.onMessage](({ type, text }) => {
+    Main[PubKeys.onMessage](({ type, text }) => {
       switch (type) {
         case MainMessageType.error: {
           this.error(text); break
@@ -35,29 +36,39 @@ class Messages {
           this.warning(text); break
         }
         case MainMessageType.startLoading: {
-          this.loadingStopper = this.loading(text); break
+          this.stopLoading = this.loading(text); break
         }
         case MainMessageType.stopLoading: {
-          this.loadingStopper?.(); break
+          this.stopLoading?.(); break
         }
       }
     })
   }
 
   /** Сообщение об ошибке */
-  error(text: string) { notification.error({ message: 'Error', description: text, duration: 10_000 }) }
+  error(text: string) {
+    notification.error({ message: 'Error', description: text, duration: 10_000 })
+  }
 
   /** Информационное сообщение */
-  info(text: string) { void message.info(text) }
+  info(text: string) {
+    void message.info(text)
+  }
 
   /** Сообщение об успехе */
-  success(text: string) { void message.success(text) }
+  success(text: string) {
+    void message.success(text)
+  }
 
   /** Загрузка */
-  loading(text: string) { return message.loading(text) }
+  loading(text: string) {
+    return message.loading(text)
+  }
 
   /** Предупреждение */
-  warning(text: string) { notification.warning({ message: 'Error', description: text, duration: 10_000 }) }
+  warning(text: string) {
+    notification.warning({ message: 'Error', description: text, duration: 10_000 })
+  }
 }
 
 export default new Messages()

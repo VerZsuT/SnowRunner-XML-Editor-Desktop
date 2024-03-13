@@ -10,18 +10,17 @@ export type * from './types'
  * _main process_
 */
 class Sizes {
+  /** Значение по умолчанию */
+  readonly default: IFileSizes = {
+    initial: 0,
+    mods: {}
+  }
+
   /** Размер initial.pak */
   initial = this.default.initial
+
   /** Размеры модов */
   private mods = this.default.mods
-
-  /** Значение по умолчанию */
-  get default(): IFileSizes {
-    return {
-      initial: 0,
-      mods: {}
-    }
-  }
 
   /**
    * Инициализация класса  
@@ -43,20 +42,22 @@ class Sizes {
 
   /**
    * Возвращает размер мода
-   * 
    * @param modFile - файл мода
    */
-  getModSize(modFile: File): number | undefined { return this.mods[modFile.name] }
+  getModSize(modFile: File): number | undefined {
+    return this.mods[modFile.name]
+  }
 
   /**
    * Установить размер мода
-   * 
    * @param modFile - файл мода
    * @param size - размер
   */
-  setModSize(modFile: File, size: number) { this.mods[modFile.name] = size }
+  setModSize(modFile: File, size: number) {
+    this.mods[modFile.name] = size
+  }
 
-  /** Сбросить */
+  /** Сбросить все размеры */
   async reset() {
     this.set(this.default)
     await this.save()
@@ -73,8 +74,12 @@ class Sizes {
   /** Получить объект размеров */
   private async getFileSizes(): Promise<IFileSizes> {
     if (await Files.sizes.exists()) {
-      try { return await this.getFromJSON() }
-      catch { return this.default }
+      try {
+        return await this.getFromJSON()
+      }
+      catch {
+        return this.default
+      }
     }
     else {
       return this.default

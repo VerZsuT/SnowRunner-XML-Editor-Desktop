@@ -4,11 +4,12 @@ import { join } from 'node:path'
 
 import { publicFunction } from 'emr-bridge'
 
-import type { IPublic } from './public'
-import { Keys } from './public'
+import type { PubType } from './public'
+import { PubKeys } from './public'
 import type { IFoundItem } from './types'
 
 import { Dir, Dirs, Files } from '/mods/files/main'
+import { HasPublic } from '/utils/bridge/main'
 
 export type * from './types'
 
@@ -16,12 +17,9 @@ export type * from './types'
  * Дополнительные методы  
  * _main process_
 */
-class Helpers {
-  constructor() { this.initPublic() }
-
+class Helpers extends HasPublic {
   /**
    * Найти в папке все соответствия
-   * 
    * @param startPath - путь, с которого начинается поиск
    * @param onlyDirs - искать только папки, игнорируя файлы (default = `false`)
    * @param extname - расширение, по которому ведётся поиск файлов (default = `xml`)
@@ -70,16 +68,16 @@ class Helpers {
   }
 
   /** Инициализация публичных объектов/методов */
-  private initPublic() {
-    publicFunction<IPublic[Keys.findInDir]>(Keys.findInDir, this.findInDir.bind(this))
-    publicFunction<IPublic[Keys.join]>(Keys.join, join)
-    publicFunction<IPublic[Keys.homedir]>(Keys.homedir, homedir)
-    publicFunction<IPublic[Keys.userInfo]>(Keys.userInfo, userInfo)
-    publicFunction<IPublic[Keys.openLink]>(Keys.openLink, shell.openExternal)
-    publicFunction<IPublic[Keys.openPath]>(Keys.openPath, shell.openPath)
-    publicFunction<IPublic[Keys.reloadApp]>(Keys.reloadApp, () => { app.relaunch(); app.quit() })
-    publicFunction<IPublic[Keys.quitApp]>(Keys.quitApp, app.quit)
-    publicFunction<IPublic[Keys.devtools]>(Keys.devtools, () => BrowserWindow.getFocusedWindow()?.webContents.toggleDevTools())
+  protected initPublic() {
+    publicFunction<PubType[PubKeys.findInDir]>(PubKeys.findInDir, this.findInDir.bind(this))
+    publicFunction<PubType[PubKeys.join]>(PubKeys.join, join)
+    publicFunction<PubType[PubKeys.homedir]>(PubKeys.homedir, homedir)
+    publicFunction<PubType[PubKeys.userInfo]>(PubKeys.userInfo, userInfo)
+    publicFunction<PubType[PubKeys.openLink]>(PubKeys.openLink, shell.openExternal)
+    publicFunction<PubType[PubKeys.openPath]>(PubKeys.openPath, shell.openPath)
+    publicFunction<PubType[PubKeys.reloadApp]>(PubKeys.reloadApp, () => { app.relaunch(); app.quit() })
+    publicFunction<PubType[PubKeys.quitApp]>(PubKeys.quitApp, app.quit)
+    publicFunction<PubType[PubKeys.devtools]>(PubKeys.devtools, () => BrowserWindow.getFocusedWindow()?.webContents.toggleDevTools())
   }
 }
 

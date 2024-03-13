@@ -55,7 +55,7 @@ import Accordion from '../../accordion.vue'
 import Group from '../../group'
 import { Float } from '../../input'
 import Select from '../../select'
-import type { ReadyEmits } from '../../utils'
+import type { ReadyEmits, ReadyProps } from '../../utils'
 import { getGameText, useReady } from '../../utils'
 import UnlockPreset from '../unlock-preset.vue'
 import texts from './texts'
@@ -63,13 +63,16 @@ import texts from './texts'
 import type { File, WheelsXML } from '/mods/renderer'
 import { useEditorStore } from '/rend/pages/main/store'
 
+export type WheelSetProps = ReadyProps & Props
+
 type Props = {
   xml: WheelsXML
   file: File
 }
 
-const emit = defineEmits<ReadyEmits>()
 const { xml, file } = defineProps<Props>()
+const emit = defineEmits<ReadyEmits>()
+
 const { info } = useEditorStore()
 
 useReady(emit)

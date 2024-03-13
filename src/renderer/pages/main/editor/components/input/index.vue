@@ -1,16 +1,16 @@
 <template>
   <Parameter
-    :label="props.label"
-    :getter="props.getter"
-    :utils="props.utils"
-    @change="emit('change', $event)"
+    :label="label"
+    :getter="getter"
+    :utils="utils"
+    @change="$emit('change', $event)"
   >
     <template #default="{ onChange, value }">
       <InputItem
-        :type="props.type"
-        :number-type="props.numberType"
-        :areas="props.areas"
-        :step="props.step"
+        :type="type"
+        :number-type="numberType"
+        :areas="areas"
+        :step="step"
         :value="<any> value"
         @change="onChange"
       />
@@ -23,9 +23,13 @@ import type { IInputProps, IParameterProps, ParameterEmits } from '../../types'
 import Parameter from '../parameter.vue'
 import InputItem from './item.vue'
 
+import type { EmitsToProps } from '/rend/types'
+
+export type InputProps = Props & EmitsToProps<ParameterEmits>
+
 type Value = string | number
 type Props = IParameterProps<Value> & Omit<IInputProps, 'value'>
 
-const props = defineProps<Props>()
-const emit = defineEmits<ParameterEmits>()
+defineProps<Props>()
+defineEmits<ParameterEmits>()
 </script>

@@ -1,12 +1,12 @@
 import { homedir, userInfo } from 'node:os'
 
-import MainArrayBase, { initArrayPublic } from '/utils/json-arrays/main'
+import MainArrayBase from '/utils/json-arrays/main'
 
 import { publicFunction, publicMainEvent, publicRendererEvent } from 'emr-bridge'
 
 import Config from '../config/main'
-import type { IPublic } from './public'
-import { Keys } from './public'
+import type { PubType } from './public'
+import { PubKeys } from './public'
 import type { IMod } from './types'
 
 import Archive from '/mods/archive/main'
@@ -24,12 +24,12 @@ export type * from './types'
  * _main process_
 */
 class Mods extends MainArrayBase<IMod, IMod & { file: File }> {
-  protected override emitChangeEvent = publicMainEvent<[IMod[]]>(Keys.mainChangeEvent)
-  protected override onChangeEvent = publicRendererEvent<IMod[]>(Keys.onRendererChange)
+  protected override emitChangeEvent = publicMainEvent<[IMod[]]>(PubKeys.mainChangeEvent)
+  protected override onChangeEvent = publicRendererEvent<IMod[]>(PubKeys.onRendererChange)
 
   protected override jsonFile = Files.mods
 
-  constructor() { super(); this.initPublic(); initArrayPublic(this, Keys.array, Keys.reset, Keys.save) }
+  constructor() { super(PubKeys.array, PubKeys.reset, PubKeys.save) }
 
   protected override convert(item: IMod): IMod & { file: File } {
     return { ...item, file: new File(item.path) }
@@ -37,49 +37,38 @@ class Mods extends MainArrayBase<IMod, IMod & { file: File }> {
 
   /** Обрабатывает имеющиеся моды в архиве */
   async procMods() {
-    if (!Config.useMods) return
-    if (!hasItems(this)) return
-
-    let counter = this.length
+    if (!Config.useMods || !hasItems(this)) return
 
     const deleteFromList = (name: string) => {
       this.findAndRemove(mod => mod.name === name)
-      counter--
     }
 
-    for (const { file, name } of this) {
-      if (!await file.exists()) {
+    for (const { file, name } of this.converted) {
+      const hasFile = await file.exists()
+      const hasPermissions = await Checks.hasPermissions(file)
+
+      if (!hasFile || !hasPermissions) {
         deleteFromList(name)
         continue
       }
-      else if (!await Checks.hasPermissions(file)) {
-        deleteFromList(name)
+
+      const sizeChanged = await file.getSize() !== Sizes.getModSize(file)
+      const hasDir = await Dirs.modsTemp.dir(name).exists()
+
+      if (!sizeChanged && hasDir) {
         continue
       }
 
-      if (await file.getSize() === Sizes.getModSize(file) && await Dirs.modsTemp.dir(name).exists()) {
-        --counter
-      }
-      else {
-        await Archive.unpackMod(file, name)
+      await Archive.unpackMod(file, name)
+      const hasClasses = await Dirs.modsTemp.dir(name, 'classes').exists()
 
-        if (await Dirs.modsTemp.dir(name, 'classes').exists()) {
-          --counter
-        }
-        else {
-          deleteFromList(name)
-        }
-
-        if (counter === 0) {
-          await GameTexts.initFromMods(this.get())
-          return
-        }
+      if (!hasClasses) {
+        deleteFromList(name)
+        continue
       }
     }
 
-    if (counter <= 0) {
-      await GameTexts.initFromMods(this.get())
-    }
+    await GameTexts.initFromMods(this.get())
   }
 
   /** Находит `.pak` файл модификаций в папке */
@@ -92,12 +81,13 @@ class Mods extends MainArrayBase<IMod, IMod & { file: File }> {
 
       if (file.isExt('pak')) {
         await Archive.unpack(file, tempDir)
+
         if (await tempDir.dir('classes').exists()) {
           const modioFile = dir.file('modio.json')
           let name = file.name
+
           if (await modioFile.exists()) {
-            const data = await modioFile.readFromJSON()
-            name = data.name
+            name = (await modioFile.readFromJSON()).name
           }
           out.push([file, procNameForFS(name)])
         }
@@ -127,11 +117,13 @@ class Mods extends MainArrayBase<IMod, IMod & { file: File }> {
 
     if (await userDir.exists()) {
       let existedDir: Dir | undefined
+
+      const getModsDir = (gamesDir: string) => `Documents/${gamesDir}/SnowRunner/base/Mods/.modio/mods`
       const dirs = [
-        userDir.dir('Documents/My Games/SnowRunner/base/Mods/.modio/mods'),
-        userDir.dir('Documents/my games/SnowRunner/base/Mods/.modio/mods'),
-        userDir.dir('Documents/mygames/SnowRunner/base/Mods/.modio/mods'),
-        userDir.dir('Documents/MyGames/SnowRunner/base/Mods/.modio/mods')
+        userDir.dir(getModsDir('My Games')),
+        userDir.dir(getModsDir('my games')),
+        userDir.dir(getModsDir('mygames')),
+        userDir.dir(getModsDir('MyGames'))
       ]
 
       for (const dir of dirs) {
@@ -162,12 +154,14 @@ class Mods extends MainArrayBase<IMod, IMod & { file: File }> {
   }
   
   /** Инициализация публичных объектов/методов */
-  private initPublic() {
-    publicFunction<IPublic[Keys.findMods]>(Keys.findMods, async dirPath => {
+  protected override initPublic(arrayKey: string, resetKey: string, saveKey: string) {
+    super.initPublic(arrayKey, resetKey, saveKey)
+
+    publicFunction<PubType[PubKeys.findMods]>(PubKeys.findMods, async dirPath => {
       const items = await this.findMods(new Dir(dirPath))
       return items.map(([mod, name]) => [mod.path, name])
     })
-    publicFunction<IPublic[Keys.getAllMods]>(Keys.getAllMods, async () => {
+    publicFunction<PubType[PubKeys.getAllMods]>(PubKeys.getAllMods, async () => {
       const items = await this.getAllMods()
       return items.map(([mod, name]) => [mod.path, name])
     })

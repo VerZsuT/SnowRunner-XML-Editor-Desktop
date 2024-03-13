@@ -1,18 +1,20 @@
 import { Bridge } from 'emr-bridge/renderer'
 
-import type { IPublic } from './public'
-import { Keys } from './public'
+import type { PubType } from './public'
+import { PubKeys } from './public'
 import type { IGameTexts } from './types'
 
 export type * from './types'
+
+const Main = Bridge.as<PubType>()
 
 /**
  * Работа с игровой локализацией  
  * _renderer process_
  */
-class GameTexts {
-  private readonly Bridge = Bridge.as<IPublic>()
-  private readonly object = this.Bridge[Keys.gameTexts]
+class GameTexts implements IGameTexts {
+  /** Объект текстов */
+  private readonly object = Main[PubKeys.gameTexts]
 
   /** Тексты из модификаций */
   readonly mods = this.object.mods
@@ -21,7 +23,6 @@ class GameTexts {
 
   /**
   * Возвращает игровой перевод по ключу.
-  * 
   * @param modID - id модификации.
   */
   get(key: string | undefined, modID?: string): string | undefined {
@@ -40,4 +41,4 @@ class GameTexts {
   }
 }
 
-export default new GameTexts() as GameTexts & IGameTexts
+export default new GameTexts()

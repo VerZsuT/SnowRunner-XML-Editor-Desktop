@@ -6,25 +6,33 @@ import { links } from './utils'
 
 import { Backup, Config, Files, Helpers, Paths, ProgramWindow, Windows } from '/mods/renderer'
 
+/** Отсутвует `initial.pak` */
 const initialNotFound = !Config.initialPath
 
 type MenuItemType = Required<MenuProps>['items'][number]
 
+/** Меню `Файл` */
 const file = computed(() => [
   MenuItem(texts.exitMenuItemLabel, () => Helpers.quitApp())
 ] satisfies MenuItemType[])
+
+/** Меню `Бэкап` */
 const backup = computed(() => [
   MenuItem(texts.openButton, () => Helpers.openPath(Paths.backupFolder)),
   Divider(),
   MenuItem(texts.saveButton, () => Backup.save()),
   MenuItem(texts.restoreMenuItemLabel, () => Backup.recoverFromIt())
 ] satisfies MenuItemType[])
+
+/** Меню `Настройки` */
 const settings = computed(() => [
   MenuItem(texts.settingsMenuLabel, () => Windows.openWindow(ProgramWindow.settings), initialNotFound),
   Divider(),
   MenuItem(texts.resetMenuItemLabel, () => Config.reset(), initialNotFound),
   MenuItem(texts.uninstallMenuItemLabel, () => Files.uninstall.exec())
 ] satisfies MenuItemType[])
+
+/** Меню `Помощь` */
 const help = computed(() => [
   MenuItem(texts.versionMenuItemLabel, () => Windows.openWindow(ProgramWindow.whatsNew)),
   Divider(),
@@ -32,14 +40,16 @@ const help = computed(() => [
   MenuItem(texts.githubTitle, () => Helpers.openLink(links.github)),
   MenuItem(texts.youtubeTitle, () => Helpers.openLink(links.youtube))
 ] satisfies MenuItemType[])
-const items = computed(() => [
+
+/** Элементы меню */
+export default computed(() => [
   NestedMenuItem(texts.fileMenuLabel, file.value),
   NestedMenuItem(texts.backupMenuLabel, backup.value, initialNotFound),
   NestedMenuItem(texts.settingsMenuLabel, settings.value),
   NestedMenuItem(texts.helpMenuLabel, help.value)
 ] satisfies MenuItemType[])
-export default items
 
+/** Элемент меню */
 function MenuItem(
   label: string,
   onClick: () => void,
@@ -47,6 +57,7 @@ function MenuItem(
   key = Math.random().toString()
 ): MenuItemType { return { label, onClick, disabled, key } }
 
+/** Меню с дочерними элементами */
 function NestedMenuItem(
   label: string,
   children: MenuItemType[],
@@ -54,4 +65,5 @@ function NestedMenuItem(
   key = Math.random().toString()
 ): MenuItemType { return { label, children, disabled, key } }
 
+/** Разделитель элементов меню */
 function Divider(): MenuItemType { return { type: 'divider' as const } }

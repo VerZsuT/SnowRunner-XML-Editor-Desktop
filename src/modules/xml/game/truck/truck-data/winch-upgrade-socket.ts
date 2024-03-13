@@ -19,5 +19,5 @@ export default class WinchUpgradeSocket extends XMLWithTemplates {
   get $Default() { return {} as StrUtils }
 
   readonly winchesFiles = this.files('winches', () => this.Type)
-  readonly winches = this.filesElementsWithTemplates(Winches, this.winchesFiles)
+  readonly winches = this.filesElementsWithTemplates<Winches>(Winches, this.winchesFiles)
 }

@@ -32,7 +32,7 @@ import { Lang } from '/mods/renderer'
 import type { BoolUtils, NumUtils } from '/mods/xml/game/game-xml'
 import { localize } from '/utils/texts/renderer'
 
-type Props = {
+export type UnlockPresetProps = {
   element?: {
     $Price: NumUtils
     $UnlockByRank: NumUtils
@@ -40,7 +40,7 @@ type Props = {
   }
 }
 
-const { element } = defineProps<Props>()
+defineProps<UnlockPresetProps>()
 
 const texts = localize({
   unlockGroupName: {

@@ -20,5 +20,5 @@ export default class SuspensionSocket extends XMLWithTemplates {
   get $Default() { return {} as StrUtils }
 
   readonly suspensionsFiles = this.files('suspensions', () => this.Type)
-  readonly suspensions = this.filesElementsWithTemplates(Suspensions, this.suspensionsFiles)
+  readonly suspensions = this.filesElementsWithTemplates<Suspensions>(Suspensions, this.suspensionsFiles)
 }

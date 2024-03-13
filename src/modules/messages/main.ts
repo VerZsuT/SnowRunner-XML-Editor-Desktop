@@ -1,7 +1,7 @@
 import { publicMainEvent } from 'emr-bridge'
 
 import { MainMessageType } from './enums'
-import { Keys } from './public'
+import { PubKeys } from './public'
 import type { IMainMessage } from './types'
 
 export * from './enums'
@@ -12,19 +12,28 @@ export type * from './types'
  * _main process_
 */
 class Messages {
-  private emitMessageEvent = publicMainEvent<IMainMessage>(Keys.messageEvent)
+  /** Вызвать событие сообщения */
+  private emitMessageEvent = publicMainEvent<IMainMessage>(PubKeys.messageEvent)
 
   /** Сообщение об ошибке */
-  error(text: string) { this.emitMessageEvent({ type: MainMessageType.error, text }) }
+  error(text: string) {
+    this.emitMessageEvent({ type: MainMessageType.error, text })
+  }
 
   /** Информационное сообщение */
-  info(text: string) { this.emitMessageEvent({ type: MainMessageType.info, text }) }
+  info(text: string) {
+    this.emitMessageEvent({ type: MainMessageType.info, text })
+  }
 
   /** Сообщение об успехе */
-  success(text: string) { this.emitMessageEvent({ type: MainMessageType.success, text }) }
+  success(text: string) {
+    this.emitMessageEvent({ type: MainMessageType.success, text })
+  }
 
   /** Предупреждение */
-  warn(text: string) { this.emitMessageEvent({ type: MainMessageType.warning, text }) }
+  warn(text: string) {
+    this.emitMessageEvent({ type: MainMessageType.warning, text })
+  }
 
   /** Загрузка */
   loading(text: string) {

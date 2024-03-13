@@ -5,7 +5,7 @@
   >
     <template #title>
       <h3 class="header-title">
-        {{ props.text }}
+        {{ text }}
       </h3>
     </template>
     <template #extra>
@@ -18,19 +18,26 @@
 import type { PageHeaderProps } from 'ant-design-vue'
 import { PageHeader } from 'ant-design-vue'
 
+import type { EmitsToProps } from '../types'
+
+export type HeaderProps = Props & EmitsToProps<Emits>
+
 type Props = PageHeaderProps & {
+  /** Текст заголовка */
   text: string
+  /** Показать кнопку `Назад` */
   withBack?: boolean
 }
 
 type Emits = {
+  /** Событие перехода назад */
   back: []
 }
 
 const props = defineProps<Props>()
 const emit = defineEmits<Emits>()
 
-const onBack = props.withBack ? () => emit('back') : undefined
+const onBack: PageHeaderProps['onBack'] = props.withBack ? () => emit('back') : undefined
 </script>
 
 <style lang='scss' scoped>

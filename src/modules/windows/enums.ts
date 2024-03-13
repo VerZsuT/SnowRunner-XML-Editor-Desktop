@@ -1,17 +1,17 @@
 /** Окно программы */
 export enum ProgramWindow {
   /** Основное окно (списки и таблица) */
-  main = 'window.main',
+  main = 'window/main',
   /** Окно настроек */
-  settings = 'window.settings',
+  settings = 'window/settings',
   /** Окно доступности обновления */
-  update = 'window.update',
+  update = 'window/update',
   /** Окно нововведений в обновлении */
-  whatsNew = 'window.whats-new',
+  whatsNew = 'window/whats-new',
   /** Окно загрузки */
-  loading = 'window.loading',
+  loading = 'window/loading',
   /** Окно первоначальной настройки */
-  setup = 'window.setup'
+  setup = 'window/setup'
 }
 
 /** Тип окна программы */

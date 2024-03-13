@@ -20,5 +20,5 @@ export default class EngineSocket extends XMLWithTemplates {
   get $Default() { return {} as StrUtils }
 
   readonly enginesFiles = this.files('engines', () => this.Type)
-  readonly engines = this.filesElementsWithTemplates(Engines, this.enginesFiles)
+  readonly engines = this.filesElementsWithTemplates<Engines>(Engines, this.enginesFiles)
 }

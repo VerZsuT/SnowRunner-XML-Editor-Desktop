@@ -1,45 +1,49 @@
 import type { AnyNode, Cheerio } from 'cheerio'
 import { load } from 'cheerio'
 
-import type { File } from '/mods/files/renderer'
+import { File } from '/mods/files/renderer'
 import { hasItems, isString } from '/utils/checks/renderer'
 
 /** Объект DOM элемента */
 export default class XMLElement {
+  /** Является ли аргумент `XMLElement` */
+  static isXMLElement(other: any): other is XMLElement {
+    return other instanceof XMLElement
+  }
+
+  /** Создать из строки */
+  static async from(str: string): Promise<XMLElement | undefined>
   /** Создать из содержимого файла */
-  static async fromFile(file: File): Promise<XMLElement | undefined> {
-    const data = await file.read()
+  static async from(file: File): Promise<XMLElement | undefined>
+  static async from(source: File | string): Promise<XMLElement | undefined> {
+    const data = File.isFile(source) ? (await source.read()) : source
     const xml = load(data || '', { xmlMode: true })
+
     if (!data || !xml.xml()) return
     return new this(xml.root())
   }
 
-  /** Создать из содержимого строки */
-  static fromString(str: string): XMLElement | undefined {
-    const xml = load(str || '', { xmlMode: true })
-    if (!str || !xml.xml()) return
-    return new this(xml.root())
-  }
-
-  protected constructor(
-    private element: Cheerio<AnyNode>,
-    public selector = '',
-    private baseElement: Cheerio<AnyNode> = element
+  constructor(
+    private readonly element: Cheerio<AnyNode>,
+    public readonly selector = '',
+    private readonly baseElement: Cheerio<AnyNode> = element
   ) {}
 
+  /** Имя тега */
   get tagName(): string {
     return this.element.get(0)?.['tagName']
   }
 
-  /** Возвращает родительский элемент */
+  /** Родительский элемент */
   get parent() {
     return new XMLElement(this.element.parent())
   }
 
-  /** Возвращает строковое представление элемента */
+  /** Строковое представление элемента */
   get xml() {
     const string = this.element.html() || ''
     let attrs: string[] | undefined
+
     if (this.hasAttrs()) {
       attrs = []
       for (const [name, value] of Object.entries(this.element.attr()!)) {
@@ -49,9 +53,11 @@ export default class XMLElement {
     if (this.tagName) {
       return `<${this.tagName}${attrs && hasItems(attrs) ? ` ${attrs.join(' ')}` : ''}>\n${string}\n</${this.tagName}>`
     }
+
     return load(string, { xmlMode: true }).xml()
   }
   
+  /** Строковое представление элемента вместе с базовым тегом */
   get baseXML() {
     return load(this.baseElement.html() || '', { xmlMode: true }).xml()
   }
@@ -159,15 +165,21 @@ export default class XMLElement {
     return new XMLElement(this.element.clone())
   }
 
+  /** Приведение к `Cheerio` элементу */
   toCheerio() {
     return this.element
   }
 }
 
+/** Значение атрибута */
 export class AttrValue {
+  /** Строковое значение */
   get str() { return this.value }
+  /** Целочисленное значение */
   get int() { return Number.parseInt(this.value) }
+  /** Значение с плавающей точкой */
   get float() { return Number.parseFloat(this.value) }
+  /** Логическое значение */
   get bool() { return this.value === 'true' }
 
   constructor(

@@ -14,10 +14,10 @@
 import { SearchOutlined } from '@ant-design/icons-vue'
 import { Input } from 'ant-design-vue'
 
-import { useFilterStore } from '../../store/filter'
+import { useListStore } from '../../store'
 import texts from '../texts'
 
-const { filter, setFilter } = useFilterStore()
+const { filter, setFilter } = useListStore()
 </script>
 
 <style lang='scss' scoped>

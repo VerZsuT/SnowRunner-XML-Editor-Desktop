@@ -2,7 +2,7 @@ import { publicFunction, publicMainEvent, publicRendererEvent, publicVariable } 
 
 import ArrayBase from '/utils/json-arrays/base'
 
-import { Keys } from './public'
+import { PubKeys } from './public'
 import type { IDLC } from './types'
 
 import type { File, IFindDirsArgs, IFindFilesArgs } from '/mods/files/main'
@@ -15,8 +15,8 @@ export type * from './types'
  * _main process_
 */
 class DLCs extends ArrayBase<IDLC, IDLC & { dir: Dir }> {
-  protected override emitChangeEvent = publicMainEvent<[IDLC[]]>(Keys.mainChangeEvent)
-  protected override onChangeEvent = publicRendererEvent<IDLC[]>(Keys.onRendererChange)
+  protected override emitChangeEvent = publicMainEvent<[IDLC[]]>(PubKeys.mainChangeEvent)
+  protected override onChangeEvent = publicRendererEvent<IDLC[]>(PubKeys.onRendererChange)
 
   protected override convert(item: IDLC): IDLC & { dir: Dir } {
     return { ...item, dir: new Dir(item.path) }
@@ -26,18 +26,20 @@ class DLCs extends ArrayBase<IDLC, IDLC & { dir: Dir }> {
 
   /** Инициализация объекта */
   async init() {
-    const dirs: Dir[] = []
+    const dlcs: IDLC[] = []
 
     for (const entry of await Dirs.dlc.read()) {
       if (await entry.isFile()) continue
-      dirs.push(entry.asDir())
+      dlcs.push({ name: entry.asDir().name, path: entry.path })
     }
 
-    this.set(dirs.map(dir => ({ name: dir.name, path: dir.path })))
+    this.set(dlcs)
   }
 
   /** Сбрасывает массив до исходного состояния */
-  reset() { this.set(this.default) }
+  reset() {
+    this.set(this.default)
+  }
 
   /** Поиск файлов */
   async findFiles(args: IFindFilesArgs): Promise<File[]> {
@@ -51,11 +53,11 @@ class DLCs extends ArrayBase<IDLC, IDLC & { dir: Dir }> {
 
   /** Инициализация публичных объектов/методов */
   private initPublic() {
-    publicVariable(Keys.array, {
+    publicVariable(PubKeys.array, {
       get: this.get.bind(this),
       set: this.set.bind(this)
     })
-    publicFunction(Keys.reset, this.reset.bind(this))
+    publicFunction(PubKeys.reset, this.reset.bind(this))
   }
 }
 

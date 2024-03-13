@@ -1,100 +1,79 @@
-const postfix = '\nError: {lst}'
-
 /** Тексты ошибок программы */
 export enum ErrorText {
   /**
    * Ошибка исполнения команды WinRAR  
-   * Параметры:  
    * 1. Исполняемая команда
    */
-  winRarCommandError = `Error on run WinRar command "{}".${postfix}`,
+  winRarCommandError = 'Error on run WinRar command "{}"',
 
   /**
    * Ошибка чтения файла  
-   * Параметры:  
    * 1. Путь к файлу
    */
-  readFileError = `Error on reading file "{}".${postfix}`,
+  readFileError = 'Error on reading file "{}"',
   /**
    * Ошибка записи файла  
-   * Параметры:  
    * 1. Путь к файлу
    */
-  writeFileError = `Error on writing file "{}".${postfix}`,
+  writeFileError = 'Error on writing file "{}"',
   /**
    * Ошибка исполнения файла  
-   * Параметры:  
    * 1. Путь к файлу
    */
-  executeFileError = `Error on executing file "{}".${postfix}`,
+  executeFileError = 'Error on executing file "{}"',
   /**
    * Ошибка копирования файла  
-   * Параметры:  
    * 1. Изначальный путь  
    * 2. Конечный путь
    */
-  copyFileError = `Error on coping file "{}" to "{}".${postfix}`,
+  copyFileError = 'Error on coping file "{}" to "{}"',
   /**
    * Ошибка создания папки  
-   * Параметры:  
    * 1. Путь создания
    */
-  makeFileError = `Error on making file "{}".${postfix}`,
+  makeFileError = 'Error on making file "{}"',
 
   /**
    * Ошибка удаления  
-   * Параметры:  
    * 1. Путь к файлу/папке
    */
-  removeError = `Error on removing "{}".${postfix}`,
+  removeError = 'Error on removing "{}"',
   /**
    * Ошибка перемещения  
-   * Параметры:  
    * 1. Изначальный путь  
    * 2. Конечный путь
    */
-  moveError = `Error on moving "{}" to "{}".${postfix}`,
+  moveError = 'Error on moving "{}" to "{}"',
   /**
    * Ошибка переименования  
-   * Параметры:  
    * 1. Изначальный путь  
    * 2. Конечный путь
    */
-  renameError = `Error on renaming "{}" to "{}".${postfix}`,
+  renameError = 'Error on renaming "{}" to "{}"',
 
   /**
    * Ошибка наличия папки  
-   * Параметры:  
    * 1. Путь к папке
   */
-  dirNotFound = `Directory "{}" not found.${postfix}`,
+  dirNotFound = 'Directory "{}" not found',
   /**
    * Ошибка создания папки  
-   * Параметры:  
    * 1. Путь создания
    */
-  makeDirError = `Error on making directory "{}".${postfix}`,
+  makeDirError = 'Error on making directory "{}"',
   /**
    * Ошибка чтения папки  
-   * Параметры:  
    * 1. Путь к папке
    */
-  readDirError = `Error on reading directory "{}".${postfix}`,
+  readDirError = 'Error on reading directory "{}"',
   /**
    * Ошибка записи папки  
-   * Параметры:  
    * 1. Путь к папке
    */
-  writeDirError = `Error on writing into directory "{}".${postfix}`,
+  writeDirError = 'Error on writing into directory "{}"',
 
-  /**
-   * Ошибка сохранения конфигурации  
-   * Параметры: нет
-   */
-  saveConfigError = `Saving configuration error.${postfix}`,
-  /**
-   * Ошибка подключения к GitHub  
-   * Параметры: нет
-   */
-  gitHubConnectError = `Error on connecting to GitHub for check updates.${postfix}`
+  /** Ошибка сохранения конфигурации */
+  saveConfigError = 'Saving configuration error',
+  /** Ошибка подключения к GitHub */
+  gitHubConnectError = 'Error on connecting to GitHub for check updates'
 }

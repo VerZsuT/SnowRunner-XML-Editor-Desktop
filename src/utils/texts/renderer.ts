@@ -16,7 +16,7 @@ export function localize<T extends ITextsToLocalize<any>>(texts: T): LocalizedTe
   }
 
   const textsObj = reactive(result)
-  Config.onChange(() => {
+  Config.addEventListener('change', () => {
     for (const key in texts) {
       textsObj[key as any] = texts[key][Config.lang]
     }

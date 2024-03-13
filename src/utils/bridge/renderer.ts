@@ -3,7 +3,6 @@ import { Bridge } from 'emr-bridge/renderer'
 /**
  * Возвращает метод, принимающий аргументы и вызывающий `Bridge[key](...args)` с этими аргументами  
  * _renderer process_
- * 
  * @param key - название публичной функции
 */
 export function providePubFunc<T extends (...args: any[]) => any>(key: string) {
@@ -14,7 +13,6 @@ export function providePubFunc<T extends (...args: any[]) => any>(key: string) {
  * Возвращает метод, не принимающий аргументы и вызывающий `Bridge[key](...args)`
  * с переданными в `provideVoidPubFunc` аргументами  
  * _renderer process_
- * 
  * @param key - название публичной функции
  * @param args - аргументы, передаваемые при каждом вызове
  */

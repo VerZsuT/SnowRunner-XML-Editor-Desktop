@@ -5,7 +5,7 @@
         <Search />
       </template>
     </Header>
-  
+    
     <Tabs
       class="tabs"
       :active-key="category"
@@ -56,7 +56,7 @@
         </template>
       </TabPane>
     </Tabs>
-  
+    
     <template v-if="files">
       <List
         v-show="source === SourceType.main"
@@ -115,6 +115,7 @@ const { category, source, setCategory, setSource } = useListStore()
 const files = ref<IFiles | null>(null)
 
 watch(category, () => files.value = null)
+
 watchEffect(async () => {
   const [main, dlc, mods] = await Promise.all([
     ItemsUtils.getMain(category.value),

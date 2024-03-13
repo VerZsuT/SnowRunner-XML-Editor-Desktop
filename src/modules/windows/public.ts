@@ -3,32 +3,32 @@ import type { MainEvent } from 'emr-bridge'
 import type { ProgramWindow } from './enums'
 import type Windows from './main'
 
-export enum Keys {
-  openWindow = 'windows.open-window',
+export enum PubKeys {
+  openWindow = 'windows/open-window',
 
-  windowReadyEvent = 'windows.window-ready-event',
-  updateContentEvent = 'update-window.content-event',
-  onUpdateContent = 'onUpdate-window.content-event',
+  windowReadyEvent = '-windows/window-ready-event',
+  updateContentEvent = '-windows/update/content-event',
+  onUpdateContent = `on${PubKeys.updateContentEvent}`,
 
-  loadingTextEvent = 'loading-window.text-event',
-  loadingSuccessEvent = 'loading-window.success-event',
-  loadingDownloadEvent = 'loading-window.download-event',
-  loadingPercentEvent = 'loading-window.percent-event',
+  loadingTextEvent = '-windows/loading/text-event',
+  loadingSuccessEvent = '-windows/loading/success-event',
+  loadingDownloadEvent = '-windows/loading/download-event',
+  loadingPercentEvent = '-windows/loading/percent-event',
 
-  onLoadingText = 'onLoading-window.text-event',
-  onLoadingSuccess = 'onLoading-window.success-event',
-  onLoadingDownload = 'onLoading-window.download-event',
-  onLoadingPercent = 'onLoading-window.percent-event'
+  onLoadingText = `on${PubKeys.loadingTextEvent}`,
+  onLoadingSuccess = `on${PubKeys.loadingSuccessEvent}`,
+  onLoadingDownload = `on${PubKeys.loadingDownloadEvent}`,
+  onLoadingPercent = `on${PubKeys.loadingPercentEvent}`
 }
 
-export interface IPublic {
-  [Keys.openWindow]: typeof Windows.openWindow
-  [Keys.onUpdateContent]: MainEvent<string>
+export type PubType = {
+  [PubKeys.openWindow]: typeof Windows.openWindow
+  [PubKeys.onUpdateContent]: MainEvent<string>
 
-  [Keys.onLoadingText]: MainEvent<string>
-  [Keys.onLoadingSuccess]: MainEvent<boolean>
-  [Keys.onLoadingDownload]: MainEvent<boolean>
-  [Keys.onLoadingPercent]: MainEvent<string | number>
+  [PubKeys.onLoadingText]: MainEvent<string>
+  [PubKeys.onLoadingSuccess]: MainEvent<boolean>
+  [PubKeys.onLoadingDownload]: MainEvent<boolean>
+  [PubKeys.onLoadingPercent]: MainEvent<string | number>
 
-  [Keys.windowReadyEvent](window: ProgramWindow): void
+  [PubKeys.windowReadyEvent](window: ProgramWindow): void
 }

@@ -24,12 +24,12 @@ import { Menu } from '/rend/components'
 import { useWindowReady } from '/rend/utils'
 import { hasItems } from '/utils/renderer'
 
-useWindowReady(ProgramWindow.main)
-
 const { page } = usePageStore()
 const { setShowMessages } = useEditorStore()
+
 const openGameUpdate = ref(false)
 
+useWindowReady(ProgramWindow.main)
 onMounted(() => setTimeout(checkGameUpdate, 2000))
 
 async function checkGameUpdate() {
@@ -54,12 +54,14 @@ window['exportDefaults'] = async () => {
     files.push(...await Dirs.classes.dir(postfix).findFiles({ ext: 'xml' }))
   }
 
-  let count = 0
   setShowMessages(false)
+
+  let count = 0
   await EditorUtils.export(
     files.map(file => ({ source: file, toExport: Files.exported })),
     () => console.log(count++)
   )
+  
   setShowMessages(true)
   
   if (await Files.exported.exists()) {

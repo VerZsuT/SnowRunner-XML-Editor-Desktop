@@ -1,5 +1,6 @@
 import type { BuildType, Lang } from './enums'
 
+/** Интерфейс конфигурации программы */
 export interface IConfig {
   /** Версия программы. */
   version: string

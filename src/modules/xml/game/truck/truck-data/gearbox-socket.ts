@@ -20,5 +20,5 @@ export default class GearboxSocket extends XMLWithTemplates {
   get $Default() { return {} as StrUtils }
 
   readonly gearboxesFiles = this.files('gearboxes', () => this.Type)
-  readonly gearboxes = this.filesElementsWithTemplates(Gearboxes, this.gearboxesFiles)
+  readonly gearboxes = this.filesElementsWithTemplates<Gearboxes>(Gearboxes, this.gearboxesFiles)
 }

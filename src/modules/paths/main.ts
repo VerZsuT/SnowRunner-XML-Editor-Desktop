@@ -3,29 +3,33 @@ import { fileURLToPath } from 'node:url'
 
 import { publicVariable } from 'emr-bridge'
 
-import type { IPublic } from './public'
-import { Keys } from './public'
+import type { PubType } from './public'
+import { PubKeys } from './public'
 import type { IPaths } from './types'
+
+import { HasPublic } from '/utils/bridge/main'
 
 export type * from './types'
 
-const __dirname = dirname(fileURLToPath(import.meta.url))
+/** Папка, в которой находится текущий исполняемый скрипт */
+const _dirname = dirname(fileURLToPath(import.meta.url))
 
 /**
  * Пути, используемые в программе (в собранном виде)  
  * _main process_
 */
-class Paths {
+class Paths extends HasPublic {
   /** URL для обновления */
-  private readonly UPDATER_URL = 'https://verzsut.github.io/sxmle_updater'
+  private readonly updaterURL = 'https://verzsut.github.io/sxmle_updater'
   /** URL репозитория */
-  private readonly REPOS_IO_URL = 'https://verzsut.github.io/SnowRunner-XML-Editor-Desktop'
+  private readonly ioReposURL = 'https://verzsut.github.io/SnowRunner-XML-Editor-Desktop'
 
   /** Объект путей */
   private readonly object: IPaths = {
-    publicInfo: `${this.UPDATER_URL}/public.json`,
-    downloadPage: `${this.REPOS_IO_URL}/download.html`,
-    update: `${this.UPDATER_URL}/update/`,
+    publicInfo: `${this.updaterURL}/public.json`,
+    downloadPage: `${this.ioReposURL}/download.html`,
+    update: `${this.updaterURL}/update/`,
+    
     root: this.resolve('../../'),
     pages: this.resolve('../renderer/src/renderer/pages'),
 
@@ -52,8 +56,6 @@ class Paths {
     dlc: this.resolve('mainTemp/[media]/_dlc')
   }
 
-  constructor() { this.initPublic() }
-
   /**
    * Инициализация класса  
    * __НЕ ИСПОЛЬЗОВАТЬ__
@@ -73,8 +75,15 @@ class Paths {
   /** Получить объект путей */
   get() { return { ...this.object } }
 
+  protected initPublic() {
+    publicVariable<PubType[PubKeys.object]>(PubKeys.object, {
+      get: this.get.bind(this)
+    })
+  }
+
+  /** Обработать путь относительно текущей папки */
   private resolve(...paths: string[]) {
-    return join(__dirname, ...paths)
+    return join(_dirname, ...paths)
   }
 
   /** Путь до json файла */
@@ -82,12 +91,6 @@ class Paths {
     return this.resolve(`jsons/${name}.json`)
   }
 
-  /** Инициализация публичных объектов/методов */
-  private initPublic() {
-    publicVariable<IPublic[Keys.object]>(Keys.object, {
-      get: this.get.bind(this)
-    })
-  }
 }
 
 export default (new Paths()._init()) as Paths & IPaths

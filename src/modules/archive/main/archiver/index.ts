@@ -10,40 +10,51 @@ import Paths from '/mods/paths/main'
 
 /** Работа с WinRAR */
 class WinRAR {
-  /** Файл списка основных файлов/папок для распаковки */
-  private readonly MAIN_UNPACK_LIST = 'unpack-list.lst'
-  /** Файл списка модовых файлов/папок для распаковки */
-  private readonly MODS_UNPACK_LIST = 'unpack-mod-list.lst'
   /** Исполняемый файл WinRAR */
-  private readonly WINRAR_EXE = 'WinRAR.exe'
+  private readonly exeName = 'WinRAR.exe'
 
-  // Флаги WinRAR
-  /** Не включать базовую папку */
-  private readonly EXCLUDE_BASE_FOLDER = '-ep1'
-  /** Не использовать полные пути */
-  private readonly EXCLUDE_ALL_PATHS = '-ep'
-  /** Рекурсивная операция */
-  private readonly RECURSIVE = '-r'
-  /** Выполнение в фоновом режиме */
-  private readonly IN_BACKGROUND = '-ibck'
-  /** Не паниковать при ошибках */
-  private readonly NO_ERRORS = '-inul'
+  /** Списки файлов для распаковки */
+  private readonly lists = {
+    /** Файл списка основных файлов/папок для распаковки */
+    main: 'unpack-list.lst',
+    /** Файл списка модовых файлов/папок для распаковки */
+    mods: 'unpack-mod-list.lst'
+  }
 
+  /** Действия архиватора */
+  private readonly actions = {
+    /** Обновление файлов в архиве */
+    update: 'f',
+    /** Распаковка файлов из архива */
+    unpack: 'x',
+    /** Добавление файла в архив */
+    add: 'a'
+  }
 
-  // Операции WinRAR
-  /** Обновление файлов в архиве */
-  private readonly UPDATE = 'f'
-  /** Распаковка файлов из архива */
-  private readonly UNPACK = 'x'
-  /** Добавление файла в архив */
-  private readonly ADD = 'a'
+  /** Флаги запуска WinRAR */
+  private readonly flags = {
+    /** Не включать базовую папку */
+    excludeBase: '-ep1',
+    /** Не использовать полные пути */
+    excludeAll: '-ep',
+    /** Рекурсивная операция */
+    recursive: '-r',
+    /** Выполнение в фоновом режиме */
+    inBackground: '-ibck',
+    /** Не паниковать при ошибках */
+    noErrors: '-inul'
+  }
 
   /**  Аргументы зависящие от режима отладки архиватора */
-  private readonly RUN_ARGS = DEBUG_ARCHIVER ? [] : [this.IN_BACKGROUND]
+  private getRunArgs(isMod = false) {
+    return DEBUG_ARCHIVER ? [] : [
+      this.flags.inBackground,
+      ...isMod ? [this.flags.noErrors] : []
+    ]
+  }
 
   /**
    * Обновить файлы в архиве
-   * 
    * @param dir - папка с файлами
    * @param archive - обновляемый архив
    */
@@ -51,58 +62,59 @@ class WinRAR {
     await archive.chmod(0o777)
     let writeResult: ICheckResult
     if (!(writeResult = await archive.canWrite()).result) {
-      throw new ProgramError(ErrorText.writeFileError, archive.path, writeResult.error!)
+      throw new ProgramError(ErrorText.writeFileError, writeResult.error, archive.path)
     }
 
     let readResult: ICheckResult
     if (!(readResult = await dir.canRead()).result) {
-      throw new ProgramError(ErrorText.readDirError, dir.path, readResult.error!)
+      throw new ProgramError(ErrorText.readDirError, readResult.error, dir.path)
     }
 
-    await this.run([
-      this.UPDATE,
-      ...this.RUN_ARGS,
+    await this.run(
+      this.actions.update,
+      
       archive.path,
       this.inner(dir.path),
-      this.RECURSIVE,
-      this.EXCLUDE_BASE_FOLDER
-    ])
+      
+      this.getRunArgs(),
+      this.flags.recursive,
+      this.flags.excludeBase
+    )
   }
 
   /**
    * Распаковать файлы из архива в папку
-   * 
    * @param archive - распаковываемый архив
    * @param dir - папка, в которую будет происходить распаковка
    */
   async unpack(archive: File, dir: Dir) {
     const isMod = !!Config.initialPath && archive.path !== Config.initialPath
-    const list = isMod ? this.MODS_UNPACK_LIST : this.MAIN_UNPACK_LIST
+    const list = isMod ? this.lists.mods : this.lists.main
 
     let readResult: ICheckResult
     if (!(readResult = await archive.canRead()).result) {
-      throw new ProgramError(ErrorText.readFileError, archive.path, readResult.error!)
+      throw new ProgramError(ErrorText.readFileError, readResult.error, archive.path)
     }
 
     await dir.make()
     let writeResult: ICheckResult
     if (!(writeResult = await dir.canWrite()).result) {
-      throw new ProgramError(ErrorText.writeDirError, dir.path, writeResult.error!)
+      throw new ProgramError(ErrorText.writeDirError, writeResult.error, dir.path)
     }
 
-    await this.run([
-      this.UNPACK,
-      ...this.RUN_ARGS,
-      ...(isMod ? [this.NO_ERRORS] : []),
+    await this.run(
+      this.actions.unpack,
+
       archive.path,
       `@${list}`,
-      this.inner(dir.path)
-    ])
+      this.inner(dir.path),
+      
+      this.getRunArgs(isMod)
+    )
   }
 
   /**
    * Добавить файл в архив
-   * 
    * @param file - добавляемый файл
    * @param archive - архив, в который будет добавляться файл
   */
@@ -110,46 +122,47 @@ class WinRAR {
     await archive.chmod(0o777)
     let readResult: ICheckResult
     if (!(readResult = await file.canRead()).result) {
-      throw new ProgramError(ErrorText.readFileError, file.path, readResult.error!)
+      throw new ProgramError(ErrorText.readFileError, readResult.error, file.path)
     }
 
     let writeResult: ICheckResult
     if (!(writeResult = await archive.canWrite()).result) {
-      throw new ProgramError(ErrorText.writeFileError, archive.path, writeResult.error!)
+      throw new ProgramError(ErrorText.writeFileError, writeResult.error, archive.path)
     }
 
-    await this.run([
-      this.ADD,
-      ...this.RUN_ARGS,
+    await this.run(
+      this.actions.add,
+
       archive.path,
       file.path,
-      this.EXCLUDE_ALL_PATHS
-    ])
+
+      this.getRunArgs(),
+      this.flags.excludeAll
+    )
   }
 
   /**
    * Запустить `WinRAR`
-   * 
-   * @param attrs - параметры вызова
+   * @param args - параметры вызова
    */
-  async run(attrs: string[]) {
+  async run(...args: (string | string[])[]) {
     if (!await Dirs.winrar.exists()) {
-      throw new ProgramError(ErrorText.dirNotFound, Dirs.winrar.path)
+      throw new ProgramError(ErrorText.dirNotFound, null, Dirs.winrar.path)
     }
 
+    const execArgs = args.flatMap(value => Array.isArray(value) ? value : [value])
     await new Promise((resolve, reject) => {
-      execFile(this.WINRAR_EXE, attrs, { cwd: Paths.winrar })
+      execFile(this.exeName, execArgs, { cwd: Paths.winrar })
         .once('close', resolve)
         .once('error', error => {
           reject(error.message)
-          throw new ProgramError(ErrorText.winRarCommandError, attrs.join(','), error.message)
+          throw new ProgramError(ErrorText.winRarCommandError, error, args.join(','))
         })
     })
   }
 
   /**
    * Добавляет в конец `//`
-   * 
    * @param path - путь
    */
   private inner(path: string) { return `${path}\\` }

@@ -1,7 +1,7 @@
 <template>
   <div>
     <Radio.Group
-      v-if="props.isSetup"
+      v-if="radioMode"
       :value="Config.ref.lang"
       :options="options"
       option-type="button"
@@ -30,16 +30,18 @@
 import { Radio, Select } from 'ant-design-vue'
 
 import texts from './texts'
-import { useLangToOptions } from './utils'
+import { langToOptions } from './utils'
 
 import { Config, Lang, parseStrToLang } from '/mods/renderer'
 
-type Props = {
-  isSetup?: boolean
+export type LanguageProps = {
+  /** Режим горизонтального выбора */
+  radioMode?: boolean
 }
 
-const props = defineProps<Props>()
-const options = useLangToOptions(Lang)
+defineProps<LanguageProps>()
+
+const options = langToOptions(Lang)
 
 function changeLang(newLang: Lang) {
   if (newLang === Config.lang) return

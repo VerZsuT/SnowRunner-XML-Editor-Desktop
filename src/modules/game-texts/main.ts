@@ -1,12 +1,13 @@
 import { publicVariable } from 'emr-bridge'
 
-import type { IPublic } from './public'
-import { Keys } from './public'
+import type { PubType } from './public'
+import { PubKeys } from './public'
 import type { IGameTexts, ITranslation } from './types'
 
 import Config, { Lang } from '/mods/data/config/main'
 import type Mods from '/mods/data/mods/main'
 import { Dirs, Files } from '/mods/files/main'
+import { HasPublic } from '/utils/bridge/main'
 
 export type * from './types'
 
@@ -14,7 +15,7 @@ export type * from './types'
  * Работа с игровой локализацией  
  * _main process_
 */
-class GameTexts {
+class GameTexts extends HasPublic {
   /** Название файлов локализаций игры для каждого языка */
   private readonly locals = {
     [Lang.ru]: 'russian',
@@ -30,8 +31,6 @@ class GameTexts {
     /** Из `initial.pak` */
     main: {}
   }
-
-  constructor() { this.initPublic() }
 
   /** Получить игровые тексты */
   getTexts() { return this.object }
@@ -66,12 +65,19 @@ class GameTexts {
         }
       }
     }
+
     this.object.mods = mods
   }
 
   /** Сохранить игровой перевод в файл (для оптимизации) */
   async saveFromInitial() {
     await Files.initialTexts.writeToJSON(this.object.main)
+  }
+
+  protected initPublic() {
+    publicVariable<PubType[PubKeys.gameTexts]>(PubKeys.gameTexts, {
+      get: this.getTexts.bind(this)
+    })
   }
 
   /** Обработать файл игрового перевода */
@@ -84,12 +90,15 @@ class GameTexts {
         const result = line.split('"')
 
         if (result && result.length > 1) {
-          const key = line.split('"')[0]!
+          let [key, value] = line.split('"')
+          if (!key || !value) continue
+
+          key = key
             .trimEnd()
             .replaceAll('"', '')
             .replaceAll('\'', '')
             .replaceAll('﻿', '')
-          const value = line.split('"')[1]!
+          value = value
             .replaceAll('\\', '')
 
           if (parseAll || (this.startsWith(key, [
@@ -113,9 +122,7 @@ class GameTexts {
             'UI_WINCH',
             'UI_DLC'
           ]) && key.endsWith('NAME'))) {
-            try {
-              strings[key] = value
-            }
+            try { strings[key] = value }
             catch {}
           }
         }
@@ -133,13 +140,6 @@ class GameTexts {
     }
 
     return false
-  }
-
-  /** Инициализация публичных объектов/методов */
-  private initPublic() {
-    publicVariable<IPublic[Keys.gameTexts]>(Keys.gameTexts, {
-      get: this.getTexts.bind(this)
-    })
   }
 }
 

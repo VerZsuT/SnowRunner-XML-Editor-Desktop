@@ -12,7 +12,7 @@
         <MenuOutlined style="font-size: 25px" />
         <template #overlay>
           <Menu mode="vertical">
-            <Menu.Item @click="onReset()">
+            <Menu.Item @click="onReset">
               <Text>{{ texts.resetMenuItemLabel }}</Text>
               <UndoOutlined class="item-icon" />
             </Menu.Item>
@@ -59,18 +59,20 @@ import { ExportUtils, ImportUtils, ResetUtils, SaveUtils } from '../utils'
 import type { TruckXML } from '/mods/renderer'
 import { Archive, Edited, File, GameTexts, Messages, Mods, TruckFileType } from '/mods/renderer'
 import { Header } from '/rend/components'
-import { prettyString } from '/utils/renderer'
+import { lastItem, prettyString } from '/utils/renderer'
 
 const { Text } = Typography
 
-type Props = {
+export type MainHeaderProps = {
   xml: TruckXML
   file: File
 }
 
-const { xml, file } = defineProps<Props>()
+const { xml, file } = defineProps<MainHeaderProps>()
+
 const { route } = usePageStore()
 const { editedAction, showMessages, setEditedAction, info } = useEditorStore()
+
 defineExpose({
   save: onSave,
   reset: reset,
@@ -82,20 +84,24 @@ const mod = Mods.findByFile(file)
 const title = getMainTitle()
 
 async function onSave(updateFiles = true) {
-  let hideLoading = () => {}
-  if (showMessages.value) hideLoading = Messages.loading(texts.savingMessage)
+  const hideLoading = showMessages.value
+    ? Messages.loading(texts.savingMessage)
+    : () => {}
+
   try {
     await save(updateFiles)
-    if (showMessages.value) Messages.success(texts.successSaveFiles)
+    success(texts.successSaveFiles)
   }
   catch (error) {
     Messages.error(String(error))
   }
+
   hideLoading()
 }
 
 async function save(updateFiles = true) {
   await SaveUtils.emitSave()
+
   if (updateFiles) {
     if (info.mod) {
       await Archive.updateFiles(info.mod)
@@ -104,14 +110,15 @@ async function save(updateFiles = true) {
   }
 
   switch (editedAction.value) {
-    case EditedAction.add: {
-      Edited.add(file, xml.Type === TruckFileType.trailer); break
+    case EditedAction.markAsEdited: {
+      Edited.markAsEdited(file, xml.Type === TruckFileType.trailer); break
     }
-    case EditedAction.remove: {
-      Edited.remove(file); break
+    case EditedAction.markAsNotEdited: {
+      Edited.markAsNotEdited(file); break
     }
   }
-  setEditedAction(EditedAction.add)
+
+  setEditedAction(EditedAction.markAsEdited)
 }
 
 function getMainTitle(): string {
@@ -120,16 +127,14 @@ function getMainTitle(): string {
     return GameTexts.get(text, Mods.getModID(file)) ?? text ?? 'TITLE_ERROR'
   }
 
-  if (file.path.split('/').length !== 1) {
-    return prettyString(new File(file.path.split('/').at(-1)!).name).toUpperCase()
-  }
-  return prettyString(new File(file.path.split('\\').at(-1)!).name).toUpperCase()
+  const separator = file.path.includes('/') ? '/' : '\\'
+  return prettyString(new File(lastItem(file.path.split(separator))!).name).toUpperCase()
 }
 
 async function importFile(toImport?: File) {
   try {
     await ImportUtils.importFile(file, toImport)
-    if (showMessages.value) Messages.success(texts.wasImported)
+    success(texts.wasImported)
   }
   catch (error) {
     Messages.error(String(error))
@@ -139,7 +144,7 @@ async function importFile(toImport?: File) {
 async function exportFile(toExport?: File) {
   try {
     await ExportUtils.exportFile(file, toExport)
-    if (showMessages.value) Messages.success(texts.wasExported)
+    success(texts.wasExported)
   }
   catch (error) {
     Messages.error(String(error))
@@ -149,16 +154,25 @@ async function exportFile(toExport?: File) {
 async function reset() {
   try {
     await ResetUtils.emit(ResetUtils.globalID)
-    setEditedAction(EditedAction.remove)
-    if (showMessages.value) Messages.success(texts.successReset)
+    setEditedAction(EditedAction.markAsNotEdited)
+    if (showMessages.value) {
+      Messages.success(texts.successReset)
+    }
   }
   catch (error) {
     Messages.error(String(error))
   }
 }
 
+function success(text: string) {
+  if (showMessages.value) {
+    Messages.success(text)
+  }
+}
+
 function onReset() {
   if (mod) return
+
   Modal.confirm({
     okText: texts.ok, cancelText: texts.cancel,
     title: texts.resetConfirmMessage,

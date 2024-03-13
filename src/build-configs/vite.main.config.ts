@@ -5,13 +5,12 @@ import { viteStaticCopy } from 'vite-plugin-static-copy'
 import Paths from './paths'
 import { external, getBuildConfig, getBuildDefine, pluginHotRestart } from './vite.base.config'
 
-const rootDir = '../'
-const thisDir = '.'
-
-export default defineConfig(env => {
-  const forgeEnv = env
+export default defineConfig(forgeEnv => {
   const { forgeConfigSelf } = forgeEnv
   const define = getBuildDefine(forgeEnv)
+  const rootDir = '../'
+  const thisDir = '.'
+
   const config: UserConfig = {
     build: {
       lib: {
