@@ -1,6 +1,10 @@
 <template>
   <div class="container">
     <VersionInfo
+      version="0.8.8"
+      :changes="v088.desc"
+    />
+    <VersionInfo
       version="0.8.7"
       :changes="v087.desc"
     />
@@ -43,6 +47,31 @@ import { useWindowReady } from '/rend/utils'
 import { localize } from '/utils/texts/renderer'
 
 useWindowReady(ProgramWindow.whatsNew)
+
+const v088 = localize({
+  desc: {
+    [Lang.ru]: [
+      'Исправлена ошибка с содержимым аддонов',
+      'Исправлена ошибка при восстановлении параметров прицепов',
+      'Добавлена минимальная ширина у выбора аддона'
+    ],
+    [Lang.en]: [
+      'Fixed a bug with the content of addons',
+      'Fixed a bug when restoring trailer parameters',
+      'Added a minimum width for the addon selection'
+    ],
+    [Lang.de]: [
+      'Ein Fehler mit dem Inhalt der Addons wurde behoben',
+      'Ein Fehler beim Wiederherstellen von Anhängereinstellungen wurde behoben',
+      'Die minimale Breite der Addon-Auswahl wurde hinzugefügt'
+    ],
+    [Lang.ch]: [
+      '修正了插件内容的错误',
+      '修复了恢复拖车参数时的错误',
+      '为插件选择添加了最小宽度'
+    ]
+  }
+})
 
 const v087 = localize({
   desc: {
