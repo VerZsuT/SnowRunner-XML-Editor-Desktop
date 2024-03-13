@@ -42,7 +42,7 @@ async function onOk() {
     if (mod) continue
 
     const dlcFolder = dlc ? `_dlc/${dlc}` : ''
-    const truckFolder = isTrailer ? 'trailers/trucks' : 'trucks'
+    const truckFolder = isTrailer ? 'trucks/trailers' : 'trucks'
     const file = Dirs.backupInitialData.file('[media]', dlcFolder, 'classes', truckFolder, `${name}.xml`)
 
     if (!await file.exists()) continue
