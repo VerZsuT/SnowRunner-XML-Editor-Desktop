@@ -6,7 +6,7 @@
     <Input
       class="input"
       type="number"
-      :default-value="value"
+      :value="val"
       @change="onChange"
     />
   </div>
@@ -15,25 +15,38 @@
 <script lang='ts' setup>
 import type { InputProps } from 'ant-design-vue'
 import { Input, Typography } from 'ant-design-vue'
+import { ref, toRefs, watchEffect } from 'vue'
 
 const { Text } = Typography
 
 export type ContentFieldProps = {
   /** Заголовок поля для ввода */
   text: string
+  value: number
 }
 
-const value = defineModel<number>({ required: true })
-defineProps<ContentFieldProps>()
+type Emits = {
+  change: [value: number]
+}
+
+const props = defineProps<ContentFieldProps>()
+const { value } = toRefs(props)
+const emit = defineEmits<Emits>()
+
+const val = ref('')
+
+watchEffect(() => val.value = String(value.value))
 
 const onChange: InputProps['onChange'] = event => {
   const inputVal = event.target.value
+  val.value = inputVal ?? ''
   if (!inputVal) return
 
   const num = Number.parseInt(inputVal)
   if (Number.isNaN(num)) return
 
-  value.value = num
+  val.value = String(num)
+  emit('change', num)
 }
 </script>
 

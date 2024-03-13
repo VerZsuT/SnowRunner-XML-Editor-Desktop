@@ -12,6 +12,7 @@
           {{ texts.addonName }}
         </Text><br>
         <Input
+          class="addon-filter"
           type="text"
           :placeholder="texts.addonFilter"
           @blur="changeFilter($event.target?.['value'])"
@@ -25,20 +26,24 @@
       </div>
       <div class="grid ac-grid">
         <ContentField
-          v-model="state.wheels"
+          :value="state.wheels"
           :text="texts.addonWheels"
+          @change="state.wheels = $event"
         />
         <ContentField
-          v-model="state.repairs"
+          :value="state.repairs"
           :text="texts.addonRepairs"
+          @change="state.repairs = $event"
         />
         <ContentField
-          v-model="state.fuel"
+          :value="state.fuel"
           :text="texts.addonFuel"
+          @change="state.fuel = $event"
         />
         <ContentField
-          v-model="state.water"
+          :value="state.water"
           :text="texts.addonWater"
+          @change="state.water = $event"
         />
       </div>
 
@@ -347,8 +352,15 @@ async function getAddons(truckName: string, mod?: string, filter?: (xml: AddonXM
   margin: 15px auto 0;
 }
 
-.addon-select {
-  margin-top: 10px;
+.addon {
+  &-select {
+    min-width: 200px;
+    margin-top: 10px;
+  }
+
+  &-filter {
+    width: 200px;
+  }
 }
 </style>
 
