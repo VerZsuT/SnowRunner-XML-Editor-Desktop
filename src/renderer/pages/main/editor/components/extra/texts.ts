@@ -2,6 +2,18 @@ import { Lang } from '/mods/renderer'
 import { localize } from '/utils/texts/renderer'
 
 export default localize({
+  load: {
+    [Lang.ru]: 'Загрузить',
+    [Lang.en]: 'Load',
+    [Lang.de]: 'Laden',
+    [Lang.ch]: '下载'
+  },
+  foundAddons: {
+    [Lang.ru]: 'Найдено аддонов',
+    [Lang.en]: 'Addons found',
+    [Lang.de]: 'Addons gefunden',
+    [Lang.ch]: '找到插件'  
+  },
   extra: {
     [Lang.ru]: 'Дополнительно',
     [Lang.en]: 'Extra',

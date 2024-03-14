@@ -8,6 +8,7 @@
       type="number"
       :value="val"
       @change="onChange"
+      @blur="$emit('blur')"
     />
   </div>
 </template>
@@ -17,19 +18,27 @@ import type { InputProps } from 'ant-design-vue'
 import { Input, Typography } from 'ant-design-vue'
 import { ref, toRefs, watchEffect } from 'vue'
 
+import type { EmitsToProps } from '/rend/types'
+
 const { Text } = Typography
 
-export type ContentFieldProps = {
+export type ContentFieldProps = Props & EmitsToProps<Emits>
+
+type Props = {
   /** Заголовок поля для ввода */
   text: string
+  /** Значение поля для ввода */
   value: number
 }
 
 type Emits = {
+  /** Событие изменения значения */
   change: [value: number]
+  /** Событие `blur` поля ввода */
+  blur: []
 }
 
-const props = defineProps<ContentFieldProps>()
+const props = defineProps<Props>()
 const { value } = toRefs(props)
 const emit = defineEmits<Emits>()
 
