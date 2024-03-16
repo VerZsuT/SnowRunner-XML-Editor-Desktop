@@ -40,21 +40,21 @@ export default localize({
   },
   addonWater: {
     [Lang.ru]: 'Вода',
+    [Lang.en]: 'Water',
+    [Lang.de]: 'Wasser',
+    [Lang.ch]: '水'
+  },
+  addonRepairs: {
+    [Lang.ru]: 'Запчасти',
     [Lang.en]: 'Repairs',
     [Lang.de]: 'Ersatzteile',
     [Lang.ch]: '零件'
   },
-  addonRepairs: {
-    [Lang.ru]: 'Запчасти',
-    [Lang.en]: 'Fuel',
-    [Lang.de]: 'Treibstoff',
-    [Lang.ch]: '燃油'
-  },
   addonFuel: {
     [Lang.ru]: 'Топливо',
-    [Lang.en]: 'Water',
-    [Lang.de]: 'Wasser',
-    [Lang.ch]: '水'
+    [Lang.en]: 'Fuel',
+    [Lang.de]: 'Kraftstoff',
+    [Lang.ch]: '燃油'
   },
   saveButton: {
     [Lang.ru]: 'Сохранить',

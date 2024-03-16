@@ -193,7 +193,7 @@ function onReset() {
 }
 
 .save-button > span,
-.menu-button > :global(.ant-dropdown-trigger) > span {
+.menu-button {
   color: white;
   font-size: 25px !important;
 }

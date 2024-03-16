@@ -104,17 +104,23 @@ export default localize({
     [Lang.de]: 'Suche',
     [Lang.ch]: '搜索'
   },
+  emptyList: {
+    [Lang.ru]: 'Список пуст',
+    [Lang.en]: 'The list is empty',
+    [Lang.de]: 'Die Liste ist leer',
+    [Lang.ch]: '列表为空'
+  },
   foundItems: {
     [Lang.ru]: 'Найдено',
     [Lang.en]: 'Added',
     [Lang.de]: 'Aktualisiert',
-    [Lang.ch]: '添加的项目'
+    [Lang.ch]: '找到的项目'
   },
   addedItems: {
     [Lang.ru]: 'Добавлено',
     [Lang.en]: 'Found',
     [Lang.de]: 'Finden',
-    [Lang.ch]: '找到的项目'
+    [Lang.ch]: '添加的项目'
   },
   dlcListTitle: {
     [Lang.ru]: 'Из DLC',
