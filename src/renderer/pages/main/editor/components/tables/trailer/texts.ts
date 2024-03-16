@@ -56,6 +56,12 @@ export default localize({
     [Lang.de]: 'Anzahl der Räder zu reparieren',
     [Lang.ch]: '需要修复的车轮数量'
   },
+  centerOfMass: {
+    [Lang.ru]: 'Смещение центра масс',
+    [Lang.en]: 'Center of mass offset',
+    [Lang.de]: 'Versatz des Massenzentrums',
+    [Lang.ch]: '质量中心的位移'
+  },
   trailerMass: {
     [Lang.ru]: 'Масса прицепа',
     [Lang.en]: 'Trailer mass',

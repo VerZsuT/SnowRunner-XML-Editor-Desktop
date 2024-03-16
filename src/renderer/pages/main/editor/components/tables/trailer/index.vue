@@ -76,6 +76,11 @@
       key="mass"
       :label="texts.mass"
     >
+      <Coords
+        v-if="xml.PhysicsModel?.Body"
+        :label="texts.centerOfMass"
+        :utils="xml.PhysicsModel.Body.$CenterOfMassOffset"
+      />
       <Int
         v-if="xml.PhysicsModel?.Body"
         :label="texts.trailerMass"
@@ -103,6 +108,7 @@
 <script lang='ts' setup>
 import { SaveUtils } from '../../../utils'
 import Accordion from '../../accordion.vue'
+import Coords from '../../coords'
 import Group from '../../group'
 import { Float, Int } from '../../input'
 import type { ReadyEmits, ReadyProps } from '../../utils'
