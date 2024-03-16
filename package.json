@@ -11,7 +11,7 @@
 	"main": ".vite/build/index.js",
 	"scripts": {
 		"package": "electron-forge package --platform=win32 --arch=ia32",
-		"package-prod": "cross-env NODE_ENV=production electron-forge package --platform=win32 --arch=ia32",
+		"package-prod": "npm i && cross-env NODE_ENV=production electron-forge package --platform=win32 --arch=ia32",
 		"start": "cross-env NODE_ENV=development electron-forge start",
 		"lint": "eslint src/**",
 		"lint:fix": "npm run lint -- --fix",
