@@ -1,12 +1,11 @@
 <template>
   <div>
-    <Radio.Group
+    <Segmented 
       v-if="radioMode"
       :value="Config.ref.lang"
       :options="options"
-      option-type="button"
-      button-style="solid"
-      @change="changeLang($event.target.value)"
+      size="large"
+      @change="changeLang(parseStrToLang(String($event)))"
     />
     <template v-else>
       <label
@@ -27,7 +26,7 @@
 </template>
 
 <script lang='ts' setup>
-import { Radio, Select } from 'ant-design-vue'
+import { Segmented, Select } from 'ant-design-vue'
 
 import texts from './texts'
 import { langToOptions } from './utils'

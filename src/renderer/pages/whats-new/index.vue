@@ -110,23 +110,19 @@ const v087 = localize({
   desc: {
     [Lang.ru]: [
       'Исправлен баг с отзывчивостью двигателя',
-      'Исправлено определение модовых прицепов',
-      'Добавлена возможность поддержки проекта (Помощь - Поддержать)'
+      'Исправлено определение модовых прицепов'
     ],
     [Lang.en]: [
       'Fixed a bug with engine responsiveness',
-      'Fixed the definition of mod trailers',
-      'Added the ability to support the project (Help - Support)'
+      'Fixed the definition of mod trailers'
     ],
     [Lang.de]: [
       'Ein Fehler mit der Reaktionsfähigkeit des Motors wurde behoben',
-      'Die Definition von Mod-Anhängern wurde korrigiert',
-      'Es wurde die Möglichkeit hinzugefügt, das Projekt zu unterstützen (Hilfe - Unterstützung)'
+      'Die Definition von Mod-Anhängern wurde korrigiert'
     ],
     [Lang.ch]: [
       '修正了引擎响应的错误',
-      '修正了mod拖车的定义',
-      '增加了支持项目的能力（帮助-支持）'
+      '修正了mod拖车的定义'
     ]
   }
 })

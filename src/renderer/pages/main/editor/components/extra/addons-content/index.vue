@@ -4,7 +4,7 @@
     :label="label.value"
     icon="wrench"
   >
-    <template v-if="!hasItems(items)">
+    <template v-if="!hasItems(files)">
       <div
         v-if="loadStatus.isLoading"
         class="loading"
@@ -69,6 +69,14 @@
           @blur="saveAddonData"
         />
       </div>
+      <Button
+        v-if="Config.ref.advancedMode"
+        class="open-file-btn"
+        type="primary"
+        @click="openFile"
+      >
+        {{ texts.openFile }}
+      </Button>
     </template>
   </Group>
 </template>
@@ -87,7 +95,7 @@ import texts from '../texts'
 import ContentField from './content-field.vue'
 
 import type { File } from '/mods/renderer'
-import { AddonXML, DLCs, Dirs, GameTexts, Lang, Messages, XMLElement } from '/mods/renderer'
+import { AddonXML, Config, DLCs, Dirs, GameTexts, Helpers, Lang, Messages, XMLElement } from '/mods/renderer'
 import { Spin } from '/rend/components'
 import { hasItems } from '/utils/renderer'
 import { localize } from '/utils/texts/renderer'
@@ -102,7 +110,7 @@ const { file, xml } = defineProps<IActionProps>()
 const emit = defineEmits<ReadyEmits>()
 
 const { mod } = useEditorStore().info
-const items = ref<File[]>([])
+const files = ref<File[]>([])
 const addon = ref('')
 
 const selectOptions = ref<OptionsType>([])
@@ -133,12 +141,12 @@ const label = localize({
 useReady(emit)
 
 async function changeNameFilter(value = '') {
-  if (!hasItems(items.value) || !allSelectOptions) return
+  if (!hasItems(files.value) || !allSelectOptions) return
   selectOptions.value = allSelectOptions.filter(({ label }) => label.toLowerCase().includes(value.toLowerCase()))
 }
 
 async function selectAddon(addonName: string) {
-  const data = await getAddonData(getItem(addonName))
+  const data = await getAddonData(getFile(addonName))
 
   addon.value = addonName
 
@@ -149,7 +157,7 @@ async function selectAddon(addonName: string) {
 }
 
 async function loadAddons() {
-  if (hasItems(items.value)) return
+  if (hasItems(files.value)) return
 
   loadStatus.isLoading = true
 
@@ -159,7 +167,7 @@ async function loadAddons() {
   const data = await getAddonData(addons[0])
 
   allSelectOptions = selectOptions.value = await initSelectOptions(addons)
-  items.value = addons
+  files.value = addons
   addon.value = addons[0].name
 
   content.wheels = data.wheels
@@ -172,7 +180,7 @@ async function loadAddons() {
 }
 
 async function saveAddonData() {
-  const item = getItem(addon.value)
+  const item = getFile(addon.value)
   const xml = await getAddonXML(item)
 
   if (!xml) throw new Error('DOM is undefined')
@@ -226,6 +234,13 @@ async function saveAddonData() {
   Messages.success(texts.changed)
 }
 
+function openFile() {
+  const file = getFile(addon.value)
+  if (file) {
+    void Helpers.openFile(file.path)
+  }
+}
+
 function isInstalled(addonXML: AddonXML): boolean {
   const InstallSocket = addonXML.GameData?.InstallSocket
   if (!InstallSocket) return false
@@ -257,8 +272,8 @@ async function getAddonName(addon: File): Promise<string | undefined> {
   return GameTexts.get(key, mod) || addon.name
 }
 
-function getItem(name?: string): File | undefined {
-  return items.value.find(item => item.name === name ?? addon.value)
+function getFile(name?: string): File | undefined {
+  return files.value.find(item => item.name === name ?? addon.value)
 }
 
 async function getAddonData(file?: File) {
@@ -289,7 +304,7 @@ async function getAddonData(file?: File) {
 }
 
 async function getAddonXML(file?: File): Promise<AddonXML | undefined> {
-  const addonFile = file ?? getItem()
+  const addonFile = file ?? getFile()
   if (!await addonFile?.exists()) return
 
   return await AddonXML.from(addonFile!)
@@ -392,6 +407,7 @@ async function getAddons(
   justify-content: space-around;
 }
 
+.open-file-btn,
 .load-btn {
   display: block !important;
   margin: 15px auto 0;

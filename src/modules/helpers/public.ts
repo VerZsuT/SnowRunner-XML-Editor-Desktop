@@ -9,6 +9,7 @@ export enum PubKeys {
   homedir = 'helpers/homedir',
   userInfo = 'helpers/user-info',
   openLink = 'helpers/open-link',
+  openFile = 'helpers/open-file',
   openPath = 'helpers/open-path',
   reloadApp = 'helpers/reload-app',
   quitApp = 'helpers/quit-app',
@@ -21,6 +22,7 @@ export type PubType = {
   [PubKeys.homedir]: typeof homedir
   [PubKeys.userInfo]: typeof userInfo
   [PubKeys.openLink](url: string): Promise<void>
+  [PubKeys.openFile](path: string): Promise<void>
   [PubKeys.openPath](path: string): Promise<string>
   [PubKeys.reloadApp](): void
   [PubKeys.quitApp](): void

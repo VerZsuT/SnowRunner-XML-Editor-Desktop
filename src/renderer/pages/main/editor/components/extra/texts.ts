@@ -2,6 +2,12 @@ import { Lang } from '/mods/renderer'
 import { localize } from '/utils/texts/renderer'
 
 export default localize({
+  openFile: {
+    [Lang.ru]: 'Открыть файл',
+    [Lang.en]: 'Open file',
+    [Lang.de]: 'Datei öffnen',
+    [Lang.ch]: '打开文件'
+  },
   load: {
     [Lang.ru]: 'Загрузить',
     [Lang.en]: 'Load',

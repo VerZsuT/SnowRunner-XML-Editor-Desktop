@@ -151,13 +151,14 @@ class Config extends HasPublic {
   private async getFromJSON(defaultConfig: IConfig): Promise<IConfig> {
     const data = await Files.config.readFromJSON<{ version: string }>()
     const version = this.getVersion(data.version)
+    const thisVersion = this.getVersion(this.default.version)
 
     let config: IConfig
 
-    if (version === this.default.version) {
+    if (version === thisVersion) {
       config = data as IConfig
     }
-    else if (version < this.default.version) {
+    else if (version < thisVersion) {
       config = await this.convertToNewest(data)
     }
     else {
