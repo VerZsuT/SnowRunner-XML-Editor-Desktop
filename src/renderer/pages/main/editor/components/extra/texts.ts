@@ -2,6 +2,18 @@ import { Lang } from '/mods/renderer'
 import { localize } from '/utils/texts/renderer'
 
 export default localize({
+  load: {
+    [Lang.ru]: 'Загрузить',
+    [Lang.en]: 'Load',
+    [Lang.de]: 'Laden',
+    [Lang.ch]: '下载'
+  },
+  foundAddons: {
+    [Lang.ru]: 'Найдено аддонов',
+    [Lang.en]: 'Addons found',
+    [Lang.de]: 'Addons gefunden',
+    [Lang.ch]: '找到插件'  
+  },
   extra: {
     [Lang.ru]: 'Дополнительно',
     [Lang.en]: 'Extra',
@@ -28,21 +40,21 @@ export default localize({
   },
   addonWater: {
     [Lang.ru]: 'Вода',
+    [Lang.en]: 'Water',
+    [Lang.de]: 'Wasser',
+    [Lang.ch]: '水'
+  },
+  addonRepairs: {
+    [Lang.ru]: 'Запчасти',
     [Lang.en]: 'Repairs',
     [Lang.de]: 'Ersatzteile',
     [Lang.ch]: '零件'
   },
-  addonRepairs: {
-    [Lang.ru]: 'Запчасти',
-    [Lang.en]: 'Fuel',
-    [Lang.de]: 'Treibstoff',
-    [Lang.ch]: '燃油'
-  },
   addonFuel: {
     [Lang.ru]: 'Топливо',
-    [Lang.en]: 'Water',
-    [Lang.de]: 'Wasser',
-    [Lang.ch]: '水'
+    [Lang.en]: 'Fuel',
+    [Lang.de]: 'Kraftstoff',
+    [Lang.ch]: '燃油'
   },
   saveButton: {
     [Lang.ru]: 'Сохранить',

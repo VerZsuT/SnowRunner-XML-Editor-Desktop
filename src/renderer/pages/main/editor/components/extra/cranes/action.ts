@@ -58,16 +58,10 @@ class Action {
     for (const { Sockets } of AddonSockets) {
       for (const Socket of Sockets.filter(({ NamesBlock }) => NamesBlock.includes(to))) {
         Socket.NamesBlock = [...Socket.NamesBlock, crane]
-  
+      }
+      for (const Socket of Sockets) {
         for (const Shift of Socket.AddonShifts.filter(({ Types }) => Types.includes(to))) {
-          const newTypes = [
-            ...Shift.Types.filter(type => type !== to),
-            crane
-          ]
-  
-          Shift.after(`
-          <AddonShift Types="${newTypes.join(', ')}" />
-          `)
+          Shift.after(Shift.xml.replace(to, crane).trim())
         }
       }
     }
@@ -91,7 +85,8 @@ class Action {
     for (const { Sockets } of AddonSockets) {
       for (const Socket of Sockets.filter(({ NamesBlock }) => NamesBlock.includes(crane))) {
         Socket.NamesBlock = Socket.NamesBlock.filter(name => name !== crane)
-
+      }
+      for (const Socket of Sockets) {
         for (const Shift of Socket.AddonShifts.filter(({ Types }) => Types.includes(crane))) {
           Shift.remove()
         }
@@ -104,8 +99,8 @@ class Action {
   hasCranes(xml: TruckXML): [hasRU: boolean, hasUS: boolean] {
     const AddonSockets = xml.GameData?.AddonSockets ?? []
     return [
-      Boolean(AddonSockets.some(({ Sockets }) => Sockets.some(({ Names }) => Names.includes('MinicraneRU')))),
-      Boolean(AddonSockets.some(({ Sockets }) => Sockets.some(({ Names }) => Names.includes('MinicraneUS'))))
+      Boolean(AddonSockets.some(({ Sockets }) => Sockets.some(({ Names }) => Names.includes(Crane.RU)))),
+      Boolean(AddonSockets.some(({ Sockets }) => Sockets.some(({ Names }) => Names.includes(Crane.US))))
     ]
   }
 }

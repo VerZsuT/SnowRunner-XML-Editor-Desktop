@@ -99,5 +99,11 @@ export default localize({
     [Lang.en]: 'YouTube(RU)',
     [Lang.de]: 'YouTube(RU)',
     [Lang.ch]: 'YouTube(RU)'
+  },
+  donationTitle: {
+    [Lang.ru]: 'Поддержать',
+    [Lang.en]: 'Support',
+    [Lang.de]: 'Unterstützen',
+    [Lang.ch]: '支持'
   }
 })

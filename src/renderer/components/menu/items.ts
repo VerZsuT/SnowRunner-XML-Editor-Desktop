@@ -38,7 +38,8 @@ const help = computed(() => [
   Divider(),
   MenuItem(texts.howToUseTitle, () => Helpers.openLink(links.modio)),
   MenuItem(texts.githubTitle, () => Helpers.openLink(links.github)),
-  MenuItem(texts.youtubeTitle, () => Helpers.openLink(links.youtube))
+  MenuItem(texts.youtubeTitle, () => Helpers.openLink(links.youtube)),
+  MenuItem(texts.donationTitle, () => Helpers.openLink(links.donation))
 ] satisfies MenuItemType[])
 
 /** Элементы меню */

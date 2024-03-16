@@ -30,6 +30,6 @@ export default class AddonSocket extends XMLWithTemplates {
   get $NamesBlock() { return {} as StrArrUtils }
 
   /** Сдвиг точки установки аддона (трейлера), если уже установлен другой аддон */
-  @innerElements(AddonShift, 'AddonShift')
+  @innerElements(AddonShift, 'AddonsShift')
   get AddonShifts(): AddonShift[] { return [] }
 }

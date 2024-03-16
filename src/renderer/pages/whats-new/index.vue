@@ -1,6 +1,10 @@
 <template>
   <div class="container">
     <VersionInfo
+      version="0.8.9"
+      :changes="v089.desc"
+    />
+    <VersionInfo
       version="0.8.8"
       :changes="v088.desc"
     />
@@ -47,6 +51,35 @@ import { useWindowReady } from '/rend/utils'
 import { localize } from '/utils/texts/renderer'
 
 useWindowReady(ProgramWindow.whatsNew)
+
+const v089 = localize({
+  desc: {
+    [Lang.ru]: [
+      'Исправлена работа добавления кранов автомобилю',
+      'Добавлена возможность поддержки проекта (Помощь - Поддержать)',
+      'Улучшена работа "содержимого аддонов"',
+      'Исправлен перевод'
+    ],
+    [Lang.en]: [
+      'Fixed the operation of adding cranes to the car',
+      'Added the ability to support the project (Help - Support)',
+      'Improved the operation of the "addons content"',
+      'Fixed translation'
+    ],
+    [Lang.de]: [
+      'Das Hinzufügen von Kränen zum Auto wurde behoben',
+      'Es wurde die Möglichkeit hinzugefügt, das Projekt zu unterstützen (Hilfe - Unterstützung)',
+      'Die Funktionsweise von "Add-On-Inhalten" wurde verbessert',
+      'Übersetzung korrigiert'
+    ],
+    [Lang.ch]: [
+      '修正了在车上添加起重机的操作',
+      '增加了支持项目的能力（帮助-支持）',
+      '改进了"插件内容"的操作',
+      '固定翻译'
+    ]
+  }
+})
 
 const v088 = localize({
   desc: {

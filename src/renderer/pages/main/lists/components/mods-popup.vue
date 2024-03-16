@@ -17,6 +17,7 @@
         :target-keys="targetKeys"
         :titles="[texts.foundItems, texts.addedItems]"
         :render="item => item.title"
+        :locale="transferLocale"
         @change="newKeys => targetKeys = newKeys"
       />
       <Button
@@ -38,7 +39,7 @@
 
 
 <script lang='ts' setup>
-import type { ModalProps } from 'ant-design-vue'
+import type { ModalProps, TransferProps } from 'ant-design-vue'
 import { Button, Modal, Transfer } from 'ant-design-vue'
 import { ref, watchEffect } from 'vue'
 
@@ -64,6 +65,13 @@ const emit = defineEmits<Emits>()
 
 const items = ref<[File, string][] | undefined>(undefined)
 const targetKeys = ref<string[]>([])
+
+const transferLocale: TransferProps['locale'] = {
+  itemUnit: '',
+  itemsUnit: '',
+  searchPlaceholder: '',
+  notFoundContent: texts.emptyList
+}
 
 watchEffect(async () => {
   if (props.show && !items.value) {
