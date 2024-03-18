@@ -60,7 +60,7 @@ export default localize({
     [Lang.ru]: 'Смещение центра масс',
     [Lang.en]: 'Center of mass offset',
     [Lang.de]: 'Versatz des Massenzentrums',
-    [Lang.ch]: '质量中心的位移'
+    [Lang.ch]: '车辆重心调整'
   },
   trailerMass: {
     [Lang.ru]: 'Масса прицепа',

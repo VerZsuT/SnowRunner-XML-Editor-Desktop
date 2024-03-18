@@ -18,13 +18,13 @@ export default localize({
     [Lang.ru]: 'Сила',
     [Lang.en]: 'Strength',
     [Lang.de]: 'Stärke',
-    [Lang.ch]: '的力量'
+    [Lang.ch]: '力量'
   },
   isEngineIgnitionRequired: {
     [Lang.ru]: 'Работает от',
     [Lang.en]: 'Works from',
     [Lang.de]: 'Arbeitet von',
-    [Lang.ch]: '由以下单位提供'
+    [Lang.ch]: '动力来源'
   },
   engine: {
     [Lang.ru]: 'Двигателя',

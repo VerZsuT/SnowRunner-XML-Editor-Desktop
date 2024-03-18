@@ -24,7 +24,7 @@ export default localize({
     [Lang.ru]: 'Дополнительно',
     [Lang.en]: 'Extra',
     [Lang.de]: 'Radantrieb',
-    [Lang.ch]: '额外费用'
+    [Lang.ch]: '其他'
   },
   cranesWarnTitle: {
     [Lang.ru]: 'Внимание!',
@@ -42,7 +42,7 @@ export default localize({
     [Lang.ru]: 'Колёса',
     [Lang.en]: 'Wheels',
     [Lang.de]: 'Ersatzräder',
-    [Lang.ch]: '轮子'
+    [Lang.ch]: '备胎'
   },
   addonWater: {
     [Lang.ru]: 'Вода',
@@ -54,7 +54,7 @@ export default localize({
     [Lang.ru]: 'Запчасти',
     [Lang.en]: 'Repairs',
     [Lang.de]: 'Ersatzteile',
-    [Lang.ch]: '零件'
+    [Lang.ch]: '修理零件'
   },
   addonFuel: {
     [Lang.ru]: 'Топливо',
@@ -72,7 +72,7 @@ export default localize({
     [Lang.ru]: 'Фильтр по имени',
     [Lang.en]: 'Filter by name',
     [Lang.de]: 'Nach Name filtern',
-    [Lang.ch]: '按名称过滤'
+    [Lang.ch]: '在此处输入名称进行筛选'
   },
   changed: {
     [Lang.ru]: 'Изменено',
@@ -102,7 +102,7 @@ export default localize({
     [Lang.ru]: 'Перед удалением крана требуется обязательно его снять с машины.',
     [Lang.en]: 'Before removing the crane, be sure to remove it from the truck.',
     [Lang.de]: 'Bevor Sie den Wasserhahn entfernen, entfernen Sie ihn unbedingt aus der Maschine.',
-    [Lang.ch]: '在卸下起重机之前，请务必将其从卡车上卸下。'
+    [Lang.ch]: '在删除起重机之前，请务必将其从卡车上卸下。'
   },
   banditWarnMessage: {
     [Lang.ru]: 'Для использования требуется купленное DLC с автомобилем KRS 58 "Бандит".',
@@ -114,12 +114,12 @@ export default localize({
     [Lang.ru]: 'Прицепы для скаута',
     [Lang.en]: 'Scout trailers',
     [Lang.de]: 'Scout-Anhänger',
-    [Lang.ch]: '侦察员拖车'
+    [Lang.ch]: '小车拖车钩'
   },
   truckTrailers: {
     [Lang.ru]: 'Обычные прицепы',
     [Lang.en]: 'Conventional trailers',
     [Lang.de]: 'Herkömmliche Anhänger',
-    [Lang.ch]: '传统的拖车'
+    [Lang.ch]: '大车拖车钩'
   }
 })

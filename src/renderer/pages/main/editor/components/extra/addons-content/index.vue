@@ -134,7 +134,7 @@ const label = localize({
     [Lang.ru]: 'Содержимое аддонов',
     [Lang.en]: 'Addons content',
     [Lang.de]: 'Addon-Inhalt',
-    [Lang.ch]: '附加组件的内容'
+    [Lang.ch]: '附加组件'
   }
 })
 

@@ -15,7 +15,7 @@ class Action {
       [Lang.ru]: 'Прицепы',
       [Lang.en]: 'Trailers',
       [Lang.de]: 'Anhänger',
-      [Lang.ch]: '拖车'
+      [Lang.ch]: '拖车钩'
     }
   })
   readonly icon = 'trailer'

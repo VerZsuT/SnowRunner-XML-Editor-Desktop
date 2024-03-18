@@ -59,25 +59,25 @@ const texts = localize({
     [Lang.ru]: 'Способ разблокировки',
     [Lang.en]: 'Unlock method',
     [Lang.de]: 'Methode entsperren',
-    [Lang.ch]: '解锁的方法'
+    [Lang.ch]: '解锁条件'
   },
   findOnMap: {
     [Lang.ru]: 'Найти на карте',
     [Lang.en]: 'Find on map',
     [Lang.de]: 'Auf Karte finden',
-    [Lang.ch]: '在地图上查找'
+    [Lang.ch]: '在地图上寻找'
   },
   byRank: {
     [Lang.ru]: 'По достижению уровня',
     [Lang.en]: 'By rank',
     [Lang.de]: 'Nach Rang',
-    [Lang.ch]: '当达到该水平时'
+    [Lang.ch]: '达到该等级时'
   },
   unlockByRank: {
     [Lang.ru]: 'Уровень разблокировки',
     [Lang.en]: 'Unlock level',
     [Lang.de]: 'Level freischalten',
-    [Lang.ch]: '解锁级别'
+    [Lang.ch]: '解锁等级'
   }
 })
 </script>

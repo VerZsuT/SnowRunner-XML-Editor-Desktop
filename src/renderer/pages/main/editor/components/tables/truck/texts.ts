@@ -54,7 +54,7 @@ export default localize({
     [Lang.ru]: 'Чувствительность руля',
     [Lang.en]: 'Steering wheel sensitivity',
     [Lang.de]: 'Empfindlichkeit des Lenkers',
-    [Lang.ch]: '舵的敏感性'
+    [Lang.ch]: '方向盘灵敏度'
   },
   torque: {
     [Lang.ru]: 'Привод',
@@ -96,7 +96,7 @@ export default localize({
     [Lang.ru]: 'Смещение центра масс',
     [Lang.en]: 'Center of mass offset',
     [Lang.de]: 'Versatz des Massenzentrums',
-    [Lang.ch]: '质量中心的位移'
+    [Lang.ch]: '车辆重心调整'
   },
   any: {
     [Lang.ru]: 'Любая',
@@ -138,13 +138,13 @@ export default localize({
     [Lang.ru]: 'Скорость возврата колёс',
     [Lang.en]: 'Back steer speed',
     [Lang.de]: 'Die Rücklaufquote der Spitze',
-    [Lang.ch]: '车轮回轮速度'
+    [Lang.ch]: '车轮回正速度'
   },
   steerSpeed: {
     [Lang.ru]: 'Скорость руля',
     [Lang.en]: 'Steer speed',
     [Lang.de]: 'Geschwindigkeit lenken',
-    [Lang.ch]: '转向速度'
+    [Lang.ch]: '转方向盘速度'
   },
   winchGroupName: {
     [Lang.ru]: 'Лебёдка',
@@ -222,7 +222,7 @@ export default localize({
     [Lang.ru]: 'Прочность',
     [Lang.en]: 'Damage capacity',
     [Lang.de]: 'Schadenskapazität',
-    [Lang.ch]: '耐用性'
+    [Lang.ch]: '血量'
   },
   fuelCapacity: {
     [Lang.ru]: 'Объём',
@@ -276,24 +276,24 @@ export default localize({
     [Lang.ru]: 'Способ разблокировки',
     [Lang.en]: 'Unlock method',
     [Lang.de]: 'Methode entsperren',
-    [Lang.ch]: '解锁的方法'
+    [Lang.ch]: '解锁条件'
   },
   findOnMap: {
     [Lang.ru]: 'Найти на карте',
     [Lang.en]: 'Find on map',
     [Lang.de]: 'Auf Karte finden',
-    [Lang.ch]: '在地图上查找'
+    [Lang.ch]: '在地图上寻找'
   },
   byRank: {
     [Lang.ru]: 'По достижению уровня',
     [Lang.en]: 'By rank',
     [Lang.de]: 'Nach Rang',
-    [Lang.ch]: '当达到该水平时'
+    [Lang.ch]: '达到该等级时'
   },
   unlockByRank: {
     [Lang.ru]: 'Уровень разблокировки',
     [Lang.en]: 'Unlock level',
     [Lang.de]: 'Level freischalten',
-    [Lang.ch]: '解锁级别'
+    [Lang.ch]: '解锁等级'
   }
 })

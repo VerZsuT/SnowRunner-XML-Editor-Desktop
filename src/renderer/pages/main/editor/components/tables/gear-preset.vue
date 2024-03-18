@@ -32,13 +32,13 @@ const texts = localize({
     [Lang.ru]: 'Макс. угловая скорость колеса',
     [Lang.en]: 'Max wheel angular velocity',
     [Lang.de]: 'Winkelgeschwindigkeit',
-    [Lang.ch]: '最大车轮角速度'
+    [Lang.ch]: '齿比'
   },
   fuelModifier: {
     [Lang.ru]: 'Модификатор потребления топлива',
     [Lang.en]: 'Fuel modifier',
     [Lang.de]: 'Kraftstoffmodifikator',
-    [Lang.ch]: '燃油消耗改性剂'
+    [Lang.ch]: '燃油消耗'
   }
 })
 </script>

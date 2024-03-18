@@ -42,7 +42,7 @@ export default localize({
     [Lang.ru]: 'Крутящий момент',
     [Lang.en]: 'Torque',
     [Lang.de]: 'Drehmoment',
-    [Lang.ch]: '扭矩'
+    [Lang.ch]: '马力'
   },
   damagedMinTorqueModifier: {
     [Lang.ru]: 'Мин. множитель мощности при повреждении',

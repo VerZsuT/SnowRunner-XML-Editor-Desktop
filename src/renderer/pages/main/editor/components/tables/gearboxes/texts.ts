@@ -24,7 +24,7 @@ export default localize({
     [Lang.ru]: 'Порог критического повреждения',
     [Lang.en]: 'Critical damage threshold',
     [Lang.de]: 'Kritische Schadensschwelle',
-    [Lang.ch]: '损伤阈值'
+    [Lang.ch]: '损坏阈值'
   },
   damageCapacity: {
     [Lang.ru]: 'Прочность',
@@ -48,25 +48,25 @@ export default localize({
     [Lang.ru]: 'Множитель потребления топлива в бездействии',
     [Lang.en]: 'IDLE fuel consumption',
     [Lang.de]: 'Leerlaufverbrauch',
-    [Lang.ch]: '意速时的油耗'
+    [Lang.ch]: '怠速时的油耗'
   },
   gearboxParams: {
     [Lang.ru]: 'Наличие передач',
     [Lang.en]: 'Gears availability',
     [Lang.de]: 'Zahnräder Verfügbarkeit',
-    [Lang.ch]: '增加的挡位'
+    [Lang.ch]: '附加挡位'
   },
   highGear: {
     [Lang.ru]: 'Повышенная',
     [Lang.en]: 'High',
     [Lang.de]: 'Hoher',
-    [Lang.ch]: '高速档'
+    [Lang.ch]: '高速挡'
   },
   allow: {
     [Lang.ru]: 'Доступно',
     [Lang.en]: 'Available',
     [Lang.de]: 'Verfügbar',
-    [Lang.ch]: '可以'
+    [Lang.ch]: '可用'
   },
   gearAllow: {
     [Lang.ru]: 'Доступно',
@@ -84,7 +84,7 @@ export default localize({
     [Lang.ru]: 'Недоступно',
     [Lang.en]: 'Not Available',
     [Lang.de]: 'Nicht verfügbar',
-    [Lang.ch]: '不可以'
+    [Lang.ch]: '不可用'
   },
   lowerGear: {
     [Lang.ru]: 'Пониженная',

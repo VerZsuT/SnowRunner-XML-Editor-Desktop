@@ -42,7 +42,7 @@ export default localize({
     [Lang.ru]: 'Максимальная высота подвески (когда сломана)',
     [Lang.en]: 'Minimum suspension height in broken condition',
     [Lang.de]: 'Minimale Aufhängungshöhe in gebrochenem Zustand',
-    [Lang.ch]: '是架损坏时的最大行程'
+    [Lang.ch]: '悬架损坏时的最大行程'
   },
   suspension: {
     [Lang.ru]: 'Подвеска',
