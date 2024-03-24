@@ -52,13 +52,16 @@ export default class XMLElement {
         attrs.push(`${name}="${value}"`)
       }
     }
-    if (this.tagName) {
-      // eslint-disable-next-line unicorn/prefer-ternary
-      if (this.innerXML) {
-        return xmlFormat(`<${this.tagName}${attrs && hasItems(attrs) ? ` ${attrs.join(' ')}` : ''}>${this.innerXML}</${this.tagName}>`)
+    if (this.tagName) {  
+      const xml = this.innerXML
+        ? `<${this.tagName}${attrs && hasItems(attrs) ? ` ${attrs.join(' ')}` : ''}>\n\t${this.innerXML}\n</${this.tagName}>`
+        : `<${this.tagName}${attrs && hasItems(attrs) ? ` ${attrs.join(' ')}` : ''} />`
+
+      try {
+        return xmlFormat(xml)
       }
-      else {
-        return xmlFormat(`<${this.tagName}${attrs && hasItems(attrs) ? ` ${attrs.join(' ')}` : ''} />`)
+      catch {
+        return xml
       }
     }
 
@@ -68,9 +71,6 @@ export default class XMLElement {
   
   /** Строковое представление элемента вместе с базовым тегом */
   get baseXML() {
-    const cloned = this.baseElement.clone()
-    const templates = cloned.find('_templates').eq(0)
-
     function format(str: string) {
       return xmlFormat(str, {
         whiteSpaceAtEndOfSelfclosingTag: true,
@@ -79,17 +79,24 @@ export default class XMLElement {
       })
     }
 
-    let templatesText = ''
-    if (templates.length === 1) {
-      const Include = templates.attr('Include')
-      const templatesXML = `<_templates${Include ? ` Include="${Include}"` : ''}>${templates.html()!}</_templates>`
-      templatesText = `${format(templatesXML)}\r\n`
-      templates.remove()
-    }
-    
-    const mainText = format(cloned.html()!)
+    try {
+      const cloned = this.baseElement.clone()
+      const templates = cloned.find('_templates').eq(0)
+      let templatesText = ''
 
-    return templatesText + mainText
+      if (templates.length === 1) {
+        const Include = templates.attr('Include')
+        const templatesXML = `<_templates${Include ? ` Include="${Include}"` : ''}>${templates.html()!}</_templates>`
+        templatesText = `${format(templatesXML)}\r\n`
+        templates.remove()
+      }
+      
+      const mainText = format(cloned.html()!.replace('&#xfeff;', ''))
+      return templatesText + mainText
+    }
+    catch {
+      return this.baseElement.html()!
+    }
   }
 
   /** Строковое представление содержимого элемента */
