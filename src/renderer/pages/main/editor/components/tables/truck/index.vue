@@ -7,10 +7,24 @@
       icon="texts"
     >
       <Text
+        v-if="xml.GameData.UiDesc.DefaultRegion"
+        :label="texts.uiName"
+        :desc="xml.GameData.UiDesc.DefaultRegion.UiNameDesc"
+        :utils="xml.GameData.UiDesc.DefaultRegion.$UiName"
+      />
+      <Text
+        v-else
         :label="texts.uiName"
         :utils="xml.GameData.UiDesc.$UiName"
       />
       <Text
+        v-if="xml.GameData.UiDesc.DefaultRegion"
+        :label="texts.uiDesc"
+        :desc="xml.GameData.UiDesc.DefaultRegion.UiDescDesc"
+        :utils="xml.GameData.UiDesc.DefaultRegion.$UiDesc"
+      />
+      <Text
+        v-else
         :label="texts.uiDesc"
         :utils="xml.GameData.UiDesc.$UiDesc"
       />

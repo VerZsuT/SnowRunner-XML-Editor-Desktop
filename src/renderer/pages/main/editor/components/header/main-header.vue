@@ -126,7 +126,7 @@ async function save(updateFiles = true) {
 
 function getMainTitle(): string {
   if (xml.GameData?.UiDesc) {
-    const text = xml.GameData.UiDesc.UiName
+    const text = xml.GameData.UiDesc.UiName ?? xml.GameData.UiDesc.DefaultRegion?.UiName
     return GameTexts.get(text, Mods.getModID(file)) ?? text ?? 'TITLE_ERROR'
   }
 
