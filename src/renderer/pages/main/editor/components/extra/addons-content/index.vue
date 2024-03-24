@@ -27,9 +27,6 @@
     </template>
     <template v-else>
       <div class="main">
-        <Text>
-          {{ texts.addonName }}
-        </Text><br>
         <Input
           class="addon-filter"
           type="text"
