@@ -8,13 +8,8 @@ import { PubKeys } from './public'
 import type { IConfig } from './types'
 
 import { PROGRAM_VERSION } from '/consts'
-import Edited from '/mods/data/edited/main'
-import Favorites from '/mods/data/favorites/main'
-import Mods from '/mods/data/mods/main'
-import Sizes from '/mods/data/sizes/main'
 import { ErrorText, ProgramError } from '/mods/errors/main'
 import { File, Files } from '/mods/files/main'
-import Helpers from '/mods/helpers/main'
 import { HasPublic } from '/utils/bridge/main'
 import { isNullable } from '/utils/checks/main'
 
@@ -101,6 +96,12 @@ class Config extends HasPublic {
    * @param noReload - отмена перезагрузки после завершения.
    */
   async reset(noReload = false) {
+    const Edited = (await import('/mods/data/edited/main')).default
+    const Favorites = (await import('/mods/data/favorites/main')).default
+    const Mods = (await import('/mods/data/mods/main')).default
+    const Sizes = (await import('/mods/data/sizes/main')).default
+    const Helpers = (await import('/mods/helpers/main')).default
+
     this.set(this.default)
 
     await Helpers.clearTemp()
