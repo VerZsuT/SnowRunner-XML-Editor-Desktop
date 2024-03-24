@@ -4,13 +4,13 @@ import MainArrayBase from '/utils/json-arrays/main'
 
 import { publicFunction, publicMainEvent, publicRendererEvent } from 'emr-bridge'
 
-import Config from '../config/main'
 import type { PubType } from './public'
 import { PubKeys } from './public'
 import type { IMod } from './types'
 
 import Archive from '/mods/archive/main'
 import Checks from '/mods/checks/main'
+import Config from '/mods/data/config/main'
 import Sizes from '/mods/data/sizes/main'
 import { Dir, Dirs, File, Files } from '/mods/files/main'
 import GameTexts from '/mods/game-texts/main'
@@ -35,7 +35,7 @@ class Mods extends MainArrayBase<IMod, IMod & { file: File }> {
     return { ...item, file: new File(item.path) }
   }
 
-  /** Обрабатывает имеющиеся моды в архиве */
+  /** Обрабатывает добавленные моды */
   async procMods() {
     if (!Config.useMods || !hasItems(this)) return
 
@@ -76,7 +76,22 @@ class Mods extends MainArrayBase<IMod, IMod & { file: File }> {
     const out: [File, string][] = []
     if (!await dir.exists()) return []
 
-    const processFile = async (file: File, dir: Dir) => {
+    for (const entry of await dir.read()) {
+      if (await entry.isFile()) {
+        await processFile(entry.asFile(), dir)
+      }
+      else {
+        const innerDir = entry.asDir()
+        for (const innerEntry of await innerDir.read()) {
+          if (await innerEntry.isDir()) continue
+          await processFile(innerEntry.asFile(), innerDir)
+        }
+      }
+    }
+
+    async function processFile(file: File, dir: Dir) {
+      if (out.some(([outFile]) => outFile.path === file.path)) return
+
       const tempDir = Dirs.modsTemp.dir(file.name)
 
       if (file.isExt('pak')) {
@@ -87,23 +102,15 @@ class Mods extends MainArrayBase<IMod, IMod & { file: File }> {
           let name = file.name
 
           if (await modioFile.exists()) {
-            name = (await modioFile.readFromJSON()).name
+            const modIoName = (await modioFile.readFromJSON()).name
+            const procedName = procNameForFS(modIoName)
+
+            if (!out.some(([, fileName]) => fileName === procedName)) {
+              name = modIoName
+            }
           }
           out.push([file, procNameForFS(name)])
         }
-      }
-    }
-
-    for (const entry of await dir.read()) {
-      if (await entry.isFile()) {
-        await processFile(entry.asFile(), dir)
-        continue
-      }
-
-      const innerDir = entry.asDir()
-      for (const innerEntry of await innerDir.read()) {
-        if (await innerEntry.isDir()) continue
-        await processFile(innerEntry.asFile(), innerDir)
       }
     }
 
