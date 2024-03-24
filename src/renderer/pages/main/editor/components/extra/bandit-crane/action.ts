@@ -1,6 +1,5 @@
 import type { File, TruckAddonSocket, TruckXML } from '/mods/renderer'
-import { Lang } from '/mods/renderer'
-import { localize } from '/utils/texts/renderer'
+import { Localization } from '/utils/texts/renderer'
 
 export type BanditCraneData = {
   hasCrane: boolean
@@ -8,14 +7,14 @@ export type BanditCraneData = {
 
 /** Вкладка `Банан бандита`. */
 class Action {
-  readonly name = localize({
-    value: {
-      [Lang.ru]: 'Банан бандита',
-      [Lang.en]: 'Bandit banana',
-      [Lang.de]: 'Bananen-Bandit',
-      [Lang.ch]: '香蕉大盗'
-    }
-  })
+  get name() {
+    return new Localization()
+      .ru('Банан бандита')
+      .en('Bandit banana')
+      .de('Bananen-Bandit')
+      .ch('香蕉大盗')
+      .get()
+  }
   readonly id = 'bandit-crane'
   readonly icon = 'banana'
 

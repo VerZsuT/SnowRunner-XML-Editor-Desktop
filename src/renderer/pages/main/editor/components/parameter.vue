@@ -25,6 +25,7 @@
 <script lang='ts' setup>
 import { Typography } from 'ant-design-vue'
 import { ref } from 'vue'
+import { ref, toRefs } from 'vue'
 
 import { useEditorStore } from '../../store'
 import texts from '../texts'
@@ -52,7 +53,8 @@ defineSlots<{
 const { info } = useEditorStore()
 const file = injectFile()
 
-const { label, utils } = props
+const { utils } = props
+const { label } = toRefs(props)
 const { isActive } = useActive()
 
 const getValue = props.getter ?? utils.get
@@ -87,7 +89,7 @@ ExportUtils.onExport(data => {
 const contextTarget = ref<HTMLDivElement | null>(null)
 const contextItems = [{
   key: 'reset-param',
-  label: `${texts.resetMenuItemLabel} ${label}`,
+  label: `${texts.resetMenuItemLabel} ${label.value}`,
   onClick: resetValue
 }]
 

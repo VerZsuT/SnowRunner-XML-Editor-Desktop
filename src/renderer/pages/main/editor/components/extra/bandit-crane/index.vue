@@ -2,7 +2,7 @@
   <Group
     v-if="isActive"
     key="bandit-crane"
-    :label="Action.name.value"
+    :label="Action.name"
     :icon="Action.icon"
   >
     <div class="content">

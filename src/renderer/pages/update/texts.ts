@@ -1,41 +1,34 @@
-import { Lang } from '/mods/renderer'
-import { localize } from '/utils/texts/renderer'
+import { Localization, LocalizationObj } from '/utils/texts/renderer'
 
-export default localize({
-  allowNewVersion: {
-    [Lang.ru]: 'Доступна новая версия программы',
-    [Lang.en]: 'A new version of the program is available',
-    [Lang.de]: 'Eine neue Version des Programms ist verfügbar',
-    [Lang.ch]: '新版本的方案已经推出'
-  },
-  installer: {
-    [Lang.ru]: 'Установщик (.exe)',
-    [Lang.en]: 'Installer (.exe)',
-    [Lang.de]: 'Installer (.exe)',
-    [Lang.ch]: '安装程序（.exe)'
-  },
-  portable: {
-    [Lang.ru]: 'Портативная (.rar)',
-    [Lang.en]: 'Portable (.rar)',
-    [Lang.de]: 'Portable (.rar)',
-    [Lang.ch]: '便携式（.rar)'
-  },
-  ignore: {
-    [Lang.ru]: 'Игнорировать',
-    [Lang.en]: 'Ignore',
-    [Lang.de]: 'Ignorieren',
-    [Lang.ch]: '忽略不计'
-  },
-  update: {
-    [Lang.ru]: 'Обновить',
-    [Lang.en]: 'Update',
-    [Lang.de]: 'Update',
-    [Lang.ch]: '更新资料'
-  },
-  close: {
-    [Lang.ru]: 'Закрыть',
-    [Lang.en]: 'Close',
-    [Lang.de]: 'Schließen',
-    [Lang.ch]: '关闭'
-  }
-})
+export default new LocalizationObj({
+  allowNewVersion: new Localization()
+    .ru('Доступна новая версия программы')
+    .en('A new version of the program is available')
+    .de('Eine neue Version des Programms ist verfügbar')
+    .ch('新版本的方案已经推出'),
+  installer: new Localization()
+    .ru('Установщик (.exe)')
+    .en('Installer (.exe)')
+    .de('Installer (.exe)')
+    .ch('安装程序（.exe)'),
+  portable: new Localization()
+    .ru('Портативная (.rar)')
+    .en('Portable (.rar)')
+    .de('Portable (.rar)')
+    .ch('便携式（.rar)'),
+  ignore: new Localization()
+    .ru('Игнорировать')
+    .en('Ignore')
+    .de('Ignorieren')
+    .ch('忽略不计'),
+  update: new Localization()
+    .ru('Обновить')
+    .en('Update')
+    .de('Update')
+    .ch('更新资料'),
+  close: new Localization()
+    .ru('Закрыть')
+    .en('Close')
+    .de('Schließen')
+    .ch('关闭')
+}).get()

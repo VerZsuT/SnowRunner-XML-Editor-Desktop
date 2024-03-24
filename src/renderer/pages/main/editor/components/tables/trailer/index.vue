@@ -33,7 +33,7 @@
           }"
         />
         <Int
-          :label="texts.wheepRepairsCapacity"
+          :label="texts.wheelRepairsCapacity"
           :utils="xml.TruckData.$WheelRepairsCapacity"
           :step="10"
           :areas="{

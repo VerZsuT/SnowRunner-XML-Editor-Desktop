@@ -1,11 +1,10 @@
-import { Lang } from '/mods/data/config/enums'
+import { BaseLocalization, BaseLocalizationObj } from '/utils/texts/base-localization'
 
-export default {
+export default new BaseLocalizationObj({
   /** Заголовок ошибки */
-  error: {
-    [Lang.ru]: 'Ошибка',
-    [Lang.en]: 'Error',
-    [Lang.de]: 'Fehler',
-    [Lang.ch]: '误差'
-  }
-}
+  error: new BaseLocalization()
+    .ru('Ошибка')
+    .en('Error')
+    .de('Fehler')
+    .ch('误差')
+})

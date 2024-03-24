@@ -1,8 +1,7 @@
 import Trailer from './trailer'
 
 import type { TruckAddonSocket, TruckXML } from '/mods/renderer'
-import { Lang } from '/mods/renderer'
-import { localize } from '/utils/texts/renderer'
+import { Localization } from '/utils/texts/renderer'
 
 export type TrailersData = {
   hasScoutTrailer: boolean
@@ -10,14 +9,14 @@ export type TrailersData = {
 }
 
 class Action {
-  readonly name = localize({
-    value: {
-      [Lang.ru]: 'Прицепы',
-      [Lang.en]: 'Trailers',
-      [Lang.de]: 'Anhänger',
-      [Lang.ch]: '拖车钩'
-    }
-  })
+  get name() {
+    return new Localization()
+      .ru('Прицепы')
+      .en('Trailers')
+      .de('Anhänger')
+      .ch('拖车钩')
+      .get()
+  }
   readonly icon = 'trailer'
   readonly id = 'trailers'
 

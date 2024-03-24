@@ -1,11 +1,9 @@
-import type { Lang } from '/mods/main'
+import type { BaseLocalization } from './base-localization'
 
 export interface ITextsToLocalize<T> {
-  [key: string]: {
-    [key in Lang]: T
-  }
+  [key: string]: BaseLocalization<T>
 }
 
-export type LocalizedTexts<T extends LocalizedTexts<any>> = {
-  [key in keyof T]: T[key][Lang.ru]
+export type LocalizedTexts<T extends ITextsToLocalize<any>> = {
+  [key in keyof T]: ReturnType<T[key]['get']>
 }

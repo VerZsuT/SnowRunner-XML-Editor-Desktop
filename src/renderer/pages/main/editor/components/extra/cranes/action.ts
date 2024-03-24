@@ -1,8 +1,7 @@
 import Crane from './crane'
 
 import type { TruckAddonSocket, TruckXML } from '/mods/renderer'
-import { Lang } from '/mods/renderer'
-import { localize } from '/utils/texts/renderer'
+import { Localization } from '/utils/texts/renderer'
 
 export type CranesData = {
   hasRUCrane: boolean
@@ -10,14 +9,14 @@ export type CranesData = {
 }
 
 class Action {
-  readonly name = localize({
-    value: {
-      [Lang.ru]: 'Краны',
-      [Lang.en]: 'Cranes',
-      [Lang.de]: 'Kräne',
-      [Lang.ch]: '起重机'
-    }
-  })
+  get name() {
+    return new Localization()
+      .ru('Краны')
+      .en('Cranes')
+      .de('Kräne')
+      .ch('起重机')
+      .get()
+  }
   readonly icon = 'crane'
   readonly id = 'cranes'
 

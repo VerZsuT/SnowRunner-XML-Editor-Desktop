@@ -1,7 +1,7 @@
 <template>
   <Group
     key="addons-content"
-    :label="label.value"
+    :label="label"
     icon="wrench"
   >
     <template v-if="!hasItems(files)">
@@ -84,7 +84,7 @@
 <script lang='ts' setup>
 import type { SelectProps } from 'ant-design-vue'
 import { Button, Input, Select, Typography } from 'ant-design-vue'
-import { reactive, ref } from 'vue'
+import { computed, reactive, ref } from 'vue'
 
 import { useEditorStore } from '../../../../store'
 import type { IActionProps } from '../../../types'
@@ -95,10 +95,10 @@ import texts from '../texts'
 import ContentField from './content-field.vue'
 
 import type { File } from '/mods/renderer'
-import { AddonXML, Config, DLCs, Dirs, GameTexts, Helpers, Lang, Messages, XMLElement } from '/mods/renderer'
+import { AddonXML, Config, DLCs, Dirs, GameTexts, Helpers, Messages, XMLElement } from '/mods/renderer'
 import { Spin } from '/rend/components'
 import { hasItems } from '/utils/renderer'
-import { localize } from '/utils/texts/renderer'
+import { Localization } from '/utils/texts/renderer'
 
 const { Text } = Typography
 
@@ -129,14 +129,13 @@ const loadStatus = reactive({
   count: 0
 })
 
-const label = localize({
-  value: {
-    [Lang.ru]: 'Содержимое аддонов',
-    [Lang.en]: 'Addons content',
-    [Lang.de]: 'Addon-Inhalt',
-    [Lang.ch]: '附加组件'
-  }
-})
+const label = computed(() => new Localization()
+  .ru('Содержимое аддонов')
+  .en('Addons content')
+  .de('Addon-Inhalt')
+  .ch('附加组件')
+  .get()
+)
 
 useReady(emit)
 

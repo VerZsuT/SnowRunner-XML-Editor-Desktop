@@ -1,299 +1,249 @@
-import { Lang } from '/mods/renderer'
-import { localize } from '/utils/texts/renderer'
+import { Localization, LocalizationObj } from '/utils/texts/renderer'
 
-export default localize({
-  physicsWheel: {
-    [Lang.ru]: 'Дополнительно',
-    [Lang.en]: 'Extra',
-    [Lang.de]: 'Radantrieb',
-    [Lang.ch]: '单个车轮设置'
-  },
-  wheel: {
-    [Lang.ru]: 'Колесо',
-    [Lang.en]: 'Wheel',
-    [Lang.de]: 'Rad',
-    [Lang.ch]: '轮子'
-  },
-  extraWheel: {
-    [Lang.ru]: 'Доп. колесо',
-    [Lang.en]: 'Extra wheel',
-    [Lang.de]: 'Zusätzliches Rad',
-    [Lang.ch]: '额外的轮子'
-  },
-  wheelsSizes: {
-    [Lang.ru]: 'Доступные размеры колёс',
-    [Lang.en]: 'Available wheel sizes',
-    [Lang.de]: 'Verfügbare Radgrößen',
-    [Lang.ch]: '可用的车轮尺寸'
-  },
-  wheelsSet: {
-    [Lang.ru]: 'Набор колёс',
-    [Lang.en]: 'Set of wheels',
-    [Lang.de]: 'Satz von Rädern',
-    [Lang.ch]: '一套轮子'
-  },
-  wheelsScale: {
-    [Lang.ru]: 'Размер колеса',
-    [Lang.en]: 'Wheel size',
-    [Lang.de]: 'Rad-Größe',
-    [Lang.ch]: '车轮尺寸'
-  },
-  winchLength: {
-    [Lang.ru]: 'Длина лебёдки',
-    [Lang.en]: 'Winch length',
-    [Lang.de]: 'Länge der Winde',
-    [Lang.ch]: '绞车的长度'
-  },
-  winchStrength: {
-    [Lang.ru]: 'Сила лебёдки',
-    [Lang.en]: 'Winch strength',
-    [Lang.de]: 'Kraft der Winde',
-    [Lang.ch]: '绞车的动力'
-  },
-  responsiveness: {
-    [Lang.ru]: 'Чувствительность руля',
-    [Lang.en]: 'Steering wheel sensitivity',
-    [Lang.de]: 'Empfindlichkeit des Lenkers',
-    [Lang.ch]: '方向盘灵敏度'
-  },
-  torque: {
-    [Lang.ru]: 'Привод',
-    [Lang.en]: 'Type of wheel drive',
-    [Lang.de]: 'Torsionsart',
-    [Lang.ch]: '驱动器'
-  },
-  torqueDefault: {
-    [Lang.ru]: 'Всегда ведущее',
-    [Lang.en]: 'Drive',
-    [Lang.de]: 'Immer Moderator',
-    [Lang.ch]: '始终开启全轮驱动'
-  },
-  torqueFull: {
-    [Lang.ru]: 'Ведущее при полном приводе',
-    [Lang.en]: 'Driving with AWD',
-    [Lang.de]: 'Allradantrieb',
-    [Lang.ch]: '全轮驱动'
-  },
-  torqueNone: {
-    [Lang.ru]: 'Ведомое',
-    [Lang.en]: 'Driven',
-    [Lang.de]: 'Slave',
-    [Lang.ch]: '跟随前一组车轮的设定'
-  },
-  torqueConnectable: {
-    [Lang.ru]: 'Определяется аддоном',
-    [Lang.en]: 'Defined by the addon',
-    [Lang.de]: 'Definiert durch Addon',
-    [Lang.ch]: '默认或升级零件决定'
-  },
-  steeringAngle: {
-    [Lang.ru]: 'Угол поворота',
-    [Lang.en]: 'Steering angle',
-    [Lang.de]: 'Drehwinkel',
-    [Lang.ch]: '转弯角度'
-  },
-  centerOfMass: {
-    [Lang.ru]: 'Смещение центра масс',
-    [Lang.en]: 'Center of mass offset',
-    [Lang.de]: 'Versatz des Massenzentrums',
-    [Lang.ch]: '车辆重心调整'
-  },
-  any: {
-    [Lang.ru]: 'Любая',
-    [Lang.en]: 'Any',
-    [Lang.de]: 'Jede',
-    [Lang.ch]: '任何'
-  },
-  none: {
-    [Lang.ru]: 'Отсутствует',
-    [Lang.en]: 'None',
-    [Lang.de]: 'Fehlt',
-    [Lang.ch]: '没有'
-  },
-  textGroupName: {
-    [Lang.ru]: 'Тексты',
-    [Lang.en]: 'Texts',
-    [Lang.de]: 'Texte',
-    [Lang.ch]: '文本'
-  },
-  uiDesc: {
-    [Lang.ru]: 'Описание',
-    [Lang.en]: 'Description',
-    [Lang.de]: 'Der Name',
-    [Lang.ch]: '简述'
-  },
-  uiName: {
-    [Lang.ru]: 'Название',
-    [Lang.en]: 'Name',
-    [Lang.de]: 'Die Beschreibung',
-    [Lang.ch]: '车名'
-  },
-  controlGroupName: {
-    [Lang.ru]: 'Управление',
-    [Lang.en]: 'Control',
-    [Lang.de]: 'Kontrolle',
-    [Lang.ch]: '方向盘'
-  },
-  backSteerSpeed: {
-    [Lang.ru]: 'Скорость возврата колёс',
-    [Lang.en]: 'Back steer speed',
-    [Lang.de]: 'Die Rücklaufquote der Spitze',
-    [Lang.ch]: '车轮回正速度'
-  },
-  steerSpeed: {
-    [Lang.ru]: 'Скорость руля',
-    [Lang.en]: 'Steer speed',
-    [Lang.de]: 'Geschwindigkeit lenken',
-    [Lang.ch]: '转方向盘速度'
-  },
-  winchGroupName: {
-    [Lang.ru]: 'Лебёдка',
-    [Lang.en]: 'Winch',
-    [Lang.de]: 'Winde',
-    [Lang.ch]: '绞盘'
-  },
-  wheelsGroupName: {
-    [Lang.ru]: 'Колёса',
-    [Lang.en]: 'Wheels',
-    [Lang.de]: 'Räder',
-    [Lang.ch]: '轮子'
-  },
-  suspensionGroupName: {
-    [Lang.ru]: 'Подвеска',
-    [Lang.en]: 'Suspension',
-    [Lang.de]: 'Aufhängung',
-    [Lang.ch]: '悬架'
-  },
-  diffLock: {
-    [Lang.ru]: 'Блокировка дифференциала',
-    [Lang.en]: 'Differential lock',
-    [Lang.de]: 'Differenzialsperre',
-    [Lang.ch]: '差速器锁'
-  },
-  installed: {
-    [Lang.ru]: 'Установлена',
-    [Lang.en]: 'Installed',
-    [Lang.de]: 'Installiert',
-    [Lang.ch]: '已安装'
-  },
-  uninstalled: {
-    [Lang.ru]: 'Не установлена',
-    [Lang.en]: 'Uninstalled',
-    [Lang.de]: 'nicht Installiert',
-    [Lang.ch]: '未安装'
-  },
-  always: {
-    [Lang.ru]: 'Всегда',
-    [Lang.en]: 'Always',
-    [Lang.de]: 'Immer',
-    [Lang.ch]: '始终开启'
-  },
-  gearboxGroupName: {
-    [Lang.ru]: 'Коробка передач',
-    [Lang.en]: 'Gearbox',
-    [Lang.de]: 'Getriebe',
-    [Lang.ch]: '变速箱'
-  },
-  engineGroupName: {
-    [Lang.ru]: 'Двигатель',
-    [Lang.en]: 'Engine',
-    [Lang.de]: 'Motor',
-    [Lang.ch]: '发动机'
-  },
-  engineStartDelay: {
-    [Lang.ru]: 'Задержка запуска двигателя',
-    [Lang.en]: 'Engine start delay',
-    [Lang.de]: 'Motorstartverzögerung',
-    [Lang.ch]: '发动机启动延迟'
-  },
-  exhaustStartTime: {
-    [Lang.ru]: 'Время начала выхлопа',
-    [Lang.en]: 'Exhaust start time',
-    [Lang.de]: 'Startzeit des Abgases',
-    [Lang.ch]: '排气的开始时间'
-  },
-  fuelGroupName: {
-    [Lang.ru]: 'Топливный бак',
-    [Lang.en]: 'Fuel',
-    [Lang.de]: 'Treibstoff',
-    [Lang.ch]: '燃油箱'
-  },
-  damageCapacity: {
-    [Lang.ru]: 'Прочность',
-    [Lang.en]: 'Damage capacity',
-    [Lang.de]: 'Schadenskapazität',
-    [Lang.ch]: '血量'
-  },
-  fuelCapacity: {
-    [Lang.ru]: 'Объём',
-    [Lang.en]: 'Fuel capacity',
-    [Lang.de]: 'Kraftstoffkapazität',
-    [Lang.ch]: '容量'
-  },
-  unlockGroupName: {
-    [Lang.ru]: 'Разблокировка',
-    [Lang.en]: 'Unlock',
-    [Lang.de]: 'Freischalten',
-    [Lang.ch]: '解锁'
-  },
-  country: {
-    [Lang.ru]: 'Страна',
-    [Lang.en]: 'Country',
-    [Lang.de]: 'Land',
-    [Lang.ch]: '国家'
-  },
-  russia: {
-    [Lang.ru]: 'Россия',
-    [Lang.en]: 'Russia',
-    [Lang.de]: 'Russland',
-    [Lang.ch]: '俄罗斯'
-  },
-  usa: {
-    [Lang.ru]: 'США',
-    [Lang.en]: 'USA',
-    [Lang.de]: 'Vereinigte Staaten von Amerika',
-    [Lang.ch]: '美国'
-  },
-  cas: {
-    [Lang.ru]: 'Центральная Азия',
-    [Lang.en]: 'Central Asia',
-    [Lang.de]: 'Zentralasien',
-    [Lang.ch]: '中亚地区'
-  },
-  ne: {
-    [Lang.ru]: 'Северная Европа',
-    [Lang.en]: 'Northern Europe',
-    [Lang.de]: 'Nordeuropa',
-    [Lang.ch]: '北欧'
-  },
-  price: {
-    [Lang.ru]: 'Цена',
-    [Lang.en]: 'Price',
-    [Lang.de]: 'Preis',
-    [Lang.ch]: '价格'
-  },
-  byExploration: {
-    [Lang.ru]: 'Способ разблокировки',
-    [Lang.en]: 'Unlock method',
-    [Lang.de]: 'Methode entsperren',
-    [Lang.ch]: '解锁条件'
-  },
-  findOnMap: {
-    [Lang.ru]: 'Найти на карте',
-    [Lang.en]: 'Find on map',
-    [Lang.de]: 'Auf Karte finden',
-    [Lang.ch]: '在地图上寻找'
-  },
-  byRank: {
-    [Lang.ru]: 'По достижению уровня',
-    [Lang.en]: 'By rank',
-    [Lang.de]: 'Nach Rang',
-    [Lang.ch]: '达到该等级时'
-  },
-  unlockByRank: {
-    [Lang.ru]: 'Уровень разблокировки',
-    [Lang.en]: 'Unlock level',
-    [Lang.de]: 'Level freischalten',
-    [Lang.ch]: '解锁等级'
-  }
-})
+export default new LocalizationObj({
+  physicsWheel: new Localization()
+    .ru('Дополнительно')
+    .en('Extra')
+    .de('Radantrieb')
+    .ch('单个车轮设置'),
+  wheel: new Localization()
+    .ru('Колесо')
+    .en('Wheel')
+    .de('Rad')
+    .ch('轮子'),
+  extraWheel: new Localization()
+    .ru('Доп. колесо')
+    .en('Extra wheel')
+    .de('Zusätzliches Rad')
+    .ch('额外的轮子'),
+  wheelsSizes: new Localization()
+    .ru('Доступные размеры колёс')
+    .en('Available wheel sizes')
+    .de('Verfügbare Radgrößen')
+    .ch('可用的车轮尺寸'),
+  wheelsSet: new Localization()
+    .ru('Набор колёс')
+    .en('Set of wheels')
+    .de('Satz von Rädern')
+    .ch('一套轮子'),
+  wheelsScale: new Localization()
+    .ru('Размер колеса')
+    .en('Wheel size')
+    .de('Rad-Größe')
+    .ch('车轮尺寸'),
+  winchLength: new Localization()
+    .ru('Длина лебёдки')
+    .en('Winch length')
+    .de('Länge der Winde')
+    .ch('绞车的长度'),
+  winchStrength: new Localization()
+    .ru('Сила лебёдки')
+    .en('Winch strength')
+    .de('Kraft der Winde')
+    .ch('绞车的动力'),
+  responsiveness: new Localization()
+    .ru('Чувствительность руля')
+    .en('Steering wheel sensitivity')
+    .de('Empfindlichkeit des Lenkers')
+    .ch('方向盘灵敏度'),
+  torque: new Localization()
+    .ru('Привод')
+    .en('Type of wheel drive')
+    .de('Torsionsart')
+    .ch('驱动器'),
+  torqueDefault: new Localization()
+    .ru('Всегда ведущее')
+    .en('Drive')
+    .de('Immer Moderator')
+    .ch('始终开启全轮驱动'),
+  torqueFull: new Localization()
+    .ru('Ведущее при полном приводе')
+    .en('Driving with AWD')
+    .de('Allradantrieb')
+    .ch('全轮驱动'),
+  torqueNone: new Localization()
+    .ru('Ведомое')
+    .en('Driven')
+    .de('Slave')
+    .ch('跟随前一组车轮的设定'),
+  torqueConnectable: new Localization()
+    .ru('Определяется аддоном')
+    .en('Defined by the addon')
+    .de('Definiert durch Addon')
+    .ch('默认或升级零件决定'),
+  steeringAngle: new Localization()
+    .ru('Угол поворота')
+    .en('Steering angle')
+    .de('Drehwinkel')
+    .ch('转弯角度'),
+  centerOfMass: new Localization()
+    .ru('Смещение центра масс')
+    .en('Center of mass offset')
+    .de('Versatz des Massenzentrums')
+    .ch('车辆重心调整'),
+  any: new Localization()
+    .ru('Любая')
+    .en('Any')
+    .de('Jede')
+    .ch('任何'),
+  none: new Localization()
+    .ru('Отсутствует')
+    .en('None')
+    .de('Fehlt')
+    .ch('没有'),
+  textGroupName: new Localization()
+    .ru('Тексты')
+    .en('Texts')
+    .de('Texte')
+    .ch('文本'),
+  uiDesc: new Localization()
+    .ru('Описание')
+    .en('Description')
+    .de('Der Name')
+    .ch('简述'),
+  uiName: new Localization()
+    .ru('Название')
+    .en('Name')
+    .de('Die Beschreibung')
+    .ch('车名'),
+  controlGroupName: new Localization()
+    .ru('Управление')
+    .en('Control')
+    .de('Kontrolle')
+    .ch('方向盘'),
+  backSteerSpeed: new Localization()
+    .ru('Скорость возврата колёс')
+    .en('Back steer speed')
+    .de('Die Rücklaufquote der Spitze')
+    .ch('车轮回正速度'),
+  steerSpeed: new Localization()
+    .ru('Скорость руля')
+    .en('Steer speed')
+    .de('Geschwindigkeit lenken')
+    .ch('转方向盘速度'),
+  winchGroupName: new Localization()
+    .ru('Лебёдка')
+    .en('Winch')
+    .de('Winde')
+    .ch('绞盘'),
+  wheelsGroupName: new Localization()
+    .ru('Колёса')
+    .en('Wheels')
+    .de('Räder')
+    .ch('轮子'),
+  suspensionGroupName: new Localization()
+    .ru('Подвеска')
+    .en('Suspension')
+    .de('Aufhängung')
+    .ch('悬架'),
+  diffLock: new Localization()
+    .ru('Блокировка дифференциала')
+    .en('Differential lock')
+    .de('Differenzialsperre')
+    .ch('差速器锁'),
+  installed: new Localization()
+    .ru('Установлена')
+    .en('Installed')
+    .de('Installiert')
+    .ch('已安装'),
+  uninstalled: new Localization()
+    .ru('Не установлена')
+    .en('Uninstalled')
+    .de('nicht Installiert')
+    .ch('未安装'),
+  always: new Localization()
+    .ru('Всегда')
+    .en('Always')
+    .de('Immer')
+    .ch('始终开启'),
+  gearboxGroupName: new Localization()
+    .ru('Коробка передач')
+    .en('Gearbox')
+    .de('Getriebe')
+    .ch('变速箱'),
+  engineGroupName: new Localization()
+    .ru('Двигатель')
+    .en('Engine')
+    .de('Motor')
+    .ch('发动机'),
+  engineStartDelay: new Localization()
+    .ru('Задержка запуска двигателя')
+    .en('Engine start delay')
+    .de('Motorstartverzögerung')
+    .ch('发动机启动延迟'),
+  exhaustStartTime: new Localization()
+    .ru('Время начала выхлопа')
+    .en('Exhaust start time')
+    .de('Startzeit des Abgases')
+    .ch('排气的开始时间'),
+  fuelGroupName: new Localization()
+    .ru('Топливный бак')
+    .en('Fuel')
+    .de('Treibstoff')
+    .ch('燃油箱'),
+  damageCapacity: new Localization()
+    .ru('Прочность')
+    .en('Damage capacity')
+    .de('Schadenskapazität')
+    .ch('血量'),
+  fuelCapacity: new Localization()
+    .ru('Объём')
+    .en('Fuel capacity')
+    .de('Kraftstoffkapazität')
+    .ch('容量'),
+  unlockGroupName: new Localization()
+    .ru('Разблокировка')
+    .en('Unlock')
+    .de('Freischalten')
+    .ch('解锁'),
+  country: new Localization()
+    .ru('Страна')
+    .en('Country')
+    .de('Land')
+    .ch('国家'),
+  russia: new Localization()
+    .ru('Россия')
+    .en('Russia')
+    .de('Russland')
+    .ch('俄罗斯'),
+  usa: new Localization()
+    .ru('США')
+    .en('USA')
+    .de('Vereinigte Staaten von Amerika')
+    .ch('美国'),
+  cas: new Localization()
+    .ru('Центральная Азия')
+    .en('Central Asia')
+    .de('Zentralasien')
+    .ch('中亚地区'),
+  ne: new Localization()
+    .ru('Северная Европа')
+    .en('Northern Europe')
+    .de('Nordeuropa')
+    .ch('北欧'),
+  price: new Localization()
+    .ru('Цена')
+    .en('Price')
+    .de('Preis')
+    .ch('价格'),
+  byExploration: new Localization()
+    .ru('Способ разблокировки')
+    .en('Unlock method')
+    .de('Methode entsperren')
+    .ch('解锁条件'),
+  findOnMap: new Localization()
+    .ru('Найти на карте')
+    .en('Find on map')
+    .de('Auf Karte finden')
+    .ch('在地图上寻找'),
+  byRank: new Localization()
+    .ru('По достижению уровня')
+    .en('By rank')
+    .de('Nach Rang')
+    .ch('达到该等级时'),
+  unlockByRank: new Localization()
+    .ru('Уровень разблокировки')
+    .en('Unlock level')
+    .de('Level freischalten')
+    .ch('解锁等级')
+}).get()

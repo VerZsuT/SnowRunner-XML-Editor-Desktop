@@ -28,9 +28,8 @@ import Group from '../group'
 import { Int } from '../input'
 import Select from '../select'
 
-import { Lang } from '/mods/renderer'
 import type { BoolUtils, NumUtils } from '/mods/xml/game/game-xml'
-import { localize } from '/utils/texts/renderer'
+import { Localization, LocalizationObj } from '/utils/texts/renderer'
 
 export type UnlockPresetProps = {
   element?: {
@@ -42,42 +41,36 @@ export type UnlockPresetProps = {
 
 defineProps<UnlockPresetProps>()
 
-const texts = localize({
-  unlockGroupName: {
-    [Lang.ru]: 'Разблокировка',
-    [Lang.en]: 'Unlock',
-    [Lang.de]: 'Freischalten',
-    [Lang.ch]: '解锁'
-  },
-  price: {
-    [Lang.ru]: 'Цена',
-    [Lang.en]: 'Price',
-    [Lang.de]: 'Preis',
-    [Lang.ch]: '价格'
-  },
-  byExploration: {
-    [Lang.ru]: 'Способ разблокировки',
-    [Lang.en]: 'Unlock method',
-    [Lang.de]: 'Methode entsperren',
-    [Lang.ch]: '解锁条件'
-  },
-  findOnMap: {
-    [Lang.ru]: 'Найти на карте',
-    [Lang.en]: 'Find on map',
-    [Lang.de]: 'Auf Karte finden',
-    [Lang.ch]: '在地图上寻找'
-  },
-  byRank: {
-    [Lang.ru]: 'По достижению уровня',
-    [Lang.en]: 'By rank',
-    [Lang.de]: 'Nach Rang',
-    [Lang.ch]: '达到该等级时'
-  },
-  unlockByRank: {
-    [Lang.ru]: 'Уровень разблокировки',
-    [Lang.en]: 'Unlock level',
-    [Lang.de]: 'Level freischalten',
-    [Lang.ch]: '解锁等级'
-  }
-})
+const texts = new LocalizationObj({
+  unlockGroupName: new Localization()
+    .ru('Разблокировка')
+    .en('Unlock')
+    .de('Freischalten')
+    .ch('解锁'),
+  price: new Localization()
+    .ru('Цена')
+    .en('Price')
+    .de('Preis')
+    .ch('价格'),
+  byExploration: new Localization()
+    .ru('Способ разблокировки')
+    .en('Unlock method')
+    .de('Methode entsperren')
+    .ch('解锁条件'),
+  findOnMap: new Localization()
+    .ru('Найти на карте')
+    .en('Find on map')
+    .de('Auf Karte finden')
+    .ch('在地图上寻找'),
+  byRank: new Localization()
+    .ru('По достижению уровня')
+    .en('By rank')
+    .de('Nach Rang')
+    .ch('达到该等级时'),
+  unlockByRank: new Localization()
+    .ru('Уровень разблокировки')
+    .en('Unlock level')
+    .de('Level freischalten')
+    .ch('解锁等级')
+}).get()
 </script>
