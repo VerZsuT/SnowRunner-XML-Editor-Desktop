@@ -200,10 +200,10 @@ export function strAttr<T extends string>() {
     key: string,
     descriptor: PropertyDescriptor
   ) => {
-    const defaultVal: Value = descriptor.get?.()
+    const getDefault = descriptor.get
 
     descriptor.get = function(this: This) {
-      return this.procAttr(key)?.str as Value ?? defaultVal
+      return this.procAttr(key)?.str as Value ?? getDefault?.()
     }
     descriptor.set = function(this: This, value: Value) {
       this.procAttr(key, value ?? null)
@@ -247,10 +247,10 @@ export function strArrAttr<T extends string>(
     key: string,
     descriptor: PropertyDescriptor
   ) => {
-    const defaultVal: Value = descriptor.get?.() ?? []
+    const getDefault = descriptor.get ?? (() => [])
 
     descriptor.get = function(this: This) {
-      return strToArr(this.procAttr(key)?.str, parser) ?? defaultVal
+      return strToArr(this.procAttr(key)?.str, parser) ?? getDefault?.()
     }
     descriptor.set = function(this: This, value: Value) {
       this.procAttr(key, hasItems(value) ? arrToStr(value) : (preserve ? '' : null))
@@ -268,19 +268,15 @@ export function strArrUtils<T extends string>(
   parser = (str: string) => str as T | undefined,
   preserve = false
 ) {
-  type Value = T[]
-
   return <This extends GameXML>(
     _: This,
     key: string,
     descriptor: PropertyDescriptor
   ) => {
     const name = key.split('$')[1]
-    let defaultVal: Value
 
     descriptor.get = function(this: This) {
       const selector = this.selector
-      defaultVal ??= this[name]
       
       return {
         get: () => this[name],
@@ -330,11 +326,11 @@ export function posAttr(limit?: PosLimits) {
     key: string,
     descriptor: PropertyDescriptor
   ) => {
-    const defaultVal: Value = descriptor.get?.()
+    const getDefault = descriptor.get
 
     descriptor.get = function(this: This) {
       const str = this.procAttr(key)?.str
-      if (!str) return defaultVal
+      if (!str) return getDefault?.()
 
       return Position.from(str, limit)
     }
@@ -379,10 +375,10 @@ export function intAttr(limit?: Limit) {
     key: string,
     descriptor: PropertyDescriptor
   ) => {
-    const defaultVal: Value = descriptor.get?.()
+    const getDefault = descriptor.get
 
     descriptor.get = function(this: This) {
-      return this.procAttr(key)?.int ?? defaultVal
+      return this.procAttr(key)?.int ?? getDefault?.()
     }
     descriptor.set = function(this: This, value: Value) {
       this.procAttr(key, value ?? null, limit)
@@ -421,10 +417,10 @@ export function floatAttr(limit?: Limit) {
     key: string,
     descriptor: PropertyDescriptor
   ) => {
-    const defaultVal: Value = descriptor.get?.()
+    const getDefault = descriptor.get
 
     descriptor.get = function(this: This) {
-      return this.procAttr(key)?.float ?? defaultVal
+      return this.procAttr(key)?.float ?? getDefault?.()
     }
     descriptor.set = function(this: This, value: Value) {
       this.procAttr(key, value ?? null, limit)
@@ -441,10 +437,10 @@ export function boolAttr() {
     key: string,
     descriptor: PropertyDescriptor
   ) => {
-    const defaultVal: Value = descriptor.get?.()
+    const getDefault = descriptor.get
 
     descriptor.get = function(this: This) {
-      return this.procAttr(key)?.bool ?? defaultVal
+      return this.procAttr(key)?.bool ?? getDefault?.()
     }
     descriptor.set = function(this: This, value: Value) {
       this.procAttr(key, value ?? null)

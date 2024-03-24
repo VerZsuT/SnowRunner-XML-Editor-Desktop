@@ -14,7 +14,7 @@ export default class WheelFriction extends XMLWithTemplates {
 
   /** Трение с дорогой */
   @floatAttr(new Limit({ min: 0.1, max: 10.0 }))
-  get BodyFrictionAsphalt() { return 1.0 }
+  get BodyFrictionAsphalt() { return this.BodyFriction }
   set BodyFrictionAsphalt(_: number | undefined) {}
   @numUtils()
   get $BodyFrictionAsphalt() { return {} as NumUtils }
