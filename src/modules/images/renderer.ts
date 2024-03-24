@@ -8,10 +8,9 @@ import { TruckXML } from '/mods/xml/renderer'
 class Images {
   /** Возвращает путь к картинке для данного файла */
   async getSrc(category: Category, file: File, xml: TruckXML): Promise<string> {
-    const base = Config.isDev ? '/src' : '..'
     const ext = category === Category.trucks ? '.jpg' : '.png'
     
-    const images = new Dir(base, '/images', category)  // {project}/src/images || {app}/renderer/src/renderer/pages
+    const images = new Dir(this.getPath(category))
     const image = images.file(`${file.name}${ext}`)
     const defaultImage = images.file('default.png')
 
@@ -30,8 +29,13 @@ class Images {
 
   /** Получить путь к иконке группы */
   getGroupIconSrc(name: string) {
+    return this.getPath(`icons/${name}.png`)
+  }
+
+  /** Возвращает путь в папке `images` */
+  getPath(pathInImagesFolder: string) {
     const base = Config.isDev ? '/src' : '..'
-    return `${base}/images/icons/${name}.png`
+    return `${base}/images/${pathInImagesFolder}`
   }
 
   /** Получить модовую картинку */
@@ -39,8 +43,7 @@ class Images {
     const modName = Mods.getModID(file)
     if (!modName || !xml.GameData?.UiDesc) return
 
-    const base = Config.isDev ? '/src' : '..'
-    const images = new Dir(base, '/images', category) // {project}/src/images || {app}/renderer/src/renderer/pages
+    const images = new Dir(this.getPath(category))
     const defaultImage = images.file('default.png')
 
     const imgName = xml.GameData?.UiDesc?.UiIcon328x458

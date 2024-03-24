@@ -21,7 +21,6 @@ import type { File, FileInfo, SuspensionsXML } from '/mods/renderer'
 import { useEditorStore } from '/rend/pages/main/store'
 import { hasItems } from '/utils/renderer'
 
-
 export type SuspensionsProps = ReadyProps & Props
 
 type Props = {

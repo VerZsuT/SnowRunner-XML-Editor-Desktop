@@ -21,7 +21,6 @@ import type { File, FileInfo, WinchesXML } from '/mods/renderer'
 import { useEditorStore } from '/rend/pages/main/store'
 import { hasItems } from '/utils/renderer'
 
-
 export type WinchesProps = ReadyProps & Props
 
 type Props = {
