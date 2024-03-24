@@ -63,9 +63,6 @@ class ForgeConfig {
           function archive(source, name) {
             execSync(`WinRAR a -ibck -ep1 -m5 "${name}" "${source}"`, { cwd: paths.winrar })
           }
-          function hasArg(name) {
-            return process.argv.includes(name)
-          }
 
           info('Clear other files in out dir')
           for (const entry of await readdir(paths.out)) {
@@ -88,23 +85,17 @@ class ForgeConfig {
           info('Rename build')
           await rename(paths.build, join(_dirname, '../../out/SnowRunnerXMLEditor'))
 
-          if (hasArg('--fast')) return
+          info('Create installer')
+          const configData = String(await readFile(paths.innoSetupConfig))
+          await writeFile(paths.innoSetupConfig, configData.replaceAll(/#define MyAppVersion .*?\r\n/g, `#define MyAppVersion "${version}"\r\n`))
+          execSync(paths.innoSetupConfig)
+          await cp(paths.installer, paths.updateInstaller)
+          await cp(paths.installer, paths.installerWithVersion)
 
-          if (!hasArg('--no-installer')) {
-            info('Create installer')
-            const configData = String(await readFile(paths.innoSetupConfig))
-            await writeFile(paths.innoSetupConfig, configData.replaceAll(/#define MyAppVersion .*?\r\n/g, `#define MyAppVersion "${version}"\r\n`))
-            execSync(paths.innoSetupConfig)
-            await cp(paths.installer, paths.updateInstaller)
-            await cp(paths.installer, paths.installerWithVersion)
-          }
-
-          if (!hasArg('--no-archive')) {
-            info('Archive build')
-            archive(paths.renamedBuild, paths.buildArchive)
-            await cp(paths.buildArchive, paths.updateBuildArchive)
-            archive(paths.installerWithVersion, paths.modioArchive)
-          }
+          info('Archive build')
+          archive(paths.renamedBuild, paths.buildArchive)
+          await cp(paths.buildArchive, paths.updateBuildArchive)
+          archive(paths.installerWithVersion, paths.modioArchive)
         }
       },
       plugins: [
