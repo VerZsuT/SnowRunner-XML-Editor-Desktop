@@ -7,11 +7,13 @@
     >
       <Float
         :label="texts.criticalDamageThreshold"
+        :desc="SuspensionSet.CriticalDamageThresholdDesc"
         :utils="SuspensionSet.$CriticalDamageThreshold"
         :step="0.01"
       />
       <Int
         :label="texts.damageCapacity"
+        :desc="SuspensionSet.DamageCapacityDesc"
         :utils="SuspensionSet.$DamageCapacity"
         :step="10"
         :areas="{
@@ -27,6 +29,7 @@
         >
           <Float
             :label="texts.height"
+            :desc="Suspension.HeightDesc"
             :utils="Suspension.$Height"
             :areas="{
               yellow: [[-2, -1], [1, 2]],
@@ -35,6 +38,7 @@
           />
           <Float
             :label="texts.strenght"
+            :desc="Suspension.StrengthDesc"
             :utils="Suspension.$Strength"
             :step="0.01"
             :areas="{
@@ -44,6 +48,7 @@
           />
           <Float
             :label="texts.damping"
+            :desc="Suspension.DampingDesc"
             :utils="Suspension.$Damping"
             :areas="{
               yellow: [1, 3],
@@ -52,6 +57,7 @@
           />
           <Float
             :label="texts.suspensionMin"
+            :desc="Suspension.SuspensionMinDesc"
             :utils="Suspension.$SuspensionMin"
             :step="0.01"
             :areas="{
@@ -61,6 +67,7 @@
           />
           <Float
             :label="texts.suspensionMax"
+            :desc="Suspension.SuspensionMaxDesc"
             :utils="Suspension.$SuspensionMax"
             :step="0.01"
             :areas="{
@@ -70,6 +77,7 @@
           />
           <Float
             :label="texts.brokenSuspensionMax"
+            :desc="Suspension.BrokenSuspensionMaxDesc"
             :utils="Suspension.$BrokenSuspensionMax"
             :step="0.01"
             :areas="{

@@ -7,6 +7,7 @@
       <template v-if="xml.TruckData">
         <Int
           :label="texts.fuelCapacity"
+          :desc="xml.TruckData.FuelCapacityDesc"
           :utils="xml.TruckData.$FuelCapacity"
           :step="10"
           :areas="{
@@ -16,6 +17,7 @@
         />
         <Int
           :label="texts.waterCapacity"
+          :desc="xml.TruckData.WaterCapacityDesc"
           :utils="xml.TruckData.$WaterCapacity"
           :step="10"
           :areas="{
@@ -25,6 +27,7 @@
         />
         <Int
           :label="texts.repairsCapacity"
+          :desc="xml.TruckData.RepairsCapacityDesc"
           :utils="xml.TruckData.$RepairsCapacity"
           :step="10"
           :areas="{
@@ -34,6 +37,7 @@
         />
         <Int
           :label="texts.wheelRepairsCapacity"
+          :desc="xml.TruckData.WheelRepairsCapacityDesc"
           :utils="xml.TruckData.$WheelRepairsCapacity"
           :step="10"
           :areas="{
@@ -44,6 +48,7 @@
         <Int
           v-if="xml.GameData?.AddonSlots"
           :label="texts.quantity"
+          :desc="xml.GameData.AddonSlots.QuantityDesc"
           :utils="xml.GameData.AddonSlots.$Quantity"
         />
       </template>
@@ -61,10 +66,12 @@
             >
               <Float
                 :label="texts.suspHeight"
+                :desc="Wheel.SuspensionHeightDesc"
                 :utils="Wheel.$SuspensionHeight"
               />
               <Float
                 :label="texts.suspStrength"
+                :desc="Wheel.SuspensionStrengthDesc"
                 :utils="Wheel.$SuspensionStrength"
               />
             </Group>
@@ -99,6 +106,7 @@
     >
       <Int
         :label="texts.price"
+        :desc="xml.GameData.PriceDesc"
         :utils="xml.GameData.$Price"
       />
     </Group>

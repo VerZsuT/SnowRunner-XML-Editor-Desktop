@@ -5,6 +5,8 @@ import Limit from '../limit'
 import XMLWithTemplates, { innerElement, innerElements } from '../xml-with-templates'
 import Suspension from './suspension'
 
+import { Localization } from '/utils/texts/renderer'
+
 export { default as Suspension } from './suspension'
 
 /** Набор подвесок */
@@ -22,6 +24,11 @@ export default class SuspensionSet extends XMLWithTemplates {
   set DamageCapacity(_: number | undefined) {}
   @numUtils()
   get $DamageCapacity() { return {} as NumUtils }
+  DamageCapacityDesc = new Localization()
+    .ru('Размер допустимого ущерба подвеске')
+    .en('The amount of possible damage to the suspension')
+    .de('Die Höhe des zulässigen Schadens an der Aufhängung')
+    .get()
 
   /** Порог критического урона */
   @floatAttr(new Limit({ min: 0.0, max: 0.999 }))
@@ -29,6 +36,11 @@ export default class SuspensionSet extends XMLWithTemplates {
   set CriticalDamageThreshold(_: number | undefined) {}
   @numUtils()
   get $CriticalDamageThreshold() { return {} as NumUtils }
+  CriticalDamageThresholdDesc = new Localization()
+    .ru('Порог критического урона подвески')
+    .en('Suspension Critical Damage Threshold')
+    .de('Schwelle für kritischen Fahrwerksschaden')
+    .get()
 
   /** Коэффициент увеличения повреждения подвески при пробитом колесе */
   @floatAttr(new Limit({ min: 0.0, max: 100.0 }))
@@ -36,6 +48,11 @@ export default class SuspensionSet extends XMLWithTemplates {
   set BrokenWheelDamageMultiplier(_: number | undefined) {}
   @numUtils()
   get $BrokenWheelDamageMultiplier() { return {} as NumUtils }
+  BrokenWheelDamageMultiplierDesc = new Localization()
+    .ru('Коэффициент увеличения повреждения подвески при пробитом колесе')
+    .en('The coefficient of increase in suspension damage with a punctured wheel')
+    .de('Erhöhte Fahrwerksschäden bei eingeschlossenem Rad')
+    .get()
 
   /** Подвески */
   @innerElements(Suspension, 'Suspension')

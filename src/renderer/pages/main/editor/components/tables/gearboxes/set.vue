@@ -7,15 +7,18 @@
     >
       <Float
         :label="texts.awdConsumptionModifier"
+        :desc="Gearbox.AWDConsumptionModifierDesc"
         :utils="Gearbox.$AWDConsumptionModifier"
       />
       <Float
         :label="texts.criticalDamageThreshold"
+        :desc="Gearbox.CriticalDamageThresholdDesc"
         :utils="Gearbox.$CriticalDamageThreshold"
         :step="0.01"
       />
       <Int
         :label="texts.damageCapacity"
+        :desc="Gearbox.DamageCapacityDesc"
         :utils="Gearbox.$DamageCapacity"
         :step="10"
         :areas="{
@@ -25,20 +28,24 @@
       />
       <Float
         :label="texts.damagedConsumptionModifier"
+        :desc="Gearbox.DamagedConsumptionModifierDesc"
         :utils="Gearbox.$DamagedConsumptionModifier"
         :step="0.01"
       />
       <Float
         :label="texts.fuelConsumption"
+        :desc="Gearbox.FuelConsumptionDesc"
         :utils="Gearbox.$FuelConsumption"
       />
       <Float
         :label="texts.idleFuelConsumption"
+        :desc="Gearbox.IdleFuelModifierDesc"
         :utils="Gearbox.$IdleFuelModifier"
       />
       <Select
         v-if="Gearbox.GameData?.GearboxParams"
         :label="texts.lowerManualGear"
+        :desc="Gearbox.GameData.GearboxParams.IsManualLowGearDesc"
         :utils="Gearbox.GameData.GearboxParams.$IsManualLowGear"
         :options="[
           [true, texts.allow],
@@ -53,6 +60,7 @@
         >
           <Select
             :label="texts.highGear"
+            :desc="Gearbox.GameData.GearboxParams.IsHighGearExistsDesc"
             :utils="Gearbox.GameData.GearboxParams.$IsHighGearExists"
             :options="[
               [true, texts.gearAllow],
@@ -61,6 +69,7 @@
           />
           <Select
             :label="texts.lowerGear"
+            :desc="Gearbox.GameData.GearboxParams.IsLowerGearExistsDesc"
             :utils="Gearbox.GameData.GearboxParams.$IsLowerGearExists"
             :options="[
               [true, texts.gearAllow],
@@ -69,6 +78,7 @@
           />
           <Select
             :label="texts.lowerPlusGear"
+            :desc="Gearbox.GameData.GearboxParams.IsLowerPlusGearExistsDesc"
             :utils="Gearbox.GameData.GearboxParams.$IsLowerPlusGearExists"
             :options="[
               [true, texts.gearAllow],
@@ -77,6 +87,7 @@
           />
           <Select
             :label="texts.lowerMinusGear"
+            :desc="Gearbox.GameData.GearboxParams.IsLowerMinusGearExistsDesc"
             :utils="Gearbox.GameData.GearboxParams.$IsLowerMinusGearExists"
             :options="[
               [true, texts.gearAllow],

@@ -6,10 +6,12 @@
   >
     <Int
       :label="texts.price"
+      :desc="element.PriceDesc"
       :utils="element.$Price"
     />
     <Select
       :label="texts.byExploration"
+      :desc="element.UnlockByExplorationDesc"
       :utils="element.$UnlockByExploration"
       :options="[
         [true, texts.findOnMap],
@@ -18,6 +20,7 @@
     />
     <Int
       :label="texts.unlockByRank"
+      :desc="element.UnlockByRankDesc"
       :utils="element.$UnlockByRank"
     />
   </Group>
@@ -36,6 +39,9 @@ export type UnlockPresetProps = {
     $Price: NumUtils
     $UnlockByRank: NumUtils
     $UnlockByExploration: BoolUtils
+    PriceDesc?: string
+    UnlockByRankDesc?: string
+    UnlockByExplorationDesc?: string
   }
 }
 

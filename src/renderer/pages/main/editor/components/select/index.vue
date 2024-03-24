@@ -3,6 +3,7 @@
     :getter="getter"
     :setter="setter"
     :label="label"
+    :desc="desc"
     :utils="utils"
     @change="$emit('change', $event)"
   >

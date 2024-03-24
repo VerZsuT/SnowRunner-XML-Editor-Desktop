@@ -29,6 +29,7 @@ export interface IActionProps {
 export interface IParameterProps<T = any, U = StrConvertUtils<T> | Utils<T>> {
   /** Название параметра в таблице */
   label: string
+  desc?: string
   getter?(): T
   setter?(value: T): void
   utils: U

@@ -2,10 +2,12 @@
   <template v-if="element">
     <Float
       :label="texts.angelVelocity"
+      :desc="element.AngVelDesc"
       :utils="element.$AngVel"
     />
     <Float
       :label="texts.fuelModifier"
+      :desc="element.FuelModifierDesc"
       :utils="element.$FuelModifier"
     />
   </template>
@@ -21,6 +23,8 @@ export type GearPresetProps = {
   element?: {
     $AngVel: NumUtils
     $FuelModifier: NumUtils
+    AngVelDesc?: string
+    FuelModifierDesc?: string
   }
 }
 
