@@ -94,8 +94,8 @@ async function onSave(updateFiles = true) {
     await save(updateFiles)
     success(texts.successSaveFiles)
   }
-  catch (error) {
-    Messages.error(String(error))
+  catch (error: any) {
+    Messages.error(error)
   }
 
   setIsSaving(false)
@@ -139,8 +139,8 @@ async function importFile(toImport?: File) {
     await ImportUtils.importFile(file, toImport)
     success(texts.wasImported)
   }
-  catch (error) {
-    Messages.error(String(error))
+  catch (error: any) {
+    Messages.error(error)
   }
 }
 
@@ -149,8 +149,8 @@ async function exportFile(toExport?: File) {
     await ExportUtils.exportFile(file, toExport)
     success(texts.wasExported)
   }
-  catch (error) {
-    Messages.error(String(error))
+  catch (error: any) {
+    Messages.error(error)
   }
 }
 
@@ -162,8 +162,8 @@ async function reset() {
       Messages.success(texts.successReset)
     }
   }
-  catch (error) {
-    Messages.error(String(error))
+  catch (error: any) {
+    Messages.error(error)
   }
 }
 
