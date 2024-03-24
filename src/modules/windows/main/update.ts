@@ -1,10 +1,10 @@
+import type { BrowserWindow } from 'electron'
+
 import { publicMainEvent } from 'emr-bridge'
 
 import { ProgramWindow, WindowType } from '../enums'
 import { PubKeys } from '../public'
 import { getDevPage, getRenderer, newWindow } from './utils'
-
-import type { BrowserWindow } from 'electron'
 
 import type { IUpdateWindow } from '/mods/updates/types'
 

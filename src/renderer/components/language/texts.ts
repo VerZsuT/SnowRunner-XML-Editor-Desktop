@@ -1,12 +1,10 @@
-import { Lang } from '/mods/renderer'
-import { localize } from '/utils/texts/renderer'
+import { Localization, LocalizationObj } from '/utils/texts/renderer'
 
-export default localize({
+export default new LocalizationObj({
   /** Название пункта с языком программы */
-  languageLabel: {
-    [Lang.ru]: 'Язык программы',
-    [Lang.en]: 'Program language',
-    [Lang.de]: 'Programmsprache',
-    [Lang.ch]: '方案语言'
-  }
-})
+  languageLabel: new Localization()
+    .ru('Язык программы')
+    .en('Program language')
+    .de('Programmsprache')
+    .ch('方案语言')
+}).get()

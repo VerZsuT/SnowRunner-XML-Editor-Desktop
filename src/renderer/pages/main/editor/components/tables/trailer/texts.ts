@@ -1,95 +1,84 @@
-import { Lang } from '/mods/renderer'
-import { localize } from '/utils/texts/renderer'
+import { Localization, LocalizationObj } from '/utils/texts/renderer'
 
-export default localize({
-  quantity: {
-    [Lang.ru]: 'Кол-во груза',
-    [Lang.en]: 'Cargo quantity',
-    [Lang.de]: 'Menge der Ladung',
-    [Lang.ch]: '货物数量'
-  },
-  inner: {
-    [Lang.ru]: 'Полезное содержимое',
-    [Lang.en]: 'Useful content',
-    [Lang.de]: 'Nützliche Inhalte',
-    [Lang.ch]: '有用的内容'
-  },
-  mass: {
-    [Lang.ru]: 'Масса',
-    [Lang.en]: 'Mass',
-    [Lang.de]: 'Masse',
-    [Lang.ch]: '重量'
-  },
-  other: {
-    [Lang.ru]: 'Прочее',
-    [Lang.en]: 'Other',
-    [Lang.de]: 'Ander',
-    [Lang.ch]: '其他'
-  },
-  price: {
-    [Lang.ru]: 'Цена',
-    [Lang.en]: 'Price',
-    [Lang.de]: 'Preis',
-    [Lang.ch]: '价格'
-  },
-  waterCapacity: {
-    [Lang.ru]: 'Объём воды',
-    [Lang.en]: 'Fuel capacity',
-    [Lang.de]: 'Kraftstoffmenge',
-    [Lang.ch]: '燃油容量'
-  },
-  fuelCapacity: {
-    [Lang.ru]: 'Объём топлива',
-    [Lang.en]: 'Water capacity',
-    [Lang.de]: 'Wasser-Kapazität',
-    [Lang.ch]: '水容量'
-  },
-  repairsCapacity: {
-    [Lang.ru]: 'Кол-во запчастей',
-    [Lang.en]: 'Repairs capacity',
-    [Lang.de]: 'Anzahl der Ersatzteile',
-    [Lang.ch]: '零部件的数量'
-  },
-  wheepRepairsCapacity: {
-    [Lang.ru]: 'Кол-во колёс для ремонта',
-    [Lang.en]: 'Wheel repairs capacity',
-    [Lang.de]: 'Anzahl der Räder zu reparieren',
-    [Lang.ch]: '需要修复的车轮数量'
-  },
-  trailerMass: {
-    [Lang.ru]: 'Масса прицепа',
-    [Lang.en]: 'Trailer mass',
-    [Lang.de]: 'Gewicht des Anhängers',
-    [Lang.ch]: '拖车重量'
-  },
-  fuelMass: {
-    [Lang.ru]: 'Масса топлива',
-    [Lang.en]: 'Fuel mass',
-    [Lang.de]: 'Gewicht des Kraftstoffs',
-    [Lang.ch]: '燃料重量'
-  },
-  wheels: {
-    [Lang.ru]: 'Колёса',
-    [Lang.en]: 'Wheels',
-    [Lang.de]: 'Räder',
-    [Lang.ch]: '轮子'
-  },
-  wheel: {
-    [Lang.ru]: 'Колесо',
-    [Lang.en]: 'Wheel',
-    [Lang.de]: 'Das Rad',
-    [Lang.ch]: '轮子'
-  },
-  suspHeight: {
-    [Lang.ru]: 'Высота подвески',
-    [Lang.en]: 'Suspension height',
-    [Lang.de]: 'Höhe der Aufhängung',
-    [Lang.ch]: '悬架高度'
-  },
-  suspStrength: {
-    [Lang.ru]: 'Жёсткость подвески',
-    [Lang.en]: 'Suspension strength',
-    [Lang.de]: 'Federungssteifigkeit',
-    [Lang.ch]: '悬架刚度'
-  }
-})
+export default new LocalizationObj({
+  quantity: new Localization()
+    .ru('Кол-во груза')
+    .en('Cargo quantity')
+    .de('Menge der Ladung')
+    .ch('装载货物的格数'),
+  inner: new Localization()
+    .ru('Полезное содержимое')
+    .en('Useful content')
+    .de('Nützliche Inhalte')
+    .ch('有用的内容'),
+  mass: new Localization()
+    .ru('Масса')
+    .en('Mass')
+    .de('Masse')
+    .ch('重量'),
+  other: new Localization()
+    .ru('Прочее')
+    .en('Other')
+    .de('Ander')
+    .ch('其他'),
+  price: new Localization()
+    .ru('Цена')
+    .en('Price')
+    .de('Preis')
+    .ch('价格'),
+  waterCapacity: new Localization()
+    .ru('Объём воды')
+    .en('Fuel capacity')
+    .de('Kraftstoffmenge')
+    .ch('燃油容量'),
+  fuelCapacity: new Localization()
+    .ru('Объём топлива')
+    .en('Water capacity')
+    .de('Wasser-Kapazität')
+    .ch('水容量'),
+  repairsCapacity: new Localization()
+    .ru('Кол-во запчастей')
+    .en('Repairs capacity')
+    .de('Anzahl der Ersatzteile')
+    .ch('修理零件数量'),
+  wheelRepairsCapacity: new Localization()
+    .ru('Кол-во колёс для ремонта')
+    .en('Wheel repairs capacity')
+    .de('Anzahl der Räder zu reparieren')
+    .ch('备胎数量'),
+  centerOfMass: new Localization()
+    .ru('Смещение центра масс')
+    .en('Center of mass offset')
+    .de('Versatz des Massenzentrums')
+    .ch('车辆重心调整'),
+  trailerMass: new Localization()
+    .ru('Масса прицепа')
+    .en('Trailer mass')
+    .de('Gewicht des Anhängers')
+    .ch('拖车重量'),
+  fuelMass: new Localization()
+    .ru('Масса топлива')
+    .en('Fuel mass')
+    .de('Gewicht des Kraftstoffs')
+    .ch('燃料重量'),
+  wheels: new Localization()
+    .ru('Колёса')
+    .en('Wheels')
+    .de('Räder')
+    .ch('轮子'),
+  wheel: new Localization()
+    .ru('Колесо')
+    .en('Wheel')
+    .de('Das Rad')
+    .ch('轮子'),
+  suspHeight: new Localization()
+    .ru('Высота подвески')
+    .en('Suspension height')
+    .de('Höhe der Aufhängung')
+    .ch('悬架的高度'),
+  suspStrength: new Localization()
+    .ru('Жёсткость подвески')
+    .en('Suspension strength')
+    .de('Federungssteifigkeit')
+    .ch('悬架的硬度')
+}).get()

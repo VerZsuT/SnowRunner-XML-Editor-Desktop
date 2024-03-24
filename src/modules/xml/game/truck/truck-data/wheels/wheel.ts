@@ -4,6 +4,8 @@ import Limit from '../../../limit'
 import type Position from '../../../position'
 import XMLWithTemplates from '../../../xml-with-templates'
 
+import { Localization } from '/utils/texts/renderer'
+
 /** Описание конкретного колеса */
 export default class Wheel extends XMLWithTemplates {
   /** Положение левого колеса (координата z обязательно должна быть положительной) */
@@ -33,6 +35,11 @@ export default class Wheel extends XMLWithTemplates {
   set Torque(_) {}
   @strUtils<WheelTorque>()
   get $Torque() { return {} as StrUtils }
+  TorqueDesc = new Localization()
+    .ru('Тип привода колеса')
+    .en('Type of wheel drive')
+    .de('Art des Radantriebs')
+    .get()
 
   /** Максимальный угол поворота колеса при рулении */
   @floatAttr(new Limit({ min: -90.0, max: 90.0 }))
@@ -40,6 +47,11 @@ export default class Wheel extends XMLWithTemplates {
   set SteeringAngle(_: number | undefined) {}
   @numUtils()
   get $SteeringAngle() { return {} as NumUtils }
+  SteeringAngleDesc = new Localization()
+    .ru('Максимальный угол поворота колеса при рулении')
+    .en('The maximum angle of rotation of the wheel when taxiing')
+    .de('Maximaler Lenkwinkel des Rades beim Lenken')
+    .get()
 
   /** Угол наклона колеса по оси OX в сторону поворота */
   @floatAttr(new Limit({ min: 0.0, max: 45.0 }))
@@ -47,6 +59,11 @@ export default class Wheel extends XMLWithTemplates {
   set SteeringCastor(_: number | undefined) {}
   @numUtils()
   get $SteeringCastor() { return {} as NumUtils }
+  SteeringCastorDesc = new Localization()
+    .ru('Угол наклона колеса в сторону поворота')
+    .en('The angle of inclination of the wheel in the direction of rotation')
+    .de('Neigungswinkel des Rades zum Drehen')
+    .get()
 
   /** Минимальное значение просадки подвески */
   @floatAttr(new Limit({ min: -1000.0, max: 1000.0 }))
@@ -61,6 +78,11 @@ export default class Wheel extends XMLWithTemplates {
   set SuspensionHeight(_: number | undefined) {}
   @numUtils()
   get $SuspensionHeight() { return {} as NumUtils }
+  SuspensionHeightDesc = new Localization()
+    .ru('Высота подвески колеса')
+    .en('Wheel suspension height')
+    .de('Höhe der Radaufhängung')
+    .get()
 
   /** Жесткость подвески */
   @floatAttr(new Limit({ min: 0.0, max: 1000.0 }))
@@ -68,6 +90,11 @@ export default class Wheel extends XMLWithTemplates {
   set SuspensionStrength(_: number | undefined) {}
   @numUtils()
   get $SuspensionStrength() { return {} as NumUtils }
+  SuspensionStrengthDesc = new Localization()
+    .ru('Жесткость подвески колеса')
+    .en('Wheel suspension stiffness')
+    .de('Steifigkeit der Radaufhängung')
+    .get()
 
   /** Имя файла колеса */
   @strAttr()

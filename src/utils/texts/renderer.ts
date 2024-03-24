@@ -1,26 +1,21 @@
 import Config from '/mods/data/config/renderer'
 
-import type { ITextsToLocalize, LocalizedTexts } from './types'
+import { BaseLocalization, BaseLocalizationObj } from './base-localization'
+import type { ITextsToLocalize } from './types'
 
-import { reactive } from 'vue'
-
-/**
- * Локализирует объект
- * @param texts - объект с локализированными вариантами
- */
-export function localize<T extends ITextsToLocalize<any>>(texts: T): LocalizedTexts<T> {
-  const result = {} as LocalizedTexts<T>
-
-  for (const key in texts) { 
-    result[key] = texts[key][Config.lang]
+/** Позволяет локализировать объект со значениями */
+export class LocalizationObj<
+  Value = string,
+  ToLocalize extends ITextsToLocalize<Value> = ITextsToLocalize<Value>
+> extends BaseLocalizationObj<Value, ToLocalize> {
+  override get() {
+    return super.get(Config)
   }
+}
 
-  const textsObj = reactive(result)
-  Config.addEventListener('change', () => {
-    for (const key in texts) {
-      textsObj[key as any] = texts[key][Config.lang]
-    }
-  })
-  
-  return textsObj as LocalizedTexts<T>
+/** Позволяет локализировать значение */
+export class Localization<Value = string> extends BaseLocalization<Value> {
+  override get() {
+    return super.get(Config.ref)
+  }
 }

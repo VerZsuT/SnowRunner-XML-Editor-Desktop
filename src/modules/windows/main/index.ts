@@ -6,21 +6,22 @@ import { publicFunction, publicRendererEvent } from 'emr-bridge'
 
 import { FORCE_DEVTOOLS } from '/consts'
 
-import loadingWindow from './loading'
-import mainWindow from './main'
-import settingsWindow from './settings'
-import setupWindow from './setup'
-import updateWindow from './update'
-import whatsNewWindow from './whats-new'
+import LoadingWindow from './loading'
+import MainWindow from './main'
+import SettingsWindow from './settings'
+import SetupWindow from './setup'
+import UpdateWindow from './update'
+import WhatsNewWindow from './whats-new'
 
-import Config from '/mods/data/config/main'
-import { Files } from '/mods/files/main'
 import type { IDownloadWindow, IUpdateWindow } from '/mods/updates/types'
 
 import { ProgramWindow } from '../enums'
 import type { PubType } from '../public'
 import { PubKeys } from '../public'
 import type { WindowParams } from '../types'
+
+import Config from '/mods/data/config/main'
+import { Files } from '/mods/files/main'
 
 export * from '../enums'
 export type * from '../types'
@@ -207,13 +208,13 @@ class Windows {
 
   /** Инициализация объектов окон программы */
   private initWindows() {
-    loadingWindow.register(this)
-    mainWindow.register(this)
-    mainWindow.register(this)
-    settingsWindow.register(this)
-    setupWindow.register(this)
-    updateWindow.register(this)
-    whatsNewWindow.register(this)
+    LoadingWindow.register(this)
+    MainWindow.register(this)
+    MainWindow.register(this)
+    SettingsWindow.register(this)
+    SetupWindow.register(this)
+    UpdateWindow.register(this)
+    WhatsNewWindow.register(this)
   }
 
   /** Инициализация публичных объектов/методов */

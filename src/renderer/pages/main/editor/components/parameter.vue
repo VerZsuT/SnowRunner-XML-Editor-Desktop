@@ -8,7 +8,18 @@
       :target="contextTarget"
     />
     <div class="label">
-      <Text>{{ label }}</Text>
+      <Popover
+        v-if="desc && Config.ref.lang !== Lang.ch"
+        placement="topLeft"
+      >
+        <template #content>
+          <Text>{{ desc }}</Text>
+        </template>
+        <Text>{{ label }}</Text>
+      </Popover>
+      <Text v-else>
+        {{ label }}
+      </Text>
     </div>
     <div
       v-if="isActive"
@@ -23,8 +34,8 @@
 </template>
 
 <script lang='ts' setup>
-import { Typography } from 'ant-design-vue'
-import { ref } from 'vue'
+import { Popover, Typography } from 'ant-design-vue'
+import { ref, toRefs } from 'vue'
 
 import { useEditorStore } from '../../store'
 import texts from '../texts'
@@ -33,7 +44,7 @@ import { ExportUtils, ImportUtils, ResetUtils } from '../utils'
 import { injectFile } from '../utils/import'
 import { useActive } from './utils'
 
-import type { IExportedData } from '/mods/renderer'
+import { Config, Lang, type IExportedData } from '/mods/renderer'
 import { ContextMenu } from '/rend/components'
 import type { EmitsToProps } from '/rend/types'
 import { isNullable, isString } from '/utils/renderer'
@@ -52,7 +63,8 @@ defineSlots<{
 const { info } = useEditorStore()
 const file = injectFile()
 
-const { label, utils } = props
+const { utils } = props
+const { label } = toRefs(props)
 const { isActive } = useActive()
 
 const getValue = props.getter ?? utils.get
@@ -87,7 +99,7 @@ ExportUtils.onExport(data => {
 const contextTarget = ref<HTMLDivElement | null>(null)
 const contextItems = [{
   key: 'reset-param',
-  label: `${texts.resetMenuItemLabel} ${label}`,
+  label: `${texts.resetMenuItemLabel} ${label.value}`,
   onClick: resetValue
 }]
 
@@ -117,6 +129,11 @@ function getExportedValue(data: IExportedData['data']): string | number | undefi
 </script>
 
 <style lang='scss' scoped>
+.desc-image img {
+  max-width: 600px;
+  max-height: 500px;
+}
+
 .parameter {
   flex-wrap: nowrap;
   box-sizing: border-box;

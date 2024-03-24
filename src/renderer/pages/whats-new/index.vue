@@ -1,44 +1,8 @@
 <template>
   <div class="container">
     <VersionInfo
-      version="0.8.9"
-      :changes="v089.desc"
-    />
-    <VersionInfo
-      version="0.8.8"
-      :changes="v088.desc"
-    />
-    <VersionInfo
-      version="0.8.7"
-      :changes="v087.desc"
-    />
-    <VersionInfo
-      version="0.8.6"
-      :changes="v086.desc"
-    />
-    <VersionInfo
-      version="0.8.5"
-      :changes="v085.desc"
-    />
-    <VersionInfo
-      version="0.8.4"
-      :changes="v084.desc"
-    />
-    <VersionInfo
-      version="0.8.3"
-      :changes="v083.desc"
-    />
-    <VersionInfo
-      version="0.8.2"
-      :changes="v082.desc"
-    />
-    <VersionInfo
-      version="0.8.1"
-      :changes="v081.desc"
-    />
-    <VersionInfo
-      version="0.8.0"
-      :changes="v080.desc"
+      version="1.0.0"
+      :changes="v100.get()"
     />
   </div>
 </template>
@@ -46,301 +10,53 @@
 <script lang='ts' setup>
 import VersionInfo from './version-info.vue'
 
-import { Lang, ProgramWindow } from '/mods/renderer'
+import { ProgramWindow } from '/mods/renderer'
 import { useWindowReady } from '/rend/utils'
-import { localize } from '/utils/texts/renderer'
+import { Localization } from '/utils/texts/renderer'
 
 useWindowReady(ProgramWindow.whatsNew)
 
-const v089 = localize({
-  desc: {
-    [Lang.ru]: [
-      'Исправлена работа добавления кранов автомобилю',
-      'Добавлена возможность поддержки проекта (Помощь - Поддержать)',
-      'Улучшена работа "содержимого аддонов"',
-      'Исправлен перевод'
-    ],
-    [Lang.en]: [
-      'Fixed the operation of adding cranes to the car',
-      'Added the ability to support the project (Help - Support)',
-      'Improved the operation of the "addons content"',
-      'Fixed translation'
-    ],
-    [Lang.de]: [
-      'Das Hinzufügen von Kränen zum Auto wurde behoben',
-      'Es wurde die Möglichkeit hinzugefügt, das Projekt zu unterstützen (Hilfe - Unterstützung)',
-      'Die Funktionsweise von "Add-On-Inhalten" wurde verbessert',
-      'Übersetzung korrigiert'
-    ],
-    [Lang.ch]: [
-      '修正了在车上添加起重机的操作',
-      '增加了支持项目的能力（帮助-支持）',
-      '改进了"插件内容"的操作',
-      '固定翻译'
-    ]
-  }
-})
-
-const v088 = localize({
-  desc: {
-    [Lang.ru]: [
-      'Исправлена ошибка с содержимым аддонов',
-      'Исправлена ошибка при восстановлении параметров прицепов',
-      'Добавлена минимальная ширина у выбора аддона'
-    ],
-    [Lang.en]: [
-      'Fixed a bug with the content of addons',
-      'Fixed a bug when restoring trailer parameters',
-      'Added a minimum width for the addon selection'
-    ],
-    [Lang.de]: [
-      'Ein Fehler mit dem Inhalt der Addons wurde behoben',
-      'Ein Fehler beim Wiederherstellen von Anhängereinstellungen wurde behoben',
-      'Die minimale Breite der Addon-Auswahl wurde hinzugefügt'
-    ],
-    [Lang.ch]: [
-      '修正了插件内容的错误',
-      '修复了恢复拖车参数时的错误',
-      '为插件选择添加了最小宽度'
-    ]
-  }
-})
-
-const v087 = localize({
-  desc: {
-    [Lang.ru]: [
-      'Исправлен баг с отзывчивостью двигателя',
-      'Исправлено определение модовых прицепов',
-      'Добавлена возможность поддержки проекта (Помощь - Поддержать)'
-    ],
-    [Lang.en]: [
-      'Fixed a bug with engine responsiveness',
-      'Fixed the definition of mod trailers',
-      'Added the ability to support the project (Help - Support)'
-    ],
-    [Lang.de]: [
-      'Ein Fehler mit der Reaktionsfähigkeit des Motors wurde behoben',
-      'Die Definition von Mod-Anhängern wurde korrigiert',
-      'Es wurde die Möglichkeit hinzugefügt, das Projekt zu unterstützen (Hilfe - Unterstützung)'
-    ],
-    [Lang.ch]: [
-      '修正了引擎响应的错误',
-      '修正了mod拖车的定义',
-      '增加了支持项目的能力（帮助-支持）'
-    ]
-  }
-})
-
-const v086 = localize({
-  desc: {
-    [Lang.ru]: [
-      'Исправлено ограничение высоты и минимальной высоты подвески',
-      'Исправлено дублирование ошибки сети',
-      'Исправлен показ контекстного меню в таблице',
-      'Исправлен баг при выборе initial.pak',
-      'Оптимизация таблицы',
-      'Добавлено автоматическое открытие установщика обновления'
-    ],
-    [Lang.en]: [
-      'Fixed height restriction and minimum suspension height',
-      'Fixed duplicate network error',
-      'Fixed the display of the context menu in the table',
-      'Fixed a bug when selecting initial.pak',
-      'Table optimization',
-      'Added automatic opening of the update installer'
-    ],
-    [Lang.de]: [
-      'Höhenbegrenzung und minimale Aufhängungshöhe wurden korrigiert',
-      'Doppelte Netzwerkfehler behoben',
-      'Die Anzeige des Kontextmenüs in der Tabelle wurde korrigiert',
-      'Ein Fehler wurde bei der Auswahl von initial behoben.pak',
-      'Tabellenoptimierung',
-      'Das automatische Öffnen des Update-Installationsprogramms wurde hinzugefügt'
-    ],
-    [Lang.ch]: [
-      '固定高度限制和最小悬挂高度',
-      '修正重复网络错误',
-      '修正了上下文菜单在表格中的显示',
-      '修正了选择初始时的错误.朴',
-      '表优化',
-      '新增自动开启更新安装程式'
-    ]
-  }
-})
-
-const v085 = localize({
-  desc: {
-    [Lang.ru]: [
-      'Исправлена неправильная работа ограничителей значений',
-      'Исправлен вылет при отсутствии интернет соединения'
-    ],
-    [Lang.en]: [
-      'Fixed incorrect operation of value limiters',
-      'Fixed crash when there is no internet connection'
-    ],
-    [Lang.de]: [
-      'Fehlerhafte Funktion der Wertbegrenzer wurde behoben',
-      'Absturz bei fehlender Internetverbindung behoben'
-    ],
-    [Lang.ch]: [
-      '数值限制器的错误操作已被修复',
-      '固定崩溃时，没有互联网连接'
-    ]
-  }
-})
-
-const v084 = localize({
-  desc: {
-    [Lang.ru]: [
-      'Исправлен баг с отсутствием некоторых двигателей',
-      'Оптимизирован список'
-    ],
-    [Lang.en]: [
-      'Fixed a bug with missing some engines',
-      'The list has been optimized'
-    ],
-    [Lang.de]: [
-      'Fehler behoben, bei dem einige Motoren fehlten',
-      'Liste wurde optimiert'
-    ],
-    [Lang.ch]: [
-      '修正了一个缺少一些引擎的错误',
-      '列表已优化'
-    ]
-  }
-})
-
-const v083 = localize({
-  desc: {
-    [Lang.ru]: [
-      'Исправлен баг с редактированием параметров на выбор',
-      'Исправлен текст при скачивании обновления'
-    ],
-    [Lang.en]: [
-      'Fixed a bug with editing the parameters to choose from',
-      'The text was corrected when downloading the update'
-    ],
-    [Lang.de]: [
-      'Fehler beim Bearbeiten von Optionen zur Auswahl behoben',
-      'Text beim Herunterladen des Updates wurde korrigiert'
-    ],
-    [Lang.ch]: [
-      '修正了编辑可供选择的参数的错误',
-      '下载更新时已更正文本'
-    ]
-  }
-})
-
-const v082 = localize({
-  desc: {
-    [Lang.ru]: ['Исправлен баг при котором нельзя было редактировать колёса из DLC'],
-    [Lang.en]: ['Fixed a bug where it was impossible to edit the wheels from the DLC'],
-    [Lang.de]: ['Es wurde ein Fehler behoben, bei dem Räder aus dem DLC nicht bearbeitet werden konnten'],
-    [Lang.ch]: ['修正了一个无法从DLC中编辑轮子的错误']
-  }
-})
-
-const v081 = localize({
-  desc: {
-    [Lang.ru]: [
-      'Исправлен баг с редактированием некоторых дробных параметров',
-      'Исправлен баг с параметром "Точная регулировка"'
-    ],
-    [Lang.en]: [
-      'Fixed a bug with editing some Float parameters',
-      'Fixed a bug with the "Precise adjustment" parameter'
-    ],
-    [Lang.de]: [
-      'Fehler beim Bearbeiten einiger Fraktionsparameter behoben',
-      'Fehler mit der Option "Feinabstimmung" behoben'
-    ],
-    [Lang.ch]: [
-      '修正了编辑一些分数参数的错误',
-      '修复了"精细调整"参数的错误'
-    ]
-  }
-})
-
-const v080 = localize({
-  desc: {
-    [Lang.ru]: [
-      'Переход с React на Vue.',
-      'Переход с Webpack на Vite.',
-      'Код переписан на асинхронный и более стабильный.',
-      'Улучшена система обработки шаблонов _templates.',
-      'Обновление программы стало более простое и менее подвержено ошибкам.',
-      'Обновлены стандартные параметры автомобилей.',
-      'К сожалению больше нет поддержки Windows 7, 8/8.1.',
-      'Любые ошибки теперь показываются пользователю.',
-      'Изменение настроек больше не требует перезагрузки программы.',
-      'Дополнительные параметры перенесены в саму таблицу.',
-      'Добавлена поддержка регионов CAS и NE у авто.',
-      'Добавлена возможность сохранять параметры несколькольких авто в одном файле.',
-      'Добавлена возможность выбора нескольких регионов.',
-      'Добавлена возможность импорта/сброса в списке.',
-      'Исправлена работа восстановления после обновления игры.',
-      'Исправлен баг с флагом "только для чтения" у initial.pak.',
-      'Исправлен "белый окран" таблицы при ошибке чтения файла.'
-    ],
-    [Lang.en]: [
-      'Switching from React to Vue.',
-      'Switching from Webpack to Vite.',
-      'The code has been rewritten to asynchronous and more stable.',
-      'The _templates template processing system has been improved.',
-      'The program update has become simpler and less error-prone.',
-      'Standard car parameters have been updated.',
-      'Unfortunately there is no longer support for Windows 7, 8/8.1.',
-      'Any errors are now shown to the user.',
-      'Changing the settings no longer requires restarting the program.',
-      'Additional parameters have been moved to the table itself.',
-      'Added support for the CAS and NE regions for cars.',
-      'Added the ability to save the parameters of several cars in one file.',
-      'Added the ability to select multiple regions.',
-      'Added the ability to import/reset in the list.',
-      'Fixed the recovery operation after updating the game.',
-      'Fixed a bug with the "read-only" flag in initial.pak.',
-      'Fixed the "white screen" of the table when reading a file error.'
-    ],
-    [Lang.de]: [
-      'Wechsel von React zu Vue.',
-      'Wechsel von Webpack zu Vite.',
-      'Der Code wurde in asynchronen und stabileren Code umgeschrieben.',
-      'Das System zur Verarbeitung von _templates-Vorlagen wurde verbessert.',
-      'Die Aktualisierung des Programms ist einfacher und weniger fehleranfällig geworden.',
-      'Die Standardeinstellungen der Fahrzeuge wurden aktualisiert.',
-      'Leider gibt es keine Unterstützung für Windows 7, 8/8.1 mehr.',
-      'Alle Fehler werden jetzt dem Benutzer angezeigt.',
-      'Das Ändern der Einstellungen erfordert keinen Neustart des Programms mehr.',
-      'Zusätzliche Parameter wurden in die Tabelle selbst übertragen.',
-      'Unterstützung für CAS- und NE-Regionen bei Auto hinzugefügt.',
-      'Es wurde die Möglichkeit hinzugefügt, mehrere Autoeinstellungen in einer Datei zu speichern.',
-      'Es wurde die Möglichkeit hinzugefügt, mehrere Regionen auszuwählen.',
-      'Option zum Importieren/Zurücksetzen in der Liste hinzugefügt.',
-      'Die Wiederherstellung nach dem Update des Spiels wurde behoben.',
-      'Ein Fehler mit dem Flag "schreibgeschützt" bei initial wurde behoben.pak.',
-      'Der weiße Bildschirm der Tabelle wurde behoben, wenn die Datei nicht gelesen wurde.'
-    ],
-    [Lang.ch]: [
-      '从React切换到Vue。',
-      '从Webpack切换到Vite。',
-      '代码已被重写为异步和更稳定。',
-      '改进了_templates模板处理系统。',
-      '程序更新变得更简单，更不容易出错。',
-      '标准汽车参数已更新。',
-      '不幸的是不再支持Windows7, 8/8.1。',
-      '任何错误现在都显示给用户。',
-      '更改设置不再需要重新启动程序。',
-      '其他参数已移动到表本身。',
-      '增加了对汽车的CAS和NE区域的支持。',
-      '增加了将几辆车的参数保存在一个文件中的功能。',
-      '增加了选择多个地区的能力。',
-      '增加了在列表中导入/重置的功能。',
-      '修复了更新游戏后的恢复操作。',
-      '修复了初始"只读"标志的错误。帕克。',
-      '修复了读取文件错误时表格的"白屏"。'
-    ]
-  }
-})
+const v100 = new Localization<string[]>()
+  .ru([
+    'Исправлен "CH" перевод',
+    'Исправлена обработка некоторых уникальных авто',
+    'Исправлено неправильное определение модов при одинаковом "modio.json" файле',
+    'Обновлены стандартные параметры',
+    'Добавлены текстовые описания параметров при наведении на название',
+    'Добавлен центр масс прицепов',
+    'Добавлена возможность открытия файлов сторонним редактором, используемых открытым авто (в расширенном режиме)',
+    'Добавлен возврат состояния списка к тому что был до открытия таблицы'
+  ])
+  .en([
+    'Fixed the "CH" translation',
+    'Fixed the processing of some unique cars',
+    'Fixed incorrect definition of mods with the same "modio.json" file',
+    'Standard parameters have been updated',
+    'Added text descriptions of parameters when hovering over the name',
+    'Added the center of mass of trailers',
+    'Added the ability to open files with a third-party editor used by an open auto (in advanced mode)',
+    'Added a return of the list state to what it was before opening the table'
+  ])
+  .de([
+    'Korrigiert "CH" Übersetzung',
+    'Die Handhabung einiger einzigartiger Autos wurde behoben',
+    'Es wurde eine falsche Definition von Mods bei demselben "modio" behoben.json" Datei',
+    'Die Standardeinstellungen wurden aktualisiert',
+    'Es wurden Textbeschreibungen für Parameter hinzugefügt, wenn Sie über den Titel schweben',
+    'Das Massenzentrum der Anhänger wurde hinzugefügt',
+    'Es wurde die Möglichkeit hinzugefügt, Dateien mit einem Drittanbieter-Editor zu öffnen, der von geöffnetem Auto (im erweiterten Modus) verwendet wird',
+    'Hinzugefügt, um den Status der Liste zu dem zurückzugeben, was vor dem Öffnen der Tabelle war'
+  ])
+  .ch([
+    '修正了"CH"翻译',
+    '修正了一些独特的汽车的加工',
+    '修正了mods的不正确定义与相同的"modio。json"文件',
+    '标准参数已更新',
+    '将鼠标悬停在名称上时添加了参数的文本描述',
+    '增加了拖车的质心',
+    '添加了使用open auto使用的第三方编辑器打开文件的功能（在高级模式下）',
+    '添加了列表状态的返回到打开表之前的状态'
+  ])
 </script>
 
 <style lang='scss'>

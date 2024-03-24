@@ -7,11 +7,27 @@
       icon="texts"
     >
       <Text
+        v-if="xml.GameData.UiDesc.DefaultRegion"
         :label="texts.uiName"
+        :desc="xml.GameData.UiDesc.DefaultRegion.UiNameDesc"
+        :utils="xml.GameData.UiDesc.DefaultRegion.$UiName"
+      />
+      <Text
+        v-else
+        :label="texts.uiName"
+        :desc="xml.GameData.UiDesc.UiNameDesc"
         :utils="xml.GameData.UiDesc.$UiName"
       />
       <Text
+        v-if="xml.GameData.UiDesc.DefaultRegion"
         :label="texts.uiDesc"
+        :desc="xml.GameData.UiDesc.DefaultRegion.UiDescDesc"
+        :utils="xml.GameData.UiDesc.DefaultRegion.$UiDesc"
+      />
+      <Text
+        v-else
+        :label="texts.uiDesc"
+        :desc="xml.GameData.UiDesc.UiDescDesc"
         :utils="xml.GameData.UiDesc.$UiDesc"
       />
     </Group>
@@ -23,16 +39,19 @@
       >
         <Float
           :label="texts.responsiveness"
+          :desc="xml.TruckData.ResponsivenessDesc"
           :utils="xml.TruckData.$Responsiveness"
           :step="0.01"
         />
         <Float
           :label="texts.backSteerSpeed"
+          :desc="xml.TruckData.BackSteerSpeedDesc"
           :utils="xml.TruckData.$BackSteerSpeed"
           :step="0.01"
         />
         <Float
           :label="texts.steerSpeed"
+          :desc="xml.TruckData.SteerSpeedDesc"
           :utils="xml.TruckData.$SteerSpeed"
           :step="0.01"
         />
@@ -45,6 +64,7 @@
         <template v-if="xml.TruckData.Winch">
           <Float
             :label="texts.winchLength"
+            :desc="xml.TruckData.Winch.LengthDesc"
             :utils="xml.TruckData.Winch.$Length"
             :step="1.0"
           />
@@ -80,6 +100,7 @@
                 >
                   <Select
                     :label="texts.torque"
+                    :desc="Wheel.TorqueDesc"
                     :utils="Wheel.$Torque"
                     :options="[
                       [WheelTorque.default, texts.torqueDefault],
@@ -90,6 +111,7 @@
                   />
                   <Float
                     :label="texts.steeringAngle"
+                    :desc="Wheel.SteeringAngleDesc"
                     :utils="Wheel.$SteeringAngle"
                     :step="1.0"
                   />
@@ -103,6 +125,7 @@
                 >
                   <Select
                     :label="texts.torque"
+                    :desc="ExtraWheel.TorqueDesc"
                     :utils="ExtraWheel.$Torque"
                     :options="[
                       [WheelTorque.default, texts.torqueDefault],
@@ -113,6 +136,7 @@
                   />
                   <Float
                     :label="texts.steeringAngle"
+                    :desc="ExtraWheel.SteeringAngleDesc"
                     :utils="ExtraWheel.$SteeringAngle"
                     :step="1.0"
                   />
@@ -195,10 +219,12 @@
       >
         <Float
           :label="texts.engineStartDelay"
+          :desc="xml.TruckData.EngineStartDelayDesc"
           :utils="xml.TruckData.$EngineStartDelay"
         />
         <Float
           :label="texts.exhaustStartTime"
+          :desc="xml.TruckData.ExhaustStartTimeDesc"
           :utils="xml.TruckData.$ExhaustStartTime"
         />
         <Engines
@@ -217,6 +243,7 @@
       >
         <Int
           :label="texts.damageCapacity"
+          :desc="xml.TruckData.FuelTank.DamageCapacityDesc"
           :utils="xml.TruckData.FuelTank.$DamageCapacity"
           :step="10"
           :areas="{
@@ -226,6 +253,7 @@
         />
         <Int
           :label="texts.fuelCapacity"
+          :desc="xml.TruckData.FuelCapacityDesc"
           :utils="xml.TruckData.$FuelCapacity"
           :step="10"
           :areas="{
@@ -245,6 +273,7 @@
         multiple
         empty-is-all
         :label="texts.country"
+        :desc="xml.GameData.CountryDesc"
         :utils="xml.GameData.$Country"
         :options="[
           [Country.ru, texts.russia],
@@ -255,10 +284,12 @@
       />
       <Int
         :label="texts.price"
+        :desc="xml.GameData.PriceDesc"
         :utils="xml.GameData.$Price"
       />
       <Select
         :label="texts.byExploration"
+        :desc="xml.GameData.UnlockByExplorationDesc"
         :utils="xml.GameData.$UnlockByExploration"
         :options="[
           [true, texts.findOnMap],
@@ -267,6 +298,7 @@
       />
       <Int
         :label="texts.unlockByRank"
+        :desc="xml.GameData.UnlockByRankDesc"
         :utils="xml.GameData.$UnlockByRank"
       />
     </Group>

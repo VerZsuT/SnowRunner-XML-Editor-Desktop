@@ -49,8 +49,8 @@ export function useFilesReady(emit: EmitFn, dynamic = false) {
   })
 
   return {
-    ready: (type: string) => ready.add(type),
-    inProgress: (type: string) => inProgress.add(type)
+    ready: (type: string) => { ready.add(type) },
+    inProgress: (type: string) => { inProgress.add(type) }
   }
 }
 

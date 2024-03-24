@@ -7,6 +7,7 @@
       <template v-if="xml.TruckData">
         <Int
           :label="texts.fuelCapacity"
+          :desc="xml.TruckData.FuelCapacityDesc"
           :utils="xml.TruckData.$FuelCapacity"
           :step="10"
           :areas="{
@@ -16,6 +17,7 @@
         />
         <Int
           :label="texts.waterCapacity"
+          :desc="xml.TruckData.WaterCapacityDesc"
           :utils="xml.TruckData.$WaterCapacity"
           :step="10"
           :areas="{
@@ -25,6 +27,7 @@
         />
         <Int
           :label="texts.repairsCapacity"
+          :desc="xml.TruckData.RepairsCapacityDesc"
           :utils="xml.TruckData.$RepairsCapacity"
           :step="10"
           :areas="{
@@ -33,7 +36,8 @@
           }"
         />
         <Int
-          :label="texts.wheepRepairsCapacity"
+          :label="texts.wheelRepairsCapacity"
+          :desc="xml.TruckData.WheelRepairsCapacityDesc"
           :utils="xml.TruckData.$WheelRepairsCapacity"
           :step="10"
           :areas="{
@@ -44,6 +48,7 @@
         <Int
           v-if="xml.GameData?.AddonSlots"
           :label="texts.quantity"
+          :desc="xml.GameData.AddonSlots.QuantityDesc"
           :utils="xml.GameData.AddonSlots.$Quantity"
         />
       </template>
@@ -61,10 +66,12 @@
             >
               <Float
                 :label="texts.suspHeight"
+                :desc="Wheel.SuspensionHeightDesc"
                 :utils="Wheel.$SuspensionHeight"
               />
               <Float
                 :label="texts.suspStrength"
+                :desc="Wheel.SuspensionStrengthDesc"
                 :utils="Wheel.$SuspensionStrength"
               />
             </Group>
@@ -76,6 +83,11 @@
       key="mass"
       :label="texts.mass"
     >
+      <Coords
+        v-if="xml.PhysicsModel?.Body"
+        :label="texts.centerOfMass"
+        :utils="xml.PhysicsModel.Body.$CenterOfMassOffset"
+      />
       <Int
         v-if="xml.PhysicsModel?.Body"
         :label="texts.trailerMass"
@@ -94,6 +106,7 @@
     >
       <Int
         :label="texts.price"
+        :desc="xml.GameData.PriceDesc"
         :utils="xml.GameData.$Price"
       />
     </Group>
@@ -103,6 +116,7 @@
 <script lang='ts' setup>
 import { SaveUtils } from '../../../utils'
 import Accordion from '../../accordion.vue'
+import Coords from '../../coords'
 import Group from '../../group'
 import { Float, Int } from '../../input'
 import type { ReadyEmits, ReadyProps } from '../../utils'

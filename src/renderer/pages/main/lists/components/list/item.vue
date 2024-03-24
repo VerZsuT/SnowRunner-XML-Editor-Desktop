@@ -1,6 +1,7 @@
 <template>
   <div
     v-show="isShow"
+    ref="container"
     class="card-container"
   >
     <Card
@@ -41,7 +42,7 @@
 import { StarFilled } from '@ant-design/icons-vue'
 import { Card } from 'ant-design-vue'
 import memoizee from 'memoizee'
-import { computed, ref, shallowRef, toRefs, watchEffect } from 'vue'
+import { computed, onMounted, ref, shallowRef, toRefs, watchEffect } from 'vue'
 
 import type { Category } from '../../../enums'
 import { Page } from '../../../enums'
@@ -62,14 +63,20 @@ export type ListItemProps = {
 const props = defineProps<ListItemProps>()
 
 const { file, category } = toRefs(props)
-const { setFile } = useEditorStore()
+const { setFile, file: prevFile } = useEditorStore()
 const { route } = usePageStore()
 const { toggleFavorite, filter } = useListStore()
 
 const contextTarget = shallowRef<HTMLImageElement | null>(null)
+const container = ref<HTMLDivElement | null>(null)
 const xml = shallowRef<TruckXML | null>(null)
 const imgSRC = ref<string | null>(null)
 const name = ref<string>('')
+
+onMounted(() => {
+  if (!container.value || !prevFile.value || !isShow.value || prevFile.value.path !== file.value.path) return
+  container.value.scrollIntoView(false)
+})
 
 watchEffect(async () => {
   const xmlRes = await TruckXML.from(file.value)

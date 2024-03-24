@@ -1,6 +1,6 @@
 import type CP from 'node:child_process'
 import type FS from 'node:fs'
-import type { WatchEventType } from 'node:fs'
+import type { WatchListener } from 'node:fs'
 import type FSP from 'node:fs/promises'
 import type PATH from 'node:path'
 
@@ -286,8 +286,8 @@ export class File extends FSEntry {
   }
 
   /** Отслеживает изменения файла */
-  watch(listener: (event: WatchEventType) => void) {
-    watch(this.path, { persistent: false }, listener)
+  watch(listener: WatchListener<string>) {
+    return watch(this.path, { persistent: false }, listener)
   }
 
   /** Исполняет файл */

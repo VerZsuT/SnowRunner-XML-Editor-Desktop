@@ -4,10 +4,20 @@ import { computed, reactive, ref, shallowRef } from 'vue'
 import type { File, FileInfo } from '/mods/renderer'
 
 const useStore = defineStore('editor', () => {
-  const file = shallowRef<File | undefined>()
   const editedAction = ref(EditedAction.markAsEdited)
   const showMessages = ref(true)
+  const isSaving = ref(false)
+  
+  const file = shallowRef<File | undefined>()
   const info = reactive<FileInfo>({})
+  const allFiles = reactive({
+    main: null as null | File,
+    engines: [] as File[],
+    winches: [] as File[],
+    suspensions: [] as File[],
+    gearboxes: [] as File[],
+    wheels: [] as File[]
+  })
 
   return {
     /** Изменить текущий файл */
@@ -26,14 +36,22 @@ const useStore = defineStore('editor', () => {
     setInfo(value: Partial<FileInfo>) {
       Object.assign(info, value)
     },
+    /** Изменить состояние "сохранение" */
+    setIsSaving(value: boolean) {
+      isSaving.value = value
+    },
     /** Текущий файл */
     file,
+    /** Информация о файле */
+    info,
+    /** Все файлы */
+    allFiles,
     /** Действие с маркировкой "изменённый" */
     editedAction,
     /** Показ сообщений */
     showMessages,
-    /** Информация о файле */
-    info
+    /** Состояние "сохранение" */
+    isSaving
   }
 })
 
@@ -48,7 +66,9 @@ export function useEditorStore() {
     /** Текущее действие с маркировкой "изменённый" */
     editedAction: computed(() => store.editedAction),
     /** Показывать ли сообщения */
-    showMessages: computed(() => store.showMessages)
+    showMessages: computed(() => store.showMessages),
+    /** Состояние "сохранение" */
+    isSaving: computed(() => store.isSaving)
   }
 }
 

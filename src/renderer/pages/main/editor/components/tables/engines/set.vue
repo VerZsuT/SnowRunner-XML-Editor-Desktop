@@ -7,11 +7,13 @@
     >
       <Float
         :label="texts.criticalDamageThreshold"
+        :desc="Engine.CriticalDamageThresholdDesc"
         :utils="Engine.$CriticalDamageThreshold"
         :step="0.01"
       />
       <Int
         :label="texts.damageCapacity"
+        :desc="Engine.DamageCapacityDesc"
         :utils="Engine.$DamageCapacity"
         :step="10"
         :areas="{
@@ -21,10 +23,12 @@
       />
       <Float
         :label="texts.damagedConsumptionModifier"
+        :desc="Engine.DamagedConsumptionModifierDesc"
         :utils="Engine.$DamagedConsumptionModifier"
       />
       <Float
         :label="texts.responsiveness"
+        :desc="Engine.EngineResponsivenessDesc"
         :utils="Engine.$EngineResponsiveness"
         :step="0.01"
         :areas="{
@@ -34,10 +38,12 @@
       />
       <Float
         :label="texts.fuelConsumption"
+        :desc="Engine.FuelConsumptionDesc"
         :utils="Engine.$FuelConsumption"
       />
       <Int
         :label="texts.torque"
+        :desc="Engine.TorqueDesc"
         :utils="Engine.$Torque"
         :step="100"
         :areas="{
@@ -47,20 +53,24 @@
       />
       <Float
         :label="texts.damagedMinTorqueModifier"
+        :desc="Engine.DamagedMinTorqueMultiplierDesc"
         :utils="Engine.$DamagedMinTorqueMultiplier"
         :step="0.01"
       />
       <Float
         :label="texts.damagedMaxTorqueModifier"
+        :desc="Engine.DamagedMaxTorqueMultiplierDesc"
         :utils="Engine.$DamagedMaxTorqueMultiplier"
         :step="0.01"
       />
       <Float
         :label="texts.brakesDelay"
+        :desc="Engine.BrakesDelayDesc"
         :utils="Engine.$BrakesDelay"
       />
       <Float
         :label="texts.maxDeltaAngVel"
+        :desc="Engine.MaxDeltaAngVelDesc"
         :utils="Engine.$MaxDeltaAngVel"
       />
       <template #groups>

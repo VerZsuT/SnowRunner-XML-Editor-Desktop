@@ -2,7 +2,7 @@
   <Group
     v-if="isActive"
     key="trailers"
-    :label="Action.name.value"
+    :label="Action.name"
     :icon="Action.icon"
   >
     <div class="grid trailers-grid">

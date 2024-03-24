@@ -5,25 +5,23 @@
     @back="route(Page.lists)"
   >
     <template #extra>
-      <Dropdown
-        class="menu-button"
-        trigger="click"
-      >
-        <MenuOutlined style="font-size: 25px" />
+      <Dropdown trigger="click">
+        <MenuOutlined class="menu-button" />
         <template #overlay>
           <Menu mode="vertical">
             <Menu.Item @click="onReset">
               <Text>{{ texts.resetMenuItemLabel }}</Text>
-              <UndoOutlined class="item-icon" />
+              <UndoOutlined class="menu-item-icon" />
             </Menu.Item>
             <Menu.Item @click="exportFile()">
               <Text>{{ texts.export }}</Text>
-              <ExportOutlined class="item-icon" />
+              <ExportOutlined class="menu-item-icon" />
             </Menu.Item>
             <Menu.Item @click="importFile()">
               <Text>{{ texts.import }}</Text>
-              <ImportOutlined class="item-icon" />
+              <ImportOutlined class="menu-item-icon" />
             </Menu.Item>
+            <FilesMenu v-if="Config.ref.advancedMode" />
           </Menu>
         </template>
       </Dropdown>
@@ -33,7 +31,7 @@
       >
         <Button
           id="save"
-          class="save-button"
+          class="menu-save-button"
           type="text"
           shape="circle"
           @click="onSave()"
@@ -51,15 +49,17 @@
 import { ExportOutlined, ImportOutlined, MenuOutlined, SaveOutlined, UndoOutlined } from '@ant-design/icons-vue'
 import { Button, Dropdown, Menu, Modal, Tooltip, Typography } from 'ant-design-vue'
 
-import { Page } from '../../enums'
-import { EditedAction, useEditorStore, usePageStore } from '../../store'
-import texts from '../texts'
-import { ExportUtils, ImportUtils, ResetUtils, SaveUtils } from '../utils'
+import { Page } from '../../../enums'
+import { EditedAction, useEditorStore, usePageStore } from '../../../store'
+import texts from '../../texts'
+import { ExportUtils, ImportUtils, ResetUtils, SaveUtils } from '../../utils'
 
 import type { TruckXML } from '/mods/renderer'
-import { Archive, Edited, File, GameTexts, Messages, Mods, TruckFileType } from '/mods/renderer'
+import { Archive, Config, Edited, File, GameTexts, Messages, Mods, TruckFileType } from '/mods/renderer'
 import { Header } from '/rend/components'
 import { lastItem, prettyString } from '/utils/renderer'
+
+import FilesMenu from '../files-menu'
 
 const { Text } = Typography
 
@@ -71,7 +71,7 @@ export type MainHeaderProps = {
 const { xml, file } = defineProps<MainHeaderProps>()
 
 const { route } = usePageStore()
-const { editedAction, showMessages, setEditedAction, info } = useEditorStore()
+const { editedAction, showMessages, setEditedAction, info, setIsSaving } = useEditorStore()
 
 defineExpose({
   save: onSave,
@@ -88,14 +88,17 @@ async function onSave(updateFiles = true) {
     ? Messages.loading(texts.savingMessage)
     : () => {}
 
+  setIsSaving(true)
+
   try {
     await save(updateFiles)
     success(texts.successSaveFiles)
   }
-  catch (error) {
-    Messages.error(String(error))
+  catch (error: any) {
+    Messages.error(error)
   }
 
+  setIsSaving(false)
   hideLoading()
 }
 
@@ -123,7 +126,7 @@ async function save(updateFiles = true) {
 
 function getMainTitle(): string {
   if (xml.GameData?.UiDesc) {
-    const text = xml.GameData.UiDesc.UiName
+    const text = xml.GameData.UiDesc.UiName ?? xml.GameData.UiDesc.DefaultRegion?.UiName
     return GameTexts.get(text, Mods.getModID(file)) ?? text ?? 'TITLE_ERROR'
   }
 
@@ -136,8 +139,8 @@ async function importFile(toImport?: File) {
     await ImportUtils.importFile(file, toImport)
     success(texts.wasImported)
   }
-  catch (error) {
-    Messages.error(String(error))
+  catch (error: any) {
+    Messages.error(error)
   }
 }
 
@@ -146,8 +149,8 @@ async function exportFile(toExport?: File) {
     await ExportUtils.exportFile(file, toExport)
     success(texts.wasExported)
   }
-  catch (error) {
-    Messages.error(String(error))
+  catch (error: any) {
+    Messages.error(error)
   }
 }
 
@@ -159,8 +162,8 @@ async function reset() {
       Messages.success(texts.successReset)
     }
   }
-  catch (error) {
-    Messages.error(String(error))
+  catch (error: any) {
+    Messages.error(error)
   }
 }
 
@@ -180,21 +183,3 @@ function onReset() {
   })
 }
 </script>
-
-<style lang='scss' scoped>
-.item-icon {
-  float: right;
-  margin-left: 10px;
-  margin-top: 5px;
-}
-.save-button {
-  margin-right: 20px;
-  margin-bottom: 5px;
-}
-
-.save-button > span,
-.menu-button {
-  color: white;
-  font-size: 25px !important;
-}
-</style>

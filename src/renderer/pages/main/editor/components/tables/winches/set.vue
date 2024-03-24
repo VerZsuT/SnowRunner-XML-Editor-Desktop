@@ -7,6 +7,7 @@
     >
       <Int
         :label="texts.length"
+        :desc="Winch.LengthDesc"
         :utils="Winch.$Length"
         :areas="{
           yellow: [30, 50],
@@ -23,6 +24,7 @@
       />
       <Select
         :label="texts.isEngineIgnitionRequired"
+        :desc="Winch.IsEngineIgnitionRequiredDesc"
         :utils="Winch.$IsEngineIgnitionRequired"
         :options="[
           [true, texts.engine],

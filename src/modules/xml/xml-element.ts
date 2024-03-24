@@ -4,6 +4,8 @@ import { load } from 'cheerio'
 import { File } from '/mods/files/renderer'
 import { hasItems, isString } from '/utils/checks/renderer'
 
+import xmlFormat from 'xml-formatter'
+
 /** Объект DOM элемента */
 export default class XMLElement {
   /** Является ли аргумент `XMLElement` */
@@ -17,7 +19,7 @@ export default class XMLElement {
   static async from(file: File): Promise<XMLElement | undefined>
   static async from(source: File | string): Promise<XMLElement | undefined> {
     const data = File.isFile(source) ? (await source.read()) : source
-    const xml = load(data || '', { xmlMode: true })
+    const xml = load(data || '', { xml: true })
 
     if (!data || !xml.xml()) return
     return new this(xml.root())
@@ -39,9 +41,9 @@ export default class XMLElement {
     return new XMLElement(this.element.parent())
   }
 
+
   /** Строковое представление элемента */
   get xml() {
-    const string = this.element.html() || ''
     let attrs: string[] | undefined
 
     if (this.hasAttrs()) {
@@ -50,16 +52,56 @@ export default class XMLElement {
         attrs.push(`${name}="${value}"`)
       }
     }
-    if (this.tagName) {
-      return `<${this.tagName}${attrs && hasItems(attrs) ? ` ${attrs.join(' ')}` : ''}>\n${string}\n</${this.tagName}>`
+    if (this.tagName) {  
+      const xml = this.innerXML
+        ? `<${this.tagName}${attrs && hasItems(attrs) ? ` ${attrs.join(' ')}` : ''}>\n\t${this.innerXML}\n</${this.tagName}>`
+        : `<${this.tagName}${attrs && hasItems(attrs) ? ` ${attrs.join(' ')}` : ''} />`
+
+      try {
+        return xmlFormat(xml)
+      }
+      catch {
+        return xml
+      }
     }
 
-    return load(string, { xmlMode: true }).xml()
+    return this.baseXML
   }
+
   
   /** Строковое представление элемента вместе с базовым тегом */
   get baseXML() {
-    return load(this.baseElement.html() || '', { xmlMode: true }).xml()
+    function format(str: string) {
+      return xmlFormat(str, {
+        whiteSpaceAtEndOfSelfclosingTag: true,
+        forceSelfClosingEmptyTag: true,
+        indentation: '  '
+      })
+    }
+
+    try {
+      const cloned = this.baseElement.clone()
+      const templates = cloned.find('_templates').eq(0)
+      let templatesText = ''
+
+      if (templates.length === 1) {
+        const Include = templates.attr('Include')
+        const templatesXML = `<_templates${Include ? ` Include="${Include}"` : ''}>${templates.html()!}</_templates>`
+        templatesText = `${format(templatesXML)}\r\n`
+        templates.remove()
+      }
+      
+      const mainText = format(cloned.html()!.replace('&#xfeff;', ''))
+      return templatesText + mainText
+    }
+    catch {
+      return this.baseElement.html()!
+    }
+  }
+
+  /** Строковое представление содержимого элемента */
+  get innerXML() {
+    return this.element.html() ?? ''
   }
 
   /** Существует ли элемент */

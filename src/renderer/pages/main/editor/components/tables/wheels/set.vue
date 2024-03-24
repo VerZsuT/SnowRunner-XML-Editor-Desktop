@@ -8,6 +8,7 @@
       <template v-if="Tire.WheelFriction">
         <Float
           :label="texts.bodyFriction"
+          :desc="Tire.WheelFriction.BodyFrictionDesc"
           :utils="Tire.WheelFriction.$BodyFriction"
           :areas="{
             yellow: [7, 8],
@@ -16,6 +17,7 @@
         />
         <Float
           :label="texts.bodyFrictionAsphalt"
+          :desc="Tire.WheelFriction.BodyFrictionAsphaltDesc"
           :utils="Tire.WheelFriction.$BodyFrictionAsphalt"
           :areas="{
             yellow: [7, 8],
@@ -24,6 +26,7 @@
         />
         <Float
           :label="texts.substanceFriction"
+          :desc="Tire.WheelFriction.SubstanceFrictionDesc"
           :utils="Tire.WheelFriction.$SubstanceFriction"
           :areas="{
             yellow: [7, 8],
@@ -32,6 +35,7 @@
         />
         <Select
           :label="texts.ignoreIce"
+          :desc="Tire.WheelFriction.IsIgnoreIceDesc"
           :utils="Tire.WheelFriction.$IsIgnoreIce"
           :options="[
             [true, texts.yes],

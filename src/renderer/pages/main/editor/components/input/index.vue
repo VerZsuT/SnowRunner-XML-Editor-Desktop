@@ -1,6 +1,7 @@
 <template>
   <Parameter
     :label="label"
+    :desc="desc"
     :getter="getter"
     :utils="utils"
     @change="$emit('change', $event)"

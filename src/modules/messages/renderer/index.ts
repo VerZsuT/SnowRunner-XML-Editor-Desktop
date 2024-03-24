@@ -46,8 +46,11 @@ class Messages {
   }
 
   /** Сообщение об ошибке */
-  error(text: string) {
-    notification.error({ message: 'Error', description: text, duration: 10_000 })
+  error(error: Error): void
+  error(error: string): void
+  error(error: string | Error): void {
+    notification.error({ message: 'Error', description: String(error), duration: 10_000 })
+    console.error(error)
   }
 
   /** Информационное сообщение */

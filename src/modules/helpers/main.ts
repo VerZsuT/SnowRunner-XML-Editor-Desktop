@@ -74,6 +74,7 @@ class Helpers extends HasPublic {
     publicFunction<PubType[PubKeys.homedir]>(PubKeys.homedir, homedir)
     publicFunction<PubType[PubKeys.userInfo]>(PubKeys.userInfo, userInfo)
     publicFunction<PubType[PubKeys.openLink]>(PubKeys.openLink, shell.openExternal)
+    publicFunction<PubType[PubKeys.openFile]>(PubKeys.openFile, shell.openExternal)
     publicFunction<PubType[PubKeys.openPath]>(PubKeys.openPath, shell.openPath)
     publicFunction<PubType[PubKeys.reloadApp]>(PubKeys.reloadApp, () => { app.relaunch(); app.quit() })
     publicFunction<PubType[PubKeys.quitApp]>(PubKeys.quitApp, app.quit)

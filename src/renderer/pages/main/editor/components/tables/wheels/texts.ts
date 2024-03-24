@@ -1,47 +1,39 @@
-import { Lang } from '/mods/renderer'
-import { localize } from '/utils/texts/renderer'
+import { Localization, LocalizationObj } from '/utils/texts/renderer'
 
-export default localize({
-  tire: {
-    [Lang.ru]: 'Покрышка',
-    [Lang.en]: 'Tire',
-    [Lang.de]: 'Reifen',
-    [Lang.ch]: '轮胎'
-  },
-  bodyFriction: {
-    [Lang.ru]: 'Сцепление на бездорожье',
-    [Lang.en]: 'Body friction',
-    [Lang.de]: 'Körperreibung',
-    [Lang.ch]: '在干土地上的摩擦力'
-  },
-  bodyFrictionAsphalt: {
-    [Lang.ru]: 'Сцепление на асфальте',
-    [Lang.en]: 'Body friction asphalt',
-    [Lang.de]: 'Körperreibung asphalt',
-    [Lang.ch]: '在公路上的摩擦力'
-  },
-  substanceFriction: {
-    [Lang.ru]: 'Сцепление в грязи',
-    [Lang.en]: 'Substance friction',
-    [Lang.de]: 'Substanzreibung',
-    [Lang.ch]: '在泥浆里的摩擦力'
-  },
-  ignoreIce: {
-    [Lang.ru]: 'Едет по льду',
-    [Lang.en]: 'Rides on ice',
-    [Lang.de]: 'Fahrten auf Eis',
-    [Lang.ch]: '在冰上驾驶'
-  },
-  yes: {
-    [Lang.ru]: 'Да',
-    [Lang.en]: 'Yes',
-    [Lang.de]: 'Ja',
-    [Lang.ch]: '是'
-  },
-  no: {
-    [Lang.ru]: 'Нет',
-    [Lang.en]: 'No',
-    [Lang.de]: 'Nein',
-    [Lang.ch]: '没有'
-  }
-})
+export default new LocalizationObj({
+  tire: new Localization()
+    .ru('Покрышка')
+    .en('Tire')
+    .de('Reifen')
+    .ch('轮胎'),
+  bodyFriction: new Localization()
+    .ru('Сцепление на бездорожье')
+    .en('Body friction')
+    .de('Körperreibung')
+    .ch('在干土地上的摩擦力'),
+  bodyFrictionAsphalt: new Localization()
+    .ru('Сцепление на асфальте')
+    .en('Body friction asphalt')
+    .de('Körperreibung asphalt')
+    .ch('在公路上的摩擦力'),
+  substanceFriction: new Localization()
+    .ru('Сцепление в грязи')
+    .en('Substance friction')
+    .de('Substanzreibung')
+    .ch('在泥浆里的摩擦力'),
+  ignoreIce: new Localization()
+    .ru('Едет по льду')
+    .en('Rides on ice')
+    .de('Fahrten auf Eis')
+    .ch('在冰上驾驶'),
+  yes: new Localization()
+    .ru('Да')
+    .en('Yes')
+    .de('Ja')
+    .ch('是'),
+  no: new Localization()
+    .ru('Нет')
+    .en('No')
+    .de('Nein')
+    .ch('没有')
+}).get()

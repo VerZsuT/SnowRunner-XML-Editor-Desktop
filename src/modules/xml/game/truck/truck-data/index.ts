@@ -12,6 +12,8 @@ import Wheels from './wheels'
 import Winch from './winch'
 import WinchUpgradeSocket from './winch-upgrade-socket'
 
+import { Localization } from '/utils/texts/renderer'
+
 export { default as TruckCompatibleWheels } from './compatible-wheels'
 export { default as TruckEngineSocket } from './engine-socket'
 export { default as TruckFuelTank } from './fuel-tank'
@@ -30,6 +32,11 @@ export default class TruckData extends AddonTruckData {
   set BackSteerSpeed(_) {}
   @numUtils()
   get $BackSteerSpeed() { return {} as NumUtils }
+  BackSteerSpeedDesc = new Localization()
+    .ru('Скорость, с которой руль возвращается в исходное положение после поворота')
+    .en('The speed at which the steering wheel returns to its original position after turning')
+    .de('Die Geschwindigkeit, mit der das Lenkrad nach dem Abbiegen in die Ausgangsposition zurückkehrt')
+    .get()
 
   /** Блокировка дифференциала */
   @strAttr()
@@ -38,12 +45,17 @@ export default class TruckData extends AddonTruckData {
   @strUtils()
   get $DiffLockType() { return {} as StrUtils }
 
-  /** Задержка после нажатия “включить двигатель” */
+  /** Задержка после нажатия "включить двигатель" */
   @floatAttr(new Limit({ min: 0.0, max: 8.0 }))
   get EngineStartDelay(): number | undefined { return undefined }
   set EngineStartDelay(_) {}
   @numUtils()
   get $EngineStartDelay() { return {} as NumUtils }
+  EngineStartDelayDesc = new Localization()
+    .ru('Задержка после нажатия "включить двигатель"')
+    .en('Delay after pressing "turn on the engine"')
+    .de('Verzögerung nach dem Drücken von "Motor einschalten"')
+    .get()
   
   /** Время начала визуализации выхлопа */
   @floatAttr(Limit.Positive)
@@ -51,13 +63,23 @@ export default class TruckData extends AddonTruckData {
   set ExhaustStartTime(_) {}
   @numUtils()
   get $ExhaustStartTime() { return {} as NumUtils }
+  ExhaustStartTimeDesc = new Localization()
+    .ru('Время начала выхлопа')
+    .en('Exhaust start time')
+    .de('Abgas-Startzeit')
+    .get()
 
-  /** Чувствительность руля */
+  /** Чувствительность рулевого управления */
   @floatAttr(new Limit({ min: 0.0, max: 1.0 }))
   get Responsiveness(): number | undefined { return undefined }
   set Responsiveness(_) {}
   @numUtils()
   get $Responsiveness() { return {} as NumUtils }
+  ResponsivenessDesc = new Localization()
+    .ru('Чувствительность рулевого управления')
+    .en('Steering sensitivity')
+    .de('Lenkempfindlichkeit')
+    .get()
 
   /** Скорость поворота руля */
   @floatAttr(new Limit({ min: 0.0, max: 1.0 }))
@@ -65,6 +87,11 @@ export default class TruckData extends AddonTruckData {
   set SteerSpeed(_) {}
   @numUtils()
   get $SteerSpeed() { return {} as NumUtils }
+  SteerSpeedDesc = new Localization()
+    .ru('Скорость поворота руля')
+    .en('Steering wheel rotation speed')
+    .de('Lenkgeschwindigkeit')
+    .get()
 
   /** Иконка трака для гаража */
   @strAttr()

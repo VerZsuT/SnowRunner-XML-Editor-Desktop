@@ -2,6 +2,7 @@
   <Parameter
     :getter="getter"
     :label="label"
+    :desc="desc"
     :utils="utils"
     @change="$emit('change', $event)"
   >

@@ -2,10 +2,12 @@
   <template v-if="element">
     <Float
       :label="texts.angelVelocity"
+      :desc="element.AngVelDesc"
       :utils="element.$AngVel"
     />
     <Float
       :label="texts.fuelModifier"
+      :desc="element.FuelModifierDesc"
       :utils="element.$FuelModifier"
     />
   </template>
@@ -14,31 +16,30 @@
 <script lang='ts' setup>
 import { Float } from '../input'
 
-import { Lang } from '/mods/renderer'
 import type { NumUtils } from '/mods/xml/game/game-xml'
-import { localize } from '/utils/texts/renderer'
+import { Localization, LocalizationObj } from '/utils/texts/renderer'
 
 export type GearPresetProps = {
   element?: {
     $AngVel: NumUtils
     $FuelModifier: NumUtils
+    AngVelDesc?: string
+    FuelModifierDesc?: string
   }
 }
 
 defineProps<GearPresetProps>()
 
-const texts = localize({
-  angelVelocity: {
-    [Lang.ru]: 'Макс. угловая скорость колеса',
-    [Lang.en]: 'Max wheel angular velocity',
-    [Lang.de]: 'Winkelgeschwindigkeit',
-    [Lang.ch]: '最大车轮角速度'
-  },
-  fuelModifier: {
-    [Lang.ru]: 'Модификатор потребления топлива',
-    [Lang.en]: 'Fuel modifier',
-    [Lang.de]: 'Kraftstoffmodifikator',
-    [Lang.ch]: '燃油消耗改性剂'
-  }
-})
+const texts = new LocalizationObj({
+  angelVelocity: new Localization()
+    .ru('Макс. угловая скорость колеса')
+    .en('Max wheel angular velocity')
+    .de('Winkelgeschwindigkeit')
+    .ch('齿比'),
+  fuelModifier: new Localization()
+    .ru('Модификатор потребления топлива')
+    .en('Fuel modifier')
+    .de('Kraftstoffmodifikator')
+    .ch('燃油消耗')
+}).get()
 </script>

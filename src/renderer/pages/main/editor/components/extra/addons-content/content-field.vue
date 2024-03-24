@@ -64,7 +64,8 @@ const onChange: InputProps['onChange'] = event => {
   align-content: space-around;
 
   .text {
-    margin-right: 5px;
+    margin-top: 3px;
+    margin-right: 10px;
   }
 
   .input {

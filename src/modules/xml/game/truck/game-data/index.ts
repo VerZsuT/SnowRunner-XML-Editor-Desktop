@@ -8,6 +8,8 @@ import CraneSocket from './crane-socket'
 import UiDesc from './ui-desc'
 import WinchSocket from './winch-socket'
 
+import { Localization } from '/utils/texts/renderer'
+
 export * from './addon-sockets'
 export { default as TrailerAddonSlots, default as TruckAddonSockets } from './addon-sockets'
 export { default as TruckCraneSocket } from './crane-socket'
@@ -22,6 +24,11 @@ export default class GameData extends BaseGameData {
   set Country(_) {}
   @strArrUtils(strToCountry, true)
   get $Country() { return {} as StrArrUtils }
+  CountryDesc = new Localization()
+    .ru('Регион, в котором автомобиль доступен для покупки')
+    .en('The region where the car is available for purchase')
+    .de('Die Region, in der das Auto zum Kauf verfügbar ist')
+    .get()
 
   /** Исключение конкретного аддона из типа */
   @strArrAttr()

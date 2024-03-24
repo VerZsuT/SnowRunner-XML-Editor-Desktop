@@ -1,41 +1,34 @@
-import { Lang } from '/mods/renderer'
-import { localize } from '/utils/texts/renderer'
+import { Localization, LocalizationObj } from '/utils/texts/renderer'
 
-export default localize({
-  winch: {
-    [Lang.ru]: 'Лебёдка',
-    [Lang.en]: 'Winch',
-    [Lang.de]: 'Seilwinde',
-    [Lang.ch]: '绞车,绞车'
-  },
-  length: {
-    [Lang.ru]: 'Длина',
-    [Lang.en]: 'Length',
-    [Lang.de]: 'Länge',
-    [Lang.ch]: '长度'
-  },
-  strengthMult: {
-    [Lang.ru]: 'Сила',
-    [Lang.en]: 'Strength',
-    [Lang.de]: 'Stärke',
-    [Lang.ch]: '的力量'
-  },
-  isEngineIgnitionRequired: {
-    [Lang.ru]: 'Работает от',
-    [Lang.en]: 'Works from',
-    [Lang.de]: 'Arbeitet von',
-    [Lang.ch]: '由以下单位提供'
-  },
-  engine: {
-    [Lang.ru]: 'Двигателя',
-    [Lang.en]: 'Engine',
-    [Lang.de]: 'Motor',
-    [Lang.ch]: '发动机'
-  },
-  battary: {
-    [Lang.ru]: 'Аккумулятора',
-    [Lang.en]: 'Battery',
-    [Lang.de]: 'Batterie',
-    [Lang.ch]: '电池'
-  }
-})
+export default new LocalizationObj({
+  winch: new Localization()
+    .ru('Лебёдка')
+    .en('Winch')
+    .de('Seilwinde')
+    .ch('绞车,绞车'),
+  length: new Localization()
+    .ru('Длина')
+    .en('Length')
+    .de('Länge')
+    .ch('长度'),
+  strengthMult: new Localization()
+    .ru('Сила')
+    .en('Strength')
+    .de('Stärke')
+    .ch('力量'),
+  isEngineIgnitionRequired: new Localization()
+    .ru('Работает от')
+    .en('Works from')
+    .de('Arbeitet von')
+    .ch('动力来源'),
+  engine: new Localization()
+    .ru('Двигателя')
+    .en('Engine')
+    .de('Motor')
+    .ch('发动机'),
+  battary: new Localization()
+    .ru('Аккумулятора')
+    .en('Battery')
+    .de('Batterie')
+    .ch('电池')
+}).get()

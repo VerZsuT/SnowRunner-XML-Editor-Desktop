@@ -1,5 +1,5 @@
-import { localize } from '/utils/texts/main'
-
 import texts from '../texts'
 
-export default localize(texts)
+import { LocalizationObj } from '/utils/texts/main'
+
+export default new LocalizationObj(texts).get()

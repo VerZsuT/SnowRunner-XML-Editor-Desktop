@@ -10,8 +10,9 @@
 </template>
 
 <script lang='ts' setup>
-import { onMounted, shallowRef } from 'vue'
+import { nextTick, onMounted, shallowRef } from 'vue'
 
+import { FilesUtils } from '../../../utils'
 import type { ReadyEmits, ReadyProps } from '../../utils'
 import { useFilesReady } from '../../utils'
 import EngineSet from './set.vue'
@@ -30,16 +31,30 @@ type Props = {
 const props = defineProps<Props>()
 const emit = defineEmits<ReadyEmits>()
 
-const { info } = useEditorStore()
+const { info, allFiles } = useEditorStore()
 const list = shallowRef<EnginesXML[]>([])
 const files = shallowRef<File[]>([])
 
 const { ready, inProgress } = useFilesReady(emit, true)
 
-onMounted(async () => {
+onMounted(init)
+
+FilesUtils.watch(update, files)
+FilesUtils.regFiles(files, allFiles.engines)
+
+async function init() {
   files.value = await props.filesGetter?.(info) || []
   list.value = await props.getter?.(info) || []
+
+  if (!hasItems(list.value)) emit('ready')
+}
+
+async function update() {
+  files.value = []
+  list.value = []
   
-  if (!hasItems(files.value)) emit('ready')
-})
+  await nextTick()
+  await init()
+}
+
 </script>

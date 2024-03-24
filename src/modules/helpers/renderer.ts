@@ -35,6 +35,9 @@ class Helpers {
   /** Открывает путь в проводнике */
   openPath = providePubFunc<PubType[PubKeys.openPath]>(PubKeys.openPath)
 
+  /** Открывает файл для редактирования */
+  openFile = providePubFunc<PubType[PubKeys.openFile]>(PubKeys.openFile)
+
   /** Перезагружает программу */
   reloadApp = providePubFunc<PubType[PubKeys.reloadApp]>(PubKeys.reloadApp)
 
