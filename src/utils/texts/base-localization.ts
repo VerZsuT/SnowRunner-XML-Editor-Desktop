@@ -1,7 +1,5 @@
 import { computed } from 'vue'
-
 import type { ITextsToLocalize, LocalizedTexts } from './types'
-
 import { Lang } from '/mods/data/config/enums'
 import type { IConfig } from '/mods/data/config/types'
 
@@ -43,8 +41,27 @@ export class BaseLocalization<T = string> {
     return computed(() => this.obj[config.lang] ?? this.obj[Lang.en]!).value
   }
 
-  ru(value: T) { this.obj[Lang.ru] = value; return this }
-  en(value: T) { this.obj[Lang.en] = value; return this }
-  de(value: T) { this.obj[Lang.de] = value; return this }
-  ch(value: T) { this.obj[Lang.ch] = value; return this }
+  ru(value: T) {
+    this.obj[Lang.ru] = value
+    
+    return this
+  }
+
+  en(value: T) {
+    this.obj[Lang.en] = value
+    
+    return this
+  }
+
+  de(value: T) {
+    this.obj[Lang.de] = value
+    
+    return this
+  }
+
+  ch(value: T) {
+    this.obj[Lang.ch] = value
+    
+    return this
+  }
 }

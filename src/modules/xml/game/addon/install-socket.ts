@@ -1,11 +1,11 @@
-import type { StrUtils } from '../game-xml'
-import { strAttr, strUtils } from '../game-xml'
+import type { IStringAttrDescriptor } from '../attributes'
+import { stringAttr } from '../attributes'
 import XMLWithTemplates from '../xml-with-templates'
 
+/** Сокет установки аддона. */
 export default class InstallSocket extends XMLWithTemplates {
-  @strAttr()
-  get Type(): string | undefined { return undefined }
-  set Type(_) {}
-  @strUtils()
-  get $Type() { return {} as StrUtils }
+  /** Тип сокета. */
+  @stringAttr()
+  accessor Type: string | undefined
+  declare $Type: IStringAttrDescriptor
 }

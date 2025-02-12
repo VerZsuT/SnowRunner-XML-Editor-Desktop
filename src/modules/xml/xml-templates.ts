@@ -3,7 +3,7 @@ import { Dirs } from '/mods/files/renderer'
 
 import XMLElement from './xml-element'
 
-import type { AnyNode, Cheerio } from 'cheerio'
+import type { Cheerio } from 'cheerio'
 
 /** Шаблоны `_templates` */
 export default class XMLTemplates extends XMLElement {
@@ -50,7 +50,7 @@ export default class XMLTemplates extends XMLElement {
     return new XMLTemplates(templates.toCheerio(), include)
   }
 
-  constructor(element: Cheerio<AnyNode>, include?: XMLTemplates) {
+  constructor(element: Cheerio<any>, include?: XMLTemplates) {
     super(element)
     this.include = include
   }

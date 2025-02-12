@@ -1,4 +1,4 @@
-import { publicMainEvent } from 'emr-bridge'
+import { emitEvent } from 'emr-bridge/main'
 
 import { MainMessageType } from './enums'
 import { PubKeys } from './public'
@@ -13,7 +13,9 @@ export type * from './types'
 */
 class Messages {
   /** Вызвать событие сообщения */
-  private emitMessageEvent = publicMainEvent<IMainMessage>(PubKeys.messageEvent)
+  private emitMessageEvent(message: IMainMessage) {
+    emitEvent(PubKeys.messageEvent, message)
+  }
 
   /** Сообщение об ошибке */
   error(text: string) {

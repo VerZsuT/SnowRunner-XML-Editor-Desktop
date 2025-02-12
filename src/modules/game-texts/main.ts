@@ -1,22 +1,20 @@
-import { publicVariable } from 'emr-bridge'
-
-import type { PubType } from './public'
-import { PubKeys } from './public'
 import type { IGameTexts, ITranslation } from './types'
 
 import Config, { Lang } from '/mods/data/config/main'
 import type Mods from '/mods/data/mods/main'
 import { Dirs, Files } from '/mods/files/main'
-import { HasPublic } from '/utils/bridge/main'
+import { providePublic, publicField } from '/utils/bridge/main'
+import { startsWith } from '/utils/strings/main'
 
 export type * from './types'
 
 /**
- * Работа с игровой локализацией  
+ * Работа с игровой локализацией.  
  * _main process_
 */
-class GameTexts extends HasPublic {
-  /** Название файлов локализаций игры для каждого языка */
+@providePublic()
+class GameTexts {
+  /** Название файлов локализаций игры для каждого языка. */
   private readonly locals = {
     [Lang.ru]: 'russian',
     [Lang.en]: 'english',
@@ -24,34 +22,33 @@ class GameTexts extends HasPublic {
     [Lang.ch]: 'chinese_simplified'
   }
 
-  /** Тексты */
-  private readonly object: IGameTexts = {
-    /** Из модификаций */
+  /** Тексты. */
+  @publicField()
+  private accessor object: IGameTexts = {
+    /** Из модификаций. */
     mods: {},
-    /** Из `initial.pak` */
+
+    /** Из `initial.pak`. */
     main: {}
   }
 
-  /** Получить игровые тексты */
-  getTexts() { return this.object }
-
-  /** Обработать файл с переводом из `initial.pak` (текущий выбранный язык в программе) */
+  /** Обработать файл с переводом из `initial.pak` (текущий выбранный язык в программе). */
   async initFromInitial() {
     if (await Files.initialTexts.exists()) {
-      this.object.main = await Files.initialTexts.readFromJSON()
+      this.set({ main: await Files.initialTexts.readFromJSON() })
     }
 
     if (await Dirs.strings.exists()) {
       const stringsFile = Dirs.strings.file(`strings_${this.locals[Config.lang]}.str`)
 
       if (await stringsFile.exists()) {
-        this.object.main = this.parseFile(await stringsFile.read('utf16le'))
+        this.set({ main: this.parseFile(await stringsFile.read('utf16le')) })
         await this.saveFromInitial()
       }
     }
   }
 
-  /** Обработать файл с переводом из `.pak` файлов модов (текущий выбранный язык в программе) */
+  /** Обработать файл с переводом из `.pak` файлов модов (текущий выбранный язык в программе). */
   async initFromMods(array: ReturnType<typeof Mods['get']>) {
     const mods: IGameTexts['mods'] = {}
 
@@ -60,27 +57,22 @@ class GameTexts extends HasPublic {
         const stringsFile = Dirs.modsTemp.file(mod.name, `texts/strings_${this.locals[Config.lang]}.str`)
 
         if (await stringsFile.exists()) {
-          try { mods[mod.name] = this.parseFile(await stringsFile.read('utf16le'), true) }
-          catch {}
+          try {
+            mods[mod.name] = this.parseFile(await stringsFile.read('utf16le'), true)
+          } catch {}
         }
       }
     }
 
-    this.object.mods = mods
+    this.set({ mods })
   }
 
-  /** Сохранить игровой перевод в файл (для оптимизации) */
+  /** Сохранить игровой перевод в файл (для оптимизации). */
   async saveFromInitial() {
     await Files.initialTexts.writeToJSON(this.object.main)
   }
 
-  protected initPublic() {
-    publicVariable<PubType[PubKeys.gameTexts]>(PubKeys.gameTexts, {
-      get: this.getTexts.bind(this)
-    })
-  }
-
-  /** Обработать файл игрового перевода */
+  /** Обработать файл игрового перевода. */
   private parseFile(data: string, parseAll?: boolean): ITranslation {
     const strings = {}
     const lines = data.match(/[^\n\r]+/g)
@@ -91,7 +83,10 @@ class GameTexts extends HasPublic {
 
         if (result && result.length > 1) {
           let [key, value] = line.split('"')
-          if (!key || !value) continue
+
+          if (!key || !value) {
+            continue
+          }
 
           key = key
             .trimEnd()
@@ -101,7 +96,7 @@ class GameTexts extends HasPublic {
           value = value
             .replaceAll('\\', '')
 
-          if (parseAll || (this.startsWith(key, [
+          if (parseAll || (startsWith(key, [
             'UI_VEHICLE',
             'UI_ADDON',
             'UI_ADDONS',
@@ -122,8 +117,9 @@ class GameTexts extends HasPublic {
             'UI_WINCH',
             'UI_DLC'
           ]) && key.endsWith('NAME'))) {
-            try { strings[key] = value }
-            catch {}
+            try {
+              strings[key] = value
+            } catch {}
           }
         }
       }
@@ -131,15 +127,11 @@ class GameTexts extends HasPublic {
     return strings
   }
 
-  /** Начинается ли ключ на одну из переданных строк */
-  private startsWith(key: string, array: string[]): boolean {
-    for (const element of array) {
-      if (key.startsWith(element!)) {
-        return true
-      }
+  private set(newObject: Partial<IGameTexts>) {
+    this.object = {
+      ...this.object,
+      ...newObject
     }
-
-    return false
   }
 }
 

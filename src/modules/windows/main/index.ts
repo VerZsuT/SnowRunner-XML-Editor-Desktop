@@ -1,27 +1,15 @@
 import { BrowserWindow } from 'electron'
+import { on } from 'emr-bridge/main'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-
-import { publicFunction, publicRendererEvent } from 'emr-bridge'
-
-import { FORCE_DEVTOOLS } from '/consts'
-
-import LoadingWindow from './loading'
-import MainWindow from './main'
-import SettingsWindow from './settings'
-import SetupWindow from './setup'
-import UpdateWindow from './update'
-import WhatsNewWindow from './whats-new'
-
-import type { IDownloadWindow, IUpdateWindow } from '/mods/updates/types'
-
 import { ProgramWindow } from '../enums'
-import type { PubType } from '../public'
 import { PubKeys } from '../public'
-import type { WindowParams } from '../types'
-
+import type { IGeneralWindow, WindowParams } from '../types'
+import GeneralWindow from './general'
+import { FORCE_DEVTOOLS } from '/consts'
 import Config from '/mods/data/config/main'
 import { Files } from '/mods/files/main'
+import { providePublic, publicMethod } from '/utils/bridge/main'
 
 export * from '../enums'
 export type * from '../types'
@@ -30,65 +18,24 @@ export type * from '../types'
 const _dirname = dirname(fileURLToPath(import.meta.url))
 
 type WindowsObject = Record<keyof ProgramWindow, [WindowParams, WindowCreator]>
-type WindowCreator = (...args: any[]) => Promise<BrowserWindow>
+type WindowCreator<T extends BrowserWindow = BrowserWindow> = (...args: any[]) => Promise<T>
 
 /**
  * Работа с окнами программы  
  * _main process_
 */
+@providePublic()
 class Windows {
   /** Объект окон */
   private readonly windows = {} as WindowsObject
 
   /** Главное окно */
-  private _mainWindow?: BrowserWindow
-  /** Главное окно */
-  get mainWindow(): BrowserWindow | undefined {
-    if (!this._mainWindow?.isDestroyed()) return this._mainWindow
-  }
-  set mainWindow(win: BrowserWindow) { this._mainWindow = win }
+  @notDestroyed()
+  accessor generalWindow: IGeneralWindow | undefined
 
-  /** Окно первичной настройки */
-  private _setupWindow?: BrowserWindow
-  /** Окно первичной настройки */
-  get setupWindow(): BrowserWindow | undefined {
-    if (!this._setupWindow?.isDestroyed()) return this._setupWindow
+  constructor() {
+    this.initWindows()
   }
-  set setupWindow(win: BrowserWindow) { this._setupWindow = win }
-
-  /** Окно загрузки */
-  private _loadingWindow?: IDownloadWindow
-  /** Окно загрузки */
-  get loadingWindow(): IDownloadWindow | undefined {
-    if (!this._loadingWindow?.isDestroyed()) return this._loadingWindow
-  }
-  set loadingWindow(win: IDownloadWindow) { this._loadingWindow = win }
-
-  /** Окно настроек */
-  private _settingsWindow?: BrowserWindow
-  /** Окно настроек */
-  get settingsWindow(): BrowserWindow | undefined {
-    if (!this._settingsWindow?.isDestroyed()) return this._settingsWindow
-  }
-  set settingsWindow(win: BrowserWindow) { this._settingsWindow = win }
-
-  /** Окно об обновлении */
-  private _updateWindow?: IUpdateWindow
-  /** Окно об обновлении */
-  get updateWindow(): IUpdateWindow | undefined {
-    if (!this._updateWindow?.isDestroyed()) return this._updateWindow
-  }
-  set updateWindow(win: IUpdateWindow) { this._updateWindow = win }
-
-  /** Окно "что нового" */
-  private _whatsNewWindow?: BrowserWindow
-  /** Окно "что нового" */
-  get whatsNewWindow(): BrowserWindow | undefined {
-    if (!this._whatsNewWindow?.isDestroyed()) return this._whatsNewWindow
-  }
-  set whatsNewWindow(win: BrowserWindow) { this._whatsNewWindow = win }
-
-  constructor() { this.initWindows(); this.initPublic() }
 
   /** Создать новое модально окно */
   async createModalWindow(params: WindowParams): Promise<BrowserWindow> {
@@ -130,22 +77,25 @@ class Windows {
         webviewTag: false
       }
     })
+
     win.setMenuBarVisibility(false)
     win.removeMenu()
 
     let hasError = true
-    const unsub = this.onWindowReady(readyType => {
-      if (type !== readyType) return
+    const unsubscribe = this.onWindowReady(async readyType => {
+      if (type !== readyType) {
+        return
+      }
+      
+      unsubscribe()
       hasError = false
-      this.showWindow(win, params)
-      unsub()
+      await this.showWindow(win, params)
     })
 
     if (Config.isDev) {
       await win.loadURL(devURL)
       setTimeout(() => hasError && this.showWindow(win, params), 3000)
-    }
-    else {
+    } else {
       await win.loadFile(path)
     }
 
@@ -153,74 +103,80 @@ class Windows {
   }
 
   /** Зарегистрировать окно программы */
-  regWindow(window: WindowParams, creator: WindowCreator) {
+  regWindow<T extends BrowserWindow = BrowserWindow>(window: WindowParams<T>, creator: WindowCreator<T>) {
     this.windows[window.name] = [window, creator]
   }
 
   /** Открыть окно программы */
+  @publicMethod()
   async openWindow(windowName: ProgramWindow, ...args: any[]) {
     const window = await this.getWindowCreator(windowName)(...args)
 
     switch (windowName) {
-      case ProgramWindow.main: {
-        this._mainWindow = window; break
-      }
-      case ProgramWindow.loading: {
-        this._loadingWindow = window as IDownloadWindow; break
-      }
-      case ProgramWindow.settings: {
-        this._settingsWindow = window; break
-      }
-      case ProgramWindow.update: {
-        this._updateWindow = window as IUpdateWindow; break
-      }
-      case ProgramWindow.whatsNew: {
-        this._whatsNewWindow = window; break
-      }
-      case ProgramWindow.setup: {
-        this._setupWindow = window; break
-      }
+      case ProgramWindow.general:
+        this.generalWindow = window as IGeneralWindow
+        
+        break
     }
 
-    await new Promise<void>(resolve => window.once('ready-to-show', resolve))
+    return new Promise<void>(resolve => window.once('ready-to-show', resolve))
   }
 
   /** Подписаться на событие готовности окна */
-  private onWindowReady = publicRendererEvent<ProgramWindow>(PubKeys.windowReadyEvent)
+  private onWindowReady(handler: (win: ProgramWindow) => void | Promise<void>) {
+    return on(PubKeys.windowReadyEvent, handler)
+  }
 
   /** Показать окно */
-  private showWindow(window: BrowserWindow, params: WindowParams) {
+  private async showWindow(window: BrowserWindow, params: WindowParams) {
     if (window && !window.isDestroyed()) {
       window.show()
+      await params.onShowed?.(window, this)
+
       window.focus()
-      void params.onShow?.(window, this)
-      void params.onFocus?.(window, this)
-      if (FORCE_DEVTOOLS) window.webContents.toggleDevTools()
+      await params.onFocused?.(window, this)
+
+      if (FORCE_DEVTOOLS) {
+        window.webContents.toggleDevTools()
+      }
     }
   }
 
   /** Получить функцию-создания окна */
-  private getWindowCreator(window: ProgramWindow): WindowCreator | never {
+  private getWindowCreator<T extends BrowserWindow = BrowserWindow>(window: ProgramWindow): WindowCreator<T> | never {
     const creator = this.windows[window][1]
-    if (!creator) throw new Error(`Window creator for '${window}' is not defined`)
+
+    if (!creator) {
+      throw new Error(`Window creator for '${window}' is not defined`)
+    }
+
     return creator
   }
 
   /** Инициализация объектов окон программы */
   private initWindows() {
-    LoadingWindow.register(this)
-    MainWindow.register(this)
-    MainWindow.register(this)
-    SettingsWindow.register(this)
-    SetupWindow.register(this)
-    UpdateWindow.register(this)
-    WhatsNewWindow.register(this)
-  }
-
-  /** Инициализация публичных объектов/методов */
-  private initPublic() {
-    publicFunction<PubType[PubKeys.openWindow]>(PubKeys.openWindow, this.openWindow.bind(this))
+    GeneralWindow.register(this)
   }
 }
 
 export default new Windows()
+
+function notDestroyed() {
+  return function<This, Value extends BrowserWindow | undefined>(
+    _target: ClassAccessorDecoratorTarget<This, Value>,
+    _context: ClassAccessorDecoratorContext<This, Value>
+  ): ClassAccessorDecoratorResult<This, Value> {
+    let value: Value
+
+    return {
+      get() {
+        return value?.isDestroyed()
+          ? undefined as Value
+          : value
+      },
+      set(newValue) {
+        value = newValue
+      }
+    }
+  }
+}

@@ -6,7 +6,7 @@ import Engine from './engine'
 
 export { default as Engine } from './engine'
 
-/** Рутовый тег файла класса двигателей */
+/** Рутовый тег файла класса двигателей. */
 export default class Engines extends XMLWithTemplates {
   static override async from(str: string): Promise<Engines | undefined>
   static override async from(file: File): Promise<Engines | undefined>
@@ -15,15 +15,17 @@ export default class Engines extends XMLWithTemplates {
     const root = await XMLElement.from(source as File)
     const element = root?.select(rootSelector)
 
-    if (root && element) return new this(
-      element,
-      await XMLTemplates.from(root),
-      rootSelector,
-      root
-    )
+    if (root && element) {
+      return new this(
+        element,
+        await XMLTemplates.from(root),
+        rootSelector,
+        root
+      )
+    }
   }
 
-  /** Двигатели */
+  /** Двигатели. */
   @innerElements(Engine, 'Engine')
-  get Engines(): Engine[] { return [] }
+  readonly Engines: Engine[] = []
 }

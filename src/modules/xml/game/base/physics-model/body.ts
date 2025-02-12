@@ -1,26 +1,23 @@
-import type { NumUtils, PosUtils } from '../../game-xml'
-import { intAttr, numUtils, posAttr, posUtils } from '../../game-xml'
+import type { INumberAttrDescriptor, IPositionAttrDescriptor } from '../../attributes'
+import { integerAttr, limit, positionAttr } from '../../attributes'
 import Limit from '../../limit'
 import type Position from '../../position'
 import XMLWithTemplates, { innerElement } from '../../xml-with-templates'
 
-/** Физическая модель */
+/** Физическая модель. */
 export default class Body extends XMLWithTemplates {
-  /** Масса тела */
-  @intAttr(new Limit({ min: 0, max: 1_000_000, fixed: true }))
-  get Mass(): number { return 0 }
-  set Mass(_: number | undefined) {}
-  @numUtils()
-  get $Mass() { return {} as NumUtils }
+  /** Масса тела. */
+  @limit(new Limit({ min: 0, max: 1_000_000, fixed: true }))
+  @integerAttr()
+  accessor Mass: number | undefined = 0
+  declare $Mass: INumberAttrDescriptor
 
-  /** Смещение центра масс */
-  @posAttr()
-  get CenterOfMassOffset(): Position | undefined { return undefined }
-  set CenterOfMassOffset(_) {}
-  @posUtils()
-  get $CenterOfMassOffset() { return {} as PosUtils }
+  /** Смещение центра масс. */
+  @positionAttr()
+  accessor CenterOfMassOffset: Position | undefined
+  declare $CenterOfMassOffset: IPositionAttrDescriptor
 
-  /** Физическое тело */
-  @innerElement(Body)
-  get Body(): Body | undefined { return undefined }
+  /** Физическое тело. */
+  @innerElement(() => Body)
+  readonly Body: Body | undefined
 }

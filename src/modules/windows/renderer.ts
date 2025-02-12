@@ -1,36 +1,36 @@
-import { providePubFunc } from '/utils/bridge/renderer'
-
-import type { PubType } from './public'
+import { Bridge } from 'emr-bridge/renderer'
+import type { Page, ProgramWindow } from './enums'
+import type MainWindows from './main'
 import { PubKeys } from './public'
+import { initMain, mainMethod } from '/utils/bridge/renderer'
 
 export * from './enums'
 export type * from './types'
+
+const bridge = Bridge.as<object>()
 
 /**
  * Работа с окнами программы  
  * _renderer process_
 */
+@initMain()
 class Windows {
   /** Открыть окно программы */
-  openWindow = providePubFunc<PubType[PubKeys.openWindow]>(PubKeys.openWindow)
+  @mainMethod()
+  openWindow!: typeof MainWindows.openWindow
 
-  /** Отследить событие контента окна обновления */
-  onUpdateContent = providePubFunc<PubType[PubKeys.onUpdateContent]>(PubKeys.onUpdateContent)
+  onRoute(handler: (page: Page) => void) {
+    return bridge.on(PubKeys.routeEvent, handler)
+  }
 
-  /** Отследить событие текста окна загрузки */
-  onLoadingText = providePubFunc<PubType[PubKeys.onLoadingText]>(PubKeys.onLoadingText)
-
-  /** Отследить событие успешности операции окна загрузки */
-  onLoadingSuccess = providePubFunc<PubType[PubKeys.onLoadingSuccess]>(PubKeys.onLoadingSuccess)
-
-  /** Отследить событие статуса загрузки из интернета окна загрузки программы */
-  onLoadingDownload = providePubFunc<PubType[PubKeys.onLoadingDownload]>(PubKeys.onLoadingDownload)
-
-  /** Отследить событие процента окна загрузки */
-  onLoadingPercent = providePubFunc<PubType[PubKeys.onLoadingPercent]>(PubKeys.onLoadingPercent)
-
-  /** Событие готовкности контента окна */
-  windowReady = providePubFunc<PubType[PubKeys.windowReadyEvent]>(PubKeys.windowReadyEvent)
+  /** Событие готовности контента окна */
+  windowReady(window: ProgramWindow) {
+    bridge.emit(PubKeys.windowReadyEvent, window)
+  }
 }
 
+/**
+ * Работа с окнами программы  
+ * _renderer process_
+*/
 export default new Windows()

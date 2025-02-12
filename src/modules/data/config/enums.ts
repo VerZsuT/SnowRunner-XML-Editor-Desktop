@@ -39,14 +39,15 @@ export function strToLang(str?: string): Lang | undefined {
  * _Если преобразование невозможно, возвращает `undefined`_
  */
 export function localeToLang(locale?: string): Lang | undefined {
-  if (!locale) return
+  if (!locale) {
+    return
+  }
 
-  const langStr = locale.split('-')[1].toLowerCase()
-  if (!langStr) return
+  const langStr = locale.toLowerCase()
 
   for (const value of Object.values(Lang)) {
     if (langStr.includes(value.toLowerCase())) {
-      return locale as Lang
+      return value
     }
   }
 }

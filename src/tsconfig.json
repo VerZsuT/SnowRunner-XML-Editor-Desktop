@@ -15,7 +15,6 @@
     "noImplicitAny": false,
     "skipLibCheck": true,
     "isolatedModules": true,
-    "experimentalDecorators": true,
     "paths": {
       "/mods/*": ["modules/*"],
       "/rend/*": ["renderer/*"],

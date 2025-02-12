@@ -1,6 +1,6 @@
 import { AddonTruckData } from '../../addon'
-import type { NumUtils, StrUtils } from '../../game-xml'
-import { floatAttr, numUtils, strAttr, strUtils } from '../../game-xml'
+import type { INumberAttrDescriptor, IStringAttrDescriptor } from '../../attributes'
+import { floatAttr, lazy, limit, stringAttr } from '../../attributes'
 import Limit from '../../limit'
 import { innerElement, innerElements } from '../../xml-with-templates'
 import CompatibleWheels from './compatible-wheels'
@@ -11,8 +11,8 @@ import SuspensionSocket from './suspension-socket'
 import Wheels from './wheels'
 import Winch from './winch'
 import WinchUpgradeSocket from './winch-upgrade-socket'
-
-import { Localization } from '/utils/texts/renderer'
+import { Config } from '/mods/renderer'
+import { BaseLocalization } from '/utils/texts/base-localization'
 
 export { default as TruckCompatibleWheels } from './compatible-wheels'
 export { default as TruckEngineSocket } from './engine-socket'
@@ -24,121 +24,120 @@ export { default as TruckWheels } from './wheels'
 export { default as TruckWinch } from './winch'
 export { default as WinchUpgradeSocket } from './winch-upgrade-socket'
 
-/** Описание большинства свойств непосредственно трака */
+/** Описание большинства свойств непосредственно трака. */
 export default class TruckData extends AddonTruckData {
-  /** Скорость, с которой колёса возвращаются на исходную позицию после поворота */
-  @floatAttr(new Limit({ min: 0.0, max: 1.0 }))
-  get BackSteerSpeed(): number | undefined { return undefined }
-  set BackSteerSpeed(_) {}
-  @numUtils()
-  get $BackSteerSpeed() { return {} as NumUtils }
-  BackSteerSpeedDesc = new Localization()
-    .ru('Скорость, с которой руль возвращается в исходное положение после поворота')
-    .en('The speed at which the steering wheel returns to its original position after turning')
-    .de('Die Geschwindigkeit, mit der das Lenkrad nach dem Abbiegen in die Ausgangsposition zurückkehrt')
-    .get()
+  /** Скорость, с которой колёса возвращаются на исходную позицию после поворота. */
+  @limit(new Limit({ min: 0.0, max: 1.0 }))
+  @floatAttr()
+  accessor BackSteerSpeed: number | undefined
+  declare $BackSteerSpeed: INumberAttrDescriptor
+  @lazy get BackSteerSpeedDesc() {
+    return new BaseLocalization()
+      .ru('Скорость, с которой руль возвращается в исходное положение после поворота')
+      .en('The speed at which the steering wheel returns to its original position after turning')
+      .de('Die Geschwindigkeit, mit der das Lenkrad nach dem Abbiegen in die Ausgangsposition zurückkehrt')
+      .get(Config)
+  }
 
-  /** Блокировка дифференциала */
-  @strAttr()
-  get DiffLockType(): DiffLockType | undefined { return undefined }
-  set DiffLockType(_) {}
-  @strUtils()
-  get $DiffLockType() { return {} as StrUtils }
+  /** Блокировка дифференциала. */
+  @stringAttr()
+  accessor DiffLockType: DiffLockType | undefined
+  declare $DiffLockType: IStringAttrDescriptor<DiffLockType>
 
-  /** Задержка после нажатия "включить двигатель" */
-  @floatAttr(new Limit({ min: 0.0, max: 8.0 }))
-  get EngineStartDelay(): number | undefined { return undefined }
-  set EngineStartDelay(_) {}
-  @numUtils()
-  get $EngineStartDelay() { return {} as NumUtils }
-  EngineStartDelayDesc = new Localization()
-    .ru('Задержка после нажатия "включить двигатель"')
-    .en('Delay after pressing "turn on the engine"')
-    .de('Verzögerung nach dem Drücken von "Motor einschalten"')
-    .get()
+  /** Задержка после нажатия "включить двигатель". */
+  @limit(new Limit({ min: 0.0, max: 8.0 }))
+  @floatAttr()
+  accessor EngineStartDelay: number | undefined
+  declare $EngineStartDelay: INumberAttrDescriptor
+  @lazy get EngineStartDelayDesc() {
+    return new BaseLocalization()
+      .ru('Задержка после нажатия "включить двигатель"')
+      .en('Delay after pressing "turn on the engine"')
+      .de('Verzögerung nach dem Drücken von "Motor einschalten"')
+      .get(Config)
+  }
   
-  /** Время начала визуализации выхлопа */
-  @floatAttr(Limit.Positive)
-  get ExhaustStartTime(): number | undefined { return undefined }
-  set ExhaustStartTime(_) {}
-  @numUtils()
-  get $ExhaustStartTime() { return {} as NumUtils }
-  ExhaustStartTimeDesc = new Localization()
-    .ru('Время начала выхлопа')
-    .en('Exhaust start time')
-    .de('Abgas-Startzeit')
-    .get()
+  /** Время начала визуализации выхлопа. */
+  @limit(Limit.Positive)
+  @floatAttr()
+  accessor ExhaustStartTime: number | undefined
+  declare $ExhaustStartTime: INumberAttrDescriptor
+  @lazy get ExhaustStartTimeDesc() {
+    return new BaseLocalization()
+      .ru('Время начала выхлопа')
+      .en('Exhaust start time')
+      .de('Abgas-Startzeit')
+      .get(Config)
+  }
 
-  /** Чувствительность рулевого управления */
-  @floatAttr(new Limit({ min: 0.0, max: 1.0 }))
-  get Responsiveness(): number | undefined { return undefined }
-  set Responsiveness(_) {}
-  @numUtils()
-  get $Responsiveness() { return {} as NumUtils }
-  ResponsivenessDesc = new Localization()
-    .ru('Чувствительность рулевого управления')
-    .en('Steering sensitivity')
-    .de('Lenkempfindlichkeit')
-    .get()
+  /** Чувствительность рулевого управления. */
+  @limit(new Limit({ min: 0.0, max: 1.0 }))
+  @floatAttr()
+  accessor Responsiveness: number | undefined
+  declare $Responsiveness: INumberAttrDescriptor
+  @lazy get ResponsivenessDesc() {
+    return new BaseLocalization()
+      .ru('Чувствительность рулевого управления')
+      .en('Steering sensitivity')
+      .de('Lenkempfindlichkeit')
+      .get(Config)
+  }
 
-  /** Скорость поворота руля */
-  @floatAttr(new Limit({ min: 0.0, max: 1.0 }))
-  get SteerSpeed(): number | undefined { return undefined }
-  set SteerSpeed(_) {}
-  @numUtils()
-  get $SteerSpeed() { return {} as NumUtils }
-  SteerSpeedDesc = new Localization()
-    .ru('Скорость поворота руля')
-    .en('Steering wheel rotation speed')
-    .de('Lenkgeschwindigkeit')
-    .get()
+  /** Скорость поворота руля. */
+  @limit(new Limit({ min: 0.0, max: 1.0 }))
+  @floatAttr()
+  accessor SteerSpeed: number | undefined
+  declare $SteerSpeed: INumberAttrDescriptor
+  @lazy get SteerSpeedDesc() {
+    return new BaseLocalization()
+      .ru('Скорость поворота руля')
+      .en('Steering wheel rotation speed')
+      .de('Lenkgeschwindigkeit')
+      .get(Config)
+  }
 
-  /** Иконка трака для гаража */
-  @strAttr()
-  get TruckImage(): string | undefined { return undefined }
-  set TruckImage(_) {}
-  @strUtils()
-  get $TruckImage() { return {} as StrUtils }
+  /** Иконка трака для гаража. */
+  @stringAttr()
+  accessor TruckImage: string | undefined
+  declare $TruckImage: IStringAttrDescriptor
 
-  @strAttr()
-  get TruckType(): TruckType | undefined { return undefined }
-  set TruckType(_) {}
-  @strUtils()
-  get $TruckType() { return {} as StrUtils }
+  @stringAttr()
+  accessor TruckType: TruckType | undefined
+  declare $TruckType: IStringAttrDescriptor<TruckType>
 
-  /** Параметры лебедки */
+  /** Параметры лебедки. */
   @innerElement(Winch)
-  get Winch(): Winch | undefined { return undefined }
+  readonly Winch: Winch | undefined
 
-  /** Секция описания колес */
+  /** Секция описания колес. */
   @innerElement(Wheels)
-  get Wheels(): Wheels | undefined { return undefined }
+  readonly Wheels: Wheels | undefined
 
   @innerElement(Wheels)
-  get ExtraWheels(): Wheels | undefined { return undefined }
+  readonly ExtraWheels: Wheels | undefined
 
-  /** Описание доступных подвесок */
+  /** Описание доступных подвесок. */
   @innerElement(SuspensionSocket)
-  get SuspensionSocket(): SuspensionSocket | undefined { return undefined }
+  readonly SuspensionSocket: SuspensionSocket | undefined
 
-  /** Описание доступных коробок передач */
+  /** Описание доступных коробок передач. */
   @innerElement(GearboxSocket)
-  get GearboxSocket(): GearboxSocket | undefined { return undefined }
+  readonly GearboxSocket: GearboxSocket | undefined
 
   @innerElement(WinchUpgradeSocket)
-  get WinchUpgradeSocket(): WinchUpgradeSocket | undefined { return undefined }
+  readonly WinchUpgradeSocket: WinchUpgradeSocket | undefined
 
-  /** Свойства бензобака */
+  /** Свойства бензобака. */
   @innerElement(FuelTank)
-  get FuelTank(): FuelTank | undefined { return undefined }
+  readonly FuelTank: FuelTank | undefined
 
-  /** Описание доступных двигателей */
+  /** Описание доступных двигателей. */
   @innerElement(EngineSocket)
-  get EngineSocket(): EngineSocket | undefined { return undefined }
+  readonly EngineSocket: EngineSocket | undefined
 
-  /** Доступные колеса */
+  /** Доступные колеса. */
   @innerElements(CompatibleWheels)
-  get CompatibleWheels(): CompatibleWheels[] { return [] }
+  readonly CompatibleWheels: CompatibleWheels[] = []
 }
 
 export enum DiffLockType {

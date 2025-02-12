@@ -1,28 +1,22 @@
-import type { PosUtils, StrArrUtils } from '../../../game-xml'
-import { posAttr, posUtils, strArrAttr, strArrUtils } from '../../../game-xml'
+import type { IPositionAttrDescriptor, IStringArrayAttrDescriptor } from '../../../attributes'
+import { positionAttr, stringArrayAttr } from '../../../attributes'
 import type Position from '../../../position'
 import XMLWithTemplates from '../../../xml-with-templates'
 
-/** Сдвиг точки установки аддона (трейлера), если уже установлен другой аддон */
+/** Сдвиг точки установки аддона (трейлера), если уже установлен другой аддон. */
 export default class AddonShift extends XMLWithTemplates {
-  /** Имя типа аддона, при установке которого сдвинется описываемый аддон  */
-  @strArrAttr()
-  get Types(): string[] { return [] }
-  set Types(_) {}
-  @strArrUtils()
-  get $Types() { return {} as StrArrUtils }
+  /** Имя типа аддона, при установке которого сдвинется описываемый аддон.  */
+  @stringArrayAttr()
+  accessor Types: string[] = []
+  declare $Types: IStringArrayAttrDescriptor
 
-  /** Смещение кости аддона при установке на трак */
-  @posAttr()
-  get Offset(): Position | undefined { return undefined }
-  set Offset(_) {}
-  @posUtils()
-  get $Offset() { return {} as PosUtils }
+  /** Смещение кости аддона при установке на трак. */
+  @positionAttr()
+  accessor Offset: Position | undefined
+  declare $Offset: IPositionAttrDescriptor
 
-  /** Запрет установки трейлера при установленной паре аддонов со сдвигом */
-  @strArrAttr()
-  get TrailerNamesBlock(): string[] { return [] }
-  set TrailerNamesBlock(_) {}
-  @strArrUtils()
-  get $TrailerNamesBlock() { return {} as StrArrUtils }
+  /** Запрет установки трейлера при установленной паре аддонов со сдвигом. */
+  @stringArrayAttr()
+  accessor TrailerNamesBlock: string[] = []
+  declare $TrailerNamesBlock: IStringArrayAttrDescriptor
 }

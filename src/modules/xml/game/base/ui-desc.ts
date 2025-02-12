@@ -1,36 +1,32 @@
-import type { StrUtils } from '../game-xml'
-import { strAttr, strUtils } from '../game-xml'
+import type { IStringAttrDescriptor } from '../attributes'
+import { lazy, stringAttr } from '../attributes'
 import XMLWithTemplates from '../xml-with-templates'
+import { Config } from '/mods/renderer'
+import { BaseLocalization } from '/utils/texts/base-localization'
 
-import { Localization } from '/utils/texts/renderer'
-
-/** Блок UI */
+/** Блок User Interface (UI). */
 export default class UiDesc extends XMLWithTemplates {
-  /** Описание */
-  @strAttr()
-  get UiDesc(): string | undefined { return undefined }
-  set UiDesc(_) {}
-  @strUtils()
-  get $UiDesc() { return {} as StrUtils }
-  get UiDescDesc() {
-    return new Localization()
+  /** Описание. */
+  @stringAttr()
+  accessor UiDesc: string | undefined
+  declare $UiDesc: IStringAttrDescriptor
+  @lazy get UiDescDesc() {
+    return new BaseLocalization()
       .ru('Описание предмета')
       .en('Description of the item')
       .de('Beschreibung des Gegenstands')
-      .get()
+      .get(Config)
   }
 
-  /** Название */
-  @strAttr()
-  get UiName(): string | undefined { return undefined }
-  set UiName(_) {}
-  @strUtils()
-  get $UiName() { return {} as StrUtils }
-  get UiNameDesc() {
-    return new Localization()
+  /** Название. */
+  @stringAttr()
+  accessor UiName: string | undefined
+  declare $UiName: IStringAttrDescriptor
+  @lazy get UiNameDesc() {
+    return new BaseLocalization()
       .ru('Название предмета')
       .en('Name of the item')
       .de('Name des Gegenstands')
-      .get()
+      .get(Config)
   }
 }

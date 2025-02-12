@@ -1,14 +1,15 @@
-/** Игровые тексты */
+/** Игровые тексты. */
 export interface IGameTexts {
-  /** Тексты самой игры */
+  /** Тексты самой игры. */
   main: ITranslation
-  /** Тексты модификаций */
+
+  /** Тексты модификаций. */
   mods: {
     [modID: string]: ITranslation
   }
 }
 
-/** Перевод */
+/** Перевод. */
 export interface ITranslation {
   [key: string]: string
 }

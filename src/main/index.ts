@@ -1,118 +1,68 @@
 import { app } from 'electron'
+import BaseApp from './base-app'
+import { Checks, Config, Dlc, Edited, Favorites, Loading, Mods, Page, ProgramWindow, QuitParams, Sizes, Texts, Windows } from '/mods/main'
 
-import { APP_NAME } from '/consts'
-import { Checks, Config, DLCs, Edited, Favorites, Mods, ProgramWindow, QuitParams, Sizes, Texts, Windows } from '/mods/main'
-
+import texts from './texts'
 import '/mods/epf/main'
 import '/mods/updates/main'
 
-/** Статический класс программы */
-class App {
-  /** Инициализация программы */
-  async init() {
-    this.handleExceptions()
-    this.checkMultipleInstances()
-    this.handleQuit()
-    this.disableNavigation()
-    this.disableSecurityWarns()
-
-    this.setName()
-    this.optimize()
-    await this.start()
-  }
-
-  /** Запуск */
-  async start() {
+/** Приложение. */
+class App extends BaseApp {
+  async afterInit() {
     await app.whenReady()
     await this.openProgram()
   }
 
   /** Запуск программы */
-  async openProgram() {
-    await Windows.openWindow(ProgramWindow.loading)
+  async openProgram(): Promise<void> {
+    Loading.init(undefined, 6, true)
+    await Windows.openWindow(ProgramWindow.general)
+    await Loading.requiredStage(texts.checkAdminPrivileges, Checks.hasAdminPrivileges.bind(Checks))
 
-    if (!await Checks.hasAdminPrivileges()) return
+    if (!await Loading.stage(texts.checkInitial, () => !!Config.initialPath)) {
+      Windows.generalWindow!.route(Page.setup)
+      
+      return Loading.hideLoading()
+    }
     
-    if (!Config.initialPath) {
-      await Windows.openWindow(ProgramWindow.setup)
+    await Loading.stage(texts.unpack, Checks.checkInitialChanges.bind(Checks))
+
+    if (!await Loading.stage(texts.checkFiles, Checks.hasAllPaths.bind(Checks))) {
+      return Config.reset()
+    }
+
+    await Loading.requiredStage(texts.loadGameTexts, Texts.initFromInitial.bind(Texts))
+    await Loading.requiredStage(texts.loadDlc, Dlc.init.bind(Dlc))
+    await Loading.requiredStage(texts.loadMods, Mods.procMods.bind(Mods))
+    Windows.generalWindow!.route(Page.lists)
+  }
+
+  onMultipleInstance() {
+    app.exit()
+    process.exit(102)
+  }
+
+  async beforeQuit() {
+    if (!QuitParams.saveJSONs) {
       return
     }
     
-    await Checks.checkInitialChanges()
-
-    if (!await Checks.hasAllPaths()) {
-      await Config.reset()
-      return
-    }
-
     await Promise.all([
-      Texts.initFromInitial(),
-      DLCs.init(),
-      Mods.procMods()
+      Config.save(),
+      Edited.save(),
+      Sizes.save(),
+      Favorites.save(),
+      Mods.save()
     ])
-
-    await Windows.openWindow(ProgramWindow.main)
   }
 
-  /** Проверка других открытых экземпляров программы */
-  checkMultipleInstances() {
-    if (!app.requestSingleInstanceLock()) {
-      app.quit()
-      process.exit(102)
-    }
+  onAllWindowsClosed() {
+    app.quit()
   }
 
-  /** Оптимизация */
-  optimize() {
-    app.disableHardwareAcceleration()
-  }
-
-  /** Изменение стандартного названия */
-  setName() {
-    app.setAppUserModelId(APP_NAME)
-  }
-
-  /** Установка действия при закрытии приложения */
-  handleQuit() {
-    app.once('before-quit', async event => {
-      event.preventDefault()
-      if (QuitParams.saveJSONs) {
-        await Promise.all([
-          Config.save(),
-          Edited.save(),
-          Sizes.save(),
-          Favorites.save(),
-          Mods.save()
-        ])
-      }
-      app.quit()
-    })
-    app.once('window-all-closed', app.exit)
-  }
-
-  /** Установка действия при исключениях */
-  handleExceptions() {
-    function onError(error: Error) {
-      console.error(error.stack || error)
-    }
-    process.once('uncaughtException', onError)
-    process.once('unhandledRejection', onError)
-  }
-
-  /** Отключение возможности навигации */
-  disableNavigation() {
-    app.on('web-contents-created', (_, contents) => {
-      contents.on('will-navigate', event => {
-        event.preventDefault()
-      })
-    })
-  }
-
-  /** Отключение предупреждений Electron */
-  disableSecurityWarns() {
-    process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = 'true'
+  onError(error: Error) {
+    console.error(error.stack || error)
   }
 }
 
-new App().init()
-  .catch(error => { throw new Error(error) })
+new App()

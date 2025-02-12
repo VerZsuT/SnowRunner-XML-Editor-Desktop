@@ -1,107 +1,103 @@
-import type { BoolUtils, NumUtils, PosUtils, StrUtils } from '../../../game-xml'
-import { boolAttr, boolUtils, floatAttr, numUtils, posAttr, posUtils, strAttr, strUtils } from '../../../game-xml'
+import type { IBooleanAttrDescriptor, INumberAttrDescriptor, IPositionAttrDescriptor, IStringAttrDescriptor } from '../../../attributes'
+import { booleanAttr, floatAttr, lazy, limit, positionAttr, stringAttr } from '../../../attributes'
 import Limit from '../../../limit'
 import type Position from '../../../position'
 import XMLWithTemplates from '../../../xml-with-templates'
+import { Config } from '/mods/renderer'
+import { BaseLocalization } from '/utils/texts/base-localization'
 
-import { Localization } from '/utils/texts/renderer'
-
-/** Описание конкретного колеса */
+/** Описание конкретного колеса. */
 export default class Wheel extends XMLWithTemplates {
-  /** Положение левого колеса (координата z обязательно должна быть положительной) */
-  @posAttr({ z: Limit.Positive })
-  get Pos(): Position | undefined { return undefined }
-  set Pos(_) {}
-  @posUtils()
-  get $Pos() { return {} as PosUtils }
+  /** Положение левого колеса (координата z обязательно должна быть положительной). */
+  @limit({ z: Limit.Positive })
+  @positionAttr()
+  accessor Pos: Position | undefined
+  declare $Pos: IPositionAttrDescriptor
 
-  /** Этот параметр делает из левого колеса правое */
-  @boolAttr()
-  get RightSize() { return false }
-  set RightSize(_: boolean | undefined) {}
-  @boolUtils()
-  get $RightSize() { return {} as BoolUtils }
+  /** Этот параметр делает из левого колеса правое. */
+  @booleanAttr()
+  accessor RightSize: boolean | undefined = false
+  declare $RightSize: IBooleanAttrDescriptor
 
-  /** Значения: front и rear. Используется только для составных колес, для определения того, переднее это колесо или заднее */
-  @strAttr<WheelLocation>()
-  get Location() { return WheelLocation.front }
-  set Location(_: WheelLocation | undefined) {}
-  @strUtils<WheelLocation>()
-  get $Location() { return {} as StrUtils }
+  /** Значения: front и rear. Используется только для составных колес, для определения того, переднее это колесо или заднее. */
+  @stringAttr<WheelLocation>()
+  accessor Location: WheelLocation | undefined = WheelLocation.front
+  declare $Location: IStringAttrDescriptor<WheelLocation>
 
-  /** Крутящий момент */
-  @strAttr<WheelTorque>()
-  get Torque(): WheelTorque | undefined { return undefined }
-  set Torque(_) {}
-  @strUtils<WheelTorque>()
-  get $Torque() { return {} as StrUtils }
-  TorqueDesc = new Localization()
-    .ru('Тип привода колеса')
-    .en('Type of wheel drive')
-    .de('Art des Radantriebs')
-    .get()
+  /** Крутящий момент. */
+  @stringAttr<WheelTorque>()
+  accessor Torque: WheelTorque | undefined
+  declare $Torque: IStringAttrDescriptor<WheelTorque>
+  @lazy get TorqueDesc() {
+    return new BaseLocalization()
+      .ru('Тип привода колеса')
+      .en('Type of wheel drive')
+      .de('Art des Radantriebs')
+      .get(Config)
+  }
 
-  /** Максимальный угол поворота колеса при рулении */
-  @floatAttr(new Limit({ min: -90.0, max: 90.0 }))
-  get SteeringAngle() { return 0.0 }
-  set SteeringAngle(_: number | undefined) {}
-  @numUtils()
-  get $SteeringAngle() { return {} as NumUtils }
-  SteeringAngleDesc = new Localization()
-    .ru('Максимальный угол поворота колеса при рулении')
-    .en('The maximum angle of rotation of the wheel when taxiing')
-    .de('Maximaler Lenkwinkel des Rades beim Lenken')
-    .get()
+  /** Максимальный угол поворота колеса при рулении. */
+  @limit(new Limit({ min: -90.0, max: 90.0 }))
+  @floatAttr()
+  accessor SteeringAngle: number | undefined = 0.0
+  declare $SteeringAngle: INumberAttrDescriptor
+  @lazy get SteeringAngleDesc() {
+    return new BaseLocalization()
+      .ru('Максимальный угол поворота колеса при рулении')
+      .en('The maximum angle of rotation of the wheel when taxiing')
+      .de('Maximaler Lenkwinkel des Rades beim Lenken')
+      .get(Config)
+  }
 
-  /** Угол наклона колеса по оси OX в сторону поворота */
-  @floatAttr(new Limit({ min: 0.0, max: 45.0 }))
-  get SteeringCastor() { return 0.0 }
-  set SteeringCastor(_: number | undefined) {}
-  @numUtils()
-  get $SteeringCastor() { return {} as NumUtils }
-  SteeringCastorDesc = new Localization()
-    .ru('Угол наклона колеса в сторону поворота')
-    .en('The angle of inclination of the wheel in the direction of rotation')
-    .de('Neigungswinkel des Rades zum Drehen')
-    .get()
+  /** Угол наклона колеса по оси OX в сторону поворота. */
+  @limit(new Limit({ min: 0.0, max: 45.0 }))
+  @floatAttr()
+  accessor SteeringCastor: number | undefined = 0.0
+  declare $SteeringCastor: INumberAttrDescriptor
+  @lazy get SteeringCastorDesc() {
+    return new BaseLocalization()
+      .ru('Угол наклона колеса в сторону поворота')
+      .en('The angle of inclination of the wheel in the direction of rotation')
+      .de('Neigungswinkel des Rades zum Drehen')
+      .get(Config)
+  }
 
-  /** Минимальное значение просадки подвески */
-  @floatAttr(new Limit({ min: -1000.0, max: 1000.0 }))
-  get SuspensionMin() { return 0.0 }
-  set SuspensionMin(_: number | undefined) {}
-  @numUtils()
-  get $SuspensionMin() { return {} as NumUtils }
+  /** Минимальное значение просадки подвески. */
+  @limit(new Limit({ min: -1000.0, max: 1000.0 }))
+  @floatAttr()
+  accessor SuspensionMin: number | undefined = 0.0
+  declare $SuspensionMin: INumberAttrDescriptor
 
-  /** Высота подвески */
-  @floatAttr(new Limit({ min: -1000.0, max: 1000.0 }))
-  get SuspensionHeight() { return 0.0 }
-  set SuspensionHeight(_: number | undefined) {}
-  @numUtils()
-  get $SuspensionHeight() { return {} as NumUtils }
-  SuspensionHeightDesc = new Localization()
-    .ru('Высота подвески колеса')
-    .en('Wheel suspension height')
-    .de('Höhe der Radaufhängung')
-    .get()
+  /** Высота подвески. */
+  @limit(new Limit({ min: -1000.0, max: 1000.0 }))
+  @floatAttr()
+  accessor SuspensionHeight: number | undefined = 0.0
+  declare $SuspensionHeight: INumberAttrDescriptor
+  @lazy get SuspensionHeightDesc() {
+    return new BaseLocalization()
+      .ru('Высота подвески колеса')
+      .en('Wheel suspension height')
+      .de('Höhe der Radaufhängung')
+      .get(Config)
+  }
 
-  /** Жесткость подвески */
-  @floatAttr(new Limit({ min: 0.0, max: 1000.0 }))
-  get SuspensionStrength() { return 0.0 }
-  set SuspensionStrength(_: number | undefined) {}
-  @numUtils()
-  get $SuspensionStrength() { return {} as NumUtils }
-  SuspensionStrengthDesc = new Localization()
-    .ru('Жесткость подвески колеса')
-    .en('Wheel suspension stiffness')
-    .de('Steifigkeit der Radaufhängung')
-    .get()
+  /** Жесткость подвески. */
+  @limit(new Limit({ min: 0.0, max: 1000.0 }))
+  @floatAttr()
+  accessor SuspensionStrength: number | undefined = 0.0
+  declare $SuspensionStrength: INumberAttrDescriptor
+  @lazy get SuspensionStrengthDesc() {
+    return new BaseLocalization()
+      .ru('Жесткость подвески колеса')
+      .en('Wheel suspension stiffness')
+      .de('Steifigkeit der Radaufhängung')
+      .get(Config)
+  }
 
-  /** Имя файла колеса */
-  @strAttr()
-  get Type(): string | undefined { return undefined }
-  set Type(_) {}
-  @strUtils()
-  get $Type() { return {} as StrUtils }
+  /** Имя файла колеса. */
+  @stringAttr()
+  accessor Type: string | undefined
+  declare $Type: IStringAttrDescriptor
 }
 
 export enum WheelLocation {

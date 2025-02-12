@@ -1,13 +1,8 @@
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import { publicVariable } from 'emr-bridge'
-
-import type { PubType } from './public'
-import { PubKeys } from './public'
 import type { IPaths } from './types'
-
-import { HasPublic } from '/utils/bridge/main'
+import { providePublic, publicField } from '/utils/bridge/main'
 
 export type * from './types'
 
@@ -18,14 +13,16 @@ const _dirname = dirname(fileURLToPath(import.meta.url))
  * Пути, используемые в программе (в собранном виде)  
  * _main process_
 */
-class Paths extends HasPublic {
+@providePublic()
+class Paths {
   /** URL для обновления */
   private readonly updaterURL = 'https://verzsut.github.io/sxmle_updater'
   /** URL репозитория */
   private readonly ioReposURL = 'https://verzsut.github.io/SnowRunner-XML-Editor-Desktop'
 
   /** Объект путей */
-  private readonly object: IPaths = {
+  @publicField()
+  private accessor object: IPaths = {
     publicInfo: `${this.updaterURL}/public.json`,
     downloadPage: `${this.ioReposURL}/download.html`,
     update: `${this.updaterURL}/update/`,
@@ -74,12 +71,6 @@ class Paths extends HasPublic {
 
   /** Получить объект путей */
   get() { return { ...this.object } }
-
-  protected initPublic() {
-    publicVariable<PubType[PubKeys.object]>(PubKeys.object, {
-      get: this.get.bind(this)
-    })
-  }
 
   /** Обработать путь относительно текущей папки */
   private resolve(...paths: string[]) {

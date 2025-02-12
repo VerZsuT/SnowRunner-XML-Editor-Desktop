@@ -1,14 +1,12 @@
-import { providePubFunc } from '/utils/bridge/renderer'
-
-import type { PubType } from './public'
-import { PubKeys } from './public'
-
+import type MainHelpers from './main'
+import { initMain, mainMethod } from '/utils/bridge/renderer'
 export type * from './types'
 
 /**
  * Дополнительные методы  
  * _renderer process_
  */
+@initMain()
 class Helpers {
   /**
    * Найти в папке все соответствия
@@ -18,34 +16,44 @@ class Helpers {
    * @param recursive - рекурсивный поиск (default = `false`)
    * @returns массив путей
    */
-  findInDir = providePubFunc<PubType[PubKeys.findInDir]>(PubKeys.findInDir)
+  @mainMethod()
+  findInDir!: typeof MainHelpers.findInDir
 
   /** Получить папку пользователя */
-  homedir = providePubFunc<PubType[PubKeys.homedir]>(PubKeys.homedir)
+  @mainMethod()
+  homedir!: typeof MainHelpers.homedir
 
   /** Получить информацию о пользователе */
-  userInfo = providePubFunc<PubType[PubKeys.userInfo]>(PubKeys.userInfo)
+  @mainMethod()
+  userInfo!: typeof MainHelpers.userInfo
 
   /** Соединяет путь */
-  join = providePubFunc<PubType[PubKeys.join]>(PubKeys.join)
+  @mainMethod()
+  join!: typeof MainHelpers.join
 
   /** Открывает ссылку в браузере */
-  openLink = providePubFunc<PubType[PubKeys.openLink]>(PubKeys.openLink)
+  @mainMethod()
+  openLink!: typeof MainHelpers.openLink
 
   /** Открывает путь в проводнике */
-  openPath = providePubFunc<PubType[PubKeys.openPath]>(PubKeys.openPath)
+  @mainMethod()
+  openPath!: typeof MainHelpers.openPath
 
   /** Открывает файл для редактирования */
-  openFile = providePubFunc<PubType[PubKeys.openFile]>(PubKeys.openFile)
+  @mainMethod()
+  openFile!: typeof MainHelpers.openFile
 
   /** Перезагружает программу */
-  reloadApp = providePubFunc<PubType[PubKeys.reloadApp]>(PubKeys.reloadApp)
+  @mainMethod()
+  reloadApp!: typeof MainHelpers.reloadApp
 
   /** Закрывает программу */
-  quitApp = providePubFunc<PubType[PubKeys.quitApp]>(PubKeys.quitApp)
+  @mainMethod()
+  quitApp!: typeof MainHelpers.quitApp
 
   /** Показывает/скрывает devtools */
-  devTools = providePubFunc<PubType[PubKeys.devtools]>(PubKeys.devtools)
+  @mainMethod()
+  devtools!: typeof MainHelpers.devtools
 }
 
 export default new Helpers()

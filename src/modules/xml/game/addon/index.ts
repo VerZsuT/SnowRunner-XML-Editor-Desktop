@@ -9,7 +9,7 @@ export * from './game-data'
 export { default as AddonGameData } from './game-data'
 export { default as AddonTruckData } from './truck-data'
 
-/** Рутовый тег файла класса двигателей */
+/** Рутовый тег файла класса двигателей. */
 export default class TruckAddon extends XMLWithTemplates {
   static override async from(str: string): Promise<TruckAddon | undefined>
   static override async from(file: File): Promise<TruckAddon | undefined>
@@ -18,19 +18,21 @@ export default class TruckAddon extends XMLWithTemplates {
     const root = await XMLElement.from(source as File)
     const element = root?.select(rootSelector)
 
-    if (root && element) return new this(
-      element,
-      await XMLTemplates.from(root),
-      rootSelector,
-      root
-    )
+    if (root && element) {
+      return new this(
+        element,
+        await XMLTemplates.from(root),
+        rootSelector,
+        root
+      )
+    }
   }
 
-  /** Свойства непосредственно аддона */
+  /** Свойства непосредственно аддона. */
   @innerElement(TruckData)
-  get TruckData(): TruckData | undefined { return undefined }
+  readonly TruckData: TruckData | undefined
 
-  /** Информация о взаимодействии двигателя с окружающим миром */
+  /** Информация о взаимодействии двигателя с окружающим миром. */
   @innerElement(GameData)
-  get GameData(): GameData | undefined { return undefined }
+  readonly GameData: GameData | undefined
 }

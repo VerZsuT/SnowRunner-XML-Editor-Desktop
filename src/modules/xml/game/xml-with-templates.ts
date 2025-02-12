@@ -14,7 +14,10 @@ export default class XMLWithTemplates extends GameXML {
   static override async from(file: File): Promise<XMLWithTemplates | undefined>
   static override async from(source: string | File): Promise<XMLWithTemplates | undefined> {
     const element = await super.from(source as File)
-    if (element) return new XMLWithTemplates(element, await XMLTemplates.from(source as File))
+
+    if (element) {
+      return new XMLWithTemplates(element, await XMLTemplates.from(source as File))
+    }
   }
 
   constructor(element: XMLElement, templates?: XMLTemplates, selector = '', baseElement = element) {
@@ -52,68 +55,127 @@ export default class XMLWithTemplates extends GameXML {
    */
   getAttrWT(name: string): AttrValue | undefined {
     const fromElement = this.getAttr(name)
-    if (fromElement) return fromElement
+
+    if (fromElement) {
+      return fromElement
+    }
 
     const fromTemplates = this.templates?.getValue(this, name)
-    if (fromTemplates) return new AttrValue(fromTemplates)
+
+    if (fromTemplates) {
+      return new AttrValue(fromTemplates)
+    }
   }
 
-  protected override procAttr(attrName: string, value?: string | number | boolean | null, limit?: Limit): AttrValue | undefined {
+  override procAttr(attrName: string, value?: string | number | boolean | null, limit?: Limit): AttrValue | undefined {
     switch (value) {
-      case undefined: {
+      case undefined:
         return this.getAttrWT(attrName)
-      }
-      default: {
+      default:
         super.procAttr(attrName, value, limit)
-      }
     }
   }
 }
 
 /**
  * Внутренний элемент
- * @param Class - класс, который будет создан для элемента
+ * @param ClassOrFactory - класс, который будет создан для элемента
  * @param tagName - название тега необходимого элемента
  * @param canAdd - добавить тег при его отсутствии
  */
-export function innerElement<T extends typeof XMLWithTemplates>(Class: T, tagName?: string, canAdd?: boolean) {
-  return <This extends XMLWithTemplates>(
-    _: This,
-    key: string,
-    descriptor: PropertyDescriptor
-  ) => {
-    descriptor.get = function(this: This) {
-      const target = tagName ?? key
-      const innerSelector = this.selector ? `${this.selector} > ${target}` : target
-      let element = this.select(target)
+export function innerElement<T extends typeof XMLWithTemplates>(
+  ClassOrFactory: T | (() => T),
+  tagName?: string,
+  canAdd?: boolean
+) {
+  type Value = InstanceType<T> | undefined
 
-      if (!element && canAdd) {
-        element = this.appendTag(target).select(target)
-      }
-      if (element) return new Class(element, this.templates, innerSelector)
-    }
+  return function<This extends XMLWithTemplates>(
+    _target: unknown,
+    context: ClassFieldDecoratorContext<This, Value>
+  ) {
+    const name = context.name.toString()
+    
+    context.addInitializer(function(this: This) {
+      Object.defineProperty(this, name, {
+        get(this: This) {
+          const target = tagName ?? name
+          const innerSelector = this.selector
+            ? `${this.selector} > ${target}`
+            : target
+          let element = this.select(target)
+    
+          if (!element && canAdd) {
+            element = this.appendTag(target).select(target)
+          }
+    
+          if (!element) {
+            return
+          }
+
+          const Class: T = typeof ClassOrFactory === 'function' && !ClassOrFactory.name
+            // @ts-expect-error
+            ? ClassOrFactory()
+            : ClassOrFactory
+          const value = new Class(element, this.templates, innerSelector) as Value
+          
+          Object.defineProperty(this, name, {
+            value,
+            enumerable: true,
+            writable: false
+          })
+
+          return value
+        },
+        enumerable: true,
+        configurable: true
+      })
+    })
   }
 }
 
 /**
  * Внутренние элементы
- * @param Class - класс, который будет создан для каждого элемента
+ * @param ClassOrFactory - класс, который будет создан для каждого элемента
  * @param selector - селектор необходимых элементов
  */
-export function innerElements<T extends typeof XMLWithTemplates>(Class: T, selector?: string) {
-  return <This extends XMLWithTemplates>(
-    _: This,
-    key: string,
-    descriptor: PropertyDescriptor
-  ) => {
-    descriptor.get = function(this: This) {
-      const target = selector ?? key
-      const elements = this.selectAll(target)
+export function innerElements<T extends typeof XMLWithTemplates>(ClassOrFactory: T | (() => T), selector?: string) {
+  type Value = InstanceType<T>[]
 
-      return elements.map((element, index) => {
-        const innerSelector = this.selector ? `${this.selector} > ${target}:nth-of-type(${index + 1})` : undefined
-        return new Class(element, this.templates, innerSelector)
+  return function<This extends XMLWithTemplates>(
+    _target: unknown,
+    context: ClassFieldDecoratorContext<This, Value>
+  ) {
+    const name = context.name.toString()
+    
+    context.addInitializer(function(this: This) {
+      Object.defineProperty(this, name, {
+        get(this: This) {
+          const target = selector ?? name
+          const elements = this.selectAll(target)
+          const Class: T = typeof ClassOrFactory === 'function' && !ClassOrFactory.name
+              // @ts-expect-error
+              ? ClassOrFactory()
+              : ClassOrFactory
+          const value = elements.map((element, index) => new Class(
+            element,
+            this.templates,
+            this.selector
+              ? `${this.selector} > ${target}:nth-of-type(${index + 1})`
+              : undefined
+          )) as Value
+
+          Object.defineProperty(this, name, {
+            value,
+            enumerable: true,
+            writable: false
+          })
+
+          return value
+        },
+        enumerable: true,
+        configurable: true
       })
-    }
+    })
   }
 }

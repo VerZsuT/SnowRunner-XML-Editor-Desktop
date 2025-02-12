@@ -1,6 +1,7 @@
-import { BaseLocalization, BaseLocalizationObj } from '/utils/texts/base-localization'
+import { createTextsLoader } from '/utils/texts'
+import { BaseLocalization } from '/utils/texts/base-localization'
 
-export default new BaseLocalizationObj({
+export default createTextsLoader({
   /** Файлы успешно объединены */
   successJoin: new BaseLocalization()
     .ru('Следующие файлы были объединены в один:')

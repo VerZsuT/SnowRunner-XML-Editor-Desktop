@@ -3,9 +3,9 @@ import TruckRim from './rim'
 
 export { default as TruckRim } from './rim'
 
-/** Секция описания дисков */
+/** Секция описания дисков. */
 export default class TruckRims extends XMLWithTemplates {
-  /** Диски */
+  /** Диски. */
   @innerElements(TruckRim, 'TruckRim')
-  get Rims(): TruckRim[] { return [] }
+  readonly Rims: TruckRim[] = []
 }

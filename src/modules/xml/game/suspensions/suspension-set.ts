@@ -1,64 +1,65 @@
+import type { INumberAttrDescriptor, IStringAttrDescriptor } from '../attributes'
+import { floatAttr, integerAttr, lazy, limit, stringAttr } from '../attributes'
 import { BaseGameData } from '../base'
-import type { NumUtils, StrUtils } from '../game-xml'
-import { floatAttr, intAttr, numUtils, strAttr, strUtils } from '../game-xml'
 import Limit from '../limit'
 import XMLWithTemplates, { innerElement, innerElements } from '../xml-with-templates'
 import Suspension from './suspension'
-
-import { Localization } from '/utils/texts/renderer'
+import { Config } from '/mods/renderer'
+import { BaseLocalization } from '/utils/texts/base-localization'
 
 export { default as Suspension } from './suspension'
 
-/** Набор подвесок */
+/** Набор подвесок. */
 export default class SuspensionSet extends XMLWithTemplates {
-  /** Имя набора подвесок */
-  @strAttr()
-  get Name(): string | undefined { return undefined }
-  set Name(_) {}
-  @strUtils()
-  get $Name() { return {} as StrUtils }
+  /** Имя набора подвесок. */
+  @stringAttr()
+  accessor Name: string | undefined
+  declare $Name: IStringAttrDescriptor
 
-  /** Размер допустимого ущерба */
-  @intAttr(new Limit({ min: 0, max: 64_000, fixed: true }))
-  get DamageCapacity() { return 0 }
-  set DamageCapacity(_: number | undefined) {}
-  @numUtils()
-  get $DamageCapacity() { return {} as NumUtils }
-  DamageCapacityDesc = new Localization()
-    .ru('Размер допустимого ущерба подвеске')
-    .en('The amount of possible damage to the suspension')
-    .de('Die Höhe des zulässigen Schadens an der Aufhängung')
-    .get()
+  /** Размер допустимого ущерба. */
+  @limit(new Limit({ min: 0, max: 64_000, fixed: true }))
+  @integerAttr()
+  accessor DamageCapacity: number | undefined = 0
+  declare $DamageCapacity: INumberAttrDescriptor
+  @lazy get DamageCapacityDesc() {
+    return new BaseLocalization()
+      .ru('Размер допустимого ущерба подвеске')
+      .en('The amount of possible damage to the suspension')
+      .de('Die Höhe des zulässigen Schadens an der Aufhängung')
+      .get(Config)
+  }
 
-  /** Порог критического урона */
-  @floatAttr(new Limit({ min: 0.0, max: 0.999 }))
-  get CriticalDamageThreshold() { return 0.7 }
-  set CriticalDamageThreshold(_: number | undefined) {}
-  @numUtils()
-  get $CriticalDamageThreshold() { return {} as NumUtils }
-  CriticalDamageThresholdDesc = new Localization()
-    .ru('Порог критического урона подвески')
-    .en('Suspension Critical Damage Threshold')
-    .de('Schwelle für kritischen Fahrwerksschaden')
-    .get()
+  /** Порог критического урона. */
+  @limit(new Limit({ min: 0.0, max: 0.999 }))
+  @floatAttr()
+  accessor CriticalDamageThreshold: number | undefined = 0.7
+  declare $CriticalDamageThreshold: INumberAttrDescriptor
+  @lazy get CriticalDamageThresholdDesc() {
+    return new BaseLocalization()
+      .ru('Порог критического урона подвески')
+      .en('Suspension Critical Damage Threshold')
+      .de('Schwelle für kritischen Fahrwerksschaden')
+      .get(Config)
+  }
 
-  /** Коэффициент увеличения повреждения подвески при пробитом колесе */
-  @floatAttr(new Limit({ min: 0.0, max: 100.0 }))
-  get BrokenWheelDamageMultiplier() { return 1.0 }
-  set BrokenWheelDamageMultiplier(_: number | undefined) {}
-  @numUtils()
-  get $BrokenWheelDamageMultiplier() { return {} as NumUtils }
-  BrokenWheelDamageMultiplierDesc = new Localization()
-    .ru('Коэффициент увеличения повреждения подвески при пробитом колесе')
-    .en('The coefficient of increase in suspension damage with a punctured wheel')
-    .de('Erhöhte Fahrwerksschäden bei eingeschlossenem Rad')
-    .get()
+  /** Коэффициент увеличения повреждения подвески при пробитом колесе. */
+  @limit(new Limit({ min: 0.0, max: 100.0 }))
+  @floatAttr()
+  accessor BrokenWheelDamageMultiplier: number | undefined = 1.0
+  declare $BrokenWheelDamageMultiplier: INumberAttrDescriptor
+  @lazy get BrokenWheelDamageMultiplierDesc() {
+    return new BaseLocalization()
+      .ru('Коэффициент увеличения повреждения подвески при пробитом колесе')
+      .en('The coefficient of increase in suspension damage with a punctured wheel')
+      .de('Erhöhte Fahrwerksschäden bei eingeschlossenem Rad')
+      .get(Config)
+  }
 
-  /** Подвески */
+  /** Подвески. */
   @innerElements(Suspension, 'Suspension')
-  get Suspensions(): Suspension[] { return [] }
+  readonly Suspensions: Suspension[] = []
 
-  /** Информация о взаимодействии подвески с окружающим миром */
+  /** Информация о взаимодействии подвески с окружающим миром. */
   @innerElement(BaseGameData)
-  get GameData(): BaseGameData | undefined { return undefined }
+  readonly GameData: BaseGameData | undefined
 }

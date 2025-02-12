@@ -1,5 +1,4 @@
 import type { IFileSizes } from './types'
-
 import type { File } from '/mods/files/main'
 import { Files } from '/mods/files/main'
 
@@ -10,6 +9,8 @@ export type * from './types'
  * _main process_
 */
 class Sizes {
+  readonly isReady: Promise<typeof this>
+
   /** Значение по умолчанию */
   readonly default: IFileSizes = {
     initial: 0,
@@ -22,11 +23,12 @@ class Sizes {
   /** Размеры модов */
   private mods = this.default.mods
 
-  /**
-   * Инициализация класса  
-   * __НЕ ИСПОЛЬЗОВАТЬ__
-  */
-  async _init() {
+  constructor() {
+    this.isReady = this.init()
+  }
+
+  /** Инициализация класса. */
+  private async init() {
     const { initial, mods } = await this.getFileSizes()
     this.initial = initial
     this.mods = mods
@@ -76,12 +78,10 @@ class Sizes {
     if (await Files.sizes.exists()) {
       try {
         return await this.getFromJSON()
-      }
-      catch {
+      } catch {
         return this.default
       }
-    }
-    else {
+    } else {
       return this.default
     }
   }
@@ -92,4 +92,4 @@ class Sizes {
   }
 }
 
-export default (await new Sizes()._init())
+export default await new Sizes().isReady

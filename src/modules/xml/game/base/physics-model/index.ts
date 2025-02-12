@@ -3,9 +3,9 @@ import Body from './body'
 
 export { default as PhysicsBody } from './body'
 
-/** Физическая модель */
+/** Физическая модель. */
 export default class BasePhysicsModel extends XMLWithTemplates {
-  /** Физическое тело */
+  /** Физическое тело. */
   @innerElement(Body)
-  get Body(): Body | undefined { return undefined }
+  readonly Body: Body | undefined
 }

@@ -4,8 +4,9 @@ import InstallSocket from './install-socket'
 
 export { default as AddonInstallSocket } from './install-socket'
 
-/** Информация о взаимодействии двигателя с окружающим миром */
+/** Информация о взаимодействии двигателя с окружающим миром. */
 export default class GameData extends BaseGameData {
+  /** Сокет установки аддона. */
   @innerElement(InstallSocket)
-  get InstallSocket(): InstallSocket | undefined { return undefined }
+  readonly InstallSocket: InstallSocket | undefined
 }

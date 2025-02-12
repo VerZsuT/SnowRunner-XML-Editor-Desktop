@@ -23,3 +23,11 @@ export interface IFindDirsArgs {
   /** Рекурсивный поиск */
   recursive?: boolean
 }
+
+export interface IFSEntrySnapshot {
+  path: string
+}
+
+export interface IFSEntryArraySnapshot {
+  paths: string[]
+}

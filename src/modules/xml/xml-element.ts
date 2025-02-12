@@ -1,4 +1,4 @@
-import type { AnyNode, Cheerio } from 'cheerio'
+import type { Cheerio } from 'cheerio'
 import { load } from 'cheerio'
 
 import { File } from '/mods/files/renderer'
@@ -26,9 +26,9 @@ export default class XMLElement {
   }
 
   constructor(
-    private readonly element: Cheerio<AnyNode>,
+    private readonly element: Cheerio<any>,
     public readonly selector = '',
-    private readonly baseElement: Cheerio<AnyNode> = element
+    private readonly baseElement: Cheerio<any> = element
   ) {}
 
   /** Имя тега */

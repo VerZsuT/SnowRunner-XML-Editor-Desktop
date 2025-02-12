@@ -1,46 +1,41 @@
+import type { EditedFile } from './types'
+import Mods from '/mods/data/mods/renderer'
+import DLCs from '/mods/dlcs/renderer'
 import type { File } from '/mods/files/renderer'
 import { Dirs } from '/mods/files/renderer'
 import RendArrayBase from '/utils/json-arrays/renderer'
-
-import type { PubType } from './public'
-import { PubKeys } from './public'
-import type { EditedFile } from './types'
-
-import Mods from '/mods/data/mods/renderer'
-import DLCs from '/mods/dlcs/renderer'
+import { initMain } from '/utils/renderer'
 
 export type * from './types'
-
-type EditedFiles = PubType[PubKeys.array]
 
 /**
  * Работа с массивом изменённых файлов  
  * _renderer process_
 */
-class Edited extends RendArrayBase<EditedFiles[number], File> {
-  constructor() {
-    super(
-      PubKeys.array,
-      PubKeys.onMainChange,
-      PubKeys.rendererChangeEvent,
-      PubKeys.reset,
-      PubKeys.save
-    )
-  }
-
+@initMain()
+class Edited extends RendArrayBase<EditedFile, File> {
   override convert({ dlc, mod, isTrailer, name }: EditedFile): File {
-    const folder = isTrailer ? 'trucks/trailers' : 'trucks'
+    const folder = isTrailer
+      ? 'trucks/trailers'
+      : 'trucks'
     const fileName = `${name}.xml`
 
-    if (dlc) return Dirs.dlc.file(dlc, 'classes', folder, fileName)
-    if (mod) return Dirs.modsTemp.file(mod, 'classes', folder, fileName)
+    if (dlc) {
+      return Dirs.dlc.file(dlc, 'classes', folder, fileName)
+    }
+
+    if (mod) {
+      return Dirs.modsTemp.file(mod, 'classes', folder, fileName)
+    }
 
     return Dirs.classes.file(folder, fileName)
   }
 
   /** Пометить файл как изменённый */
   markAsEdited(file: File, isTrailer?: boolean) {
-    if (this.isEdited(file)) return
+    if (this.isEdited(file)) {
+      return
+    }
 
     this.push({
       name: file.name,
@@ -50,13 +45,16 @@ class Edited extends RendArrayBase<EditedFiles[number], File> {
     })
   }
 
-  /** Пометить файл как неизменённый */
+  /** Пометить файл как неизмененный */
   markAsNotEdited(file: File) {
-    if (!this.isEdited(file)) return
+    if (!this.isEdited(file)) {
+      return
+    }
 
     for (const [i, item] of this.entries()) {
       if (item.name === file.name) {
         this.removeAt(i)
+        
         break
       }
     }

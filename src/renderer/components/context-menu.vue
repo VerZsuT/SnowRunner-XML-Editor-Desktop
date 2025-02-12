@@ -17,29 +17,30 @@ import type { ItemType } from 'ant-design-vue'
 import { Menu } from 'ant-design-vue'
 import type { ComponentPublicInstance } from 'vue'
 import { computed, ref, toRefs, watch } from 'vue'
-
 import type { EmitsToProps } from '../types'
 
 export type ContextMenuProps = Props & EmitsToProps<Emits>
 
 type Props = {
-  /** Элементы меню */
+  /** Элементы меню. */
   items: ItemType[]
-  /** Таргет контекстного меню */
+
+  /** Таргет контекстного меню. */
   target: ComponentPublicInstance | HTMLElement | null
 }
 
 type Emits = {
-  /** Событие закрытия меню */
+  /** Событие закрытия меню. */
   close: []
-  /** Событие показа меню */
+
+  /** Событие показа меню. */
   show: []
 }
 
 const props = defineProps<Props>()
+const { target, items } = toRefs(props)
 const emit = defineEmits<Emits>()
 
-const { target, items } = toRefs(props)
 const isShow = ref(false)
 const position = ref({ x: 50, y: 50 })
 
@@ -53,11 +54,18 @@ const menuItems = computed(() => items.value.map(item => {
   } as ItemType
 }))
 
-watch(target, () => {
-  const value = target.value
-  if (!value) return
+watch(target, handleTarget)
 
-  const element = '$el' in value ? value.$el : value
+function handleTarget() {
+  const value = target.value
+
+  if (!value) {
+    return
+  }
+
+  const element = '$el' in value
+    ? value.$el
+    : value
 
   element.addEventListener('contextmenu', (event: MouseEvent) => {
     event.preventDefault()
@@ -68,7 +76,7 @@ watch(target, () => {
 
     emit('show')
   })
-})
+}
 
 function hide(event?: MouseEvent) {
   event?.stopPropagation()

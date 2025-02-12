@@ -1,3 +1,4 @@
+import type { IHasSnapshot } from 'emr-bridge/renderer'
 import type CP from 'node:child_process'
 import type FS from 'node:fs'
 import type { WatchListener } from 'node:fs'
@@ -5,7 +6,7 @@ import type FSP from 'node:fs/promises'
 import type PATH from 'node:path'
 
 import type { XMLElement } from '../renderer'
-import type { ICheckResult, IFindDirsArgs, IFindFilesArgs } from './types'
+import type { ICheckResult, IFindDirsArgs, IFindFilesArgs, IFSEntryArraySnapshot, IFSEntrySnapshot } from './types'
 export type * from './types'
 
 import { ErrorText, ProgramError } from '/mods/errors/renderer'
@@ -27,12 +28,24 @@ const {
  * Сущность в файловой системе  
  * _renderer process_
 */
-export class FSEntry {
+export class FSEntry implements IHasSnapshot<IFSEntrySnapshot> {
   /** Путь к сущности */
-  readonly path: string
+  path = ''
 
-  constructor(path: string, ...partsToJoin: string[]) {
-    this.path = join(path, ...partsToJoin)
+  constructor(path?: string, ...partsToJoin: string[]) {
+    if (path) {
+      this.path = join(path, ...partsToJoin)
+    }
+  }
+
+  takeSnapshot(): IFSEntrySnapshot {
+    return {
+      path: this.path
+    }
+  }
+
+  updateFromSnapshot(snapshot: IFSEntrySnapshot): void {
+    this.path = snapshot.path
   }
 
   /** Имя базовой папки */
@@ -140,7 +153,19 @@ export class FSEntry {
  * Массив сущностей в файловой системе  
  * _renderer process_
 */
-class FSEntryArray extends Array<FSEntry> {
+export class FSEntryArray extends Array<FSEntry> implements IHasSnapshot<IFSEntryArraySnapshot> {
+  takeSnapshot(): IFSEntryArraySnapshot {
+    return {
+      paths: this.map(entry => entry.path)
+    }
+  }
+
+  updateFromSnapshot(snapshot: IFSEntryArraySnapshot): void {
+    for (const path of snapshot.paths) {
+      this.push(new FSEntry(path))
+    }
+  }
+
   /** Возвращает в виде массива файлов */
   asFiles(): File[] {
     return this.map(entry => entry.asFile())
@@ -149,6 +174,34 @@ class FSEntryArray extends Array<FSEntry> {
   /** Возвращает в виде массива папок */
   asDirs(): Dir[] {
     return this.map(entry => entry.asDir())
+  }
+}
+
+export class FileArray extends Array<File> implements IHasSnapshot<IFSEntryArraySnapshot> {
+  takeSnapshot(): IFSEntryArraySnapshot {
+    return {
+      paths: this.map(entry => entry.path)
+    }
+  }
+
+  updateFromSnapshot(snapshot: IFSEntryArraySnapshot): void {
+    for (const path of snapshot.paths) {
+      this.push(new File(path))
+    }
+  }
+}
+
+export class DirArray extends Array<Dir> implements IHasSnapshot<IFSEntryArraySnapshot> {
+  takeSnapshot(): IFSEntryArraySnapshot {
+    return {
+      paths: this.map(entry => entry.path)
+    }
+  }
+
+  updateFromSnapshot(snapshot: IFSEntryArraySnapshot): void {
+    for (const path of snapshot.paths) {
+      this.push(new Dir(path))
+    }
   }
 }
 

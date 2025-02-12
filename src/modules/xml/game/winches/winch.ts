@@ -1,45 +1,45 @@
+import type { INumberAttrDescriptor } from '../attributes'
+import { booleanAttr, floatAttr, lazy, limit } from '../attributes'
 import { BaseGameData } from '../base'
-import type { BoolUtils, NumUtils } from '../game-xml'
-import { boolAttr, boolUtils, floatAttr, numUtils } from '../game-xml'
 import Limit from '../limit'
 import XMLWithTemplates, { innerElement } from '../xml-with-templates'
+import { Config } from '/mods/renderer'
+import { BaseLocalization } from '/utils/texts/base-localization'
 
-import { Localization } from '/utils/texts/renderer'
-
-/** Лебёдка */
+/** Лебёдка. */
 export default class Winch extends XMLWithTemplates {
-  /** Длина лебёдки */
-  @floatAttr(new Limit({ min: 0.0, max: 100.0 }))
-  get Length() { return 14.0 }
-  set Length(_: number | undefined) {}
-  @numUtils()
-  get $Length() { return {} as NumUtils }
-  LengthDesc = new Localization()
-    .ru('Максимальная длина веревки лебедки')
-    .en('Maximum length of the winch rope')
-    .de('Maximale Länge des Seilwinde')
-    .get()
+  /** Длина лебёдки. */
+  @limit(new Limit({ min: 0.0, max: 100.0 }))
+  @floatAttr()
+  accessor Length: number | undefined = 14.0
+  declare $Length: INumberAttrDescriptor
+  @lazy get LengthDesc() {
+    return new BaseLocalization()
+      .ru('Максимальная длина веревки лебедки')
+      .en('Maximum length of the winch rope')
+      .de('Maximale Länge des Seilwinde')
+      .get(Config)
+  }
 
-  /** Сила лебёдки */
-  @floatAttr(new Limit({ min: 0.0, max: 10.0 }))
-  get StrengthMult() { return 1.0 }
-  set StrengthMult(_: number | undefined) {}
-  @numUtils()
-  get $StrengthMult() { return {} as NumUtils }
+  /** Сила лебёдки. */
+  @limit(new Limit({ min: 0.0, max: 10.0 }))
+  @floatAttr()
+  accessor StrengthMult: number | undefined = 1.0
+  declare $StrengthMult: INumberAttrDescriptor
 
-  /** Автономная ли лебёдка */
-  @boolAttr()
-  get IsEngineIgnitionRequired() { return true }
-  set IsEngineIgnitionRequired(_: boolean | undefined) {}
-  @boolUtils()
-  get $IsEngineIgnitionRequired() { return {} as BoolUtils }
-  IsEngineIgnitionRequiredDesc = new Localization()
-    .ru('Может ли лебёдка работать с заглушенным двигателем')
-    .en('Can the winch work with the engine turned off')
-    .de('Kann die Winde mit einem abgeschalteten Motor arbeiten')
-    .get()
+  /** Автономная ли лебёдка. */
+  @booleanAttr()
+  accessor IsEngineIgnitionRequired: boolean | undefined = true
+  declare $IsEngineIgnitionRequired: INumberAttrDescriptor
+  @lazy get IsEngineIgnitionRequiredDesc() {
+    return new BaseLocalization()
+      .ru('Может ли лебёдка работать с заглушенным двигателем')
+      .en('Can the winch work with the engine turned off')
+      .de('Kann die Winde mit einem abgeschalteten Motor arbeiten')
+      .get(Config)
+  }
 
-  /** Информация о взаимодействии лебёдки с окружающим миром */
+  /** Информация о взаимодействии лебёдки с окружающим миром. */
   @innerElement(BaseGameData)
-  get GameData(): BaseGameData | undefined { return undefined }
+  readonly GameData: BaseGameData | undefined
 }

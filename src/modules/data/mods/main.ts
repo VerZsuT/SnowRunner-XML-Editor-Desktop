@@ -1,21 +1,18 @@
+import { publishFunction } from 'emr-bridge/main'
 import { homedir, userInfo } from 'node:os'
-
-import MainArrayBase from '/utils/json-arrays/main'
-
-import { publicFunction, publicMainEvent, publicRendererEvent } from 'emr-bridge'
-
 import type { PubType } from './public'
 import { PubKeys } from './public'
 import type { IMod } from './types'
-
 import Archive from '/mods/archive/main'
 import Checks from '/mods/checks/main'
 import Config from '/mods/data/config/main'
 import Sizes from '/mods/data/sizes/main'
 import { Dir, Dirs, File, Files } from '/mods/files/main'
 import GameTexts from '/mods/game-texts/main'
+import { providePublic } from '/utils/bridge/main'
 import { hasItems } from '/utils/checks/main'
-import { procNameForFS } from '/utils/main'
+import MainArrayBase from '/utils/json-arrays/main'
+import { processNameForFilesystem } from '/utils/main'
 
 export type * from './types'
 
@@ -23,13 +20,15 @@ export type * from './types'
  * Работа с массивом модификаций  
  * _main process_
 */
+@providePublic()
 class Mods extends MainArrayBase<IMod, IMod & { file: File }> {
-  protected override emitChangeEvent = publicMainEvent<[IMod[]]>(PubKeys.mainChangeEvent)
-  protected override onChangeEvent = publicRendererEvent<IMod[]>(PubKeys.onRendererChange)
-
   protected override jsonFile = Files.mods
 
-  constructor() { super(PubKeys.array, PubKeys.reset, PubKeys.save) }
+  constructor() {
+    super()
+    this.initPublic()
+    this.isReady = this.init()
+  }
 
   protected override convert(item: IMod): IMod & { file: File } {
     return { ...item, file: new File(item.path) }
@@ -37,7 +36,9 @@ class Mods extends MainArrayBase<IMod, IMod & { file: File }> {
 
   /** Обрабатывает добавленные моды */
   async procMods() {
-    if (!Config.useMods || !hasItems(this)) return
+    if (!Config.useMods || !hasItems(this)) {
+      return
+    }
 
     const deleteFromList = (name: string) => {
       this.findAndRemove(mod => mod.name === name)
@@ -49,6 +50,7 @@ class Mods extends MainArrayBase<IMod, IMod & { file: File }> {
 
       if (!hasFile || !hasPermissions) {
         deleteFromList(name)
+
         continue
       }
 
@@ -64,6 +66,7 @@ class Mods extends MainArrayBase<IMod, IMod & { file: File }> {
 
       if (!hasClasses) {
         deleteFromList(name)
+        
         continue
       }
     }
@@ -74,23 +77,31 @@ class Mods extends MainArrayBase<IMod, IMod & { file: File }> {
   /** Находит `.pak` файл модификаций в папке */
   async findMods(dir: Dir): Promise<[File, name: string][]> {
     const out: [File, string][] = []
-    if (!await dir.exists()) return []
+
+    if (!await dir.exists()) {
+      return []
+    }
 
     for (const entry of await dir.read()) {
       if (await entry.isFile()) {
         await processFile(entry.asFile(), dir)
-      }
-      else {
+      } else {
         const innerDir = entry.asDir()
+
         for (const innerEntry of await innerDir.read()) {
-          if (await innerEntry.isDir()) continue
+          if (await innerEntry.isDir()) {
+            continue
+          }
+
           await processFile(innerEntry.asFile(), innerDir)
         }
       }
     }
 
     async function processFile(file: File, dir: Dir) {
-      if (out.some(([outFile]) => outFile.path === file.path)) return
+      if (out.some(([outFile]) => outFile.path === file.path)) {
+        return
+      }
 
       const tempDir = Dirs.modsTemp.dir(file.name)
 
@@ -103,13 +114,14 @@ class Mods extends MainArrayBase<IMod, IMod & { file: File }> {
 
           if (await modioFile.exists()) {
             const modIoName = (await modioFile.readFromJSON()).name
-            const procedName = procNameForFS(modIoName)
+            const procedName = processNameForFilesystem(modIoName)
 
             if (!out.some(([, fileName]) => fileName === procedName)) {
               name = modIoName
             }
           }
-          out.push([file, procNameForFS(name)])
+
+          out.push([file, processNameForFilesystem(name)])
         }
       }
     }
@@ -136,6 +148,7 @@ class Mods extends MainArrayBase<IMod, IMod & { file: File }> {
       for (const dir of dirs) {
         if (await dir.exists()) {
           existedDir = dir
+
           break
         }
       }
@@ -154,25 +167,25 @@ class Mods extends MainArrayBase<IMod, IMod & { file: File }> {
         }
       }
 
-      if (!isExists) out.push([mod.file, mod.name])
+      if (!isExists) {
+        out.push([mod.file, mod.name])
+      }
     }
 
     return out
   }
   
   /** Инициализация публичных объектов/методов */
-  protected override initPublic(arrayKey: string, resetKey: string, saveKey: string) {
-    super.initPublic(arrayKey, resetKey, saveKey)
-
-    publicFunction<PubType[PubKeys.findMods]>(PubKeys.findMods, async dirPath => {
-      const items = await this.findMods(new Dir(dirPath))
-      return items.map(([mod, name]) => [mod.path, name])
+  private initPublic() {
+    publishFunction<PubType[PubKeys.findMods]>(PubKeys.findMods, async dirPath => {
+      return (await this.findMods(new Dir(dirPath)))
+        .map(([mod, name]) => [mod.path, name])
     })
-    publicFunction<PubType[PubKeys.getAllMods]>(PubKeys.getAllMods, async () => {
-      const items = await this.getAllMods()
-      return items.map(([mod, name]) => [mod.path, name])
+    publishFunction<PubType[PubKeys.getAllMods]>(PubKeys.getAllMods, async () => {
+      return (await this.getAllMods())
+        .map(([mod, name]) => [mod.path, name])
     })
   }
 }
 
-export default (await new Mods()._init())
+export default await new Mods().isReady

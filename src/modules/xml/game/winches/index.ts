@@ -7,7 +7,7 @@ import { type File } from '/mods/renderer'
 
 export { default as Winch } from './winch'
 
-/** Варианты лебёдок */
+/** Варианты лебёдок. */
 export default class WinchVariants extends XMLWithTemplates {
   static override async from(str: string): Promise<WinchVariants | undefined>
   static override async from(file: File): Promise<WinchVariants | undefined>
@@ -16,15 +16,17 @@ export default class WinchVariants extends XMLWithTemplates {
     const root = await XMLElement.from(source as File)
     const element = root?.select(rootSelector)
 
-    if (root && element) return new this(
-      element,
-      await XMLTemplates.from(root),
-      rootSelector,
-      root
-    )
+    if (root && element) {
+      return new this(
+        element,
+        await XMLTemplates.from(root),
+        rootSelector,
+        root
+      )
+    }
   }
 
-  /** Лебёдки */
+  /** Лебёдки. */
   @innerElements(Winch, 'Winch')
-  get Winches(): Winch[] { return [] }
+  readonly Winches: Winch[] = []
 }

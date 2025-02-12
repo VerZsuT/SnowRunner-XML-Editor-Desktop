@@ -1,39 +1,35 @@
+import type { INumberAttrDescriptor, IStringAttrDescriptor } from '../../attributes'
+import { floatAttr, integerAttr, limit, stringAttr } from '../../attributes'
 import { BaseGameData } from '../../base'
-import type { NumUtils, StrUtils } from '../../game-xml'
-import { floatAttr, intAttr, numUtils, strAttr, strUtils } from '../../game-xml'
 import Limit from '../../limit'
 import XMLWithTemplates, { innerElement } from '../../xml-with-templates'
 import WheelFriction from './wheel-friction'
 
 export { default as TireWheelFriction } from './wheel-friction'
 
-/** Шина */
+/** Шина. */
 export default class TruckTire extends XMLWithTemplates {
-  /** Имя покрышки */
-  @strAttr()
-  get Name(): string | undefined { return undefined }
-  set Name(_) {}
-  @strUtils()
-  get $Name() { return {} as StrUtils }
+  /** Имя покрышки. */
+  @stringAttr()
+  accessor Name: string | undefined
+  declare $Name: IStringAttrDescriptor
 
-  /** Масса колеса */
-  @intAttr(Limit.Positive.fixed())
-  get Mass(): number | undefined { return undefined }
-  set Mass(_) {}
-  @numUtils()
-  get $Mass() { return {} as NumUtils }
+  /** Масса колеса. */
+  @limit(Limit.Positive.fixed())
+  @integerAttr()
+  accessor Mass: number | undefined
+  declare $Mass: INumberAttrDescriptor
 
-  /** Скейл массы заднего колеса */
-  @floatAttr(new Limit({ min: 0.01 }))
-  get RearMassScale() { return 1.0 }
-  set RearMassScale(_: number | undefined) {}
-  @numUtils()
-  get $RearMassScale() { return {} as NumUtils }
+  /** Скейл массы заднего колеса. */
+  @limit(new Limit({ min: 0.01 }))
+  @floatAttr()
+  accessor RearMassScale: number | undefined = 1.0
+  declare $RearMassScale: INumberAttrDescriptor
 
   @innerElement(WheelFriction, 'WheelFriction', true)
-  get WheelFriction(): WheelFriction | undefined { return undefined }
+  readonly WheelFriction: WheelFriction | undefined
 
-  /** Информация о взаимодействии покрышки с окружающим миром */
+  /** Информация о взаимодействии покрышки с окружающим миром. */
   @innerElement(BaseGameData)
-  get GameData(): BaseGameData | undefined { return undefined }
+  readonly GameData: BaseGameData | undefined
 }

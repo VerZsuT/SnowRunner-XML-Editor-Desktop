@@ -1,20 +1,17 @@
-import { shallowRef, triggerRef } from 'vue'
-
 /** Базовый класс для массива */
-export default abstract class ArrayBase<Item, Converted = Item> {
+export default abstract class ArrayBase<Item, Converted = Item> implements Iterable<Converted> {
   /** Исходный массив */
-  protected arr: Item[] = []
-  /** Реактивная ссылка на объект */
-  protected thisRef = shallowRef(this)
+  protected accessor arr: Item[] = []
 
   /** Значение по умолчанию */
-  get default(): Item[] { return [] }
-
-  /** Реактивная ссылка */
-  get ref() { return this.thisRef.value }
+  get default(): Item[] {
+    return []
+  }
 
   /** Длина массива */
-  get length(): number { return this.arr.length }
+  get length(): number {
+    return this.arr.length
+  }
 
   /** Преобразованный массив */
   get converted(): Converted[] {
@@ -27,41 +24,26 @@ export default abstract class ArrayBase<Item, Converted = Item> {
     }
   }
 
-  /** Отследить изменение */
-  protected handleChange() {
-    this.onChangeEvent(newArray => {
-      this.rawSet(newArray)
-    })
-  }
-
   /** Преобразователь типа */
   protected convert(item: Item): Converted {
     return item as unknown as Converted
   }
 
   /** Возвращает массив */
-  get(): Item[] { return [...this.arr] }
+  get(): Item[] {
+    return [...this.arr]
+  }
 
   /** Устанавливает переданный массив */
   set(array: Item[]) {
-    this.rawSet(array)
-    this.emitChangeEvent(this.get())
-  }
-
-  /** Устанавливает переданный массив без вызова события изменения */
-  rawSet(array: Item[]) {
     this.arr = [...array]
-    triggerRef(this.thisRef)
   }
 
   /** Добавляет элемент в конец массива, и возвращает новую длину массива. */
   push(...items: Item[]): number {
-    const result = this.arr.push(...items)
+    this.arr = [...this.arr, ...items]
 
-    triggerRef(this.thisRef)
-    this.emitChangeEvent(this.get())
-
-    return result
+    return this.arr.length
   }
 
   /** Возвращает элементы, соответствующие условию в переданной функции. */
@@ -69,7 +51,7 @@ export default abstract class ArrayBase<Item, Converted = Item> {
     return this.arr.filter(predicate)
   }
 
-  /** Возаращает первый элемент, соответвующий условию в переданной функции */
+  /** Возвращает первый элемент, соответствующий условию в переданной функции */
   find(predicate: (value: Item, index: number, arr: Item[]) => unknown) {
     return this.arr.find(predicate)
   }
@@ -100,10 +82,7 @@ export default abstract class ArrayBase<Item, Converted = Item> {
   }
 
   /** Очищает массив */
-  clear() { this.set([]) }
-
-  /** Функция вызова события изменения массива */
-  protected abstract emitChangeEvent(newArray: Item[]): void
-  /** Функция подписки на событие изменения массива */
-  protected abstract onChangeEvent(handler: (newArray: Item[]) => void): void
+  clear() {
+    this.set([])
+  }
 }

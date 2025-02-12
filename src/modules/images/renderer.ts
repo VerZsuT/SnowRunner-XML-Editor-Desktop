@@ -1,8 +1,8 @@
-import { Category } from '/rend/pages/main/enums'
+import { Category } from '../../renderer/pages/general/enums'
 
 import { Config, Mods } from '/mods/data/renderer'
 import { Dir, File } from '/mods/files/renderer'
-import { TruckXML } from '/mods/xml/renderer'
+import type { TruckXML } from '/mods/xml/renderer'
 
 /** Работа с картинками */
 class Images {

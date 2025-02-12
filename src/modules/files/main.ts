@@ -1,10 +1,11 @@
+import type { IHasSnapshot } from 'emr-bridge/main'
 import { execFile } from 'node:child_process'
 import type { WatchListener } from 'node:fs'
 import { watch } from 'node:fs'
-import { access, chmod, constants, copyFile, lstat, mkdir, readFile, readdir, rename, rm, writeFile } from 'node:fs/promises'
+import { access, chmod, constants, copyFile, lstat, mkdir, readdir, readFile, rename, rm, writeFile } from 'node:fs/promises'
 import { basename, dirname, extname, join } from 'node:path'
 
-import type { ICheckResult, IFindDirsArgs, IFindFilesArgs } from './types'
+import type { ICheckResult, IFindDirsArgs, IFindFilesArgs, IFSEntryArraySnapshot, IFSEntrySnapshot } from './types'
 export type * from './types'
 
 import { ErrorText, ProgramError } from '/mods/errors/main'
@@ -14,12 +15,24 @@ import Paths from '/mods/paths/main'
  * Сущность в файловой системе  
  * _main process_
 */
-export class FSEntry {
+export class FSEntry implements IHasSnapshot<IFSEntrySnapshot> {
   /** Путь к сущности */
-  readonly path: string
+  path = ''
 
-  constructor(path: string, ...partsToJoin: string[]) {
-    this.path = join(path, ...partsToJoin)
+  constructor(path?: string, ...partsToJoin: string[]) {
+    if (path) {
+      this.path = join(path, ...partsToJoin)
+    }
+  }
+
+  takeSnapshot(): IFSEntrySnapshot {
+    return {
+      path: this.path
+    }
+  }
+
+  updateFromSnapshot(snapshot: IFSEntrySnapshot): void {
+    this.path = snapshot.path
   }
 
   /** Имя базовой папки */
@@ -127,7 +140,19 @@ export class FSEntry {
  * Массив сущностей в файловой системе  
  * _main process_
 */
-class FSEntryArray extends Array<FSEntry> {
+export class FSEntryArray extends Array<FSEntry> implements IHasSnapshot<IFSEntryArraySnapshot> {
+  takeSnapshot(): IFSEntryArraySnapshot {
+    return {
+      paths: this.map(entry => entry.path)
+    }
+  }
+
+  updateFromSnapshot(snapshot: IFSEntryArraySnapshot): void {
+    for (const path of snapshot.paths) {
+      this.push(new FSEntry(path))
+    }
+  }
+
   /** Возвращает в виде массива файлов */
   asFiles(): File[] {
     return this.map(entry => entry.asFile())
@@ -136,6 +161,34 @@ class FSEntryArray extends Array<FSEntry> {
   /** Возвращает в виде массива папок */
   asDirs(): Dir[] {
     return this.map(entry => entry.asDir())
+  }
+}
+
+export class FileArray extends Array<File> implements IHasSnapshot<IFSEntryArraySnapshot> {
+  takeSnapshot(): IFSEntryArraySnapshot {
+    return {
+      paths: this.map(entry => entry.path)
+    }
+  }
+
+  updateFromSnapshot(snapshot: IFSEntryArraySnapshot): void {
+    for (const path of snapshot.paths) {
+      this.push(new File(path))
+    }
+  }
+}
+
+export class DirArray extends Array<Dir> implements IHasSnapshot<IFSEntryArraySnapshot> {
+  takeSnapshot(): IFSEntryArraySnapshot {
+    return {
+      paths: this.map(entry => entry.path)
+    }
+  }
+
+  updateFromSnapshot(snapshot: IFSEntryArraySnapshot): void {
+    for (const path of snapshot.paths) {
+      this.push(new Dir(path))
+    }
   }
 }
 
@@ -169,13 +222,15 @@ export class Dir extends FSEntry {
 
   /** Считывает содержимое папки */
   async read(): Promise<FSEntryArray> {
-    if (!await this.exists()) return new FSEntryArray()
+    if (!await this.exists()) {
+      return new FSEntryArray()
+    }
 
     try {
       const inner = await readdir(this.path)
+
       return new FSEntryArray(...inner.map(name => this.entry(name)))
-    }
-    catch (error: any) {
+    } catch (error: any) {
       throw new ProgramError(ErrorText.readDirError, error, this.path)
     }
   }

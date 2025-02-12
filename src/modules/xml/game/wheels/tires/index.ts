@@ -4,9 +4,9 @@ import TruckTire from './tire'
 export * from './tire'
 export { default as TruckTire } from './tire'
 
-/** Секция описания шин */
+/** Секция описания шин. */
 export default class TruckTires extends XMLWithTemplates {
-  /** Шины */
+  /** Шины. */
   @innerElements(TruckTire, 'TruckTire')
-  get Tires(): TruckTire[] { return [] }
+  readonly Tires: TruckTire[] = []
 }

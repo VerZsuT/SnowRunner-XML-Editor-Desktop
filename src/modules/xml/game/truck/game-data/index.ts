@@ -1,14 +1,14 @@
+import type { IStringArrayAttrDescriptor } from '../../attributes'
+import { lazy, stringArrayAttr } from '../../attributes'
 import { BaseGameData } from '../../base'
-import type { StrArrUtils } from '../../game-xml'
-import { strArrAttr, strArrUtils } from '../../game-xml'
 import { innerElement, innerElements } from '../../xml-with-templates'
 import AddonSlots from './addon-slots'
 import AddonSockets from './addon-sockets'
 import CraneSocket from './crane-socket'
 import UiDesc from './ui-desc'
 import WinchSocket from './winch-socket'
-
-import { Localization } from '/utils/texts/renderer'
+import { Config } from '/mods/renderer'
+import { BaseLocalization } from '/utils/texts/base-localization'
 
 export * from './addon-sockets'
 export { default as TrailerAddonSlots, default as TruckAddonSockets } from './addon-sockets'
@@ -16,45 +16,43 @@ export { default as TruckCraneSocket } from './crane-socket'
 export { default as TruckUiDesc } from './ui-desc'
 export { default as TruckWinchSocket } from './winch-socket'
 
-/** Информация о взаимодействии трака с окружающим миром */
+/** Информация о взаимодействии трака с окружающим миром. */
 export default class GameData extends BaseGameData {
-  /** Регион */
-  @strArrAttr(strToCountry, true)
-  get Country(): Country[] { return [] }
-  set Country(_) {}
-  @strArrUtils(strToCountry, true)
-  get $Country() { return {} as StrArrUtils }
-  CountryDesc = new Localization()
-    .ru('Регион, в котором автомобиль доступен для покупки')
-    .en('The region where the car is available for purchase')
-    .de('Die Region, in der das Auto zum Kauf verfügbar ist')
-    .get()
+  /** Регион. */
+  @stringArrayAttr(strToCountry, true)
+  accessor Country: Country[] = []
+  declare $Country: IStringArrayAttrDescriptor<Country>
+  @lazy get CountryDesc() {
+    return new BaseLocalization()
+      .ru('Регион, в котором автомобиль доступен для покупки')
+      .en('The region where the car is available for purchase')
+      .de('Die Region, in der das Auto zum Kauf verfügbar ist')
+      .get(Config)
+  }
 
-  /** Исключение конкретного аддона из типа */
-  @strArrAttr()
-  get ExcludeAddons(): string[] { return [] }
-  set ExcludeAddons(_) {}
-  @strArrUtils()
-  get $ExcludeAddons() { return {} as StrArrUtils }
+  /** Исключение конкретного аддона из типа. */
+  @stringArrayAttr()
+  accessor ExcludeAddons: string[] = []
+  declare $ExcludeAddons: IStringArrayAttrDescriptor
 
-  /** Место крепления лебедки */
+  /** Место крепления лебедки. */
   @innerElements(WinchSocket, 'WinchSocket')
-  get WinchSockets(): WinchSocket[] { return [] }
+  readonly WinchSockets: WinchSocket[] = []
 
-  /** Блок UI */
+  /** Блок UI. */
   @innerElement(UiDesc)
-  get UiDesc(): UiDesc | undefined { return undefined }
+  readonly UiDesc: UiDesc | undefined = undefined
 
   @innerElement(AddonSlots)
-  get AddonSlots(): AddonSlots | undefined { return undefined }
+  readonly AddonSlots: AddonSlots | undefined
 
-  /** Место, за которое может цепляться кран */
+  /** Место, за которое может цепляться кран. */
   @innerElements(CraneSocket, 'CraneSocket')
-  get CraneSockets(): CraneSocket[] { return [] }
+  readonly CraneSockets: CraneSocket[] = []
 
-  /** Секция определения взаимного расположения аддонов трака */
+  /** Секция определения взаимного расположения аддонов трака. */
   @innerElements(AddonSockets)
-  get AddonSockets(): AddonSockets[] { return [] }
+  readonly AddonSockets: AddonSockets[] = []
 }
 
 export enum Country {

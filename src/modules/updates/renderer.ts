@@ -1,17 +1,15 @@
-import type { PubType } from './public'
-import { PubKeys } from './public'
-
-import { providePubFunc } from '/utils/bridge/renderer'
-
-export type * from './types'
+import type MainUpdates from './main'
+import { initMain, mainMethod } from '/utils/bridge/renderer'
 
 /**
  * Работа с обновлениями программы  
  * _renderer process_
 */
+@initMain()
 class Updates {
   /** Запустить процесс обновления программы */
-  updateApp = providePubFunc<PubType[PubKeys.updateApp]>(PubKeys.updateApp)
+  @mainMethod()
+  updateApp!: typeof MainUpdates.updateApp
 }
 
 export default new Updates()

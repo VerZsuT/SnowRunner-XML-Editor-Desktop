@@ -1,15 +1,13 @@
+import type { IStringAttrDescriptor } from '../../attributes'
+import { stringAttr } from '../../attributes'
 import { BaseWheelFriction } from '../../base'
-import type { StrUtils } from '../../game-xml'
-import { strAttr, strUtils } from '../../game-xml'
 
-/** Сцепление колеса с дорогой */
+/** Сцепление колеса с дорогой. */
 export default class WheelFriction extends BaseWheelFriction {
-  /** Имя типа резины */
-  @strAttr<WheelName>()
-  get UiName(): WheelName | undefined { return undefined }
-  set UiName(_) {}
-  @strUtils<WheelName>()
-  get $UiName() { return {} as StrUtils }
+  /** Имя типа резины. */
+  @stringAttr<WheelName>()
+  accessor UiName: WheelName | undefined
+  declare $UiName: IStringAttrDescriptor<WheelName>
 }
 
 export enum WheelName {
