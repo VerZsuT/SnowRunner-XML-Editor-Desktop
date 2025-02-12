@@ -1,7 +1,7 @@
 <template>
-  <Popover
-    v-if="valueTips.hasAny || areaTips.hasAny"
-    placement="topLeft"
+  <Wrap
+    :wrapper="popover"
+    :wrap="valueTips.hasAny || areaTips.hasAny"
   >
     <template #content>
       <Text v-if="valueTips.hasAny">
@@ -28,22 +28,20 @@
         </span>
       </Text>
     </template>
-    <slot name="default" />
-  </Popover>
-  <slot
-    v-else
-    name="default"
-  />
+    <slot />
+  </Wrap>
 </template>
 <script setup lang="ts">
 import { Popover, Typography } from 'ant-design-vue'
-import { computed, toRefs } from 'vue'
+import { computed, toRefs, h } from 'vue'
 import texts from '../../texts'
+import { Wrap } from '/rend/components'
 import type { IInputAreas, InputArea } from '../../types'
 import type { IAttrDescriptor } from '/mods/xml/game/attributes'
 import { areasToString, formatString } from '/utils/strings/renderer'
 
 const { Text } = Typography
+const popover = h(Popover, { placement: 'topLeft' })
 
 export type InputTipProps = {
   descriptor: IAttrDescriptor<string | number>

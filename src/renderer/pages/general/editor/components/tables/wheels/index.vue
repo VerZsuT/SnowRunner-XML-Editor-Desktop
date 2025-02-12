@@ -1,12 +1,16 @@
 <template>
-  <WheelsSet
+  <template
     v-for="(file, i) of files"
     :key="file.path"
-    :xml="wheelsSets[i]"
-    :file="file"
-    @mount="inProgress(file.path)"
-    @ready="ready(file.path)"
-  />
+  >
+    <FileNameInfo :file="files[i]" />
+    <WheelsSet
+      :xml="wheelsSets[i]"
+      :file="file"
+      @mount="inProgress(file.path)"
+      @ready="ready(file.path)"
+    />
+  </template>
 </template>
 
 <script lang='ts' setup>
@@ -14,10 +18,11 @@ import { storeToRefs } from 'pinia'
 import { nextTick, onMounted, shallowRef } from 'vue'
 import { useEditorStore } from '../../../../store'
 import { FilesUtils } from '../../../utils'
+import { FileNameInfo } from '../../info'
 import type { ReadyEmits, ReadyProps } from '../../utils'
 import { useFilesReady } from '../../utils'
 import WheelsSet from './set.vue'
-import type { File, FileInfo, WheelsXML } from '/mods/renderer'
+import { type File, type FileInfo, type WheelsXML } from '/mods/renderer'
 import { hasItems } from '/utils/renderer'
 
 export type WheelsProps = ReadyProps & Props
@@ -52,7 +57,7 @@ async function init() {
     ? [set]
     : []
 
-  if (!hasItems(wheelsSets.value)) {
+  if (!hasItems(files.value) || !hasItems(wheelsSets.value)) {
     emit('ready')
   }
 }

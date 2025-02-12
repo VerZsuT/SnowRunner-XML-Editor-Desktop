@@ -2,12 +2,11 @@ import { createTextsLoader } from '/utils/texts'
 import { BaseLocalization } from '/utils/texts/base-localization'
 
 export default await createTextsLoader({
-  // TEXT update title
   title: new BaseLocalization()
     .ru('Обновление')
     .en('Update')
-    .de('Eine neue Version des Programms ist verfügbar')
-    .ch('新版本的方案已经推出'),
+    .de('Erneuerung')
+    .ch('更新资料'),
 
   allowNewVersion: new BaseLocalization()
     .ru('Доступна новая версия программы')

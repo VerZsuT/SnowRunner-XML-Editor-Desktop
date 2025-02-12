@@ -39,7 +39,8 @@ class Config {
     advancedMode: false,
     useMods: true,
     openWhatsNew: true,
-    checkUpdates: true
+    checkUpdates: true,
+    optimizeUnpack: false
   }
 
   /** Объект конфига */
@@ -50,9 +51,7 @@ class Config {
   private readonly devDefault: IConfig = {
     ...this.default,
     lang: strToLang(process.env.DEV_LANG) || this.default.lang,
-    // TODO uncomment
     initialPath: process.env.DEV_INITIAL_PATH || this.default.initialPath,
-    //initialPath: 'C:\\Users\\sacha\\Downloads\\Telegram Desktop\\initial.pak',
     openWhatsNew: false
   }
 
@@ -154,7 +153,7 @@ class Config {
     if (version === thisVersion) {
       config = data as IConfig
     } else if (version < thisVersion) {
-      config = await this.convertToNewest(data as IConfig)
+      config = await this.convertToNewest(data as IConfig, defaultConfig)
     }  else {
       config = defaultConfig
     }
@@ -173,10 +172,16 @@ class Config {
   }
 
   /** Привести старую версию конфига к текущей */
-  private async convertToNewest(data: IConfig): Promise<IConfig> {
+  private async convertToNewest(data: IConfig, defaultConfig: IConfig): Promise<IConfig> {
+    const minConvertibleVersion = '1.0.0'
+
+    if (data.version < minConvertibleVersion) {
+      return defaultConfig
+    }
+
     return {
+      ...defaultConfig,
       ...data,
-      openWhatsNew: true,
       initialPath: data.initialPath !== undefined
         ? data.initialPath
         : null

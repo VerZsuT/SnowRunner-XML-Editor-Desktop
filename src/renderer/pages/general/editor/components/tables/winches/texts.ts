@@ -32,9 +32,15 @@ export default await createTextsLoader({
     .de('Motor')
     .ch('发动机'),
 
-  battary: new BaseLocalization()
+  battery: new BaseLocalization()
     .ru('Аккумулятора')
     .en('Battery')
     .de('Batterie')
-    .ch('电池')
+    .ch('电池'),
+
+  name: new BaseLocalization()
+    .ru('Название')
+    .en('Name')
+    .de('Titel')
+    .ch('标题')
 }).loadRenderer()

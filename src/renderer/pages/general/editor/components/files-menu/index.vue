@@ -3,11 +3,10 @@
     <template #title>
       <Text>{{ texts.title }}</Text>
     </template>
-    <FileItem
+    <Files
       v-if="allFiles.main"
-      :key="allFiles.main.path"
-      :value="allFiles.main"
       :title="texts.main"
+      :value="[allFiles.main]"
     />
     <Files
       v-if="hasItems(allFiles.engines)"
@@ -41,7 +40,6 @@
 import { SubMenu, Typography } from 'ant-design-vue'
 import { storeToRefs } from 'pinia'
 import { useEditorStore } from '../../../store'
-import FileItem from './file.vue'
 import Files from './files.vue'
 import texts from './texts'
 import { hasItems } from '/utils/renderer'

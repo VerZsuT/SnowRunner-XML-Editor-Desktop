@@ -5,6 +5,11 @@
       :key="`winch=${i}`"
       :label="getGameText(Winch.GameData?.UiDesc?.UiName, texts.winch, info.mod)"
     >
+      <Info
+        v-if="Config.advancedMode"
+        :label="texts.name"
+        :getter="() => Winch.Name"
+      />
       <Int
         :label="texts.length"
         :desc="Winch.LengthDesc"
@@ -28,7 +33,7 @@
         :descriptor="<any>Winch.$IsEngineIgnitionRequired"
         :options="[
           [true, texts.engine],
-          [false, texts.battary]
+          [false, texts.battery]
         ]"
       />
       <template #groups>
@@ -47,13 +52,14 @@ import { useEditorStore } from '../../../../store'
 import { SaveUtils, provideFile } from '../../../utils'
 import Accordion from '../../accordion.vue'
 import Group from '../../group'
+import { Info } from '../../info'
 import { Float, Int } from '../../input'
 import Select from '../../select'
 import type { ReadyEmits, ReadyProps } from '../../utils'
 import { getGameText, useReady } from '../../utils'
 import UnlockPreset from '../unlock-preset'
 import texts from './texts'
-import type { File, WinchesXML } from '/mods/renderer'
+import { Config, type File, type WinchesXML } from '/mods/renderer'
 
 export type WinchSetProps = ReadyProps & Props
 

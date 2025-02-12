@@ -63,8 +63,14 @@ export default await createTextsLoader({
     .ch('制动延迟'),
 
   maxDeltaAngVel: new BaseLocalization()
-    .ru( 'Макс. дельта угловой скорости')
-    .en( 'Max angular velocity delta')
-    .de( 'maximale Winkelgeschwindigkeit Delta')
-    .ch( '加速的减速')
+    .ru('Макс. дельта угловой скорости')
+    .en('Max angular velocity delta')
+    .de('maximale Winkelgeschwindigkeit Delta')
+    .ch('加速的减速'),
+
+  name: new BaseLocalization()
+    .ru('Название')
+    .en('Name')
+    .de('Titel')
+    .ch('标题')
 }).loadRenderer()

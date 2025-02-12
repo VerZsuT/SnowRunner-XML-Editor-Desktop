@@ -1,5 +1,5 @@
-import type { INumberAttrDescriptor } from '../attributes'
-import { booleanAttr, floatAttr, lazy, limit } from '../attributes'
+import type { INumberAttrDescriptor, IStringAttrDescriptor } from '../attributes'
+import { booleanAttr, floatAttr, lazy, limit, stringAttr } from '../attributes'
 import { BaseGameData } from '../base'
 import Limit from '../limit'
 import XMLWithTemplates, { innerElement } from '../xml-with-templates'
@@ -8,6 +8,10 @@ import { BaseLocalization } from '/utils/texts/base-localization'
 
 /** Лебёдка. */
 export default class Winch extends XMLWithTemplates {
+  @stringAttr()
+  accessor Name: string | undefined
+  declare $Name: IStringAttrDescriptor
+
   /** Длина лебёдки. */
   @limit(new Limit({ min: 0.0, max: 100.0 }))
   @floatAttr()

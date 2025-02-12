@@ -6,4 +6,5 @@ export { default as Menu } from './menu'
 export { default as Settings } from './settings'
 export { default as Spin } from './spin.vue'
 export { default as WhatsNew } from './whats-new'
+export { default as Wrap } from './wrap.vue'
 

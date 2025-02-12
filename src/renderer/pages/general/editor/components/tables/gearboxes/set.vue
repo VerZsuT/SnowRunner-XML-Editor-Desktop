@@ -5,6 +5,11 @@
       :key="`gearbox-${i}`"
       :label="getGameText(Gearbox.GameData?.UiDesc?.UiName, texts.gearbox, info.mod)"
     >
+      <Info
+        v-if="Config.advancedMode"
+        :label="texts.name"
+        :getter="() => Gearbox.Name"
+      />
       <Float
         :label="texts.awdConsumptionModifier"
         :desc="Gearbox.AWDConsumptionModifierDesc"
@@ -136,6 +141,7 @@ import { useEditorStore } from '../../../../store'
 import { SaveUtils, provideFile } from '../../../utils'
 import Accordion from '../../accordion.vue'
 import Group from '../../group'
+import { Info } from '../../info'
 import { Float, Int } from '../../input'
 import Select from '../../select'
 import type { ReadyEmits, ReadyProps } from '../../utils'
@@ -143,7 +149,7 @@ import { getGameText, useReady } from '../../utils'
 import GearPreset from '../gear-preset'
 import UnlockPreset from '../unlock-preset'
 import texts from './texts'
-import type { File, GearboxesXML } from '/mods/renderer'
+import { Config, type File, type GearboxesXML } from '/mods/renderer'
 
 export type GearboxSetProps = ReadyProps & Props
 

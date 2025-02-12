@@ -2,7 +2,6 @@ import XMLElement from '../../xml-element'
 import XMLTemplates from '../../xml-templates'
 import XMLWithTemplates, { innerElements } from '../xml-with-templates'
 import Winch from './winch'
-
 import { type File } from '/mods/renderer'
 
 export { default as Winch } from './winch'

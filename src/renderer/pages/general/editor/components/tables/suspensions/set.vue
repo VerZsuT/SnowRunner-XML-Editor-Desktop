@@ -5,6 +5,11 @@
       :key="`suspension-set-${i}`"
       :label="getGameText(SuspensionSet.GameData?.UiDesc?.UiName, texts.suspensionSet, info.mod)"
     >
+      <Info
+        v-if="Config.advancedMode"
+        :label="texts.name"
+        :getter="() => SuspensionSet.Name"
+      />
       <Float
         :label="texts.criticalDamageThreshold"
         :desc="SuspensionSet.CriticalDamageThresholdDesc"
@@ -96,17 +101,18 @@
 </template>
 
 <script lang='ts' setup>
-import { storeToRefs } from "pinia"
+import { storeToRefs } from 'pinia'
 import { useEditorStore } from '../../../../store'
 import { SaveUtils, provideFile } from '../../../utils'
 import Accordion from '../../accordion.vue'
 import Group from '../../group'
+import { Info } from '../../info'
 import { Float, Int } from '../../input'
 import type { ReadyEmits, ReadyProps } from '../../utils'
 import { getGameText, useReady } from '../../utils'
 import UnlockPreset from '../unlock-preset'
 import texts from './texts'
-import type { File, SuspensionsXML } from '/mods/renderer'
+import { Config, type File, type SuspensionsXML } from '/mods/renderer'
 
 export type SuspensionSetProps = ReadyProps & Props
 

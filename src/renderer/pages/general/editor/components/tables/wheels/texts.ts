@@ -42,5 +42,11 @@ export default await createTextsLoader({
     .ru('Нет')
     .en('No')
     .de('Nein')
-    .ch('没有')
+    .ch('没有'),
+
+  name: new BaseLocalization()
+    .ru('Название')
+    .en('Name')
+    .de('Titel')
+    .ch('标题')
 }).loadRenderer()

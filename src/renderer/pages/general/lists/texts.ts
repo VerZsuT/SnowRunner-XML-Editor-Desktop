@@ -170,40 +170,39 @@ export default await createTextsLoader({
     .de('Autos')
     .ch('汽车'),
 
-  // TEXT types
   allTypes: new BaseLocalization()
     .ru('Все')
     .en('All')
-    .de('Autos')
-    .ch('汽车'),
+    .de('Alle')
+    .ch('全部'),
 
   heavyType: new BaseLocalization()
     .ru('Тяжёлый')
     .en('Heavy')
-    .de('Autos')
-    .ch('汽车'),
+    .de('Schwer')
+    .ch('重'),
 
   heavyDutyType: new BaseLocalization()
     .ru('Грузовой')
     .en('Heavy duty')
-    .de('Autos')
-    .ch('汽车'),
+    .de('Fracht')
+    .ch('货物'),
 
   highwayType: new BaseLocalization()
     .ru('Шоссейник')
     .en('Highway')
-    .de('Autos')
-    .ch('汽车'),
+    .de('Der Autobahnfahrer')
+    .ch('公路维修'),
 
   offroadType: new BaseLocalization()
     .ru('Внедорожник')
     .en('Offroad')
-    .de('Autos')
-    .ch('汽车'),
+    .de('SUV')
+    .ch('越野车'),
 
   scoutType: new BaseLocalization()
     .ru('Скаут')
     .en('Scout')
-    .de('Autos')
-    .ch('汽车')
+    .de('Pfadfinder')
+    .ch('童子军')
 }).loadRenderer()

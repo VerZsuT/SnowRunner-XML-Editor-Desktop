@@ -5,6 +5,11 @@
       :key="`engine-${i}`"
       :label="getGameText(Engine.GameData?.UiDesc?.UiName, texts.engine, info.mod)"
     >
+      <Info
+        v-if="Config.advancedMode"
+        :label="texts.name"
+        :getter="() => Engine.Name"
+      />
       <Float
         :label="texts.criticalDamageThreshold"
         :desc="Engine.CriticalDamageThresholdDesc"
@@ -89,12 +94,13 @@ import { useEditorStore } from '../../../../store'
 import { SaveUtils, provideFile } from '../../../utils'
 import Accordion from '../../accordion.vue'
 import Group from '../../group'
+import { Info } from '../../info'
 import { Float, Int } from '../../input'
 import type { ReadyEmits, ReadyProps } from '../../utils'
 import { getGameText, useReady } from '../../utils'
 import UnlockPreset from '../unlock-preset'
 import texts from './texts'
-import type { EnginesXML, File } from '/mods/renderer'
+import { Config, type EnginesXML, type File } from '/mods/renderer'
 
 export type EngineSetProps = ReadyProps & Props
 

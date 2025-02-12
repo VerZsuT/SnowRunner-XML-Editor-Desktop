@@ -8,18 +8,15 @@
       :target="contextTarget"
     />
     <div class="label">
-      <Popover
-        v-if="desc && Config.lang !== Lang.ch"
-        placement="topLeft"
+      <Wrap
+        :wrapper="popover"
+        :wrap="!!desc && Config.lang !== Lang.ch"
       >
         <template #content>
           <Text>{{ desc }}</Text>
         </template>
         <Text>{{ label }}</Text>
-      </Popover>
-      <Text v-else>
-        {{ label }}
-      </Text>
+      </Wrap>
     </div>
     <div
       v-if="isActive"
@@ -36,7 +33,7 @@
 <script lang='ts' setup>
 import { Popover, Typography } from 'ant-design-vue'
 import { storeToRefs } from 'pinia'
-import { ref, toRefs } from 'vue'
+import { h, ref, toRefs } from 'vue'
 import { useEditorStore } from '../../store'
 import texts from '../texts'
 import type { IParameterProps, ParameterEmits, ParameterValue } from '../types'
@@ -44,11 +41,12 @@ import { ExportUtils, ImportUtils, ResetUtils } from '../utils'
 import { injectFile } from '../utils/import'
 import { useActive } from './utils'
 import { Config, Lang, type IExportedData } from '/mods/renderer'
-import { ContextMenu } from '/rend/components'
+import { ContextMenu, Wrap } from '/rend/components'
 import type { EmitsToProps } from '/rend/types'
 import { isNullable, isString } from '/utils/renderer'
 
 const { Text } = Typography
+const popover = h(Popover, { placement: 'topLeft' })
 
 export type ParameterProps = IParameterProps & EmitsToProps<ParameterEmits>
 
@@ -76,7 +74,7 @@ const setValue = (value: ParameterValue) => {
   emit('change', getValue())
 }
 
-const value = ref(descriptor.value.get() ?? '')
+const value = ref(getValue() ?? '')
 
 ResetUtils.onReset(resetValue)
 ImportUtils.onImport(data => {

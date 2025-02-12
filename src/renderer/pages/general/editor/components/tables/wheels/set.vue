@@ -5,6 +5,11 @@
       :key="`tire-${i}`"
       :label="getGameText(Tire.GameData?.UiDesc?.UiName, texts.tire, info.mod)"
     >
+      <Info
+        v-if="Config.advancedMode"
+        :label="texts.name"
+        :getter="() => Tire.Name"
+      />
       <template v-if="Tire.WheelFriction">
         <Float
           :label="texts.bodyFriction"
@@ -59,13 +64,14 @@ import { useEditorStore } from '../../../../store'
 import { SaveUtils, provideFile } from '../../../utils'
 import Accordion from '../../accordion.vue'
 import Group from '../../group'
+import { Info } from '../../info'
 import { Float } from '../../input'
 import Select from '../../select'
 import type { ReadyEmits, ReadyProps } from '../../utils'
 import { getGameText, useReady } from '../../utils'
 import UnlockPreset from '../unlock-preset'
 import texts from './texts'
-import type { File, WheelsXML } from '/mods/renderer'
+import { Config, type File, type WheelsXML } from '/mods/renderer'
 
 export type WheelSetProps = ReadyProps & Props
 

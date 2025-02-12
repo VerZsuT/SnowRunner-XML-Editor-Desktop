@@ -17,6 +17,11 @@
           :label="texts.modsLabel"
         />
         <BoolSetting
+          v-model="optimizeUnpack"
+          :label="texts.optimizeUnpackLabel"
+          :tip="texts.optimizeUnpackTip"
+        />
+        <BoolSetting
           v-model="advanced"
           :label="texts.advancedModeLabel"
         />
@@ -46,10 +51,12 @@ import { Language } from '/rend/components'
 const updates = ref(Config.checkUpdates)
 const mods = ref(Config.useMods)
 const advanced = ref(Config.advancedMode)
+const optimizeUnpack = ref(Config.optimizeUnpack)
 
 watch(updates, () => Config.checkUpdates = updates.value)
 watch(mods, () => Config.useMods = mods.value)
 watch(advanced, () => Config.advancedMode = advanced.value)
+watch(optimizeUnpack, () => Config.optimizeUnpack = optimizeUnpack.value)
 
 const isOpen = defineModel<boolean>({ required: true })
 </script>

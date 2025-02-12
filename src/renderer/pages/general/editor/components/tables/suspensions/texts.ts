@@ -60,5 +60,11 @@ export default await createTextsLoader({
     .ru('Прочность')
     .en('Damage capacity')
     .de('Schadenskapazität')
-    .ch('血量')
+    .ch('血量'),
+
+  name: new BaseLocalization()
+    .ru('Название')
+    .en('Name')
+    .de('Titel')
+    .ch('标题')
 }).loadRenderer()

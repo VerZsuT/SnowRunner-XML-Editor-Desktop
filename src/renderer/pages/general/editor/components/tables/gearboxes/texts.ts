@@ -114,5 +114,11 @@ export default await createTextsLoader({
     .ru('Передачи')
     .en('Gears')
     .de('Gangs')
-    .ch('标配挡位')
+    .ch('标配挡位'),
+
+  name: new BaseLocalization()
+    .ru('Название')
+    .en('Name')
+    .de('Titel')
+    .ch('标题')
 }).loadRenderer()

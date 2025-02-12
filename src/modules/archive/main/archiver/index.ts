@@ -17,7 +17,10 @@ class WinRAR {
     main: 'unpack-list.lst',
 
     /** Файл списка модовых файлов/папок для распаковки. */
-    mods: 'unpack-mod-list.lst'
+    mods: 'unpack-mod-list.lst',
+
+    /** Файл оптимизированного списка основных файлов/папок для распаковки. */
+    mainOptimized: 'unpack-list-optimized.lst'
   }
 
   /** Действия архиватора. */
@@ -98,7 +101,11 @@ class WinRAR {
    */
   async unpack(archive: File, dir: Dir) {
     const isMod = !!Config.initialPath && archive.path !== Config.initialPath
-    const list = isMod ? this.lists.mods : this.lists.main
+    const list = isMod
+      ? this.lists.mods
+      : Config.optimizeUnpack
+        ? this.lists.mainOptimized
+        : this.lists.main
 
     let readResult: ICheckResult
     let writeResult: ICheckResult

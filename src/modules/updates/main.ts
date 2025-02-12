@@ -1,12 +1,14 @@
 import { app, shell } from 'electron'
 import { open } from 'node:fs/promises'
 import { get } from 'node:https'
-
 import { Loading } from '../main'
+import TextsLoader from './texts'
 import { Dirs } from '/mods/files/main'
 import Helpers from '/mods/helpers/main'
 import Paths from '/mods/paths/main'
 import { providePublic, publicMethod } from '/utils/bridge/main'
+
+const texts = await TextsLoader.loadMain()
 
 /**
  * Работа с обновлениями программы  
@@ -51,8 +53,7 @@ class Updates {
   /** Запустить процесс обновления программы */
   @publicMethod()
   async updateApp(portable = false) {
-    // TEXT downloading
-    Loading.init('Downloading')
+    Loading.init(texts.downloading)
 
     await Helpers.clearTemp()
     await Dirs.updateTemp.make()
