@@ -3,41 +3,38 @@
     <Header :text="category === Category.trucks ? texts.trucksListTitle : texts.trailersListTitle">
       <template #extra>
         <Button
-          class="filters-button"
+          class="header-button"
           shape="circle"
           @click="toggleFiltersPanel"
         >
           <template #icon>
-            <FilterOutlined style="font-size: 25px" />
+            <FilterOutlined class="button-icon" />
+          </template>
+        </Button>
+        <Button
+          class="header-button"
+          shape="circle"
+          @click="toggleListMode"
+        >
+          <template #icon>
+            <MenuOutlined
+              v-if="listMode === ListMode.cards"
+              class="button-icon"
+            />
+            <AppstoreOutlined
+              v-else
+              class="button-icon"
+            />
           </template>
         </Button>
       </template>
     </Header>
 
     <Filters :is-open="filtersIsOpen" />
-    
-    <template v-if="files">
-      <List
-        v-show="source === SourceType.main"
-        :src-type="SourceType.main"
-        :files="files[SourceType.main]"
-      />
-      <List
-        v-show="source === SourceType.dlc"
-        :src-type="SourceType.dlc"
-        :files="files[SourceType.dlc]"
-      />
-      <List
-        v-show="source === SourceType.mods"
-        :src-type="SourceType.mods"
-        :files="files[SourceType.mods]"
-      />
-      <List
-        v-show="source === SourceType.favorites"
-        :src-type="SourceType.favorites"
-        :files="files[SourceType.favorites]"
-      />
-    </template>
+    <List
+      v-if="files"
+      :files="files[source]"
+    />
     <Spin
       v-else
       center
@@ -46,23 +43,22 @@
 </template>
 
 <script lang='ts' setup>
-import { FilterOutlined } from '@ant-design/icons-vue'
+import { AppstoreOutlined, FilterOutlined, MenuOutlined } from '@ant-design/icons-vue'
 import { Button } from 'ant-design-vue'
 import { storeToRefs } from 'pinia'
 import { onMounted, ref, watch } from 'vue'
-import { Category, SourceType } from '../enums'
+import { Category, ListMode, SourceType } from '../enums'
 import { useListStore } from '../store/list'
 import { Filters, List } from './components'
 import texts from './texts'
 import { ItemsUtils } from './utils'
-import type { File } from '/mods/renderer'
 import { Helpers } from '/mods/renderer'
 import { Header, Spin } from '/rend/components'
 import { useKey } from '/rend/utils'
 
 const listStore = useListStore()
-const { files, category, source } = storeToRefs(listStore)
-const { clearFiles } = listStore
+const { files, category, source, listMode } = storeToRefs(listStore)
+const { clearFiles, setListMode } = listStore
 
 const filtersIsOpen = ref(true)
 
@@ -81,28 +77,23 @@ onMounted(async () => {
 function loadFiles() {
   return Promise.all([
     ItemsUtils.getMain(category.value)
-      .then(main => pushToFiles(SourceType.main, main)),
+      .then(main => files.value[SourceType.main].push(...main)),
     ItemsUtils.getDLC(category.value)
-      .then(dlc => pushToFiles(SourceType.dlc, dlc)),
+      .then(dlc => files.value[SourceType.dlc].push(...dlc)),
     ItemsUtils.getMods(category.value)
-      .then(mods => pushToFiles(SourceType.mods, mods))
+      .then(mods => files.value[SourceType.mods].push(...mods))
   ]) 
-}
-  
-function pushToFiles(source: SourceType, array: File[]) {
-  const favorites = files.value[SourceType.favorites]
-
-  for (const file of array) {
-    files.value[source].push(file)
-
-    if (!favorites.includes(file)) {
-      favorites.push(file)
-    }
-  }
 }
 
 function toggleFiltersPanel() {
   filtersIsOpen.value = !filtersIsOpen.value
+}
+
+function toggleListMode() {
+  setListMode(listMode.value === ListMode.cards
+    ? ListMode.list
+    : ListMode.cards
+  )
 }
 </script>
 
@@ -131,10 +122,15 @@ function toggleFiltersPanel() {
   flex-direction: column;
   flex-grow: 1;
   height: calc(100vh - 100px);
+
+  .header-button {
+    position: relative;
+    right: 20px;
+
+    .button-icon {
+      font-size: 25px;
+    }
+  }
 }
 
-.filters-button {
-  position: relative;
-  right: 20px;
-}
 </style>

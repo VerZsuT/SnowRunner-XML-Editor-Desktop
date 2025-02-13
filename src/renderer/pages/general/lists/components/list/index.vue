@@ -1,7 +1,10 @@
 <template>
-  <div class="list">
+  <div
+    ref="container"
+    class="list"
+  >
     <div
-      v-if="srcType === SourceType.mods"
+      v-if="source === SourceType.mods"
       class="mods-button-cont"
     >
       <Button
@@ -28,7 +31,7 @@
 <script lang='ts' setup>
 import { Button, Modal } from 'ant-design-vue'
 import { storeToRefs } from 'pinia'
-import { ref, toRefs, watchEffect } from 'vue'
+import { nextTick, ref, toRefs, watch, watchEffect } from 'vue'
 import type { Category } from '../../../enums'
 import { SourceType } from '../../../enums'
 import { useListStore } from '../../../store/list'
@@ -36,19 +39,21 @@ import texts from '../../texts'
 import ModsPopup from '../mods-popup.vue'
 import ListItem from './item.vue'
 import type { File } from '/mods/renderer'
-import { Favorites, Helpers } from '/mods/renderer'
+import { Helpers } from '/mods/renderer'
 
 export type ListProps = {
-  srcType: SourceType
   files: File[]
 }
 
 const props = defineProps<ListProps>()
-const { files, srcType } = toRefs(props)
+const { files } = toRefs(props)
 
-const { category } = storeToRefs(useListStore())
+const { category, source } = storeToRefs(useListStore())
 const isShowMods = ref(false)
+const container = ref<HTMLDivElement | null>(null)
 const listItems = useFilteredItems()
+
+useScrollResetting()
 
 function hideModsPopup(isReload?: boolean) {
   isShowMods.value = false
@@ -68,20 +73,17 @@ function useFilteredItems() {
   const items = ref<{ file: File, category: Category }[]>([])
   
   watchEffect(() => {
-    items.value = filterFiles(files.value).map(file => ({ file, category: category.value }))
+    items.value = files.value.map(file => ({ file, category: category.value }))
   })
 
   return items
 }
 
-function filterFiles(files: File[]): File[] {
-  let filtered = files
-
-  if (srcType.value === SourceType.favorites) {
-    filtered = filtered.filter(value => Favorites.includes(value.name))
-  }
-  
-  return filtered
+function useScrollResetting() {
+  watch(files, async () => {
+    await nextTick()
+    container.value?.scrollTo({ top: 0 })
+  })
 }
 </script>
 
@@ -91,15 +93,13 @@ function filterFiles(files: File[]): File[] {
   justify-content: space-evenly;
   overflow-y: auto;
   height: 100%;
+  align-content: flex-start;
   flex-grow: 1;
   flex-direction: row;
   flex-wrap: wrap;
   will-change: auto;
-  padding-bottom: 20px;
-
-  > div {
-    overflow-x: hidden !important;
-  }
+  gap: 5px;
+  padding: 10px 0;
 }
 
 .mods-button-cont {

@@ -1,8 +1,8 @@
 import { defineStore } from 'pinia'
 import { reactive, ref } from 'vue'
-import { Category, SourceType } from '../enums'
+import { Category, ListMode, SourceType } from '../enums'
 import type { File, TruckType, TruckXML } from '/mods/renderer'
-import { Favorites } from '/mods/renderer'
+import { Edited, Favorites } from '/mods/renderer'
 
 export type ItemCache = {
   xml: TruckXML
@@ -11,15 +11,24 @@ export type ItemCache = {
 const itemsCache = new Map<string, ItemCache>()
 
 export const useListStore = defineStore('list', () => {
-  const source = ref(SourceType.main)
   const category = ref(Category.trucks)
+  const source = ref(SourceType.all)
   const truckType = ref<TruckType | ''>('')
+  const listMode = ref(ListMode.cards)
   const name = ref('')
-  const files = reactive({
-    [SourceType.main]: [] as File[],
-    [SourceType.dlc]: [] as File[],
-    [SourceType.mods]: [] as File[],
-    [SourceType.favorites]: [] as File[]
+  const files = reactive<Record<SourceType, File[]>>({
+    [SourceType.main]: [],
+    [SourceType.dlc]: [],
+    [SourceType.mods]: [],
+    get [SourceType.all]() {
+      return [...this.main, ...this.dlc, ...this.mods]
+    },
+    get [SourceType.favorites]() {
+      return this[SourceType.all].filter(item => Favorites.isFavorite(item))
+    },
+    get [SourceType.edited]() {
+      return this[SourceType.all].filter(item => Edited.isEdited(item))
+    }
   })
 
   return {
@@ -34,12 +43,15 @@ export const useListStore = defineStore('list', () => {
     setTruckType(newType: TruckType) {
       truckType.value = newType
     },
+    setListMode(newMode: ListMode) {
+      listMode.value = newMode
+    },
     /** Изменить статус "избранное" */
-    toggleFavorite(name: string) {
-      if (Favorites.includes(name)) {
-        Favorites.set(Favorites.filter(value => value !== name))
+    toggleFavorite(file: File) {
+      if (Favorites.isFavorite(file)) {
+        Favorites.findAndRemove(item => item === file.name)
       } else {
-        Favorites.push(name)
+        Favorites.push(file.name)
       }
     },
     /** Изменить фильтр по названию */
@@ -50,9 +62,10 @@ export const useListStore = defineStore('list', () => {
       files[SourceType.main].length = 0
       files[SourceType.dlc].length = 0
       files[SourceType.mods].length = 0
-      files[SourceType.favorites].length = 0
     },
+    /** Кеш элементов. */
     itemsCache,
+    /** Файлы. */
     files,
     /** Фильтр по названию */
     name,
@@ -60,6 +73,9 @@ export const useListStore = defineStore('list', () => {
     source,
     /** Категорию в списке */
     category,
-    truckType
+    /** Тип автомобиля. */
+    truckType,
+    /** Режим списка. */
+    listMode
   }
 })

@@ -43,9 +43,9 @@ export default function useKey(params: IHotKeysParams | IHotKeysParams['key'], h
 
   function eventHandler(event: KeyboardEvent) {
     const keyIsValid = event.code === key
-    const ctrlIsValid = ctrlKey && event.ctrlKey
-    const shiftIsValid = shiftKey && event.shiftKey
-
+    const ctrlIsValid = ctrlKey === event.ctrlKey
+    const shiftIsValid = shiftKey === event.shiftKey
+    
     if (keyIsValid && ctrlIsValid && shiftIsValid) {
       if (prevent) {
         event.preventDefault()

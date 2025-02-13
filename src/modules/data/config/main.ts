@@ -40,7 +40,7 @@ class Config {
     useMods: true,
     openWhatsNew: true,
     checkUpdates: true,
-    optimizeUnpack: false
+    optimizeUnpack: true
   }
 
   /** Объект конфига */
@@ -50,6 +50,7 @@ class Config {
   /** Стандартное значение конфига в `dev` режиме */
   private readonly devDefault: IConfig = {
     ...this.default,
+    advancedMode: true,
     lang: strToLang(process.env.DEV_LANG) || this.default.lang,
     initialPath: process.env.DEV_INITIAL_PATH || this.default.initialPath,
     openWhatsNew: false
@@ -151,7 +152,7 @@ class Config {
     let config: IConfig
 
     if (version === thisVersion) {
-      config = data as IConfig
+      config = {...defaultConfig, ...data}
     } else if (version < thisVersion) {
       config = await this.convertToNewest(data as IConfig, defaultConfig)
     }  else {

@@ -23,13 +23,14 @@
 <script lang='ts' setup>
 import { storeToRefs } from 'pinia'
 import { nextTick, onMounted, ref, shallowRef } from 'vue'
-import { useEditorStore } from '../store'
+import { useEditorStore, usePageStore } from '../store'
 import { Header, Table } from './components'
 import type { ReadyEmits, ReadyProps } from './components/utils'
 import { FilesUtils, ResetUtils, provideFile } from './utils'
 import type { File } from '/mods/renderer'
-import { DLCs, Dirs, Mods, TruckXML } from '/mods/renderer'
+import { DLCs, Dirs, Mods, Page, TruckXML } from '/mods/renderer'
 import { Spin } from '/rend/components'
+import { useKey } from '/rend/utils'
 
 export type EditorProps = Props & ReadyProps
 
@@ -61,6 +62,7 @@ defineExpose({
 const editorStore = useEditorStore()
 const { file: prevFile, allFiles } = storeToRefs(editorStore)
 const { setInfo } = editorStore
+const { route } = usePageStore()
 
 const xml = shallowRef<TruckXML | null>(null)
 const header = ref<InstanceType<typeof Header> | null>(null)
@@ -70,6 +72,7 @@ const file = (props.file ?? prevFile.value)!
 
 onMounted(init)
 FilesUtils.watch(update, [file])
+useKey('Escape', () => route(Page.lists))
 
 setInfo({
   dlc: DLCs.getDLC(file),

@@ -4,17 +4,58 @@
     ref="container"
     class="card-container"
   >
+    <ContextMenu
+      :target="container"
+      :items="contextMenuItems"
+    />
+
+    <div
+      v-if="listMode === ListMode.list"
+      class="row"
+      @click="openEditor"
+    >
+      <img
+        width="63"
+        height="87"
+        :src="imgSRC"
+      >
+      <div class="description">
+        <Text class="title">
+          {{ title.first }}<span class="red">{{ title.second }}</span>{{ title.last }}
+        </Text>
+        <div class="indicators-tags">
+          <Tag v-if="files[SourceType.main].includes(file)">
+            {{ texts.mainSource }}
+          </Tag>
+          <Tag v-else-if="files[SourceType.dlc].includes(file)">
+            {{ texts.dlcSource }}
+          </Tag>
+          <Tag v-else-if="files[SourceType.mods].includes(file)">
+            {{ texts.modsSource }}
+          </Tag>
+          <Tag v-if="texts[`${type}_TYPE`]">
+            {{ texts[`${type}_TYPE`] }}
+          </Tag>
+          <Tag
+            v-if="isFavorite"
+            color="gold"
+          >
+            <StarFilled class="favorite-star" />
+          </Tag>
+          <Tag v-if="isEdited">
+            <EditFilled class="edited-mark" />
+          </Tag>
+        </div>
+      </div>
+    </div>
     <Card
+      v-else
       class="card"
       :loading="!xml || !imgSRC"
       hoverable
     >
-      <template
-        v-if="imgSRC"
-        #cover
-      >
+      <template #cover>
         <img
-          ref="contextTarget"
           width="250"
           height="350"
           :src="imgSRC"
@@ -26,32 +67,36 @@
           {{ title.first }}<span class="red">{{ title.second }}</span>{{ title.last }}
         </template>
       </Card.Meta>
-      <StarFilled
-        v-if="isFavorite"
-        class="fav-star"
-      />
-      <ContextMenu
-        :target="contextTarget"
-        :items="contextMenuItems"
-      />
+      <div class="indicators">
+        <StarFilled
+          v-if="isFavorite"
+          class="favorite-star"
+        />
+        <EditFilled
+          v-if="isEdited"
+          class="edited-mark"
+        />
+      </div>
     </Card>
   </div>
 </template>
 
 <script lang='ts' setup>
-import { StarFilled } from '@ant-design/icons-vue'
-import { Card } from 'ant-design-vue'
+import { EditFilled, StarFilled } from '@ant-design/icons-vue'
+import { Card, Tag, Typography } from 'ant-design-vue'
 import memoizee from 'memoizee'
 import { storeToRefs } from 'pinia'
 import { computed, onMounted, ref, shallowRef, toRefs, watch, watchEffect } from 'vue'
-import type { Category } from '../../../enums'
+import { ListMode, SourceType, type Category } from '../../../enums'
 import { useEditorStore, useListStore, usePageStore } from '../../../store'
 import texts from '../../texts'
 import { EditorUtils } from '../../utils'
-import type { File, TruckType } from '/mods/renderer'
-import { Favorites, GameTexts, Images, Messages, Mods, Page, TruckXML } from '/mods/renderer'
+import type { TruckType } from '/mods/renderer'
+import { Edited, Favorites, GameTexts, Images, Messages, Mods, Page, TruckXML, type File } from '/mods/renderer'
 import { ContextMenu } from '/rend/components'
 import { prettyString } from '/utils/renderer'
+
+const { Text } = Typography
 
 export type ListItemProps = {
   file: File
@@ -68,13 +113,12 @@ const { clearEditorStore, setFile } = editorStore
 const { route } = usePageStore()
 
 const listStore = useListStore()
-const { name: nameFilter, truckType: typeFilter } = storeToRefs(listStore)
+const { name: nameFilter, truckType: typeFilter, files, listMode } = storeToRefs(listStore)
 const { toggleFavorite, itemsCache } = listStore
 
-const contextTarget = shallowRef<HTMLImageElement | null>(null)
 const container = ref<HTMLDivElement | null>(null)
 const xml = shallowRef<TruckXML | null>(null)
-const imgSRC = ref<string | null>(null)
+const imgSRC = ref<string>(Images.getDefault(category.value))
 const name = ref<string>('')
 const type = ref<TruckType | undefined>()
 
@@ -165,7 +209,8 @@ const title = computed(() => {
   }
 })
 
-const isFavorite = computed(() => Favorites.includes(file.value.name))
+const isFavorite = computed(() => Favorites.isFavorite(file.value))
+const isEdited = computed(() => Edited.isEdited(file.value))
 const contextMenuItems = computed(() => [
   {
     label: isFavorite.value
@@ -216,7 +261,7 @@ function openEditor() {
 }
 
 function toggleFav() {
-  toggleFavorite(file.value.name)
+  toggleFavorite(file.value)
 }
 </script>
 
@@ -239,15 +284,57 @@ function toggleFav() {
   height: 400px;
 
   &-container {
-    position: relative;
-    margin-top: 20px;
+    height: fit-content;
+
+    .row {
+      display: flex;
+      box-sizing: border-box;
+      width: calc(100vw - 20px);
+      gap: 20px;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      align-items: center;
+      justify-content: flex-start;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 1px 2px 0 rgba(34, 60, 80, 0.6);
+      overflow: hidden;
+      cursor: pointer;
+      transition: background-color 0.1s ease-in-out;
+
+      &:hover {
+        filter: brightness(96%);
+      }
+
+      img {
+        box-shadow: 1px 0 3px 0 rgba(34, 60, 80, 0.6);
+      }
+
+      .description {
+        .title {
+          font-size: 16px;
+          font-weight: bold;
+        }
+
+        .indicators-tags {
+          margin-top: 10px;
+        }
+      }
+    }
   }
 
-  .fav-star {
-    color: yellow;
+  .indicators {
     position: absolute;
     top: 10px;
     left: 10px;
+  }
+
+  .favorite-star {
+    color: yellow;
+  }
+
+  .edited-mark {
+    color: white;
   }
 }
 

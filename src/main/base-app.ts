@@ -44,7 +44,7 @@ export default abstract class BaseApp {
 
   /** Оптимизация */
   private optimize() {
-    app.disableHardwareAcceleration()
+    //app.disableHardwareAcceleration()
   }
 
   /** Изменение стандартного названия */

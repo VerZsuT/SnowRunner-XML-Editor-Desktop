@@ -98,7 +98,7 @@ function hide(event?: MouseEvent) {
   &-menu {
     border: 1px solid lightgray;
     position: absolute;
-    border-radius: 5px;
+    border-radius: 8px;
     border-inline-end-color: lightgray !important;
   }
 }

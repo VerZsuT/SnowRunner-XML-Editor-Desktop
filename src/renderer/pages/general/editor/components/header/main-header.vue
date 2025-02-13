@@ -5,8 +5,18 @@
     @back="() => route(Page.lists)"
   >
     <template #extra>
-      <Dropdown trigger="click">
-        <MenuOutlined class="menu-button" />
+      <Dropdown
+        v-model:open="menuIsOpened"
+        trigger="click"
+      >
+        <MenuUnfoldOutlined
+          v-if="menuIsOpened"
+          class="menu-button"
+        />
+        <MenuFoldOutlined
+          v-else
+          class="menu-button"
+        />
         <template #overlay>
           <Menu mode="vertical">
             <Menu.Item @click="onReset">
@@ -41,9 +51,10 @@
 </template>
 
 <script lang='ts' setup>
-import { ExportOutlined, ImportOutlined, MenuOutlined, SaveOutlined, UndoOutlined } from '@ant-design/icons-vue'
+import { ExportOutlined, ImportOutlined, MenuFoldOutlined, MenuUnfoldOutlined, SaveOutlined, UndoOutlined } from '@ant-design/icons-vue'
 import { Button, Dropdown, Menu, Modal, Typography } from 'ant-design-vue'
 import { storeToRefs } from 'pinia'
+import { ref } from 'vue'
 import { EditedAction, useEditorStore, usePageStore } from '../../../store'
 import texts from '../../texts'
 import { ExportUtils, ImportUtils, ResetUtils, SaveUtils } from '../../utils'
@@ -73,6 +84,7 @@ defineExpose({
   export: exportFile
 })
 
+const menuIsOpened = ref(false)
 const mod = Mods.findByFile(file)
 const title = getMainTitle()
 

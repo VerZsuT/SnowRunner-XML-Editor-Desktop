@@ -129,16 +129,28 @@ export default await createTextsLoader({
     .ch('DLC'),
 
   favoritesSource: new BaseLocalization()
-    .ru('Избранное')
+    .ru('Избранные')
     .en('Favorites')
     .de('Auswahl')
     .ch('收藏'),
+
+  editedSource: new BaseLocalization()
+    .ru('Изменённые')
+    .en('Edited')
+    .de('Verändern')
+    .ch('经修改'),
 
   mainSource: new BaseLocalization()
     .ru('Базовые')
     .en('Basic')
     .de('Basic')
     .ch('基本'),
+
+  allSource: new BaseLocalization()
+    .ru('Все')
+    .en('All')
+    .de('Alle')
+    .ch('全部'),
 
   modsSource: new BaseLocalization()
     .ru('Модификации')
@@ -176,31 +188,31 @@ export default await createTextsLoader({
     .de('Alle')
     .ch('全部'),
 
-  heavyType: new BaseLocalization()
+  HEAVY_TYPE: new BaseLocalization()
     .ru('Тяжёлый')
     .en('Heavy')
     .de('Schwer')
     .ch('重'),
 
-  heavyDutyType: new BaseLocalization()
+  HEAVY_DUTY_TYPE: new BaseLocalization()
     .ru('Грузовой')
     .en('Heavy duty')
     .de('Fracht')
     .ch('货物'),
 
-  highwayType: new BaseLocalization()
+  HIGHWAY_TYPE: new BaseLocalization()
     .ru('Шоссейник')
     .en('Highway')
     .de('Der Autobahnfahrer')
     .ch('公路维修'),
 
-  offroadType: new BaseLocalization()
+  OFFROAD_TYPE: new BaseLocalization()
     .ru('Внедорожник')
     .en('Offroad')
     .de('SUV')
     .ch('越野车'),
 
-  scoutType: new BaseLocalization()
+  SCOUT_TYPE: new BaseLocalization()
     .ru('Скаут')
     .en('Scout')
     .de('Pfadfinder')

@@ -74,3 +74,11 @@ function onReset() {
   return ResetUtils.emit(resetID)
 }
 </script>
+
+<style lang="scss">
+.table .ant-collapse-header {
+  &:hover {
+    filter: brightness(96%);
+  }
+}
+</style>

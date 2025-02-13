@@ -6,6 +6,7 @@
     :description="`${texts.allowNewVersion} (v${version})`"
     type="info"
     show-icon
+    closable
   >
     <template #icon>
       <CloudDownloadOutlined />

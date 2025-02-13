@@ -8,7 +8,9 @@ import type { TruckXML } from '/mods/xml/renderer'
 class Images {
   /** Возвращает путь к картинке для данного файла */
   async getSrc(category: Category, file: File, xml: TruckXML): Promise<string> {
-    const ext = category === Category.trucks ? '.jpg' : '.png'
+    const ext = category === Category.trucks
+      ? '.jpg'
+      : '.png'
     
     const images = new Dir(this.getPath(category))
     const image = images.file(`${file.name}${ext}`)
@@ -25,6 +27,10 @@ class Images {
     }
 
     return image.path
+  }
+
+  getDefault(category: Category) {
+    return new Dir(this.getPath(category)).file('default.png').path
   }
 
   /** Получить путь к иконке группы */

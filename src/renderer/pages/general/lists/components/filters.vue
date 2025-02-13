@@ -1,5 +1,5 @@
 <template>
-  <Transition name="filters">
+  <VueTransition name="filters">
     <div
       v-show="isOpen"
       class="filters"
@@ -38,14 +38,14 @@
         @change="setName($event.target.value)"
       />
     </div>
-  </Transition>
+  </VueTransition>
 </template>
 
 <script setup lang="ts">
 import type { SelectProps } from 'ant-design-vue'
 import { Input, Select } from 'ant-design-vue'
 import { storeToRefs } from 'pinia'
-import { computed, Transition } from 'vue'
+import { computed, Transition as VueTransition } from 'vue'
 import { Category, SourceType } from '../../enums'
 import { useListStore } from '../../store'
 import texts from '../texts'
@@ -73,6 +73,10 @@ const categories = computed<SelectProps['options']>(() => [
 ])
 const sources = computed<SelectProps['options']>(() => [
   {
+    label: texts.allSource,
+    value: SourceType.all
+  },
+  {
     label: texts.mainSource,
     value: SourceType.main
   },
@@ -88,6 +92,10 @@ const sources = computed<SelectProps['options']>(() => [
   {
     label: texts.favoritesSource,
     value: SourceType.favorites
+  },
+  {
+    label: texts.editedSource,
+    value: SourceType.edited
   }
 ])
 const truckTypes = computed<SelectProps['options']>(() => [
@@ -96,23 +104,23 @@ const truckTypes = computed<SelectProps['options']>(() => [
     value: ''
   },
   {
-    label: texts.heavyType,
+    label: texts.HEAVY_TYPE,
     value: TruckType.heavy
   },
   {
-    label: texts.heavyDutyType,
+    label: texts.HEAVY_DUTY_TYPE,
     value: TruckType.heavyDuty
   },
   {
-    label: texts.highwayType,
+    label: texts.HIGHWAY_TYPE,
     value: TruckType.highway
   },
   {
-    label: texts.offroadType,
+    label: texts.OFFROAD_TYPE,
     value: TruckType.offroad
   },
   {
-    label: texts.scoutType,
+    label: texts.SCOUT_TYPE,
     value: TruckType.scout
   }
 ])
@@ -142,6 +150,7 @@ const truckTypes = computed<SelectProps['options']>(() => [
   height: 40px;
   padding: 5px 0;
   text-align: center;
+  z-index: 0;
 
   .filter-select {
     min-width: 150px;
@@ -150,6 +159,16 @@ const truckTypes = computed<SelectProps['options']>(() => [
   .filter-input {
     display: inline-block;
     width: 150px;
+  }
+
+  .filter-select,
+  .filter-input {
+    transition: background-color 0.1s ease-in-out;
+
+    &:hover {
+      background: #f4f4f4;
+      border-radius: 5px;
+    }
   }
 }
 </style>
