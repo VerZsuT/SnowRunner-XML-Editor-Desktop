@@ -14,11 +14,11 @@
         <InputItem
           :type="type"
           :number-type="numberType"
-          :areas="areas"
-          :step="step"
+          :areas="areas ?? descriptor.areas"
+          :step="step ?? descriptor.step"
           :value="<any> value"
-          :min="descriptor.limit?.minValue"
-          :max="descriptor.limit?.maxValue"
+          :min="min ?? descriptor.limit?.minValue"
+          :max="max ?? descriptor.limit?.maxValue"
           @change="onChange"
         />
       </InputTip>

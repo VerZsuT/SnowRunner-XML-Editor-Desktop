@@ -1,4 +1,4 @@
-import type { IStringAttrDescriptor } from '../attributes'
+import type { IStringAttrDescriptor, XmlValue } from '../attributes'
 import { stringAttr } from '../attributes'
 import XMLWithTemplates from '../xml-with-templates'
 
@@ -6,6 +6,6 @@ import XMLWithTemplates from '../xml-with-templates'
 export default class InstallSocket extends XMLWithTemplates {
   /** Тип сокета. */
   @stringAttr()
-  accessor Type: string | undefined
+  accessor Type: XmlValue<string>
   declare $Type: IStringAttrDescriptor
 }

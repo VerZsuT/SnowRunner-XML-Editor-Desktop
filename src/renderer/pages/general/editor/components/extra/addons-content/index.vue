@@ -25,7 +25,10 @@
         </Button>
       </div>
     </template>
-    <template v-else>
+    <div
+      v-else
+      class="wrapper"
+    >
       <div class="main">
         <Input
           class="addon-filter"
@@ -74,7 +77,7 @@
       >
         {{ texts.openFile }}
       </Button>
-    </template>
+    </div>
   </Group>
 </template>
 
@@ -279,7 +282,7 @@ async function getAddonName(addon: File): Promise<string | undefined> {
 }
 
 function getFile(name?: string): File | undefined {
-  return files.value.find(item => item.name === name || addon.value)
+  return files.value.find(item => item.name === (name || addon.value))
 }
 
 async function getAddonData(file?: File) {
@@ -429,6 +432,7 @@ async function getAddons(
 }
 
 .prepare {
+  width: 100%;
   height: 100%;
 }
 
@@ -451,6 +455,11 @@ async function getAddons(
   &-filter {
     width: 200px;
   }
+}
+
+.wrapper {
+  width: 100%;
+  text-align: center;
 }
 </style>
 

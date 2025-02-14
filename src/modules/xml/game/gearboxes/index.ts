@@ -1,6 +1,7 @@
 import type { File } from '../../../renderer'
 import XMLElement from '../../xml-element'
 import XMLTemplates from '../../xml-templates'
+import type { XmlElements } from '../attributes'
 import XMLWithTemplates, { innerElements } from '../xml-with-templates'
 import Gearbox from './gearbox'
 
@@ -28,5 +29,5 @@ export default class Gearboxes extends XMLWithTemplates {
 
   /** Коробки передач. */
   @innerElements(Gearbox, 'Gearbox')
-  readonly Gearboxes: Gearbox[] = []
+  readonly Gearboxes!: XmlElements<Gearbox>
 }

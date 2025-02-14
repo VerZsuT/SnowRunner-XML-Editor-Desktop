@@ -1,7 +1,7 @@
 import type { File } from '../../../renderer'
 import XMLElement from '../../xml-element'
 import XMLTemplates from '../../xml-templates'
-import type { IStringAttrDescriptor } from '../attributes'
+import type { IStringAttrDescriptor, XmlElement, XmlValue } from '../attributes'
 import { stringAttr } from '../attributes'
 import BasePhysicsModel from '../base/physics-model'
 import XMLWithTemplates, { innerElement } from '../xml-with-templates'
@@ -34,26 +34,26 @@ export default class TruckXML extends XMLWithTemplates {
 
   /** Этот атрибут определяет, описывается трак или трейлер (прицеп или полуприцеп). */
   @stringAttr<TruckFileType>()
-  accessor Type: TruckFileType | undefined
+  accessor Type: XmlValue<TruckFileType>
   declare $Type: IStringAttrDescriptor<TruckFileType>
 
   /** Описание большинства свойств непосредственно трака. */
   @innerElement(TruckData)
-  readonly TruckData: TruckData | undefined
+  readonly TruckData: XmlElement<TruckData>
 
   /** Информация о взаимодействии трака с окружающим миром. */
   @innerElement(GameData)
-  readonly GameData: GameData | undefined
+  readonly GameData: XmlElement<GameData>
 
   /** Физическая модель. */
   @innerElement(BasePhysicsModel)
-  readonly PhysicsModel: BasePhysicsModel | undefined
+  readonly PhysicsModel: XmlElement<BasePhysicsModel>
 
   @innerElement(BasePhysicsModel)
-  readonly FuelMass: BasePhysicsModel | undefined
+  readonly FuelMass: XmlElement<BasePhysicsModel>
 
   @innerElement(BasePhysicsModel)
-  readonly WaterMass: BasePhysicsModel | undefined
+  readonly WaterMass: XmlElement<BasePhysicsModel>
 }
 
 export enum TruckFileType {

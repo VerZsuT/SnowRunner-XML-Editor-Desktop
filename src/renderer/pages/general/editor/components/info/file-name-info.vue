@@ -33,17 +33,19 @@ const { isActive } = useActive()
 }
 
 .info {
+  position: relative;
+  top: 10px;
   flex-wrap: nowrap;
   box-sizing: border-box;
   justify-content: flex-start;
   align-items: center;
-  margin-top: 10px;
   border: 1px solid lightgray;
   border-bottom: 0;
   padding: 5px 0;
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
   padding-left: 20px;
+  width: 100%;
   
   .content {
     font-weight: normal;
@@ -56,7 +58,7 @@ const { isActive } = useActive()
   }
 
   &:first-of-type {
-    margin-top: 0;
+    margin-top: -10px;
   }
 }
 </style>

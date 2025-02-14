@@ -282,14 +282,16 @@ function toggleFav() {
   box-sizing: content-box;
   width: 250px;
   height: 400px;
+  margin: auto;
 
   &-container {
     height: fit-content;
+    flex: auto;
 
     .row {
       display: flex;
       box-sizing: border-box;
-      width: calc(100vw - 20px);
+      min-width: 400px;
       gap: 20px;
       flex-direction: row;
       flex-wrap: nowrap;

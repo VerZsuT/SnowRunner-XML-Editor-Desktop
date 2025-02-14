@@ -7,89 +7,22 @@
     >
       <Info
         v-if="Config.advancedMode"
-        :label="texts.name"
-        :getter="() => SuspensionSet.Name"
+        :descriptor="SuspensionSet.$Name"
       />
-      <Float
-        :label="texts.criticalDamageThreshold"
-        :desc="SuspensionSet.CriticalDamageThresholdDesc"
-        :descriptor="SuspensionSet.$CriticalDamageThreshold"
-        :step="0.01"
-      />
-      <Int
-        :label="texts.damageCapacity"
-        :desc="SuspensionSet.DamageCapacityDesc"
-        :descriptor="SuspensionSet.$DamageCapacity"
-        :step="10"
-        :areas="{
-          yellow: [1000, 10_000],
-          red: [10_001, Number.POSITIVE_INFINITY]
-        }"
-      />
+      <Float :descriptor="SuspensionSet.$CriticalDamageThreshold" />
+      <Int :descriptor="SuspensionSet.$DamageCapacity" />
       <template #groups>
         <Group
           v-for="(Suspension, i2) of SuspensionSet.Suspensions"
           :key="`suspension-${i2}`"
-          :label="`${texts.suspension} ${i2 + 1}`"
+          :label="getSuspensionLabel(i2 + 1, Suspension.WheelType)"
         >
-          <Float
-            :label="texts.height"
-            :desc="Suspension.HeightDesc"
-            :descriptor="Suspension.$Height"
-            :areas="{
-              yellow: [[-2, -1], [1, 2]],
-              red: [[-1000, -2.1], [2.1, 1000]]
-            }"
-          />
-          <Float
-            :label="texts.strenght"
-            :desc="Suspension.StrengthDesc"
-            :descriptor="Suspension.$Strength"
-            :step="0.01"
-            :areas="{
-              yellow: [0.5, 1.5],
-              red: [1.6, Number.POSITIVE_INFINITY]
-            }"
-          />
-          <Float
-            :label="texts.damping"
-            :desc="Suspension.DampingDesc"
-            :descriptor="Suspension.$Damping"
-            :areas="{
-              yellow: [1, 3],
-              red: [3, 1000]
-            }"
-          />
-          <Float
-            :label="texts.suspensionMin"
-            :desc="Suspension.SuspensionMinDesc"
-            :descriptor="Suspension.$SuspensionMin"
-            :step="0.01"
-            :areas="{
-              yellow: [[-5, -2], [2, 5]],
-              red: [[-1000, -5.1], [5.1, 1000]]
-            }"
-          />
-          <Float
-            :label="texts.suspensionMax"
-            :desc="Suspension.SuspensionMaxDesc"
-            :descriptor="Suspension.$SuspensionMax"
-            :step="0.01"
-            :areas="{
-              yellow: [[-5, -2], [2, 5]],
-              red: [[-1000, -5.1], [5.1, 1000]]
-            }"
-          />
-          <Float
-            :label="texts.brokenSuspensionMax"
-            :desc="Suspension.BrokenSuspensionMaxDesc"
-            :descriptor="Suspension.$BrokenSuspensionMax"
-            :step="0.01"
-            :areas="{
-              yellow: [[-5, -2], [2, 5]],
-              red: [[-1000, -5.1], [5.1, 1000]]
-            }"
-          />
+          <Float :descriptor="Suspension.$Height" />
+          <Float :descriptor="Suspension.$Strength" />
+          <Float :descriptor="Suspension.$Damping" />
+          <Float :descriptor="Suspension.$SuspensionMin" />
+          <Float :descriptor="Suspension.$SuspensionMax" />
+          <Float :descriptor="Suspension.$BrokenSuspensionMax" />
         </Group>
         <UnlockPreset
           key="unlock"
@@ -112,7 +45,7 @@ import type { ReadyEmits, ReadyProps } from '../../utils'
 import { getGameText, useReady } from '../../utils'
 import UnlockPreset from '../unlock-preset'
 import texts from './texts'
-import { Config, type File, type SuspensionsXML } from '/mods/renderer'
+import { Config, WheelLocation, type File, type SuspensionsXML } from '/mods/renderer'
 
 export type SuspensionSetProps = ReadyProps & Props
 
@@ -128,4 +61,14 @@ const { info } = storeToRefs(useEditorStore())
 useReady(emit)
 provideFile(file)
 SaveUtils.useOnSave(() => file.write(xml.baseXML))
+
+function getSuspensionLabel(nth: number, type?: WheelLocation) {
+  const values: Record<WheelLocation, string> = {
+    [WheelLocation.front]: texts.frontSuspension,
+    [WheelLocation.middle]: texts.middleSuspension,
+    [WheelLocation.rear]: texts.rearSuspension
+  }
+  
+  return values[type!] ?? `${texts.suspension} ${nth}`
+}
 </script>

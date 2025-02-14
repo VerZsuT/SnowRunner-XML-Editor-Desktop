@@ -8,24 +8,6 @@ export default await createTextsLoader({
     .de('Seilwinde')
     .ch('绞车,绞车'),
 
-  length: new BaseLocalization()
-    .ru('Длина')
-    .en('Length')
-    .de('Länge')
-    .ch('长度'),
-
-  strengthMult: new BaseLocalization()
-    .ru('Сила')
-    .en('Strength')
-    .de('Stärke')
-    .ch('力量'),
-
-  isEngineIgnitionRequired: new BaseLocalization()
-    .ru('Работает от')
-    .en('Works from')
-    .de('Arbeitet von')
-    .ch('动力来源'),
-
   engine: new BaseLocalization()
     .ru('Двигателя')
     .en('Engine')
@@ -36,11 +18,5 @@ export default await createTextsLoader({
     .ru('Аккумулятора')
     .en('Battery')
     .de('Batterie')
-    .ch('电池'),
-
-  name: new BaseLocalization()
-    .ru('Название')
-    .en('Name')
-    .de('Titel')
-    .ch('标题')
+    .ch('电池')
 }).loadRenderer()

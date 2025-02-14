@@ -5,6 +5,7 @@
   >
     <Accordion>
       <AddonsContent
+        class="content"
         :file="file"
         :xml="xml"
         @mount="inProgress(ReadyType.addonsContent)"
@@ -58,3 +59,9 @@ const emit = defineEmits<ReadyEmits>()
 
 const { ready, inProgress } = useFilesReady(emit, true)
 </script>
+
+<style lang="scss" scoped>
+.content {
+  justify-content: center;
+}
+</style>

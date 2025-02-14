@@ -1,5 +1,6 @@
 <template>
   <Collapse
+    class="collapse"
     accordion
     @change="onKeyChange"
   >
@@ -13,3 +14,9 @@ import { provideActive } from './utils';
 
 const { onKeyChange } = provideActive(true)
 </script>
+
+<style lang="scss">
+.collapse {
+  width: 100%;
+}
+</style>

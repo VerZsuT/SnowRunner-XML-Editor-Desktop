@@ -6,7 +6,6 @@ export const useEditorStore = defineStore('editor', () => {
   const editedAction = ref(EditedAction.markAsEdited)
   const showMessages = ref(true)
   const isSaving = ref(false)
-  
   const file = shallowRef<File | undefined>()
   const info = reactive<FileInfo>({})
   const allFiles = reactive({

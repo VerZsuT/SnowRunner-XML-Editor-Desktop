@@ -5,50 +5,12 @@
       :label="texts.inner"
     >
       <template v-if="xml.TruckData">
-        <Int
-          :label="texts.fuelCapacity"
-          :desc="xml.TruckData.FuelCapacityDesc"
-          :descriptor="xml.TruckData.$FuelCapacity"
-          :step="10"
-          :areas="{
-            yellow: [1000, 5000],
-            red: [5001, Number.POSITIVE_INFINITY]
-          }"
-        />
-        <Int
-          :label="texts.waterCapacity"
-          :desc="xml.TruckData.WaterCapacityDesc"
-          :descriptor="xml.TruckData.$WaterCapacity"
-          :step="10"
-          :areas="{
-            yellow: [1000, 5000],
-            red: [5001, Number.POSITIVE_INFINITY]
-          }"
-        />
-        <Int
-          :label="texts.repairsCapacity"
-          :desc="xml.TruckData.RepairsCapacityDesc"
-          :descriptor="xml.TruckData.$RepairsCapacity"
-          :step="10"
-          :areas="{
-            yellow: [1000, 5000],
-            red: [5001, Number.POSITIVE_INFINITY]
-          }"
-        />
-        <Int
-          :label="texts.wheelRepairsCapacity"
-          :desc="xml.TruckData.WheelRepairsCapacityDesc"
-          :descriptor="xml.TruckData.$WheelRepairsCapacity"
-          :step="10"
-          :areas="{
-            yellow: [100, 500],
-            red: [501, Number.POSITIVE_INFINITY]
-          }"
-        />
+        <Int :descriptor="xml.TruckData.$FuelCapacity" />
+        <Int :descriptor="xml.TruckData.$WaterCapacity" />
+        <Int :descriptor="xml.TruckData.$RepairsCapacity" />
+        <Int :descriptor="xml.TruckData.$WheelRepairsCapacity" />
         <Int
           v-if="xml.GameData?.AddonSlots"
-          :label="texts.quantity"
-          :desc="xml.GameData.AddonSlots.QuantityDesc"
           :descriptor="xml.GameData.AddonSlots.$Quantity"
         />
       </template>
@@ -64,16 +26,8 @@
               :key="`wheel-${i}`"
               :label="`${texts.wheel} ${i + 1}`"
             >
-              <Float
-                :label="texts.suspHeight"
-                :desc="Wheel.SuspensionHeightDesc"
-                :descriptor="Wheel.$SuspensionHeight"
-              />
-              <Float
-                :label="texts.suspStrength"
-                :desc="Wheel.SuspensionStrengthDesc"
-                :descriptor="Wheel.$SuspensionStrength"
-              />
+              <Float :descriptor="Wheel.$SuspensionHeight" />
+              <Float :descriptor="Wheel.$SuspensionStrength" />
             </Group>
           </template>
         </Group>
@@ -85,7 +39,6 @@
     >
       <Coords
         v-if="xml.PhysicsModel?.Body"
-        :label="texts.centerOfMass"
         :descriptor="xml.PhysicsModel.Body.$CenterOfMassOffset"
       />
       <Int
@@ -104,11 +57,7 @@
       key="other"
       :label="texts.other"
     >
-      <Int
-        :label="texts.price"
-        :desc="xml.GameData.PriceDesc"
-        :descriptor="xml.GameData.$Price"
-      />
+      <Int :descriptor="xml.GameData.$Price" />
     </Group>
   </Accordion>
 </template>

@@ -1,4 +1,4 @@
-import type { IStringAttrDescriptor } from '../../../attributes'
+import type { IStringAttrDescriptor, XmlElements, XmlValue } from '../../../attributes'
 import { stringAttr } from '../../../attributes'
 import Wheels from '../../../wheels'
 import XMLWithTemplates, { innerElements } from '../../../xml-with-templates'
@@ -11,12 +11,12 @@ export { default as TruckWheel } from './wheel'
 export default class TruckWheels extends XMLWithTemplates {
   /** Имя файла дефолтного класса колес. */
   @stringAttr()
-  accessor DefaultWheelType: string | undefined
+  accessor DefaultWheelType: XmlValue<string>
   declare $DefaultWheelType: IStringAttrDescriptor
 
   /** Описание конкретных колёс. */
   @innerElements(Wheel, 'Wheel')
-  readonly Wheels: Wheel[] = []
+  readonly Wheels!: XmlElements<Wheel>
   
   readonly defaultWheelFile = this.file('wheels', () => this.DefaultWheelType)
   readonly defaultWheel = this.fileElementWithTemplates<Wheels>(Wheels, this.defaultWheelFile)

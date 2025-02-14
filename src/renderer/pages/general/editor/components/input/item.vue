@@ -127,6 +127,6 @@ function getStatus(): Status {
 
 <style lang='scss' scoped>
 .input {
-  min-width: 150px;
+  min-width: 130px;
 }
 </style>

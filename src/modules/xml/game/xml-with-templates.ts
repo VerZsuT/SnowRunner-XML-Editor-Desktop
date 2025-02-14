@@ -5,12 +5,12 @@ import XMLTemplates from '../xml-templates'
 import GameXML from './game-xml'
 
 export default class XMLWithTemplates extends GameXML {
-  /** Элемент шаблонов */
+  /** Элемент шаблонов. */
   readonly templates?: XMLTemplates
 
-  /** Создать из строки */
+  /** Создать из строки. */
   static override async from(str: string): Promise<XMLWithTemplates | undefined>
-  /** Создать из содержимого файла */
+  /** Создать из содержимого файла. */
   static override async from(file: File): Promise<XMLWithTemplates | undefined>
   static override async from(source: string | File): Promise<XMLWithTemplates | undefined> {
     const element = await super.from(source as File)
@@ -26,9 +26,9 @@ export default class XMLWithTemplates extends GameXML {
   }
 
   /**
-   * Получить геттер элементов из файлов
-   * @param Class - класс, который будет создаваться из файлов
-   * @param filesGetter - геттер файлов
+   * Получить геттер элементов из файлов.
+   * @param Class Класс, который будет создаваться из файлов.
+   * @param filesGetter Геттер файлов.
    */
   protected filesElementsWithTemplates<T extends XMLWithTemplates>(
     Class: { from: typeof XMLWithTemplates['from'] },
@@ -38,9 +38,9 @@ export default class XMLWithTemplates extends GameXML {
   }
 
   /**
-   * Получить геттер элемента из файла
-   * @param Class - класс, который будет создаваться из файла
-   * @param fileGetter - геттер файла
+   * Получить геттер элемента из файла.
+   * @param Class Класс, который будет создаваться из файла.
+   * @param fileGetter Геттер файла.
    */
   protected fileElementWithTemplates<T extends XMLWithTemplates>(
     Class: { from: typeof XMLWithTemplates['from'] },
@@ -50,8 +50,8 @@ export default class XMLWithTemplates extends GameXML {
   }
 
   /**
-   * Получить значение атрибута
-   * @param name - имя атрибута
+   * Получить значение атрибута.
+   * @param name Имя атрибута.
    */
   getAttrWT(name: string): AttrValue | undefined {
     const fromElement = this.getAttr(name)
@@ -78,10 +78,10 @@ export default class XMLWithTemplates extends GameXML {
 }
 
 /**
- * Внутренний элемент
- * @param ClassOrFactory - класс, который будет создан для элемента
- * @param tagName - название тега необходимого элемента
- * @param canAdd - добавить тег при его отсутствии
+ * Внутренний элемент.
+ * @param ClassOrFactory Класс, который будет создан для элемента.
+ * @param tagName Название тега необходимого элемента.
+ * @param canAdd Добавить тег при его отсутствии.
  */
 export function innerElement<T extends typeof XMLWithTemplates>(
   ClassOrFactory: T | (() => T),
@@ -97,8 +97,14 @@ export function innerElement<T extends typeof XMLWithTemplates>(
     const name = context.name.toString()
     
     context.addInitializer(function(this: This) {
+      let savedValue: Value | null = null
+
       Object.defineProperty(this, name, {
         get(this: This) {
+          if (savedValue !== null) {
+            return savedValue
+          }
+
           const target = tagName ?? name
           const innerSelector = this.selector
             ? `${this.selector} > ${target}`
@@ -110,22 +116,15 @@ export function innerElement<T extends typeof XMLWithTemplates>(
           }
     
           if (!element) {
-            return
+            return savedValue = undefined
           }
 
           const Class: T = typeof ClassOrFactory === 'function' && !ClassOrFactory.name
             // @ts-expect-error
             ? ClassOrFactory()
             : ClassOrFactory
-          const value = new Class(element, this.templates, innerSelector) as Value
-          
-          Object.defineProperty(this, name, {
-            value,
-            enumerable: true,
-            writable: false
-          })
 
-          return value
+          return savedValue = new Class(element, this.templates, innerSelector) as Value
         },
         enumerable: true,
         configurable: true
@@ -135,9 +134,9 @@ export function innerElement<T extends typeof XMLWithTemplates>(
 }
 
 /**
- * Внутренние элементы
- * @param ClassOrFactory - класс, который будет создан для каждого элемента
- * @param selector - селектор необходимых элементов
+ * Внутренние элементы.
+ * @param ClassOrFactory Класс, который будет создан для каждого элемента.
+ * @param selector Селектор необходимых элементов.
  */
 export function innerElements<T extends typeof XMLWithTemplates>(ClassOrFactory: T | (() => T), selector?: string) {
   type Value = InstanceType<T>[]
@@ -149,29 +148,28 @@ export function innerElements<T extends typeof XMLWithTemplates>(ClassOrFactory:
     const name = context.name.toString()
     
     context.addInitializer(function(this: This) {
+      let savedValue: Value | null = null
+
       Object.defineProperty(this, name, {
         get(this: This) {
+          if (savedValue !== null) {
+            return savedValue
+          }
+
           const target = selector ?? name
           const elements = this.selectAll(target)
           const Class: T = typeof ClassOrFactory === 'function' && !ClassOrFactory.name
               // @ts-expect-error
               ? ClassOrFactory()
               : ClassOrFactory
-          const value = elements.map((element, index) => new Class(
+
+          return savedValue = elements.map((element, index) => new Class(
             element,
             this.templates,
             this.selector
               ? `${this.selector} > ${target}:nth-of-type(${index + 1})`
               : undefined
           )) as Value
-
-          Object.defineProperty(this, name, {
-            value,
-            enumerable: true,
-            writable: false
-          })
-
-          return value
         },
         enumerable: true,
         configurable: true

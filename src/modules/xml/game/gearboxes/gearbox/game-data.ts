@@ -1,3 +1,4 @@
+import type { XmlElement } from '../../attributes'
 import { BaseGameData } from '../../base'
 import { innerElement } from '../../xml-with-templates'
 import GearboxParams from './gearbox-params'
@@ -8,5 +9,5 @@ export { default as GearboxParams } from './gearbox-params'
 export default class GameData extends BaseGameData {
   /** Наличие передач в коробке. */
   @innerElement(GearboxParams)
-  readonly GearboxParams: GearboxParams | undefined
+  readonly GearboxParams: XmlElement<GearboxParams>
 }

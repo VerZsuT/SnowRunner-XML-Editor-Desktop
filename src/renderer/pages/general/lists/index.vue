@@ -52,6 +52,7 @@ import { useListStore } from '../store/list'
 import { Filters, List } from './components'
 import texts from './texts'
 import { ItemsUtils } from './utils'
+import type { File } from '/mods/renderer'
 import { Helpers } from '/mods/renderer'
 import { Header, Spin } from '/rend/components'
 import { useKey } from '/rend/utils'
@@ -74,15 +75,25 @@ onMounted(async () => {
   }
 })
 
-function loadFiles() {
-  return Promise.all([
-    ItemsUtils.getMain(category.value)
-      .then(main => files.value[SourceType.main].push(...main)),
-    ItemsUtils.getDLC(category.value)
-      .then(dlc => files.value[SourceType.dlc].push(...dlc)),
+async function loadFiles() {
+  const [main, dlc, mods] = await Promise.all([
+    ItemsUtils.getMain(category.value),
+    ItemsUtils.getDLC(category.value),
     ItemsUtils.getMods(category.value)
-      .then(mods => files.value[SourceType.mods].push(...mods))
-  ]) 
+  ])
+
+  addFiles(SourceType.main, main)
+  addFiles(SourceType.dlc, dlc)
+  addFiles(SourceType.mods, mods)
+}
+
+function addFiles(sourceType: SourceType, newFiles: File[]) {
+  files.value[sourceType].push(...newFiles)
+  files.value[sourceType].sort(sortByName)
+}
+
+function sortByName(a: File, b: File) {
+  return a.name.localeCompare(b.name)
 }
 
 function toggleFiltersPanel() {

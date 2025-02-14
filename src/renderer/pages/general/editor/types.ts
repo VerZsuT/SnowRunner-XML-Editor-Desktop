@@ -31,7 +31,7 @@ export interface IParameterProps<
   Descriptor = IStringConvertAttrDescriptor<Value>
 > {
   /** Название параметра в таблице */
-  label: string
+  label?: string
   desc?: string
   getter?(): Value
   setter?(value: Value): void

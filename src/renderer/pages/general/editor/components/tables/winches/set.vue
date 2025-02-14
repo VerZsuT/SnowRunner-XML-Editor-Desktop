@@ -7,29 +7,11 @@
     >
       <Info
         v-if="Config.advancedMode"
-        :label="texts.name"
-        :getter="() => Winch.Name"
+        :descriptor="Winch.$Name"
       />
-      <Int
-        :label="texts.length"
-        :desc="Winch.LengthDesc"
-        :descriptor="Winch.$Length"
-        :areas="{
-          yellow: [30, 50],
-          red: [51, 100]
-        }"
-      />
-      <Float
-        :label="texts.strengthMult"
-        :descriptor="Winch.$StrengthMult"
-        :areas="{
-          yellow: [2, 5],
-          red: [5.1, 10]
-        }"
-      />
+      <Int :descriptor="Winch.$Length" />
+      <Float :descriptor="Winch.$StrengthMult" />
       <Select
-        :label="texts.isEngineIgnitionRequired"
-        :desc="Winch.IsEngineIgnitionRequiredDesc"
         :descriptor="<any>Winch.$IsEngineIgnitionRequired"
         :options="[
           [true, texts.engine],

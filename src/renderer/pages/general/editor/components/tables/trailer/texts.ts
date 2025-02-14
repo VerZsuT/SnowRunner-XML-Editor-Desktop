@@ -2,12 +2,6 @@ import { createTextsLoader } from '/utils/texts'
 import { BaseLocalization } from '/utils/texts/base-localization'
 
 export default await createTextsLoader({
-  quantity: new BaseLocalization()
-    .ru('Кол-во груза')
-    .en('Cargo quantity')
-    .de('Menge der Ladung')
-    .ch('装载货物的格数'),
-
   inner: new BaseLocalization()
     .ru('Полезное содержимое')
     .en('Useful content')
@@ -25,42 +19,6 @@ export default await createTextsLoader({
     .en('Other')
     .de('Ander')
     .ch('其他'),
-
-  price: new BaseLocalization()
-    .ru('Цена')
-    .en('Price')
-    .de('Preis')
-    .ch('价格'),
-
-  waterCapacity: new BaseLocalization()
-    .ru('Объём воды')
-    .en('Fuel capacity')
-    .de('Kraftstoffmenge')
-    .ch('燃油容量'),
-
-  fuelCapacity: new BaseLocalization()
-    .ru('Объём топлива')
-    .en('Water capacity')
-    .de('Wasser-Kapazität')
-    .ch('水容量'),
-
-  repairsCapacity: new BaseLocalization()
-    .ru('Кол-во запчастей')
-    .en('Repairs capacity')
-    .de('Anzahl der Ersatzteile')
-    .ch('修理零件数量'),
-
-  wheelRepairsCapacity: new BaseLocalization()
-    .ru('Кол-во колёс для ремонта')
-    .en('Wheel repairs capacity')
-    .de('Anzahl der Räder zu reparieren')
-    .ch('备胎数量'),
-
-  centerOfMass: new BaseLocalization()
-    .ru('Смещение центра масс')
-    .en('Center of mass offset')
-    .de('Versatz des Massenzentrums')
-    .ch('车辆重心调整'),
 
   trailerMass: new BaseLocalization()
     .ru('Масса прицепа')
@@ -84,17 +42,5 @@ export default await createTextsLoader({
     .ru('Колесо')
     .en('Wheel')
     .de('Das Rad')
-    .ch('轮子'),
-
-  suspHeight: new BaseLocalization()
-    .ru('Высота подвески')
-    .en('Suspension height')
-    .de('Höhe der Aufhängung')
-    .ch('悬架的高度'),
-
-  suspStrength: new BaseLocalization()
-    .ru('Жёсткость подвески')
-    .en('Suspension strength')
-    .de('Federungssteifigkeit')
-    .ch('悬架的硬度')
+    .ch('轮子')
 }).loadRenderer()

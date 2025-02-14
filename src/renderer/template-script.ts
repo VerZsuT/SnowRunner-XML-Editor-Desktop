@@ -26,13 +26,13 @@ class Template {
       }
 
       if (keyIs('S')) {
-        // Быстрое сохранение
+        // Быстрое сохранение.
         document.querySelector<HTMLInputElement>('#save')?.click()
       } else if (keyIs('Q')) {
-        // Быстрое закрытие
+        // Быстрое закрытие.
         Helpers.quitApp()
       } else if (keyIs('I') && shift && ctrl) {
-        // Открыть `devtools`
+        // Открыть `devtools`.
         Helpers.devtools()
       }
     })

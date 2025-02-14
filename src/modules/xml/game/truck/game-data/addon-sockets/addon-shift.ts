@@ -1,4 +1,4 @@
-import type { IPositionAttrDescriptor, IStringArrayAttrDescriptor } from '../../../attributes'
+import type { IPositionAttrDescriptor, IStringArrayAttrDescriptor, XmlArrayValue, XmlValue } from '../../../attributes'
 import { positionAttr, stringArrayAttr } from '../../../attributes'
 import type Position from '../../../position'
 import XMLWithTemplates from '../../../xml-with-templates'
@@ -7,16 +7,16 @@ import XMLWithTemplates from '../../../xml-with-templates'
 export default class AddonShift extends XMLWithTemplates {
   /** Имя типа аддона, при установке которого сдвинется описываемый аддон.  */
   @stringArrayAttr()
-  accessor Types: string[] = []
+  accessor Types!: XmlArrayValue<string>
   declare $Types: IStringArrayAttrDescriptor
 
   /** Смещение кости аддона при установке на трак. */
   @positionAttr()
-  accessor Offset: Position | undefined
+  accessor Offset: XmlValue<Position>
   declare $Offset: IPositionAttrDescriptor
 
   /** Запрет установки трейлера при установленной паре аддонов со сдвигом. */
   @stringArrayAttr()
-  accessor TrailerNamesBlock: string[] = []
+  accessor TrailerNamesBlock!: XmlArrayValue<string>
   declare $TrailerNamesBlock: IStringArrayAttrDescriptor
 }

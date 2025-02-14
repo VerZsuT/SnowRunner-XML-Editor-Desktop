@@ -84,6 +84,7 @@ export default [
 		'@typescript-eslint/no-this-alias': 'off',
 		'@typescript-eslint/no-non-null-assertion': 'off',
 		'no-tabs': 'off',
+		'no-cond-assign': 'off',
 		'no-multi-spaces': 'off',
 		'key-spacing': 'off',
 		'no-bitwise': 'off',

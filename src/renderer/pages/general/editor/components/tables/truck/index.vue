@@ -8,26 +8,18 @@
     >
       <Text
         v-if="xml.GameData.UiDesc.DefaultRegion"
-        :label="texts.uiName"
-        :desc="xml.GameData.UiDesc.DefaultRegion.UiNameDesc"
         :descriptor="xml.GameData.UiDesc.DefaultRegion.$UiName"
       />
       <Text
         v-else
-        :label="texts.uiName"
-        :desc="xml.GameData.UiDesc.UiNameDesc"
         :descriptor="xml.GameData.UiDesc.$UiName"
       />
       <Text
         v-if="xml.GameData.UiDesc.DefaultRegion"
-        :label="texts.uiDesc"
-        :desc="xml.GameData.UiDesc.DefaultRegion.UiDescDesc"
         :descriptor="xml.GameData.UiDesc.DefaultRegion.$UiDesc"
       />
       <Text
         v-else
-        :label="texts.uiDesc"
-        :desc="xml.GameData.UiDesc.UiDescDesc"
         :descriptor="xml.GameData.UiDesc.$UiDesc"
       />
     </Group>
@@ -37,24 +29,9 @@
         :label="texts.controlGroupName"
         icon="steering-wheel"
       >
-        <Float
-          :label="texts.responsiveness"
-          :desc="xml.TruckData.ResponsivenessDesc"
-          :descriptor="xml.TruckData.$Responsiveness"
-          :step="0.01"
-        />
-        <Float
-          :label="texts.backSteerSpeed"
-          :desc="xml.TruckData.BackSteerSpeedDesc"
-          :descriptor="xml.TruckData.$BackSteerSpeed"
-          :step="0.01"
-        />
-        <Float
-          :label="texts.steerSpeed"
-          :desc="xml.TruckData.SteerSpeedDesc"
-          :descriptor="xml.TruckData.$SteerSpeed"
-          :step="0.01"
-        />
+        <Float :descriptor="xml.TruckData.$Responsiveness" />
+        <Float :descriptor="xml.TruckData.$BackSteerSpeed" />
+        <Float :descriptor="xml.TruckData.$SteerSpeed" />
       </Group>
       <Group
         key="winch"
@@ -62,16 +39,8 @@
         icon="winches"
       >
         <template v-if="xml.TruckData.Winch">
-          <Float
-            :label="texts.winchLength"
-            :desc="xml.TruckData.Winch.LengthDesc"
-            :descriptor="xml.TruckData.Winch.$Length"
-            :step="1.0"
-          />
-          <Float
-            :label="texts.winchStrength"
-            :descriptor="xml.TruckData.Winch.$StrengthMult"
-          />
+          <Float :descriptor="xml.TruckData.Winch.$Length" />
+          <Float :descriptor="xml.TruckData.Winch.$StrengthMult" />
         </template>
         <Winches
           key="winches-file"
@@ -99,8 +68,6 @@
                   :label="`${texts.wheel} ${i + 1}`"
                 >
                   <Select
-                    :label="texts.torque"
-                    :desc="Wheel.TorqueDesc"
                     :descriptor="Wheel.$Torque"
                     :options="[
                       [WheelTorque.default, texts.torqueDefault],
@@ -109,12 +76,7 @@
                       [WheelTorque.connectable, texts.torqueConnectable]
                     ]"
                   />
-                  <Float
-                    :label="texts.steeringAngle"
-                    :desc="Wheel.SteeringAngleDesc"
-                    :descriptor="Wheel.$SteeringAngle"
-                    :step="1.0"
-                  />
+                  <Float :descriptor="Wheel.$SteeringAngle" />
                 </Group>
               </template>
               <template v-if="xml.TruckData.ExtraWheels">
@@ -124,8 +86,6 @@
                   :label="`${texts.extraWheel} ${i + 1}`"
                 >
                   <Select
-                    :label="texts.torque"
-                    :desc="ExtraWheel.TorqueDesc"
                     :descriptor="ExtraWheel.$Torque"
                     :options="[
                       [WheelTorque.default, texts.torqueDefault],
@@ -134,12 +94,7 @@
                       [WheelTorque.connectable, texts.torqueConnectable]
                     ]"
                   />
-                  <Float
-                    :label="texts.steeringAngle"
-                    :desc="ExtraWheel.SteeringAngleDesc"
-                    :descriptor="ExtraWheel.$SteeringAngle"
-                    :step="1.0"
-                  />
+                  <Float :descriptor="ExtraWheel.$SteeringAngle" />
                 </Group>
               </template>
             </template>
@@ -152,12 +107,9 @@
               <Group
                 v-for="(CompatibleWheels, i) of xml.TruckData.CompatibleWheels"
                 :key="`compat-wheels-${i}`"
-                :label="`${texts.wheelsSet} ${i + 1}`"
+                :label="getCompatibleWheelsLabel(i + 1, CompatibleWheels.Type)"
               >
-                <Float
-                  :label="texts.wheelsScale"
-                  :descriptor="CompatibleWheels.$Scale"
-                />
+                <Float :descriptor="CompatibleWheels.$Scale" />
               </Group>
             </template>
           </Group>
@@ -178,11 +130,9 @@
       >
         <Coords
           v-if="xml.PhysicsModel?.Body"
-          :label="texts.centerOfMass"
           :descriptor="xml.PhysicsModel.Body.$CenterOfMassOffset"
         />
         <Select
-          :label="texts.diffLock"
           :descriptor="xml.TruckData.$DiffLockType"
           :options="[
             [DiffLockType.none, texts.none],
@@ -217,16 +167,8 @@
         :label="texts.engineGroupName"
         icon="engines"
       >
-        <Float
-          :label="texts.engineStartDelay"
-          :desc="xml.TruckData.EngineStartDelayDesc"
-          :descriptor="xml.TruckData.$EngineStartDelay"
-        />
-        <Float
-          :label="texts.exhaustStartTime"
-          :desc="xml.TruckData.ExhaustStartTimeDesc"
-          :descriptor="xml.TruckData.$ExhaustStartTime"
-        />
+        <Float :descriptor="xml.TruckData.$EngineStartDelay" />
+        <Float :descriptor="xml.TruckData.$ExhaustStartTime" />
         <Engines
           key="engines-file"
           :getter="xml.TruckData.EngineSocket?.engines"
@@ -241,26 +183,8 @@
         :label="texts.fuelGroupName"
         icon="fuel"
       >
-        <Int
-          :label="texts.damageCapacity"
-          :desc="xml.TruckData.FuelTank.DamageCapacityDesc"
-          :descriptor="xml.TruckData.FuelTank.$DamageCapacity"
-          :step="10"
-          :areas="{
-            yellow: [1000, 5000],
-            red: [5001, Number.POSITIVE_INFINITY]
-          }"
-        />
-        <Int
-          :label="texts.fuelCapacity"
-          :desc="xml.TruckData.FuelCapacityDesc"
-          :descriptor="xml.TruckData.$FuelCapacity"
-          :step="10"
-          :areas="{
-            yellow: [1000, 5000],
-            red: [5001, Number.POSITIVE_INFINITY]
-          }"
-        />
+        <Int :descriptor="xml.TruckData.FuelTank.$DamageCapacity" />
+        <Int :descriptor="xml.TruckData.$FuelCapacity" />
       </Group>
     </template>
     <Group
@@ -272,8 +196,6 @@
       <Select
         multiple
         empty-is-all
-        :label="texts.country"
-        :desc="xml.GameData.CountryDesc"
         :descriptor="xml.GameData.$Country"
         :options="[
           [Country.ru, texts.russia],
@@ -282,25 +204,15 @@
           [Country.ne, texts.ne]
         ]"
       />
-      <Int
-        :label="texts.price"
-        :desc="xml.GameData.PriceDesc"
-        :descriptor="xml.GameData.$Price"
-      />
+      <Int :descriptor="xml.GameData.$Price" />
       <Select
-        :label="texts.byExploration"
-        :desc="xml.GameData.UnlockByExplorationDesc"
         :descriptor="xml.GameData.$UnlockByExploration"
         :options="[
           [true, texts.findOnMap],
           [false, texts.byRank]
         ]"
       />
-      <Int
-        :label="texts.unlockByRank"
-        :desc="xml.GameData.UnlockByRankDesc"
-        :descriptor="xml.GameData.$UnlockByRank"
-      />
+      <Int :descriptor="xml.GameData.$UnlockByRank" />
     </Group>
     <Extra
       key="extra"
@@ -330,7 +242,7 @@ import Winches from '../winches'
 import texts from './texts'
 import { ReadyType } from './utils'
 import type { File, TruckCompatibleWheels, TruckXML } from '/mods/renderer'
-import { Country, DiffLockType, WheelTorque } from '/mods/renderer'
+import { Config, Country, DiffLockType, WheelTorque } from '/mods/renderer'
 
 export type TruckProps = ReadyProps & Props
 
@@ -357,5 +269,11 @@ function filterCompat(wheels: TruckCompatibleWheels[]) {
     
     return true
   })
+}
+
+function getCompatibleWheelsLabel(nth: number, type?: string) {
+  return Config.advancedMode && type
+    ? type
+    : `${texts.wheelsSet} ${nth}`
 }
 </script>

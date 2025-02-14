@@ -1,6 +1,7 @@
 import type { File } from '../../../renderer'
 import XMLElement from '../../xml-element'
 import XMLTemplates from '../../xml-templates'
+import type { XmlElement } from '../attributes'
 import XMLWithTemplates, { innerElement } from '../xml-with-templates'
 import GameData from './game-data'
 import TruckData from './truck-data'
@@ -30,9 +31,9 @@ export default class TruckAddon extends XMLWithTemplates {
 
   /** Свойства непосредственно аддона. */
   @innerElement(TruckData)
-  readonly TruckData: TruckData | undefined
+  readonly TruckData: XmlElement<TruckData>
 
   /** Информация о взаимодействии двигателя с окружающим миром. */
   @innerElement(GameData)
-  readonly GameData: GameData | undefined
+  readonly GameData: XmlElement<GameData>
 }

@@ -1,4 +1,4 @@
-import type { IPositionAttrDescriptor } from '../../attributes'
+import type { IPositionAttrDescriptor, XmlValue } from '../../attributes'
 import { positionAttr } from '../../attributes'
 import type Position from '../../position'
 import XMLWithTemplates from '../../xml-with-templates'
@@ -7,6 +7,6 @@ import XMLWithTemplates from '../../xml-with-templates'
 export default class CraneSocket extends XMLWithTemplates {
   /** Положение сокета крана. */
   @positionAttr()
-  accessor Pos: Position | undefined
+  accessor Pos: XmlValue<Position>
   declare $Pos: IPositionAttrDescriptor
 }

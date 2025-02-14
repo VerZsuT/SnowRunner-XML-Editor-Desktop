@@ -1,6 +1,7 @@
 import type { File } from '../../../renderer'
 import XMLElement from '../../xml-element'
 import XMLTemplates from '../../xml-templates'
+import type { XmlElements } from '../attributes'
 import XMLWithTemplates, { innerElements } from '../xml-with-templates'
 import SuspensionSet from './suspension-set'
 
@@ -28,5 +29,5 @@ export default class Suspensions extends XMLWithTemplates {
 
   /** Наборы подвесок. */
   @innerElements(SuspensionSet, 'SuspensionSet')
-  readonly Sets: SuspensionSet[] = []
+  readonly Sets!: XmlElements<SuspensionSet>
 }

@@ -2,11 +2,21 @@ import type GameXML from './game-xml'
 import type Limit from './limit'
 import type { PosLimits } from './position'
 import Position from './position'
+import type { IInputAreas } from '/rend/pages/general/editor/types'
 import { arrayToString, boolToString, hasItems, numberToString, stringToArray, stringToBoolean, stringToNumber } from '/utils/renderer'
 
-const LIMITS_PROPERTY = Symbol('limits property')
-type LimitsProperty = {
-  [name: string]: Limit | PosLimits
+const PROPERTIES = Symbol('properties')
+
+type AttributeProperties = Record<string | symbol, IBaseAttributeProperties>
+
+interface IBaseAttributeProperties<Value = unknown> {
+  label?: string
+  desc?: string
+  limit?: Value extends XmlValue<Position>
+    ? PosLimits
+    : Limit
+  step?: number
+  areas?: IInputAreas
 }
 
 /** Строковый атрибут. */
@@ -113,7 +123,7 @@ export function positionAttr() {
           return defaultValue
         }
 
-        return Position.from(str, this[LIMITS_PROPERTY]?.[name])
+        return Position.from(str, this[PROPERTIES]?.[name]?.limit)
       },
       set(value) {
         this.procAttr(name, value?.toString() ?? null)
@@ -148,7 +158,7 @@ export function integerAttr() {
         return this.procAttr(name)?.int ?? defaultValue
       },
       set(value) {
-        this.procAttr(name, value ?? null, this[LIMITS_PROPERTY]?.[name])
+        this.procAttr(name, value ?? null, this[PROPERTIES]?.[name]?.limit)
       }
     }
   }
@@ -180,7 +190,7 @@ export function floatAttr() {
         return this.procAttr(name)?.float ?? defaultValue
       },
       set(value) {
-        this.procAttr(name, value ?? null, this[LIMITS_PROPERTY]?.[name])
+        this.procAttr(name, value ?? null, this[PROPERTIES]?.[name]?.limit)
       }
     }
   }
@@ -234,12 +244,10 @@ export function lazy<This, Value>(
   }
 }
 
-/**
- * Лимитировать значение.
- * @param limit Лимит значения.
- */
-export function limit(limit: Limit | PosLimits) {
-  return function<This, Value>(
+export function properties<This, Value>(
+  properties: IBaseAttributeProperties<NoInfer<Value>> & { default?: NoInfer<Value> }
+) {
+  return function(
     _target: ClassAccessorDecoratorTarget<This, Value>,
     context: ClassAccessorDecoratorContext<This, Value>
   ): ClassAccessorDecoratorResult<This, Value> {
@@ -247,9 +255,9 @@ export function limit(limit: Limit | PosLimits) {
 
     return {
       init(value) {
-        (this[LIMITS_PROPERTY] ??= {} satisfies LimitsProperty)[name] = limit
+        (this[PROPERTIES] ??= {} satisfies AttributeProperties)[name] = properties
 
-        return value
+        return properties.default ?? value
       }
     }
   }
@@ -264,17 +272,21 @@ export function limit(limit: Limit | PosLimits) {
 function createStringAttrDescriptor<
   This extends GameXML,
   Value extends string = string
->(name: string, instance: This, defaultValue?: Value): IStringAttrDescriptor<Value> {
-  return {
-    attrType: 'string',
-    ...createBaseStringConvertAttrDescriptor(
-      name,
-      instance,
-      defaultValue,
-      str => str as Value,
-      str => str ?? ''
-    )
-  }
+>(name: string, instance: This, defaultValue?: Value) {
+  const baseDescriptor = createBaseStringConvertAttrDescriptor(
+    name,
+    instance,
+    defaultValue,
+    str => str as Value,
+    str => str ?? ''
+  )
+
+  return mixDescriptors<
+    typeof baseDescriptor,
+    IStringAttrDescriptor<Value>
+  >(baseDescriptor, {
+    attrType: 'string'
+  })
 }
 
 /**
@@ -294,11 +306,17 @@ function createStringArrayAttrDescriptor<
   defaultValue?: Value[],
   parser = (str: string) => str as Value | undefined,
   preserve = false
-): IStringArrayAttrDescriptor<Value> {
-  const baseDescriptor = createBaseAttrDescriptor<Value[]>(name, instance, defaultValue)
+) {
+  const baseDescriptor = createBaseAttrDescriptor<Value[]>(
+    name,
+    instance,
+    defaultValue
+  )
 
-  return {
-    ...baseDescriptor,
+  return mixDescriptors<
+    typeof baseDescriptor,
+    IStringArrayAttrDescriptor<Value>
+  >(baseDescriptor, {
     attrType: 'stringArray',
     getStr: () => arrayToString(baseDescriptor.get()),
     setStr: value => baseDescriptor.set(
@@ -308,7 +326,7 @@ function createStringArrayAttrDescriptor<
             ? []
             : undefined
     )
-  }
+  })
 }
 
 /**
@@ -319,17 +337,21 @@ function createStringArrayAttrDescriptor<
  */
 function createPositionAttrDescriptor<
   This extends GameXML
->(name: string, instance: This, defaultValue?: Position): IPositionAttrDescriptor {
-  return {
-    attrType: 'position',
-    ...createBaseStringConvertAttrDescriptor(
-      name,
-      instance,
-      defaultValue,
-      str => Position.from(str),
-      pos => pos?.toString() ?? ''
-    )
-  }
+>(name: string, instance: This, defaultValue?: Position) {
+  const baseDescriptor = createBaseStringConvertAttrDescriptor(
+    name,
+    instance,
+    defaultValue,
+    str => Position.from(str),
+    pos => pos?.toString() ?? ''
+  )
+
+  return mixDescriptors<
+    typeof baseDescriptor,
+    IPositionAttrDescriptor
+  >(baseDescriptor, {
+    attrType: 'position'
+  })
 }
 
 /**
@@ -340,11 +362,21 @@ function createPositionAttrDescriptor<
  */
 function createNumberAttrDescriptor<
   This extends GameXML
->(name: string, instance: This, defaultValue?: number): INumberAttrDescriptor {
-  return {
-    attrType: 'number',
-    ...createBaseStringConvertAttrDescriptor(name, instance, defaultValue, stringToNumber, numberToString)
-  }
+>(name: string, instance: This, defaultValue?: number) {
+  const baseDescriptor = createBaseStringConvertAttrDescriptor(
+    name,
+    instance,
+    defaultValue,
+    stringToNumber,
+    numberToString
+  )
+
+  return mixDescriptors<
+    typeof baseDescriptor,
+    INumberAttrDescriptor
+  >(baseDescriptor, {
+    attrType: 'number'
+  })
 }
 
 /**
@@ -355,11 +387,21 @@ function createNumberAttrDescriptor<
  */
 function createBooleanAttrDescriptor<
   Instance extends GameXML
->(name: string, instance: Instance, defaultValue?: boolean): IBooleanAttrDescriptor {
-  return {
-    attrType: 'boolean',
-    ...createBaseStringConvertAttrDescriptor(name, instance, defaultValue, stringToBoolean, boolToString)
-  }
+>(name: string, instance: Instance, defaultValue?: boolean) {
+  const baseDescriptor = createBaseStringConvertAttrDescriptor(
+    name,
+    instance,
+    defaultValue,
+    stringToBoolean,
+    boolToString
+  )
+
+  return mixDescriptors<
+    typeof baseDescriptor,
+    IBooleanAttrDescriptor
+  >(baseDescriptor, {
+    attrType: 'boolean'
+  })
 }
 
 /**
@@ -374,18 +416,20 @@ function createBaseStringConvertAttrDescriptor<Value>(
   defaultValue: Value | undefined,
   fromString: (value: string) => Value,
   toString: (value?: Value) => string
-): IStringConvertAttrDescriptor<Value> {
+) {
   const baseDescriptor = createBaseAttrDescriptor<Value>(name, instance, defaultValue)
 
-  return {
-    ...baseDescriptor,
+  return mixDescriptors<
+    typeof baseDescriptor,
+    IStringConvertAttrDescriptor<Value>
+  >(baseDescriptor, {
     getStr: () => toString(baseDescriptor.get()),
     setStr: value => baseDescriptor.set(
-      value
-        ? fromString(value)
-        : undefined
+    value
+      ? fromString(value)
+      : undefined
     )
-  }
+  })
 }
 
 /**
@@ -403,11 +447,33 @@ function createBaseAttrDescriptor<Value>(
     name,
     selector: instance.selector,
     default: defaultValue,
-    get limit() { return instance[LIMITS_PROPERTY]?.[name] },
+    get limit() { return instance[PROPERTIES]?.[name]?.limit },
+    get step() { return instance[PROPERTIES]?.[name]?.step },
+    get areas() { return instance[PROPERTIES]?.[name]?.areas },
+    get label() { return instance[PROPERTIES]?.[name]?.label },
+    get desc() { return instance[PROPERTIES]?.[name]?.desc },
     get: () => instance[name],
     set: value => instance[name] = value
   }
 }
+
+function mixDescriptors<
+  Base extends object,
+  Child extends Base
+>(baseDescriptor: Base, mixin: Omit<Child, keyof Base>) {
+  return new Proxy({...baseDescriptor, ...mixin}, {
+    get(target, key) {
+      return key in baseDescriptor
+        ? baseDescriptor[key]
+        : target[key]
+    }
+  })
+}
+
+export type XmlValue<T> = T | undefined
+export type XmlArrayValue<T> = T[]
+export type XmlElement<T extends GameXML> = T | undefined
+export type XmlElements<T extends GameXML> = T[]
 
 /** Дескриптор атрибута. */
 export interface IAttrDescriptor<Value = unknown> {
@@ -418,7 +484,14 @@ export interface IAttrDescriptor<Value = unknown> {
   selector: string
 
   /** Ограничение значения. */
-  limit?: Value extends Position ? PosLimits : Limit
+  limit?: Value extends Position
+    ? PosLimits
+    : Limit
+
+  step?: number
+  areas?: IInputAreas
+  label?: string
+  desc?: string
 
   /** Стандартное значение. */
   default?: Value

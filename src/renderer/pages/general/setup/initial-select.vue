@@ -36,21 +36,17 @@ const file = defineModel<File>()
 async function onFolderClick() {
   const selected = await getFromFolder()
 
-  if (!selected) {
-    return
+  if (selected) {
+    file.value = selected
   }
-
-  file.value = selected
 }
 
 async function onFileClick() {
   const selected = await getInitialPak()
 
-  if (!selected) {
-    return
+  if (selected) {
+    file.value = selected
   }
-
-  file.value = selected
 }
 
 async function getInitialPak(): Promise<File | undefined> {
@@ -104,9 +100,9 @@ async function findInitial(dir: Dir): Promise<File | undefined> {
 <style lang='scss' scoped>
 .game-folder {
   margin-top: 40px;
-}
 
-.folder-button {
-  margin-right: 30px;
+  .folder-button {
+    margin-right: 30px;
+  }
 }
 </style>

@@ -93,7 +93,7 @@ function hide(event?: MouseEvent) {
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 30;
+  z-index: 10;
   
   &-menu {
     border: 1px solid lightgray;

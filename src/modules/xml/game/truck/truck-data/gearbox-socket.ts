@@ -1,4 +1,4 @@
-import type { IStringAttrDescriptor } from '../../attributes'
+import type { IStringAttrDescriptor, XmlValue } from '../../attributes'
 import { stringAttr } from '../../attributes'
 import Gearboxes from '../../gearboxes'
 import XMLWithTemplates from '../../xml-with-templates'
@@ -7,12 +7,12 @@ import XMLWithTemplates from '../../xml-with-templates'
 export default class GearboxSocket extends XMLWithTemplates {
   /** Имя xml-файла. */
   @stringAttr()
-  accessor Type: string | undefined
+  accessor Type: XmlValue<string>
   declare $Type: IStringAttrDescriptor
 
   /** Имя дефолтной коробки. */
   @stringAttr()
-  accessor Default: string | undefined
+  accessor Default: XmlValue<string>
   declare $Default: IStringAttrDescriptor
 
   readonly gearboxesFiles = this.files('gearboxes', () => this.Type)

@@ -1,6 +1,7 @@
 <template>
   <Text> X: </Text>
   <InputNumber
+    class="coordinate"
     :step="step"
     :value="coords.x"
     @change="value => changeCoord({ x: Number.parseFloat(String(value)) })"
@@ -8,6 +9,7 @@
 
   <Text> Y: </Text>
   <InputNumber
+    class="coordinate"
     :step="step"
     :value="coords.y"
     @change="value => changeCoord({ y: Number.parseFloat(String(value)) })"
@@ -15,6 +17,7 @@
   
   <Text> Z: </Text>
   <InputNumber
+    class="coordinate"
     :step="step"
     :value="coords.z"
     @change="value => changeCoord({ z: Number.parseFloat(String(value)) })"
@@ -64,3 +67,9 @@ function changeCoord(newCoord: Partial<Position>) {
   emit('change', coords.value.toString())
 }
 </script>
+
+<style lang="scss" scoped>
+.coordinate {
+  width: 70px;
+}
+</style>

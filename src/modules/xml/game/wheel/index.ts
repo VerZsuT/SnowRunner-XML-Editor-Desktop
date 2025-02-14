@@ -1,8 +1,8 @@
 import type { File } from '../../../renderer'
 import XMLElement from '../../xml-element'
 import XMLTemplates from '../../xml-templates'
-import type { INumberAttrDescriptor } from '../attributes'
-import { floatAttr, integerAttr, limit } from '../attributes'
+import type { INumberAttrDescriptor, XmlElement, XmlValue } from '../attributes'
+import { floatAttr, integerAttr, properties } from '../attributes'
 import { BaseWheelFriction } from '../base'
 import Limit from '../limit'
 import XMLWithTemplates, { innerElement } from '../xml-with-templates'
@@ -27,30 +27,38 @@ export default class Wheel extends XMLWithTemplates {
   }
 
   /** Масса колеса. */
-  @limit(Limit.Positive.fixed())
+  @properties({
+    limit: Limit.Positive.fixed()
+  })
   @integerAttr()
-  accessor Mass: number | undefined
+  accessor Mass: XmlValue<number>
   declare $Mass: INumberAttrDescriptor
 
   /** Радиус колеса. */
-  @limit(Limit.Positive)
+  @properties({
+    limit: Limit.Positive
+  })
   @floatAttr()
-  accessor Radius: number | undefined
+  accessor Radius: XmlValue<number>
   declare $Radius: INumberAttrDescriptor
 
   /** Ширина. */
-  @limit(Limit.Positive)
+  @properties({
+    limit: Limit.Positive
+  })
   @floatAttr()
-  accessor Width: number | undefined
+  accessor Width: XmlValue<number>
   declare $Width: INumberAttrDescriptor
 
   /** Размер допустимого ущерба. */
-  @limit(new Limit({ min: 0, max: 64_000, fixed: true }))
+  @properties({
+    limit: new Limit({ min: 0, max: 64_000, fixed: true })
+  })
   @integerAttr()
-  accessor DamageCapacity: number | undefined
+  accessor DamageCapacity: XmlValue<number>
   declare $DamageCapacity: INumberAttrDescriptor
 
   /** Трение колеса. */
   @innerElement(BaseWheelFriction, 'WheelFriction', true)
-  readonly WheelFriction: BaseWheelFriction | undefined
+  readonly WheelFriction: XmlElement<BaseWheelFriction>
 }

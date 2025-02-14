@@ -1,149 +1,148 @@
-import type { INumberAttrDescriptor, IStringAttrDescriptor } from '../../attributes'
-import { floatAttr, integerAttr, lazy, limit, stringAttr } from '../../attributes'
+import type { INumberAttrDescriptor, IStringAttrDescriptor, XmlElement, XmlValue } from '../../attributes'
+import { floatAttr, integerAttr, properties, stringAttr } from '../../attributes'
 import { BaseGameData } from '../../base'
 import Limit from '../../limit'
 import XMLWithTemplates, { innerElement } from '../../xml-with-templates'
-import { Config } from '/mods/renderer'
-import { BaseLocalization } from '/utils/texts/base-localization'
+import texts from './texts'
 
 /** Двигатель. */
 export default class Engine extends XMLWithTemplates {
   /** Имя двигателя. */
+  @properties({
+    get label() { return texts.name }
+  })
   @stringAttr()
-  accessor Name: string | undefined
+  accessor Name: XmlValue<string>
   declare $Name: IStringAttrDescriptor
   
   /** Расход топлива. */
-  @limit(new Limit({ min: 0.0, max: 100.0 }))
+  @properties({
+    get label() { return texts.fuelConsumption },
+    get desc() { return texts.fuelConsumptionDesc },
+    limit: new Limit({ min: 0.0, max: 100.0 }),
+    default: 0.5
+  })
   @floatAttr()
-  accessor FuelConsumption: number | undefined = 0.5
+  accessor FuelConsumption: XmlValue<number>
   declare $FuelConsumption: INumberAttrDescriptor
-  @lazy get FuelConsumptionDesc() {
-    return new BaseLocalization()
-      .ru('Базовое потребление топлива двигателем')
-      .en('The basic fuel consumption of the engine')
-      .de('Basiskraftstoffverbrauch durch den Motor')
-      .get(Config)
-  }
-
+  
   /** Размер допустимого ущерба. */
-  @limit(new Limit({ min: 0, max: 64_000, fixed: true }))
+  @properties({
+    get label() { return texts.damageCapacity },
+    get desc() { return texts.damageCapacityDesc },
+    step: 10,
+    limit: new Limit({ min: 0, max: 64_000, fixed: true }),
+    areas: {
+      yellow: [1001, 5000],
+      red: [5001, Number.POSITIVE_INFINITY]
+    },
+    default: 0
+  })
   @integerAttr()
-  accessor DamageCapacity: number | undefined = 0
+  accessor DamageCapacity: XmlValue<number>
   declare $DamageCapacity: INumberAttrDescriptor
-  @lazy get DamageCapacityDesc() {
-    return new BaseLocalization()
-      .ru('Размер допустимого ущерба двигателю')
-      .en('The amount of possible damage to the engine')
-      .de('Die Größe des zulässigen Motorschadens')
-      .get(Config)
-  }
 
   /** Порог критической поломки. */
-  @limit(new Limit({ min: 0.0, max: 0.999 }))
+  @properties({
+    get label() { return texts.criticalDamageThreshold },
+    get desc() { return texts.criticalDamageThresholdDesc },
+    step: 0.01,
+    limit: new Limit({ min: 0.0, max: 0.999 })
+  })
   @floatAttr()
-  accessor CriticalDamageThreshold: number | undefined = 0.7
+  accessor CriticalDamageThreshold: XmlValue<number>
   declare $CriticalDamageThreshold: INumberAttrDescriptor
-  @lazy get CriticalDamageThresholdDesc() {
-    return new BaseLocalization()
-      .ru('Порог критической поломки. После этого порога изменяется расход топлива и мощность двигателя')
-      .en('The threshold of critical failure. After this threshold, the fuel consumption and engine power change')
-      .de('Kritische Bruchschwelle. Nach dieser Schwelle ändert sich der Kraftstoffverbrauch und die Motorleistung')
-      .get(Config)
-  }
 
   /** Максимальное значение изменения расхода при поломке двигателя. */
-  @limit(new Limit({ min: 0.1, max: 32.0 }))
+  @properties({
+    get label() { return texts.damagedConsumptionModifier },
+    get desc() { return texts.damagedConsumptionModifierDesc },
+    limit: new Limit({ min: 0.1, max: 32.0 }),
+    default: 1.0
+  })
   @floatAttr()
-  accessor DamagedConsumptionModifier: number | undefined = 1.0
+  accessor DamagedConsumptionModifier: XmlValue<number>
   declare $DamagedConsumptionModifier: INumberAttrDescriptor
-  @lazy get DamagedConsumptionModifierDesc() {
-    return new BaseLocalization()
-      .ru('Максимальное значение изменения расхода при поломке двигателя')
-      .en('The maximum value of the flow rate change in case of engine failure')
-      .de('Maximale Durchflussänderung bei Motorschaden')
-      .get(Config)
-  }
 
   /** Отзывчивость двигателя. */
-  @limit(new Limit({ min: 0.01, max: 1.0 }))
+  @properties({
+    get label() { return texts.responsiveness },
+    get desc() { return texts.responsivenessDesc },
+    step: 0.01,
+    limit: new Limit({ min: 0.01, max: 1.0 }),
+    areas: {
+      yellow: [0.1, 0.5],
+      red: [0.5, 1]
+    },
+    default: 0.04
+  })
   @floatAttr()
-  accessor EngineResponsiveness: number | undefined = 0.04
+  accessor EngineResponsiveness: XmlValue<number>
   declare $EngineResponsiveness: INumberAttrDescriptor
-  @lazy get EngineResponsivenessDesc() {
-    return new BaseLocalization()
-      .ru('Отзывчивость двигателя (скорость набирания оборотов)')
-      .en('Engine responsiveness (revving speed)')
-      .de('Reaktionsfähigkeit des Motors (Drehzahl)')
-      .get(Config)
-  }
 
   /** Мощность. */
-  @limit(new Limit({ min: 0, max: 1_000_000, fixed: true }))
+  @properties({
+    get label() { return texts.torque },
+    get desc() { return texts.torqueDesc },
+    step: 100,
+    limit: new Limit({ min: 0, max: 1_000_000, fixed: true }),
+    areas: {
+      yellow: [700_000, 800_000],
+      red: [800_001, Number.POSITIVE_INFINITY]
+    },
+    default: 0
+  })
   @integerAttr()
-  accessor Torque: number | undefined = 0
+  accessor Torque: XmlValue<number>
   declare $Torque: INumberAttrDescriptor
-  @lazy get TorqueDesc() {
-    return new BaseLocalization()
-      .ru('Мощность двигателя')
-      .en('Engine power')
-      .de('Motorleistung')
-      .get(Config)
-  }
-
-  /** Множитель мощности, когда ущерб движка достиг порога CriticalDamageThresold. */
-  @limit(new Limit({ min: 0.0, max: 1.0 }))
+  
+  /** Множитель мощности, когда ущерб движка достиг порога CriticalDamageThreshold. */
+  @properties({
+    get label() { return texts.damagedMinTorqueModifier },
+    get desc() { return texts.damagedMinTorqueModifierDesc },
+    step: 0.01,
+    limit: new Limit({ min: 0.0, max: 1.0 }),
+    default: 0.0
+  })
   @floatAttr()
-  accessor DamagedMinTorqueMultiplier: number | undefined = 0.0
+  accessor DamagedMinTorqueMultiplier: XmlValue<number>
   declare $DamagedMinTorqueMultiplier: INumberAttrDescriptor
-  @lazy get DamagedMinTorqueMultiplierDesc() {
-    return new BaseLocalization()
-      .ru('Множитель мощности, когда ущерб движка достиг порога поломки')
-      .en('Power multiplier when engine damage has reached the breakdown threshold')
-      .de('Leistungsmultiplikator, wenn der Motorschaden die Bruchschwelle erreicht hat')
-      .get(Config)
-  }
 
   /** Множитель мощности, когда движок близок к полной поломке. */
-  @limit(new Limit({ min: 0.0, max: 1.0 }))
+  @properties({
+    get label() { return texts.damagedMaxTorqueModifier },
+    get desc() { return texts.damagedMaxTorqueModifierDesc },
+    step: 0.01,
+    limit: new Limit({ min: 0.0, max: 1.0 }),
+    default: 0.0
+  })
   @floatAttr()
-  accessor DamagedMaxTorqueMultiplier: number | undefined = 0.0
+  accessor DamagedMaxTorqueMultiplier: XmlValue<number>
   declare $DamagedMaxTorqueMultiplier: INumberAttrDescriptor
-  @lazy get DamagedMaxTorqueMultiplierDesc() {
-    return new BaseLocalization()
-      .ru('Множитель мощности, когда движок близок к полной поломке (к 0 прочности)')
-      .en('Power multiplier when the engine is close to complete breakdown (to 0 strength)')
-      .de('Leistungsmultiplikator, wenn der Motor nahe an einem vollständigen Bruch liegt (bei 0 Stärke)')
-      .get(Config)
-  }
 
   /** Задержка при торможении. */
-  @limit(new Limit({ min: 0.0, max: 1.0 }))
+  @properties({
+    get label() { return texts.brakesDelay },
+    get desc() { return texts.brakesDelayDesc },
+    limit: new Limit({ min: 0.0, max: 1.0 }),
+    default: 0.0
+  })
   @floatAttr()
-  accessor BrakesDelay: number | undefined = 0.0
+  accessor BrakesDelay: XmlValue<number>
   declare $BrakesDelay: INumberAttrDescriptor
-  @lazy get BrakesDelayDesc() {
-    return new BaseLocalization()
-      .ru('Задержка при торможении')
-      .en('Braking delay')
-      .de('Verzögerung beim Bremsen')
-      .get(Config)
-  }
 
   /** Ограничитель максимального углового ускорения колёс. */
-  @limit(new Limit({ min: 0.0, max: 1_000_000.0 }))
+  @properties({
+    get label() { return texts.maxDeltaAngVel },
+    get desc() { return texts.maxDeltaAngVelDesc },
+    limit: new Limit({ min: 0.0, max: 1_000_000.0 }),
+    default: 0.0
+  })
   @floatAttr()
-  accessor MaxDeltaAngVel: number | undefined = 0.0
+  accessor MaxDeltaAngVel: XmlValue<number>
   declare $MaxDeltaAngVel: INumberAttrDescriptor
-  @lazy get MaxDeltaAngVelDesc() {
-    return new BaseLocalization()
-      .ru('Ограничитель максимального углового ускорения колёс. Чем он меньше, тем медленнее разгоняется машина')
-      .en('The limiter of the maximum angular acceleration of the wheels. The smaller it is, the slower the car accelerates')
-      .de('Begrenzer für maximale Winkelbeschleunigung der Räder. Je kleiner es ist, desto langsamer beschleunigt das Auto')
-      .get(Config)
-  }
 
   /** Информация о взаимодействии двигателя с окружающим миром. */
   @innerElement(BaseGameData)
-  readonly GameData: BaseGameData | undefined
+  readonly GameData: XmlElement<BaseGameData>
 }

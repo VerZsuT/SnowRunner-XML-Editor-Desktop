@@ -1,5 +1,6 @@
 import XMLElement from '../../xml-element'
 import XMLTemplates from '../../xml-templates'
+import type { XmlElements } from '../attributes'
 import XMLWithTemplates, { innerElements } from '../xml-with-templates'
 import Winch from './winch'
 import { type File } from '/mods/renderer'
@@ -27,5 +28,5 @@ export default class WinchVariants extends XMLWithTemplates {
 
   /** Лебёдки. */
   @innerElements(Winch, 'Winch')
-  readonly Winches: Winch[] = []
+  readonly Winches!: XmlElements<Winch>
 }

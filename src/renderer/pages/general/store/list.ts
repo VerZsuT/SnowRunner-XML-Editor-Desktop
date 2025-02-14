@@ -21,7 +21,11 @@ export const useListStore = defineStore('list', () => {
     [SourceType.dlc]: [],
     [SourceType.mods]: [],
     get [SourceType.all]() {
-      return [...this.main, ...this.dlc, ...this.mods]
+      return [
+        ...this[SourceType.main],
+        ...this[SourceType.dlc],
+        ...this[SourceType.mods]
+      ].toSorted((a, b) => a.name.localeCompare(b.name))
     },
     get [SourceType.favorites]() {
       return this[SourceType.all].filter(item => Favorites.isFavorite(item))

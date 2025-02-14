@@ -124,6 +124,7 @@ function removeTrailer(trailer: Trailer) {
   align-content: center;
   justify-content: space-evenly;
   align-items: center;
+  width: 100%;
 }
 
 .buttons {

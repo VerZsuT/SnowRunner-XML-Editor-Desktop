@@ -7,40 +7,13 @@
     >
       <Info
         v-if="Config.advancedMode"
-        :label="texts.name"
-        :getter="() => Tire.Name"
+        :descriptor="Tire.$Name"
       />
       <template v-if="Tire.WheelFriction">
-        <Float
-          :label="texts.bodyFriction"
-          :desc="Tire.WheelFriction.BodyFrictionDesc"
-          :descriptor="Tire.WheelFriction.$BodyFriction"
-          :areas="{
-            yellow: [7, 8],
-            red: [8.1, 10]
-          }"
-        />
-        <Float
-          :label="texts.bodyFrictionAsphalt"
-          :desc="Tire.WheelFriction.BodyFrictionAsphaltDesc"
-          :descriptor="Tire.WheelFriction.$BodyFrictionAsphalt"
-          :areas="{
-            yellow: [7, 8],
-            red: [8.1, 10]
-          }"
-        />
-        <Float
-          :label="texts.substanceFriction"
-          :desc="Tire.WheelFriction.SubstanceFrictionDesc"
-          :descriptor="Tire.WheelFriction.$SubstanceFriction"
-          :areas="{
-            yellow: [7, 8],
-            red: [8.1, 10]
-          }"
-        />
+        <Float :descriptor="Tire.WheelFriction.$BodyFriction" />
+        <Float :descriptor="Tire.WheelFriction.$BodyFrictionAsphalt" />
+        <Float :descriptor="Tire.WheelFriction.$SubstanceFriction" />
         <Select
-          :label="texts.ignoreIce"
-          :desc="Tire.WheelFriction.IsIgnoreIceDesc"
           :descriptor="Tire.WheelFriction.$IsIgnoreIce"
           :options="[
             [true, texts.yes],

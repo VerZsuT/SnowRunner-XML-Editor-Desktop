@@ -4,25 +4,15 @@
     key="unlock"
     :label="texts.unlockGroupName"
   >
-    <Int
-      :label="texts.price"
-      :desc="element.PriceDesc"
-      :descriptor="element.$Price"
-    />
+    <Int :descriptor="element.$Price" />
     <Select
-      :label="texts.byExploration"
-      :desc="element.UnlockByExplorationDesc"
       :descriptor="element.$UnlockByExploration"
       :options="[
         [true, texts.findOnMap],
         [false, texts.byRank]
       ]"
     />
-    <Int
-      :label="texts.unlockByRank"
-      :desc="element.UnlockByRankDesc"
-      :descriptor="element.$UnlockByRank"
-    />
+    <Int :descriptor="element.$UnlockByRank" />
   </Group>
 </template>
   
@@ -38,9 +28,6 @@ export type UnlockPresetProps = {
     $Price: INumberAttrDescriptor
     $UnlockByRank: INumberAttrDescriptor
     $UnlockByExploration: IBooleanAttrDescriptor
-    PriceDesc?: string
-    UnlockByRankDesc?: string
-    UnlockByExplorationDesc?: string
   }
 }
 

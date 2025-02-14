@@ -1,1 +1,1 @@
-export { default } from './index.vue'
+export { default as GearPreset } from './index.vue'

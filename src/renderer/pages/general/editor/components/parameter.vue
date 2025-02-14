@@ -10,12 +10,12 @@
     <div class="label">
       <Wrap
         :wrapper="popover"
-        :wrap="!!desc && Config.lang !== Lang.ch"
+        :wrap="!!descRef && Config.lang !== Lang.ch"
       >
         <template #content>
-          <Text>{{ desc }}</Text>
+          <Text>{{ descRef }}</Text>
         </template>
-        <Text>{{ label }}</Text>
+        <Text>{{ labelRef }}</Text>
       </Wrap>
     </div>
     <div
@@ -33,7 +33,7 @@
 <script lang='ts' setup>
 import { Popover, Typography } from 'ant-design-vue'
 import { storeToRefs } from 'pinia'
-import { h, ref, toRefs } from 'vue'
+import { computed, h, ref, toRefs } from 'vue'
 import { useEditorStore } from '../../store'
 import texts from '../texts'
 import type { IParameterProps, ParameterEmits, ParameterValue } from '../types'
@@ -51,13 +51,15 @@ const popover = h(Popover, { placement: 'topLeft' })
 export type ParameterProps = IParameterProps & EmitsToProps<ParameterEmits>
 
 const props = defineProps<IParameterProps>()
-const { label, descriptor } = toRefs(props)
+const { label, desc, descriptor } = toRefs(props)
 const emit = defineEmits<ParameterEmits>()
 
 defineSlots<{
   default(props: { value: ParameterValue; onChange(v: ParameterValue): void }): any
 }>()
 
+const labelRef = computed(() => label.value ?? descriptor.value.label)
+const descRef = computed(() => desc.value ?? descriptor.value.desc)
 const { info } = storeToRefs(useEditorStore())
 const file = injectFile()
 
@@ -97,7 +99,7 @@ ExportUtils.onExport(data => {
 const contextTarget = ref<HTMLDivElement | null>(null)
 const contextItems = [{
   key: 'reset-param',
-  label: `${texts.resetMenuItemLabel} ${label.value}`,
+  label: `${texts.resetMenuItemLabel} "${labelRef.value}"`,
   onClick: resetValue
 }]
 
@@ -133,7 +135,38 @@ function getExportedValue(data: IExportedData['data']): string | number | undefi
 }
 </script>
 
+<style lang="scss">
+$parameterMinWidth: 650px;
+$parameterMinWidthAddition: calc($parameterMinWidth / 10);
+
+.table .ant-collapse-content .ant-collapse-content-box {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  justify-content: center;
+  align-items: center;
+  row-gap: 10px;
+  padding: 10px !important;
+
+  @media screen and (min-width: calc($parameterMinWidth * 2 + $parameterMinWidthAddition)) {
+    > div:nth-last-child(1 of .grid) {
+      flex: 0 0 auto;
+    }
+  }
+}
+
+@media screen and (min-width: calc($parameterMinWidth * 2 + $parameterMinWidthAddition)) {
+  .table .ant-collapse-content .ant-collapse-content-box {
+    justify-content: space-between;
+  }
+}
+</style>
+
 <style lang='scss' scoped>
+$parameterMinWidth: 650px;
+$parameterMinWidthAddition: calc($parameterMinWidth / 10);
+
 .desc-image img {
   max-width: 600px;
   max-height: 500px;
@@ -145,7 +178,9 @@ function getExportedValue(data: IExportedData['data']): string | number | undefi
   align-content: center;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
+  flex: 1 1 0;
+  min-width: $parameterMinWidth;
+  min-height: 40px;
 
   .label,
   .content {
@@ -154,7 +189,7 @@ function getExportedValue(data: IExportedData['data']): string | number | undefi
   }
 
   .label {
-    padding-left: 20px;
+    padding-left: 30px;
   }
 
   .content {
@@ -163,7 +198,30 @@ function getExportedValue(data: IExportedData['data']): string | number | undefi
     flex-wrap: wrap;
     align-content: center;
     align-items: center;
-    justify-content: space-around;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  @media screen and (min-width: calc($parameterMinWidth * 2 + $parameterMinWidthAddition)) {
+    .content {
+      justify-content: flex-end;
+      padding-right: 40px;
+    }
+  }
+}
+
+@media screen and (min-width: calc($parameterMinWidth * 2 + $parameterMinWidthAddition)) {
+  .parameter {
+    width: 50%;
+    min-width: 50%;
+
+    &:nth-child(2n+1) {
+      border-right: 1px solid lightgray;
+    }
+
+    &:nth-child(2n) {
+      flex: 1 1 0 !important;
+    }
   }
 }
 </style>

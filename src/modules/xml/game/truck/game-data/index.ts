@@ -1,14 +1,13 @@
-import type { IStringArrayAttrDescriptor } from '../../attributes'
-import { lazy, stringArrayAttr } from '../../attributes'
+import type { IStringArrayAttrDescriptor, XmlArrayValue, XmlElement, XmlElements } from '../../attributes'
+import { properties, stringArrayAttr } from '../../attributes'
 import { BaseGameData } from '../../base'
 import { innerElement, innerElements } from '../../xml-with-templates'
 import AddonSlots from './addon-slots'
 import AddonSockets from './addon-sockets'
 import CraneSocket from './crane-socket'
+import texts from './texts'
 import UiDesc from './ui-desc'
 import WinchSocket from './winch-socket'
-import { Config } from '/mods/renderer'
-import { BaseLocalization } from '/utils/texts/base-localization'
 
 export * from './addon-sockets'
 export { default as TrailerAddonSlots, default as TruckAddonSockets } from './addon-sockets'
@@ -19,40 +18,37 @@ export { default as TruckWinchSocket } from './winch-socket'
 /** Информация о взаимодействии трака с окружающим миром. */
 export default class GameData extends BaseGameData {
   /** Регион. */
+  @properties({
+    get label() { return texts.country },
+    get desc() { return texts.countryDesc }
+  })
   @stringArrayAttr(strToCountry, true)
-  accessor Country: Country[] = []
+  accessor Country!: XmlArrayValue<Country>
   declare $Country: IStringArrayAttrDescriptor<Country>
-  @lazy get CountryDesc() {
-    return new BaseLocalization()
-      .ru('Регион, в котором автомобиль доступен для покупки')
-      .en('The region where the car is available for purchase')
-      .de('Die Region, in der das Auto zum Kauf verfügbar ist')
-      .get(Config)
-  }
 
   /** Исключение конкретного аддона из типа. */
   @stringArrayAttr()
-  accessor ExcludeAddons: string[] = []
+  accessor ExcludeAddons!: XmlArrayValue<string>
   declare $ExcludeAddons: IStringArrayAttrDescriptor
 
   /** Место крепления лебедки. */
   @innerElements(WinchSocket, 'WinchSocket')
-  readonly WinchSockets: WinchSocket[] = []
+  readonly WinchSockets!: XmlElements<WinchSocket>
 
   /** Блок UI. */
   @innerElement(UiDesc)
-  readonly UiDesc: UiDesc | undefined = undefined
+  readonly UiDesc: XmlElement<UiDesc> = undefined
 
   @innerElement(AddonSlots)
-  readonly AddonSlots: AddonSlots | undefined
+  readonly AddonSlots: XmlElement<AddonSlots>
 
   /** Место, за которое может цепляться кран. */
   @innerElements(CraneSocket, 'CraneSocket')
-  readonly CraneSockets: CraneSocket[] = []
+  readonly CraneSockets!: XmlElements<CraneSocket>
 
   /** Секция определения взаимного расположения аддонов трака. */
   @innerElements(AddonSockets)
-  readonly AddonSockets: AddonSockets[] = []
+  readonly AddonSockets!: XmlElements<AddonSockets>
 }
 
 export enum Country {
@@ -63,10 +59,9 @@ export enum Country {
 }
 
 export function strToCountry(str: string): Country | undefined {
-  switch (str) {
-    case Country.ru: { return Country.ru }
-    case Country.us: { return Country.us }
-    case Country.cas: { return Country.cas }
-    case Country.ne: { return Country.ne }
+  for (const country of Object.values(Country)) {
+    if (country === str) {
+      return country
+    }
   }
 }

@@ -1,6 +1,7 @@
 import type { File } from '../../../renderer'
 import XMLElement from '../../xml-element'
 import XMLTemplates from '../../xml-templates'
+import type { XmlElements } from '../attributes'
 import XMLWithTemplates, { innerElements } from '../xml-with-templates'
 import Engine from './engine'
 
@@ -27,5 +28,5 @@ export default class Engines extends XMLWithTemplates {
 
   /** Двигатели. */
   @innerElements(Engine, 'Engine')
-  readonly Engines: Engine[] = []
+  readonly Engines!: XmlElements<Engine>
 }

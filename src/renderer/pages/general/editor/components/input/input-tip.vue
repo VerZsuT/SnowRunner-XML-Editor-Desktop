@@ -33,11 +33,11 @@
 </template>
 <script setup lang="ts">
 import { Popover, Typography } from 'ant-design-vue'
-import { computed, toRefs, h } from 'vue'
+import { computed, h, toRefs } from 'vue'
 import texts from '../../texts'
-import { Wrap } from '/rend/components'
 import type { IInputAreas, InputArea } from '../../types'
 import type { IAttrDescriptor } from '/mods/xml/game/attributes'
+import { Wrap } from '/rend/components'
 import { areasToString, formatString } from '/utils/strings/renderer'
 
 const { Text } = Typography
@@ -49,8 +49,9 @@ export type InputTipProps = {
 }
 
 const props = defineProps<InputTipProps>()
-const { descriptor, areas } = toRefs(props)
+const { descriptor } = toRefs(props)
 
+const areasRef = computed(() => props.areas ?? descriptor.value.areas)
 const valueTips = computed(() => ({
   min: getValueTip(descriptor.value.limit?.minValue, texts.inputMin, Number.NEGATIVE_INFINITY),
   max: getValueTip(descriptor.value.limit?.maxValue, texts.inputMax, Number.POSITIVE_INFINITY),
@@ -60,9 +61,9 @@ const valueTips = computed(() => ({
   }
 }))
 const areaTips = computed(() => ({
-  green: getAreaTip(areas.value?.green, texts.inputGreenArea),
-  yellow: getAreaTip(areas.value?.yellow, texts.inputYellowArea),
-  red: getAreaTip(areas.value?.red, texts.inputRedArea),
+  green: getAreaTip(areasRef.value?.green, texts.inputGreenArea),
+  yellow: getAreaTip(areasRef.value?.yellow, texts.inputYellowArea),
+  red: getAreaTip(areasRef.value?.red, texts.inputRedArea),
   get hasAny() {
     return this.green !== undefined || this.yellow !== undefined || this.red !== undefined
   }

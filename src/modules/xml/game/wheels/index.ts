@@ -1,8 +1,8 @@
 import type { File } from '../../../renderer'
 import XMLElement from '../../xml-element'
 import XMLTemplates from '../../xml-templates'
-import type { INumberAttrDescriptor } from '../attributes'
-import { floatAttr, integerAttr, limit } from '../attributes'
+import type { INumberAttrDescriptor, XmlElement, XmlValue } from '../attributes'
+import { floatAttr, integerAttr, properties } from '../attributes'
 import Limit from '../limit'
 import XMLWithTemplates, { innerElement } from '../xml-with-templates'
 import TruckRims from './rims'
@@ -33,40 +33,54 @@ export default class Wheels extends XMLWithTemplates {
   }
 
   /** Размер допустимого ущерба. */
-  @limit(new Limit({ min: 0, max: 64_000, fixed: true }))
+  @properties({
+    limit: new Limit({ min: 0, max: 64_000, fixed: true })
+  })
   @integerAttr()
-  accessor DamageCapacity: number | undefined
+  accessor DamageCapacity: XmlValue<number>
   declare $DamageCapacity: INumberAttrDescriptor
 
   /** Радиус колеса. */
-  @limit(Limit.Positive)
+  @properties({
+    limit: Limit.Positive,
+    default: 1.0
+  })
   @floatAttr()
-  accessor Radius: number | undefined = 1.0
+  accessor Radius: XmlValue<number>
   declare $Radius: INumberAttrDescriptor
 
   /** Ширина колеса. */
-  @limit(Limit.Positive)
+  @properties({
+    limit: Limit.Positive,
+    default: 1.0
+  })
   @floatAttr()
-  accessor Width: number | undefined = 1.0
+  accessor Width: XmlValue<number>
   declare $Width: INumberAttrDescriptor
 
   /** Радиус заднего колеса. */
-  @limit(Limit.Positive)
+  @properties({
+    limit: Limit.Positive,
+    default: 1.0
+  })
   @floatAttr()
-  accessor RadiusRear: number | undefined = 1.0
+  accessor RadiusRear: XmlValue<number>
   declare $RadiusRear: INumberAttrDescriptor
 
   /** Ширина заднего колеса. */
-  @limit(Limit.Positive)
+  @properties({
+    limit: Limit.Positive,
+    default: 1.0
+  })
   @floatAttr()
-  accessor WidthRear: number | undefined = 1.0
+  accessor WidthRear: XmlValue<number>
   declare $WidthRear: INumberAttrDescriptor
 
   /** Секция описания шин. */
   @innerElement(TruckTires)
-  readonly TruckTires: TruckTires | undefined
+  readonly TruckTires: XmlElement<TruckTires>
 
   /** Секция описания дисков. */
   @innerElement(TruckRims)
-  readonly TruckRims: TruckRims | undefined
+  readonly TruckRims: XmlElement<TruckRims>
 }
