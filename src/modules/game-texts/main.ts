@@ -79,12 +79,7 @@ class GameTexts {
         continue
       }
 
-      this.set({
-        mods: {
-          ...this.object.mods,
-          [mod.name]: this.parseFile(await stringsFile.read('utf16le'))
-        }
-      })
+      result[mod.name] = this.parseFile(await stringsFile.read('utf16le'))
     }
 
     this.set({ mods: result })

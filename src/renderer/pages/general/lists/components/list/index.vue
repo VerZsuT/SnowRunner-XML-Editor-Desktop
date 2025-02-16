@@ -110,9 +110,7 @@ function useScrollResetting() {
   margin-bottom: 10px;
 
   &-cont {
-    position: relative;
     width: 100%;
-    top: 15px;
     text-align: center;
   }
 }
