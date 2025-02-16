@@ -1,8 +1,9 @@
-/** Интерфейс JSON файла размеров */
+/** Размеры. */
 export interface IFileSizes {
-  /** Размер `initial.pak` */
+  /** Размер `initial.pak`. */
   initial: number
-  /** Размеры модификаций */
+
+  /** Размеры модификаций. */
   mods: {
     [fileName: string]: number
   }

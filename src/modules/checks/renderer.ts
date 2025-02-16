@@ -1,23 +1,45 @@
-import type _MainChecks from './main'
-import type { PubType } from './public'
-import { PubKeys } from './public'
-
-import { providePubFunc } from '/utils/bridge/renderer'
+import type MainChecks from './main'
+import { initMain, mainMethod } from '/utils/bridge/renderer'
 
 export type * from './types'
 
 /**
- * Разного рода проверки  
+ * Разного рода проверки.  
  * _renderer process_
-*/
+ */
+@initMain()
 class Checks {
   /**
    * Проверить наличие обновления.  
-   * Выводит оповещение при наличии
-   * @param whateverCheck - игнорировать настройку `settings.updates` в `Config`  
-   * {@link _MainChecks.checkUpdate|Перейти к методу}
+   * Выводит оповещение при наличии.
+   * @param whateverCheck Игнорировать настройку `settings.updates` в `Config`.
+   * 
+   * {@link MainChecks.checkUpdate|Перейти к методу}
    */
-  checkUpdate = providePubFunc<PubType[PubKeys.checkUpdate]>(PubKeys.checkUpdate)
+  @mainMethod()
+  checkUpdate!: typeof MainChecks.checkUpdate
+
+  /**
+   * Проверить наличие прав администратора у программы (требуется для чтения/записи файлов).  
+   * Выводит уведомление и закрывает программу при неудаче.
+   * 
+   * {@link MainChecks.hasAdminPrivileges|Перейти к методу}
+   */
+  @mainMethod()
+  hasAdminPrivileges!: typeof MainChecks.hasAdminPrivileges
+
+  /**
+   * Проверить на стороннее изменение `initial.pak`.  
+   * Если изменения присутствуют, то обновляет игровые файлы в программе.
+   * 
+   * {@link MainChecks.checkInitialChanges|Перейти к методу}
+   */
+  @mainMethod()
+  checkInitialChanges!: typeof MainChecks.checkInitialChanges
 }
 
+/**
+ * Разного рода проверки.  
+ * _renderer process_
+ */
 export default new Checks()

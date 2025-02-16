@@ -1,46 +1,41 @@
-import type { File } from '/mods/files/renderer'
-import { Dirs } from '/mods/files/renderer'
-import RendArrayBase from '/utils/json-arrays/renderer'
-
-import type { PubType } from './public'
-import { PubKeys } from './public'
-import type { EditedFile } from './types'
-
+import type { IEditedFile } from './types'
 import Mods from '/mods/data/mods/renderer'
 import DLCs from '/mods/dlcs/renderer'
+import type { IFile } from '/mods/files/renderer'
+import { Dirs } from '/mods/files/renderer'
+import RendArrayBase from '/utils/json-arrays/renderer'
+import { initMain } from '/utils/renderer'
 
 export type * from './types'
 
-type EditedFiles = PubType[PubKeys.array]
-
 /**
- * Работа с массивом изменённых файлов  
+ * Работа с массивом изменённых файлов.  
  * _renderer process_
-*/
-class Edited extends RendArrayBase<EditedFiles[number], File> {
-  constructor() {
-    super(
-      PubKeys.array,
-      PubKeys.onMainChange,
-      PubKeys.rendererChangeEvent,
-      PubKeys.reset,
-      PubKeys.save
-    )
-  }
-
-  override convert({ dlc, mod, isTrailer, name }: EditedFile): File {
-    const folder = isTrailer ? 'trucks/trailers' : 'trucks'
+ */
+@initMain()
+class Edited extends RendArrayBase<IEditedFile, IFile> {
+  override convert({ dlc, mod, isTrailer, name }: IEditedFile): IFile {
+    const folder = isTrailer
+      ? 'trucks/trailers'
+      : 'trucks'
     const fileName = `${name}.xml`
 
-    if (dlc) return Dirs.dlc.file(dlc, 'classes', folder, fileName)
-    if (mod) return Dirs.modsTemp.file(mod, 'classes', folder, fileName)
-
-    return Dirs.classes.file(folder, fileName)
+    return dlc
+      ? Dirs.dlc.file(dlc, 'classes', folder, fileName)
+      : mod
+        ? Dirs.modsTemp.file(mod, 'classes', folder, fileName)
+        : Dirs.classes.file(folder, fileName)
   }
 
-  /** Пометить файл как изменённый */
-  markAsEdited(file: File, isTrailer?: boolean) {
-    if (this.isEdited(file)) return
+  /**
+   * Пометить файл как изменённый.
+   * @param file Файл.
+   * @param isTrailer Является ли файл трейлером.
+   */
+  markAsEdited(file: IFile, isTrailer?: boolean) {
+    if (this.isEdited(file)) {
+      return
+    }
 
     this.push({
       name: file.name,
@@ -50,22 +45,36 @@ class Edited extends RendArrayBase<EditedFiles[number], File> {
     })
   }
 
-  /** Пометить файл как неизменённый */
-  markAsNotEdited(file: File) {
-    if (!this.isEdited(file)) return
+  /**
+   * Пометить файл как неизмененный.
+   * @param file Файл.
+   */
+  markAsNotEdited(file: IFile) {
+    if (!this.isEdited(file)) {
+      return
+    }
 
     for (const [i, item] of this.entries()) {
       if (item.name === file.name) {
         this.removeAt(i)
+        
         break
       }
     }
   }
 
-  /** Помечен ли файл как изменённый */
-  isEdited(file: File) {
+  /**
+   * Помечен ли файл как изменённый.
+   * @param file Файл.
+   * @returns Помечен ли файл как изменённый.
+   */
+  isEdited(file: IFile) {
     return this.some(item => item.name === file.name)
   }
 }
 
+/**
+ * Работа с массивом изменённых файлов.  
+ * _renderer process_
+ */
 export default new Edited()

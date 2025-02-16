@@ -1,65 +1,93 @@
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import { publicVariable } from 'emr-bridge'
-
-import type { PubType } from './public'
-import { PubKeys } from './public'
 import type { IPaths } from './types'
-
-import { HasPublic } from '/utils/bridge/main'
+import { providePublic, publicField } from '/utils/bridge/main'
 
 export type * from './types'
 
-/** Папка, в которой находится текущий исполняемый скрипт */
+/** Папка, в которой находится текущий исполняемый скрипт. */
 const _dirname = dirname(fileURLToPath(import.meta.url))
 
 /**
- * Пути, используемые в программе (в собранном виде)  
+ * Обработать путь относительно текущей папки.
+ * @param paths Пути.
+ * @returns Абсолютный путь.
+ */
+function resolve(...paths: string[]) {
+  return join(_dirname, ...paths)
+}
+
+/**
+ * Получить путь до json файла.
+ * @param name Название файла.
+ * @returns Путь до json файла.
+ */
+function json(name: string): string {
+  return resolve(`jsons/${name}.json`)
+}
+
+/**
+ * Получить дату-время для initial.pak.
+ * @returns Дата-время.
+ */
+function getInitialDateTime() {
+  const date = new Date()
+  const dateString = date.toISOString().split('T')[0]
+  const timeString = date.toLocaleTimeString().replaceAll(':', '-')
+
+  return `${dateString}_${timeString}`
+}
+
+/**
+ * Пути, используемые в программе.  
  * _main process_
-*/
-class Paths extends HasPublic {
-  /** URL для обновления */
+ */
+@providePublic()
+class Paths {
+  /** URL для обновления. */
   private readonly updaterURL = 'https://verzsut.github.io/sxmle_updater'
-  /** URL репозитория */
+
+  /** URL репозитория. */
   private readonly ioReposURL = 'https://verzsut.github.io/SnowRunner-XML-Editor-Desktop'
 
-  /** Объект путей */
-  private readonly object: IPaths = {
+  /** Объект путей. */
+  @publicField()
+  private accessor object: IPaths = {
     publicInfo: `${this.updaterURL}/public.json`,
     downloadPage: `${this.ioReposURL}/download.html`,
     update: `${this.updaterURL}/update/`,
-    
-    root: this.resolve('../../'),
-    pages: this.resolve('../renderer/src/renderer/pages'),
-
-    config: this.json('config'),
-    edited: this.json('edited'),
-    favorites: this.json('favorites'),
-    mods: this.json('mods'),
-    sizes: this.json('sizes'),
-    texts: this.json('game-texts'),
-    exported: this.json('exported'),
-
-    backupFolder: this.resolve('backups'),
-    backupInitial: this.resolve('backups/initial.pak'),
-    backupInitialData: this.resolve('backups/previous_initial'),
-    icon: this.resolve('../favicon.ico'),
-    winrar: this.resolve('winrar'),
-    mainTemp: this.resolve('mainTemp'),
-    modsTemp: this.resolve('modsTemp'),
-    updateTemp: this.resolve('updateTemp'),
-    strings: this.resolve('mainTemp/[strings]'),
-    uninstall: this.resolve('../../../../unins000.exe'),
-    classes: this.resolve('mainTemp/[media]/classes'),
-    templates: this.resolve('mainTemp/[media]/_templates'),
-    dlc: this.resolve('mainTemp/[media]/_dlc')
+    root: resolve('../../'),
+    pages: resolve('../renderer/src/renderer/pages'),
+    config: json('config'),
+    edited: json('edited'),
+    favorites: json('favorites'),
+    mods: json('mods'),
+    sizes: json('sizes'),
+    texts: json('game-texts'),
+    exported: json('exported'),
+    backupFolder: resolve('backups'),
+    backupInitial: resolve('backups/initial.pak'),
+    get backupInitialWithDate() {
+      return resolve(`backups/initial_${getInitialDateTime()}.pak`)
+    },
+    backupInitialData: resolve('backups/previous_initial'),
+    icon: resolve('../favicon.ico'),
+    winrar: resolve('winrar'),
+    mainTemp: resolve('mainTemp'),
+    modsTemp: resolve('modsTemp'),
+    updateTemp: resolve('updateTemp'),
+    strings: resolve('mainTemp/[strings]'),
+    uninstall: resolve('../../../../unins000.exe'),
+    classes: resolve('mainTemp/[media]/classes'),
+    templates: resolve('mainTemp/[media]/_templates'),
+    dlc: resolve('mainTemp/[media]/_dlc')
   }
 
   /**
-   * Инициализация класса  
+   * Инициализация класса.  
    * __НЕ ИСПОЛЬЗОВАТЬ__
-  */
+   */
   _init() {
     for (const key in this.object) {
       Object.defineProperty(this, key, {
@@ -72,25 +100,17 @@ class Paths extends HasPublic {
     return this
   }
 
-  /** Получить объект путей */
-  get() { return { ...this.object } }
-
-  protected initPublic() {
-    publicVariable<PubType[PubKeys.object]>(PubKeys.object, {
-      get: this.get.bind(this)
-    })
+  /**
+   * Получить пути.
+   * @returns Пути.
+   */
+  get() {
+    return { ...this.object }
   }
-
-  /** Обработать путь относительно текущей папки */
-  private resolve(...paths: string[]) {
-    return join(_dirname, ...paths)
-  }
-
-  /** Путь до json файла */
-  private json(name: string): string {
-    return this.resolve(`jsons/${name}.json`)
-  }
-
 }
 
-export default (new Paths()._init()) as Paths & IPaths
+/**
+ * Пути, используемые в программе.  
+ * _main process_
+ */
+export default new Paths()._init() as Paths & IPaths

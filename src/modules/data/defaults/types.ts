@@ -1,4 +1,4 @@
-/** Стандартные значения параметров таблицы */
+/** Стандартные значения параметров таблицы. */
 export interface IDefaults {
   [fileName: string]: {
     [selector: string]: {

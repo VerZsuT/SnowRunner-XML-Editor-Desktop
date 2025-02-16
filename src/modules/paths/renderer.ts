@@ -1,35 +1,37 @@
-import { Bridge } from 'emr-bridge/renderer'
-
-import { PubKeys } from './public'
 import type { IPaths } from './types'
+import { initMain, mainObjectField } from '/utils/renderer'
 
 export type * from './types'
 
-/** Мост main-rend */
-const Main = Bridge.as<IPaths>()
-
 /**
- * Пути, используемые в программе (в собранном виде)  
+ * Пути, используемые в программе.  
  * _renderer process_
-*/
+ */
+@initMain()
 class Paths {
-  /** Объект путей */
-  private readonly object = Main[PubKeys.object]
+  /** Объект путей. */
+  @mainObjectField()
+  private readonly object!: IPaths
 
   /**
-   * Инициализация класса  
+   * Инициализация класса.  
    * __НЕ ИСПОЛЬЗОВАТЬ__
-  */
+   */
   _init() {
     for (const key in this.object) {
       Object.defineProperty(this, key, {
-        get: () => (this.object[key]),
+        get: () => this.object[key],
         enumerable: true,
         configurable: false
       })
     }
+
     return this
   }
 }
 
-export default (new Paths()._init()) as Paths & IPaths
+/**
+ * Пути, используемые в программе.  
+ * _renderer process_
+ */
+export default new Paths()._init() as Paths & IPaths

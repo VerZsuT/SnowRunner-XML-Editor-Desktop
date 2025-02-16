@@ -1,104 +1,117 @@
-import type { File } from '/mods/files/renderer'
+import type { Cheerio } from 'cheerio'
+import XMLElement from './xml-element'
+import type { IFile } from '/mods/files/renderer'
 import { Dirs } from '/mods/files/renderer'
 
-import XMLElement from './xml-element'
-
-import type { AnyNode, Cheerio } from 'cheerio'
-
-/** Шаблоны `_templates` */
+/** Шаблоны `_templates`. */
 export default class XMLTemplates extends XMLElement {
-  /** Название тега шаблонов */
+  /** Название тега шаблонов. */
   private static readonly tagName = '_templates'
-  /** Название атрибута с включающим шаблоном */
+
+  /** Название атрибута с включающим шаблоном. */
   private static readonly includeAttr = 'Include'
-  /** Название атрибута с именем шаблона */
+
+  /** Название атрибута с именем шаблона. */
   private static readonly attrName = '_template'
 
-  /** Включающий шаблон */
+  /** Включающий шаблон. */
   private readonly include: XMLTemplates | undefined
 
-  /** Создать из элемента */
+  /** Создать из элемента. */
   static override async from(xml: XMLElement): Promise<XMLTemplates | undefined>
-  /** Создать из строки */
+  /** Создать из строки. */
   static override async from(str: string): Promise<XMLTemplates | undefined>
-  /** Создать из содержимого файла */
-  static override async from(file: File): Promise<XMLTemplates | undefined>
-  static override async from(source: string | File | XMLElement): Promise<XMLTemplates | undefined> {
+  /** Создать из содержимого файла. */
+  static override async from(file: IFile): Promise<XMLTemplates | undefined>
+  static override async from(source: string | IFile | XMLElement): Promise<XMLTemplates | undefined> {
     if (this.isXMLElement(source)) {
       return this.fromXML(source)
     }
 
-    const res = await this.from(source as File)
-    if (res) return this.fromXML(res)
+    const res = await this.from(source as IFile)
+
+    return res
+      ? this.fromXML(res)
+      : undefined
   }
 
-  /** Найти `_templates` и создать объект */
+  /** Найти `_templates` и создать объект. */
   private static async fromXML(xml: XMLElement) {
-    xml = xml.clone()
+    const templates = xml.clone().select(this.tagName)
 
-    const templates = xml.select(this.tagName)
-    if (!templates) return
+    if (!templates) {
+      return
+    }
 
     const includeAttr = templates.getAttr(this.includeAttr)
     let include: XMLTemplates | undefined
 
     if (includeAttr) {
       const templatesElement = await Dirs.templates.file(`${includeAttr.str}.xml`).readFromXML()
-      if (templatesElement) include = new XMLTemplates(templatesElement.toCheerio())
+
+      if (templatesElement) {
+        include = new XMLTemplates(templatesElement.toCheerio())
+      }
     }
 
     return new XMLTemplates(templates.toCheerio(), include)
   }
 
-  constructor(element: Cheerio<AnyNode>, include?: XMLTemplates) {
+  constructor(element: Cheerio<any>, include?: XMLTemplates) {
     super(element)
     this.include = include
   }
 
-  /** Получить значение из шаблона */
+  /** Получить значение из шаблона. */
   getValue(element: XMLElement, attrName: string): string | undefined {
     const template = this.getTemplate(element)
-    if (!template) return
 
-    return this.getFromTemplate(element, template, attrName)
+    return template
+      ? this.getFromTemplate(element, template, attrName)
+      : undefined
   }
 
   /** Получить значение из шаблона */
   private getFromTemplate(element: XMLElement, template: XMLElement, attrName: string): string | undefined {
     if (template.parent.tagName === element.tagName) {
       const value = template.getAttr(attrName)?.str
-      if (value) return value
 
-      const extraTemplate = this.getExtraTemplate(template)
-      if (!extraTemplate) return
-
-      return this.getFromTemplate(element, extraTemplate, attrName)
-    }
-    else {
-      const templateElement = template.select(`${element.tagName}`)
-
-      if (templateElement) {
-        const value = templateElement.getAttr(attrName)?.str
-        if (value) return value
+      if (value !== undefined) {
+        return value
       }
 
       const extraTemplate = this.getExtraTemplate(template)
-      if (!extraTemplate) return
 
-      return this.getFromTemplate(element, extraTemplate, attrName)
+      return extraTemplate
+        ? this.getFromTemplate(element, extraTemplate, attrName)
+        : undefined
     }
+
+    const templateElement = template.select(`${element.tagName}`)
+
+    if (templateElement) {
+      const value = templateElement.getAttr(attrName)?.str
+
+      if (value) {
+        return value
+      }
+    }
+
+    const extraTemplate = this.getExtraTemplate(template)
+
+    return extraTemplate
+      ? this.getFromTemplate(element, extraTemplate, attrName)
+      : undefined
   }
 
-  /** Найти дополнительный шаблон */
+  /** Найти дополнительный шаблон. */
   private getExtraTemplate(template: XMLElement): XMLElement | undefined {
-    const templateAttr = template.getAttr(XMLTemplates.attrName)
-    if (!templateAttr) return
-
-    const extraTemplate = this.getTemplate(template)
-    if (extraTemplate) return extraTemplate
+    return template.getAttr(XMLTemplates.attrName)
+      ? this.getTemplate(template)
+      : undefined
   }
 
-  /** Найти шаблон */
+  /** Найти шаблон. */
   private getTemplate(element: XMLElement): XMLElement | undefined {
     let selector: string | undefined
 
@@ -106,21 +119,16 @@ export default class XMLTemplates extends XMLElement {
       const templateName = target.getAttr(XMLTemplates.attrName)?.str
 
       if (templateName) {
-        if (target === element) {
-          selector = `${target.tagName} ${templateName}`
+        selector = target === element
+          ? `${target.tagName} ${templateName}`
+          : `${target.tagName} ${templateName} ${element.tagName}`
+
           break
-        }
-        selector = `${target.tagName} ${templateName} ${element.tagName}`
-        break
       }
     }
     
-    if (!selector) return
-
-    const mainTemplate = this.select(selector)
-    if (mainTemplate) return mainTemplate
-
-    const includedTemplate = this.include?.getTemplate(element)
-    if (includedTemplate) return includedTemplate
+    return selector
+      ? this.select(selector) ?? this.include?.getTemplate(element)
+      : undefined
   }
 }

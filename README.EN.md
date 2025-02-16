@@ -2,7 +2,7 @@
 
 This program allows you to edit the XML files of the SnowRunner game by editing the visual parameter table.  
 The editor unpacks the necessary files from _initial.pak_ to a temporary folder, after which it goes to work with them. When saving, changes are made to the archive.  
-To work with _initial.pak_, the program uses a portable version of _WinRar_ for 32-bit systems.  
+To work with _initial.pak_, the program uses a portable version of _WinRar_ for 64-bit systems.  
 Everything works using **Electron**, **Vite**, **Vue**, **Typescript**.
 
 The editor has the following functionality:
@@ -86,15 +86,10 @@ Project directories:
    /renderer:           renderer process.
       /components           common components.
       /pages                program windows.
-         /loading               loading window.
-         /main                  main window.
+         /general               main window.
             /editor                 page of the editor (tables).
             /lists                  page of lists of trucks / trailers.
-            /main                   main page.
-         /settings              settings window.
-         /setup                 first setup window.
-         /update                update window.
-         /whats-new             "what's new" window.
+            /general                main page.
       /utils                helper scripts.
       style.scss            global styles.
       preload.ts            preload script.

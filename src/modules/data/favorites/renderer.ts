@@ -1,26 +1,28 @@
+import type { FavoriteTruck } from './types'
+import type { IFile } from '/mods/renderer'
 import RendArrayBase from '/utils/json-arrays/renderer'
-
-import type { PubType } from './public'
-import { PubKeys } from './public'
+import { initMain } from '/utils/renderer'
 
 export type * from './types'
 
-type FavoriteTrucks = PubType[PubKeys.array]
-
 /**
- * Работа с массивом избранных авто  
+ * Работа с массивом избранных авто.  
  * _renderer process_
-*/
-class Favorites extends RendArrayBase<FavoriteTrucks[number]> {
-  constructor() {
-    super(
-      PubKeys.array,
-      PubKeys.onMainChange,
-      PubKeys.rendererChangeEvent,
-      PubKeys.reset,
-      PubKeys.save
-    )
+ */
+@initMain()
+class Favorites extends RendArrayBase<FavoriteTruck> {
+  /**
+   * Является ли файл избранным.
+   * @param file Файл.
+   * @returns Является ли файл избранным.
+   */
+  isFavorite(file: IFile) {
+    return this.includes(file.name)
   }
 }
 
+/**
+ * Работа с массивом избранных авто.  
+ * _renderer process_
+ */
 export default new Favorites()

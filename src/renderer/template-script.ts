@@ -1,42 +1,42 @@
 import { Config, Helpers, Messages } from '/mods/renderer'
 
-/** Скрипт шаблона */
+/** Шаблон. */
 class Template {
-  /** Инициализация */
-  init() {
+  /** Создать шаблон. */
+  constructor() {
     this.changeTitle()
     this.handleKeys()
     Messages.handleMessages()
   }
 
-  /** Изменить заголовок */
+  /** Изменить заголовок. */
   changeTitle() {
     document.title = `SnowRunner XML editor v${Config.version}`
   }
 
-  /** Отследить нажатие горячих клавиш */
+  /** Отследить нажатие горячих клавиш. */
   handleKeys() {
     document.addEventListener('keydown', event => {
       const keyIs = (code: string) => event.code === `Key${code}`
       const shift = event.shiftKey
       const ctrl = event.ctrlKey
 
-      if (!ctrl) return
+      if (!ctrl) {
+        return
+      }
 
-      // Быстрое сохранение
       if (keyIs('S')) {
+        // Быстрое сохранение.
         document.querySelector<HTMLInputElement>('#save')?.click()
-      }
-      // Быстрое закрытие
-      else if (keyIs('Q')) {
+      } else if (keyIs('Q')) {
+        // Быстрое закрытие.
         Helpers.quitApp()
-      }
-      // Открыть `devtools`
-      else if (keyIs('I') && shift && ctrl) {
-        Helpers.devTools()
+      } else if (keyIs('I') && shift && ctrl) {
+        // Открыть `devtools`.
+        Helpers.devtools()
       }
     })
   }
 }
 
-new Template().init()
+new Template()

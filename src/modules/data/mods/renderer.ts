@@ -1,84 +1,110 @@
 import { Bridge } from 'emr-bridge/renderer'
-
-import type { Dir } from '/mods/files/renderer'
-import { Dirs, File } from '/mods/files/renderer'
-import RendArrayBase from '/utils/json-arrays/renderer'
-
+import type MainMods from './main'
 import type { PubType } from './public'
 import { PubKeys } from './public'
 import type { IMod } from './types'
-
 import Archive from '/mods/archive/renderer'
 import Dialogs from '/mods/dialogs/renderer'
+import type { IDir, IFile } from '/mods/files/renderer'
+import { Dirs, File } from '/mods/files/renderer'
+import RendArrayBase from '/utils/json-arrays/renderer'
+import { initMain, mainMethod } from '/utils/renderer'
 
 export type * from './types'
 
-/** Мост main-rend */
-const Main = Bridge.as<PubType>()
-
-type ArrayType = PubType[PubKeys.array]
+/** Мост main-rend. */
+const bridge = Bridge.as<PubType>()
 
 /**
- * Работа с массивом модификаций  
+ * Работа с массивом модификаций.  
  * _renderer process_
-*/
-class Mods extends RendArrayBase<ArrayType[number], ArrayType[number] & { file: File }> {
-  constructor() {
-    super(
-      PubKeys.array,
-      PubKeys.onMainChange,
-      PubKeys.rendererChangeEvent,
-      PubKeys.reset,
-      PubKeys.save
-    )
-  }
-
-  protected override convert(item: IMod): IMod & { file: File } {
+ */
+@initMain()
+class Mods extends RendArrayBase<IMod, IMod & { file: IFile }> {
+  protected override convert(item: IMod): IMod & { file: IFile } {
     return { ...item, file: new File(item.path) }
   }
 
-  /** Находит `.pak` файл модификаций в папке */
-  async findMods(dir: Dir): Promise<[file: File, name: string][]> {
-    const result = await Main[PubKeys.findMods](dir.path)
-    return result.map(([path, name]) => [new File(path), name])
+  @mainMethod()
+  procMods!: typeof MainMods.procMods
+
+  /**
+   * Найти `.pak` файлы модификаций в папке.
+   * @param dir Папка.
+   * @returns `.pak` файлы модификаций в папке.
+   */
+  async findMods(dir: IDir): Promise<[file: IFile, name: string][]> {
+    return (await bridge[PubKeys.findMods](dir.path))
+      .map(([path, name]) => [new File(path), name])
   }
 
-  /** Возвращает список всех модов (добавленных и в документах) */
-  async getAllMods(): Promise<[file: File, name: string][]> {
-    const result = await Main[PubKeys.getAllMods]()
-    return result.map(([path, name]) => [new File(path), name])
+  /**
+   * Получить список всех модов (добавленных и в документах).
+   * @returns Список всех модов (добавленных и в документах).
+   */
+  async getAllMods(): Promise<[file: IFile, name: string][]> {
+    return (await bridge[PubKeys.getAllMods]())
+      .map(([path, name]) => [new File(path), name])
   }
 
-  /** Находит ID мода из пути к файлу */
-  getModID(file: File): string | undefined {
-    if (!file.path.includes(Dirs.modsTemp.name)) return
-    return file.path.split(Dirs.modsTemp.name).at(1)?.split('\\').at(1)
+  /**
+   * Получить ID мода из пути к файлу.
+   * @param file Файл.
+   * @returns ID мода.
+   */
+  getModID(file: IFile): string | undefined {
+    return file.path.includes(Dirs.modsTemp.name)
+      ? file.path
+        .split(Dirs.modsTemp.name)
+        .at(1)
+        ?.split('\\')
+        .at(1)
+      : undefined
   }
 
-  /** Находит мод по названию */
+  /**
+   * Найти мод по названию.
+   * @param name Название.
+   * @returns Мод.
+   */
   findByName(name: string): IMod | undefined {
     return this.find(mod => mod.name === name)
   }
 
-  /** Находит мод по xml файлу */
-  findByFile(file: File): IMod | undefined {
+  /**
+   * Найти мод по XML файлу.
+   * @param file XML файл.
+   * @returns Мод.
+   */
+  findByFile(file: IFile): IMod | undefined {
     const modName = this.getModID(file)
-    return modName ? this.findByName(modName) : undefined
+
+    return modName
+      ? this.findByName(modName)
+      : undefined
   }
 
-  /** Запрашивает у пользователя `.pak` файлы модов */
-  async request() {
-    const result = await this.getModPaks()
-    if (!result) return
-    return result
+  /**
+   * Запросить у пользователя `.pak` файлы модов.
+   * @returns Выбранные `.pak` файлы модов.
+   */
+  async requestPaks() {
+    return await this.getModPaks()
   }
 
-  /** Запрашивает у пользователя папки с модами */
+  /**
+   * Запросить у пользователя папки с модами.
+   * @returns Выбранные папки с модами.
+  */
   async requestDirs() {
     const dirs = Dialogs.getDirs()
-    if (!dirs) return
 
-    const result: [file: File, name: string][] = []
+    if (!dirs) {
+      return
+    }
+
+    const result: [file: IFile, name: string][] = []
+
     for (const dir of dirs) {
       result.push(...await this.findMods(dir))
     }
@@ -86,19 +112,31 @@ class Mods extends RendArrayBase<ArrayType[number], ArrayType[number] & { file: 
     return result
   }
 
-  /** Сохраняет моды из вариантов `Select` */
-  saveFromSelect(keys: string[], items: [File, string][]) {
-    const selected = this.fromSelectKeys(keys, items)
-    this.set(selected)
+  /**
+   * Сохранить моды из вариантов `Select`.
+   * @param keys Ключи.
+   * @param items Элементы.
+   */
+  saveFromSelect(keys: string[], items: [IFile, string][]) {
+    this.set(this.fromSelectKeys(keys, items))
   }
 
-  /** Преобразует в варианты `Select` */
-  toSelectKeys(items: [File, string][]): string[] {
+  /**
+   * Преобразовать в варианты `Select`.
+   * @param items Элементы.
+   * @returns Варианты `Select`.
+   */
+  toSelectKeys(items: [IFile, string][]): string[] {
     return items.map(item => item[0].path)
   }
 
-  /** Преобразует варианты `Select` в `IMod` */
-  fromSelectKeys(keys: string[], items: [File, string][]): IMod[] {
+  /**
+   * Преобразовать варианты `Select` в `IMod`.
+   * @param keys Ключи.
+   * @param items Элементы.
+   * @returns Модификации.
+   */
+  fromSelectKeys(keys: string[], items: [IFile, string][]): IMod[] {
     const out: IMod[] = []
 
     for (const key of keys) {
@@ -116,14 +154,21 @@ class Mods extends RendArrayBase<ArrayType[number], ArrayType[number] & { file: 
     return out
   }
 
-  /** Получить `.pak` модификаций */
-  private async getModPaks(): Promise<[File, string][] | undefined> {
+  /**
+   * Получить `.pak` файлы модификаций.
+   * @returns `.pak` файлы модификаций.
+   */
+  private async getModPaks(): Promise<[IFile, string][] | undefined> {
     const paks = Dialogs.getPaks()
-    const out: [File, string][] = []
-    if (!paks) return
+    const out: [IFile, string][] = []
+
+    if (!paks) {
+      return
+    }
     
     for (const pak of paks) {
       await Archive.unpack(pak, Dirs.modsTemp.dir(pak.name))
+      
       if (!await Dirs.modsTemp.dir(pak.name, 'classes').exists()) {
         return
       }
@@ -135,4 +180,8 @@ class Mods extends RendArrayBase<ArrayType[number], ArrayType[number] & { file: 
   }
 }
 
+/**
+ * Работа с массивом модификаций.  
+ * _renderer process_
+ */
 export default new Mods()

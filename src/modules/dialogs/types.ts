@@ -1,8 +1,7 @@
 import type { MessageBoxSyncOptions } from 'electron'
-
 import type { DialogSourceType, DialogType } from './enums'
 
-/** Параметры диалогового окна */
+/** Параметры диалогового окна. */
 export type DialogProps = Array<'openFile' | 'openDirectory' | 'multiSelections'>
 
 export interface IDialogAlertParams {

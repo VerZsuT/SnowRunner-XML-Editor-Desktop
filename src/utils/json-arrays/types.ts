@@ -1,7 +1,8 @@
-/** JSON файл массива */
-export type ArrayJSON = {
-  /** Версия файла */
+/** JSON файл массива. */
+export interface IArrayJSON {
+  /** Версия файла. */
   version: string
-  /** Данные массива */
+
+  /** Данные массива. */
   data: any
 }

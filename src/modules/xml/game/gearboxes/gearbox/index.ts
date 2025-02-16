@@ -1,134 +1,131 @@
-import type { NumUtils, StrUtils } from '../../game-xml'
-import { floatAttr, intAttr, numUtils, strAttr, strUtils } from '../../game-xml'
+import type { INumberAttrDescriptor, IStringAttrDescriptor, XmlElement, XmlElements, XmlValue } from '../../attributes'
+import { floatAttr, integerAttr, properties, stringAttr } from '../../attributes'
 import Limit from '../../limit'
 import XMLWithTemplates, { innerElement, innerElements } from '../../xml-with-templates'
 import GameData from './game-data'
 import Gear from './gear'
-
-import { Localization } from '/utils/texts/renderer'
+import texts from './texts'
 
 export * from './game-data'
 export { default as GearboxGameData } from './game-data'
 export { default as Gear } from './gear'
 
-/** Коробка передач */
+/** Коробка передач. */
 export default class Gearbox extends XMLWithTemplates {
-  /** Коэффициент изменения расхода топлива при использовании полного привода */
-  @floatAttr(new Limit({ min: 0.0, max: 32.0 }))
-  get AWDConsumptionModifier() { return 1.0 }
-  set AWDConsumptionModifier(_: number | undefined) {}
-  @numUtils()
-  get $AWDConsumptionModifier() { return {} as NumUtils }
-  AWDConsumptionModifierDesc = new Localization()
-    .ru('Коэффициент изменения расхода топлива при использовании полного привода')
-    .en('The coefficient of change in fuel consumption when using all-wheel drive')
-    .de('Änderungskoeffizient des Kraftstoffverbrauchs bei Verwendung eines Allradantriebs')
-    .get()
+  /** Коэффициент изменения расхода топлива при использовании полного привода. */
+  @properties({
+    get label() { return texts.awdConsumptionModifier },
+    get desc() { return texts.awdConsumptionModifierDesc },
+    limit: new Limit({ min: 0.0, max: 32.0 }),
+    default: 1.0
+  })
+  @floatAttr()
+  accessor AWDConsumptionModifier: XmlValue<number>
+  declare $AWDConsumptionModifier: INumberAttrDescriptor
 
-  /** Процент повреждений, после которого коробка начинает проявлять признаки поломки - вылетающие передачи и увеличение расхода топлива */
-  @floatAttr(new Limit({ min: 0.0, max: 0.999 }))
-  get CriticalDamageThreshold() { return 0.7 }
-  set CriticalDamageThreshold(_: number | undefined) {}
-  @numUtils()
-  get $CriticalDamageThreshold() { return {} as NumUtils }
-  CriticalDamageThresholdDesc = new Localization()
-    .ru('Порог повреждений, после которого коробка начинает проявлять признаки поломки - вылетающие передачи и увеличение расхода топлива')
-    .en('The damage threshold, after which the box begins to show signs of failure - flying gears and increased fuel consumption')
-    .de('Die Schadensschwelle, nach der die Box Anzeichen von Bruch zeigt - ausfallende Übertragungen und erhöhter Kraftstoffverbrauch')
-    .get()
+  /** Процент повреждений, после которого коробка начинает проявлять признаки поломки - вылетающие передачи и увеличение расхода топлива. */
+  @properties({
+    get label() { return texts.criticalDamageThreshold },
+    get desc() { return texts.criticalDamageThresholdDesc },
+    step: 0.01,
+    limit: new Limit({ min: 0.0, max: 0.999 }),
+    default: 0.7
+  })
+  @floatAttr()
+  accessor CriticalDamageThreshold: XmlValue<number>
+  declare $CriticalDamageThreshold: INumberAttrDescriptor
 
-  /** Размер допустимого ущерба */
-  @intAttr(new Limit({ min: 0, max: 64_000, fixed: true }))
-  get DamageCapacity() { return 0 }
-  set DamageCapacity(_: number | undefined) {}
-  @numUtils()
-  get $DamageCapacity() { return {} as NumUtils }
-  DamageCapacityDesc = new Localization()
-    .ru('Размер допустимого ущерба коробке передач')
-    .en('The amount of possible damage to the gearbox')
-    .de('Die Größe des zulässigen Getriebeschadens')
-    .get()
+  /** Размер допустимого ущерба. */
+  @properties({
+    get label() { return texts.damageCapacity },
+    get desc() { return texts.damageCapacityDesc },
+    step: 10,
+    limit: new Limit({ min: 0, max: 64_000, fixed: true }),
+    areas: {
+      yellow: [1000, 10_000],
+      red: [10_001, Number.POSITIVE_INFINITY]
+    },
+    default: 0
+  })
+  @integerAttr()
+  accessor DamageCapacity: XmlValue<number>
+  declare $DamageCapacity: INumberAttrDescriptor
 
-  /** Максимальный множитель расхода топлива, к этому множителю расход приходит, когда коробка полностью сломана */
-  @floatAttr(new Limit({ min: 0.0, max: 32.0 }))
-  get DamagedConsumptionModifier() { return 1.0 }
-  set DamagedConsumptionModifier(_: number | undefined) {}
-  @numUtils()
-  get $DamagedConsumptionModifier() { return {} as NumUtils }
-  DamagedConsumptionModifierDesc = new Localization()
-    .ru('Максимальный множитель расхода топлива, к этому множителю расход приходит, когда коробка полностью сломана')
-    .en('The maximum fuel consumption multiplier, the consumption comes to this multiplier when the box is completely broken')
-    .de('Der maximale Kraftstoffverbrauchsmultiplikator, zu diesem Volumenmultiplikator kommt der Verbrauch, wenn die Box vollständig kaputt ist')
-    .get()
+  /** Максимальный множитель расхода топлива, к этому множителю расход приходит, когда коробка полностью сломана. */
+  @properties({
+    get label() { return texts.damagedConsumptionModifier },
+    get desc() { return texts.damagedConsumptionModifierDesc },
+    step: 0.01,
+    limit: new Limit({ min: 0.0, max: 32.0 }),
+    default: 1.0
+  })
+  @floatAttr()
+  accessor DamagedConsumptionModifier: XmlValue<number>
+  declare $DamagedConsumptionModifier: INumberAttrDescriptor
 
-  /** Базовое потребление топлива коробкой */
-  @floatAttr(new Limit({ min: 0.0, max: 10.0 }))
-  get FuelConsumption() { return 0.1 }
-  set FuelConsumption(_: number | undefined) {}
-  @numUtils()
-  get $FuelConsumption() { return {} as NumUtils }
-  FuelConsumptionDesc = new Localization()
-    .ru('Базовое потребление топлива коробкой передач')
-    .en('Basic fuel consumption of the gearbox')
-    .de('Basiskraftstoffverbrauch durch Getriebe')
-    .get()
+  /** Базовое потребление топлива коробкой. */
+  @properties({
+    get label() { return texts.fuelConsumption },
+    get desc() { return texts.fuelConsumptionDesc },
+    limit: new Limit({ min: 0.0, max: 10.0 }),
+    default: 0.1
+  })
+  @floatAttr()
+  accessor FuelConsumption: XmlValue<number>
+  declare $FuelConsumption: INumberAttrDescriptor
 
-  /** Множитель потребления топлива, когда автомобиль стоит на месте с заведенным двигателем */
-  @floatAttr(new Limit({ min: 0.0, max: 10.0 }))
-  get IdleFuelModifier() { return 0.3 }
-  set IdleFuelModifier(_: number | undefined) {}
-  @numUtils()
-  get $IdleFuelModifier() { return {} as NumUtils }
-  IdleFuelModifierDesc = new Localization()
-    .ru('Множитель потребления топлива, когда автомобиль стоит на месте с заведенным двигателем')
-    .en('Fuel consumption multiplier when the car is stationary with the engine running')
-    .de('Multiplikator des Kraftstoffverbrauchs, wenn das Fahrzeug bei laufendem Motor stillsteht')
-    .get()
+  /** Множитель потребления топлива, когда автомобиль стоит на месте с заведенным двигателем. */
+  @properties({
+    get label() { return texts.idleFuelConsumption },
+    get desc() { return texts.idleFuelConsumptionDesc },
+    limit: new Limit({ min: 0.0, max: 10.0 }),
+    default: 0.3
+  })
+  @floatAttr()
+  accessor IdleFuelModifier: XmlValue<number>
+  declare $IdleFuelModifier: INumberAttrDescriptor
 
-  /** Название подвески */
-  @strAttr()
-  get Name(): string | undefined { return undefined }
-  set Name(_) {}
-  @strUtils()
-  get $Name() { return {} as StrUtils }
+  /** Название подвески. */
+  @properties({
+    get label() { return texts.name }
+  })
+  @stringAttr()
+  accessor Name: XmlValue<string>
+  declare $Name: IStringAttrDescriptor
 
-  /** Минимальная частота вылетания передачи, на момент, когда прочность достигла CriticalDamageThreshold */
-  @floatAttr(new Limit({ min: 0.0, max: 60.0 }))
-  get MinBreakFreq() { return 0.0 }
-  set MinBreakFreq(_: number | undefined) {}
-  @numUtils()
-  get $MinBreakFreq() { return {} as NumUtils }
-  MinBreakFreqDesc = new Localization()
-    .ru('Минимальная частота вылетания передачи, на момент, когда прочность достигла критического порога')
-    .en('The minimum frequency of transmission failure, at the moment when the strength has reached a critical threshold')
-    .de('Minimale Übertragungsabfangsrate, zu dem Zeitpunkt, an dem die Stärke die kritische Schwelle erreicht hat')
-    .get()
+  /** Минимальная частота вылетания передачи, на момент, когда прочность достигла CriticalDamageThreshold. */
+  @properties({
+    get desc() { return texts.minBreakFreqDesc },
+    limit: new Limit({ min: 0.0, max: 60.0 }),
+    default: 0.0
+  })
+  @floatAttr()
+  accessor MinBreakFreq: XmlValue<number>
+  declare $MinBreakFreq: INumberAttrDescriptor
 
-  /** Максимальная частота вылетания передачи, на момент, когда прочность приближается к нулю */
-  @floatAttr(new Limit({ min: 0.0, max: 60.0 }))
-  get MaxBreakFreq() { return 0.0 }
-  set MaxBreakFreq(_: number | undefined) {}
-  @numUtils()
-  get $MaxBreakFreq() { return {} as NumUtils }
-  MaxBreakFreqDesc = new Localization()
-    .ru('Максимальная частота вылетания передачи, на момент, когда прочность приближается к нулю')
-    .en('The maximum frequency of transmission failure, at the moment when the strength is approaching zero')
-    .de('Maximale Abfangfrequenz des Getriebes, zu dem Zeitpunkt, an dem sich die Stärke dem Nullpunkt nähert')
-    .get()
+  /** Максимальная частота вылетания передачи, на момент, когда прочность приближается к нулю. */
+  @properties({
+    get desc() { return texts.maxBreakFreqDesc },
+    limit: new Limit({ min: 0.0, max: 60.0 }),
+    default: 0.0
+  })
+  @floatAttr()
+  accessor MaxBreakFreq: XmlValue<number>
+  declare $MaxBreakFreq: INumberAttrDescriptor
 
-  /** Задняя передача */
+  /** Задняя передача. */
   @innerElement(Gear)
-  get ReverseGear(): Gear | undefined { return undefined }
+  readonly ReverseGear: XmlElement<Gear>
 
-  /** Повышенная передача */
+  /** Повышенная передача. */
   @innerElement(Gear)
-  get HighGear(): Gear | undefined { return undefined }
+  readonly HighGear: XmlElement<Gear>
 
-  /** Передачи */
+  /** Передачи. */
   @innerElements(Gear, 'Gear')
-  get Gears(): Gear[] { return [] }
+  readonly Gears!: XmlElements<Gear>
 
-  /** Информация о взаимодействии коробки передач с окружающим миром */
+  /** Информация о взаимодействии коробки передач с окружающим миром. */
   @innerElement(GameData)
-  get GameData(): GameData | undefined { return undefined }
+  readonly GameData: XmlElement<GameData>
 }

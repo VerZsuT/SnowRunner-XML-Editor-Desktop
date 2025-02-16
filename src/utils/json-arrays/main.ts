@@ -1,85 +1,82 @@
-import { publicFunction, publicVariable } from 'emr-bridge'
-
+import { publicField, publicMethod } from '../bridge/main'
 import ArrayBase from './base'
+import type { IArrayJSON } from './types'
+import type { IFile } from '/mods/files/main'
 
-import type { File } from '/mods/files/main'
+/** Базовый класс для массива в main-process. */
+export default abstract class MainArrayBase<Item, Extended = Item> extends ArrayBase<Item, Extended> {
+  /** Готов ли массив к использованию. */
+  isReady!: Promise<typeof this>
 
-import type { ArrayJSON } from './types'
+  @publicField()
+  protected accessor arr: Item[] = []
 
-/** Базовый класс для массива в main-process */
-export default abstract class MainArrayBase<Item, Extended  = Item> extends ArrayBase<Item, Extended> {
-  /** Версия JSON файла */
+  /** Версия JSON файла. */
   protected readonly version = '1.0'
 
-  /** Файл для записи/чтения массива */
-  protected abstract jsonFile: File
-
-  constructor(arrayKey: string, resetKey: string, saveKey: string) {
-    super()
-    this.initPublic(arrayKey, resetKey, saveKey)
-  }
+  /** Файл для записи/чтения массива. */
+  protected abstract jsonFile: IFile
 
   /**
-   * Инициализация класса  
-   * __НЕ ИСПОЛЬЗОВАТЬ__
-  */
-  async _init() {
+   * Инициализировать экземпляр класса.
+   * @returns Экземпляр класса.
+   */
+  protected async init() {
     this.set(await this.getArray())
-    this.handleChange()
 
     return this
   }
 
-  /** Возвращает массив в исходное состояние */
+  /** Вернуть массив в исходное состояние. */
+  @publicMethod()
   async reset() {
     this.set(this.default)
     await this.save()
   }
 
-  /** Сохраняет изменения в json */
+  /** Сохранить изменения в json. */
+  @publicMethod()
   async save() {
     await this.jsonFile.writeToJSON({
       version: this.version,
       data: this.get()
-    })
+    } satisfies IArrayJSON)
   }
 
-  /** Преобразовать к новой версии */
+  /**
+   * Преобразовать к новой версии.
+   * @param data Данные.
+   * @returns Преобразованные данные.
+   */
   protected async convertToNewest(data: any) {
     return data
   }
 
-  /** Инициализация публичных объектов/методов */
-  protected initPublic(arrayKey: string, resetKey: string, saveKey: string) {
-    publicVariable(arrayKey, {
-      get: this.get.bind(this),
-      set: this.set.bind(this)
-    })
-    publicFunction(resetKey, this.reset.bind(this))
-    publicFunction(saveKey, this.save.bind(this))
-  }
-
-  /** Получить массив изменённых файлов */
+  /**
+   * Получить массив.
+   * @returns Массив.
+   */
   private async getArray(): Promise<Item[]> {
     if (await this.jsonFile.exists()) {
       try {
         return await this.getFromJSON()
-      }
-      catch {
+      } catch {
         return this.default
       }
-    }
-    else {
+    } else {
       return this.default
     }
   }
 
-  /** Получить массив из JSON */
+  /**
+   * Получить массив из JSON.
+   * @returns Массив.
+   */
   private async getFromJSON(): Promise<Item[]> {
-    const { version, data } = await this.jsonFile.readFromJSON<ArrayJSON>()
+    const { version, data } = await this.jsonFile.readFromJSON<IArrayJSON>()
 
-    if (version < this.version) return this.convertToNewest(data)
-    
-    return data
+    return version < this.version
+      ? this.convertToNewest(data)
+      : data
   }
 }

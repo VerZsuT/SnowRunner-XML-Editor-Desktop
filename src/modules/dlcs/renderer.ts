@@ -1,49 +1,58 @@
-import type { File, IFindDirsArgs, IFindFilesArgs } from '/mods/files/renderer'
-import { Dir, Dirs } from '/mods/files/renderer'
-
-import { PubKeys } from './public'
 import type { IDLC } from './types'
-
-import { RendArrayBase } from '/utils/renderer'
+import type { IDir, IFile, IFindDirsArgs, IFindFilesArgs } from '/mods/files/renderer'
+import { Dir, Dirs } from '/mods/files/renderer'
+import { initMain, RendArrayBase } from '/utils/renderer'
 
 export type * from './types'
 
 /**
- * Работа с дополнениями игры  
+ * Работа с дополнениями игры.  
  * _renderer process_
-*/
-class DLCs extends RendArrayBase<IDLC, IDLC & { dir: Dir }> {
-  constructor() {
-    super(
-      PubKeys.array,
-      PubKeys.onMainChange,
-      PubKeys.rendererChangeEvent,
-      PubKeys.reset,
-      'unavailable'
-    )
-  }
-
-  protected override convert(item: IDLC): IDLC & { dir: Dir } {
+ */
+@initMain()
+class DLCs extends RendArrayBase<IDLC, IDLC & { dir: IDir }> {
+  protected override convert(item: IDLC): IDLC & { dir: IDir } {
     return { ...item, dir: new Dir(item.path) }
   }
 
-  override async save() {}
+  override save = async () => {}
 
-  /** Возвращает название DLC */
-  getDLC(file: File): string | undefined {
-    if (!file.path.includes(Dirs.dlc.name)) return
-    return file.path.split(Dirs.dlc.name).at(1)?.split('\\').at(1)
+  /**
+   * Получить название DLC.
+   * @param file Файл.
+   * @returns Название DLC.
+   */
+  getDLC(file: IFile): string | undefined {
+    return file.path.includes(Dirs.dlc.name)
+      ? file.path
+        .split(Dirs.dlc.name)
+        .at(1)
+        ?.split('\\')
+        .at(1)
+      : undefined
   }
 
-  /** Поиск файлов */
-  async findFiles(args: IFindFilesArgs): Promise<File[]> {
-    return await Dirs.dlc.findFiles(args)
+  /**
+   * Найти файлы.
+   * @param args Аргументы поиска.
+   * @returns Файлы.
+   */
+  async findFiles(args: IFindFilesArgs): Promise<IFile[]> {
+    return Dirs.dlc.findFiles(args)
   }
 
-  /** Поиск папок */
-  async findDirs(args: IFindDirsArgs): Promise<Dir[]> {
-    return await Dirs.dlc.findDirs(args)
+  /**
+   * Найти папки.
+   * @param args Аргументы поиска.
+   * @returns Папки.
+   */
+  async findDirs(args: IFindDirsArgs): Promise<IDir[]> {
+    return Dirs.dlc.findDirs(args)
   }
 }
 
+/**
+ * Работа с дополнениями игры.  
+ * _renderer process_
+ */
 export default new DLCs()

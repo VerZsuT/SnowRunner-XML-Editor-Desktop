@@ -1,9 +1,9 @@
-import type { File } from '../../../renderer'
+import type { IFile } from '../../../renderer'
 import XMLElement from '../../xml-element'
 import XMLTemplates from '../../xml-templates'
+import type { IStringAttrDescriptor, XmlElement, XmlValue } from '../attributes'
+import { stringAttr } from '../attributes'
 import BasePhysicsModel from '../base/physics-model'
-import type { StrUtils } from '../game-xml'
-import { strAttr, strUtils } from '../game-xml'
 import XMLWithTemplates, { innerElement } from '../xml-with-templates'
 import GameData from './game-data'
 import TruckData from './truck-data'
@@ -13,47 +13,47 @@ export { default as TruckGameData } from './game-data'
 export * from './truck-data'
 export { default as TruckData } from './truck-data'
 
-/** XML автомобиля / прицепа */
+/** XML автомобиля/прицепа. */
 export default class TruckXML extends XMLWithTemplates {
   static override async from(str: string): Promise<TruckXML | undefined>
-  static override async from(file: File): Promise<TruckXML | undefined>
-  static override async from(source: string | File): Promise<TruckXML | undefined> {
+  static override async from(file: IFile): Promise<TruckXML | undefined>
+  static override async from(source: string | IFile): Promise<TruckXML | undefined> {
     const rootSelector = 'Truck'
-    const root = await XMLElement.from(source as File)
+    const root = await XMLElement.from(source as IFile)
     const element = root?.select(rootSelector)
 
-    if (root && element) return new this(
-      element,
-      await XMLTemplates.from(root),
-      rootSelector,
-      root
-    )
+    if (root && element) {
+      return new this(
+        element,
+        await XMLTemplates.from(root),
+        rootSelector,
+        root
+      )
+    }
   }
 
-  /** Этот атрибут определяет, описывается трак или трейлер (прицеп или полуприцеп) */
-  @strAttr<TruckFileType>()
-  get Type(): TruckFileType | undefined { return undefined }
-  set Type(_) {}
-  @strUtils<TruckFileType>()
-  get $Type() { return {} as StrUtils }
+  /** Этот атрибут определяет, описывается трак или трейлер (прицеп или полуприцеп). */
+  @stringAttr<TruckFileType>()
+  accessor Type: XmlValue<TruckFileType>
+  declare $Type: IStringAttrDescriptor<TruckFileType>
 
-  /** Описание большинства свойств непосредственно трака */
+  /** Описание большинства свойств непосредственно трака. */
   @innerElement(TruckData)
-  get TruckData(): TruckData | undefined { return undefined }
+  readonly TruckData: XmlElement<TruckData>
 
-  /** Информация о взаимодействии трака с окружающим миром */
+  /** Информация о взаимодействии трака с окружающим миром. */
   @innerElement(GameData)
-  get GameData(): GameData | undefined { return undefined }
+  readonly GameData: XmlElement<GameData>
 
-  /** Физическая модель */
+  /** Физическая модель. */
   @innerElement(BasePhysicsModel)
-  get PhysicsModel(): BasePhysicsModel | undefined { return undefined }
-
-  @innerElement(BasePhysicsModel)
-  get FuelMass(): BasePhysicsModel | undefined { return undefined }
+  readonly PhysicsModel: XmlElement<BasePhysicsModel>
 
   @innerElement(BasePhysicsModel)
-  get WaterMass(): BasePhysicsModel | undefined { return undefined }
+  readonly FuelMass: XmlElement<BasePhysicsModel>
+
+  @innerElement(BasePhysicsModel)
+  readonly WaterMass: XmlElement<BasePhysicsModel>
 }
 
 export enum TruckFileType {

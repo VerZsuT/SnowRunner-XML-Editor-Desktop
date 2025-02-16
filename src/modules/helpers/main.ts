@@ -1,44 +1,45 @@
 import { BrowserWindow, app, shell } from 'electron'
 import { homedir, userInfo } from 'node:os'
 import { join } from 'node:path'
-
-import { publicFunction } from 'emr-bridge'
-
-import type { PubType } from './public'
-import { PubKeys } from './public'
 import type { IFoundItem } from './types'
-
 import { Dir, Dirs, Files } from '/mods/files/main'
-import { HasPublic } from '/utils/bridge/main'
+import { providePublic, publicMethod } from '/utils/bridge/main'
 
 export type * from './types'
 
 /**
- * Дополнительные методы  
+ * Дополнительные методы.  
  * _main process_
-*/
-class Helpers extends HasPublic {
+ */
+@providePublic()
+class Helpers {
   /**
-   * Найти в папке все соответствия
-   * @param startPath - путь, с которого начинается поиск
-   * @param onlyDirs - искать только папки, игнорируя файлы (default = `false`)
-   * @param extname - расширение, по которому ведётся поиск файлов (default = `xml`)
-   * @param recursive - рекурсивный поиск (default = `false`)
-   * @returns массив путей
+   * Найти в папке все соответствия.
+   * @param startPath Путь, с которого начинается поиск.
+   * @param onlyDirs Искать только папки, игнорируя файлы (default = `false`).
+   * @param extname Расширение, по которому ведётся поиск файлов (default = `xml`).
+   * @param recursive Рекурсивный поиск (default = `false`).
+   * @returns Найденные пути.
    */
-  async findInDir(startPath: string, onlyDirs?: boolean, extname = 'xml', recursive?: boolean): Promise<IFoundItem[]> {
+  @publicMethod()
+  async findInDir(
+    startPath: string,
+    onlyDirs?: boolean,
+    extname = 'xml',
+    recursive?: boolean
+  ): Promise<IFoundItem[]> {
     const startDir = new Dir(startPath)
     let array: IFoundItem[] = []
 
-    if (!await startDir.exists()) return []
+    if (!await startDir.exists()) {
+      return []
+    }
 
     const entries = await startDir.read()
     for (const entry of entries) {
       const isDir = await entry.isDir()
 
-      if (onlyDirs) {
-        if (!isDir) continue
-
+      if (onlyDirs && isDir) {
         array.push({
           name: entry.basename(),
           path: entry.path
@@ -47,8 +48,7 @@ class Helpers extends HasPublic {
 
       if (isDir && recursive) {
         array = [...array, ...await this.findInDir(entry.path, false, extname, true)]
-      }
-      else if (entry.asFile().isExt(extname)) {
+      } else if (entry.asFile().isExt(extname)) {
         array.push({
           name: entry.asFile().name,
           path: entry.path
@@ -59,7 +59,7 @@ class Helpers extends HasPublic {
     return array
   }
 
-  /** Очистить папку для временных файлов программы */
+  /** Очистить папку для временных файлов программы. */
   async clearTemp() {
     await Files.backupInitial.remove()
     await Dirs.mainTemp.clear()
@@ -67,19 +67,87 @@ class Helpers extends HasPublic {
     await Dirs.updateTemp.clear()
   }
 
-  /** Инициализация публичных объектов/методов */
-  protected initPublic() {
-    publicFunction<PubType[PubKeys.findInDir]>(PubKeys.findInDir, this.findInDir.bind(this))
-    publicFunction<PubType[PubKeys.join]>(PubKeys.join, join)
-    publicFunction<PubType[PubKeys.homedir]>(PubKeys.homedir, homedir)
-    publicFunction<PubType[PubKeys.userInfo]>(PubKeys.userInfo, userInfo)
-    publicFunction<PubType[PubKeys.openLink]>(PubKeys.openLink, shell.openExternal)
-    publicFunction<PubType[PubKeys.openFile]>(PubKeys.openFile, shell.openExternal)
-    publicFunction<PubType[PubKeys.openPath]>(PubKeys.openPath, shell.openPath)
-    publicFunction<PubType[PubKeys.reloadApp]>(PubKeys.reloadApp, () => { app.relaunch(); app.quit() })
-    publicFunction<PubType[PubKeys.quitApp]>(PubKeys.quitApp, app.quit)
-    publicFunction<PubType[PubKeys.devtools]>(PubKeys.devtools, () => BrowserWindow.getFocusedWindow()?.webContents.toggleDevTools())
+  /**
+   * Join all arguments together and normalize the resulting path.
+   * @param paths Paths to join.
+   * @throws {TypeError} if any of the path segments is not a string.
+   */
+  @publicMethod()
+  join(...args: Parameters<typeof join>) {
+    return join(...args)
+  }
+
+  /**
+   * Returns the string path of the current user's home directory.
+   *
+   * On POSIX, it uses the `$HOME` environment variable if defined. Otherwise it
+   * uses the [effective UID](https://en.wikipedia.org/wiki/User_identifier#Effective_user_ID) to look up the user's home directory.
+   *
+   * On Windows, it uses the `USERPROFILE` environment variable if defined.
+   * Otherwise it uses the path to the profile directory of the current user.
+   */
+  @publicMethod()
+  homedir(...args: Parameters<typeof homedir>) {
+    return homedir(...args)
+  }
+
+  /**
+   * Returns information about the currently effective user. On POSIX platforms,
+   * this is typically a subset of the password file. The returned object includes
+   * the `username`, `uid`, `gid`, `shell`, and `homedir`. On Windows, the `uid` and `gid` fields are `-1`, and `shell` is `null`.
+   *
+   * The value of `homedir` returned by `os.userInfo()` is provided by the operating
+   * system. This differs from the result of `os.homedir()`, which queries
+   * environment variables for the home directory before falling back to the
+   * operating system response.
+   *
+   * Throws a [`SystemError`](https://nodejs.org/docs/latest-v22.x/api/errors.html#class-systemerror) if a user has no `username` or `homedir`.
+   */
+  @publicMethod()
+  userInfo(...args: Parameters<typeof userInfo>) {
+    return userInfo(...args)
+  }
+
+  /** Открыть ссылку. */
+  @publicMethod()
+  async openLink(...args: Parameters<typeof shell.openExternal>) {
+    return shell.openExternal(...args)
+  }
+
+  /** Открыть файл. */
+  @publicMethod()
+  async openFile(...args: Parameters<typeof shell.openExternal>) {
+    return shell.openExternal(...args)
+  }
+
+  /** Открыть путь. */
+  @publicMethod()
+  async openPath(...args: Parameters<typeof shell.openPath>) {
+    return shell.openPath(...args)
+  }
+
+  /** Переключить devtools. */
+  @publicMethod()
+  devtools() {
+    BrowserWindow.getFocusedWindow()?.webContents.toggleDevTools()
+  }
+
+  /** Перезагрузить приложение. */
+  @publicMethod()
+  reloadApp() {
+    app.relaunch()
+    this.quitApp()
+  }
+
+  /** Закрыть приложение. */
+  @publicMethod()
+  quitApp() {
+    app.quit()
   }
 }
 
+/**
+ * Дополнительные методы.  
+ * _main process_
+ */
 export default new Helpers()

@@ -17,35 +17,38 @@
 <script lang='ts' setup>
 import type { PageHeaderProps } from 'ant-design-vue'
 import { PageHeader } from 'ant-design-vue'
-
 import type { EmitsToProps } from '../types'
 
 export type HeaderProps = Props & EmitsToProps<Emits>
 
 type Props = PageHeaderProps & {
-  /** Текст заголовка */
+  /** Текст заголовка, */
   text: string
-  /** Показать кнопку `Назад` */
+
+  /** Показать кнопку `Назад`. */
   withBack?: boolean
 }
 
 type Emits = {
-  /** Событие перехода назад */
+  /** Событие перехода назад. */
   back: []
 }
 
 const props = defineProps<Props>()
 const emit = defineEmits<Emits>()
 
-const onBack: PageHeaderProps['onBack'] = props.withBack ? () => emit('back') : undefined
+const onBack: PageHeaderProps['onBack'] = props.withBack
+  ? () => emit('back')
+  : undefined
 </script>
 
 <style lang='scss' scoped>
 .header {
-  border: 1px solid rgb(235, 237, 240);
-  padding: 5px 0;
+  padding: 4px 5px 5px 5px;
   max-height: 55px;
   background-color: #1c7dca;
+  box-shadow: 0 0 3px 0 rgba(34, 60, 80, 0.6);
+  z-index: 1;
 
   &-title {
     width: 100vw;

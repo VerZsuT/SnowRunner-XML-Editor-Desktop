@@ -1,25 +1,31 @@
-import type _MainBackup from './main'
-import type { PubType } from './public'
-import { PubKeys } from './public'
-
-import { providePubFunc } from '/utils/bridge/renderer'
+import type MainBackup from './main'
+import { initMain, mainMethod } from '/utils/bridge/renderer'
 
 /**
- * Работа с бэкапом  
+ * Работа с бэкапом.  
  * _renderer process_
 */
+@initMain()
 class Backup {
   /**
-   * Сохранить бэкап `initial.pak`  
-   * {@link _MainBackup.save|Перейти к методу}
+   * Сохранить бэкап `initial.pak`.
+   *  
+   * {@link MainBackup.save|Перейти к методу}
    */
-  save = providePubFunc<PubType[PubKeys.save]>(PubKeys.save)
+  @mainMethod()
+  save!: typeof MainBackup.save
 
   /**
-   * Заменить оригинальный `initial.pak` на сохранённый  
-   * {@link _MainBackup.recoverFromIt|Перейти к методу}
+   * Заменить оригинальный `initial.pak` на сохранённый.
+   * 
+   * {@link MainBackup.recoverFromIt|Перейти к методу}
    */
-  recoverFromIt = providePubFunc<PubType[PubKeys.recoverFromIt]>(PubKeys.recoverFromIt)
+  @mainMethod()
+  recoverFromIt!: typeof MainBackup.recoverFromIt
 }
 
+/**
+ * Работа с бэкапом.  
+ * _renderer process_
+*/
 export default new Backup()

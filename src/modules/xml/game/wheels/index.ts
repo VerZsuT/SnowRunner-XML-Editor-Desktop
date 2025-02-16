@@ -1,8 +1,8 @@
-import type { File } from '../../../renderer'
+import type { IFile } from '../../../renderer'
 import XMLElement from '../../xml-element'
 import XMLTemplates from '../../xml-templates'
-import type { NumUtils } from '../game-xml'
-import { floatAttr, intAttr, numUtils } from '../game-xml'
+import type { INumberAttrDescriptor, XmlElement, XmlValue } from '../attributes'
+import { floatAttr, integerAttr, properties } from '../attributes'
 import Limit from '../limit'
 import XMLWithTemplates, { innerElement } from '../xml-with-templates'
 import TruckRims from './rims'
@@ -13,63 +13,74 @@ export { default as TruckRims } from './rims'
 export * from './tires'
 export { default as TruckTires } from './tires'
 
-/** Рутовый тег файла класса типа колес (набор взаимозаменяемых шин и дисков) */
+/** Рутовый тег файла класса типа колес (набор взаимозаменяемых шин и дисков). */
 export default class Wheels extends XMLWithTemplates {
   static override async from(str: string): Promise<Wheels | undefined>
-  static override async from(file: File): Promise<Wheels | undefined>
-  static override async from(source: string | File): Promise<Wheels | undefined> {
+  static override async from(file: IFile): Promise<Wheels | undefined>
+  static override async from(source: string | IFile): Promise<Wheels | undefined> {
     const rootSelector = 'TruckWheels'
-    const root = await XMLElement.from(source as File)
+    const root = await XMLElement.from(source as IFile)
     const element = root?.select(rootSelector)
 
-    if (root && element) return new this(
-      element,
-      await XMLTemplates.from(root),
-      rootSelector,
-      root
-    )
+    if (root && element) {
+      return new this(
+        element,
+        await XMLTemplates.from(root),
+        rootSelector,
+        root
+      )
+    }
   }
 
-  /** Размер допустимого ущерба */
-  @intAttr(new Limit({ min: 0, max: 64_000, fixed: true }))
-  get DamageCapacity(): number | undefined { return undefined }
-  set DamageCapacity(_) {}
-  @numUtils()
-  get $DamageCapacity() { return {} as NumUtils }
+  /** Размер допустимого ущерба. */
+  @properties({
+    limit: new Limit({ min: 0, max: 64_000, fixed: true })
+  })
+  @integerAttr()
+  accessor DamageCapacity: XmlValue<number>
+  declare $DamageCapacity: INumberAttrDescriptor
 
-  /** Радиус колеса */
-  @floatAttr(Limit.Positive)
-  get Radius() { return 1.0 }
-  set Radius(_: number | undefined) {}
-  @numUtils()
-  get $Radius() { return {} as NumUtils }
+  /** Радиус колеса. */
+  @properties({
+    limit: Limit.Positive,
+    default: 1.0
+  })
+  @floatAttr()
+  accessor Radius: XmlValue<number>
+  declare $Radius: INumberAttrDescriptor
 
-  /** Ширина колеса */
-  @floatAttr(Limit.Positive)
-  get Width() { return 1.0 }
-  set Width(_: number | undefined) {}
-  @numUtils()
-  get $Width() { return {} as NumUtils }
+  /** Ширина колеса. */
+  @properties({
+    limit: Limit.Positive,
+    default: 1.0
+  })
+  @floatAttr()
+  accessor Width: XmlValue<number>
+  declare $Width: INumberAttrDescriptor
 
-  /** Радиус заднего колеса */
-  @floatAttr(Limit.Positive)
-  get RadiusRear() { return 1.0 }
-  set RadiusRear(_: number | undefined) {}
-  @numUtils()
-  get $RadiusRear() { return {} as NumUtils }
+  /** Радиус заднего колеса. */
+  @properties({
+    limit: Limit.Positive,
+    default: 1.0
+  })
+  @floatAttr()
+  accessor RadiusRear: XmlValue<number>
+  declare $RadiusRear: INumberAttrDescriptor
 
-  /** Ширина заднего колеса */
-  @floatAttr(Limit.Positive)
-  get WidthRear() { return 1.0 }
-  set WidthRear(_: number | undefined) {}
-  @numUtils()
-  get $WidthRear() { return {} as NumUtils }
+  /** Ширина заднего колеса. */
+  @properties({
+    limit: Limit.Positive,
+    default: 1.0
+  })
+  @floatAttr()
+  accessor WidthRear: XmlValue<number>
+  declare $WidthRear: INumberAttrDescriptor
 
-  /** Секция описания шин */
+  /** Секция описания шин. */
   @innerElement(TruckTires)
-  get TruckTires(): TruckTires | undefined { return undefined }
+  readonly TruckTires: XmlElement<TruckTires>
 
-  /** Секция описания дисков */
+  /** Секция описания дисков. */
   @innerElement(TruckRims)
-  get TruckRims(): TruckRims | undefined { return undefined }
+  readonly TruckRims: XmlElement<TruckRims>
 }

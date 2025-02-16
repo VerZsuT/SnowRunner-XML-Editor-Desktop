@@ -1,76 +1,102 @@
 import type { BrowserWindow } from 'electron'
-
-import type { ProgramWindow, WindowType } from './enums'
+import type { Page, ProgramWindow, WindowType } from './enums'
 import type ManagerType from './main'
 
-/** Параметры создания окна программы */
+/** Главное окно. */
+export interface IGeneralWindow extends BrowserWindow {
+  /**
+   * Роутинг.
+   * @param page Страница.
+   */
+  route(page: Page): void
+}
+
+/** Параметры создания окна программы. */
 export interface ICreateWindowAttrs {
-  /** Путь к html файлу */
+  /** Путь к html файлу. */
   path: string
-  /** Путь в dev html файлу */
+
+  /** Путь в dev html файлу. */
   devURL: string
-  /** Изначальная ширина окна */
+
+  /** Изначальная ширина окна. */
   width?: number
-  /** Изначальная высота окна */
+
+  /** Изначальная высота окна. */
   height?: number
-  /** Минимальная ширина окна */
+
+  /** Минимальная ширина окна. */
   minWidth?: number
-  /** Минимальная высота окна */
+
+  /** Минимальная высота окна. */
   minHeight?: number
-  /** Максимальная ширина окна */
+
+  /** Максимальная ширина окна. */
   maxWidth?: number
-  /** Максимальная высота окна */
+
+  /** Максимальная высота окна. */
   maxHeight?: number
-  /** Можно ли изменять размер окна */
+
+  /** Можно ли изменять размер окна. */
   resizable?: boolean
-  /** Показать окно сразу */
+
+  /** Показать окно сразу. */
   show?: boolean
-  /** Родительское окно (для модальных окон) */
+
+  /** Родительское окно (для модальных окон). */
   parent?: BrowserWindow
-  /** Является ли окно модальным */
+
+  /** Является ли окно модальным. */
   modal?: boolean
-  /** Имеет ли окно рамки */
+
+  /** Имеет ли окно рамки. */
   frame?: boolean
-  /** Уникальное имя окна */
+
+  /** Уникальное имя окна. */
   name: ProgramWindow
 }
 
-/** Параметры создания объекта окна программы */
-export type WindowParams = ICreateWindowAttrs & {
+/** Параметры создания объекта окна программы. */
+export type WindowParams<T extends BrowserWindow = BrowserWindow> = ICreateWindowAttrs & {
   /**
-   * Подписаться на событие создания окна
-   * @param window - созданное окно программы
-   * @param Manager - класс менеджера окон
-   * @param args - прочие переданные для конкретного окна аргументы
+   * Подписаться на событие после создания окна.
+   * @param window Окно программы.
+   * @param Manager Менеджер окон.
+   * @param args Прочие аргументы.
    */
-  onCreate?(window: BrowserWindow, Manager: typeof ManagerType): void | Promise<void>
+  onCreated?(window: T, Manager: typeof ManagerType): void | Promise<void>
+
   /**
-   * Подписаться на событие фокусе окна
-   * @param window - созданное окно программы
-   * @param Manager - класс менеджера окон
-   * @param args - прочие переданные для конкретного окна аргументы
+   * Подписаться на событие после фокуса окна.
+   * @param window Окно программы.
+   * @param Manager Менеджер окон.
+   * @param args Прочие аргументы.
    */
-  onFocus?(window: BrowserWindow, Manager: typeof ManagerType): void | Promise<void>
+  onFocused?(window: T, Manager: typeof ManagerType): void | Promise<void>
+
   /**
-   * Подписаться на событие закрытия окна
-   * @param window - созданное окно программы
-   * @param Manager - класс менеджера окон
-   * @param args - прочие переданные для конкретного окна аргументы
+   * Подписаться на событие перед закрытием окна.
+   * @param window Окно программы.
+   * @param Manager Менеджер окон.
+   * @param args Прочие аргументы.
   */
-  onClose?(window: BrowserWindow, Manager: typeof ManagerType): void | Promise<void>
+  onClose?(window: T, Manager: typeof ManagerType): void | Promise<void>
+
   /**
-   * Подписаться на событие показа окна
-   * @param window - созданное окно программы
-   * @param Manager - класс менеджера окон
-   * @param args - прочие переданные для конкретного окна аргументы
+   * Подписаться на событие после показа окна.
+   * @param window Окно программы.
+   * @param Manager Менеджер окон.
+   * @param args Прочие аргументы.
   */
-  onShow?(window: BrowserWindow, Manager: typeof ManagerType): void | Promise<void>
+  onShowed?(window: T, Manager: typeof ManagerType): void | Promise<void>
+
   /**
-   * Функция-создатель объекта окна
-   * @param superCreate - функция-создатель из класса объекта
-   * @param args - прочие переданные для конкретного окна аргументы
+   * Функция-создатель объекта окна.
+   * @param superCreate Функция-создатель из класса объекта.
+   * @param args -Прочие аргументы.
   */
-  create?(superCreate: () => Promise<BrowserWindow>, ...args: any[]): Promise<BrowserWindow>
-  /** Тип окна программы */
+  create?(superCreate: () => Promise<T>, ...args: any[]): Promise<T>
+
+  /** Тип окна программы. */
   windowType: WindowType
 }
