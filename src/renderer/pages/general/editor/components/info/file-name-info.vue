@@ -15,12 +15,13 @@
 <script lang='ts' setup>
 import { Typography } from 'ant-design-vue'
 import { useActive } from '../utils'
-import { Config, Helpers, type File } from '/mods/renderer'
+import type { IFile } from '/mods/renderer'
+import { Config, Helpers } from '/mods/renderer'
 
 const { Text } = Typography
 
 export type FileInfoProps = {
-	file: File
+	file: IFile
 }
 
 defineProps<FileInfoProps>()

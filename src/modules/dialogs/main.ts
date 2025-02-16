@@ -3,6 +3,7 @@ import { dialog, nativeImage } from 'electron'
 import { DialogSourceType, DialogType } from './enums'
 import TextsLoader from './texts'
 import type { IDialogAlertParams, IDialogParams, IOpenDialogParams } from './types'
+import type { IDir, IFile } from '/mods/files/main'
 import { Dir, DirArray, File, FileArray, Files } from '/mods/files/main'
 import { providePublic, publicMethod } from '/utils/bridge/main'
 import { hasItems } from '/utils/checks/main'
@@ -10,12 +11,12 @@ import { hasItems } from '/utils/checks/main'
 export * from './enums'
 export type * from './types'
 
-const Texts = await TextsLoader.loadMain()
+const texts = await TextsLoader.loadMain()
 
 /**
  * Вывод системных диалогов.  
  * _main process_
-*/
+ */
 @providePublic()
 class Dialogs {
   /** Описания расширений файлов программы (для диалогов). */
@@ -26,19 +27,25 @@ class Dialogs {
     xml: 'XML file'
   }
 
-  /** Выводит ошибку на экран. */
+  /**
+   * Вывести ошибку.
+   * @param message Сообщение ошибки.
+   */
   error(message: string): Promise<MessageBoxReturnValue> {
     return this.alert({
       type: 'warning',
-      title: Texts.error,
+      title: texts.error,
       message
     })
   }
 
-  /** Открыть окно с сообщением. */
+  /**
+   * Вывести сообщение.
+   * @param params Параметры сообщения.
+   */
   alert(params: IDialogAlertParams): Promise<MessageBoxReturnValue> {
     const {
-      buttons = [Texts.ok],
+      buttons = [texts.ok],
       noLink = false,
       type = 'info',
       title, message
@@ -51,9 +58,12 @@ class Dialogs {
     return dialog.showMessageBox(dialogParams)
   }
 
-  /** Открыть окно выбора `.epf` файла. */
+  /**
+   * Открыть окно выбора `.epf` файла.
+   * @returns Выбранный `.epf` файл.
+   */
   @publicMethod()
-  getEPF(): File | undefined {
+  getEPF(): IFile | undefined {
     const path = this.openDialog<string>({
       extention: 'epf'
     })
@@ -63,9 +73,13 @@ class Dialogs {
     }
   }
 
-  /** Открыть окно сохранения `.epf` файла. */
+  /**
+   * Открыть окно сохранения `.epf` файла.
+   * @param defaultName Название файла по умолчанию.
+   * @returns Выбранный`.epf` файл.
+   */
   @publicMethod()
-  saveEPF(defaultName: string): File | undefined {
+  saveEPF(defaultName: string): IFile | undefined {
     const path = this.openDialog<string>({
       type: DialogType.save,
       defaultPath: defaultName,
@@ -77,9 +91,12 @@ class Dialogs {
     }
   }
 
-  /** Открыть окно выбора `initial.pak`. */
+  /**
+   * Открыть окно выбора `initial.pak`.
+   * @returns Выбранный `initial.pak` файл.
+   */
   @publicMethod()
-  getInitial(): File | undefined {
+  getInitial(): IFile | undefined {
     const path = this.openDialog<string>({
       extention: 'pak'
     })
@@ -89,9 +106,12 @@ class Dialogs {
     }
   }
 
-  /** Открыть окно выбора папки. */
+  /**
+   * Открыть окно выбора папки.
+   * @returns Выбранная папка.
+   */
   @publicMethod()
-  getDir(): Dir | undefined {
+  getDir(): IDir | undefined {
     const path = this.openDialog<string>({
       source: DialogSourceType.dir
     })
@@ -101,9 +121,12 @@ class Dialogs {
     }
   }
 
-  /** Открыть окно выбора папки. */
+  /**
+   * Открыть окно выбора папок.
+   * @returns Выбранные папки.
+   */
   @publicMethod()
-  getDirs(): DirArray | undefined {
+  getDirs(): IDir[] | undefined {
     const paths = this.openDialog<string[]>({
       properties: ['multiSelections', 'openDirectory']
     })
@@ -113,9 +136,12 @@ class Dialogs {
     }
   }
 
-  /** Открыть окно выбора папки. */
+  /**
+   * Открыть окно выбора `.pak` файлов.
+   * @returns Выбранные `.pak` файлы.
+   */
   @publicMethod()
-  getPaks(): FileArray | undefined {
+  getPaks(): IFile[] | undefined {
     const paths = this.openDialog<string[]>({
       properties: ['multiSelections', 'openFile'],
       extention: '.pak'
@@ -126,8 +152,11 @@ class Dialogs {
     }
   }
 
-  /** Открыть окно выбора нескольких `.epf` файлов. */
-  getMultiEPF(): FileArray | undefined {
+  /**
+   * Открыть окно выбора `.epf` файлов.
+   * @returns Выбранные `.epf` файлы.
+   */
+  getMultiEPF(): IFile[] | undefined {
     const paths = this.openDialog<string[]>({
       properties: ['openFile', 'multiSelections'],
       extention: 'epf'
@@ -138,9 +167,12 @@ class Dialogs {
     }
   }
 
-  /** Открыть окно выбора `.xml` файла. */
+  /**
+   * Открыть окно выбора `.xml` файла.
+   * @returns Выбранный `.xml` файл.
+   */
   @publicMethod()
-  getXML(): File | undefined {
+  getXML(): IFile | undefined {
     const path = this.openDialog<string>({
       extention: 'xml'
     })
@@ -150,7 +182,11 @@ class Dialogs {
     }
   }
 
-  /** Открыть диалоговое окно, */
+  /**
+   * Открыть диалоговое окно.
+   * @param params Параметры окна.
+   * @returns Выбранная сущность.
+   */
   openDialog<T extends string | string[]>(params: IOpenDialogParams): T | undefined {
     const {
       type = DialogType.open,
@@ -193,4 +229,8 @@ class Dialogs {
   }
 }
 
+/**
+ * Вывод системных диалогов.  
+ * _main process_
+ */
 export default new Dialogs()

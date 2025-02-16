@@ -1,16 +1,16 @@
 import { onMounted, onUnmounted } from 'vue'
 
-import type { File, IExportedData } from '/mods/renderer'
+import type { IExportedData, IFile } from '/mods/renderer'
 
 export type EveryCallback = () => Promise<void> | void
 
-export type ExportArgs = { source: File, toExport?: File }[]
+export type ExportArgs = { source: IFile, toExport?: IFile }[]
 export type ExportListener = (args: ExportArgs, every?: EveryCallback) => IExportedData | void | Promise<IExportedData | void>
 
-export type ImportArgs = { file: File, toImport?: File }[]
+export type ImportArgs = { file: IFile, toImport?: IFile }[]
 export type ImportListener = (args: ImportArgs, every?: EveryCallback) => void | Promise<void>
 
-export type ResetArgs = File[]
+export type ResetArgs = IFile[]
 export type ResetListener = (args: ResetArgs, every?: EveryCallback) => void | Promise<void>
 
 class EditorUtils {

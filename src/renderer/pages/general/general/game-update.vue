@@ -18,7 +18,7 @@ import { ref } from 'vue'
 import { EditorUtils } from '../lists/utils'
 import { useEditorStore } from '../store'
 import texts from './texts'
-import type { File } from '/mods/renderer'
+import type { IFile } from '/mods/renderer'
 import { Dirs, Edited, Files } from '/mods/renderer'
 
 const { Text } = Typography
@@ -32,7 +32,7 @@ const current = ref(0)
 const allCount = ref(0)
 
 async function onOk() {
-  const files: File[] = []
+  const files: IFile[] = []
 
   loading.value = true
 

@@ -133,10 +133,15 @@ export function processNameForFilesystem(name: string): string {
     .toLowerCase()
 }
 
-/** Начинается ли ключ на одну из переданных строк. */
-export function startsWith(key: string, array: string[]): boolean {
+/**
+ * Начинается ли строка на одну из переданных строк.
+ * @param str Строка.
+ * @param array Массив строк.
+ * @returns Начинается ли строка на одну из переданных строк.
+ */
+export function startsWith(str: string, array: string[]): boolean {
   for (const element of array) {
-    if (key.startsWith(element!)) {
+    if (str.startsWith(element!)) {
       return true
     }
   }

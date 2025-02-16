@@ -38,11 +38,11 @@ import { useListStore } from '../../../store/list'
 import texts from '../../texts'
 import ModsPopup from '../mods-popup.vue'
 import ListItem from './item.vue'
-import type { File } from '/mods/renderer'
+import type { IFile } from '/mods/renderer'
 import { Helpers } from '/mods/renderer'
 
 export type ListProps = {
-  files: File[]
+  files: IFile[]
 }
 
 const props = defineProps<ListProps>()
@@ -70,7 +70,7 @@ function hideModsPopup(isReload?: boolean) {
 }
 
 function useFilteredItems() {
-  const items = ref<{ file: File, category: Category }[]>([])
+  const items = ref<{ file: IFile, category: Category }[]>([])
   
   watchEffect(() => {
     items.value = files.value.map(file => ({ file, category: category.value }))

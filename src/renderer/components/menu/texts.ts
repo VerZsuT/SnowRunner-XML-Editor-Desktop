@@ -9,6 +9,18 @@ export default await createTextsLoader({
     .de('Öffnen')
     .ch('打开'),
 
+  savingMessage: new BaseLocalization()
+    .ru('Сохранение...')
+    .en('Saving...')
+    .de('Speichern...')
+    .ch('保存中'),
+
+  successSaveFiles: new BaseLocalization()
+    .ru('Сохранено')
+    .en('Saved')
+    .de('Gespeichert')
+    .ch('保存成功'),
+
   /** Текст кнопки сохранения. */
   saveButton: new BaseLocalization()
     .ru('Сохранить')
@@ -22,6 +34,27 @@ export default await createTextsLoader({
     .en('Reset')
     .de('Zurücksetzen')
     .ch('重置'),
+
+  /** Текст элемента `Открыть файлы`. */
+  openFilesFolderItemLabel: new BaseLocalization()
+    .ru('Открыть файлы')
+    .en('Open Files')
+    .de('Dateien öffnen')
+    .ch('打开文件'),
+
+  /** Текст элемента `Обновить архив`. */
+  saveFilesItemLabel: new BaseLocalization()
+    .ru('Обновить архив')
+    .en('Update archive')
+    .de('Archiv aktualisieren')
+    .ch('更新存档'),
+
+  /** Текст элемента `Распаковать архив`. */
+  unpackFilesItemLabel: new BaseLocalization()
+    .ru('Распаковать архив')
+    .en('Unpack archive')
+    .de('Entpacken Sie das Archiv')
+    .ch('解压缩档案'),
 
   /** Текст элемента `Выход`. */
   exitMenuItemLabel: new BaseLocalization()

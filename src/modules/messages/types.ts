@@ -1,9 +1,10 @@
 import type { MainMessageType } from './enums'
 
-/** Сообщение из main-process */
+/** Сообщение из main-process. */
 export interface IMainMessage {
-  /** Тип */
+  /** Тип. */
   type: MainMessageType
-  /** Содержимое */
+
+  /** Содержимое. */
   text: string
 }

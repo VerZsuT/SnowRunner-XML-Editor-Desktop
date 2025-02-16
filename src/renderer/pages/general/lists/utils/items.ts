@@ -1,25 +1,25 @@
 import { Category, SourceType } from '../../enums'
 
-import type { File } from '/mods/renderer'
+import type { IFile } from '/mods/renderer'
 import { Config, DLCs, Dirs, Mods, TruckFileType, TruckXML } from '/mods/renderer'
 
 class ItemsUtils {
-  async getMain(category: Category): Promise<File[]> {
+  async getMain(category: Category): Promise<IFile[]> {
     return this.filterByCategory(await this.getList(category, SourceType.main), category)
   }
 
-  async getDLC(category: Category): Promise<File[]> {
+  async getDLC(category: Category): Promise<IFile[]> {
     return this.filterByCategory(await this.getList(category, SourceType.dlc), category)
   }
 
-  async getMods(category: Category): Promise<File[]> {
+  async getMods(category: Category): Promise<IFile[]> {
     return Config.useMods
       ? this.filterByCategory(await this.getList(category, SourceType.mods), category)
       : []
   }
 
-  private async filterByCategory(array: File[], category: Category): Promise<File[]> {
-    const result: File[] = []
+  private async filterByCategory(array: IFile[], category: Category): Promise<IFile[]> {
+    const result: IFile[] = []
 
     for (const file of array) {
       const xml = await TruckXML.from(file)
@@ -38,9 +38,9 @@ class ItemsUtils {
     return result.filter(Boolean)
   }
 
-  private async getList(category: Category, from?: SourceType): Promise<File[]> {
+  private async getList(category: Category, from?: SourceType): Promise<IFile[]> {
     if (from === SourceType.dlc) {
-      const array: File[] = []
+      const array: IFile[] = []
 
       for (const dlc of DLCs) {
         const classes = dlc.dir.dir('classes')
@@ -60,7 +60,7 @@ class ItemsUtils {
     }
 
     if (from === SourceType.mods) {
-      const array: File[] = []
+      const array: IFile[] = []
 
       for (const mod of Mods) {
         const modClasses = Dirs.modsTemp.dir(mod.name, 'classes')

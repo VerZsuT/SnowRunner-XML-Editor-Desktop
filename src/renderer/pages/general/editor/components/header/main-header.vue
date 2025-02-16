@@ -59,7 +59,7 @@ import { EditedAction, useEditorStore, usePageStore } from '../../../store'
 import texts from '../../texts'
 import { ExportUtils, ImportUtils, ResetUtils, SaveUtils } from '../../utils'
 import FilesMenu from '../files-menu'
-import type { TruckXML } from '/mods/renderer'
+import type { IFile, TruckXML } from '/mods/renderer'
 import { Archive, Config, Edited, File, GameTexts, Messages, Mods, Page, TruckFileType } from '/mods/renderer'
 import { Header } from '/rend/components'
 import { lastItem, prettyString } from '/utils/renderer'
@@ -68,7 +68,7 @@ const { Text } = Typography
 
 export type MainHeaderProps = {
   xml: TruckXML
-  file: File
+  file: IFile
 }
 
 const { xml, file } = defineProps<MainHeaderProps>()
@@ -143,7 +143,7 @@ function getMainTitle(): string {
   return prettyString(new File(lastItem(file.path.split(separator))!).name).toUpperCase()
 }
 
-async function importFile(toImport?: File) {
+async function importFile(toImport?: IFile) {
   try {
     await ImportUtils.importFile(file, toImport)
     success(texts.wasImported)
@@ -152,7 +152,7 @@ async function importFile(toImport?: File) {
   }
 }
 
-async function exportFile(toExport?: File) {
+async function exportFile(toExport?: IFile) {
   try {
     await ExportUtils.exportFile(file, toExport)
     success(texts.wasExported)

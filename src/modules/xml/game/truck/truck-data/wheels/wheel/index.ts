@@ -5,12 +5,14 @@ import Limit from '/mods/xml/game/limit'
 import type Position from '/mods/xml/game/position'
 import XMLWithTemplates from '/mods/xml/game/xml-with-templates'
 
+/** Расположение колеса. */
 export enum WheelLocation {
   front = 'front',
   rear = 'rear',
   middle = 'middle'
 }
 
+/** Привод колеса. */
 export enum WheelTorque {
   default = 'default',
   full = 'full',

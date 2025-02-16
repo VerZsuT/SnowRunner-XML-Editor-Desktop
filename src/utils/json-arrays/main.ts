@@ -1,50 +1,61 @@
 import { publicField, publicMethod } from '../bridge/main'
 import ArrayBase from './base'
-import type { ArrayJSON } from './types'
-import type { File } from '/mods/files/main'
+import type { IArrayJSON } from './types'
+import type { IFile } from '/mods/files/main'
 
-/** Базовый класс для массива в main-process */
+/** Базовый класс для массива в main-process. */
 export default abstract class MainArrayBase<Item, Extended = Item> extends ArrayBase<Item, Extended> {
+  /** Готов ли массив к использованию. */
   isReady!: Promise<typeof this>
 
   @publicField()
   protected accessor arr: Item[] = []
 
-  /** Версия JSON файла */
+  /** Версия JSON файла. */
   protected readonly version = '1.0'
 
-  /** Файл для записи/чтения массива */
-  protected abstract jsonFile: File
+  /** Файл для записи/чтения массива. */
+  protected abstract jsonFile: IFile
 
-  /** Инициализация класса. */
+  /**
+   * Инициализировать экземпляр класса.
+   * @returns Экземпляр класса.
+   */
   protected async init() {
     this.set(await this.getArray())
 
     return this
   }
 
-  /** Возвращает массив в исходное состояние */
+  /** Вернуть массив в исходное состояние. */
   @publicMethod()
   async reset() {
     this.set(this.default)
     await this.save()
   }
 
-  /** Сохраняет изменения в json */
+  /** Сохранить изменения в json. */
   @publicMethod()
   async save() {
     await this.jsonFile.writeToJSON({
       version: this.version,
       data: this.get()
-    } satisfies ArrayJSON)
+    } satisfies IArrayJSON)
   }
 
-  /** Преобразовать к новой версии */
+  /**
+   * Преобразовать к новой версии.
+   * @param data Данные.
+   * @returns Преобразованные данные.
+   */
   protected async convertToNewest(data: any) {
     return data
   }
 
-  /** Получить массив изменённых файлов */
+  /**
+   * Получить массив.
+   * @returns Массив.
+   */
   private async getArray(): Promise<Item[]> {
     if (await this.jsonFile.exists()) {
       try {
@@ -57,9 +68,12 @@ export default abstract class MainArrayBase<Item, Extended = Item> extends Array
     }
   }
 
-  /** Получить массив из JSON */
+  /**
+   * Получить массив из JSON.
+   * @returns Массив.
+   */
   private async getFromJSON(): Promise<Item[]> {
-    const { version, data } = await this.jsonFile.readFromJSON<ArrayJSON>()
+    const { version, data } = await this.jsonFile.readFromJSON<IArrayJSON>()
 
     return version < this.version
       ? this.convertToNewest(data)

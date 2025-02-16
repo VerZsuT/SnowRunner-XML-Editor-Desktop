@@ -1,6 +1,6 @@
 import type { Cheerio } from 'cheerio'
 import XMLElement from './xml-element'
-import type { File } from '/mods/files/renderer'
+import type { IFile } from '/mods/files/renderer'
 import { Dirs } from '/mods/files/renderer'
 
 /** Шаблоны `_templates`. */
@@ -22,13 +22,13 @@ export default class XMLTemplates extends XMLElement {
   /** Создать из строки. */
   static override async from(str: string): Promise<XMLTemplates | undefined>
   /** Создать из содержимого файла. */
-  static override async from(file: File): Promise<XMLTemplates | undefined>
-  static override async from(source: string | File | XMLElement): Promise<XMLTemplates | undefined> {
+  static override async from(file: IFile): Promise<XMLTemplates | undefined>
+  static override async from(source: string | IFile | XMLElement): Promise<XMLTemplates | undefined> {
     if (this.isXMLElement(source)) {
       return this.fromXML(source)
     }
 
-    const res = await this.from(source as File)
+    const res = await this.from(source as IFile)
 
     return res
       ? this.fromXML(res)

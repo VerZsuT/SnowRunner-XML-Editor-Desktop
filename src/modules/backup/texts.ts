@@ -1,6 +1,7 @@
 import { createTextsLoader } from '/utils/texts'
 import { BaseLocalization } from '/utils/texts/base-localization'
 
+/** Тексты работы с бэкапом. */
 export default createTextsLoader({
   /** Бэкап сохранён успешно. */
   successBackupSave: new BaseLocalization()

@@ -46,10 +46,10 @@ const {
     ? 1
     : 0.1
 } = props
-const coords = ref(propValue.value ?? new Position())
+const coords = ref(propValue.value || new Position())
 
 watch(propValue, () => {
-  const newPos = propValue.value ?? new Position()
+  const newPos = propValue.value || new Position()
   
   if (!coords.value.equals(newPos)) {
     coords.value = newPos

@@ -44,13 +44,14 @@ import type { ReadyEmits, ReadyProps } from '../../utils'
 import { getGameText, useReady } from '../../utils'
 import UnlockPreset from '../unlock-preset'
 import texts from './texts'
-import { Config, type File, type WheelsXML } from '/mods/renderer'
+import type { IFile } from '/mods/renderer'
+import { Config, type WheelsXML } from '/mods/renderer'
 
 export type WheelSetProps = ReadyProps & Props
 
 type Props = {
   xml: WheelsXML
-  file: File
+  file: IFile
 }
 
 const { xml, file } = defineProps<Props>()

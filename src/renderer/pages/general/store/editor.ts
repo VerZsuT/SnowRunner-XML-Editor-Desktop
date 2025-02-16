@@ -1,20 +1,20 @@
 import { defineStore } from 'pinia'
 import { reactive, ref, shallowRef } from 'vue'
-import type { File, FileInfo } from '/mods/renderer'
+import type { FileInfo, IFile } from '/mods/renderer'
 
 export const useEditorStore = defineStore('editor', () => {
   const editedAction = ref(EditedAction.markAsEdited)
   const showMessages = ref(true)
   const isSaving = ref(false)
-  const file = shallowRef<File | undefined>()
+  const file = shallowRef<IFile | undefined>()
   const info = reactive<FileInfo>({})
   const allFiles = reactive({
-    main: null as null | File,
-    engines: [] as File[],
-    winches: [] as File[],
-    suspensions: [] as File[],
-    gearboxes: [] as File[],
-    wheels: [] as File[]
+    main: null as null | IFile,
+    engines: [] as IFile[],
+    winches: [] as IFile[],
+    suspensions: [] as IFile[],
+    gearboxes: [] as IFile[],
+    wheels: [] as IFile[]
   })
 
   return {
@@ -34,7 +34,7 @@ export const useEditorStore = defineStore('editor', () => {
       allFiles.wheels.length = 0
     },
     /** Изменить текущий файл */
-    setFile(value: File) {
+    setFile(value: IFile) {
       file.value = value
     },
     /** Изменить действие с маркировкой "изменённый" */

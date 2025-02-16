@@ -71,13 +71,13 @@ import { Float, Int } from '../../input'
 import type { ReadyEmits, ReadyProps } from '../../utils'
 import { useReady } from '../../utils'
 import texts from './texts'
-import type { File, TruckXML } from '/mods/renderer'
+import type { IFile, TruckXML } from '/mods/renderer'
 
 export type TrailerProps = ReadyProps & Props
 
 type Props = {
   xml: TruckXML
-  file: File
+  file: IFile
 }
 
 const { xml, file } = defineProps<Props>()

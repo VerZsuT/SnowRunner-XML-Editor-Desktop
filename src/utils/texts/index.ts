@@ -1,6 +1,11 @@
 import { BaseLocalizationObj } from './base-localization'
 import type { ITextsToLocalize, LocalizedTexts } from './types'
 
+/**
+ * Создать загрузчик локализации.
+ * @param texts Тексты для локализации.
+ * @returns Локализация.
+ */
 export function createTextsLoader<
 	Value = string,
   ToLocalize extends ITextsToLocalize<Value> = ITextsToLocalize<Value>

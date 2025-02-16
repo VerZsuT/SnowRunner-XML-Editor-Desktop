@@ -25,7 +25,7 @@ import Update from '../update'
 import EditorActions from './editor-actions.vue'
 import GameUpdate from './game-update.vue'
 import texts from './texts'
-import type { File } from '/mods/renderer'
+import type { IFile } from '/mods/renderer'
 import { Checks, DLCs, Dirs, Edited, Files, Loading, Page, ProgramWindow, Windows } from '/mods/renderer'
 import { LoadingPage, Menu } from '/rend/components'
 import { useWindowReady } from '/rend/utils'
@@ -71,7 +71,7 @@ function useMainRouting() {
 }
 
 window['exportDefaults'] = async () => {
-  const files: File[] = []
+  const files: IFile[] = []
   const folders = ['trucks', 'trucks/trailers']
 
   for (const dlcItem of DLCs) {

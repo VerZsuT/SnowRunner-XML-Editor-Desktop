@@ -1,42 +1,50 @@
-/** Тип билда программы */
+/** Тип билда программы. */
 export enum BuildType {
-  /** Билд для разработки */
+  /** Для разработки. */
   dev = 'dev',
-  /** Билд для конечного пользователя */
+
+  /** Для конечного пользователя. */
   prod = 'prod'
 }
 
-/** Язык интерфейса программы */
+/** Язык интерфейса программы. */
 export enum Lang {
-  /** Русский язык интерфейса */
+  /** Русский. */
   ru = 'RU',
-  /** Английский язык интерфейса */
+
+  /** Английский. */
   en = 'EN',
-  /** Немецкий язык интерфейса */
+
+  /** Немецкий. */
   de = 'DE',
-  /** Китайский (упрощённый) язык интерфейса */
+
+  /** Китайский (упрощённый). */
   ch = 'CH'
 }
 
 /**
- * Преобразует строку в `Lang`
- * 
+ * Преобразует строку в `Lang`.  
  * _Если преобразование невозможно, возвращает `undefined`_
+ * @param str Строка.
+ * @returns Lang.
  */
 export function strToLang(str?: string): Lang | undefined {
-  if (!str) return
+  if (!str) {
+    return
+  }
 
   for (const value of Object.values(Lang)) {
     if (str === value) {
-      return str as Lang
+      return value
     }
   }
 }
 
 /**
- * Преобразует `locale` в `Lang`
- * 
+ * Преобразует `locale` в `Lang`.  
  * _Если преобразование невозможно, возвращает `undefined`_
+ * @param locale Locale.
+ * @returns Lang.
  */
 export function localeToLang(locale?: string): Lang | undefined {
   if (!locale) {
@@ -53,13 +61,17 @@ export function localeToLang(locale?: string): Lang | undefined {
 }
 
 /**
- * Преобразует строку в `Lang`
- * 
+ * Преобразует строку в `Lang`.  
  * _Если преобразование невозможно, бросает ошибку `Error`_
+ * @param str Строка.
+ * @returns Lang.
  */
 export function parseStrToLang(str: string): Lang | never {
   const value = strToLang(str)
-  if (!value) throw new Error(`Cannot parse '${str}' into Lang`)
+
+  if (!value) {
+    throw new Error(`Cannot parse '${str}' into Lang`)
+  }
   
   return value
 }

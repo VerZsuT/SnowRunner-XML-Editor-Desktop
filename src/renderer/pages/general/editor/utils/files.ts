@@ -4,14 +4,14 @@ import { storeToRefs } from 'pinia'
 import type { MaybeRef } from 'vue'
 import { onUnmounted, ref, watchEffect } from 'vue'
 import { useEditorStore } from '../../store'
-import type { File } from '/mods/renderer'
+import type { IFile } from '/mods/renderer'
 
 export type UpdateListener = () => void | Promise<void>
 
 /** Работа с файлами в таблице. */
 class FilesUtils {
   /** Добавить файлы в список. */
-  regFiles(source: MaybeRef<File[]>, direction: File[]) {
+  regFiles(source: MaybeRef<IFile[]>, direction: IFile[]) {
     const sourceRef = ref(source)
 
     watchEffect(() => {
@@ -24,12 +24,12 @@ class FilesUtils {
   }
 
   /** Отследить изменения файлов. */
-  watch(listener: WatchListener<string>, files: MaybeRef<File[]>) {
+  watch(listener: WatchListener<string>, files: MaybeRef<IFile[]>) {
     const { isSaving } = storeToRefs(useEditorStore())
     const filesRef = ref(files)
 
     const watchers: FSWatcher[] = []
-    const watched: File[] = []
+    const watched: IFile[] = []
     
     const watchListener = debounce((event, fileName) => {
       if (!isSaving.value) {
@@ -37,7 +37,7 @@ class FilesUtils {
       }
     }, 200)
 
-    const watchFile = (file: File) => {
+    const watchFile = (file: IFile) => {
       watchers.push(file.watch((...args) => watchListener(...args)))
       watched.push(file)
     }

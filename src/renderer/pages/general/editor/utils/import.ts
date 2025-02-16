@@ -1,7 +1,7 @@
 import type { InjectionKey } from 'vue'
 import { inject, onMounted, onUnmounted, provide } from 'vue'
 import ExportUtils from './export'
-import type { File, IExportedData } from '/mods/renderer'
+import type { IExportedData, IFile } from '/mods/renderer'
 import { DLCs, Dialogs, Messages, Mods, TruckFileType, TruckXML } from '/mods/renderer'
 
 export type ImportListener = (data: IExportedData) => void | Promise<void>
@@ -16,7 +16,7 @@ class ImportUtils {
 
   getName = ExportUtils.getName
 
-  async importFile(source: File, toImport?: File) {
+  async importFile(source: IFile, toImport?: IFile) {
     const chosen = toImport ?? Dialogs.getEPF()
 
     if (!chosen) {
@@ -52,8 +52,8 @@ class ImportUtils {
   }
 }
 
-export const fileInjectKey: InjectionKey<File> = Symbol()
+export const fileInjectKey: InjectionKey<IFile> = Symbol()
 export const injectFile = () => inject(fileInjectKey)!
-export const provideFile = (file: File) => provide(fileInjectKey, file)
+export const provideFile = (file: IFile) => provide(fileInjectKey, file)
 
 export default new ImportUtils()

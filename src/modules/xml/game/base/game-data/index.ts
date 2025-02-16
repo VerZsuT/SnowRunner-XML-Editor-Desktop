@@ -40,7 +40,7 @@ export default class BaseGameData extends XMLWithTemplates {
   accessor UnlockByRank: XmlValue<number>
   declare $UnlockByRank: INumberAttrDescriptor
 
-  /** Блок UI */
+  /** Блок UI. */
   @innerElement(BaseUiDesc)
   readonly UiDesc: XmlElement<BaseUiDesc>
 }

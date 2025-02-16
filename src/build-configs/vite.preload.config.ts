@@ -1,5 +1,4 @@
 import type { UserConfig } from 'vite'
-
 import { defineConfig, mergeConfig } from 'vite'
 import { external, externalizePlugin, getBuildConfig, pluginHotRestart } from './vite.base.config'
 

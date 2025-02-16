@@ -21,13 +21,13 @@ import { ref } from 'vue'
 import texts from '../../texts'
 import ErrorHeader from './error-header.vue'
 import MainHeader from './main-header.vue'
-import type { File, TruckXML } from '/mods/renderer'
+import type { IFile, TruckXML } from '/mods/renderer'
 
 const { Text } = Typography
 
 type Props = {
   xml?: TruckXML | null
-  file?: File | null
+  file?: IFile | null
   hasError: boolean
 }
 type MainHeaderExpose = InstanceType<typeof MainHeader>

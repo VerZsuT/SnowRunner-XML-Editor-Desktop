@@ -58,6 +58,7 @@ watch(mods, () => Config.useMods = mods.value)
 watch(advanced, () => Config.advancedMode = advanced.value)
 watch(optimizeUnpack, () => Config.optimizeUnpack = optimizeUnpack.value)
 
+/** Открыты ли настройки. */
 const isOpen = defineModel<boolean>({ required: true })
 </script>
 

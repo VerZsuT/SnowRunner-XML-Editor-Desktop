@@ -1,5 +1,5 @@
 import type { IDLC } from './types'
-import type { File, IFindDirsArgs, IFindFilesArgs } from '/mods/files/main'
+import type { IDir, IFile, IFindDirsArgs, IFindFilesArgs } from '/mods/files/main'
 import { Dir, Dirs } from '/mods/files/main'
 import { providePublic, publicField, publicMethod } from '/utils/bridge/main'
 import ArrayBase from '/utils/json-arrays/base'
@@ -7,19 +7,19 @@ import ArrayBase from '/utils/json-arrays/base'
 export type * from './types'
 
 /**
- * Работа с дополнениями игры  
+ * Работа с дополнениями игры.  
  * _main process_
-*/
+ */
 @providePublic()
-class DLCs extends ArrayBase<IDLC, IDLC & { dir: Dir }> {
+class DLCs extends ArrayBase<IDLC, IDLC & { dir: IDir }> {
   @publicField()
   protected accessor arr: IDLC[] = []
 
-  protected override convert(item: IDLC): IDLC & { dir: Dir } {
+  protected override convert(item: IDLC): IDLC & { dir: IDir } {
     return { ...item, dir: new Dir(item.path) }
   }
 
-  /** Инициализация объекта */
+  /** Инициализировать класс. */
   async init() {
     const dlcs: IDLC[] = []
 
@@ -34,21 +34,33 @@ class DLCs extends ArrayBase<IDLC, IDLC & { dir: Dir }> {
     this.set(dlcs)
   }
 
-  /** Сбрасывает массив до исходного состояния */
+  /** Сбросить массив до исходного состояния. */
   @publicMethod()
   reset() {
     this.set(this.default)
   }
 
-  /** Поиск файлов */
-  async findFiles(args: IFindFilesArgs): Promise<File[]> {
+  /**
+   * Найти файлы.
+   * @param args Аргументы поиска.
+   * @returns Файлы.
+   */
+  async findFiles(args: IFindFilesArgs): Promise<IFile[]> {
     return Dirs.dlc.findFiles(args)
   }
 
-  /** Поиск папок */
-  async findDirs(args: IFindDirsArgs): Promise<Dir[]> {
+  /**
+   * Найти папки.
+   * @param args Аргументы поиска.
+   * @returns Папки.
+   */
+  async findDirs(args: IFindDirsArgs): Promise<IDir[]> {
     return Dirs.dlc.findDirs(args)
   }
 }
 
+/**
+ * Работа с дополнениями игры.  
+ * _main process_
+ */
 export default new DLCs()

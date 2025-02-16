@@ -1,5 +1,6 @@
+import type MainGameTexts from './main'
 import type { IGameTexts } from './types'
-import { initMain, mainObjectField } from '/utils/renderer'
+import { initMain, mainMethod, mainObjectField } from '/utils/renderer'
 
 export type * from './types'
 
@@ -23,9 +24,19 @@ class GameTexts implements IGameTexts {
     return this.object.main
   }
 
+  /** Обработать файл с переводом из `initial.pak` (текущий выбранный язык в программе). */
+  @mainMethod()
+  initFromInitial!: typeof MainGameTexts.initFromInitial
+
+  /** Обработать файл с переводом из `.pak` файлов модов (текущий выбранный язык в программе). */
+  @mainMethod()
+  initFromMods!: typeof MainGameTexts.initFromMods
+
   /**
   * Возвращает игровой перевод по ключу.
+  * @param key Ключ.
   * @param modID - id модификации.
+  * @returns Игровой перевод.
   */
   get(key: string | undefined, modID?: string): string | undefined {
     let value: string | undefined
@@ -44,4 +55,8 @@ class GameTexts implements IGameTexts {
   }
 }
 
+/**
+ * Работа с игровой локализацией.  
+ * _renderer process_
+ */
 export default new GameTexts()

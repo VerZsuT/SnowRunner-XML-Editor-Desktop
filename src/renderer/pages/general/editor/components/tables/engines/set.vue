@@ -41,13 +41,14 @@ import type { ReadyEmits, ReadyProps } from '../../utils'
 import { getGameText, useReady } from '../../utils'
 import UnlockPreset from '../unlock-preset'
 import texts from './texts'
-import { Config, type EnginesXML, type File } from '/mods/renderer'
+import type { IFile } from '/mods/renderer'
+import { Config, type EnginesXML } from '/mods/renderer'
 
 export type EngineSetProps = ReadyProps & Props
 
 type Props = {
   xml: EnginesXML
-  file: File
+  file: IFile
 }
 
 const { xml, file } = defineProps<Props>()

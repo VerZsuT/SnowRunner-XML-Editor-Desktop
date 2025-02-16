@@ -1,4 +1,4 @@
-import type { File } from '../../../renderer'
+import type { IFile } from '../../../renderer'
 import XMLElement from '../../xml-element'
 import XMLTemplates from '../../xml-templates'
 import type { XmlElement } from '../attributes'
@@ -13,10 +13,10 @@ export { default as AddonTruckData } from './truck-data'
 /** Рутовый тег файла класса двигателей. */
 export default class TruckAddon extends XMLWithTemplates {
   static override async from(str: string): Promise<TruckAddon | undefined>
-  static override async from(file: File): Promise<TruckAddon | undefined>
-  static override async from(source: string | File): Promise<TruckAddon | undefined> {
+  static override async from(file: IFile): Promise<TruckAddon | undefined>
+  static override async from(source: string | IFile): Promise<TruckAddon | undefined> {
     const rootSelector = 'TruckAddon'
-    const root = await XMLElement.from(source as File)
+    const root = await XMLElement.from(source as IFile)
     const element = root?.select(rootSelector)
 
     if (root && element) {

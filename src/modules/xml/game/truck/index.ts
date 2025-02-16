@@ -1,4 +1,4 @@
-import type { File } from '../../../renderer'
+import type { IFile } from '../../../renderer'
 import XMLElement from '../../xml-element'
 import XMLTemplates from '../../xml-templates'
 import type { IStringAttrDescriptor, XmlElement, XmlValue } from '../attributes'
@@ -16,10 +16,10 @@ export { default as TruckData } from './truck-data'
 /** XML автомобиля/прицепа. */
 export default class TruckXML extends XMLWithTemplates {
   static override async from(str: string): Promise<TruckXML | undefined>
-  static override async from(file: File): Promise<TruckXML | undefined>
-  static override async from(source: string | File): Promise<TruckXML | undefined> {
+  static override async from(file: IFile): Promise<TruckXML | undefined>
+  static override async from(source: string | IFile): Promise<TruckXML | undefined> {
     const rootSelector = 'Truck'
-    const root = await XMLElement.from(source as File)
+    const root = await XMLElement.from(source as IFile)
     const element = root?.select(rootSelector)
 
     if (root && element) {

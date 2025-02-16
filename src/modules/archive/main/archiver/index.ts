@@ -1,5 +1,5 @@
 import { execFile } from 'node:child_process'
-import type { Dir, File, ICheckResult } from '../../../main'
+import type { IDir, IFile } from '../../../main'
 import { DEBUG_ARCHIVER } from '/consts'
 import Config from '/mods/data/config/main'
 import { ErrorText, ProgramError } from '/mods/errors/main'
@@ -13,13 +13,13 @@ class WinRAR {
 
   /** Списки файлов для распаковки. */
   private readonly lists = {
-    /** Файл списка основных файлов/папок для распаковки. */
+    /** Список основных файлов/папок для распаковки. */
     main: 'unpack-list.lst',
 
-    /** Файл списка модовых файлов/папок для распаковки. */
+    /** Список модовых файлов/папок для распаковки. */
     mods: 'unpack-mod-list.lst',
 
-    /** Файл оптимизированного списка основных файлов/папок для распаковки. */
+    /** Оптимизированный список основных файлов/папок для распаковки. */
     mainOptimized: 'unpack-list-optimized.lst'
   }
 
@@ -53,7 +53,11 @@ class WinRAR {
     noErrors: '-inul'
   }
 
-  /**  Аргументы зависящие от режима отладки архиватора. */
+  /**
+   * Получить аргументы, зависящие от режима отладки архиватора.
+   * @param isMod Идёт ли работа с модификацией.
+   * @returns Аргументы запуска.
+   */
   private getRunArgs(isMod = false) {
     return DEBUG_ARCHIVER
       ? []
@@ -70,17 +74,15 @@ class WinRAR {
    * @param dir Папка с файлами.
    * @param archive Обновляемый архив.
    */
-  async update(dir: Dir, archive: File) {
-    let readResult: ICheckResult
-    let writeResult: ICheckResult
-
+  async update(dir: IDir, archive: IFile) {
     await archive.chmod(0o777)
 
-    if (!(writeResult = await archive.canWrite()).result) {
-      throw new ProgramError(ErrorText.writeFileError, writeResult.error, archive.path)
-    }
+    const readResult = await archive.canWrite()
+    const writeResult = await dir.canRead()
 
-    if (!(readResult = await dir.canRead()).result) {
+    if (!writeResult.result) {
+      throw new ProgramError(ErrorText.writeFileError, writeResult.error, archive.path)
+    } else if (!readResult.result) {
       throw new ProgramError(ErrorText.readDirError, readResult.error, dir.path)
     }
 
@@ -99,7 +101,7 @@ class WinRAR {
    * @param archive Распаковываемый архив.
    * @param dir Папка, в которую будет происходить распаковка.
    */
-  async unpack(archive: File, dir: Dir) {
+  async unpack(archive: IFile, dir: IDir) {
     const isMod = !!Config.initialPath && archive.path !== Config.initialPath
     const list = isMod
       ? this.lists.mods
@@ -107,16 +109,17 @@ class WinRAR {
         ? this.lists.mainOptimized
         : this.lists.main
 
-    let readResult: ICheckResult
-    let writeResult: ICheckResult
-
-    if (!(readResult = await archive.canRead()).result) {
+    const readResult = await archive.canRead()
+    
+    if (!readResult.result) {
       throw new ProgramError(ErrorText.readFileError, readResult.error, archive.path)
     }
-
+    
     await dir.make()
 
-    if (!(writeResult = await dir.canWrite()).result) {
+    const writeResult = await dir.canWrite()
+
+    if (!writeResult.result) {
       throw new ProgramError(ErrorText.writeDirError, writeResult.error, dir.path)
     }
 
@@ -134,17 +137,15 @@ class WinRAR {
    * @param file Добавляемый файл.
    * @param archive Архив, в который будет добавляться файл.
   */
-  async add(file: File, archive: File) {
-    let readResult: ICheckResult
-    let writeResult: ICheckResult
-
+  async add(file: IFile, archive: IFile) {
     await archive.chmod(0o777)
 
-    if (!(readResult = await file.canRead()).result) {
-      throw new ProgramError(ErrorText.readFileError, readResult.error, file.path)
-    }
+    const readResult = await file.canRead()
+    const writeResult = await archive.canWrite()
 
-    if (!(writeResult = await archive.canWrite()).result) {
+    if (!readResult.result) {
+      throw new ProgramError(ErrorText.readFileError, readResult.error, file.path)
+    } else if (!writeResult.result) {
       throw new ProgramError(ErrorText.writeFileError, writeResult.error, archive.path)
     }
 
@@ -167,7 +168,7 @@ class WinRAR {
     }
 
     const execArgs = args.flatMap(value => Array.isArray(value) ? value : [value])
-    const {promise, resolve, reject} = Promise.withResolvers()
+    const { promise, resolve, reject } = Promise.withResolvers()
 
     execFile(this.exeName, execArgs, { cwd: Paths.winrar })
       .once('close', resolve)
@@ -181,12 +182,14 @@ class WinRAR {
   }
 
   /**
-   * Добавляет в конец `//`.
+   * Сделать путь внутренним.
    * @param path Путь.
+   * @returns Внутренний путь.
    */
   private inner(path: string) {
     return `${path}\\`
   }
 }
 
+/** Работа с WinRAR. */
 export default new WinRAR()

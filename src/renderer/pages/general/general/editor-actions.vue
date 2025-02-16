@@ -30,18 +30,18 @@ import { shallowRef, watch } from 'vue'
 import Editor from '../editor'
 import type { EveryCallback } from '../lists/utils'
 import { EditorUtils } from '../lists/utils'
-import type { File } from '/mods/renderer'
+import type { IFile } from '/mods/renderer'
 
 const { forAction: forExport, args: exportArgs, editor: exportEditor } = useAction(EditorUtils.onExport)
 const { forAction: forImport, args: importArgs, editor: importEditor } = useAction(EditorUtils.onImport)
 const { forAction: forReset, args: resetArgs, editor: resetEditor } = useAction(EditorUtils.onReset)
 
-async function exportFile(toExport?: File) {
+async function exportFile(toExport?: IFile) {
   await exportEditor.value?.export(toExport)
   exportArgs.value = null
 }
 
-async function importFile(toImport?: File) {
+async function importFile(toImport?: IFile) {
   await importEditor.value?.import(isLast(), toImport)
   importArgs.value = null
 

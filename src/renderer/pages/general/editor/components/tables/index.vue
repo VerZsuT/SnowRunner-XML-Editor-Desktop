@@ -19,12 +19,12 @@
 import type { ReadyEmits } from '../utils'
 import TrailerTable from './trailer'
 import TruckTable from './truck'
-import type { File, TruckXML } from '/mods/renderer'
+import type { IFile, TruckXML } from '/mods/renderer'
 import { TruckFileType } from '/mods/renderer'
 
 type Props = {
   xml: TruckXML
-  file: File
+  file: IFile
 }
 
 defineProps<Props>()

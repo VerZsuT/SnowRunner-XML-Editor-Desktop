@@ -1,6 +1,7 @@
 import { createTextsLoader } from '/utils/texts'
 import { BaseLocalization } from '/utils/texts/base-localization'
 
+/** Тексты архиватора. */
 export default createTextsLoader({
   /** Ошибка сохранения мода. */
   saveModError: new BaseLocalization()

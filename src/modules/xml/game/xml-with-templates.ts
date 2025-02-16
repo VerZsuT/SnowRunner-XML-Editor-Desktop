@@ -1,4 +1,4 @@
-import type { File, FileInfo, Limit } from '../../renderer'
+import type { FileInfo, IFile, Limit } from '../../renderer'
 import type XMLElement from '../xml-element'
 import { AttrValue } from '../xml-element'
 import XMLTemplates from '../xml-templates'
@@ -11,12 +11,12 @@ export default class XMLWithTemplates extends GameXML {
   /** Создать из строки. */
   static override async from(str: string): Promise<XMLWithTemplates | undefined>
   /** Создать из содержимого файла. */
-  static override async from(file: File): Promise<XMLWithTemplates | undefined>
-  static override async from(source: string | File): Promise<XMLWithTemplates | undefined> {
-    const element = await super.from(source as File)
+  static override async from(file: IFile): Promise<XMLWithTemplates | undefined>
+  static override async from(source: string | IFile): Promise<XMLWithTemplates | undefined> {
+    const element = await super.from(source as IFile)
 
     if (element) {
-      return new XMLWithTemplates(element, await XMLTemplates.from(source as File))
+      return new XMLWithTemplates(element, await XMLTemplates.from(source as IFile))
     }
   }
 
@@ -97,14 +97,8 @@ export function innerElement<T extends typeof XMLWithTemplates>(
     const name = context.name.toString()
     
     context.addInitializer(function(this: This) {
-      let savedValue: Value | null = null
-
       Object.defineProperty(this, name, {
         get(this: This) {
-          if (savedValue !== null) {
-            return savedValue
-          }
-
           const target = tagName ?? name
           const innerSelector = this.selector
             ? `${this.selector} > ${target}`
@@ -116,7 +110,7 @@ export function innerElement<T extends typeof XMLWithTemplates>(
           }
     
           if (!element) {
-            return savedValue = undefined
+            return
           }
 
           const Class: T = typeof ClassOrFactory === 'function' && !ClassOrFactory.name
@@ -124,7 +118,7 @@ export function innerElement<T extends typeof XMLWithTemplates>(
             ? ClassOrFactory()
             : ClassOrFactory
 
-          return savedValue = new Class(element, this.templates, innerSelector) as Value
+          return new Class(element, this.templates, innerSelector) as Value
         },
         enumerable: true,
         configurable: true
@@ -148,14 +142,8 @@ export function innerElements<T extends typeof XMLWithTemplates>(ClassOrFactory:
     const name = context.name.toString()
     
     context.addInitializer(function(this: This) {
-      let savedValue: Value | null = null
-
       Object.defineProperty(this, name, {
         get(this: This) {
-          if (savedValue !== null) {
-            return savedValue
-          }
-
           const target = selector ?? name
           const elements = this.selectAll(target)
           const Class: T = typeof ClassOrFactory === 'function' && !ClassOrFactory.name
@@ -163,7 +151,7 @@ export function innerElements<T extends typeof XMLWithTemplates>(ClassOrFactory:
               ? ClassOrFactory()
               : ClassOrFactory
 
-          return savedValue = elements.map((element, index) => new Class(
+          return elements.map((element, index) => new Class(
             element,
             this.templates,
             this.selector

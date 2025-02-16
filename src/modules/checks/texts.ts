@@ -1,6 +1,7 @@
 import { createTextsLoader } from '/utils/texts'
 import { BaseLocalization } from '/utils/texts/base-localization'
 
+/** Тексты проверок. */
 export default createTextsLoader({
   /** Ошибка прав доступа. */
   adminRequiredMessage: new BaseLocalization()

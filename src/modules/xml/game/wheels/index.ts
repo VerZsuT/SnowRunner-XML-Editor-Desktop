@@ -1,4 +1,4 @@
-import type { File } from '../../../renderer'
+import type { IFile } from '../../../renderer'
 import XMLElement from '../../xml-element'
 import XMLTemplates from '../../xml-templates'
 import type { INumberAttrDescriptor, XmlElement, XmlValue } from '../attributes'
@@ -16,10 +16,10 @@ export { default as TruckTires } from './tires'
 /** Рутовый тег файла класса типа колес (набор взаимозаменяемых шин и дисков). */
 export default class Wheels extends XMLWithTemplates {
   static override async from(str: string): Promise<Wheels | undefined>
-  static override async from(file: File): Promise<Wheels | undefined>
-  static override async from(source: string | File): Promise<Wheels | undefined> {
+  static override async from(file: IFile): Promise<Wheels | undefined>
+  static override async from(source: string | IFile): Promise<Wheels | undefined> {
     const rootSelector = 'TruckWheels'
-    const root = await XMLElement.from(source as File)
+    const root = await XMLElement.from(source as IFile)
     const element = root?.select(rootSelector)
 
     if (root && element) {

@@ -40,13 +40,17 @@ import { Button, Steps } from 'ant-design-vue'
 import { ref } from 'vue'
 import InitialSelect from './initial-select.vue'
 import texts from './texts'
-import type { File } from '/mods/renderer'
+import type { IFile } from '/mods/renderer'
 import { Archive, Backup, Config, Helpers } from '/mods/renderer'
 import { Header, Language } from '/rend/components'
 
 const step = ref(0)
 
-async function onChangeGameFolder(file: File) {
+async function onChangeGameFolder(file?: IFile) {
+  if (!file) {
+    return
+  }
+
   Config.initialPath = file.path
   await Backup.save()
   await Archive.unpackMain()

@@ -7,9 +7,10 @@ import Archive from '/mods/archive/main'
 import Checks from '/mods/checks/main'
 import Config from '/mods/data/config/main'
 import Sizes from '/mods/data/sizes/main'
+import type { IDir, IFile } from '/mods/files/main'
 import { Dir, Dirs, File, Files } from '/mods/files/main'
 import GameTexts from '/mods/game-texts/main'
-import { providePublic } from '/utils/bridge/main'
+import { providePublic, publicMethod } from '/utils/bridge/main'
 import { hasItems } from '/utils/checks/main'
 import MainArrayBase from '/utils/json-arrays/main'
 import { processNameForFilesystem } from '/utils/main'
@@ -17,11 +18,11 @@ import { processNameForFilesystem } from '/utils/main'
 export type * from './types'
 
 /**
- * Работа с массивом модификаций  
+ * Работа с массивом модификаций.  
  * _main process_
-*/
+ */
 @providePublic()
-class Mods extends MainArrayBase<IMod, IMod & { file: File }> {
+class Mods extends MainArrayBase<IMod, IMod & { file: IFile }> {
   protected override jsonFile = Files.mods
 
   constructor() {
@@ -30,11 +31,12 @@ class Mods extends MainArrayBase<IMod, IMod & { file: File }> {
     this.isReady = this.init()
   }
 
-  protected override convert(item: IMod): IMod & { file: File } {
+  protected override convert(item: IMod): IMod & { file: IFile } {
     return { ...item, file: new File(item.path) }
   }
 
-  /** Обрабатывает добавленные моды */
+  /** обработать добавленные моды. */
+  @publicMethod()
   async procMods() {
     if (!Config.useMods || !hasItems(this)) {
       return
@@ -71,12 +73,16 @@ class Mods extends MainArrayBase<IMod, IMod & { file: File }> {
       }
     }
 
-    await GameTexts.initFromMods(this.get())
+    await GameTexts.initFromMods()
   }
 
-  /** Находит `.pak` файл модификаций в папке */
-  async findMods(dir: Dir): Promise<[File, name: string][]> {
-    const out: [File, string][] = []
+  /**
+   * Найти `.pak` файлы модификаций в папке.
+   * @param dir Папка.
+   * @returns `.pak` файлы модификаций в папке.
+   */
+  async findMods(dir: IDir): Promise<[IFile, name: string][]> {
+    const out: [IFile, string][] = []
 
     if (!await dir.exists()) {
       return []
@@ -98,7 +104,7 @@ class Mods extends MainArrayBase<IMod, IMod & { file: File }> {
       }
     }
 
-    async function processFile(file: File, dir: Dir) {
+    async function processFile(file: IFile, dir: IDir) {
       if (out.some(([outFile]) => outFile.path === file.path)) {
         return
       }
@@ -129,13 +135,16 @@ class Mods extends MainArrayBase<IMod, IMod & { file: File }> {
     return out
   }
 
-  /** Возвращает список всех модов (добавленных и в документах) */
-  async getAllMods(): Promise<[File, string][]> {
+  /**
+   * Получить список всех модов (добавленных и в документах).
+   * @returns Список всех модов (добавленных и в документах).
+   */
+  async getAllMods(): Promise<[IFile, string][]> {
     const userDir = new Dir(userInfo().homedir || homedir() || process.env.HOME || '')
-    const out: [File, string][] = []
+    const out: [IFile, string][] = []
 
     if (await userDir.exists()) {
-      let existedDir: Dir | undefined
+      let existedDir: IDir | undefined
 
       const getModsDir = (gamesDir: string) => `Documents/${gamesDir}/SnowRunner/base/Mods/.modio/mods`
       const dirs = [
@@ -175,7 +184,7 @@ class Mods extends MainArrayBase<IMod, IMod & { file: File }> {
     return out
   }
   
-  /** Инициализация публичных объектов/методов */
+  /** Инициализировать публичные объекты/методы. */
   private initPublic() {
     publishFunction<PubType[PubKeys.findMods]>(PubKeys.findMods, async dirPath => {
       return (await this.findMods(new Dir(dirPath)))
@@ -188,4 +197,8 @@ class Mods extends MainArrayBase<IMod, IMod & { file: File }> {
   }
 }
 
+/**
+ * Работа с массивом модификаций.  
+ * _main process_
+ */
 export default await new Mods().isReady

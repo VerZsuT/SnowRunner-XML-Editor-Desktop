@@ -1,8 +1,7 @@
-import type { Plugin, UserConfig } from 'vite'
-
 import { builtinModules } from 'node:module'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import type { Plugin, UserConfig } from 'vite'
 
 /** Папка, в которой находится текущий исполняемый скрипт. */
 const _dirname = dirname(fileURLToPath(import.meta.url))
@@ -10,13 +9,13 @@ const _dirname = dirname(fileURLToPath(import.meta.url))
 /** Встроенные модули приложения. */
 const builtins = [
 	'electron',
-	...builtinModules.flatMap(m => [m, `node:${m}`])
+	...builtinModules.flatMap(module => [module, `node:${module}`])
 ]
 
 /** Модули, которые пакуются вместе с приложением. */
 export const external = [...builtins]
 
-/** Алиасы путей */
+/** Алиасы путей. */
 export const alias = {
 	'/mods': join(_dirname, '../modules'),
 	'/rend': join(_dirname, '../renderer'),
@@ -29,14 +28,9 @@ export function externalizePlugin(options): Plugin {
 	  name: 'externalize-plugin',
 	  enforce: 'pre',
 	  resolveId(id) {
-		if (options.filter.test(id.replaceAll('\\', '/'))) {
-			return {
-				id,
-				external: true
-			}
-		}
-
-		return null
+			return options.filter.test(id.replaceAll('\\', '/'))
+				? { id, external: true }
+				: null
 	  }
 	}
 }

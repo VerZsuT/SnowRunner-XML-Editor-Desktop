@@ -22,7 +22,7 @@
       />
       <Button
         class="mods-manual-button"
-        @click="async () => addItems(await Mods.request())"
+        @click="async () => addItems(await Mods.requestPaks())"
       >
         {{ texts.manualMod }}
       </Button>
@@ -42,7 +42,7 @@ import type { ModalProps, TransferProps } from 'ant-design-vue'
 import { Button, Modal, Transfer } from 'ant-design-vue'
 import { ref, watchEffect } from 'vue'
 import texts from '../texts'
-import type { File } from '/mods/renderer'
+import type { IFile } from '/mods/renderer'
 import { Mods } from '/mods/renderer'
 import { Spin } from '/rend/components'
 import type { EmitsToProps } from '/rend/types'
@@ -59,7 +59,7 @@ type Emits = {
 const props = defineProps<Props>()
 const emit = defineEmits<Emits>()
 
-const items = ref<[File, string][] | undefined>(undefined)
+const items = ref<[IFile, string][] | undefined>(undefined)
 const targetKeys = ref<string[]>([])
 
 const transferLocale: TransferProps['locale'] = {
@@ -98,7 +98,7 @@ const hidePopup: ModalProps['onCancel'] = () => {
   emit('hide', false)
 }
 
-function getTargetKeys(items: [File, string][]): string[] {
+function getTargetKeys(items: [IFile, string][]): string[] {
   const keys = Mods.toSelectKeys(items)
   
   return Mods

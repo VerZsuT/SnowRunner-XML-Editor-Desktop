@@ -1,4 +1,4 @@
-import type _MainDialogs from './main'
+import type MainDialogs from './main'
 import { Dir, DirArray, File, FileArray } from '/mods/files/renderer'
 import { initMain, mainMethod } from '/utils/renderer'
 
@@ -12,53 +12,64 @@ export type * from './types'
 @initMain()
 class Dialogs {
   /**
-   * Открыть окно выбора `.epf` файла.  
-   * {@link _MainDialogs.getEPF|Перейти к методу}
+   * Открыть окно выбора `.epf` файла.
+   * 
+   * {@link MainDialogs.getEPF|Перейти к методу}
    */
   @mainMethod(File)
-  getEPF!: () => File | undefined
+  getEPF!: typeof MainDialogs.getEPF
 
   /**
-   * Открыть окно сохранения `.epf` файла.  
-   * {@link _MainDialogs.saveEPF|Перейти к методу}
+   * Открыть окно сохранения `.epf` файла.
+   * 
+   * {@link MainDialogs.saveEPF|Перейти к методу}
    */
   @mainMethod(File)
-  saveEPF!: (defaultName: string) => File | undefined
+  saveEPF!: typeof MainDialogs.saveEPF
 
   /**
-   * Открыть окно выбора `initial.pak`.  
-   * {@link _MainDialogs.getInitial|Перейти к методу}
+   * Открыть окно выбора `initial.pak`.
+   * 
+   * {@link MainDialogs.getInitial|Перейти к методу}
    */
   @mainMethod(File)
-  getInitial!: () => File | undefined
+  getInitial!: typeof MainDialogs.getInitial
 
   /**
-   * Открыть окно выбора папки.  
-   * {@link _MainDialogs.getDir|Перейти к методу}
+   * Открыть окно выбора папки.
+   * 
+   * {@link MainDialogs.getDir|Перейти к методу}
    */
   @mainMethod(Dir)
-  getDir!: () => Dir | undefined
+  getDir!: typeof MainDialogs.getDir
 
   /**
-   * Открыть окно выбора папки.  
-   * {@link _MainDialogs.getDirs|Перейти к методу}
+   * Открыть окно выбора папки.
+   * 
+   * {@link MainDialogs.getDirs|Перейти к методу}
    */
   @mainMethod(DirArray)
-  getDirs!: () => DirArray
+  getDirs!: typeof MainDialogs.getDirs
 
   /**
-   * Открыть окно выбора папки.  
-   * {@link _MainDialogs.getPaks|Перейти к методу}
+   * Открыть окно выбора папки.
+   * 
+   * {@link MainDialogs.getPaks|Перейти к методу}
    */
   @mainMethod(FileArray)
-  getPaks!: () => FileArray
+  getPaks!: typeof MainDialogs.getPaks
 
   /**
-   * Открыть окно выбора `.xml` файла.  
-   * {@link _MainDialogs.getXML|Перейти к методу}
+   * Открыть окно выбора `.xml` файла.
+   * 
+   * {@link MainDialogs.getXML|Перейти к методу}
    */
   @mainMethod(File)
-  getXML!: () => File | undefined
+  getXML!: typeof MainDialogs.getXML
 }
 
+/**
+ * Вывод системных диалогов.  
+ * _renderer process_
+ */
 export default new Dialogs()

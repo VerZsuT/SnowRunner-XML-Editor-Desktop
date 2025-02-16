@@ -41,13 +41,14 @@ import type { ReadyEmits, ReadyProps } from '../../utils'
 import { getGameText, useReady } from '../../utils'
 import UnlockPreset from '../unlock-preset'
 import texts from './texts'
-import { Config, type File, type WinchesXML } from '/mods/renderer'
+import type { IFile } from '/mods/renderer'
+import { Config, type WinchesXML } from '/mods/renderer'
 
 export type WinchSetProps = ReadyProps & Props
 
 type Props = {
   xml: WinchesXML
-  file: File
+  file: IFile
 }
 
 const { xml, file } = defineProps<Props>()

@@ -107,13 +107,14 @@ import { getGameText, useReady } from '../../utils'
 import { GearPreset } from '../gear-preset'
 import UnlockPreset from '../unlock-preset'
 import texts from './texts'
-import { Config, type File, type GearboxesXML } from '/mods/renderer'
+import type { IFile } from '/mods/renderer'
+import { Config, type GearboxesXML } from '/mods/renderer'
 
 export type GearboxSetProps = ReadyProps & Props
 
 type Props = {
   xml: GearboxesXML
-  file: File
+  file: IFile
 }
 
 const { xml, file } = defineProps<Props>()

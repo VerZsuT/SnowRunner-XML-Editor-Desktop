@@ -27,8 +27,9 @@
 
 <script lang='ts' setup>
 import { Segmented, Select } from 'ant-design-vue'
+import { nextTick } from 'vue'
 import texts from './texts'
-import { Config, Lang, parseStrToLang } from '/mods/renderer'
+import { Config, GameTexts, Lang, parseStrToLang } from '/mods/renderer'
 
 export type LanguageProps = {
   /** Режим горизонтального выбора. */
@@ -43,12 +44,15 @@ const options = langToOptions(Lang)
  * Изменить язык.
  * @param newLang Новый язык.
  */
-function changeLang(newLang: Lang) {
+async function changeLang(newLang: Lang) {
   if (newLang === Config.lang) {
     return
   }
 
   Config.lang = newLang
+  await nextTick()
+  await GameTexts.initFromInitial()
+  await GameTexts.initFromMods()
 }
 
 /**

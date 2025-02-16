@@ -1,9 +1,8 @@
 import { computed } from 'vue'
 import type { ITextsToLocalize, LocalizedTexts } from './types'
 import { Lang } from '/mods/data/config/enums'
-import type { IConfig } from '/mods/data/config/types'
 
-/** Позволяет локализировать объект со значениями */
+/** Базовый объект локализации. */
 export class BaseLocalizationObj<
   Value = string,
   ToLocalize extends ITextsToLocalize<Value> = ITextsToLocalize<Value>
@@ -17,8 +16,12 @@ export class BaseLocalizationObj<
     this.value = obj instanceof BaseLocalizationObj ? obj.value : obj
   }
 
-  /** Локализировать объект */
-  get(config: IConfig): LocalizedTexts<typeof this.value> {
+  /**
+   * Получить локализованный объект.
+   * @param config Конфиг.
+   * @returns Локализованный объект.
+   */
+  get(config: { lang: Lang }): LocalizedTexts<typeof this.value> {
     const out = {} as any
 
     for (const key in this.value) {
@@ -32,33 +35,54 @@ export class BaseLocalizationObj<
   }
 }
 
-/** Позволяет локализировать значение */
+/** Базовая локализация. */
 export class BaseLocalization<T = string> {
+  /** Содержимое локализации. */
   protected readonly obj: { [key in Lang]?: T } = {}
 
-  /** Локализировать значение */
+  /**
+   * Получить локализованное значение.
+   * @param config Конфигурация.
+   * @returns Локализованное значение.
+   */
   get(config: { lang: Lang }) {
     return computed(() => this.obj[config.lang] ?? this.obj[Lang.en]!).value
   }
 
+  /**
+   * Установить значение для RU.
+   * @param value Значение.
+   */
   ru(value: T) {
     this.obj[Lang.ru] = value
     
     return this
   }
 
+  /**
+   * Установить значение для EN.
+   * @param value Значение.
+   */
   en(value: T) {
     this.obj[Lang.en] = value
     
     return this
   }
 
+  /**
+   * Установить значение для DE.
+   * @param value Значение.
+   */
   de(value: T) {
     this.obj[Lang.de] = value
     
     return this
   }
 
+  /**
+   * Установить значение для CH.
+   * @param value Значение.
+   */
   ch(value: T) {
     this.obj[Lang.ch] = value
     

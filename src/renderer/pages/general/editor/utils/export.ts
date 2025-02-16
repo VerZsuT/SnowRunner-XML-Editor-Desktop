@@ -1,5 +1,5 @@
 import { onMounted, onUnmounted } from 'vue'
-import type { File, IExportedData } from '/mods/renderer'
+import type { IExportedData, IFile } from '/mods/renderer'
 import { DLCs, Dialogs, Mods, TruckFileType, TruckXML } from '/mods/renderer'
 
 export type ExportListener = (data: IExportedData) => void | Promise<void>
@@ -13,11 +13,11 @@ class ExportUtils {
     onUnmounted(() => this.listeners.delete(listener))
   }
 
-  getName(file: File, dlc?: string, mod?: string) {
+  getName(file: IFile, dlc?: string, mod?: string) {
     return `${file.name}_${dlc ?? mod ?? 'default'}`
   }
 
-  async exportFile(file: File, toExport?: File): Promise<IExportedData | void> {
+  async exportFile(file: IFile, toExport?: IFile): Promise<IExportedData | void> {
     const chosen = toExport ?? Dialogs.saveEPF(file.name)
 
     if (!chosen) {

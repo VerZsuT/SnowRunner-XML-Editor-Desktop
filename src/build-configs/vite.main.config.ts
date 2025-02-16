@@ -1,5 +1,4 @@
 import type { UserConfig } from 'vite'
-
 import { defineConfig, mergeConfig } from 'vite'
 import { viteStaticCopy } from 'vite-plugin-static-copy'
 import Paths from './paths'

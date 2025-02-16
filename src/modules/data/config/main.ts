@@ -11,25 +11,26 @@ export * from './enums'
 export type * from './types'
 
 /**
- * Работа с конфигурацией программы  
+ * Работа с конфигурацией программы.  
  * _main process_
-*/
+ */
 @providePublic()
 class Config {
+  /** Готов ли класс к использованию. */
   readonly isReady: Promise<typeof this>
   
-  /** Файл initial.pak */
+  /** Файл initial.pak. */
   get initial() {
     return new File(this.object.initialPath || '')
   }
 
-  /** Программа в режиме разработки */
+  /** Программа в режиме разработки. */
   get isDev() {
     return this.object.buildType === BuildType.dev
   }
 
-  /** Стандартное значение конфига */
-  readonly default: IConfig = {
+  /** Стандартное значение конфигурации для `prod`. */
+  readonly prodDefault: IConfig = {
     version: PROGRAM_VERSION,
     buildType: process.env.NODE_ENV === 'development'
       ? BuildType.dev
@@ -43,29 +44,29 @@ class Config {
     optimizeUnpack: true
   }
 
-  /** Объект конфига */
-  @publicField()
-  private accessor object!: IConfig
-
-  /** Стандартное значение конфига в `dev` режиме */
+  /** Стандартное значение конфигурации в `dev` режиме. */
   private readonly devDefault: IConfig = {
-    ...this.default,
+    ...this.prodDefault,
     advancedMode: true,
-    lang: strToLang(process.env.DEV_LANG) || this.default.lang,
-    initialPath: process.env.DEV_INITIAL_PATH || this.default.initialPath,
+    lang: strToLang(process.env.DEV_LANG) || this.prodDefault.lang,
+    initialPath: process.env.DEV_INITIAL_PATH || this.prodDefault.initialPath,
     openWhatsNew: false
   }
+
+  /** Стандартное значение конфигурации. */
+  readonly default: IConfig = this.prodDefault.buildType === BuildType.dev
+    ? this.devDefault
+    : this.prodDefault
+
+  /** Объект конфигурации. */
+  @publicField()
+  private accessor object!: IConfig
 
   constructor() {
     this.isReady = this.init()
   }
 
-  /** Получить объект конфига */
-  get(): IConfig {
-    return { ...this.object }
-  }
-
-  /** Сохранить изменения в `config.json` */
+  /** Сохранить изменения в `config.json`. */
   @publicMethod()
   async save() {
     try {
@@ -75,7 +76,7 @@ class Config {
     }
   }
 
-  /** Установить настройки */
+  /** Установить конфигурацию. */
   set(newObject: Partial<IConfig>) {
     for (const key in newObject) {
       this.object[key] = newObject[key]
@@ -83,8 +84,8 @@ class Config {
   }
 
   /**
-   * Сбросить `config.json` на "заводскую" версию
-   * @param noReload - отмена перезагрузки после завершения.
+   * Сбросить `config.json` на "заводскую" версию.
+   * @param noReload Отмена перезагрузки после завершения.
    */
   @publicMethod()
   async reset(noReload = false) {
@@ -111,7 +112,7 @@ class Config {
     app.quit()
   }
 
-  /** Инициализация объекта. */
+  /** Инициализация класса. */
   private async init() {
     this.object = await this.getConfig()
 
@@ -126,37 +127,39 @@ class Config {
     return this
   }
 
-  /** Получить объект конфига */
+  /**
+   * Получить конфигурацию.
+   * @returns Объект конфигурации.
+   */
   private async getConfig(): Promise<IConfig> {
-    const defaultConfig = this.default.buildType === BuildType.dev
-      ? this.devDefault
-      : this.default
-
     if (await Files.config.exists()) {
       try {
-        return await this.getFromJSON(defaultConfig)
+        return await this.getFromJSON()
       } catch {
-        return defaultConfig
+        return this.default
       }
     }
 
-    return defaultConfig
+    return this.default
   }
 
-  /** Получить объект конфига из JSON */
-  private async getFromJSON(defaultConfig: IConfig): Promise<IConfig> {
+  /**
+   * Получить конфигурацию из JSON.
+   * @returns Объект конфигурации.
+   */
+  private async getFromJSON(): Promise<IConfig> {
     const data = await Files.config.readFromJSON<{ version: string }>()
-    const version = this.getVersion(data.version)
-    const thisVersion = this.getVersion(this.default.version)
+    const version = this.getVersionWithoutBeta(data.version)
+    const thisVersion = this.getVersionWithoutBeta(this.default.version)
 
     let config: IConfig
 
     if (version === thisVersion) {
-      config = {...defaultConfig, ...data}
+      config = { ...this.default, ...data }
     } else if (version < thisVersion) {
-      config = await this.convertToNewest(data as IConfig, defaultConfig)
+      config = await this.convertToNewest(data as IConfig)
     }  else {
-      config = defaultConfig
+      config = this.default
     }
 
     config.version = this.default.version
@@ -168,33 +171,47 @@ class Config {
     return config
   }
 
+  /**
+   * Получить язык пользователя.
+   * @returns Язык пользователя.
+   */
   private getUserLang() {
     return localeToLang(Intl.DateTimeFormat().resolvedOptions().locale)
   }
 
-  /** Привести старую версию конфига к текущей */
-  private async convertToNewest(data: IConfig, defaultConfig: IConfig): Promise<IConfig> {
+  /**
+   * Привести старую версию конфигурации к текущей.
+   * @param data Старая версия конфигурации.
+   * @returns Адаптированная конфигурация.
+   */
+  private async convertToNewest(data: IConfig): Promise<IConfig> {
     const minConvertibleVersion = '1.0.0'
 
-    if (data.version < minConvertibleVersion) {
-      return defaultConfig
-    }
-
-    return {
-      ...defaultConfig,
-      ...data,
-      initialPath: data.initialPath !== undefined
-        ? data.initialPath
-        : null
-    } satisfies IConfig
+    return data.version < minConvertibleVersion
+      ? this.default
+      : {
+        ...this.default,
+        ...data,
+        initialPath: data.initialPath !== undefined
+          ? data.initialPath
+          : null
+      }
   }
 
-  /** Получает версию без `-beta` постфикса */
-  private getVersion(version: string) {
+  /**
+   * Получить версию без `-beta` постфикса.
+   * @param version Версия.
+   * @returns Версия без `-beta` постфикса.
+   */
+  private getVersionWithoutBeta(version: string) {
     return version.includes('-beta')
       ? version.split('-beta')[0]
       : version
   }
 }
 
+/**
+ * Работа с конфигурацией программы.  
+ * _main process_
+ */
 export default await new Config().isReady as Config & IConfig

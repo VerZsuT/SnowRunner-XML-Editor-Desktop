@@ -1,71 +1,77 @@
 import type { IFileSizes } from './types'
-import type { File } from '/mods/files/main'
+import type { IFile } from '/mods/files/main'
 import { Files } from '/mods/files/main'
 
 export type * from './types'
 
 /**
- * Работа с массивом размеров архивов  
+ * Работа с массивом размеров архивов.  
  * _main process_
-*/
+ */
 class Sizes {
+  /** Готов ли класс к использованию. */
   readonly isReady: Promise<typeof this>
 
-  /** Значение по умолчанию */
+  /** Значение по умолчанию. */
   readonly default: IFileSizes = {
     initial: 0,
     mods: {}
   }
 
-  /** Размер initial.pak */
+  /** Размер initial.pak. */
   initial = this.default.initial
 
-  /** Размеры модов */
+  /** Размеры модов. */
   private mods = this.default.mods
 
   constructor() {
     this.isReady = this.init()
   }
 
-  /** Инициализация класса. */
+  /** Инициализировать класс. */
   private async init() {
     const { initial, mods } = await this.getFileSizes()
+
     this.initial = initial
     this.mods = mods
     
     return this
   }
 
-  /** Устанавливает объект размеров */
+  /**
+   * Установить размеры.
+   * @param sizes Размеры.
+   */
   set(sizes: IFileSizes) {
     this.initial = sizes.initial
     this.mods = { ...sizes.mods }
   }
 
   /**
-   * Возвращает размер мода
-   * @param modFile - файл мода
+   * Получить размер мода.
+   * @param modFile Файл мода.
+   * @returns Размер мода.
    */
-  getModSize(modFile: File): number | undefined {
+  getModSize(modFile: IFile): number | undefined {
     return this.mods[modFile.name]
   }
 
   /**
-   * Установить размер мода
-   * @param modFile - файл мода
-   * @param size - размер
+   * Установить размер мода.
+   * @param modFile Файл мода.
+   * @param size Размер.
   */
-  setModSize(modFile: File, size: number) {
+  setModSize(modFile: IFile, size: number) {
     this.mods[modFile.name] = size
   }
 
-  /** Сбросить все размеры */
+  /** Сбросить все размеры. */
   async reset() {
     this.set(this.default)
     await this.save()
   }
 
-  /** Сохранить изменения размеров */
+  /** Сохранить изменения размеров. */
   async save() {
     await Files.sizes.writeToJSON({
       initial: this.initial,
@@ -73,7 +79,10 @@ class Sizes {
     } satisfies IFileSizes)
   }
 
-  /** Получить объект размеров */
+  /**
+   * Получить размеры.
+   * @returns Размеры.
+   */
   private async getFileSizes(): Promise<IFileSizes> {
     if (await Files.sizes.exists()) {
       try {
@@ -81,15 +90,22 @@ class Sizes {
       } catch {
         return this.default
       }
-    } else {
-      return this.default
     }
+
+    return this.default
   }
 
-  /** Получить из JSON */
+  /**
+   * Получить размеры из JSON.
+   * @returns Размеры.
+   */
   private async getFromJSON(): Promise<IFileSizes> {
     return await Files.sizes.readFromJSON<IFileSizes>()
   }
 }
 
+/**
+ * Работа с массивом размеров архивов.  
+ * _main process_
+ */
 export default await new Sizes().isReady

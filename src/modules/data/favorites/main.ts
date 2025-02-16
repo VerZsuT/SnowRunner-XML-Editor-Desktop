@@ -6,9 +6,9 @@ import MainArrayBase from '/utils/json-arrays/main'
 export type * from './types'
 
 /**
- * Работа с массивом избранных авто  
+ * Работа с массивом избранных авто.  
  * _main process_
-*/
+ */
 @providePublic()
 class Favorites extends MainArrayBase<FavoriteTruck> {
   protected override jsonFile = Files.favorites
@@ -19,4 +19,8 @@ class Favorites extends MainArrayBase<FavoriteTruck> {
   }
 }
 
+/**
+ * Работа с массивом избранных авто.  
+ * _main process_
+ */
 export default await new Favorites().isReady

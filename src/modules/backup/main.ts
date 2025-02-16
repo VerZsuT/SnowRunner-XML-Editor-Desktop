@@ -5,7 +5,7 @@ import { Dirs, Files } from '/mods/files/main'
 import Messages from '/mods/messages/main'
 import { providePublic, publicMethod } from '/utils/bridge/main'
 
-const Texts = await TextsLoader.loadMain()
+const texts = await TextsLoader.loadMain()
 
 /**
  * Работа с бэкапом.  
@@ -16,16 +16,20 @@ class Backup {
   /** Сохранить бэкап `initial.pak`. */
   @publicMethod()
   async save() {
+    const backupInitialWithDate = Files.backupInitialWithDate
+
     await Dirs.backupFolder.make()
     await Files.backupInitial.remove()
+    await backupInitialWithDate.remove()
 
     // Не сохранять бэкап в dev режиме.
     if (Config.buildType === BuildType.dev) {
-      return
+     return
     }
 
     await Config.initial.copyTo(Files.backupInitial)
-    Messages.info(Texts.successBackupSave)
+    await Config.initial.copyTo(backupInitialWithDate)
+    Messages.info(texts.successBackupSave)
   }
 
   /** Заменить оригинальный `initial.pak` на сохранённый. */
@@ -38,8 +42,12 @@ class Backup {
     await Config.initial.remove()
     await Files.backupInitial.copyTo(Config.initial)
     await Archive.unpackMain()
-    Messages.info(Texts.successInitialRestore)
+    Messages.info(texts.successInitialRestore)
   }
 }
 
+/**
+ * Работа с бэкапом.  
+ * _main process_
+*/
 export default new Backup()

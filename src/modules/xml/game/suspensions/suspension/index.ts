@@ -16,6 +16,7 @@ export default class Suspension extends XMLWithTemplates {
   @properties({
     get label() { return texts.height },
     get desc() { return texts.heightDesc },
+    step: 0.01,
     limit: new Limit({ min: -1000.0, max: 1000.0 }),
     areas: {
       yellow: [[-2, -1], [1, 2]],
@@ -45,6 +46,7 @@ export default class Suspension extends XMLWithTemplates {
   @properties({
     get label() { return texts.damping },
     get desc() { return texts.dampingDesc },
+    step: 0.01,
     limit: new Limit({ min: 0.0, max: 1000.0 }),
     areas: {
       yellow: [1, 3],

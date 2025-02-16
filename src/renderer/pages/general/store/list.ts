@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { reactive, ref } from 'vue'
 import { Category, ListMode, SourceType } from '../enums'
-import type { File, TruckType, TruckXML } from '/mods/renderer'
+import type { IFile, TruckType, TruckXML } from '/mods/renderer'
 import { Edited, Favorites } from '/mods/renderer'
 
 export type ItemCache = {
@@ -16,7 +16,7 @@ export const useListStore = defineStore('list', () => {
   const truckType = ref<TruckType | ''>('')
   const listMode = ref(ListMode.cards)
   const name = ref('')
-  const files = reactive<Record<SourceType, File[]>>({
+  const files = reactive<Record<SourceType, IFile[]>>({
     [SourceType.main]: [],
     [SourceType.dlc]: [],
     [SourceType.mods]: [],
@@ -51,7 +51,7 @@ export const useListStore = defineStore('list', () => {
       listMode.value = newMode
     },
     /** Изменить статус "избранное" */
-    toggleFavorite(file: File) {
+    toggleFavorite(file: IFile) {
       if (Favorites.isFavorite(file)) {
         Favorites.findAndRemove(item => item === file.name)
       } else {

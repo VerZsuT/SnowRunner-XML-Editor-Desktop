@@ -28,10 +28,10 @@
 import { FileFilled, FolderFilled } from '@ant-design/icons-vue'
 import { Button } from 'ant-design-vue'
 import texts from './texts'
-import type { Dir, File } from '/mods/renderer'
+import type { IDir, IFile } from '/mods/renderer'
 import { Dialogs, Messages } from '/mods/renderer'
 
-const file = defineModel<File>()
+const file = defineModel<IFile>()
 
 async function onFolderClick() {
   const selected = await getFromFolder()
@@ -49,7 +49,7 @@ async function onFileClick() {
   }
 }
 
-async function getInitialPak(): Promise<File | undefined> {
+async function getInitialPak(): Promise<IFile | undefined> {
   const selected = Dialogs.getInitial()
 
   if (!selected || selected.basename() !== 'initial.pak' || !await selected.exists()) {
@@ -61,7 +61,7 @@ async function getInitialPak(): Promise<File | undefined> {
   return selected
 }
 
-async function getFromFolder(): Promise<File | undefined> {
+async function getFromFolder(): Promise<IFile | undefined> {
   const selected = Dialogs.getDir()
 
   if (!selected) {
@@ -81,7 +81,7 @@ async function getFromFolder(): Promise<File | undefined> {
   return found
 }
 
-async function findInitial(dir: Dir): Promise<File | undefined> {
+async function findInitial(dir: IDir): Promise<IFile | undefined> {
   const parts = ['steamapps', 'common', 'SnowRunner', 'en_us', 'preload', 'paks', 'client', 'initial.pak']
   const len = parts.length
 

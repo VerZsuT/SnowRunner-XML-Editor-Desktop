@@ -2,7 +2,7 @@ import type { AttrValue } from '../xml-element'
 import XMLElement from '../xml-element'
 import type Limit from './limit'
 import DLCs from '/mods/dlcs/renderer'
-import type { File } from '/mods/files/renderer'
+import type { IFile } from '/mods/files/renderer'
 import { Dirs } from '/mods/files/renderer'
 import { lastItem } from '/utils/renderer'
 
@@ -30,7 +30,7 @@ export default class GameXML extends XMLElement {
    * @param namesGetter Геттер имени файлов.
    */
   protected files(folder: string, namesGetter: () => string | undefined) {
-    return async (info: FileInfo): Promise<File[]> => {
+    return async (info: FileInfo): Promise<IFile[]> => {
       const names = namesGetter()?.split(',') ?? []
 
       if (lastItem(names) === '') {
@@ -38,7 +38,7 @@ export default class GameXML extends XMLElement {
       }
 
       return (await Promise.all(names.map(async name => this.file(folder, () => name)(info)))
-        ).filter(Boolean) as File[]
+        ).filter(Boolean) as IFile[]
     }
   }
 
@@ -48,7 +48,7 @@ export default class GameXML extends XMLElement {
    * @param nameGetter Геттер имени файла.
    */
   protected file(folder: string, nameGetter: () => string | undefined) {
-    return async (info: FileInfo): Promise<File | undefined> => {
+    return async (info: FileInfo): Promise<IFile | undefined> => {
       const name = nameGetter()?.trim()
       
       if (name) {
@@ -125,7 +125,7 @@ export default class GameXML extends XMLElement {
    * @param name Имя файла.
    * @param info Информация о файле.
    */
-  private async getFile(folder: string, name: string, info: FileInfo): Promise<File | undefined> {
+  private async getFile(folder: string, name: string, info: FileInfo): Promise<IFile | undefined> {
     const { isBackup, mod } = info
 
     const classesDir = isBackup

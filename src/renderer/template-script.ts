@@ -1,8 +1,8 @@
 import { Config, Helpers, Messages } from '/mods/renderer'
 
-/** Скрипт шаблона. */
+/** Шаблон. */
 class Template {
-  /** Инициализация. */
+  /** Создать шаблон. */
   constructor() {
     this.changeTitle()
     this.handleKeys()

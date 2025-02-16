@@ -10,27 +10,35 @@ export type * from './types'
 const bridge = Bridge.as<object>()
 
 /**
- * Работа с окнами программы  
+ * Работа с окнами программы.  
  * _renderer process_
-*/
+ */
 @initMain()
 class Windows {
-  /** Открыть окно программы */
+  /** Открыть окно программы. */
   @mainMethod()
   openWindow!: typeof MainWindows.openWindow
 
+  /**
+   * Обработать событие роутинга.
+   * @param handler Обработчик.
+   * @returns Функция отписки.
+   */
   onRoute(handler: (page: Page) => void) {
     return bridge.on(PubKeys.routeEvent, handler)
   }
 
-  /** Событие готовности контента окна */
+  /**
+   * Вызвать событие готовности контента окна.
+   * @param window Окно.
+   */
   windowReady(window: ProgramWindow) {
     bridge.emit(PubKeys.windowReadyEvent, window)
   }
 }
 
 /**
- * Работа с окнами программы  
+ * Работа с окнами программы.  
  * _renderer process_
-*/
+ */
 export default new Windows()

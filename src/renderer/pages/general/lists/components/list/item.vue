@@ -84,22 +84,21 @@
 <script lang='ts' setup>
 import { EditFilled, StarFilled } from '@ant-design/icons-vue'
 import { Card, Tag, Typography } from 'ant-design-vue'
-import memoizee from 'memoizee'
 import { storeToRefs } from 'pinia'
-import { computed, onMounted, ref, shallowRef, toRefs, watch, watchEffect } from 'vue'
+import { computed, onMounted, ref, shallowRef, toRefs, watchEffect } from 'vue'
 import { ListMode, SourceType, type Category } from '../../../enums'
 import { useEditorStore, useListStore, usePageStore } from '../../../store'
 import texts from '../../texts'
 import { EditorUtils } from '../../utils'
-import type { TruckType } from '/mods/renderer'
-import { Edited, Favorites, GameTexts, Images, Messages, Mods, Page, TruckXML, type File } from '/mods/renderer'
+import type { IFile, TruckType } from '/mods/renderer'
+import { Edited, Favorites, GameTexts, Images, Messages, Mods, Page, TruckXML } from '/mods/renderer'
 import { ContextMenu } from '/rend/components'
 import { prettyString } from '/utils/renderer'
 
 const { Text } = Typography
 
 export type ListItemProps = {
-  file: File
+  file: IFile
   category: Category
 }
 
@@ -122,7 +121,7 @@ const imgSRC = ref<string>(Images.getDefault(category.value))
 const name = ref<string>('')
 const type = ref<TruckType | undefined>()
 
-const getName = memoizee((file: File, xml: TruckXML): string => {
+function getName(file: IFile, xml: TruckXML): string {
   let name = prettyString(file.name)
 
   if (xml.GameData?.UiDesc) {
@@ -134,10 +133,10 @@ const getName = memoizee((file: File, xml: TruckXML): string => {
   }
 
   return name
-})
-const getType = memoizee((xml: TruckXML) => {
+}
+function getType(xml: TruckXML) {
   return xml.TruckData?.TruckType
-})
+}
 
 onMounted(() => {
   if (!container.value || !prevFile.value || !isShow.value || prevFile.value.path !== file.value.path) {
@@ -147,7 +146,7 @@ onMounted(() => {
   container.value.scrollIntoView(false)
 })
 
-watch([file, xml, name], async () => {
+watchEffect(async () => {
   const cache = itemsCache.get(file.value.path)
   const xmlRes = cache
     ? cache.xml as TruckXML
@@ -167,7 +166,7 @@ watch([file, xml, name], async () => {
   xml.value = xmlRes
   name.value = getName(file.value, xmlRes)
   type.value = getType(xmlRes)
-}, { immediate: true })
+})
 
 watchEffect(async () => {
   if (!xml.value) {

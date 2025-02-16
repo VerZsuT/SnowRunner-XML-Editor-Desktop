@@ -1,4 +1,4 @@
-import type { File } from '../../../renderer'
+import type { IFile } from '../../../renderer'
 import XMLElement from '../../xml-element'
 import XMLTemplates from '../../xml-templates'
 import type { XmlElements } from '../attributes'
@@ -10,10 +10,10 @@ export { default as Engine } from './engine'
 /** Рутовый тег файла класса двигателей. */
 export default class Engines extends XMLWithTemplates {
   static override async from(str: string): Promise<Engines | undefined>
-  static override async from(file: File): Promise<Engines | undefined>
-  static override async from(source: string | File): Promise<Engines | undefined> {
+  static override async from(file: IFile): Promise<Engines | undefined>
+  static override async from(source: string | IFile): Promise<Engines | undefined> {
     const rootSelector = 'EngineVariants'
-    const root = await XMLElement.from(source as File)
+    const root = await XMLElement.from(source as IFile)
     const element = root?.select(rootSelector)
 
     if (root && element) {

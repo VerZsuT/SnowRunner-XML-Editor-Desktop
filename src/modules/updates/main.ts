@@ -11,46 +11,52 @@ import { providePublic, publicMethod } from '/utils/bridge/main'
 const texts = await TextsLoader.loadMain()
 
 /**
- * Работа с обновлениями программы  
+ * Работа с обновлениями программы.  
  * _main process_
  */
 @providePublic()
 class Updates {
-  /** Загрузить файл из сети */
+  /**
+   * Загрузить файл из сети.
+   * @param url URL файла.
+   * @param path Путь в файловой системе.
+   * @param inMemory Сохранять в памяти.
+   * @returns Содержимое файла (при `inMemory=true`).
+   */
   download(url: string, path?: string, inMemory = false): Promise<string | void> {
-    return new Promise((resolve, reject) => {
-      get(url, async response => {
-        if (inMemory) {
-          let chunks = ''
-  
-          response.on('data', chunk => chunks += chunk)
-          response.on('error', reject)
-          response.on('end', () => resolve(chunks))
-        }
-        else if (path) {
-          const file = await open(path, 'w')
-          const writeStream = file.createWriteStream()
+    const { promise, resolve, reject } = Promise.withResolvers<string | void>()
 
-          const length = Number.parseInt(response.headers['content-length']!, 10)
-          let current = 0
+    get(url, async response => {
+      if (inMemory) {
+        let chunks = ''
 
-          Loading.setStagesCount(100)
-          response.pipe(writeStream)
-          response.on('data', chunk => {
-            current += chunk.length
-            Loading.setCompletedCount(Math.floor(100 * (current / length)))
-          })
-          response.on('error', reject)
-          response.on('end', () => {
-            Loading.completeStage()
-            writeStream.close(() => resolve())
-          })
-        }
-      })
+        response.on('data', chunk => chunks += chunk)
+        response.on('error', reject)
+        response.on('end', () => resolve(chunks))
+      } else if (path) {
+        const file = await open(path, 'w')
+        const writeStream = file.createWriteStream()
+        const length = Number.parseInt(response.headers['content-length']!, 10)
+        let current = 0
+
+        Loading.setStagesCount(100)
+        response.pipe(writeStream)
+        response.on('data', chunk => {
+          current += chunk.length
+          Loading.setCompletedCount(Math.floor(100 * (current / length)))
+        })
+        response.on('error', reject)
+        response.on('end', () => {
+          Loading.completeStage()
+          writeStream.close(() => resolve())
+        })
+      }
     })
+    
+    return promise
   }
 
-  /** Запустить процесс обновления программы */
+  /** Запустить процесс обновления программы. */
   @publicMethod()
   async updateApp(portable = false) {
     Loading.init(texts.downloading)
@@ -68,16 +74,16 @@ class Updates {
 
     if (portable) {
       shell.showItemInFolder(file.path)
-    } else {
-      const err = await shell.openPath(file.path)
-
-      if (err) {
-        shell.showItemInFolder(file.path)
-      }
+    } else if (await shell.openPath(file.path)) {
+      shell.showItemInFolder(file.path)
     }
 
     app.quit()
   }
 }
 
+/**
+ * Работа с обновлениями программы.  
+ * _main process_
+ */
 export default new Updates()

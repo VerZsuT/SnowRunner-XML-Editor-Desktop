@@ -93,7 +93,7 @@ import type { ReadyEmits, ReadyProps } from '../../utils'
 import { useReady } from '../../utils'
 import texts from '../texts'
 import ContentField from './content-field.vue'
-import type { File } from '/mods/renderer'
+import type { IFile } from '/mods/renderer'
 import { AddonXML, Config, DLCs, Dirs, GameTexts, Helpers, Messages, XMLElement } from '/mods/renderer'
 import { Spin } from '/rend/components'
 import { hasItems } from '/utils/renderer'
@@ -109,7 +109,7 @@ const { file, xml } = defineProps<IActionProps>()
 const emit = defineEmits<ReadyEmits>()
 
 const { info } = storeToRefs(useEditorStore())
-const files = ref<File[]>([])
+const files = ref<IFile[]>([])
 const addon = ref('')
 
 const selectOptions = ref<OptionsType>([])
@@ -262,7 +262,7 @@ function isInstalled(addonXML: AddonXML): boolean {
   )
 }
 
-async function initSelectOptions(items: File[]): Promise<OptionsType> {
+async function initSelectOptions(items: IFile[]): Promise<OptionsType> {
   return await Promise.all(
     items.map(async addon => ({
       value: addon.name,
@@ -271,7 +271,7 @@ async function initSelectOptions(items: File[]): Promise<OptionsType> {
   )
 }
 
-async function getAddonName(addon: File): Promise<string | undefined> {
+async function getAddonName(addon: IFile): Promise<string | undefined> {
   const xml = await getAddonXML(addon)
   const uiDesc = xml?.GameData?.UiDesc
   const key = uiDesc
@@ -281,11 +281,11 @@ async function getAddonName(addon: File): Promise<string | undefined> {
   return GameTexts.get(key, info.value.mod) || addon.name
 }
 
-function getFile(name?: string): File | undefined {
+function getFile(name?: string): IFile | undefined {
   return files.value.find(item => item.name === (name || addon.value))
 }
 
-async function getAddonData(file?: File) {
+async function getAddonData(file?: IFile) {
   if (!file) {
     return defaultContent
   }
@@ -303,10 +303,10 @@ async function getAddonData(file?: File) {
     TruckData = addonXML.TruckData!
   }
 
-  const wheels = TruckData.WheelRepairsCapacity
-  const repairs = TruckData.RepairsCapacity
-  const fuel = TruckData.FuelCapacity
-  const water = TruckData.WaterCapacity
+  const wheels = TruckData.WheelRepairsCapacity ?? defaultContent.wheels
+  const repairs = TruckData.RepairsCapacity ?? defaultContent.repairs
+  const fuel = TruckData.FuelCapacity ?? defaultContent.fuel
+  const water = TruckData.WaterCapacity ?? defaultContent.water
 
   return {
     ...defaultContent,
@@ -317,7 +317,7 @@ async function getAddonData(file?: File) {
   }
 }
 
-async function getAddonXML(file?: File): Promise<AddonXML | undefined> {
+async function getAddonXML(file?: IFile): Promise<AddonXML | undefined> {
   const addonFile = file ?? getFile()
 
   return await addonFile?.exists()
@@ -330,14 +330,14 @@ async function getAddons(
   mod?: string,
   filter?: (xml: AddonXML) => boolean,
   every?: () => void | Promise<void>
-): Promise<File[]> {
-  const out: File[] = []
+): Promise<IFile[]> {
+  const out: IFile[] = []
   const tuningDir = Dirs.classes.dir(`trucks/${truckName}_tuning`)
   const inLoading = new Set<Promise<void>>()
 
-  function filterFile(file: File) {
+  function filterFile(file: IFile) {
     inLoading.add((async () => {
-      async function pushToOut(file: File) {
+      async function pushToOut(file: IFile) {
         out.push(file)
         await every?.()
       }
@@ -427,13 +427,10 @@ async function getAddons(
 .prepare,
 .loading,
 .wrapper {
-  margin-bottom: 10px;
-  text-align: center;
-}
-
-.prepare {
   width: 100%;
   height: 100%;
+  margin-bottom: 10px;
+  text-align: center;
 }
 
 .ac-grid {
@@ -460,6 +457,10 @@ async function getAddons(
 .wrapper {
   width: 100%;
   text-align: center;
+
+  .main {
+    margin-bottom: 10px;
+  }
 }
 </style>
 

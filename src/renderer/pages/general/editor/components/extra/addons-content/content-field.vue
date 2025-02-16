@@ -6,6 +6,7 @@
     <Input
       class="input"
       type="number"
+      min="0"
       :value="val"
       @change="onChange"
       @blur="$emit('blur')"

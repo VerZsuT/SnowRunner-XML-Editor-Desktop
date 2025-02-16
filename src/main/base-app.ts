@@ -1,7 +1,9 @@
 import { app } from 'electron'
 import { APP_NAME } from '/consts'
 
+/** Базовый класс приложения. */
 export default abstract class BaseApp {
+  /** Готово ли к использованию. */
   readonly isReady: Promise<void>
 
   constructor() {
@@ -10,6 +12,7 @@ export default abstract class BaseApp {
       .catch(error => { throw new Error(error) })
   }
 
+  /** Инициализировать приложение. */
   protected async init(): Promise<void> {
     this.handleExceptions()
     await this.checkMultipleInstances()
@@ -17,7 +20,6 @@ export default abstract class BaseApp {
     this.disableNavigation()
     this.disableSecurityWarns()
     this.setName()
-    this.optimize()
   }
 
   /** Действие после инициализации. */
@@ -27,7 +29,7 @@ export default abstract class BaseApp {
   abstract onMultipleInstance(): void | Promise<void>
 
   /** Действие перед закрытием. */
-  abstract beforeQuit(event: Electron.Event): void | Promise<void>
+  abstract beforeQuit(): void | Promise<void>
 
   /** Действие при закрытии всех окон. */
   abstract onAllWindowsClosed(): void | Promise<void>
@@ -35,30 +37,25 @@ export default abstract class BaseApp {
   /** Действие при ошибке. */
   abstract onError(error: Error): void | Promise<void>
 
-  /** Проверка других открытых экземпляров программы */
+  /** Проверить другие открытые экземпляры программы. */
   private async checkMultipleInstances() {
     if (!app.requestSingleInstanceLock()) {
       await this.onMultipleInstance()
     }
   }
 
-  /** Оптимизация */
-  private optimize() {
-    //app.disableHardwareAcceleration()
-  }
-
-  /** Изменение стандартного названия */
+  /** Установить название. */
   private setName() {
     app.setAppUserModelId(APP_NAME)
   }
   
 
-  /** Установка действия при закрытии приложения */
+  /** Отследить закрытие приложения. */
   private handleQuit() {
     app.on('before-quit', event => {
       event.preventDefault()
 
-      const result = this.beforeQuit(event)
+      const result = this.beforeQuit()
 
       if (!result) {
         return
@@ -69,13 +66,13 @@ export default abstract class BaseApp {
     app.on('window-all-closed', () => this.onAllWindowsClosed())
   }
 
-  /** Установка действия при исключениях */
+  /** Обработать исключения. */
   private handleExceptions() {
     process.on('uncaughtException', error => this.onError(error))
     process.on('unhandledRejection', error => this.onError(error as any))
   }
 
-  /** Отключение возможности навигации */
+  /** Отключить возможность навигации. */
   private disableNavigation() {
     app.on('web-contents-created', (_, contents) => {
       contents.on('will-navigate', event => {
@@ -84,7 +81,7 @@ export default abstract class BaseApp {
     })
   }
 
-  /** Отключение предупреждений Electron */
+  /** Отключить предупреждения Electron. */
   private disableSecurityWarns() {
     process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = 'true'
   }

@@ -2,22 +2,36 @@ import type Limit from './limit'
 
 /** Позиция (набор координат). */
 export default class Position {
-  /** Позиция с X координатой. */
+  /**
+   * Получить позицию с X координатой.
+   * @param value X координата.
+   */
   static x(value: number) {
     return new Position(value, 0, 0)
   }
 
-  /** Позиция с Y координатой. */
+  /**
+   * Получить позицию с Y координатой.
+   * @param value Y координата.
+   */
   static y(value: number) {
     return new Position(0, value, 0)
   }
 
-  /** Позиция с Z координатой. */
+  /**
+   * Получить позицию с Z координатой.
+   * @param value Z координата.
+   */
   static z(value: number) {
     return new Position(0, 0, value)
   }
 
-  /** Создать из строки. */
+  /**
+   * Создать из строки.
+   * @param str Строка.
+   * @param limits Ограничения.
+   * @returns Позиция.
+   */
   static from(str: string, limits?: PosLimits): Position {
     const [
       x = '0.0', y = '0.0', z = '0.0'
@@ -31,7 +45,12 @@ export default class Position {
     )
   }
 
-  /** Позиция с лимитом. */
+  /**
+   * Получить позицию с ограничением.
+   * @param pos Позиция.
+   * @param limits Ограничение.
+   * @returns Позиция с ограничением.
+   */
   static limitPos(pos: Position, limits: PosLimits): Position {
     return new Position(pos.x, pos.y, pos.z, limits)
   }
@@ -42,7 +61,7 @@ export default class Position {
   }
 
   set x(value: number) {
-    this._x = this.limit(value, this.limits.x)
+    this._x = this.limitCoordinate(value, this.limits.x)
   }
 
   /** Y координата. */
@@ -51,7 +70,7 @@ export default class Position {
   }
 
   set y(value: number) {
-    this._y = this.limit(value, this.limits.y)
+    this._y = this.limitCoordinate(value, this.limits.y)
   }
 
   /** Z координата. */
@@ -60,7 +79,7 @@ export default class Position {
   }
 
   set z(value: number) {
-    this._z = this.limit(value, this.limits.z)
+    this._z = this.limitCoordinate(value, this.limits.z)
   }
 
   /** X координата. */
@@ -75,7 +94,18 @@ export default class Position {
   /** Лимиты координат. */
   private limits: PosLimits = {}
 
-  /** Объединить координаты. */
+  constructor(x = 0, y = 0, z = 0, limits?: PosLimits) {
+    this.limits = limits || {}
+    this.x = x
+    this.y = y
+    this.z = z
+  }
+
+  /**
+   * Объединить координаты.
+   * @param other Другие координаты.
+   * @returns Объединённые координаты.
+   */
   toCompared(other: Partial<Position>) {
     return new Position(
       other.x ?? this._x,
@@ -84,7 +114,11 @@ export default class Position {
     )
   }
   
-  /** Равны ли координаты. */
+  /**
+   * Равны ли координаты.
+   * @param other Другие координаты.
+   * @returns Равны ли координаты.
+   */
   equals(other: Position) {
     return (
       this._x === other.x
@@ -93,27 +127,28 @@ export default class Position {
     )
   }
 
-  /** Преобразование в строку. */
+  /**
+   * Получить строку.
+   * @returns Строка.
+   */
   toString() {
     return `(${this._x}; ${this._y}; ${this._z})`
   }
 
-  constructor(x = 0, y = 0, z = 0, limits?: PosLimits) {
-    this.limits = limits || {}
-    this.x = x
-    this.y = y
-    this.z = z
-  }
-
-  /** Лимитировать значение. */
-  private limit(value: number, limit?: Limit) {
+  /**
+   * Ограничить значение координаты.
+   * @param limit Ограничение координаты.
+   * @param value Значение координаты.
+   * @returns Ограниченное значение координаты.
+   */
+  private limitCoordinate(value: number, limit?: Limit) {
     return limit
       ? limit.lim(value)
       : value
   }
 }
 
-/** Лимит позиции/ */
+/** Ограничение позиции. */
 export type PosLimits = {
   /** Лимит координаты X. */
   x?: Limit

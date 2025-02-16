@@ -1,25 +1,25 @@
 /** Пути в программе. */
 class Paths {
 	/** Папка с исходниками. */
-	public readonly src = './src'
+	readonly src = './src'
 
 	/** Папка проекта. */
-	public readonly root = '.'
+	readonly root = '.'
 
 	/** Папка с картинками. */
-	public readonly images = `${this.src}/images`
+	readonly images = `${this.src}/images`
 
 	/** Иконка. */
-	public readonly favicon = `${this.src}/images/favicon.ico`
+	readonly favicon = `${this.src}/images/favicon.ico`
 	
 	/** Папка с WinRAR. */
-	public readonly winrar = `${this.src}/modules/archive/main/archiver/files`
+	readonly winrar = `${this.src}/modules/archive/main/archiver/files`
 
 	/** Файл лицензии. */
-	public readonly license = `${this.root}/LICENSE`
+	readonly license = `${this.root}/LICENSE`
 
 	/** Файл README. */
-	public readonly readme = `${this.root}/README.md`
+	readonly readme = `${this.root}/README.md`
 }
 
 export default new Paths()

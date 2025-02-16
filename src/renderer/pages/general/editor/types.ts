@@ -1,6 +1,6 @@
 import type { InputType, NumberType } from './enums'
 
-import type { File, Position, TruckXML } from '/mods/renderer'
+import type { IFile, Position, TruckXML } from '/mods/renderer'
 import type { IStringConvertAttrDescriptor } from '/mods/xml/game/attributes'
 
 /** Параметры доп. сценария */
@@ -22,7 +22,7 @@ export interface IActionData {
 }
 
 export interface IActionProps {
-  file: File
+  file: IFile
   xml: TruckXML
 }
 

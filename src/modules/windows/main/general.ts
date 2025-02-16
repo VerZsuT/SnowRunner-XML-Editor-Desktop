@@ -4,7 +4,7 @@ import { PubKeys } from '../public'
 import type { IGeneralWindow } from '../types'
 import { getDevPage, getRenderer, newWindow } from './utils'
 
-/** Главное окно программы */
+/** Главное окно программы. */
 export default newWindow<IGeneralWindow>({
   windowType: WindowType.default,
   name: ProgramWindow.general,

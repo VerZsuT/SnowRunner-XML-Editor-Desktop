@@ -1,4 +1,3 @@
-// Attributes
 const DOWNLOAD = 'download'
 const LINK = 'link'
 const VERSION = 'version'
@@ -9,27 +8,27 @@ const LEGACY = 'legacy'
 const GITHUB_SOURCE = 'GitHub'
 const RELEASES_URL = 'https://github.com/VerZsuT/SnowRunner-XML-Editor-Desktop/releases/download'
 
-const genLink = (version, type, legacy) => `${RELEASES_URL}/${version}/SnowRunnerXMLEditor${legacy ? '_legacy' : ''}.${type}`
+function genLink(version, type, legacy) {
+  return `${RELEASES_URL}/${version}/SnowRunnerXMLEditor${legacy ? '_legacy' : ''}.${type}`
+}
 
-// Download buttons
-const $$buttons = document.querySelectorAll(`button[${DOWNLOAD}]`)
+const downloadButtons = document.querySelectorAll(`button[${DOWNLOAD}]`)
 
-for (const $button of $$buttons) {
-  const $a = document.createElement('a')
-  const version = $button.getAttribute(VERSION)
-  const type = $button.getAttribute(SOURCE_TYPE)
-  const source = $button.getAttribute(SOURCE)
-  const legacy = $button.getAttribute(LEGACY)
+for (const downloadButton of downloadButtons) {
+  const linkElement = document.createElement('a')
+  const version = downloadButton.getAttribute(VERSION)
+  const type = downloadButton.getAttribute(SOURCE_TYPE)
+  const source = downloadButton.getAttribute(SOURCE)
+  const legacy = downloadButton.getAttribute(LEGACY)
 
-  $a.style.display = 'none'
-  $button.prepend($a)
+  linkElement.style.display = 'none'
+  downloadButton.prepend(linkElement)
 
   if (source === GITHUB_SOURCE) {
-    $a.href = genLink(version, type, legacy)
-  }
-  else {
-    $a.href = $button.getAttribute(LINK)
+    linkElement.href = genLink(version, type, legacy)
+  } else {
+    linkElement.href = downloadButton.getAttribute(LINK)
   }
 
-  $button.addEventListener('click', () => $a.click())
+  downloadButton.addEventListener('click', () => linkElement.click())
 }

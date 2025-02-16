@@ -1,37 +1,43 @@
 import type MainArchive from './main'
 import { initMain, mainMethod } from '/utils/bridge/renderer'
 
-import type _MainArchive from './main'
-
 /**
- * Работа с архивами  
+ * Работа с архивами.  
  * _renderer process_
 */
 @initMain()
 class Archive {
   /**
-   * Распаковать файлы из архива в папку
-   * @param archive - файл архива
-   * @param dir - папки
-   * {@link _MainArchive.unpack|Перейти к методу}
+   * Распаковать файлы из архива в папку.
+   * @param archive Файл архива.
+   * @param dir Папка.
+   * 
+   * {@link MainArchive.unpack|Перейти к методу}
    */
   @mainMethod()
   unpack!: typeof MainArchive.unpack
 
   /**
-   * Распаковать основные XML файлы (+DLC) из `initial.pak` 
-   * @param hideLoading - скрывать окно загрузки после окончания (default - `true`)  
-   * {@link _MainArchive.unpackMain|Перейти к методу}
+   * Распаковать основные XML файлы (+DLC) из `initial.pak`.
+   * @param hideLoading Скрывать окно загрузки после окончания.
+   * 
+   * {@link MainArchive.unpackMain|Перейти к методу}
    */
   @mainMethod()
   unpackMain!: typeof MainArchive.unpackMain
 
   /**
-   * Обновить файлы в initial.pak и модах
-   * @param mod - модификация
+   * Обновить файлы в initial.pak и модах.
+   * @param modName Название мода.
+   * 
+   * {@link MainArchive.updateFiles|Перейти к методу}
    */
   @mainMethod()
   updateFiles!: typeof MainArchive.updateFiles
 }
 
+/**
+ * Работа с архивами.  
+ * _renderer process_
+*/
 export default new Archive()

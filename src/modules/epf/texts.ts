@@ -1,14 +1,16 @@
 import { createTextsLoader } from '/utils/texts'
 import { BaseLocalization } from '/utils/texts/base-localization'
 
+/** Тексты работы с EPF. */
 export default createTextsLoader({
-  /** Файлы успешно объединены */
+  /** Файлы успешно объединены. */
   successJoin: new BaseLocalization()
     .ru('Следующие файлы были объединены в один:')
     .en('The following files have been merged into one:')
     .de('Die folgenden Dateien wurden zu einem zusammengefasst:')
     .ch('以下文件已合并为一个'),
-  /** Сообщение о содержимом */
+    
+  /** Сообщение о содержимом. */
   seeExportedMessage: new BaseLocalization()
     .ru('В данном файле находятся параметры следующих файлов:')
     .en('This file contains the parameters of the following files:')

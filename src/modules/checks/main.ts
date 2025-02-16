@@ -1,24 +1,22 @@
 import { app } from 'electron'
 import dns from 'node:dns'
 import { get } from 'node:https'
-
 import TextsLoader from './texts'
 import type { PubFile } from './types'
-
 import Archive from '/mods/archive/main'
 import Backup from '/mods/backup/main'
 import Config from '/mods/data/config/main'
 import Sizes from '/mods/data/sizes/main'
 import Dialogs from '/mods/dialogs/main'
 import { ErrorText, ProgramError } from '/mods/errors/main'
-import type { FSEntry, ICheckResult } from '/mods/files/main'
+import type { IFSEntry } from '/mods/files/main'
 import { Dirs, Files } from '/mods/files/main'
 import Paths from '/mods/paths/main'
 import { providePublic, publicMethod } from '/utils/bridge/main'
 
 export type * from './types'
 
-const Texts = await TextsLoader.loadMain()
+const texts = await TextsLoader.loadMain()
 
 /**
  * Разного рода проверки.  
@@ -28,6 +26,7 @@ const Texts = await TextsLoader.loadMain()
 class Checks {
   /** Папка с xml файлами из initial.pak. */
   private readonly mediaFolder = '[media]'
+
   /** Сайт GitHub. */
   private readonly githubURL = 'github.com'
 
@@ -50,7 +49,7 @@ class Checks {
       return true
     } catch (error: any) {
       void Dialogs.alert({
-        message: `${Texts.adminRequiredMessage}\nError: ${error?.message}`,
+        message: `${texts.adminRequiredMessage}\nError: ${error?.message}`,
         type: 'warning',
         buttons: ['Exit'],
         title: 'Error'
@@ -96,7 +95,7 @@ class Checks {
    */
   @publicMethod()
   async checkUpdate(whateverCheck?: boolean): Promise<string | undefined> {
-    const {promise, resolve, reject} = Promise.withResolvers<string | undefined>()
+    const { promise, resolve, reject } = Promise.withResolvers<string | undefined>()
 
     if (!Config.checkUpdates && !whateverCheck) {
       return
@@ -138,19 +137,19 @@ class Checks {
    */
   async hasAllPaths(): Promise<boolean> {
     if (!await Config.initial.exists()) {
-      void Dialogs.error(Texts.initialNotFound)
+      void Dialogs.error(texts.initialNotFound)
 
       return false
     }
 
     if (!await Dirs.classes.exists()) {
-      void Dialogs.error(Texts.classesNotFound)
+      void Dialogs.error(texts.classesNotFound)
 
       return false
     }
 
     if (!await Dirs.dlc.exists()) {
-      void Dialogs.error(Texts.dlcFolderNotFound)
+      void Dialogs.error(texts.dlcFolderNotFound)
 
       return false
     }
@@ -162,19 +161,17 @@ class Checks {
    * Проверить наличие у программы прав на чтение/запись файла/папки по переданному пути.
    * @param entry Файл/папка.
    */
-  async hasPermissions(entry: FSEntry): Promise<boolean> {
+  async hasPermissions(entry: IFSEntry): Promise<boolean> {
     if (!await entry.exists()) {
       return false
     }
 
-    let readResult: ICheckResult
-    let writeResult: ICheckResult
+    const readResult = await entry.canRead()
+    const writeResult = await entry.canWrite()
 
-    if (!(readResult = await entry.canRead()).result) {
+    if (!readResult.result) {
       throw new ProgramError(ErrorText.readFileError, readResult.error, entry.path)
-    }
-
-    if (!(writeResult = await entry.canWrite()).result) {
+    } else if (!writeResult.result) {
       throw new ProgramError(ErrorText.writeFileError, writeResult.error, entry.path)
     }
 
@@ -182,4 +179,8 @@ class Checks {
   }
 }
 
+/**
+ * Разного рода проверки.  
+ * _main process_
+*/
 export default new Checks()

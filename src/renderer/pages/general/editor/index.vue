@@ -27,7 +27,7 @@ import { useEditorStore, usePageStore } from '../store'
 import { Header, Table } from './components'
 import type { ReadyEmits, ReadyProps } from './components/utils'
 import { FilesUtils, ResetUtils, provideFile } from './utils'
-import type { File } from '/mods/renderer'
+import type { IFile } from '/mods/renderer'
 import { DLCs, Dirs, Mods, Page, TruckXML } from '/mods/renderer'
 import { Spin } from '/rend/components'
 import { useKey } from '/rend/utils'
@@ -36,7 +36,7 @@ export type EditorProps = Props & ReadyProps
 
 type Props = {
   /** Файл для редактирования. */
-  file?: File
+  file?: IFile
 }
 type HeaderExpose = InstanceType<typeof Header>
 
@@ -105,7 +105,7 @@ async function update() {
   await init()
 }
 
-function regFile(file: File) {
+function regFile(file: IFile) {
   allFiles.value.main = file
 }
 </script>

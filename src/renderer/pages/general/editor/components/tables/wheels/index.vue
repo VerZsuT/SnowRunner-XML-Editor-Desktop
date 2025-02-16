@@ -22,14 +22,15 @@ import { FileNameInfo } from '../../info'
 import type { ReadyEmits, ReadyProps } from '../../utils'
 import { useFilesReady } from '../../utils'
 import WheelsSet from './set.vue'
-import { type File, type FileInfo, type WheelsXML } from '/mods/renderer'
+import type { IFile } from '/mods/renderer'
+import { type FileInfo, type WheelsXML } from '/mods/renderer'
 import { hasItems } from '/utils/renderer'
 
 export type WheelsProps = ReadyProps & Props
 
 type Props = {
   getter?(info: FileInfo): Promise<WheelsXML | undefined>
-  fileGetter?(info: FileInfo): Promise<File | undefined>
+  fileGetter?(info: FileInfo): Promise<IFile | undefined>
 }
 
 const props = defineProps<Props>()
@@ -37,7 +38,7 @@ const emit = defineEmits<ReadyEmits>()
 
 const { allFiles, info } = storeToRefs(useEditorStore())
 const wheelsSets = shallowRef<WheelsXML[]>([])
-const files = shallowRef<File[]>([])
+const files = shallowRef<IFile[]>([])
 
 const { ready, inProgress } = useFilesReady(emit, true)
 

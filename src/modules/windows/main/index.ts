@@ -14,22 +14,25 @@ import { providePublic, publicMethod } from '/utils/bridge/main'
 export * from '../enums'
 export type * from '../types'
 
-/** Папка, в которой находится текущий исполняемый скрипт */
+/** Папка, в которой находится текущий исполняемый скрипт. */
 const _dirname = dirname(fileURLToPath(import.meta.url))
 
+/** Объект с окнами. */
 type WindowsObject = Record<keyof ProgramWindow, [WindowParams, WindowCreator]>
+
+/** Функция-создатель окна. */
 type WindowCreator<T extends BrowserWindow = BrowserWindow> = (...args: any[]) => Promise<T>
 
 /**
- * Работа с окнами программы  
+ * Работа с окнами программы.  
  * _main process_
-*/
+ */
 @providePublic()
 class Windows {
-  /** Объект окон */
+  /** Объект окон. */
   private readonly windows = {} as WindowsObject
 
-  /** Главное окно */
+  /** Главное окно. */
   @notDestroyed()
   accessor generalWindow: IGeneralWindow | undefined
 
@@ -37,7 +40,11 @@ class Windows {
     this.initWindows()
   }
 
-  /** Создать новое модально окно */
+  /**
+   * Создать новое модально окно.
+   * @param params Параметры окна.
+   * @returns Созданное окно.
+   */
   async createModalWindow(params: WindowParams): Promise<BrowserWindow> {
     return this.createWindow({
       ...params,
@@ -46,7 +53,11 @@ class Windows {
     })
   }
 
-  /** Создать окно с указанными атрибутами */
+  /**
+   * Создать новое окно.
+   * @param params Параметры окна.
+   * @returns Созданное окно.
+   */
   async createWindow(params: WindowParams): Promise<BrowserWindow> {
     const {
       parent, devURL, name: type, path,
@@ -102,12 +113,20 @@ class Windows {
     return win
   }
 
-  /** Зарегистрировать окно программы */
+  /**
+   * Зарегистрировать окно программы.
+   * @param window Параметры окна.
+   * @param creator Функция-создатель.
+   */
   regWindow<T extends BrowserWindow = BrowserWindow>(window: WindowParams<T>, creator: WindowCreator<T>) {
     this.windows[window.name] = [window, creator]
   }
 
-  /** Открыть окно программы */
+  /**
+   * Открыть окно программы.
+   * @param windowName Название окна.
+   * @param args Аргументы открытия.
+   */
   @publicMethod()
   async openWindow(windowName: ProgramWindow, ...args: any[]) {
     const window = await this.getWindowCreator(windowName)(...args)
@@ -122,27 +141,41 @@ class Windows {
     return new Promise<void>(resolve => window.once('ready-to-show', resolve))
   }
 
-  /** Подписаться на событие готовности окна */
+  /**
+   * Подписаться на событие готовности окна.
+   * @param handler Обработчик.
+   * @returns Функция отписки.
+   */
   private onWindowReady(handler: (win: ProgramWindow) => void | Promise<void>) {
     return on(PubKeys.windowReadyEvent, handler)
   }
 
-  /** Показать окно */
+  /**
+   * Показать окно.
+   * @param window Окно.
+   * @param params Параметра окна.
+   */
   private async showWindow(window: BrowserWindow, params: WindowParams) {
-    if (window && !window.isDestroyed()) {
-      window.show()
-      await params.onShowed?.(window, this)
+    if (!window || window.isDestroyed()) {
+      return
+    }
 
-      window.focus()
-      await params.onFocused?.(window, this)
+    window.show()
+    await params.onShowed?.(window, this)
 
-      if (FORCE_DEVTOOLS) {
-        window.webContents.toggleDevTools()
-      }
+    window.focus()
+    await params.onFocused?.(window, this)
+
+    if (FORCE_DEVTOOLS) {
+      window.webContents.toggleDevTools()
     }
   }
 
-  /** Получить функцию-создания окна */
+  /**
+   * Получить функцию-создатель окна.
+   * @param window Окно.
+   * @returns Функция-создатель окна.
+   */
   private getWindowCreator<T extends BrowserWindow = BrowserWindow>(window: ProgramWindow): WindowCreator<T> | never {
     const creator = this.windows[window][1]
 
@@ -153,14 +186,13 @@ class Windows {
     return creator
   }
 
-  /** Инициализация объектов окон программы */
+  /** Инициализировать окна программы. */
   private initWindows() {
     GeneralWindow.register(this)
   }
 }
 
-export default new Windows()
-
+/** Окно не уничтожено. */
 function notDestroyed() {
   return function<This, Value extends BrowserWindow | undefined>(
     _target: ClassAccessorDecoratorTarget<This, Value>,
@@ -180,3 +212,9 @@ function notDestroyed() {
     }
   }
 }
+
+/**
+ * Работа с окнами программы.  
+ * _main process_
+ */
+export default new Windows()

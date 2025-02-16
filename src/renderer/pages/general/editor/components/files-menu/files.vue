@@ -14,13 +14,13 @@
 <script lang='ts' setup>
 import { SubMenu, Typography } from 'ant-design-vue'
 import FileItem from './file.vue'
-import type { File } from '/mods/renderer'
+import type { IFile } from '/mods/renderer'
 
 const { Text } = Typography
 
 type Props = {
   title: string
-  value: File[]
+  value: IFile[]
 }
 
 defineProps<Props>()

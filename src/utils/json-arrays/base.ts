@@ -1,19 +1,19 @@
-/** Базовый класс для массива */
+/** Базовый класс для массива. */
 export default abstract class ArrayBase<Item, Converted = Item> implements Iterable<Converted> {
-  /** Исходный массив */
+  /** Исходный массив. */
   protected accessor arr: Item[] = []
 
-  /** Значение по умолчанию */
+  /** Значение по умолчанию. */
   get default(): Item[] {
     return []
   }
 
-  /** Длина массива */
+  /** Длина массива. */
   get length(): number {
     return this.arr.length
   }
 
-  /** Преобразованный массив */
+  /** Преобразованный массив. */
   get converted(): Converted[] {
     return this.arr.map(item => this.convert(item))
   }
@@ -24,64 +24,103 @@ export default abstract class ArrayBase<Item, Converted = Item> implements Itera
     }
   }
 
-  /** Преобразователь типа */
+  /**
+   * Преобразовать элемент в выходной тип.
+   * @param item Элемент.
+   * @returns Выходной элемент.
+   */
   protected convert(item: Item): Converted {
     return item as unknown as Converted
   }
 
-  /** Возвращает массив */
+  /**
+   * Получить массив.
+   * @returns Массив.
+   */
   get(): Item[] {
     return [...this.arr]
   }
 
-  /** Устанавливает переданный массив */
+  /**
+   * Устанавливает массив.
+   * @param array Новый массив.
+   */
   set(array: Item[]) {
     this.arr = [...array]
   }
 
-  /** Добавляет элемент в конец массива, и возвращает новую длину массива. */
+  /**
+   * Добавить элементы в конец массива.
+   * @param items Элементы.
+   * @returns Новая длина массива.
+   */
   push(...items: Item[]): number {
     this.arr = [...this.arr, ...items]
 
     return this.arr.length
   }
 
-  /** Возвращает элементы, соответствующие условию в переданной функции. */
+  /**
+   * Отфильтровать элементы по условию.
+   * @param predicate Условие.
+   * @returns Элементы, соответствующие условию.
+   */
   filter(predicate: (item: Item, index: number, arr: Item[]) => unknown) {
     return this.arr.filter(predicate)
   }
 
-  /** Возвращает первый элемент, соответствующий условию в переданной функции */
+  /**
+   * Найти первый элемент по условию.
+   * @param predicate Условие.
+   * @returns Элемент, соответствующий условию.
+   */
   find(predicate: (value: Item, index: number, arr: Item[]) => unknown) {
     return this.arr.find(predicate)
   }
 
-  /** Имеется ли элемент, соответствующий условию в переданной функции */
+  /**
+   * Есть ли элемент, соответствующий условию.
+   * @param predicate Условие.
+   * @returns Есть ли элемент, соответствующий условию.
+   */
   some(predicate: (value: Item, index: number, arr: Item[]) => unknown) {
     return this.arr.some(predicate)
   }
 
-  /** Имеется ли элемент в массиве */
+  /**
+   * Есть ли элемент в массиве.
+   * @param item Элемент.
+   * @returns Есть ли элемент в массиве.
+   */
   includes(item: Item): boolean {
     return this.arr.includes(item)
   }
 
-  /** Входные точки */
+  /**
+   * Получить входные точки.
+   * @returns Входные точки.
+   */
   entries() {
     return this.arr.entries()
   }
 
-  /** Удаляет элемент по индексу */
+  /**
+   * Удалить элемент по индексу.
+   * @param index Индекс.
+   */
   removeAt(index: number) {
     this.set(this.filter((_, i) => i !== index))
   }
 
-  /** Находит элемент и удаляет его из массива */
+  /**
+   * Найти и удалить элемент по условию.
+   * @param predicate Условие.
+   */
   findAndRemove(predicate: (value: Item, index: number, object: Item[]) => boolean) {
     this.set(this.filter((...args) => !predicate(...args)))
   }
 
-  /** Очищает массив */
+  /** Очистить массив. */
   clear() {
     this.set([])
   }

@@ -52,7 +52,7 @@ import { useListStore } from '../store/list'
 import { Filters, List } from './components'
 import texts from './texts'
 import { ItemsUtils } from './utils'
-import type { File } from '/mods/renderer'
+import type { IFile } from '/mods/renderer'
 import { Helpers } from '/mods/renderer'
 import { Header, Spin } from '/rend/components'
 import { useKey } from '/rend/utils'
@@ -87,12 +87,12 @@ async function loadFiles() {
   addFiles(SourceType.mods, mods)
 }
 
-function addFiles(sourceType: SourceType, newFiles: File[]) {
+function addFiles(sourceType: SourceType, newFiles: IFile[]) {
   files.value[sourceType].push(...newFiles)
   files.value[sourceType].sort(sortByName)
 }
 
-function sortByName(a: File, b: File) {
+function sortByName(a: IFile, b: IFile) {
   return a.name.localeCompare(b.name)
 }
 

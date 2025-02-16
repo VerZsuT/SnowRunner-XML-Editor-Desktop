@@ -5,17 +5,29 @@ import Position from './position'
 import type { IInputAreas } from '/rend/pages/general/editor/types'
 import { arrayToString, boolToString, hasItems, numberToString, stringToArray, stringToBoolean, stringToNumber } from '/utils/renderer'
 
+/** Ключ свойства в параметрами атрибутов. */
 const PROPERTIES = Symbol('properties')
 
+/** Параметры атрибутов. */
 type AttributeProperties = Record<string | symbol, IBaseAttributeProperties>
 
+/** Базовые параметры атрибута. */
 interface IBaseAttributeProperties<Value = unknown> {
+  /** Заголовок. */
   label?: string
+
+  /** Описание. */
   desc?: string
+
+  /** Ограничение. */
   limit?: Value extends XmlValue<Position>
     ? PosLimits
     : Limit
+
+  /** Шаг изменения. */
   step?: number
+
+  /** Цветовые зоны. */
   areas?: IInputAreas
 }
 
@@ -228,22 +240,10 @@ export function booleanAttr() {
   }
 }
 
-/** Ленивое получение значения. */
-export function lazy<This, Value>(
-  target: () => Value,
-  context: ClassGetterDecoratorContext<This, Value>
-) {
-  const name = context.name.toString()
-
-  return function(this: This): Value {
-    return Object.defineProperty(this, name, {
-      value: target.call(this),
-      writable: false,
-      enumerable: true
-    })[name]
-  }
-}
-
+/**
+ * Добавить параметры атрибуту.
+ * @param properties Параметры.
+ */
 export function properties<This, Value>(
   properties: IBaseAttributeProperties<NoInfer<Value>> & { default?: NoInfer<Value> }
 ) {
@@ -267,6 +267,7 @@ export function properties<This, Value>(
  * Создать дескриптор строкового атрибута.
  * @param name Имя атрибута.
  * @param instance Экземпляр элемента.
+ * @param defaultValue Значение по умолчанию.
  * @returns Дескриптор строкового атрибута.
  */
 function createStringAttrDescriptor<
@@ -293,6 +294,7 @@ function createStringAttrDescriptor<
  * Создать дескриптор атрибута с массивом строк.
  * @param name Имя атрибута.
  * @param instance Экземпляр элемента.
+ * @param defaultValue Значение по умолчанию.
  * @param parser Функция-преобразователь.
  * @param preserve Не удалять атрибут при пустом значении (`false`).
  * @returns Дескриптор атрибута с массивом строк.
@@ -333,6 +335,7 @@ function createStringArrayAttrDescriptor<
  * Создать дескриптор атрибута с позицией.
  * @param name Имя атрибута.
  * @param instance Экземпляр элемента.
+ * @param defaultValue Значение по умолчанию.
  * @returns Дескриптор атрибута с позицией.
  */
 function createPositionAttrDescriptor<
@@ -358,6 +361,7 @@ function createPositionAttrDescriptor<
  * Создать дескриптор числового атрибута.
  * @param name Имя атрибута.
  * @param instance Экземпляр элемента.
+ * @param defaultValue Значение по умолчанию.
  * @returns Дескриптор числового атрибута.
  */
 function createNumberAttrDescriptor<
@@ -383,6 +387,7 @@ function createNumberAttrDescriptor<
  * Создать дескриптор логического атрибута.
  * @param name Имя атрибута.
  * @param instance Экземпляр элемента.
+ * @param defaultValue Значение по умолчанию.
  * @returns Дескриптор логического атрибута.
  */
 function createBooleanAttrDescriptor<
@@ -408,6 +413,9 @@ function createBooleanAttrDescriptor<
  * Создать базовый дескриптор атрибута.
  * @param name Имя атрибута.
  * @param instance Экземпляр элемента.
+ * @param defaultValue Значение по умолчанию.
+ * @param fromString Функция установки из строки.
+ * @param toString Функция получения строки.
  * @returns Базовый дескриптор атрибута.
  */
 function createBaseStringConvertAttrDescriptor<Value>(
@@ -436,6 +444,7 @@ function createBaseStringConvertAttrDescriptor<Value>(
  * Создать базовый дескриптор атрибута.
  * @param name Имя атрибута.
  * @param instance Экземпляр элемента.
+ * @param defaultValue Значение по умолчанию.
  * @returns Базовый дескриптор атрибута.
  */
 function createBaseAttrDescriptor<Value>(
@@ -457,6 +466,12 @@ function createBaseAttrDescriptor<Value>(
   }
 }
 
+/**
+ * Объединить дескрипторы.
+ * @param baseDescriptor Базовый дескриптор.
+ * @param mixin Подмешиваемый дескриптор.
+ * @returns Объединённый дескриптор.
+ */
 function mixDescriptors<
   Base extends object,
   Child extends Base
@@ -470,9 +485,16 @@ function mixDescriptors<
   })
 }
 
+/** XML значение атрибута. */
 export type XmlValue<T> = T | undefined
+
+/** Array XML значение атрибута. */
 export type XmlArrayValue<T> = T[]
+
+/** XML элемент. */
 export type XmlElement<T extends GameXML> = T | undefined
+
+/** XML элементы. */
 export type XmlElements<T extends GameXML> = T[]
 
 /** Дескриптор атрибута. */
@@ -488,9 +510,16 @@ export interface IAttrDescriptor<Value = unknown> {
     ? PosLimits
     : Limit
 
+  /** Шаг установки. */
   step?: number
+
+  /** Цветовые зоны. */
   areas?: IInputAreas
+
+  /** Заголовок. */
   label?: string
+
+  /** Описание. */
   desc?: string
 
   /** Стандартное значение. */

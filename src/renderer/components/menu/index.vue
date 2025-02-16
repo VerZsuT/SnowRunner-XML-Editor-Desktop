@@ -19,13 +19,14 @@
 </template>
 
 <script lang='ts' setup>
-import type { MenuProps } from 'ant-design-vue'
+import type { ItemType, MenuProps } from 'ant-design-vue'
 import { Menu } from 'ant-design-vue'
-import { computed, onMounted, ref } from 'vue'
+import { computed, nextTick, onMounted, ref } from 'vue'
 import Settings from '../settings'
 import WhatsNew from '../whats-new'
 import texts from './texts'
-import { Backup, Config, Files, Helpers, Paths } from '/mods/renderer'
+import { Archive, Backup, Config, Files, Helpers, Messages, Mods, Page, Paths } from '/mods/renderer'
+import { usePageStore } from '/rend/pages/general/store'
 
 const settingsHasBeenOpened = ref(false)
 const settingsIsOpen = ref(false)
@@ -35,6 +36,7 @@ const whatsNewIsOpen = ref(false)
 
 /** Отсутствует `initial.pak`. */
 const initialNotFound = !Config.initialPath
+const { route } = usePageStore()
 
 /** Ссылки на медиа ресурсы. */
 const links = {
@@ -51,97 +53,125 @@ const links = {
   donation: 'https://www.donationalerts.com/r/verzsut'
 }
 
-/** Элементы меню */
+/** Элементы меню. */
 const items = computed(() => [
+  // Файл.
   {
-    key: 'FILE MENU',
+    key: 'file_menu',
     label: texts.fileMenuLabel,
     children: [
+      ...inAdvancedMode([
+        {
+          key: 'open_files_folder',
+          label: texts.openFilesFolderItemLabel,
+          disabled: initialNotFound,
+          onClick: () => Helpers.openPath(Paths.mainTemp)
+        },
+        {
+          key: 'save_files',
+          label: texts.saveFilesItemLabel,
+          disabled: initialNotFound,
+          onClick: () => updateFiles()
+        },
+        {
+          key: 'unpack_files',
+          label: texts.unpackFilesItemLabel,
+          disabled: initialNotFound,
+          onClick: () => unpackFiles()
+        },
+        { type: 'divider' }
+      ]),
       {
-        key: 'EXIT',
+        key: 'exit',
         label: texts.exitMenuItemLabel,
         onClick: () => Helpers.quitApp()
       }
     ]
   },
+
+  // Бэкап.
   {
-    key: 'BACKUP MENU',
+    key: 'backup_menu',
     label: texts.backupMenuLabel,
     disabled: initialNotFound,
     children: [
       {
-        key: 'OPEN BACKUP',
+        key: 'open_backup',
         label: texts.openButton,
         onClick: () => Helpers.openPath(Paths.backupFolder)
       },
       { type: 'divider' },
       {
-        key: 'SAVE BACKUP',
+        key: 'save_backup',
         label: texts.saveButton,
         onClick: () => Backup.save()
       },
       {
-        key: 'RECOVER FROM BACKUP',
+        key: 'recover_from_backup',
         label: texts.restoreMenuItemLabel,
         onClick: () => Backup.recoverFromIt()
       }
     ]
   },
+
+  // Настройки.
   {
-    key: 'SETTINGS MENU',
+    key: 'settings_menu',
     label: texts.settingsMenuLabel,
     children: [
       {
-        key: 'OPEN SETTINGS',
+        key: 'open_settings',
         label: texts.settingsMenuLabel,
         disabled: initialNotFound,
         onClick: () => openSettings()
       },
       { type: 'divider' },
       {
-        key: 'RESET SETTINGS',
+        key: 'reset_settings',
         label: texts.resetMenuItemLabel,
         disabled: initialNotFound,
         onClick: () => Config.reset()
       },
       {
-        key: 'UNINSTALL',
+        key: 'uninstall_program',
         label: texts.uninstallMenuItemLabel,
         onClick: () => Files.uninstall.exec()
       }
     ]
   },
+
+  // Помощь.
   {
     label: texts.helpMenuLabel,
+    key: 'help_menu',
     children: [
       {
-        key: 'VERSION',
+        key: 'version_info',
         label: texts.versionMenuItemLabel,
         onClick: () => openWhatsNew()
       },
       { type: 'divider' },
       {
-        key: 'HOW TO USE',
+        key: 'how_to_use',
         label: texts.howToUseTitle,
         onClick: () => Helpers.openLink(links.modio)
       },
       {
-        key: 'GITHUB',
+        key: 'github',
         label: texts.githubTitle,
         onClick: () => Helpers.openLink(links.github)
       },
       {
-        key: 'YOUTUBE',
+        key: 'youtube',
         label: texts.youtubeTitle,
         onClick: () => Helpers.openLink(links.youtube)
       },
       {
-        key: 'DONATION',
+        key: 'donation',
         label: texts.donationTitle,
         onClick: () => Helpers.openLink(links.donation)
       }
-    ],
-    key: 'HELP MENU'
+    ]
   }
 ] satisfies Required<MenuProps>['items'])
 
@@ -153,6 +183,35 @@ onMounted(() => {
     }
   }, 1000)
 })
+
+function inAdvancedMode(items: ItemType[]) {
+  return Config.advancedMode
+    ? items
+    : []
+}
+
+async function unpackFiles() {
+  route(Page.none)
+  await nextTick()
+  await Promise.all([
+    Archive.unpackMain(),
+    Mods.procMods()
+  ])
+  route(Page.lists)
+}
+
+async function updateFiles() {
+  const hideLoading = Messages.loading(texts.savingMessage)
+
+  try {
+    await Archive.updateFiles()
+    Messages.success(texts.successSaveFiles)
+  } catch (error: any) {
+    Messages.error(error)
+  }
+
+  hideLoading()
+}
 
 function openSettings() {
   settingsHasBeenOpened.value = true

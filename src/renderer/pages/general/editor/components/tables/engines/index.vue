@@ -22,21 +22,21 @@ import { FileNameInfo } from '../../info'
 import type { ReadyEmits, ReadyProps } from '../../utils'
 import { useFilesReady } from '../../utils'
 import EngineSet from './set.vue'
-import type { EnginesXML, File, FileInfo } from '/mods/renderer'
+import type { EnginesXML, FileInfo, IFile } from '/mods/renderer'
 import { hasItems } from '/utils/renderer'
 
 export type EnginesProps = ReadyProps & Props
 
 type Props = {
   getter?(info: FileInfo): Promise<EnginesXML[]>
-  filesGetter?(info: FileInfo): Promise<File[]>
+  filesGetter?(info: FileInfo): Promise<IFile[]>
 }
 
 const props = defineProps<Props>()
 const emit = defineEmits<ReadyEmits>()
 const { allFiles, info } = storeToRefs(useEditorStore())
 const list = shallowRef<EnginesXML[]>([])
-const files = shallowRef<File[]>([])
+const files = shallowRef<IFile[]>([])
 const { ready, inProgress } = useFilesReady(emit, true)
 
 onMounted(init)

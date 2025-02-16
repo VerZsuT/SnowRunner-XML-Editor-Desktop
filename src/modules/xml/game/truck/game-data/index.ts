@@ -51,6 +51,7 @@ export default class GameData extends BaseGameData {
   readonly AddonSockets!: XmlElements<AddonSockets>
 }
 
+/** Страна открытия. */
 export enum Country {
   ru = 'RU',
   us = 'US',

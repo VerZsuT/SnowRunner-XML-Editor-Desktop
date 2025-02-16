@@ -54,7 +54,7 @@ export default class TruckData extends XMLWithTemplates {
   accessor RepairsCapacity: XmlValue<number>
   declare $RepairsCapacity: INumberAttrDescriptor
 
-  /** WheelRepairsCapacity. */
+  /** Количество колёс для ремонта. */
   @properties({
     get label() { return texts.wheelRepairsCapacity },
     get desc() { return texts.wheelRepairsCapacityDesc },

@@ -1,4 +1,5 @@
-import { Config, type File, type TruckAddonSocket, type TruckXML } from '/mods/renderer'
+import type { IFile } from '/mods/renderer'
+import { Config, type TruckAddonSocket, type TruckXML } from '/mods/renderer'
 import { BaseLocalization } from '/utils/texts/base-localization'
 
 export type BanditCraneData = {
@@ -22,7 +23,7 @@ class Action {
   private readonly trunkName = 'ziks605rTrunk'
   private readonly frameAddonName = 'ZikzFrameAddon'
 
-  isActive(file: File): boolean {
+  isActive(file: IFile): boolean {
     return file.name === 'zikz_605r'
   }
 

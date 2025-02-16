@@ -4,23 +4,23 @@ import { initMain, mainObjectField } from '/utils/renderer'
 export type * from './types'
 
 /**
- * Пути, используемые в программе (в собранном виде)  
+ * Пути, используемые в программе.  
  * _renderer process_
-*/
+ */
 @initMain()
 class Paths {
-  /** Объект путей */
+  /** Объект путей. */
   @mainObjectField()
   private readonly object!: IPaths
 
   /**
-   * Инициализация класса  
+   * Инициализация класса.  
    * __НЕ ИСПОЛЬЗОВАТЬ__
-  */
+   */
   _init() {
     for (const key in this.object) {
       Object.defineProperty(this, key, {
-        get: () => (this.object[key]),
+        get: () => this.object[key],
         enumerable: true,
         configurable: false
       })
@@ -30,4 +30,8 @@ class Paths {
   }
 }
 
+/**
+ * Пути, используемые в программе.  
+ * _renderer process_
+ */
 export default new Paths()._init() as Paths & IPaths

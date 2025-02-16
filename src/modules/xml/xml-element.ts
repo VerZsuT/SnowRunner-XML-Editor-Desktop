@@ -1,10 +1,9 @@
 import type { Cheerio } from 'cheerio'
 import { load } from 'cheerio'
-
+import xmlFormat from 'xml-formatter'
+import type { IFile } from '/mods/files/renderer'
 import { File } from '/mods/files/renderer'
 import { hasItems, isString } from '/utils/checks/renderer'
-
-import xmlFormat from 'xml-formatter'
 
 /** Объект DOM элемента. */
 export default class XMLElement {
@@ -16,11 +15,11 @@ export default class XMLElement {
   /** Создать из строки. */
   static async from(str: string): Promise<XMLElement | undefined>
   /** Создать из содержимого файла. */
-  static async from(file: File): Promise<XMLElement | undefined>
-  static async from(source: File | string): Promise<XMLElement | undefined> {
+  static async from(file: IFile): Promise<XMLElement | undefined>
+  static async from(source: IFile | string): Promise<XMLElement | undefined> {
     const data = File.isFile(source)
       ? await source.read()
-      : source
+      : source as string
     const xml = load(data || '', { xml: true })
 
     return data && xml.xml()
@@ -75,11 +74,16 @@ export default class XMLElement {
   /** Строковое представление элемента вместе с базовым тегом. */
   get baseXML() {
     function format(str: string) {
-      return xmlFormat(str, {
+      const formatted = xmlFormat(str, {
         whiteSpaceAtEndOfSelfclosingTag: true,
         forceSelfClosingEmptyTag: true,
         indentation: '  '
       })
+      const area = document.createElement('textarea')
+
+      area.innerHTML = formatted
+
+      return area.value
     }
 
     try {

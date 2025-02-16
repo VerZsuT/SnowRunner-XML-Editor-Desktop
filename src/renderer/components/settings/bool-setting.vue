@@ -27,7 +27,10 @@ const { Text } = Typography
 const popover = h(Popover, { placement: 'topLeft' })
 
 export type BoolSettingProps = {
+  /** Заголовок. */
 	label: string
+
+  /** Подсказка. */
   tip?: string
 }
 
