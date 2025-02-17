@@ -56,6 +56,12 @@ export default await createTextsLoader({
     .de('Definiert durch Addon')
     .ch('默认或升级零件决定'),
 
+  connectable: new BaseLocalization()
+  .ru('Определяется аддоном')
+  .en('Defined by the addon')
+  .de('Definiert durch Addon')
+  .ch('默认或升级零件决定'),
+
   any: new BaseLocalization()
     .ru('Любая')
     .en('Any')

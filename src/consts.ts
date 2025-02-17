@@ -2,7 +2,7 @@
 export const APP_NAME = 'SnowRunner XML Editor'
 
 /** Версия программы. */
-export const PROGRAM_VERSION = '1.1.0'
+export const PROGRAM_VERSION = '1.1.1'
 
 /** В любом случае показать devtools. */
 export const FORCE_DEVTOOLS = false
