@@ -31,14 +31,7 @@
     </Header>
 
     <Filters :is-open="filtersIsOpen" />
-    <List
-      v-if="files"
-      :files="files[source]"
-    />
-    <Spin
-      v-else
-      center
-    />
+    <List />
   </div>
 </template>
 
@@ -54,11 +47,11 @@ import texts from './texts'
 import { ItemsUtils } from './utils'
 import type { IFile } from '/mods/renderer'
 import { Helpers } from '/mods/renderer'
-import { Header, Spin } from '/rend/components'
+import { Header } from '/rend/components'
 import { useKey } from '/rend/utils'
 
 const listStore = useListStore()
-const { files, category, source, listMode } = storeToRefs(listStore)
+const { files, category, listMode } = storeToRefs(listStore)
 const { clearFiles, setListMode } = listStore
 
 const filtersIsOpen = ref(true)

@@ -1,5 +1,6 @@
 <template>
   <div
+    v-if="files"
     ref="container"
     class="list"
   >
@@ -24,34 +25,31 @@
       :key="item.file.name"
       :file="item.file"
       :category="item.category"
+      :style="{ display: files[source].includes(item.file) ? 'block' : 'none' }"
     />
   </div>
+  <Spin
+    v-else
+    center
+  />
 </template>
 
 <script lang='ts' setup>
 import { Button, Modal } from 'ant-design-vue'
 import { storeToRefs } from 'pinia'
-import { nextTick, ref, toRefs, watch, watchEffect } from 'vue'
-import type { Category } from '../../../enums'
+import { computed, nextTick, ref, watch } from 'vue'
 import { SourceType } from '../../../enums'
 import { useListStore } from '../../../store/list'
 import texts from '../../texts'
 import ModsPopup from '../mods-popup.vue'
 import ListItem from './item.vue'
-import type { IFile } from '/mods/renderer'
 import { Helpers } from '/mods/renderer'
+import { Spin } from '/rend/components'
 
-export type ListProps = {
-  files: IFile[]
-}
-
-const props = defineProps<ListProps>()
-const { files } = toRefs(props)
-
-const { category, source } = storeToRefs(useListStore())
+const { category, source, files } = storeToRefs(useListStore())
 const isShowMods = ref(false)
 const container = ref<HTMLDivElement | null>(null)
-const listItems = useFilteredItems()
+const listItems = getItems()
 
 useScrollResetting()
 
@@ -69,14 +67,8 @@ function hideModsPopup(isReload?: boolean) {
   }
 }
 
-function useFilteredItems() {
-  const items = ref<{ file: IFile, category: Category }[]>([])
-  
-  watchEffect(() => {
-    items.value = files.value.map(file => ({ file, category: category.value }))
-  })
-
-  return items
+function getItems() {
+  return computed(() => files.value[SourceType.all].map(file => ({ file, category: category.value })))
 }
 
 function useScrollResetting() {

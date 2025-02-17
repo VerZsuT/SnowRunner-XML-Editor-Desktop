@@ -134,6 +134,7 @@ function getName(file: IFile, xml: TruckXML): string {
 
   return name
 }
+
 function getType(xml: TruckXML) {
   return xml.TruckData?.TruckType
 }

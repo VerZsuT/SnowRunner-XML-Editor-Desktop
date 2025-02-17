@@ -8,8 +8,11 @@
     <GameUpdate v-model="gameUpdateOpened" />
     
     <Setup v-if="page === Page.setup" />
-    <Lists v-else-if="page === Page.lists" />
-    <Editor v-else-if="page === Page.editor" />
+    <Lists
+      v-else-if="page === Page.lists || page !== Page.none"
+      v-show="page === Page.lists"
+    />
+    <Editor v-if="page === Page.editor" />
   </template>
 </template>
 
