@@ -5,6 +5,7 @@
     :mode="multiple ? 'multiple' : undefined"
     :options="options"
     :value="value"
+    :disabled="disabled"
     @change="onSelect($event as string | string[])"
   />
 </template>

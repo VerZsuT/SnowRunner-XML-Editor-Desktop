@@ -123,7 +123,7 @@ function changeValue(newValue: ParameterValue) {
 }
 
 async function getDefaultValue() {
-  return getExportedValue((await import('/mods/data/defaults/renderer')).default)
+  return ResetUtils.getDefaultValue(file, info.value, descriptor.value)
 }
 
 function getExportedValue(data: IExportedData['data']): string | number | undefined {

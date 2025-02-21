@@ -1,5 +1,8 @@
 import type { InjectionKey } from 'vue'
 import { inject, onMounted, onUnmounted, provide } from 'vue'
+import ImportUtils from './import'
+import type { FileInfo, IFile } from '/mods/renderer'
+import type { IAttrDescriptor } from '/mods/xml/game/attributes'
 
 export type ResetListenersList = Record<number, Set<ResetListener>>
 export type ResetListener = () => Promise<any>
@@ -30,6 +33,15 @@ class ResetUtils {
 
   async emit(id: number) {
     return Promise.all([...(this.listeners[id] ?? [])].map(listener => listener()))
+  }
+
+  async getDefaultValue(file: IFile, info: FileInfo, descriptor: IAttrDescriptor): Promise<string | number | undefined> {
+    const defaults = (await import('/mods/data/defaults/renderer')).default
+    const name = ImportUtils.getName(file, info.dlc, info.mod)
+    
+    return defaults[name]
+      ?.[descriptor.selector]
+      ?.[descriptor.name]
   }
 }
 

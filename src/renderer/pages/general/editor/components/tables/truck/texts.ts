@@ -62,18 +62,6 @@ export default await createTextsLoader({
   .de('Definiert durch Addon')
   .ch('默认或升级零件决定'),
 
-  any: new BaseLocalization()
-    .ru('Любая')
-    .en('Any')
-    .de('Jede')
-    .ch('任何'),
-
-  none: new BaseLocalization()
-    .ru('Отсутствует')
-    .en('None')
-    .de('Fehlt')
-    .ch('没有'),
-
   textGroupName: new BaseLocalization()
     .ru('Тексты')
     .en('Texts')
@@ -103,24 +91,6 @@ export default await createTextsLoader({
     .en('Suspension')
     .de('Aufhängung')
     .ch('悬架'),
-
-  installed: new BaseLocalization()
-    .ru('Установлена')
-    .en('Installed')
-    .de('Installiert')
-    .ch('已安装'),
-
-  uninstalled: new BaseLocalization()
-    .ru('Не установлена')
-    .en('Uninstalled')
-    .de('nicht Installiert')
-    .ch('未安装'),
-
-  always: new BaseLocalization()
-    .ru('Всегда')
-    .en('Always')
-    .de('Immer')
-    .ch('始终开启'),
 
   gearboxGroupName: new BaseLocalization()
     .ru('Коробка передач')

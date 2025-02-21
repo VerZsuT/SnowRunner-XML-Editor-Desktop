@@ -508,7 +508,9 @@ export interface IAttrDescriptor<Value = unknown> {
   /** Ограничение значения. */
   limit?: Value extends Position
     ? PosLimits
-    : Limit
+    : Value extends number
+      ? Limit
+      : PosLimits | Limit
 
   /** Шаг установки. */
   step?: number

@@ -97,6 +97,7 @@ export interface ISelectProps {
   options: SelectOptions
   multiple?: boolean
   emptyIsAll?: boolean
+  disabled?: boolean
 }
 
 

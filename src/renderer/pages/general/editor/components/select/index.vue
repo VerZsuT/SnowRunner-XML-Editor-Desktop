@@ -13,6 +13,7 @@
         :empty-is-all="emptyIsAll"
         :options="options"
         :value="<ArrOrNot<Value>> value"
+        :disabled="disabled"
         @change="onChange"
       />
     </template>

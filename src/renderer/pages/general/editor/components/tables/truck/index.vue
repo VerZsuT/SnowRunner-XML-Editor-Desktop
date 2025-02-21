@@ -132,15 +132,7 @@
           v-if="xml.PhysicsModel?.Body"
           :descriptor="xml.PhysicsModel.Body.$CenterOfMassOffset"
         />
-        <Select
-          :descriptor="xml.TruckData.$DiffLockType"
-          :options="[
-            [DiffLockType.none, texts.none],
-            [DiffLockType.installed, texts.installed],
-            [DiffLockType.uninstalled, texts.uninstalled],
-            [DiffLockType.always, texts.always]
-          ]"
-        />
+        <DiffLock :descriptor="xml.TruckData.$DiffLockType" />
         <Suspensions
           key="suspensions-file"
           :getter="xml.TruckData.SuspensionSocket?.suspensions"
@@ -232,6 +224,7 @@ import Extra from '../../extra'
 import Group from '../../group'
 import { Float, Int, Text } from '../../input'
 import Select from '../../select'
+import DiffLock from '../../select/diff-lock.vue'
 import type { ReadyEmits, ReadyProps } from '../../utils'
 import { useFilesReady } from '../../utils'
 import Engines from '../engines'
@@ -242,7 +235,7 @@ import Winches from '../winches'
 import texts from './texts'
 import { ReadyType } from './utils'
 import type { IFile, TruckCompatibleWheels, TruckXML } from '/mods/renderer'
-import { Config, Country, DiffLockType, WheelTorque } from '/mods/renderer'
+import { Config, Country, WheelTorque } from '/mods/renderer'
 
 export type TruckProps = ReadyProps & Props
 
