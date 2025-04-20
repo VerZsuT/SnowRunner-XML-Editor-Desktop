@@ -42,10 +42,10 @@ class ForgeConfig {
 						renamedBuild = join(this.out, name)
 						buildArchive = join(this.out, `${name}.rar`)
 						updateBuildArchive = join(this.out, `${name}_portable.rar`)
-						modioArchive = join(this.out, `${name}-v${version}.zip`)
+						modioArchive = join(this.out, `${name}_v${version}.zip`)
 
 						installer = join(this.out, `${name}.exe`)
-						installerWithVersion = join(this.out, `${name}-v${version}.exe`)
+						installerWithVersion = join(this.out, `${name}_v${version}.exe`)
 						updateInstaller = join(this.out, `${name}_update.exe`)
 
 						app = join(this.build, 'resources/app')
@@ -56,7 +56,7 @@ class ForgeConfig {
 						innoSetupConfig = join(this.innoSetup, 'installer.config.iss')
 					}
 
-					const name = 'SnowRunner-XML-Editor'
+					const name = 'SnowRunnerXMLEditor'
 					const paths = new Paths()
 
 					const info = text => console.info(text)
@@ -85,7 +85,7 @@ class ForgeConfig {
 					}
 
 					info('Rename build')
-					await rename(paths.build, join(_dirname, '../../out/SnowRunner-XML-Editor'))
+					await rename(paths.build, join(_dirname, '../../out/SnowRunnerXMLEditor'))
 
 					info('Create installer')
 					const configData = String(await readFile(paths.innoSetupConfig))

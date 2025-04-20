@@ -1,4 +1,4 @@
-import { Category } from '../../renderer/pages/general/enums'
+import type { Category } from '../../renderer/pages/general/enums'
 import { Config, Mods } from '/mods/data/renderer'
 import type { IFile } from '/mods/files/renderer'
 import { Dir, File } from '/mods/files/renderer'
@@ -17,13 +17,9 @@ class Images {
    * @returns Путь к картинке для данного файла автомобиля/прицепа.
    */
   async getSrc(category: Category, file: IFile, xml: TruckXML): Promise<string> {
-    const ext = category === Category.trucks
-      ? '.jpg'
-      : '.png'
-    
     const images = new Dir(this.getImagePath(category))
-    const image = images.file(`${file.name}${ext}`)
-    const defaultImage = images.file('default.png')
+    const image = images.file(`${file.name}.webp`)
+    const defaultImage = images.file('default.webp')
 
     const modID = Mods.getModID(file)
 
@@ -46,7 +42,7 @@ class Images {
    * @returns Путь к картинке по умолчанию.
    */
   getDefault(category: Category): string {
-    return new Dir(this.getImagePath(category)).file('default.png').path
+    return new Dir(this.getImagePath(category)).file('default.webp').path
   }
 
   /**
@@ -55,7 +51,7 @@ class Images {
    * @returns Путь к иконке группы.
    */
   getGroupIconSrc(name: string): string {
-    return this.getImagePath(`icons/${name}.png`)
+    return this.getImagePath(`icons/${name}.webp`)
   }
 
   /**
@@ -86,7 +82,7 @@ class Images {
     }
 
     const images = new Dir(this.getImagePath(category))
-    const defaultImage = images.file('default.png')
+    const defaultImage = images.file('default.webp')
 
     const imgName = xml.GameData?.UiDesc?.UiIcon328x458
     const imgFile = new File(`${'../'.repeat(5)}build/modsTemp/${modName}/ui/textures/${imgName}.png`)

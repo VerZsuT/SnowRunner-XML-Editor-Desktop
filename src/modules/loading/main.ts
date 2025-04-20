@@ -15,6 +15,7 @@ class Loading {
     return {
       isLoading: false,
       hasError: false,
+      error: '',
       text: 'Loading',
       stagesCount: 1,
       completedCount: 0
@@ -84,8 +85,6 @@ class Loading {
    */
   async runRequiredStage(name: string, action: StageAction) {
     if (!await this.runStage(name, action)) {
-      this.errorOnStage()
-
       throw new Error(`Error on required stage ${name}`)
     }
   }
@@ -103,8 +102,8 @@ class Loading {
 
     try {
       result = await action() ?? true
-    } catch (error) {
-      this.errorOnStage()
+    } catch (error: unknown) {
+      this.errorOnStage(error as Error)
       throw error
     }
 
@@ -148,8 +147,8 @@ class Loading {
   }
 
   /** Установить признак ошибки на стадии. */
-  errorOnStage() {
-    this.set({ hasError: true })
+  errorOnStage(error: Error) {
+    this.set({ hasError: true, error: error.message })
   }
 
   /**

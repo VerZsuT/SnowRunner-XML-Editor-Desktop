@@ -30,12 +30,14 @@ import type { ProgressProps } from 'ant-design-vue'
 import { Progress as AntProgress, Typography } from 'ant-design-vue'
 import { computed } from 'vue'
 import Spin from './spin.vue'
-import { Loading } from '/mods/renderer'
+import { Loading, Messages } from '/mods/renderer'
 
 const { Title } = Typography
 
 const progressStatus = computed<ProgressProps['status']>(() => {
   if (Loading.state.hasError) {
+    Messages.error(Loading.state.error)
+
     return 'exception'
   }
   

@@ -6,6 +6,9 @@ export interface ILoadingState {
   /** Имеется ошибка. */
   hasError: boolean
 
+  /** Какая ошибка. */
+  error: string
+
   /** Текст текущей стадии. */
 	text: string
 

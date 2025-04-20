@@ -135,7 +135,10 @@ const items = computed(() => [
       {
         key: 'uninstall_program',
         label: texts.uninstallMenuItemLabel,
-        onClick: () => Files.uninstall.exec()
+        onClick: () => {
+          void Files.uninstall.exec()
+          Helpers.quitApp()
+        }
       }
     ]
   },

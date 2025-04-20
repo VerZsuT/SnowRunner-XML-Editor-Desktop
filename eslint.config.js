@@ -83,6 +83,7 @@ export default [
 		'@typescript-eslint/no-var-requires': 'off',
 		'@typescript-eslint/no-this-alias': 'off',
 		'@typescript-eslint/no-non-null-assertion': 'off',
+		'no-undef': 'off',
 		'no-tabs': 'off',
 		'no-cond-assign': 'off',
 		'no-multi-spaces': 'off',

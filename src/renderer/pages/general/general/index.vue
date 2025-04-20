@@ -29,7 +29,7 @@ import EditorActions from './editor-actions.vue'
 import GameUpdate from './game-update.vue'
 import texts from './texts'
 import type { IFile } from '/mods/renderer'
-import { Checks, DLCs, Dirs, Edited, Files, Loading, Page, ProgramWindow, Windows } from '/mods/renderer'
+import { Checks, DLCs, Dirs, Edited, Files, Helpers, Loading, Page, ProgramWindow, Windows } from '/mods/renderer'
 import { LoadingPage, Menu } from '/rend/components'
 import { useWindowReady } from '/rend/utils'
 import { hasItems } from '/utils/renderer'
@@ -102,6 +102,7 @@ window['exportDefaults'] = async () => {
   
   if (await Files.exported.exists()) {
     console.log(texts.exported)
+    await Helpers.openFile(Files.exported.path)
   } else {
     console.error(texts.exportError)
   }
