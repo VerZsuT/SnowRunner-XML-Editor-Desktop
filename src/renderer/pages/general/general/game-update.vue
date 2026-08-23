@@ -13,13 +13,13 @@
 </template>
 
 <script lang='ts' setup>
+import type { IFile } from '@modules/renderer'
+import { Dirs, Edited, Files } from '@modules/renderer'
 import { Modal, Typography } from 'ant-design-vue'
 import { ref } from 'vue'
-import { EditorUtils } from '../lists/utils'
+import { EditorUtils } from '../lists/utilities'
 import { useEditorStore } from '../store'
-import texts from './texts'
-import type { IFile } from '/mods/renderer'
-import { Dirs, Edited, Files } from '/mods/renderer'
+import texts from './localization'
 
 const { Text } = Typography
 

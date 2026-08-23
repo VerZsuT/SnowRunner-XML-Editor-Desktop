@@ -26,11 +26,11 @@
 </template>
 
 <script setup lang="ts">
+import { Loading, Messages } from '@modules/renderer'
 import type { ProgressProps } from 'ant-design-vue'
 import { Progress as AntProgress, Typography } from 'ant-design-vue'
 import { computed } from 'vue'
 import Spin from './spin.vue'
-import { Loading, Messages } from '/mods/renderer'
 
 const { Title } = Typography
 

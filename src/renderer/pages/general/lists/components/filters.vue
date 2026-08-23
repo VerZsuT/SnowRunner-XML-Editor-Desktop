@@ -42,14 +42,14 @@
 </template>
 
 <script setup lang="ts">
+import { Config, TruckType } from '@modules/renderer'
 import type { SelectProps } from 'ant-design-vue'
 import { Input, Select } from 'ant-design-vue'
 import { storeToRefs } from 'pinia'
 import { computed, Transition as VueTransition } from 'vue'
 import { Category, SourceType } from '../../enums'
 import { useListStore } from '../../store'
-import texts from '../texts'
-import { Config, TruckType } from '/mods/renderer'
+import texts from '../localization'
 
 export type FiltersProps = {
 	isOpen: boolean

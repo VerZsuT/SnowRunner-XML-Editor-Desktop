@@ -12,9 +12,9 @@
 </template>
 
 <script lang='ts' setup>
+import type { IFile } from '@modules/renderer'
 import { SubMenu, Typography } from 'ant-design-vue'
 import FileItem from './file.vue'
-import type { IFile } from '/mods/renderer'
 
 const { Text } = Typography
 

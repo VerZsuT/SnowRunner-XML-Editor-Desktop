@@ -34,16 +34,16 @@
 </template>
 
 <script lang='ts' setup>
+import { Images } from '@modules/renderer'
+import { ContextMenu } from '@renderer/components'
+import type { EmitsToProps } from '@renderer/types'
 import { Collapse } from 'ant-design-vue'
 import { ref, useAttrs } from 'vue'
-import texts from '../../texts'
+import texts from '../../localization'
 import type { IGroupProps } from '../../types'
-import { ResetUtils } from '../../utils'
+import { ResetUtils } from '../../utilities'
 import Accordion from '../accordion.vue'
-import { provideGroupActive } from '../utils'
-import { Images } from '/mods/renderer'
-import { ContextMenu } from '/rend/components'
-import type { EmitsToProps } from '/rend/types'
+import { provideGroupActive } from '../utilities'
 
 const { Panel } = Collapse
 

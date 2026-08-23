@@ -34,19 +34,19 @@
 </template>
 
 <script lang='ts' setup>
+import type { IFile } from '@modules/renderer'
+import { Config, WheelLocation, type SuspensionsXML } from '@modules/renderer'
 import { storeToRefs } from 'pinia'
 import { useEditorStore } from '../../../../store'
-import { SaveUtils, provideFile } from '../../../utils'
+import { SaveUtils, provideFile } from '../../../utilities'
 import Accordion from '../../accordion.vue'
 import Group from '../../group'
 import { Info } from '../../info'
 import { Float, Int } from '../../input'
-import type { ReadyEmits, ReadyProps } from '../../utils'
-import { getGameText, useReady } from '../../utils'
+import type { ReadyEmits, ReadyProps } from '../../utilities'
+import { getGameText, useReady } from '../../utilities'
 import UnlockPreset from '../unlock-preset'
-import texts from './texts'
-import type { IFile } from '/mods/renderer'
-import { Config, WheelLocation, type SuspensionsXML } from '/mods/renderer'
+import texts from './localization'
 
 export type SuspensionSetProps = ReadyProps & Props
 

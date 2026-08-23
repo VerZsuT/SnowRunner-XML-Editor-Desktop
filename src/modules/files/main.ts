@@ -1,3 +1,5 @@
+import { ErrorText, ProgramError } from '@modules/errors/main'
+import Paths from '@modules/paths/main'
 import type { IHasSnapshot } from 'emr-bridge/main'
 import { execFile } from 'node:child_process'
 import type { WatchListener } from 'node:fs'
@@ -5,13 +7,11 @@ import { watch } from 'node:fs'
 import { access, chmod, constants, copyFile, lstat, mkdir, readdir, readFile, rename, rm, writeFile } from 'node:fs/promises'
 import { basename, dirname, extname, join } from 'node:path'
 import type { ICheckResult, IDir, IFile, IFindDirsArgs, IFindFilesArgs, IFSEntry, IFSEntryArraySnapshot, IFSEntrySnapshot } from './types'
-import { ErrorText, ProgramError } from '/mods/errors/main'
-import Paths from '/mods/paths/main'
 
 export type * from './types'
 
 /**
- * Сущность в файловой системе.  
+ * Сущность в файловой системе.
  * _main process_
  */
 export class FSEntry implements IFSEntry, IHasSnapshot<IFSEntrySnapshot> {
@@ -49,6 +49,23 @@ export class FSEntry implements IFSEntry, IHasSnapshot<IFSEntrySnapshot> {
     return exists(this.path)
   }
 
+  async hasPermissions(): Promise<boolean> {
+    if (!await this.exists()) {
+      return false
+    }
+
+    const readResult = await this.canRead()
+    const writeResult = await this.canWrite()
+
+    if (!readResult.result) {
+      throw new ProgramError(ErrorText.readFileError, readResult.error, this.path)
+    } else if (!writeResult.result) {
+      throw new ProgramError(ErrorText.writeFileError, writeResult.error, this.path)
+    }
+
+    return true
+  }
+
   canRead() {
     return canRead(this.path)
   }
@@ -81,7 +98,7 @@ export class FSEntry implements IFSEntry, IHasSnapshot<IFSEntrySnapshot> {
     if (!await this.exists()) {
       return
     }
-    
+
     try {
       await rm(this.path, { recursive: await this.isDir(), force: true })
     } catch (error: any) {
@@ -119,7 +136,7 @@ export class FSEntry implements IFSEntry, IHasSnapshot<IFSEntrySnapshot> {
 }
 
 /**
- * Массив сущностей в файловой системе.  
+ * Массив сущностей в файловой системе.
  * _main process_
  */
 export class FSEntryArray extends Array<IFSEntry> implements IHasSnapshot<IFSEntryArraySnapshot> {
@@ -153,7 +170,7 @@ export class FSEntryArray extends Array<IFSEntry> implements IHasSnapshot<IFSEnt
 }
 
 /**
- * Массив файлов в файловой системе.  
+ * Массив файлов в файловой системе.
  * _main process_
  */
 export class FileArray extends Array<IFile> implements IHasSnapshot<IFSEntryArraySnapshot> {
@@ -171,7 +188,7 @@ export class FileArray extends Array<IFile> implements IHasSnapshot<IFSEntryArra
 }
 
 /**
- * Массив папок в файловой системе.  
+ * Массив папок в файловой системе.
  * _main process_
  */
 export class DirArray extends Array<IDir> implements IHasSnapshot<IFSEntryArraySnapshot> {
@@ -189,7 +206,7 @@ export class DirArray extends Array<IDir> implements IHasSnapshot<IFSEntryArrayS
 }
 
 /**
- * Папка в файловой системе.  
+ * Папка в файловой системе.
  * _main process_
  */
 export class Dir extends FSEntry implements IDir {
@@ -288,7 +305,7 @@ export class Dir extends FSEntry implements IDir {
 }
 
 /**
- * Файл в файловой системе.  
+ * Файл в файловой системе.
  * _main process_
 */
 export class File extends FSEntry implements IFile {
@@ -387,7 +404,7 @@ export class File extends FSEntry implements IFile {
 }
 
 /**
- * Основные файлы.  
+ * Основные файлы.
  * _main process_
  */
 export const Files = {
@@ -428,7 +445,7 @@ export const Files = {
 }
 
 /**
- * Основные папки.  
+ * Основные папки.
  * _main process_
  */
 export const Dirs = {
@@ -464,7 +481,7 @@ export const Dirs = {
 
   /** Временная папка `_templates`. */
   templates: new Dir(Paths.templates),
-  
+
   /** Временная папка `_dlc`. */
   dlc: new Dir(Paths.dlc)
 }

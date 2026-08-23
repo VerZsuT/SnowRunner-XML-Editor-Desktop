@@ -16,10 +16,10 @@
 </template>
 
 <script lang='ts' setup>
+import type { IAttrDescriptor } from '@modules/xml/game/attributes'
 import { Typography } from 'ant-design-vue'
 import { computed, toRefs } from 'vue'
-import { useActive } from '../utils'
-import type { IAttrDescriptor } from '/mods/xml/game/attributes'
+import { useActive } from '../utilities'
 
 const { Text } = Typography
 

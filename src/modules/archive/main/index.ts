@@ -1,18 +1,19 @@
-import TextsLoader from '../texts'
+import { providePublic, publicMethod } from '@bridge/main'
+import { loadLocalization } from '@localization/main'
+import Config from '@modules/data/config/main'
+import Modifications from '@modules/data/modifications/main'
+import Sizes from '@modules/data/sizes/main'
+import type { IDir, IFile } from '@modules/files/main'
+import { Dir, Dirs, File } from '@modules/files/main'
+import Loading from '@modules/loading/main'
+import Messages from '@modules/messages/main'
+import localization from '../localization'
 import WinRAR from './archiver'
-import Config from '/mods/data/config/main'
-import Mods from '/mods/data/mods/main'
-import Sizes from '/mods/data/sizes/main'
-import type { IDir, IFile } from '/mods/files/main'
-import { Dir, Dirs, File } from '/mods/files/main'
-import { Loading } from '/mods/main'
-import Messages from '/mods/messages/main'
-import { providePublic, publicMethod } from '/utils/bridge/main'
 
-const texts = await TextsLoader.loadMain()
+const texts = loadLocalization(localization)
 
 /**
- * Работа с архивами.  
+ * Работа с архивами.
  * _main process_
 */
 @providePublic()
@@ -44,7 +45,7 @@ class Archive {
       return this.update(Dirs.mainTemp, Config.initial)
     }
 
-    const mod = Mods.find(mod => mod.name === modName)
+    const mod = Modifications.find(mod => mod.name === modName)
 
     if (!mod) {
       Messages.error(`Mod '${modName}' not found`)
@@ -74,11 +75,11 @@ class Archive {
   async unpackMain(hideLoading = true) {
     return this.isInitialUnpacking = (async() => {
       Loading.init(texts.unpacking, undefined, hideLoading)
-  
+
       await Dirs.mainTemp.clear()
       await this.unpack(Config.initial, Dirs.mainTemp)
       await this.saveSize(Config.initial)
-  
+
       Loading.completeStage()
     })()
   }
@@ -113,7 +114,7 @@ class Archive {
 }
 
 /**
- * Работа с архивами.  
+ * Работа с архивами.
  * _main process_
 */
 export default new Archive()

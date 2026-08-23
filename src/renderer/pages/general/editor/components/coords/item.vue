@@ -25,12 +25,12 @@
 </template>
 
 <script lang='ts' setup>
+import { Position } from '@modules/renderer'
+import type { EmitsToProps } from '@renderer/types'
 import { InputNumber, Typography } from 'ant-design-vue'
 import { ref, toRefs, watch } from 'vue'
 import { NumberType } from '../../enums'
 import type { ParameterEmits, PositionProps } from '../../types'
-import { Position } from '/mods/renderer'
-import type { EmitsToProps } from '/rend/types'
 export type { PositionProps } from '../../types'
 
 const { Text } = Typography

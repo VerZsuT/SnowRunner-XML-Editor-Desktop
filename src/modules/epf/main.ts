@@ -1,14 +1,15 @@
-import TextsLoader from './texts'
-import { APP_NAME } from '/consts'
-import Dialogs from '/mods/dialogs/main'
-import { providePublic, publicMethod } from '/utils/bridge/main'
+import { providePublic, publicMethod } from '@bridge/main'
+import { loadLocalization } from '@localization/main'
+import { APP_NAME } from '@modules/app'
+import Dialogs from '@modules/dialogs/main'
+import localization from './localization'
 
 export type * from './types'
 
-const texts = await TextsLoader.loadMain()
+const texts = loadLocalization(localization)
 
 /**
- * Работа с файлами `.epf`  
+ * Работа с файлами `.epf`
  * _main process_
  */
 @providePublic()
@@ -17,7 +18,7 @@ class EPF {
   private readonly defaultFilename = 'joined'
 
   /**
-   * Открыть окно выбора `.epf` файлов.  
+   * Открыть окно выбора `.epf` файлов.
    * После выбора объединяет их и сохраняет по выбранному пользователем пути.
    */
   @publicMethod()
@@ -59,7 +60,7 @@ class EPF {
   }
 
   /**
-   * Вывести содержимое `.epf` файла.  
+   * Вывести содержимое `.epf` файла.
    * Анализирует выбранный `.epf` файл и выводит окно с его содержимым в более удобном формате.
    */
   @publicMethod()
@@ -89,7 +90,7 @@ class EPF {
 }
 
 /**
- * Работа с файлами `.epf`  
+ * Работа с файлами `.epf`
  * _main process_
  */
 export default new EPF()

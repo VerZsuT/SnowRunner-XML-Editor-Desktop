@@ -2,7 +2,7 @@ import type { IBooleanAttrDescriptor, INumberAttrDescriptor, XmlValue } from '..
 import { booleanAttr, floatAttr, properties } from '../../attributes'
 import Limit from '../../limit'
 import XMLWithTemplates from '../../xml-with-templates'
-import texts from './texts'
+import texts from './localization'
 
 /** Трение колеса. */
 export default class BaseWheelFriction extends XMLWithTemplates {

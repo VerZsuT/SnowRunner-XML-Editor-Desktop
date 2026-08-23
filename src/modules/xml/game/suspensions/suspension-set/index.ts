@@ -4,7 +4,7 @@ import { BaseGameData } from '../../base'
 import Limit from '../../limit'
 import XMLWithTemplates, { innerElement, innerElements } from '../../xml-with-templates'
 import Suspension from '../suspension'
-import texts from './texts'
+import texts from './localization'
 
 export { default as Suspension } from '../suspension'
 

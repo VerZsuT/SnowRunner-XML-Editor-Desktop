@@ -16,11 +16,11 @@
 </template>
 
 <script lang='ts' setup>
-import type { ReadyEmits } from '../utils'
+import type { IFile, TruckXML } from '@modules/renderer'
+import { TruckFileType } from '@modules/renderer'
+import type { ReadyEmits } from '../utilities'
 import TrailerTable from './trailer'
 import TruckTable from './truck'
-import type { IFile, TruckXML } from '/mods/renderer'
-import { TruckFileType } from '/mods/renderer'
 
 type Props = {
   xml: TruckXML

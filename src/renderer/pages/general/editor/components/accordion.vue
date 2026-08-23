@@ -9,8 +9,8 @@
 </template>
 
 <script lang='ts' setup>
-import { Collapse } from 'ant-design-vue';
-import { provideActive } from './utils';
+import { Collapse } from 'ant-design-vue'
+import { provideActive } from './utilities'
 
 const { onKeyChange } = provideActive(true)
 </script>

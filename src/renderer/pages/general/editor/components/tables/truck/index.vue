@@ -217,7 +217,9 @@
 </template>
 
 <script lang='ts' setup>
-import { SaveUtils } from '../../../utils'
+import type { IFile, TruckCompatibleWheels, TruckXML } from '@modules/renderer'
+import { Config, Country, WheelTorque } from '@modules/renderer'
+import { SaveUtils } from '../../../utilities'
 import Accordion from '../../accordion.vue'
 import Coords from '../../coords'
 import Extra from '../../extra'
@@ -225,17 +227,15 @@ import Group from '../../group'
 import { Float, Int, Text } from '../../input'
 import Select from '../../select'
 import DiffLock from '../../select/diff-lock.vue'
-import type { ReadyEmits, ReadyProps } from '../../utils'
-import { useFilesReady } from '../../utils'
+import type { ReadyEmits, ReadyProps } from '../../utilities'
+import { useFilesReady } from '../../utilities'
 import Engines from '../engines'
 import Gearboxes from '../gearboxes'
 import Suspensions from '../suspensions'
 import Wheels from '../wheels'
 import Winches from '../winches'
-import texts from './texts'
-import { ReadyType } from './utils'
-import type { IFile, TruckCompatibleWheels, TruckXML } from '/mods/renderer'
-import { Config, Country, WheelTorque } from '/mods/renderer'
+import { ReadyType } from './enums'
+import texts from './localization'
 
 export type TruckProps = ReadyProps & Props
 

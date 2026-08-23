@@ -1,25 +1,25 @@
+import { providePublic, publicMethod } from '@bridge/main'
+import { loadLocalization } from '@localization/main'
+import Archive from '@modules/archive/main'
+import Backup from '@modules/backup/main'
+import Config from '@modules/data/config/main'
+import Sizes from '@modules/data/sizes/main'
+import Dialogs from '@modules/dialogs/main'
+import { ErrorText, ProgramError } from '@modules/errors/main'
+import { Dirs, Files } from '@modules/files/main'
+import Paths from '@modules/paths/main'
 import { app } from 'electron'
 import dns from 'node:dns'
 import { get } from 'node:https'
-import TextsLoader from './texts'
+import localization from './localization'
 import type { PubFile } from './types'
-import Archive from '/mods/archive/main'
-import Backup from '/mods/backup/main'
-import Config from '/mods/data/config/main'
-import Sizes from '/mods/data/sizes/main'
-import Dialogs from '/mods/dialogs/main'
-import { ErrorText, ProgramError } from '/mods/errors/main'
-import type { IFSEntry } from '/mods/files/main'
-import { Dirs, Files } from '/mods/files/main'
-import Paths from '/mods/paths/main'
-import { providePublic, publicMethod } from '/utils/bridge/main'
 
 export type * from './types'
 
-const texts = await TextsLoader.loadMain()
+const texts = loadLocalization(localization)
 
 /**
- * Разного рода проверки.  
+ * Разного рода проверки.
  * _main process_
 */
 @providePublic()
@@ -31,7 +31,7 @@ class Checks {
   private readonly githubURL = 'github.com'
 
   /**
-   * Проверить наличие прав администратора у программы (требуется для чтения/записи файлов).  
+   * Проверить наличие прав администратора у программы (требуется для чтения/записи файлов).
    * Выводит уведомление и закрывает программу при неудаче.
    */
   @publicMethod()
@@ -60,7 +60,7 @@ class Checks {
   }
 
   /**
-   * Проверить на стороннее изменение `initial.pak`.  
+   * Проверить на стороннее изменение `initial.pak`.
    * Если изменения присутствуют, то обновляет игровые файлы в программе.
    */
   @publicMethod()
@@ -89,7 +89,7 @@ class Checks {
   }
 
   /**
-   * Проверить наличие обновления.  
+   * Проверить наличие обновления.
    * Выводит оповещение при наличии.
    * @param whateverCheck Игнорировать настройку `updates` в `Config`.
    */
@@ -132,7 +132,7 @@ class Checks {
   }
 
   /**
-   * Проверить наличие всех путей для работы программы. `config.paths`.  
+   * Проверить наличие всех путей для работы программы. `config.paths`.
    * В случае неудачи выводит уведомление.
    */
   async hasAllPaths(): Promise<boolean> {
@@ -156,31 +156,10 @@ class Checks {
 
     return true
   }
-
-  /**
-   * Проверить наличие у программы прав на чтение/запись файла/папки по переданному пути.
-   * @param entry Файл/папка.
-   */
-  async hasPermissions(entry: IFSEntry): Promise<boolean> {
-    if (!await entry.exists()) {
-      return false
-    }
-
-    const readResult = await entry.canRead()
-    const writeResult = await entry.canWrite()
-
-    if (!readResult.result) {
-      throw new ProgramError(ErrorText.readFileError, readResult.error, entry.path)
-    } else if (!writeResult.result) {
-      throw new ProgramError(ErrorText.writeFileError, writeResult.error, entry.path)
-    }
-
-    return true
-  }
 }
 
 /**
- * Разного рода проверки.  
+ * Разного рода проверки.
  * _main process_
 */
 export default new Checks()

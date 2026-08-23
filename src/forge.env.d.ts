@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/consistent-type-imports */
 export { }
 
 declare global {
 	const RENDERER_VITE_DEV_SERVER_URL: string
-	
+
 	namespace NodeJS {
 		interface Process {
 			viteDevServers: Record<string, import('vite').ViteDevServer>

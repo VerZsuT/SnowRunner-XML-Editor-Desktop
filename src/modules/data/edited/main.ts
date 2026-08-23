@@ -1,13 +1,13 @@
+import { providePublic } from '@bridge/main'
+import { Dirs, Files } from '@modules/files/main'
+import type { IFile } from '@modules/main'
+import MainArrayBase from '@utilities/json-arrays/main'
 import type { IEditedFile } from './types'
-import type { IFile } from '/mods/files/main'
-import { Dirs, Files } from '/mods/files/main'
-import { providePublic } from '/utils/bridge/main'
-import MainArrayBase from '/utils/json-arrays/main'
 
 export type * from './types'
 
 /**
- * Работа с массивом изменённых файлов.  
+ * Работа с массивом изменённых файлов.
  * _main process_
  */
 @providePublic()
@@ -34,7 +34,7 @@ class Edited extends MainArrayBase<IEditedFile, IFile> {
 }
 
 /**
- * Работа с массивом изменённых файлов.  
+ * Работа с массивом изменённых файлов.
  * _main process_
  */
 export default await new Edited().isReady

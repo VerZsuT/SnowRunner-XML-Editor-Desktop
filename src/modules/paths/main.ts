@@ -1,8 +1,8 @@
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
+import { providePublic, publicField } from '@bridge/main'
 import type { IPaths } from './types'
-import { providePublic, publicField } from '/utils/bridge/main'
 
 export type * from './types'
 
@@ -40,7 +40,7 @@ function getInitialDateTime() {
 }
 
 /**
- * Пути, используемые в программе.  
+ * Пути, используемые в программе.
  * _main process_
  */
 @providePublic()
@@ -85,7 +85,7 @@ class Paths {
   }
 
   /**
-   * Инициализация класса.  
+   * Инициализация класса.
    * __НЕ ИСПОЛЬЗОВАТЬ__
    */
   _init() {
@@ -110,7 +110,7 @@ class Paths {
 }
 
 /**
- * Пути, используемые в программе.  
+ * Пути, используемые в программе.
  * _main process_
  */
 export default new Paths()._init() as Paths & IPaths

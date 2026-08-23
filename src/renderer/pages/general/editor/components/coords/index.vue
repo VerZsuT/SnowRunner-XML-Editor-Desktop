@@ -18,12 +18,12 @@
 </template>
 
 <script lang='ts' setup>
+import type { IPositionAttrDescriptor } from '@modules/xml/game/attributes'
+import type Position from '@modules/xml/game/position'
+import type { EmitsToProps } from '@renderer/types'
 import type { IInputProps, IParameterProps, ParameterEmits } from '../../types'
 import Parameter from '../parameter.vue'
 import CoordsItem from './item.vue'
-import type { IPositionAttrDescriptor } from '/mods/xml/game/attributes'
-import type Position from '/mods/xml/game/position'
-import type { EmitsToProps } from '/rend/types'
 
 export type CoordsProps = Props & EmitsToProps<ParameterEmits>
 

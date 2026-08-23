@@ -1,11 +1,11 @@
+import { Files } from '@modules/files/main'
+import type { IFile } from '@modules/main'
 import type { IFileSizes } from './types'
-import type { IFile } from '/mods/files/main'
-import { Files } from '/mods/files/main'
 
 export type * from './types'
 
 /**
- * Работа с массивом размеров архивов.  
+ * Работа с массивом размеров архивов.
  * _main process_
  */
 class Sizes {
@@ -34,7 +34,7 @@ class Sizes {
 
     this.initial = initial
     this.mods = mods
-    
+
     return this
   }
 
@@ -105,7 +105,7 @@ class Sizes {
 }
 
 /**
- * Работа с массивом размеров архивов.  
+ * Работа с массивом размеров архивов.
  * _main process_
  */
 export default await new Sizes().isReady

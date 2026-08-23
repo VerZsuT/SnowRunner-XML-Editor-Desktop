@@ -3,7 +3,7 @@ import { booleanAttr, floatAttr, properties, stringAttr } from '../../attributes
 import { BaseGameData } from '../../base'
 import Limit from '../../limit'
 import XMLWithTemplates, { innerElement } from '../../xml-with-templates'
-import texts from './texts'
+import texts from './localization'
 
 /** Лебёдка. */
 export default class Winch extends XMLWithTemplates {

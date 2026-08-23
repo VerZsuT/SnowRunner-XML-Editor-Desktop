@@ -83,17 +83,17 @@
 
 <script lang='ts' setup>
 import { EditFilled, StarFilled } from '@ant-design/icons-vue'
+import type { IFile, TruckType } from '@modules/renderer'
+import { Edited, Favorites, GameTexts, Images, Messages, Modifications, Page, TruckXML } from '@modules/renderer'
+import { ContextMenu } from '@renderer/components'
+import { prettyString } from '@utilities/renderer'
 import { Card, Tag, Typography } from 'ant-design-vue'
 import { storeToRefs } from 'pinia'
 import { computed, onMounted, ref, shallowRef, toRefs, watchEffect } from 'vue'
 import { ListMode, SourceType, type Category } from '../../../enums'
 import { useEditorStore, useListStore, usePageStore } from '../../../store'
-import texts from '../../texts'
-import { EditorUtils } from '../../utils'
-import type { IFile, TruckType } from '/mods/renderer'
-import { Edited, Favorites, GameTexts, Images, Messages, Mods, Page, TruckXML } from '/mods/renderer'
-import { ContextMenu } from '/rend/components'
-import { prettyString } from '/utils/renderer'
+import texts from '../../localization'
+import { EditorUtils } from '../../utilities'
 
 const { Text } = Typography
 
@@ -128,7 +128,7 @@ function getName(file: IFile, xml: TruckXML): string {
     const uiName = xml.GameData?.UiDesc?.UiName
 
     if (uiName) {
-      name = GameTexts.get(uiName, Mods.getModID(file)) || uiName
+      name = GameTexts.get(uiName, Modifications.getModID(file)) || uiName
     }
   }
 

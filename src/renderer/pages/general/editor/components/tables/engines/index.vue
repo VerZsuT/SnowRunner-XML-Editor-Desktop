@@ -14,16 +14,16 @@
 </template>
 
 <script lang='ts' setup>
+import type { EnginesXML, FileInfo, IFile } from '@modules/renderer'
+import { hasItems } from '@utilities/renderer'
 import { storeToRefs } from 'pinia'
 import { nextTick, onMounted, shallowRef } from 'vue'
 import { useEditorStore } from '../../../../store'
-import { FilesUtils } from '../../../utils'
+import { FilesUtils } from '../../../utilities'
 import { FileNameInfo } from '../../info'
-import type { ReadyEmits, ReadyProps } from '../../utils'
-import { useFilesReady } from '../../utils'
+import type { ReadyEmits, ReadyProps } from '../../utilities'
+import { useFilesReady } from '../../utilities'
 import EngineSet from './set.vue'
-import type { EnginesXML, FileInfo, IFile } from '/mods/renderer'
-import { hasItems } from '/utils/renderer'
 
 export type EnginesProps = ReadyProps & Props
 

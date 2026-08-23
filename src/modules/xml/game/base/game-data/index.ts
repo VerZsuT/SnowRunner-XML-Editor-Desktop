@@ -3,7 +3,7 @@ import { booleanAttr, integerAttr, properties } from '../../attributes'
 import Limit from '../../limit'
 import XMLWithTemplates, { innerElement } from '../../xml-with-templates'
 import BaseUiDesc from '../ui-desc'
-import texts from './texts'
+import texts from './localization'
 
 /** Информация о взаимодействии сущности с окружающим миром. */
 export default class BaseGameData extends XMLWithTemplates {

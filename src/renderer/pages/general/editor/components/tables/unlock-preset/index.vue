@@ -17,11 +17,11 @@
 </template>
   
 <script lang='ts' setup>
+import type { IBooleanAttrDescriptor, INumberAttrDescriptor } from '@modules/xml/game/attributes'
 import Group from '../../group'
 import { Int } from '../../input'
 import Select from '../../select'
-import texts from './texts'
-import type { IBooleanAttrDescriptor, INumberAttrDescriptor } from '/mods/xml/game/attributes'
+import texts from './localization'
 
 export type UnlockPresetProps = {
   element?: {

@@ -1,9 +1,9 @@
+import type { IInputAreas } from '@renderer/pages/general/editor/types'
+import { arrayToString, boolToString, hasItems, numberToString, stringToArray, stringToBoolean, stringToNumber } from '@utilities/renderer'
 import type GameXML from './game-xml'
 import type Limit from './limit'
 import type { PosLimits } from './position'
 import Position from './position'
-import type { IInputAreas } from '/rend/pages/general/editor/types'
-import { arrayToString, boolToString, hasItems, numberToString, stringToArray, stringToBoolean, stringToNumber } from '/utils/renderer'
 
 /** Ключ свойства в параметрами атрибутов. */
 const PROPERTIES = Symbol('properties')
@@ -34,14 +34,14 @@ interface IBaseAttributeProperties<Value = unknown> {
 /** Строковый атрибут. */
 export function stringAttr<T extends string>() {
   type Value = T | undefined
-  
+
   return function<This extends GameXML>(
     _target: ClassAccessorDecoratorTarget<This, Value>,
     context: ClassAccessorDecoratorContext<This, Value>
   ): ClassAccessorDecoratorResult<This, Value> {
     const name = context.name.toString()
-    let defaultValue: Value 
-  
+    let defaultValue: Value
+
     return {
       init(value) {
         defaultValue = value
@@ -50,7 +50,7 @@ export function stringAttr<T extends string>() {
           enumerable: true,
           writable: false
         })
-    
+
         return value
       },
       get() {
@@ -64,7 +64,7 @@ export function stringAttr<T extends string>() {
 }
 
 /**
- * Атрибут с массивом строк.  
+ * Атрибут с массивом строк.
  * Пример - `First, Second, Third`.
  * @param parser Функция-преобразователь.
  * @param preserve Не удалять атрибут при пустом значении (`false`).

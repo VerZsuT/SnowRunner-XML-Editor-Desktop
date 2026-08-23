@@ -1,5 +1,5 @@
+import { Spin } from '@renderer/components'
 import { defineAsyncComponent, h } from 'vue'
-import { Spin } from '/rend/components'
 
 export default defineAsyncComponent({
 	loader: () => import('./index.vue'),

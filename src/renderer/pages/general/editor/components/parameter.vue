@@ -31,19 +31,19 @@
 </template>
 
 <script lang='ts' setup>
+import { Config, Lang, type IExportedData } from '@modules/renderer'
+import { ContextMenu, Wrap } from '@renderer/components'
+import type { EmitsToProps } from '@renderer/types'
+import { isNullable, isString } from '@utilities/renderer'
 import { Popover, Typography } from 'ant-design-vue'
 import { storeToRefs } from 'pinia'
 import { computed, h, ref, toRefs } from 'vue'
 import { useEditorStore } from '../../store'
-import texts from '../texts'
+import texts from '../localization'
 import type { IParameterProps, ParameterEmits, ParameterValue } from '../types'
-import { ExportUtils, ImportUtils, ResetUtils } from '../utils'
-import { injectFile } from '../utils/import'
-import { useActive } from './utils'
-import { Config, Lang, type IExportedData } from '/mods/renderer'
-import { ContextMenu, Wrap } from '/rend/components'
-import type { EmitsToProps } from '/rend/types'
-import { isNullable, isString } from '/utils/renderer'
+import { ExportUtils, ImportUtils, ResetUtils } from '../utilities'
+import { injectFile } from '../utilities/import'
+import { useActive } from './utilities'
 
 const { Text } = Typography
 const popover = h(Popover, { placement: 'topLeft' })

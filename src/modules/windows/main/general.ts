@@ -2,7 +2,7 @@ import { emitEvent } from 'emr-bridge/main'
 import { ProgramWindow, WindowType } from '../enums'
 import { PubKeys } from '../public'
 import type { IGeneralWindow } from '../types'
-import { getDevPage, getRenderer, newWindow } from './utils'
+import { getDevPage, getRenderer, newWindow } from './utilities'
 
 /** Главное окно программы. */
 export default newWindow<IGeneralWindow>({

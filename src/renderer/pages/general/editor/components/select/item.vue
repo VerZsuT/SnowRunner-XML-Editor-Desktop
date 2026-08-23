@@ -11,10 +11,10 @@
 </template>
 
 <script lang='ts' setup>
+import type { EmitsToProps } from '@renderer/types'
 import { Select } from 'ant-design-vue'
 import { computed } from 'vue'
 import type { ISelectProps, SelectEmits } from '../../types'
-import type { EmitsToProps } from '/rend/types'
 
 export type SelectItemProps = ISelectProps & EmitsToProps<SelectEmits>
 

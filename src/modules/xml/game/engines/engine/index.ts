@@ -3,7 +3,7 @@ import { floatAttr, integerAttr, properties, stringAttr } from '../../attributes
 import { BaseGameData } from '../../base'
 import Limit from '../../limit'
 import XMLWithTemplates, { innerElement } from '../../xml-with-templates'
-import texts from './texts'
+import texts from './localization'
 
 /** Двигатель. */
 export default class Engine extends XMLWithTemplates {
@@ -14,7 +14,7 @@ export default class Engine extends XMLWithTemplates {
   @stringAttr()
   accessor Name: XmlValue<string>
   declare $Name: IStringAttrDescriptor
-  
+
   /** Расход топлива. */
   @properties({
     get label() { return texts.fuelConsumption },
@@ -25,7 +25,7 @@ export default class Engine extends XMLWithTemplates {
   @floatAttr()
   accessor FuelConsumption: XmlValue<number>
   declare $FuelConsumption: INumberAttrDescriptor
-  
+
   /** Размер допустимого ущерба. */
   @properties({
     get label() { return texts.damageCapacity },
@@ -95,7 +95,7 @@ export default class Engine extends XMLWithTemplates {
   @integerAttr()
   accessor Torque: XmlValue<number>
   declare $Torque: INumberAttrDescriptor
-  
+
   /** Множитель мощности, когда ущерб движка достиг порога CriticalDamageThreshold. */
   @properties({
     get label() { return texts.damagedMinTorqueModifier },

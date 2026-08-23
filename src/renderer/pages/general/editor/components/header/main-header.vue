@@ -52,17 +52,17 @@
 
 <script lang='ts' setup>
 import { ExportOutlined, ImportOutlined, MenuFoldOutlined, MenuUnfoldOutlined, SaveOutlined, UndoOutlined } from '@ant-design/icons-vue'
+import type { IFile, TruckXML } from '@modules/renderer'
+import { Archive, Config, Edited, File, GameTexts, Messages, Modifications, Page, TruckFileType } from '@modules/renderer'
+import { Header } from '@renderer/components'
+import { lastItem, prettyString } from '@utilities/renderer'
 import { Button, Dropdown, Menu, Modal, Typography } from 'ant-design-vue'
 import { storeToRefs } from 'pinia'
 import { ref } from 'vue'
 import { EditedAction, useEditorStore, usePageStore } from '../../../store'
-import texts from '../../texts'
-import { ExportUtils, ImportUtils, ResetUtils, SaveUtils } from '../../utils'
+import texts from '../../localization'
+import { ExportUtils, ImportUtils, ResetUtils, SaveUtils } from '../../utilities'
 import FilesMenu from '../files-menu'
-import type { IFile, TruckXML } from '/mods/renderer'
-import { Archive, Config, Edited, File, GameTexts, Messages, Mods, Page, TruckFileType } from '/mods/renderer'
-import { Header } from '/rend/components'
-import { lastItem, prettyString } from '/utils/renderer'
 
 const { Text } = Typography
 
@@ -85,7 +85,7 @@ defineExpose({
 })
 
 const menuIsOpened = ref(false)
-const mod = Mods.findByFile(file)
+const mod = Modifications.findByFile(file)
 const title = getMainTitle()
 
 async function onSave(updateFiles = true) {
@@ -135,7 +135,7 @@ function getMainTitle(): string {
   if (xml.GameData?.UiDesc) {
     const text = xml.GameData.UiDesc.UiName ?? xml.GameData.UiDesc.DefaultRegion?.UiName
 
-    return GameTexts.get(text, Mods.getModID(file)) ?? text ?? 'TITLE_ERROR'
+    return GameTexts.get(text, Modifications.getModID(file)) ?? text ?? 'TITLE_ERROR'
   }
 
   const separator = file.path.includes('/') ? '/' : '\\'

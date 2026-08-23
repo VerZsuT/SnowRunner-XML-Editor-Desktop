@@ -1,5 +1,5 @@
-import Messages from '/mods/messages/renderer'
-import { formatString } from '/utils/strings/renderer'
+import Messages from '@modules/messages/renderer'
+import { formatString } from '@utilities/renderer'
 
 export * from './enums'
 
@@ -17,7 +17,7 @@ export class ProgramError extends Error {
   constructor(text: string, error?: Error | null, ...formatArgs: string[]) {
     text = formatString(text, ...formatArgs)
     Messages.error(text)
-    
+
     super(text, { cause: error })
   }
 }

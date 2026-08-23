@@ -21,11 +21,11 @@
 </template>
 
 <script lang='ts' setup>
+import type { IStringConvertAttrDescriptor } from '@modules/xml/game/attributes'
+import type { EmitsToProps } from '@renderer/types'
 import type { ArrOrNot, IParameterProps, ISelectProps, ParameterEmits } from '../../types'
 import Parameter from '../parameter.vue'
 import SelectItem from './item.vue'
-import type { IStringConvertAttrDescriptor } from '/mods/xml/game/attributes'
-import type { EmitsToProps } from '/rend/types'
 
 export type SelectProps = Props & EmitsToProps<ParameterEmits>  
 

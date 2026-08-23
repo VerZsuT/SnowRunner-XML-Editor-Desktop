@@ -27,12 +27,12 @@
 </template>
 
 <script lang='ts' setup>
+import type { EmitsToProps } from '@renderer/types'
+import { isNullable } from '@utilities/renderer'
 import { Input, InputNumber } from 'ant-design-vue'
 import { computed, nextTick, ref, toRefs, watch } from 'vue'
 import { InputType, NumberType } from '../../enums'
 import type { IInputProps, ParameterEmits } from '../../types'
-import type { EmitsToProps } from '/rend/types'
-import { isNullable } from '/utils/renderer'
 
 type Status = '' | 'error' | 'warning'
 

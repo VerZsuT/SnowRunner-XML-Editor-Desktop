@@ -5,7 +5,7 @@ import { innerElement, innerElements } from '../../xml-with-templates'
 import AddonSlots from './addon-slots'
 import AddonSockets from './addon-sockets'
 import CraneSocket from './crane-socket'
-import texts from './texts'
+import texts from './localization'
 import UiDesc from './ui-desc'
 import WinchSocket from './winch-socket'
 

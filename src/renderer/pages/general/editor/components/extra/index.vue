@@ -37,12 +37,12 @@
 import type { IActionProps } from '../../types'
 import Accordion from '../accordion.vue'
 import Group from '../group'
-import type { ReadyEmits, ReadyProps } from '../utils'
-import { useFilesReady } from '../utils'
+import type { ReadyEmits, ReadyProps } from '../utilities'
+import { useFilesReady } from '../utilities'
 import AddonsContent from './addons-content'
 import BanditCrane from './bandit-crane'
 import Cranes from './cranes'
-import texts from './texts'
+import texts from './localization'
 import Trailers from './trailers'
 
 enum ReadyType {

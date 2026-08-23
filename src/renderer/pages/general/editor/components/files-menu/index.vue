@@ -37,12 +37,12 @@
 </template>
 
 <script lang='ts' setup>
+import { hasItems } from '@utilities/renderer'
 import { SubMenu, Typography } from 'ant-design-vue'
 import { storeToRefs } from 'pinia'
 import { useEditorStore } from '../../../store'
 import Files from './files.vue'
-import texts from './texts'
-import { hasItems } from '/utils/renderer'
+import texts from './localization'
 
 const { Text } = Typography
 

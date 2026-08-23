@@ -26,10 +26,10 @@
 
 <script lang='ts' setup>
 import { FileFilled, FolderFilled } from '@ant-design/icons-vue'
+import type { IDir, IFile } from '@modules/renderer'
+import { Dialogs, Messages } from '@modules/renderer'
 import { Button } from 'ant-design-vue'
-import texts from './texts'
-import type { IDir, IFile } from '/mods/renderer'
-import { Dialogs, Messages } from '/mods/renderer'
+import texts from './localization'
 
 const file = defineModel<IFile>()
 

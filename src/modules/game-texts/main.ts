@@ -1,14 +1,15 @@
+import { providePublic, publicField, publicMethod } from '@bridge/main'
+import Archive from '@modules/archive/main'
+import Config, { Lang } from '@modules/data/config/main'
+import Modifications from '@modules/data/modifications/main'
+import { Dirs } from '@modules/files/main'
 import type { FSWatcher } from 'node:fs'
-import { Archive } from '../main'
 import type { IGameTexts, ITranslation } from './types'
-import Config, { Lang } from '/mods/data/config/main'
-import { Dirs } from '/mods/files/main'
-import { providePublic, publicField, publicMethod } from '/utils/bridge/main'
 
 export type * from './types'
 
 /**
- * Работа с игровой локализацией.  
+ * Работа с игровой локализацией.
  * _main process_
  */
 @providePublic()
@@ -66,9 +67,8 @@ class GameTexts {
   @publicMethod()
   async initFromMods() {
     const result: IGameTexts['mods'] = {}
-    const Mods = (await import('/mods/data/mods/main')).default
 
-    for (const mod of Mods) {
+    for (const mod of Modifications) {
       if (!await Dirs.modsTemp.dir(mod.name, 'texts').exists()) {
         continue
       }
@@ -123,7 +123,7 @@ class GameTexts {
         strings[key] = value
       } catch {}
     }
-    
+
     return strings
   }
 
@@ -140,7 +140,7 @@ class GameTexts {
 }
 
 /**
- * Работа с игровой локализацией.  
+ * Работа с игровой локализацией.
  * _main process_
  */
 export default new GameTexts()

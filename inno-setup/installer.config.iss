@@ -1,5 +1,5 @@
 #define MyAppName "SnowRunnerXMLEditor"
-#define MyAppVersion "1.2.0"
+#define MyAppVersion "1.3.0"
 #define MyAppPublisher "VerZsuT"
 #define MyAppURL "https://snowrunner.mod.io/guides/snowrunner-xml-editor/"
 #define MyAppExeName "SnowRunnerXMLEditor.exe"
@@ -16,7 +16,7 @@ DefaultDirName={autopf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 OutputDir="..\out"
 OutputBaseFilename={#MyAppName}
-SetupIconFile="..\out\{#MyAppName}\resources\app\.vite\build\favicon.ico"
+SetupIconFile="..\out\{#MyAppName}\resources\app\.vite\favicon.ico"
 AppReadmeFile="..\out\{#MyAppName}\resources\app\.vite\README.md"
 LicenseFile="..\out\{#MyAppName}\resources\app\.vite\LICENSE"
 SolidCompression=yes

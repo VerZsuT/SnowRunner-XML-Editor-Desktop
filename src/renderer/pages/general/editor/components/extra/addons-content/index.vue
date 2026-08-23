@@ -82,6 +82,11 @@
 </template>
 
 <script lang='ts' setup>
+import { LocalizationStrings } from '@localization'
+import type { IFile } from '@modules/renderer'
+import { AddonXML, Config, DLCs, Dirs, GameTexts, Messages, System, XMLElement } from '@modules/renderer'
+import { Spin } from '@renderer/components'
+import { hasItems } from '@utilities/renderer'
 import type { SelectProps } from 'ant-design-vue'
 import { Button, Input, Select, Typography } from 'ant-design-vue'
 import { storeToRefs } from 'pinia'
@@ -89,15 +94,10 @@ import { computed, reactive, ref } from 'vue'
 import { useEditorStore } from '../../../../store'
 import type { IActionProps } from '../../../types'
 import Group from '../../group'
-import type { ReadyEmits, ReadyProps } from '../../utils'
-import { useReady } from '../../utils'
-import texts from '../texts'
+import type { ReadyEmits, ReadyProps } from '../../utilities'
+import { useReady } from '../../utilities'
+import texts from '../localization'
 import ContentField from './content-field.vue'
-import type { IFile } from '/mods/renderer'
-import { AddonXML, Config, DLCs, Dirs, GameTexts, Helpers, Messages, XMLElement } from '/mods/renderer'
-import { Spin } from '/rend/components'
-import { hasItems } from '/utils/renderer'
-import { BaseLocalization } from '/utils/texts/base-localization'
 
 const { Text } = Typography
 
@@ -126,7 +126,7 @@ const loadStatus = reactive({
   isLoading: false,
   count: 0
 })
-const label = computed(() => new BaseLocalization()
+const label = computed(() => new LocalizationStrings()
   .ru('Содержимое аддонов')
   .en('Addons content')
   .de('Addon-Inhalt')
@@ -240,7 +240,7 @@ function openFile() {
   const file = getFile(addon.value)
 
   if (file) {
-    void Helpers.openFile(file.path)
+    void System.openFile(file.path)
   }
 }
 

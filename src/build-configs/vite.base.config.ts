@@ -17,10 +17,11 @@ export const external = [...builtins]
 
 /** Алиасы путей. */
 export const alias = {
-	'/mods': join(_dirname, '../modules'),
-	'/rend': join(_dirname, '../renderer'),
-	'/utils': join(_dirname, '../utils'),
-	'/consts': join(_dirname, '../consts')
+	'@modules': join(_dirname, '../modules'),
+	'@renderer': join(_dirname, '../renderer'),
+	'@utilities': join(_dirname, '../utilities'),
+	'@bridge': join(_dirname, '../utilities/bridge'),
+	'@localization': join(_dirname, '../utilities/localization')
 }
 
 export function externalizePlugin(options): Plugin {

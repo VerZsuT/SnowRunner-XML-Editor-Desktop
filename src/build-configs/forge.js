@@ -19,20 +19,23 @@ class ForgeConfig {
 	rendererConfigPath = this.getPathToConfig('renderer')
 
 	/** Получить объект конфигурации. */
+	/**
+	 * @returns {import("@electron-forge/shared-types").ForgeConfig}
+	 */
 	getConfig() {
 		return {
 			packagerConfig: {
 				overwrite: true,
-				icon: '.vite/build/favicon.ico'
+				icon: '.vite/favicon.ico'
 			},
 			hooks: {
 				async prePackage() {
 					console.info('Change version')
 
-					const path = join(_dirname, '../consts.ts')
+					const path = join(_dirname, '../modules/app/index.ts')
 					const constsData = String(await readFile(path))
 
-					await writeFile(path, constsData.replaceAll(/PROGRAM_VERSION =.*?\r\n/g, `PROGRAM_VERSION = '${version}'\r\n`))
+					await writeFile(path, constsData.replaceAll(/APP_VERSION =.*?\r\n/g, `APP_VERSION = '${version}'\r\n`))
 				},
 				async postPackage(_, { outputPaths }) {
 					class Paths {
@@ -119,10 +122,12 @@ class ForgeConfig {
 								config: this.preloadConfigPath
 							}
 						],
-						renderer: [{
-							name: 'renderer',
-							config: this.rendererConfigPath
-						}]
+						renderer: [
+							{
+								name: 'renderer',
+								config: this.rendererConfigPath
+							}
+						]
 					}
 				}
 			]

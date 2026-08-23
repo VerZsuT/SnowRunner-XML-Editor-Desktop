@@ -3,7 +3,7 @@ import { integerAttr, positionAttr, properties } from '../../../attributes'
 import Limit from '../../../limit'
 import type Position from '../../../position'
 import XMLWithTemplates, { innerElement } from '../../../xml-with-templates'
-import texts from './texts'
+import texts from './localization'
 
 /** Физическая модель. */
 export default class PhysicsBody extends XMLWithTemplates {

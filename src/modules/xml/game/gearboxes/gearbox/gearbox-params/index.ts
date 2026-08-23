@@ -2,7 +2,7 @@ import type { IBooleanAttrDescriptor, XmlElement, XmlValue } from '../../../attr
 import { booleanAttr, properties } from '../../../attributes'
 import { BaseUiDesc } from '../../../base'
 import XMLWithTemplates, { innerElement } from '../../../xml-with-templates'
-import texts from './texts'
+import texts from './localization'
 
 /** Наличие передач в коробке. */
 export default class GearboxParams extends XMLWithTemplates {

@@ -1,6 +1,6 @@
+import type { FileInfo, IFile } from '@modules/renderer'
 import { defineStore } from 'pinia'
 import { reactive, ref, shallowRef } from 'vue'
-import type { FileInfo, IFile } from '/mods/renderer'
 
 export const useEditorStore = defineStore('editor', () => {
   const editedAction = ref(EditedAction.markAsEdited)

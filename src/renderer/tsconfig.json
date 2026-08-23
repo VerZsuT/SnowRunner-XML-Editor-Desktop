@@ -1,12 +1,12 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
+    "target": "es2025",
     "moduleResolution": "Bundler",
     "lib": ["ESNext", "DOM", "DOM.Iterable"],
-    "module": "ESNext",
+    "module": "esnext",
+    "rootDir": "..",
     "outDir": "../dist",
     "newLine": "LF",
-    "baseUrl": "..",
     "strict": true,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
@@ -16,10 +16,12 @@
     "skipLibCheck": true,
     "isolatedModules": true,
     "paths": {
-      "/mods/*": ["modules/*"],
-      "/rend/*": ["renderer/*"],
-      "/utils/*": ["utils/*"],
-      "/consts": ["consts"]
+      "@modules/*": ["../modules/*"],
+      "@renderer/*": ["../renderer/*"],
+      "@utilities/*": ["../utilities/*"],
+      "@bridge/*": ["../utilities/bridge/*"],
+      "@localization/*": ["../utilities/localization/*"],
+      "@localization": ["../utilities/localization/index"]
     }
   },
   "include": [

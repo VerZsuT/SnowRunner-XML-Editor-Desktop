@@ -1,6 +1,6 @@
+import { LocalizationStrings } from '@localization'
+import { Config, type TruckAddonSocket, type TruckXML } from '@modules/renderer'
 import Crane from './crane'
-import { Config, type TruckAddonSocket, type TruckXML } from '/mods/renderer'
-import { BaseLocalization } from '/utils/texts/base-localization'
 
 export type CranesData = {
   hasRUCrane: boolean
@@ -9,7 +9,7 @@ export type CranesData = {
 
 class Action {
   get name() {
-    return new BaseLocalization()
+    return new LocalizationStrings()
       .ru('Краны')
       .en('Cranes')
       .de('Kräne')
@@ -106,10 +106,10 @@ class Action {
 
     stateSetter?.(false)
   }
-  
+
   hasCranes(xml: TruckXML): [hasRU: boolean, hasUS: boolean] {
     const AddonSockets = xml.GameData?.AddonSockets ?? []
-    
+
     return [
       Boolean(AddonSockets.some(({ Sockets }) => Sockets.some(({ Names }) => Names.includes(Crane.RU)))),
       Boolean(AddonSockets.some(({ Sockets }) => Sockets.some(({ Names }) => Names.includes(Crane.US))))

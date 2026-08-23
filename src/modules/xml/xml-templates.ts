@@ -1,7 +1,7 @@
+import { Dirs } from '@modules/files/renderer'
+import type { IFile } from '@modules/renderer'
 import type { Cheerio } from 'cheerio'
 import XMLElement from './xml-element'
-import type { IFile } from '/mods/files/renderer'
-import { Dirs } from '/mods/files/renderer'
 
 /** Шаблоны `_templates`. */
 export default class XMLTemplates extends XMLElement {
@@ -126,7 +126,7 @@ export default class XMLTemplates extends XMLElement {
           break
       }
     }
-    
+
     return selector
       ? this.select(selector) ?? this.include?.getTemplate(element)
       : undefined

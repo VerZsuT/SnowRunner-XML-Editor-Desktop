@@ -1,6 +1,6 @@
+import { LocalizationStrings } from '@localization'
+import { Config, type TruckAddonSocket, type TruckXML } from '@modules/renderer'
 import Trailer from './trailer'
-import { Config, type TruckAddonSocket, type TruckXML } from '/mods/renderer'
-import { BaseLocalization } from '/utils/texts/base-localization'
 
 export type TrailersData = {
   hasScoutTrailer: boolean
@@ -9,7 +9,7 @@ export type TrailersData = {
 
 class Action {
   get name() {
-    return new BaseLocalization()
+    return new LocalizationStrings()
       .ru('Прицепы')
       .en('Trailers')
       .de('Anhänger')
@@ -112,7 +112,7 @@ class Action {
 
   hasTrailers(xml: TruckXML): [hasScout: boolean, hasMain: boolean] {
     const AddonSockets = xml.GameData?.AddonSockets ?? []
-    
+
     return [
       Boolean(AddonSockets.some(({ Sockets }) => Sockets.some(({ Names }) => Names.includes('ScautTrailer')))),
       Boolean(AddonSockets.some(({ Sockets }) => Sockets.some(({ Names }) => Names.includes('Trailer'))))

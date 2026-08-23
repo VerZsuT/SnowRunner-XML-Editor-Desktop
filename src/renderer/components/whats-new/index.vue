@@ -1,7 +1,7 @@
 <template>
   <Modal
     v-model:open="isOpen"
-    :title="`${texts.whatsNewTitle} ${PROGRAM_VERSION}`"
+    :title="`${texts.whatsNewTitle} ${APP_VERSION}`"
   >
     <div class="container">
       <VersionInfo :changes="info" />
@@ -20,17 +20,17 @@
 </template>
 
 <script lang='ts' setup>
+import { LocalizationStrings } from '@localization'
+import { APP_VERSION } from '@modules/app'
+import { Config } from '@modules/renderer'
 import { Button, Modal } from 'ant-design-vue'
 import { computed } from 'vue'
-import texts from './texts'
+import texts from './localization'
 import VersionInfo from './version-info.vue'
-import { PROGRAM_VERSION } from '/consts'
-import { Config } from '/mods/renderer'
-import { BaseLocalization } from '/utils/texts/base-localization'
 
 /** Открыто ли модальное окно. */
 const isOpen = defineModel<boolean>({ required: true })
-const info = computed(() => new BaseLocalization<string[]>()
+const info = computed(() => new LocalizationStrings<string[]>()
   .ru([
     'Обновлены компоненты программы',
     'Добавлены картинки новых авто',

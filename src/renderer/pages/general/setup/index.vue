@@ -36,13 +36,13 @@
 </template>
 
 <script lang='ts' setup>
+import type { IFile } from '@modules/renderer'
+import { App, Archive, Backup, Config } from '@modules/renderer'
+import { Header, Language } from '@renderer/components'
 import { Button, Steps } from 'ant-design-vue'
 import { ref } from 'vue'
 import InitialSelect from './initial-select.vue'
-import texts from './texts'
-import type { IFile } from '/mods/renderer'
-import { Archive, Backup, Config, Helpers } from '/mods/renderer'
-import { Header, Language } from '/rend/components'
+import texts from './localization.js'
 
 const step = ref(0)
 
@@ -54,7 +54,7 @@ async function onChangeGameFolder(file?: IFile) {
   Config.initialPath = file.path
   await Backup.save()
   await Archive.unpackMain()
-  Helpers.reloadApp()
+  App.reload()
 }
 </script>
 

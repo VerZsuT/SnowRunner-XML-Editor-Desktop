@@ -1,10 +1,10 @@
+import Config from '@modules/data/config/main'
+import Env from '@modules/env/main'
+import { ErrorText, ProgramError } from '@modules/errors/main'
+import { Dirs } from '@modules/files/main'
+import type { IDir, IFile } from '@modules/main'
+import Paths from '@modules/paths/main'
 import { execFile } from 'node:child_process'
-import type { IDir, IFile } from '../../../main'
-import { DEBUG_ARCHIVER } from '/consts'
-import Config from '/mods/data/config/main'
-import { ErrorText, ProgramError } from '/mods/errors/main'
-import { Dirs } from '/mods/files/main'
-import Paths from '/mods/paths/main'
 
 /** Работа с WinRAR. */
 class WinRAR {
@@ -59,7 +59,7 @@ class WinRAR {
    * @returns Аргументы запуска.
    */
   private getRunArgs(isMod = false) {
-    return DEBUG_ARCHIVER
+    return Env.debugArchiver
       ? []
       : [
         this.flags.inBackground,
@@ -110,11 +110,11 @@ class WinRAR {
         : this.lists.main
 
     const readResult = await archive.canRead()
-    
+
     if (!readResult.result) {
       throw new ProgramError(ErrorText.readFileError, readResult.error, archive.path)
     }
-    
+
     await dir.make()
 
     const writeResult = await dir.canWrite()

@@ -1,19 +1,19 @@
+import { Dir, DirArray, File, FileArray } from '@modules/files/renderer'
+import { initMain, mainMethod } from '@utilities/renderer'
 import type MainDialogs from './main'
-import { Dir, DirArray, File, FileArray } from '/mods/files/renderer'
-import { initMain, mainMethod } from '/utils/renderer'
 
 export * from './enums'
 export type * from './types'
 
 /**
- * Вывод системных диалогов.  
+ * Вывод системных диалогов.
  * _renderer process_
  */
 @initMain()
 class Dialogs {
   /**
    * Открыть окно выбора `.epf` файла.
-   * 
+   *
    * {@link MainDialogs.getEPF|Перейти к методу}
    */
   @mainMethod(File)
@@ -21,7 +21,7 @@ class Dialogs {
 
   /**
    * Открыть окно сохранения `.epf` файла.
-   * 
+   *
    * {@link MainDialogs.saveEPF|Перейти к методу}
    */
   @mainMethod(File)
@@ -29,7 +29,7 @@ class Dialogs {
 
   /**
    * Открыть окно выбора `initial.pak`.
-   * 
+   *
    * {@link MainDialogs.getInitial|Перейти к методу}
    */
   @mainMethod(File)
@@ -37,7 +37,7 @@ class Dialogs {
 
   /**
    * Открыть окно выбора папки.
-   * 
+   *
    * {@link MainDialogs.getDir|Перейти к методу}
    */
   @mainMethod(Dir)
@@ -45,7 +45,7 @@ class Dialogs {
 
   /**
    * Открыть окно выбора папки.
-   * 
+   *
    * {@link MainDialogs.getDirs|Перейти к методу}
    */
   @mainMethod(DirArray)
@@ -53,7 +53,7 @@ class Dialogs {
 
   /**
    * Открыть окно выбора папки.
-   * 
+   *
    * {@link MainDialogs.getPaks|Перейти к методу}
    */
   @mainMethod(FileArray)
@@ -61,7 +61,7 @@ class Dialogs {
 
   /**
    * Открыть окно выбора `.xml` файла.
-   * 
+   *
    * {@link MainDialogs.getXML|Перейти к методу}
    */
   @mainMethod(File)
@@ -69,7 +69,7 @@ class Dialogs {
 }
 
 /**
- * Вывод системных диалогов.  
+ * Вывод системных диалогов.
  * _renderer process_
  */
 export default new Dialogs()

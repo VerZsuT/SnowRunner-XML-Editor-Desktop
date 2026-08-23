@@ -1,13 +1,13 @@
+import { providePublic, publicField, publicMethod } from '@bridge/main'
+import { Dir, Dirs } from '@modules/files/main'
+import type { IDir, IFile, IFindDirsArgs, IFindFilesArgs } from '@modules/main'
+import ArrayBase from '@utilities/json-arrays/base'
 import type { IDLC } from './types'
-import type { IDir, IFile, IFindDirsArgs, IFindFilesArgs } from '/mods/files/main'
-import { Dir, Dirs } from '/mods/files/main'
-import { providePublic, publicField, publicMethod } from '/utils/bridge/main'
-import ArrayBase from '/utils/json-arrays/base'
 
 export type * from './types'
 
 /**
- * Работа с дополнениями игры.  
+ * Работа с дополнениями игры.
  * _main process_
  */
 @providePublic()
@@ -60,7 +60,7 @@ class DLCs extends ArrayBase<IDLC, IDLC & { dir: IDir }> {
 }
 
 /**
- * Работа с дополнениями игры.  
+ * Работа с дополнениями игры.
  * _main process_
  */
 export default new DLCs()

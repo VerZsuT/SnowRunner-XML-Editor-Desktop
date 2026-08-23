@@ -26,10 +26,10 @@
 </template>
 
 <script lang='ts' setup>
+import { Config, GameTexts, Lang, parseStrToLang } from '@modules/renderer'
 import { Segmented, Select } from 'ant-design-vue'
 import { nextTick } from 'vue'
-import texts from './texts'
-import { Config, GameTexts, Lang, parseStrToLang } from '/mods/renderer'
+import texts from './localization'
 
 export type LanguageProps = {
   /** Режим горизонтального выбора. */

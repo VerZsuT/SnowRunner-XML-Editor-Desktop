@@ -1,14 +1,15 @@
-import TextsLoader from './texts'
-import Archive from '/mods/archive/main'
-import Config, { BuildType } from '/mods/data/config/main'
-import { Dirs, Files } from '/mods/files/main'
-import Messages from '/mods/messages/main'
-import { providePublic, publicMethod } from '/utils/bridge/main'
+import { providePublic, publicMethod } from '@bridge/main'
+import { loadLocalization } from '@localization/main'
+import Archive from '@modules/archive/main'
+import Config, { BuildType } from '@modules/data/config/main'
+import { Dirs, Files } from '@modules/files/main'
+import Messages from '@modules/messages/main'
+import localization from './localization'
 
-const texts = await TextsLoader.loadMain()
+const texts = loadLocalization(localization)
 
 /**
- * Работа с бэкапом.  
+ * Работа с бэкапом.
  * _main process_
 */
 @providePublic()
@@ -47,7 +48,7 @@ class Backup {
 }
 
 /**
- * Работа с бэкапом.  
+ * Работа с бэкапом.
  * _main process_
 */
 export default new Backup()

@@ -1,41 +1,42 @@
+import { loadLocalization } from '@localization/main'
+import { App, Checks, Config, Dlc, Edited, Favorites, Loading, Modifications, Page, ProgramWindow, QuitParams, Sizes, Texts, Windows } from '@modules/main'
 import { app } from 'electron'
-import BaseApp from './base-app'
-import TextsLoader from './texts'
-import { Checks, Config, Dlc, Edited, Favorites, Loading, Mods, Page, ProgramWindow, QuitParams, Sizes, Texts, Windows } from '/mods/main'
+import BaseProgram from './base-program'
+import localization from './localization'
 
-import '/mods/epf/main'
-import '/mods/updates/main'
+import '@modules/epf/main'
+import '@modules/updates/main'
 
-const texts = await TextsLoader.loadMain()
+const texts = loadLocalization(localization)
 
-/** Приложение. */
-class App extends BaseApp {
+/** Программа. */
+class Program extends BaseProgram {
   async afterInit() {
     await app.whenReady()
-    await this.openProgram()
+    await this.run()
   }
 
   /** Запуск программы. */
-  async openProgram(): Promise<void> {
+  async run(): Promise<void> {
     Loading.init(undefined, 6, true)
     await Windows.openWindow(ProgramWindow.general)
     await Loading.runRequiredStage(texts.checkAdminPrivileges, Checks.hasAdminPrivileges.bind(Checks))
 
     if (!await Loading.runStage(texts.checkInitial, () => !!Config.initialPath)) {
       Windows.generalWindow!.route(Page.setup)
-      
+
       return Loading.hideLoading()
     }
-    
+
     await Loading.runStage(texts.unpack, Checks.checkInitialChanges.bind(Checks))
 
     if (!await Loading.runStage(texts.checkFiles, Checks.hasAllPaths.bind(Checks))) {
-      return Config.reset()
+      return App.resetToDefaults()
     }
 
     await Loading.runRequiredStage(texts.loadGameTexts, Texts.initFromInitial.bind(Texts))
     await Loading.runRequiredStage(texts.loadDlc, Dlc.init.bind(Dlc))
-    await Loading.runRequiredStage(texts.loadMods, Mods.procMods.bind(Mods))
+    await Loading.runRequiredStage(texts.loadMods, Modifications.procMods.bind(Modifications))
     Windows.generalWindow!.route(Page.lists)
   }
 
@@ -48,13 +49,13 @@ class App extends BaseApp {
     if (!QuitParams.saveJSONs) {
       return
     }
-    
+
     await Promise.all([
       Config.save(),
       Edited.save(),
       Sizes.save(),
       Favorites.save(),
-      Mods.save()
+      Modifications.save()
     ])
   }
 
@@ -67,4 +68,4 @@ class App extends BaseApp {
   }
 }
 
-new App()
+new Program()

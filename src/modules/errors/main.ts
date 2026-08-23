@@ -1,10 +1,10 @@
-import Messages from '/mods/messages/main'
-import { formatString } from '/utils/strings/main'
+import Messages from '@modules/messages/main'
+import { formatString } from '@utilities/main'
 
 export * from './enums'
 
 /**
- * Ошибка программы.  
+ * Ошибка программы.
  * _main process_
  */
 export class ProgramError extends Error {
@@ -17,7 +17,7 @@ export class ProgramError extends Error {
   constructor(text: string, error?: Error | null, ...formatArgs: string[]) {
     text = formatString(text, ...formatArgs)
     Messages.error(text)
-    
+
     super(text, { cause: error })
   }
 }

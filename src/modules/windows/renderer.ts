@@ -1,8 +1,8 @@
+import { initMain, mainMethod } from '@bridge/renderer'
 import { Bridge } from 'emr-bridge/renderer'
 import type { Page, ProgramWindow } from './enums'
 import type MainWindows from './main'
 import { PubKeys } from './public'
-import { initMain, mainMethod } from '/utils/bridge/renderer'
 
 export * from './enums'
 export type * from './types'
@@ -10,7 +10,7 @@ export type * from './types'
 const bridge = Bridge.as<object>()
 
 /**
- * Работа с окнами программы.  
+ * Работа с окнами программы.
  * _renderer process_
  */
 @initMain()
@@ -38,7 +38,7 @@ class Windows {
 }
 
 /**
- * Работа с окнами программы.  
+ * Работа с окнами программы.
  * _renderer process_
  */
 export default new Windows()

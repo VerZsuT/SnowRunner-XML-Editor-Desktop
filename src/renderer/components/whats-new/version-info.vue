@@ -13,7 +13,7 @@
 </template>
 
 <script lang='ts' setup>
-import { List, Typography } from 'ant-design-vue';
+import { List, Typography } from 'ant-design-vue'
 
 const { Text } = Typography
 

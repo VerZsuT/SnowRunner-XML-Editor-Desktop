@@ -21,16 +21,16 @@
 </template>
 
 <script lang='ts' setup>
+import type { IFile } from '@modules/renderer'
+import { DLCs, Dirs, Modifications, Page, TruckXML } from '@modules/renderer'
+import { Spin } from '@renderer/components'
+import { useKey } from '@renderer/utilities'
 import { storeToRefs } from 'pinia'
 import { nextTick, onMounted, ref, shallowRef } from 'vue'
 import { useEditorStore, usePageStore } from '../store'
 import { Header, Table } from './components'
-import type { ReadyEmits, ReadyProps } from './components/utils'
-import { FilesUtils, ResetUtils, provideFile } from './utils'
-import type { IFile } from '/mods/renderer'
-import { DLCs, Dirs, Mods, Page, TruckXML } from '/mods/renderer'
-import { Spin } from '/rend/components'
-import { useKey } from '/rend/utils'
+import type { ReadyEmits, ReadyProps } from './components/utilities'
+import { FilesUtils, ResetUtils, provideFile } from './utilities'
 
 export type EditorProps = Props & ReadyProps
 
@@ -76,7 +76,7 @@ useKey('Escape', () => route(Page.lists))
 
 setInfo({
   dlc: DLCs.getDLC(file),
-  mod: Mods.getModID(file),
+  mod: Modifications.getModID(file),
   isBackup: file.path.includes(Dirs.backupInitialData.name)
 })
 

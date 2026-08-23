@@ -1,17 +1,18 @@
+import { providePublic, publicMethod } from '@bridge/main'
+import { loadLocalization } from '@localization/main'
+import App from '@modules/app/main'
+import { Dirs } from '@modules/files/main'
+import Paths from '@modules/paths/main'
 import { app, shell } from 'electron'
 import { open } from 'node:fs/promises'
 import { get } from 'node:https'
 import { Loading } from '../main'
-import TextsLoader from './texts'
-import { Dirs } from '/mods/files/main'
-import Helpers from '/mods/helpers/main'
-import Paths from '/mods/paths/main'
-import { providePublic, publicMethod } from '/utils/bridge/main'
+import localization from './localization'
 
-const texts = await TextsLoader.loadMain()
+const texts = loadLocalization(localization)
 
 /**
- * Работа с обновлениями программы.  
+ * Работа с обновлениями программы.
  * _main process_
  */
 @providePublic()
@@ -52,7 +53,7 @@ class Updates {
         })
       }
     })
-    
+
     return promise
   }
 
@@ -61,7 +62,7 @@ class Updates {
   async updateApp(portable = false) {
     Loading.init(texts.downloading)
 
-    await Helpers.clearTemp()
+    await App.clearTemp()
     await Dirs.updateTemp.make()
 
     const postfix = portable
@@ -69,7 +70,7 @@ class Updates {
       : 'update.exe'
     const url = `${Paths.update}/SnowRunnerXMLEditor_${postfix}`
     const file = Dirs.updateTemp.file(`SnowRunnerXMLEditor_${postfix}`)
-    
+
     await this.download(url, file.path)
 
     if (portable) {
@@ -83,7 +84,7 @@ class Updates {
 }
 
 /**
- * Работа с обновлениями программы.  
+ * Работа с обновлениями программы.
  * _main process_
  */
 export default new Updates()

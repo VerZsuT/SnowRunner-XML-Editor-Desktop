@@ -1,24 +1,24 @@
-import { app } from 'electron'
+import { providePublic, publicField, publicMethod } from '@bridge/main'
+import { APP_VERSION } from '@modules/app'
+import Env from '@modules/env/main'
+import { ErrorText, ProgramError } from '@modules/errors/main'
+import { File, Files } from '@modules/files/main'
+import { isNullable } from '@utilities/main'
 import { BuildType, Lang, localeToLang, strToLang } from './enums'
 import type { IConfig } from './types'
-import { PROGRAM_VERSION } from '/consts'
-import { ErrorText, ProgramError } from '/mods/errors/main'
-import { File, Files } from '/mods/files/main'
-import { providePublic, publicField, publicMethod } from '/utils/bridge/main'
-import { isNullable } from '/utils/checks/main'
 
 export * from './enums'
 export type * from './types'
 
 /**
- * Работа с конфигурацией программы.  
+ * Работа с конфигурацией программы.
  * _main process_
  */
 @providePublic()
 class Config {
   /** Готов ли класс к использованию. */
   readonly isReady: Promise<typeof this>
-  
+
   /** Файл initial.pak. */
   get initial() {
     return new File(this.object.initialPath || '')
@@ -31,8 +31,8 @@ class Config {
 
   /** Стандартное значение конфигурации для `prod`. */
   readonly prodDefault: IConfig = {
-    version: PROGRAM_VERSION,
-    buildType: process.env.NODE_ENV === 'development'
+    version: APP_VERSION,
+    buildType: Env.isDev
       ? BuildType.dev
       : BuildType.prod,
     lang: this.getUserLang() || Lang.en,
@@ -48,8 +48,9 @@ class Config {
   private readonly devDefault: IConfig = {
     ...this.prodDefault,
     advancedMode: true,
-    lang: strToLang(process.env.DEV_LANG) || this.prodDefault.lang,
-    initialPath: process.env.DEV_INITIAL_PATH || this.prodDefault.initialPath,
+    lang: strToLang(Env.lang) || this.prodDefault.lang,
+    initialPath: Env.initialPath || this.prodDefault.initialPath,
+		optimizeUnpack: !Env.disableUnpackOptimizer,
     openWhatsNew: false
   }
 
@@ -91,25 +92,9 @@ class Config {
   async reset(noReload = false) {
     this.set(this.default)
 
-    await Promise.all([
-      (await import('/mods/helpers/main')).default
-        .clearTemp(),
-      (await import('/mods/data/sizes/main')).default
-        .reset(),
-      (await import('/mods/data/edited/main')).default
-        .reset(),
-      (await import('/mods/data/favorites/main')).default
-        .reset(),
-      (await import('/mods/data/mods/main')).default
-        .reset()
-    ])
-
     if (noReload) {
       return this.save()
     }
-
-    app.relaunch()
-    app.quit()
   }
 
   /** Инициализация класса. */
@@ -167,7 +152,7 @@ class Config {
     if (isNullable(config.lang)) {
       config.lang = this.default.lang
     }
-    
+
     return config
   }
 
@@ -211,7 +196,7 @@ class Config {
 }
 
 /**
- * Работа с конфигурацией программы.  
+ * Работа с конфигурацией программы.
  * _main process_
  */
 export default await new Config().isReady as Config & IConfig

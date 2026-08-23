@@ -7,8 +7,8 @@ import CompatibleWheels from './compatible-wheels'
 import EngineSocket from './engine-socket'
 import FuelTank from './fuel-tank'
 import GearboxSocket from './gearbox-socket'
+import texts from './localization'
 import SuspensionSocket from './suspension-socket'
-import texts from './texts'
 import Wheels from './wheels'
 import Winch from './winch'
 import WinchUpgradeSocket from './winch-upgrade-socket'
@@ -53,7 +53,7 @@ export default class TruckData extends AddonTruckData {
   @floatAttr()
   accessor EngineStartDelay: XmlValue<number>
   declare $EngineStartDelay: INumberAttrDescriptor
-  
+
   /** Время начала визуализации выхлопа. */
   @properties({
     get label() { return texts.exhaustStartTime },

@@ -1,9 +1,9 @@
-import texts from './texts'
-import type { IBooleanAttrDescriptor, INumberAttrDescriptor, IPositionAttrDescriptor, IStringAttrDescriptor, XmlValue } from '/mods/xml/game/attributes'
-import { booleanAttr, floatAttr, positionAttr, properties, stringAttr } from '/mods/xml/game/attributes'
-import Limit from '/mods/xml/game/limit'
-import type Position from '/mods/xml/game/position'
-import XMLWithTemplates from '/mods/xml/game/xml-with-templates'
+import type { IBooleanAttrDescriptor, INumberAttrDescriptor, IPositionAttrDescriptor, IStringAttrDescriptor, XmlValue } from '@modules/xml/game/attributes'
+import { booleanAttr, floatAttr, positionAttr, properties, stringAttr } from '@modules/xml/game/attributes'
+import Limit from '@modules/xml/game/limit'
+import type Position from '@modules/xml/game/position'
+import XMLWithTemplates from '@modules/xml/game/xml-with-templates'
+import texts from './localization'
 
 /** Расположение колеса. */
 export enum WheelLocation {

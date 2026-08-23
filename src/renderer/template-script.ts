@@ -1,4 +1,4 @@
-import { Config, Helpers, Messages } from '/mods/renderer'
+import { App, Config, Messages } from '@modules/renderer'
 
 /** Шаблон. */
 class Template {
@@ -30,10 +30,10 @@ class Template {
         document.querySelector<HTMLInputElement>('#save')?.click()
       } else if (keyIs('Q')) {
         // Быстрое закрытие.
-        Helpers.quitApp()
+        App.quit()
       } else if (keyIs('I') && shift && ctrl) {
         // Открыть `devtools`.
-        Helpers.devtools()
+        App.toggleDevTools()
       }
     })
   }

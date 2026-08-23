@@ -1,5 +1,5 @@
 <template>
-  <MenuItem @click="Helpers.openFile(value.path)">
+  <MenuItem @click="System.openFile(value.path)">
     <Text>{{ title ?? value.name }}</Text>
     <FileTextOutlined class="menu-item-icon" />
   </MenuItem>
@@ -7,9 +7,9 @@
 
 <script lang='ts' setup>
 import { FileTextOutlined } from '@ant-design/icons-vue'
+import type { IFile } from '@modules/renderer'
+import { System } from '@modules/renderer'
 import { MenuItem, Typography } from 'ant-design-vue'
-import type { IFile } from '/mods/renderer'
-import { Helpers } from '/mods/renderer'
 
 const { Text } = Typography
 

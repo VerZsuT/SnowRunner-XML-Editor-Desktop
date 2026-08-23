@@ -1,7 +1,7 @@
 import type { IStringAttrDescriptor, XmlValue } from '../../attributes'
 import { properties, stringAttr } from '../../attributes'
 import XMLWithTemplates from '../../xml-with-templates'
-import texts from './texts'
+import texts from './localization'
 
 /** Блок User Interface (UI). */
 export default class BaseUiDesc extends XMLWithTemplates {

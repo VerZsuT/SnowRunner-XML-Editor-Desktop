@@ -35,16 +35,16 @@
 </template>
 
 <script lang='ts' setup>
+import { App } from '@modules/renderer'
+import { Spin } from '@renderer/components'
 import { Button, Modal } from 'ant-design-vue'
 import { storeToRefs } from 'pinia'
 import { computed, nextTick, ref, watch } from 'vue'
 import { SourceType } from '../../../enums'
 import { useListStore } from '../../../store/list'
-import texts from '../../texts'
+import texts from '../../localization'
 import ModsPopup from '../mods-popup.vue'
 import ListItem from './item.vue'
-import { Helpers } from '/mods/renderer'
-import { Spin } from '/rend/components'
 
 const { category, source, files } = storeToRefs(useListStore())
 const isShowMods = ref(false)
@@ -61,7 +61,7 @@ function hideModsPopup(isReload?: boolean) {
       Modal.confirm({
         okText: texts.ok, cancelText: texts.cancel,
         title: texts.relaunchPrompt,
-        onOk: () => Helpers.reloadApp()
+        onOk: () => App.reload()
       })
     }, 200)
   }

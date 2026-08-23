@@ -1,9 +1,9 @@
+import type { IFile } from '@modules/renderer'
 import XMLElement from '../../xml-element'
 import XMLTemplates from '../../xml-templates'
 import type { XmlElements } from '../attributes'
 import XMLWithTemplates, { innerElements } from '../xml-with-templates'
 import Winch from './winch'
-import type { IFile } from '/mods/renderer'
 
 export { default as Winch } from './winch'
 

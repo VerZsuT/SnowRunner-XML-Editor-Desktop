@@ -1,0 +1,20 @@
+import { Localization, LocalizationStrings, loadLocalization } from '@localization/renderer'
+
+export default loadLocalization(new Localization({
+  winchLength: new LocalizationStrings()
+    .ru('Длина лебёдки')
+    .en('Winch length')
+    .de('Länge der Winde')
+    .ch('绞车的长度'),
+
+  winchLengthDesc: new LocalizationStrings()
+    .ru('Максимальная длина веревки лебедки')
+    .en('Maximum length of the winch rope')
+    .de('Maximale Länge des Seilwinde'),
+
+  strengthMult: new LocalizationStrings()
+    .ru('Сила лебёдки')
+    .en('Winch strength')
+    .de('Kraft der Winde')
+    .ch('绞车的动力')
+}))

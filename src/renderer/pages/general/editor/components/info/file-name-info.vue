@@ -5,7 +5,7 @@
   >
     <div
       class="content"
-      @click="Helpers.openFile(file.path)"
+      @click="System.openFile(file.path)"
     >
       <Text>{{ file.basename() }}</Text>
     </div>
@@ -13,10 +13,10 @@
 </template>
 
 <script lang='ts' setup>
+import type { IFile } from '@modules/renderer'
+import { Config, System } from '@modules/renderer'
 import { Typography } from 'ant-design-vue'
-import { useActive } from '../utils'
-import type { IFile } from '/mods/renderer'
-import { Config, Helpers } from '/mods/renderer'
+import { useActive } from '../utilities'
 
 const { Text } = Typography
 

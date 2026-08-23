@@ -1,25 +1,32 @@
+import { dirname, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
+import { normalizePath } from 'vite'
+
+/** Папка, в которой находится текущий исполняемый скрипт. */
+const _dirname = dirname(fileURLToPath(import.meta.url))
+
 /** Пути в программе. */
 class Paths {
 	/** Папка с исходниками. */
-	readonly src = './src'
+	readonly src = normalizePath(resolve(_dirname, '..'))
 
 	/** Папка проекта. */
-	readonly root = '.'
+	readonly root = normalizePath(resolve(this.src, '..'))
 
 	/** Папка с картинками. */
-	readonly images = `${this.src}/images`
+	readonly images = normalizePath(resolve(this.src, './images'))
 
 	/** Иконка. */
-	readonly favicon = `${this.src}/images/favicon.ico`
-	
+	readonly favicon = normalizePath(resolve(this.images, './favicon.ico'))
+
 	/** Папка с WinRAR. */
-	readonly winrar = `${this.src}/modules/archive/main/archiver/files`
+	readonly winrar = normalizePath(resolve(this.src, './modules/archive/main/archiver/files'))
 
 	/** Файл лицензии. */
-	readonly license = `${this.root}/LICENSE`
+	readonly license = normalizePath(resolve(this.root, './LICENSE'))
 
 	/** Файл README. */
-	readonly readme = `${this.root}/README.md`
+	readonly readme = normalizePath(resolve(this.root, './README.md'))
 }
 
 export default new Paths()

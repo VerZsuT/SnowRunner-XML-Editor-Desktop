@@ -32,13 +32,14 @@
   </Wrap>
 </template>
 <script setup lang="ts">
+import type { Limit } from '@modules/renderer'
+import type { IAttrDescriptor } from '@modules/xml/game/attributes'
+import { Wrap } from '@renderer/components'
+import { areasToString, formatString } from '@utilities/strings/renderer'
 import { Popover, Typography } from 'ant-design-vue'
 import { computed, h, toRefs } from 'vue'
-import texts from '../../texts'
+import texts from '../../localization'
 import type { IInputAreas, InputArea } from '../../types'
-import type { IAttrDescriptor } from '/mods/xml/game/attributes'
-import { Wrap } from '/rend/components'
-import { areasToString, formatString } from '/utils/strings/renderer'
 
 const { Text } = Typography
 const popover = h(Popover, { placement: 'topLeft' })
@@ -53,8 +54,8 @@ const { descriptor } = toRefs(props)
 
 const areasRef = computed(() => props.areas ?? descriptor.value.areas)
 const valueTips = computed(() => ({
-  min: getValueTip(descriptor.value.limit?.minValue, texts.inputMin, Number.NEGATIVE_INFINITY),
-  max: getValueTip(descriptor.value.limit?.maxValue, texts.inputMax, Number.POSITIVE_INFINITY),
+  min: getValueTip((descriptor.value.limit as Limit)?.minValue, texts.inputMin, Number.NEGATIVE_INFINITY),
+  max: getValueTip((descriptor.value.limit as Limit)?.maxValue, texts.inputMax, Number.POSITIVE_INFINITY),
   default: getValueTip(descriptor.value.default, texts.inputDefault),
   get hasAny() {
     return this.min !== undefined || this.max !== undefined || this.default !== undefined

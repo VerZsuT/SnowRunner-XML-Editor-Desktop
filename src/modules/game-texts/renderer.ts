@@ -1,11 +1,11 @@
+import { initMain, mainMethod, mainObjectField } from '@utilities/renderer'
 import type MainGameTexts from './main'
 import type { IGameTexts } from './types'
-import { initMain, mainMethod, mainObjectField } from '/utils/renderer'
 
 export type * from './types'
 
 /**
- * Работа с игровой локализацией.  
+ * Работа с игровой локализацией.
  * _renderer process_
  */
 @initMain()
@@ -18,7 +18,7 @@ class GameTexts implements IGameTexts {
   get mods() {
     return this.object.mods
   }
-  
+
   /** Тексты из `initial.pak`. */
   get main() {
     return this.object.main
@@ -56,7 +56,7 @@ class GameTexts implements IGameTexts {
 }
 
 /**
- * Работа с игровой локализацией.  
+ * Работа с игровой локализацией.
  * _renderer process_
  */
 export default new GameTexts()

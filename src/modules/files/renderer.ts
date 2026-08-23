@@ -1,3 +1,5 @@
+import { ErrorText, ProgramError } from '@modules/errors/renderer'
+import Paths from '@modules/paths/renderer'
 import type { IHasSnapshot } from 'emr-bridge/renderer'
 import type CP from 'node:child_process'
 import type FS from 'node:fs'
@@ -6,8 +8,6 @@ import type FSP from 'node:fs/promises'
 import type PATH from 'node:path'
 import type { XMLElement } from '../renderer'
 import type { ICheckResult, IDir, IFile, IFindDirsArgs, IFindFilesArgs, IFSEntry, IFSEntryArraySnapshot, IFSEntrySnapshot } from './types'
-import { ErrorText, ProgramError } from '/mods/errors/renderer'
-import Paths from '/mods/paths/renderer'
 export type * from './types'
 
 const {
@@ -23,7 +23,7 @@ const {
 }
 
 /**
- * Сущность в файловой системе.  
+ * Сущность в файловой системе.
  * _renderer process_
 */
 export class FSEntry implements IFSEntry, IHasSnapshot<IFSEntrySnapshot> {
@@ -61,6 +61,23 @@ export class FSEntry implements IFSEntry, IHasSnapshot<IFSEntrySnapshot> {
     return exists(this.path)
   }
 
+	async hasPermissions(): Promise<boolean> {
+		if (!await this.exists()) {
+			return false
+		}
+
+		const readResult = await this.canRead()
+		const writeResult = await this.canWrite()
+
+		if (!readResult.result) {
+			throw new ProgramError(ErrorText.readFileError, readResult.error, this.path)
+		} else if (!writeResult.result) {
+			throw new ProgramError(ErrorText.writeFileError, writeResult.error, this.path)
+		}
+
+		return true
+	}
+
   canRead() {
     return canRead(this.path)
   }
@@ -93,7 +110,7 @@ export class FSEntry implements IFSEntry, IHasSnapshot<IFSEntrySnapshot> {
     if (!await this.exists()) {
       return
     }
-    
+
     try {
       await rm(this.path, { recursive: await this.isDir(), force: true })
     } catch (error: any) {
@@ -131,7 +148,7 @@ export class FSEntry implements IFSEntry, IHasSnapshot<IFSEntrySnapshot> {
 }
 
 /**
- * Массив сущностей в файловой системе.  
+ * Массив сущностей в файловой системе.
  * _renderer process_
 */
 export class FSEntryArray extends Array<IFSEntry> implements IHasSnapshot<IFSEntryArraySnapshot> {
@@ -165,7 +182,7 @@ export class FSEntryArray extends Array<IFSEntry> implements IHasSnapshot<IFSEnt
 }
 
 /**
- * Массив файлов в файловой системе.  
+ * Массив файлов в файловой системе.
  * _renderer process_
 */
 export class FileArray extends Array<IFile> implements IHasSnapshot<IFSEntryArraySnapshot> {
@@ -183,7 +200,7 @@ export class FileArray extends Array<IFile> implements IHasSnapshot<IFSEntryArra
 }
 
 /**
- * Массив папок в файловой системе.  
+ * Массив папок в файловой системе.
  * _renderer process_
 */
 export class DirArray extends Array<IDir> implements IHasSnapshot<IFSEntryArraySnapshot> {
@@ -201,7 +218,7 @@ export class DirArray extends Array<IDir> implements IHasSnapshot<IFSEntryArrayS
 }
 
 /**
- * Папка в файловой системе.  
+ * Папка в файловой системе.
  * _renderer process_
  */
 export class Dir extends FSEntry implements IDir {
@@ -300,7 +317,7 @@ export class Dir extends FSEntry implements IDir {
 }
 
 /**
- * Файл в файловой системе.  
+ * Файл в файловой системе.
  * _renderer process_
 */
 export class File extends FSEntry implements IFile {
@@ -408,7 +425,7 @@ export class File extends FSEntry implements IFile {
 }
 
 /**
- * Основными папки.  
+ * Основными папки.
  * _renderer process_
  */
 export const Dirs = {
@@ -420,13 +437,13 @@ export const Dirs = {
 
   /** Папка со страницами. */
   pages: new Dir(Paths.pages),
-  
+
   /** Папка с бэкапами. */
   backupFolder: new Dir(Paths.backupFolder),
 
   /** Бэкап данных `initail.pak` перед распаковкой. */
   backupInitialData: new Dir(Paths.backupInitialData),
-  
+
   /** Временная папка для основных файлов. */
   mainTemp: new Dir(Paths.mainTemp),
 
@@ -450,7 +467,7 @@ export const Dirs = {
 }
 
 /**
- * Основными файлы.  
+ * Основными файлы.
  * _renderer process_
  */
 export const Files = {
@@ -488,7 +505,7 @@ export const Files = {
   get backupInitialWithDate() {
     return new File(Paths.backupInitialWithDate)
   },
-  
+
   /** Деинсталлятор. */
   uninstall: new File(Paths.uninstall)
 }

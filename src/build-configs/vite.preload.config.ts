@@ -1,14 +1,19 @@
 import type { UserConfig } from 'vite'
 import { defineConfig, mergeConfig } from 'vite'
-import { external, externalizePlugin, getBuildConfig, pluginHotRestart } from './vite.base.config'
+import { external, externalizePlugin, getBuildConfig, pluginHotRestart } from './vite.base.config.js'
 
 export default defineConfig(forgeEnv => {
 	const { forgeConfigSelf } = forgeEnv
+	const forgeConfig = forgeConfigSelf as any
 	const config: UserConfig = {
+		esbuild: {
+			target: 'node25',
+			supported: { 'top-level-await': true }
+		},
 		build: {
 			rollupOptions: {
 				external: [...external, '**/renderer'],
-				input: forgeConfigSelf['entry'],
+				input: forgeConfig['entry'],
 				output: {
 					format: 'cjs',
 					inlineDynamicImports: true,
@@ -17,10 +22,6 @@ export default defineConfig(forgeEnv => {
 					assetFileNames: '[name].[ext]'
 				}
 			}
-		},
-		esbuild: {
-			target: 'node22',
-			supported: { 'top-level-await': true }
 		},
 		plugins: [
 			externalizePlugin({ filter: /\/renderer(\.ts)?$/ }),

@@ -1,15 +1,15 @@
+import Modifications from '@modules/data/modifications/renderer'
+import DLCs from '@modules/dlcs/renderer'
+import { Dirs } from '@modules/files/renderer'
+import type { IFile } from '@modules/renderer'
+import RendArrayBase from '@utilities/json-arrays/renderer'
+import { initMain } from '@utilities/renderer'
 import type { IEditedFile } from './types'
-import Mods from '/mods/data/mods/renderer'
-import DLCs from '/mods/dlcs/renderer'
-import type { IFile } from '/mods/files/renderer'
-import { Dirs } from '/mods/files/renderer'
-import RendArrayBase from '/utils/json-arrays/renderer'
-import { initMain } from '/utils/renderer'
 
 export type * from './types'
 
 /**
- * Работа с массивом изменённых файлов.  
+ * Работа с массивом изменённых файлов.
  * _renderer process_
  */
 @initMain()
@@ -41,7 +41,7 @@ class Edited extends RendArrayBase<IEditedFile, IFile> {
       name: file.name,
       isTrailer,
       dlc: DLCs.getDLC(file),
-      mod: Mods.getModID(file)
+      mod: Modifications.getModID(file)
     })
   }
 
@@ -57,7 +57,7 @@ class Edited extends RendArrayBase<IEditedFile, IFile> {
     for (const [i, item] of this.entries()) {
       if (item.name === file.name) {
         this.removeAt(i)
-        
+
         break
       }
     }
@@ -74,7 +74,7 @@ class Edited extends RendArrayBase<IEditedFile, IFile> {
 }
 
 /**
- * Работа с массивом изменённых файлов.  
+ * Работа с массивом изменённых файлов.
  * _renderer process_
  */
 export default new Edited()

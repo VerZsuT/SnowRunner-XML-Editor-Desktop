@@ -1,10 +1,10 @@
+import DLCs from '@modules/dlcs/renderer'
+import { Dirs } from '@modules/files/renderer'
+import type { IFile } from '@modules/renderer'
+import { lastItem } from '@utilities/renderer'
 import type { AttrValue } from '../xml-element'
 import XMLElement from '../xml-element'
 import type Limit from './limit'
-import DLCs from '/mods/dlcs/renderer'
-import type { IFile } from '/mods/files/renderer'
-import { Dirs } from '/mods/files/renderer'
-import { lastItem } from '/utils/renderer'
 
 /** Информация о файле. */
 export type FileInfo = {
@@ -50,7 +50,7 @@ export default class GameXML extends XMLElement {
   protected file(folder: string, nameGetter: () => string | undefined) {
     return async (info: FileInfo): Promise<IFile | undefined> => {
       const name = nameGetter()?.trim()
-      
+
       if (name) {
         return this.getFile(folder, name, info)
       }
@@ -95,8 +95,8 @@ export default class GameXML extends XMLElement {
 
   /**
    * Запрос к атрибуту.
-   * 
-   * Если `value=null`, то удаляет атрибут.  
+   *
+   * Если `value=null`, то удаляет атрибут.
    * Если `value=undefined`, то возвращает значение атрибута.
    * @param attrName Имя атрибута.
    * @param value Устанавливаемое значение.

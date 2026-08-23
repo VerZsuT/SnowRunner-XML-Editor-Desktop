@@ -1,8 +1,9 @@
-import TextsLoader from './texts'
+import { providePublic, publicField } from '@bridge/main'
+import { loadLocalization } from '@localization/main'
+import localization from './localization'
 import type { ILoadingState, StageAction } from './types'
-import { providePublic, publicField } from '/utils/bridge/main'
 
-const texts = await TextsLoader.loadMain()
+const texts = loadLocalization(localization)
 
 /**
  * Работа с загрузкой программы.
@@ -39,10 +40,10 @@ class Loading {
     if (this.state.isLoading) {
       return
     }
-    
+
     this.reset()
     this.autoEnd = autoEnd
-    this.set({ 
+    this.set({
       isLoading: true,
       stagesCount: stagesCount ?? this.default.stagesCount,
       text: text
@@ -96,20 +97,19 @@ class Loading {
    * @returns Результат завершения.
    */
   async runStage(name: string, action: StageAction): Promise<boolean> {
-    let result = false
-
     this.set({ text: this.prepareStageText(name) })
 
     try {
-      result = await action() ?? true
+      const result = await action() ?? true
+
+			this.completeStage()
+
+			return result
     } catch (error: unknown) {
       this.errorOnStage(error as Error)
+
       throw error
     }
-
-    this.completeStage()
-
-    return result
   }
 
   /**

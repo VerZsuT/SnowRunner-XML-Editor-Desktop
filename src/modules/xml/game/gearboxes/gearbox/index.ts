@@ -4,7 +4,7 @@ import Limit from '../../limit'
 import XMLWithTemplates, { innerElement, innerElements } from '../../xml-with-templates'
 import GameData from './game-data'
 import Gear from './gear'
-import texts from './texts'
+import texts from './localization'
 
 export * from './game-data'
 export { default as GearboxGameData } from './game-data'

@@ -1,8 +1,8 @@
+import type { IFile, TruckType, TruckXML } from '@modules/renderer'
+import { Edited, Favorites } from '@modules/renderer'
 import { defineStore } from 'pinia'
 import { reactive, ref } from 'vue'
 import { Category, ListMode, SourceType } from '../enums'
-import type { IFile, TruckType, TruckXML } from '/mods/renderer'
-import { Edited, Favorites } from '/mods/renderer'
 
 export type ItemCache = {
   xml: TruckXML

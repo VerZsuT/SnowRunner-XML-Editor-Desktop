@@ -38,12 +38,12 @@
 
 <script lang='ts' setup>
 import { MenuOutlined, SaveOutlined } from '@ant-design/icons-vue'
+import { Config, Page } from '@modules/renderer'
+import { Header } from '@renderer/components'
 import { Button, Dropdown, Menu, Tooltip } from 'ant-design-vue'
 import { usePageStore } from '../../../store'
-import texts from '../../texts'
+import texts from '../../localization'
 import FilesMenu from '../files-menu'
-import { Config, Page } from '/mods/renderer'
-import { Header } from '/rend/components'
 
 const { route } = usePageStore()
 </script>

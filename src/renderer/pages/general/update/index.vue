@@ -49,11 +49,11 @@
 
 <script lang='ts' setup>
 import { CloudDownloadOutlined, DownOutlined } from '@ant-design/icons-vue'
+import { Checks, Config, Updates } from '@modules/renderer'
 import type { ButtonProps, MenuProps } from 'ant-design-vue'
 import { Alert, Button, Dropdown, Menu, Space } from 'ant-design-vue'
 import { onMounted, ref } from 'vue'
-import texts from './texts'
-import { Checks, Config, Updates } from '/mods/renderer'
+import texts from './localization'
 
 const version = ref('')
 const isOpen = ref(false)

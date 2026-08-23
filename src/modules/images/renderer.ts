@@ -1,8 +1,7 @@
-import type { Category } from '../../renderer/pages/general/enums'
-import { Config, Mods } from '/mods/data/renderer'
-import type { IFile } from '/mods/files/renderer'
-import { Dir, File } from '/mods/files/renderer'
-import type { TruckXML } from '/mods/xml/renderer'
+import { Config, Modifications } from '@modules/data/renderer'
+import { Dir, File } from '@modules/files/renderer'
+import type { IFile, TruckXML } from '@modules/renderer'
+import type { Category } from '@renderer/pages/general/enums'
 
 /**
  * Работа с картинками.
@@ -21,7 +20,7 @@ class Images {
     const image = images.file(`${file.name}.webp`)
     const defaultImage = images.file('default.webp')
 
-    const modID = Mods.getModID(file)
+    const modID = Modifications.getModID(file)
 
     if (modID) {
       const modImage = await this.getModImage(category, file, xml)
@@ -30,7 +29,7 @@ class Images {
         ? modImage.path
         : defaultImage.path
     }
-    
+
     return await this.imageExists(image)
       ? image.path
       : defaultImage.path
@@ -75,7 +74,7 @@ class Images {
    * @returns Модовая картинка.
    */
   private async getModImage(category: Category, file: IFile, xml: TruckXML): Promise<IFile | undefined> {
-    const modName = Mods.getModID(file)
+    const modName = Modifications.getModID(file)
 
     if (!modName || !xml.GameData?.UiDesc) {
       return
@@ -99,7 +98,7 @@ class Images {
    */
   private imageExists(file: IFile): Promise<boolean> {
     const image = new Image()
-    
+
     return new Promise(resolve => {
       image.onload = () => resolve(true)
       image.onerror = () => resolve(false)

@@ -2,7 +2,7 @@ import type { IStringAttrDescriptor, XmlElement, XmlValue } from '../../../attri
 import { properties, stringAttr } from '../../../attributes'
 import { BaseGameData } from '../../../base'
 import XMLWithTemplates, { innerElement } from '../../../xml-with-templates'
-import texts from './texts'
+import texts from './localization'
 
 /** Диск или пара дисков. */
 export default class TruckRim extends XMLWithTemplates {

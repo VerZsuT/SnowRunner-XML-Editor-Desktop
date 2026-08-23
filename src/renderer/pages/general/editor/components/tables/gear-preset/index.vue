@@ -6,8 +6,8 @@
 </template>
   
 <script lang='ts' setup>
+import type { INumberAttrDescriptor } from '@modules/xml/game/attributes'
 import { Float } from '../../input'
-import type { INumberAttrDescriptor } from '/mods/xml/game/attributes'
 
 export type GearPresetProps = {
   element?: {

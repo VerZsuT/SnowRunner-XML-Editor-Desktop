@@ -63,15 +63,15 @@
 </template>
 
 <script lang='ts' setup>
-import { SaveUtils } from '../../../utils'
+import type { IFile, TruckXML } from '@modules/renderer'
+import { SaveUtils } from '../../../utilities'
 import Accordion from '../../accordion.vue'
 import Coords from '../../coords'
 import Group from '../../group'
 import { Float, Int } from '../../input'
-import type { ReadyEmits, ReadyProps } from '../../utils'
-import { useReady } from '../../utils'
-import texts from './texts'
-import type { IFile, TruckXML } from '/mods/renderer'
+import type { ReadyEmits, ReadyProps } from '../../utilities'
+import { useReady } from '../../utilities'
+import texts from './localization'
 
 export type TrailerProps = ReadyProps & Props
 

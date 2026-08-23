@@ -19,14 +19,14 @@
 </template>
 
 <script lang='ts' setup>
+import { App, Archive, Backup, Config, Files, Messages, Modifications, Page, Paths, System } from '@modules/renderer'
+import { usePageStore } from '@renderer/pages/general/store'
 import type { ItemType, MenuProps } from 'ant-design-vue'
 import { Menu } from 'ant-design-vue'
 import { computed, nextTick, onMounted, ref } from 'vue'
 import Settings from '../settings'
 import WhatsNew from '../whats-new'
-import texts from './texts'
-import { Archive, Backup, Config, Files, Helpers, Messages, Mods, Page, Paths } from '/mods/renderer'
-import { usePageStore } from '/rend/pages/general/store'
+import texts from './localization'
 
 const settingsHasBeenOpened = ref(false)
 const settingsIsOpen = ref(false)
@@ -65,7 +65,7 @@ const items = computed(() => [
           key: 'open_files_folder',
           label: texts.openFilesFolderItemLabel,
           disabled: initialNotFound,
-          onClick: () => Helpers.openPath(Paths.mainTemp)
+          onClick: () => System.openPath(Paths.mainTemp)
         },
         {
           key: 'save_files',
@@ -84,7 +84,7 @@ const items = computed(() => [
       {
         key: 'exit',
         label: texts.exitMenuItemLabel,
-        onClick: () => Helpers.quitApp()
+        onClick: () => App.quit()
       }
     ]
   },
@@ -98,7 +98,7 @@ const items = computed(() => [
       {
         key: 'open_backup',
         label: texts.openButton,
-        onClick: () => Helpers.openPath(Paths.backupFolder)
+        onClick: () => System.openPath(Paths.backupFolder)
       },
       { type: 'divider' },
       {
@@ -130,14 +130,14 @@ const items = computed(() => [
         key: 'reset_settings',
         label: texts.resetMenuItemLabel,
         disabled: initialNotFound,
-        onClick: () => Config.reset()
+        onClick: () => App.resetToDefaults()
       },
       {
         key: 'uninstall_program',
         label: texts.uninstallMenuItemLabel,
-        onClick: () => {
-          void Files.uninstall.exec()
-          Helpers.quitApp()
+        onClick: async () => {
+          await System.openFile(Files.uninstall.path)
+          App.quit()
         }
       }
     ]
@@ -157,22 +157,22 @@ const items = computed(() => [
       {
         key: 'how_to_use',
         label: texts.howToUseTitle,
-        onClick: () => Helpers.openLink(links.modio)
+        onClick: () => System.openLink(links.modio)
       },
       {
         key: 'github',
         label: texts.githubTitle,
-        onClick: () => Helpers.openLink(links.github)
+        onClick: () => System.openLink(links.github)
       },
       {
         key: 'youtube',
         label: texts.youtubeTitle,
-        onClick: () => Helpers.openLink(links.youtube)
+        onClick: () => System.openLink(links.youtube)
       },
       {
         key: 'donation',
         label: texts.donationTitle,
-        onClick: () => Helpers.openLink(links.donation)
+        onClick: () => System.openLink(links.donation)
       }
     ]
   }
@@ -198,7 +198,7 @@ async function unpackFiles() {
   await nextTick()
   await Promise.all([
     Archive.unpackMain(),
-    Mods.procMods()
+    Modifications.procMods()
   ])
   route(Page.lists)
 }

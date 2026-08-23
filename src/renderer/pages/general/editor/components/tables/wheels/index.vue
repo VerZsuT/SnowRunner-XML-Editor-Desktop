@@ -14,17 +14,17 @@
 </template>
 
 <script lang='ts' setup>
+import type { IFile } from '@modules/renderer'
+import { type FileInfo, type WheelsXML } from '@modules/renderer'
+import { hasItems } from '@utilities/renderer'
 import { storeToRefs } from 'pinia'
 import { nextTick, onMounted, shallowRef } from 'vue'
 import { useEditorStore } from '../../../../store'
-import { FilesUtils } from '../../../utils'
+import { FilesUtils } from '../../../utilities'
 import { FileNameInfo } from '../../info'
-import type { ReadyEmits, ReadyProps } from '../../utils'
-import { useFilesReady } from '../../utils'
+import type { ReadyEmits, ReadyProps } from '../../utilities'
+import { useFilesReady } from '../../utilities'
 import WheelsSet from './set.vue'
-import type { IFile } from '/mods/renderer'
-import { type FileInfo, type WheelsXML } from '/mods/renderer'
-import { hasItems } from '/utils/renderer'
 
 export type WheelsProps = ReadyProps & Props
 

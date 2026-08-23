@@ -13,15 +13,15 @@
 </template>
 
 <script lang='ts' setup>
+import { Config, DiffLockType } from '@modules/renderer'
+import type { IStringAttrDescriptor } from '@modules/xml/game/attributes'
 import { storeToRefs } from 'pinia'
 import { computed, ref, watchEffect } from 'vue'
 import { useEditorStore } from '../../../store'
 import type { ParameterEmits } from '../../types'
-import { injectFile, ResetUtils } from '../../utils'
+import { injectFile, ResetUtils } from '../../utilities'
 import Select from './index.vue'
-import texts from './texts'
-import { Config, DiffLockType } from '/mods/renderer'
-import type { IStringAttrDescriptor } from '/mods/xml/game/attributes'
+import texts from './localization'
 
 export type DiffLockProps = {
   descriptor: IStringAttrDescriptor<DiffLockType>

@@ -7,11 +7,11 @@
 </template>
 
 <script lang='ts' setup>
+import type { INumberAttrDescriptor } from '@modules/xml/game/attributes'
+import type { EmitsToProps } from '@renderer/types'
 import { NumberType } from '../../../enums'
 import type { IParameterProps, NumberEmits, NumberProps } from '../../../types'
 import Num from './num.vue'
-import type { INumberAttrDescriptor } from '/mods/xml/game/attributes'
-import type { EmitsToProps } from '/rend/types'
 
 export type IntProps = Props & EmitsToProps<NumberEmits>
 

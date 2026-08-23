@@ -17,8 +17,8 @@
           :areas="areas ?? descriptor.areas"
           :step="step ?? descriptor.step"
           :value="<any> value"
-          :min="min ?? descriptor.limit?.minValue"
-          :max="max ?? descriptor.limit?.maxValue"
+          :min="min ?? (descriptor.limit as Limit)?.minValue"
+          :max="max ?? (descriptor.limit as Limit)?.maxValue"
           @change="onChange"
         />
       </InputTip>
@@ -27,11 +27,12 @@
 </template>
 
 <script lang='ts' setup>
+import type { Limit } from '@modules/renderer'
+import type { EmitsToProps } from '@renderer/types'
 import type { IInputProps, IParameterProps, ParameterEmits } from '../../types'
 import Parameter from '../parameter.vue'
 import InputTip from './input-tip.vue'
 import InputItem from './item.vue'
-import type { EmitsToProps } from '/rend/types'
 
 export type InputProps = Props & EmitsToProps<ParameterEmits>
 

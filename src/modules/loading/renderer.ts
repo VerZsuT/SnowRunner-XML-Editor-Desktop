@@ -1,6 +1,6 @@
+import { initMain, mainObjectField } from '@utilities/renderer'
 import { computed } from 'vue'
 import type { ILoadingState } from './types'
-import { initMain, mainObjectField } from '/utils/renderer'
 
 /**
  * Работа с загрузкой программы.

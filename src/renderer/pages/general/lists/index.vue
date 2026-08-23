@@ -37,18 +37,18 @@
 
 <script lang='ts' setup>
 import { AppstoreOutlined, FilterOutlined, MenuOutlined } from '@ant-design/icons-vue'
+import type { IFile } from '@modules/renderer'
+import { App } from '@modules/renderer'
+import { Header } from '@renderer/components'
+import { useKey } from '@renderer/utilities'
 import { Button } from 'ant-design-vue'
 import { storeToRefs } from 'pinia'
 import { onMounted, ref, watch } from 'vue'
 import { Category, ListMode, SourceType } from '../enums'
 import { useListStore } from '../store/list'
 import { Filters, List } from './components'
-import texts from './texts'
-import { ItemsUtils } from './utils'
-import type { IFile } from '/mods/renderer'
-import { Helpers } from '/mods/renderer'
-import { Header } from '/rend/components'
-import { useKey } from '/rend/utils'
+import texts from './localization'
+import { ItemsUtils } from './utilities'
 
 const listStore = useListStore()
 const { files, category, listMode } = storeToRefs(listStore)
@@ -61,7 +61,7 @@ watch(category, async () => {
   await loadFiles()
 })
 
-useKey('Escape', () => Helpers.quitApp())
+useKey('Escape', () => App.quit())
 onMounted(async () => {
   if (files.value[SourceType.main].length === 0) {
     await loadFiles()

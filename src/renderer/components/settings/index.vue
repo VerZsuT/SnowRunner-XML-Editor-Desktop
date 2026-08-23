@@ -41,12 +41,12 @@
 </template>
 
 <script setup lang="ts">
+import { Config } from '@modules/renderer'
+import { Language } from '@renderer/components'
 import { Button, Modal } from 'ant-design-vue'
 import { ref, watch } from 'vue'
 import BoolSetting from './bool-setting.vue'
-import texts from './texts'
-import { Config } from '/mods/renderer'
-import { Language } from '/rend/components'
+import texts from './localization.js'
 
 const updates = ref(Config.checkUpdates)
 const mods = ref(Config.useMods)

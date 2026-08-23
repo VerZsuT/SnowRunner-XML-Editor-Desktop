@@ -26,11 +26,11 @@
 </template>
 
 <script lang='ts' setup>
+import type { IFile } from '@modules/renderer'
 import { shallowRef, watch } from 'vue'
 import Editor from '../editor'
-import type { EveryCallback } from '../lists/utils'
-import { EditorUtils } from '../lists/utils'
-import type { IFile } from '/mods/renderer'
+import type { EveryCallback } from '../lists/utilities'
+import { EditorUtils } from '../lists/utilities'
 
 const { forAction: forExport, args: exportArgs, editor: exportEditor } = useAction(EditorUtils.onExport)
 const { forAction: forImport, args: importArgs, editor: importEditor } = useAction(EditorUtils.onImport)

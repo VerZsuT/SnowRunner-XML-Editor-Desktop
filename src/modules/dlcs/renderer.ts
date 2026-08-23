@@ -1,12 +1,12 @@
+import { Dir, Dirs } from '@modules/files/renderer'
+import type { IDir, IFile, IFindDirsArgs, IFindFilesArgs } from '@modules/renderer'
+import { initMain, RendArrayBase } from '@utilities/renderer'
 import type { IDLC } from './types'
-import type { IDir, IFile, IFindDirsArgs, IFindFilesArgs } from '/mods/files/renderer'
-import { Dir, Dirs } from '/mods/files/renderer'
-import { initMain, RendArrayBase } from '/utils/renderer'
 
 export type * from './types'
 
 /**
- * Работа с дополнениями игры.  
+ * Работа с дополнениями игры.
  * _renderer process_
  */
 @initMain()
@@ -52,7 +52,7 @@ class DLCs extends RendArrayBase<IDLC, IDLC & { dir: IDir }> {
 }
 
 /**
- * Работа с дополнениями игры.  
+ * Работа с дополнениями игры.
  * _renderer process_
  */
 export default new DLCs()

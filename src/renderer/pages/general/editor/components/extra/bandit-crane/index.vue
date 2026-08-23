@@ -32,18 +32,18 @@
 </template>
 
 <script lang='ts' setup>
+import type { IExportedData } from '@modules/renderer'
 import { Button, Typography } from 'ant-design-vue'
 import { storeToRefs } from 'pinia'
 import { ref } from 'vue'
 import { useEditorStore } from '../../../../store'
 import type { IActionProps } from '../../../types'
-import { ExportUtils, ImportUtils } from '../../../utils'
+import { ExportUtils, ImportUtils } from '../../../utilities'
 import Group from '../../group'
-import type { ReadyEmits, ReadyProps } from '../../utils'
-import { useReady } from '../../utils'
-import texts from '../texts'
+import type { ReadyEmits, ReadyProps } from '../../utilities'
+import { useReady } from '../../utilities'
+import texts from '../localization'
 import Action from './action'
-import type { IExportedData } from '/mods/renderer'
 
 const { Paragraph } = Typography
 

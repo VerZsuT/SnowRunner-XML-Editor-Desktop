@@ -1,8 +1,8 @@
+import { initMain, mainMethod } from '@bridge/renderer'
 import type MainUpdates from './main'
-import { initMain, mainMethod } from '/utils/bridge/renderer'
 
 /**
- * Работа с обновлениями программы  
+ * Работа с обновлениями программы
  * _renderer process_
  */
 @initMain()
@@ -13,7 +13,7 @@ class Updates {
 }
 
 /**
- * Работа с обновлениями программы  
+ * Работа с обновлениями программы
  * _renderer process_
  */
 export default new Updates()

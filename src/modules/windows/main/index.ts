@@ -1,3 +1,7 @@
+import { providePublic, publicMethod } from '@bridge/main'
+import Config from '@modules/data/config/main'
+import Env from '@modules/env/main'
+import { Files } from '@modules/files/main'
 import { BrowserWindow } from 'electron'
 import { on } from 'emr-bridge/main'
 import { dirname, join } from 'node:path'
@@ -6,10 +10,6 @@ import { ProgramWindow } from '../enums'
 import { PubKeys } from '../public'
 import type { IGeneralWindow, WindowParams } from '../types'
 import GeneralWindow from './general'
-import { FORCE_DEVTOOLS } from '/consts'
-import Config from '/mods/data/config/main'
-import { Files } from '/mods/files/main'
-import { providePublic, publicMethod } from '/utils/bridge/main'
 
 export * from '../enums'
 export type * from '../types'
@@ -24,7 +24,7 @@ type WindowsObject = Record<keyof ProgramWindow, [WindowParams, WindowCreator]>
 type WindowCreator<T extends BrowserWindow = BrowserWindow> = (...args: any[]) => Promise<T>
 
 /**
- * Работа с окнами программы.  
+ * Работа с окнами программы.
  * _main process_
  */
 @providePublic()
@@ -97,7 +97,7 @@ class Windows {
       if (type !== readyType) {
         return
       }
-      
+
       unsubscribe()
       hasError = false
       await this.showWindow(win, params)
@@ -134,7 +134,7 @@ class Windows {
     switch (windowName) {
       case ProgramWindow.general:
         this.generalWindow = window as IGeneralWindow
-        
+
         break
     }
 
@@ -166,7 +166,7 @@ class Windows {
     window.focus()
     await params.onFocused?.(window, this)
 
-    if (FORCE_DEVTOOLS) {
+    if (Env.forceDevTools) {
       window.webContents.toggleDevTools()
     }
   }
@@ -214,7 +214,7 @@ function notDestroyed() {
 }
 
 /**
- * Работа с окнами программы.  
+ * Работа с окнами программы.
  * _main process_
  */
 export default new Windows()

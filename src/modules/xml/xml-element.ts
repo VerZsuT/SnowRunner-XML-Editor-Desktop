@@ -1,9 +1,9 @@
+import { File } from '@modules/files/renderer'
+import type { IFile } from '@modules/renderer'
+import { hasItems, isString } from '@utilities/renderer'
 import type { Cheerio } from 'cheerio'
 import { load } from 'cheerio'
 import xmlFormat from 'xml-formatter'
-import type { IFile } from '/mods/files/renderer'
-import { File } from '/mods/files/renderer'
-import { hasItems, isString } from '/utils/checks/renderer'
 
 /** Объект DOM элемента. */
 export default class XMLElement {
@@ -55,7 +55,7 @@ export default class XMLElement {
       }
     }
 
-    if (this.tagName) {  
+    if (this.tagName) {
       const xml = this.innerXML
         ? `<${this.tagName}${attrs && hasItems(attrs) ? ` ${attrs.join(' ')}` : ''}>\n\t${this.innerXML}\n</${this.tagName}>`
         : `<${this.tagName}${attrs && hasItems(attrs) ? ` ${attrs.join(' ')}` : ''} />`
@@ -70,7 +70,7 @@ export default class XMLElement {
     return this.baseXML
   }
 
-  
+
   /** Строковое представление элемента вместе с базовым тегом. */
   get baseXML() {
     function format(str: string) {
@@ -98,7 +98,7 @@ export default class XMLElement {
         templatesText = `${format(templatesXML)}\r\n`
         templates.remove()
       }
-      
+
       const mainText = format(cloned.html()!.replace('&#xfeff;', ''))
 
       return templatesText + mainText

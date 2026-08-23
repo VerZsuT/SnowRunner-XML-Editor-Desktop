@@ -2,7 +2,7 @@ import type { INumberAttrDescriptor, XmlValue } from '../../attributes'
 import { integerAttr, properties } from '../../attributes'
 import Limit from '../../limit'
 import XMLWithTemplates from '../../xml-with-templates'
-import texts from './texts'
+import texts from './localization'
 
 /** Свойства непосредственно аддона. */
 export default class TruckData extends XMLWithTemplates {

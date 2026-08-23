@@ -1,6 +1,6 @@
-import type { IFile } from '/mods/renderer'
-import { Config, type TruckAddonSocket, type TruckXML } from '/mods/renderer'
-import { BaseLocalization } from '/utils/texts/base-localization'
+import { LocalizationStrings } from '@localization'
+import type { IFile } from '@modules/renderer'
+import { Config, type TruckAddonSocket, type TruckXML } from '@modules/renderer'
 
 export type BanditCraneData = {
   hasCrane: boolean
@@ -9,7 +9,7 @@ export type BanditCraneData = {
 /** Вкладка `Банан бандита`. */
 class Action {
   get name() {
-    return new BaseLocalization()
+    return new LocalizationStrings()
       .ru('Банан бандита')
       .en('Bandit banana')
       .de('Bananen-Bandit')

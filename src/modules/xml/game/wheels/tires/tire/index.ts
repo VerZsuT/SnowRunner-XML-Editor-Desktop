@@ -4,7 +4,7 @@ import { BaseGameData } from '../../../base'
 import Limit from '../../../limit'
 import XMLWithTemplates, { innerElement } from '../../../xml-with-templates'
 import WheelFriction from '../wheel-friction'
-import texts from './texts'
+import texts from './localization'
 
 export { default as TireWheelFriction } from '../wheel-friction'
 

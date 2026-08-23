@@ -17,22 +17,22 @@
 </template>
 
 <script lang='ts' setup>
+import type { IFile } from '@modules/renderer'
+import { Checks, DLCs, Dirs, Edited, Files, Loading, Page, ProgramWindow, System, Windows } from '@modules/renderer'
+import { LoadingPage, Menu } from '@renderer/components'
+import { useWindowReady } from '@renderer/utilities'
+import { hasItems } from '@utilities/renderer'
 import { storeToRefs } from 'pinia'
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import Editor from '../editor'
 import Lists from '../lists'
-import { EditorUtils } from '../lists/utils'
+import { EditorUtils } from '../lists/utilities'
 import Setup from '../setup'
 import { useEditorStore, usePageStore } from '../store'
 import Update from '../update'
 import EditorActions from './editor-actions.vue'
 import GameUpdate from './game-update.vue'
-import texts from './texts'
-import type { IFile } from '/mods/renderer'
-import { Checks, DLCs, Dirs, Edited, Files, Helpers, Loading, Page, ProgramWindow, Windows } from '/mods/renderer'
-import { LoadingPage, Menu } from '/rend/components'
-import { useWindowReady } from '/rend/utils'
-import { hasItems } from '/utils/renderer'
+import texts from './localization'
 
 const pageStore = usePageStore()
 const { route } = pageStore
@@ -102,7 +102,7 @@ window['exportDefaults'] = async () => {
   
   if (await Files.exported.exists()) {
     console.log(texts.exported)
-    await Helpers.openFile(Files.exported.path)
+    await System.openFile(Files.exported.path)
   } else {
     console.error(texts.exportError)
   }

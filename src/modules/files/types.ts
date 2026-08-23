@@ -24,6 +24,12 @@ export interface IFSEntry {
    */
   exists(): Promise<boolean>
 
+	/**
+   * Проверить наличие у программы прав на чтение/запись файла/папки.
+	 * @returns Имеет ли программа права на чтение/запись.
+   */
+	hasPermissions(): Promise<boolean>
+
   /**
    * Проверить можно ли прочитать файл/папку.
    * @returns Можно ли прочитать файл/папку.
@@ -67,7 +73,7 @@ export interface IFSEntry {
   isFile(): Promise<boolean>
 
   /**
-   * Рекурсивно удалить файл/папку.  
+   * Рекурсивно удалить файл/папку.
    * Не бросает исключение если не существует.
    */
   remove(): Promise<void>
@@ -195,7 +201,7 @@ export interface IFile extends IFSEntry {
   readFromJSON<T extends object = any>(): Promise<T>
 
   /**
-   * Записать данные в файл.  
+   * Записать данные в файл.
    * Перезаписывает файл если он существует.
    * @param data Данные.
    * @param encoding Кодировка файла.
@@ -209,27 +215,27 @@ export interface IFile extends IFSEntry {
   writeToJSON<T extends object>(obj: T): Promise<void>
 
   /**
-   * Копировать файл.  
+   * Копировать файл.
    * Перезаписывает файл если тот уже существует.
    * @param file Сущность.
    */
   copyTo(entry: IFSEntry): Promise<void>
   /**
-   * Копировать файл.  
+   * Копировать файл.
    * Перезаписывает файл если тот уже существует.
    * @param path Путь.
    */
   copyTo(path: string): Promise<void>
 
   /**
-   * Создать файл файл.  
-   * Рекурсивно создаёт родительскую папку, затем сам файл.  
+   * Создать файл файл.
+   * Рекурсивно создаёт родительскую папку, затем сам файл.
    * Ничего не делает если уже существует.
    */
   make(): Promise<void>
 
   /**
-   * Очистить файл.  
+   * Очистить файл.
    * Если не существует, то создаёт файл.
    */
   clear(): Promise<void>

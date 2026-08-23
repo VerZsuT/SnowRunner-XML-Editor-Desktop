@@ -15,10 +15,10 @@
 </template>
 
 <script lang='ts' setup>
+import type { EmitsToProps } from '@renderer/types'
 import type { InputProps } from 'ant-design-vue'
 import { Input, Typography } from 'ant-design-vue'
 import { ref, toRefs, watchEffect } from 'vue'
-import type { EmitsToProps } from '/rend/types'
 
 const { Text } = Typography
 

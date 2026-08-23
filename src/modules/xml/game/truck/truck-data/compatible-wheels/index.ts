@@ -4,7 +4,7 @@ import Limit from '../../../limit'
 import Wheel from '../../../wheel'
 import Wheels from '../../../wheels'
 import XMLWithTemplates from '../../../xml-with-templates'
-import texts from './texts'
+import texts from './localization'
 
 /** Доступные колеса. */
 export default class CompatibleWheels extends XMLWithTemplates {

@@ -1,20 +1,21 @@
+import { providePublic, publicMethod } from '@bridge/main'
+import { loadLocalization } from '@localization/main'
+import { Dir, DirArray, File, FileArray, Files } from '@modules/files/main'
+import type { IDir, IFile } from '@modules/main'
+import { hasItems } from '@utilities/main'
 import type { MessageBoxReturnValue } from 'electron'
 import { dialog, nativeImage } from 'electron'
 import { DialogSourceType, DialogType } from './enums'
-import TextsLoader from './texts'
+import localization from './localization'
 import type { IDialogAlertParams, IDialogParams, IOpenDialogParams } from './types'
-import type { IDir, IFile } from '/mods/files/main'
-import { Dir, DirArray, File, FileArray, Files } from '/mods/files/main'
-import { providePublic, publicMethod } from '/utils/bridge/main'
-import { hasItems } from '/utils/checks/main'
 
 export * from './enums'
 export type * from './types'
 
-const texts = await TextsLoader.loadMain()
+const texts = loadLocalization(localization)
 
 /**
- * Вывод системных диалогов.  
+ * Вывод системных диалогов.
  * _main process_
  */
 @providePublic()
@@ -230,7 +231,7 @@ class Dialogs {
 }
 
 /**
- * Вывод системных диалогов.  
+ * Вывод системных диалогов.
  * _main process_
  */
 export default new Dialogs()

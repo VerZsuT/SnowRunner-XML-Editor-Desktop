@@ -7,10 +7,10 @@
 </template>
 
 <script lang='ts' setup>
+import type { EmitsToProps } from '@renderer/types'
 import { InputType } from '../../../enums'
 import type { IInputProps, IParameterProps, ParameterEmits } from '../../../types'
 import Input from '../index.vue'
-import type { EmitsToProps } from '/rend/types'
 
 export type TextProps = Props & EmitsToProps<ParameterEmits>
 

@@ -2,7 +2,7 @@ import type { INumberAttrDescriptor, XmlValue } from '../../../attributes'
 import { floatAttr, properties } from '../../../attributes'
 import Limit from '../../../limit'
 import XMLWithTemplates from '../../../xml-with-templates'
-import texts from './texts'
+import texts from './localization'
 
 /** Параметры лебедки. */
 export default class Winch extends XMLWithTemplates {

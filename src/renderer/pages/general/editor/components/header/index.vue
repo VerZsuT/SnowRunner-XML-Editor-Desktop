@@ -16,12 +16,12 @@
 </template>
 
 <script lang='ts' setup>
+import type { IFile, TruckXML } from '@modules/renderer'
 import { Typography } from 'ant-design-vue'
 import { ref } from 'vue'
-import texts from '../../texts'
+import texts from '../../localization'
 import ErrorHeader from './error-header.vue'
 import MainHeader from './main-header.vue'
-import type { IFile, TruckXML } from '/mods/renderer'
 
 const { Text } = Typography
 
