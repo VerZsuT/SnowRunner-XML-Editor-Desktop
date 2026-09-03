@@ -68,7 +68,7 @@ const onUpdateClick: MenuProps['onClick'] = ({ key }) => {
     return
   }
   
-  void Updates.updateApp(key === 'portable')
+  void Updates.updateApp(version.value, key === 'portable')
   isOpen.value = false
 }
 

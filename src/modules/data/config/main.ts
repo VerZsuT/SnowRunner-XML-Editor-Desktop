@@ -2,7 +2,7 @@ import { providePublic, publicField, publicMethod } from '@bridge/main'
 import { APP_VERSION } from '@modules/app'
 import Env from '@modules/env/main'
 import { ErrorText, ProgramError } from '@modules/errors/main'
-import { File, Files } from '@modules/files/main'
+import { Dirs, File, Files } from '@modules/files/main'
 import { isNullable } from '@utilities/main'
 import { BuildType, Lang, localeToLang, strToLang } from './enums'
 import type { IConfig } from './types'
@@ -143,6 +143,7 @@ class Config {
       config = { ...this.default, ...data }
     } else if (version < thisVersion) {
       config = await this.convertToNewest(data as IConfig)
+			await Dirs.mainTemp.remove()
     }  else {
       config = this.default
     }

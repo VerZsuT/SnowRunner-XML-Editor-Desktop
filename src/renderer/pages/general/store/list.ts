@@ -12,7 +12,7 @@ const itemsCache = new Map<string, ItemCache>()
 
 export const useListStore = defineStore('list', () => {
   const category = ref(Category.trucks)
-  const source = ref(SourceType.all)
+  const source = ref(SourceType.main)
   const truckType = ref<TruckType | ''>('')
   const listMode = ref(ListMode.cards)
   const name = ref('')

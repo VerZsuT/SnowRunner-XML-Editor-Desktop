@@ -44,12 +44,10 @@ class ForgeConfig {
 
 						renamedBuild = join(this.out, name)
 						buildArchive = join(this.out, `${name}.rar`)
-						updateBuildArchive = join(this.out, `${name}_portable.rar`)
 						modioArchive = join(this.out, `${name}_v${version}.zip`)
 
 						installer = join(this.out, `${name}.exe`)
 						installerWithVersion = join(this.out, `${name}_v${version}.exe`)
-						updateInstaller = join(this.out, `${name}_update.exe`)
 
 						app = join(this.build, 'resources/app')
 						locales = join(this.build, 'locales')
@@ -96,13 +94,11 @@ class ForgeConfig {
 					await writeFile(paths.innoSetupConfig, configData.replaceAll(/#define MyAppVersion .*?\r\n/g, `#define MyAppVersion "${version}"\r\n`))
 					execSync(paths.innoSetupConfig)
 					if (existsSync(paths.installer)) {
-						await cp(paths.installer, paths.updateInstaller)
 						await cp(paths.installer, paths.installerWithVersion)
 					}
 
 					info('Archive build')
 					archive(paths.renamedBuild, paths.buildArchive)
-					await cp(paths.buildArchive, paths.updateBuildArchive)
 					if (existsSync(paths.installerWithVersion)) {
 						archive(paths.installerWithVersion, paths.modioArchive)
 					}

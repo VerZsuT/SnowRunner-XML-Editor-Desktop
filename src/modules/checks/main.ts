@@ -79,6 +79,7 @@ class Checks {
 
     if (await Dirs.mainTemp.exists()) {
       await Dirs.backupInitialData.remove()
+			await Dirs.backupInitialData.root.make()
 
       if (!RENDERER_VITE_DEV_SERVER_URL) {
         await Dirs.mainTemp.move(Dirs.backupInitialData)

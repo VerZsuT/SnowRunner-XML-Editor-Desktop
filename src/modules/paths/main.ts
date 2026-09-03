@@ -45,18 +45,18 @@ function getInitialDateTime() {
  */
 @providePublic()
 class Paths {
-  /** URL для обновления. */
-  private readonly updaterURL = 'https://verzsut.github.io/sxmle_updater'
+	/** URL репозитория. */
+  private readonly reposURL = 'https://github.com/VerZsuT/SnowRunner-XML-Editor-Desktop'
 
-  /** URL репозитория. */
+  /** URL github pages репозитория. */
   private readonly ioReposURL = 'https://verzsut.github.io/SnowRunner-XML-Editor-Desktop'
 
   /** Объект путей. */
   @publicField()
   private accessor object: IPaths = {
-    publicInfo: `${this.updaterURL}/public.json`,
+    publicInfo: `${this.ioReposURL}/version-info.json`,
     downloadPage: `${this.ioReposURL}/download.html`,
-    update: `${this.updaterURL}/update/`,
+    update: `${this.reposURL}/releases/download`,
     root: resolve('../../'),
     pages: resolve('../renderer/src/renderer/pages'),
     config: json('config'),

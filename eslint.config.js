@@ -1,8 +1,8 @@
-import js from '@eslint/js';
-import unicorn from 'eslint-plugin-unicorn';
-import vue from 'eslint-plugin-vue';
-import ts from 'typescript-eslint';
-import vueParser from 'vue-eslint-parser';
+import js from '@eslint/js'
+import unicorn from 'eslint-plugin-unicorn'
+import vue from 'eslint-plugin-vue'
+import ts from 'typescript-eslint'
+import vueParser from 'vue-eslint-parser'
 
 export default [
 	js.configs.recommended,
@@ -23,7 +23,7 @@ export default [
 			],
 			extraFileExtensions: ['.vue'],
 		},
-	},	
+	},
 	plugins: {
 		'vue': vue,
 		'unicorn': unicorn,
