@@ -104,5 +104,5 @@ npm run package
 
 ## Картинки
 
-![список авто](https://thumb.modcdn.io/mods/71c4/3056663/thumb_1020x2000/screenshot2024-03-04131955.png)
-![таблица параметров](https://thumb.modcdn.io/mods/71c4/3056663/thumb_1020x2000/screenshot2024-03-04132039.png)
+![список авто](https://image.modcdn.io/members/4a97/2992192/profile/screenshot2025-02-16212229.png)
+![таблица параметров](https://image.modcdn.io/members/4a97/2992192/profile/screenshot2025-02-16212527.png)
