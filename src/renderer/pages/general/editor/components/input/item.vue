@@ -28,7 +28,7 @@
 
 <script lang='ts' setup>
 import type { EmitsToProps } from '@renderer/types'
-import { isNullable } from '@utilities/renderer'
+import { isNullable } from '@utilities/checks/renderer'
 import { Input, InputNumber } from 'ant-design-vue'
 import { computed, nextTick, ref, toRefs, watch } from 'vue'
 import { InputType, NumberType } from '../../enums'

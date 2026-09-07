@@ -1,31 +1,45 @@
-import Archive from '@modules/archive/renderer'
-import Dialogs from '@modules/dialogs/renderer'
-import { Dirs, File } from '@modules/files/renderer'
-import type { IDir, IFile } from '@modules/renderer'
-import { initMain, mainMethod, RendArrayBase } from '@utilities/renderer'
+import type { Dialogs } from '@modules/dialogs/renderer'
+import type { Dirs, Files, IDir, IFile } from '@modules/files/renderer'
+import { initMain, mainMethod } from '@utilities/bridge/renderer'
+import { di, inject } from '@utilities/di/container'
+import { ARCHIVE_TOKEN, DIALOGS_TOKEN, DIRS_TOKEN, FILES_TOKEN } from '@utilities/di/renderer/tokens'
+import { RendArrayBase } from '@utilities/json-arrays/renderer'
 import { Bridge } from 'emr-bridge/renderer'
-import type MainMods from './main'
+import type { Mods as ModsMain } from './main'
 import type { PubType } from './public'
 import { PubKeys } from './public'
 import type { IMod } from './types'
 
 export type * from './types'
 
-/** Мост main-rend. */
-const bridge = Bridge.as<PubType>()
-
 /**
  * Работа с массивом модификаций.
  * _renderer process_
  */
 @initMain()
-class Mods extends RendArrayBase<IMod, IMod & { file: IFile }> {
+export class Mods extends RendArrayBase<IMod, IMod & { file: IFile }> {
+	/** Мост main-rend. */
+	private readonly bridge = Bridge.as<PubType>()
+
+	/** Основные папки. */
+	@inject(DIRS_TOKEN)
+	private readonly dirs!: Dirs
+
+	/** Основные файлы. */
+	@inject(FILES_TOKEN)
+	private readonly files!: Files
+
+	/** Диалоги. */
+	@inject(DIALOGS_TOKEN)
+	private readonly dialogs!: Dialogs
+
   protected override convert(item: IMod): IMod & { file: IFile } {
-    return { ...item, file: new File(item.path) }
+    return { ...item, file: this.files.new(item.path) }
   }
 
+	/** Обработать добавленные моды. */
   @mainMethod()
-  procMods!: typeof MainMods.procMods
+  procMods!: ModsMain['procMods']
 
   /**
    * Найти `.pak` файлы модификаций в папке.
@@ -33,8 +47,8 @@ class Mods extends RendArrayBase<IMod, IMod & { file: IFile }> {
    * @returns `.pak` файлы модификаций в папке.
    */
   async findMods(dir: IDir): Promise<[file: IFile, name: string][]> {
-    return (await bridge[PubKeys.findMods](dir.path))
-      .map(([path, name]) => [new File(path), name])
+    return (await this.bridge[PubKeys.findMods](dir.path))
+      .map(([path, name]) => [this.files.new(path), name])
   }
 
   /**
@@ -42,8 +56,8 @@ class Mods extends RendArrayBase<IMod, IMod & { file: IFile }> {
    * @returns Список всех модов (добавленных и в документах).
    */
   async getAllMods(): Promise<[file: IFile, name: string][]> {
-    return (await bridge[PubKeys.getAllMods]())
-      .map(([path, name]) => [new File(path), name])
+    return (await this.bridge[PubKeys.getAllMods]())
+      .map(([path, name]) => [this.files.new(path), name])
   }
 
   /**
@@ -52,9 +66,9 @@ class Mods extends RendArrayBase<IMod, IMod & { file: IFile }> {
    * @returns ID мода.
    */
   getModID(file: IFile): string | undefined {
-    return file.path.includes(Dirs.modsTemp.name)
+    return file.path.includes(this.dirs.modsTemp.name)
       ? file.path
-        .split(Dirs.modsTemp.name)
+        .split(this.dirs.modsTemp.name)
         .at(1)
         ?.split('\\')
         .at(1)
@@ -96,16 +110,16 @@ class Mods extends RendArrayBase<IMod, IMod & { file: IFile }> {
    * @returns Выбранные папки с модами.
   */
   async requestDirs() {
-    const dirs = Dialogs.getDirs()
+    const dirPaths = this.dialogs.getDirs()
 
-    if (!dirs) {
+    if (!dirPaths) {
       return
     }
 
     const result: [file: IFile, name: string][] = []
 
-    for (const dir of dirs) {
-      result.push(...await this.findMods(dir))
+    for (const dirPath of dirPaths) {
+      result.push(...await this.findMods(this.dirs.new(dirPath)))
     }
 
     return result
@@ -158,29 +172,27 @@ class Mods extends RendArrayBase<IMod, IMod & { file: IFile }> {
    * @returns `.pak` файлы модификаций.
    */
   private async getModPaks(): Promise<[IFile, string][] | undefined> {
-    const paks = Dialogs.getPaks()
+    const pakPaths = this.dialogs.getPaks()
     const out: [IFile, string][] = []
 
-    if (!paks) {
+    if (!pakPaths) {
       return
     }
 
-    for (const pak of paks) {
-      await Archive.unpack(pak, Dirs.modsTemp.dir(pak.name))
+		const archive = di.resolve(ARCHIVE_TOKEN)
 
-      if (!await Dirs.modsTemp.dir(pak.name, 'classes').exists()) {
+    for (const pakPath of pakPaths) {
+			const pakFile = this.files.new(pakPath)
+
+      await archive.unpack(pakPath, this.dirs.modsTemp.dir(pakFile.name).path)
+
+      if (!await this.dirs.modsTemp.dir(pakFile.name, 'classes').exists()) {
         return
       }
 
-      out.push([pak, pak.name])
+      out.push([pakFile, pakFile.name])
     }
 
     return out
   }
 }
-
-/**
- * Работа с массивом модификаций.
- * _renderer process_
- */
-export default new Mods()

@@ -5,13 +5,13 @@ export type LimitArgs = {
 
   /** Максимально значение. */
   max?: number
-  
+
   /** Целочисленное значение. */
   fixed?: boolean
 }
 
 /** Лимит числового значения. */
-export default class Limit {
+export class Limit {
   /** Минимальное значение. */
   get minValue() {
     return this._min
@@ -40,21 +40,21 @@ export default class Limit {
   /** Установить минимальное значение. */
   min(value: number) {
     this._min = value
-    
+
     return this
   }
 
   /** Установить максимальное значение. */
   max(value: number) {
     this._max = value
-    
+
     return this
   }
 
   /** Округлять значение до целого. */
   fixed() {
     this._fixed = true
-    
+
     return this
   }
 

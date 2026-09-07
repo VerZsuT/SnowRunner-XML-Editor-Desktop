@@ -1,7 +1,7 @@
 import { Localization, LocalizationStrings } from '@localization'
 import { loadLocalization } from '@localization/renderer'
 
-export default loadLocalization(new Localization({
+export const WHATS_NEW_LOCALIZATION = loadLocalization(new Localization({
   whatsNewTitle: new LocalizationStrings()
     .ru('Изменения в версии')
     .en('What\'s new in the version')

@@ -1,7 +1,7 @@
 import { Localization, LocalizationStrings } from '@localization'
 import { loadLocalization } from '@localization/renderer'
 
-export default loadLocalization(new Localization({
+export const FILES_MENU_LOCALIZATION = loadLocalization(new Localization({
   title: new LocalizationStrings()
     .ru('Файлы')
     .en('Files')

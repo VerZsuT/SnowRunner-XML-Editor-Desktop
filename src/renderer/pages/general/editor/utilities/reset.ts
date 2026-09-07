@@ -1,8 +1,9 @@
-import type { FileInfo, IFile } from '@modules/renderer'
+import type { IFile } from '@modules/files/types'
 import type { IAttrDescriptor } from '@modules/xml/game/attributes'
+import type { FileInfo } from '@modules/xml/renderer'
 import type { InjectionKey } from 'vue'
 import { inject, onMounted, onUnmounted, provide } from 'vue'
-import ImportUtils from './import'
+import { importUtils } from './import'
 
 export type ResetListenersList = Record<number, Set<ResetListener>>
 export type ResetListener = () => Promise<any>
@@ -36,13 +37,13 @@ class ResetUtils {
   }
 
   async getDefaultValue(file: IFile, info: FileInfo, descriptor: IAttrDescriptor): Promise<string | number | undefined> {
-    const defaults = (await import('@modules/data/defaults/renderer')).default
-    const name = ImportUtils.getName(file, info.dlc, info.mod)
+    const {DEFAULT_PARAMETER_VALUES} = await import('@modules/data/defaults/renderer')
+    const name = importUtils.getName(file, info.dlc, info.mod)
 
-    return defaults[name]
+    return DEFAULT_PARAMETER_VALUES[name]
       ?.[descriptor.selector]
       ?.[descriptor.name]
   }
 }
 
-export default new ResetUtils()
+export const resetUtils = new ResetUtils()

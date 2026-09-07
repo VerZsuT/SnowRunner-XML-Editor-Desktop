@@ -1,15 +1,15 @@
+import { BaseGameData } from '@modules/xml/game/base/game-data'
 import type { INumberAttrDescriptor, IStringAttrDescriptor, XmlElement, XmlValue } from '../../../attributes'
 import { floatAttr, integerAttr, properties, stringAttr } from '../../../attributes'
-import { BaseGameData } from '../../../base'
-import Limit from '../../../limit'
-import XMLWithTemplates, { innerElement } from '../../../xml-with-templates'
-import WheelFriction from '../wheel-friction'
-import texts from './localization'
+import { Limit } from '../../../limit'
+import { XMLWithTemplates, innerElement } from '../../../xml-with-templates'
+import { TireWheelFriction } from '../wheel-friction'
+import { TIRE_LOCALIZATION as texts } from './localization'
 
-export { default as TireWheelFriction } from '../wheel-friction'
+export * from '../wheel-friction'
 
 /** Шина. */
-export default class TruckTire extends XMLWithTemplates {
+export class TruckTire extends XMLWithTemplates {
   /** Имя покрышки. */
   @properties({
     get label() { return texts.name }
@@ -35,8 +35,8 @@ export default class TruckTire extends XMLWithTemplates {
   accessor RearMassScale: XmlValue<number>
   declare $RearMassScale: INumberAttrDescriptor
 
-  @innerElement(WheelFriction, 'WheelFriction', true)
-  readonly WheelFriction: XmlElement<WheelFriction>
+  @innerElement(TireWheelFriction, 'WheelFriction', true)
+  readonly WheelFriction: XmlElement<TireWheelFriction>
 
   /** Информация о взаимодействии покрышки с окружающим миром. */
   @innerElement(BaseGameData)

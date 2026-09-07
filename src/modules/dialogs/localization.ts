@@ -1,7 +1,7 @@
 import { Localization, LocalizationStrings } from '@localization'
 
 /** Тексты диалогов. */
-export default new Localization({
+export const DIALOGS_LOCALIZATION = new Localization({
   /** Заголовок ошибки. */
   error: new LocalizationStrings()
     .ru('Ошибка')

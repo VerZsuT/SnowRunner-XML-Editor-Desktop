@@ -1,5 +1,8 @@
-import type { IExportedData, IFile } from '@modules/renderer'
-import { DLCs, Dialogs, Modifications, TruckFileType, TruckXML } from '@modules/renderer'
+import type { IExportedData } from '@modules/epf/types'
+import type { IFile } from '@modules/files/types'
+import { TruckFileType, TruckXML } from '@modules/xml/renderer'
+import { di } from '@utilities/di/container'
+import { DIALOGS_TOKEN, DLC_TOKEN, FILES_TOKEN, MODS_TOKEN } from '@utilities/di/renderer/tokens'
 import { onMounted, onUnmounted } from 'vue'
 
 export type ExportListener = (data: IExportedData) => void | Promise<void>
@@ -18,9 +21,10 @@ class ExportUtils {
   }
 
   async exportFile(file: IFile, toExport?: IFile): Promise<IExportedData | void> {
-    const chosen = toExport ?? Dialogs.saveEPF(file.name)
+		const dialogs = di.resolve(DIALOGS_TOKEN)
+    const chosenPath = toExport?.path ?? dialogs.saveEPF(file.name)
 
-    if (!chosen) {
+    if (!chosenPath) {
       return
     }
 
@@ -37,16 +41,22 @@ class ExportUtils {
       actionsData: {}
     }
 
-    if (chosen && await chosen.exists()) {
-      const chosedData = await chosen.readFromJSON<IExportedData>()
+		const files = di.resolve(FILES_TOKEN)
+		const chosenFile = files.new(chosenPath)
+
+    if (await chosenFile.exists()) {
+      const chosedData = await chosenFile.readFromJSON<IExportedData>()
 
       if (chosedData.version === this.EXPORT_VERSION) {
         additionData = chosedData
       }
     }
 
-    const dlc = DLCs.getDLC(file)
-    const mod = Modifications.getModID(file)
+		const dlcs = di.resolve(DLC_TOKEN)
+		const mods = di.resolve(MODS_TOKEN)
+
+    const dlc = dlcs.getDLC(file)
+    const mod = mods.getModID(file)
     const isTrailer = xml.Type === TruckFileType.trailer
     const data: IExportedData = {
       version: this.EXPORT_VERSION,
@@ -64,8 +74,8 @@ class ExportUtils {
 
     await Promise.all([...this.listeners].map(async listener => await listener(data)))
 
-    return chosen.writeToJSON(data)
+    return chosenFile.writeToJSON(data)
   }
 }
 
-export default new ExportUtils()
+export const exportUtils = new ExportUtils()

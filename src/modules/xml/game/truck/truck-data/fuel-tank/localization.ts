@@ -1,6 +1,6 @@
 import { Localization, LocalizationStrings, loadLocalization } from '@localization/renderer'
 
-export default loadLocalization(new Localization({
+export const FUEL_TANK_LOCALIZATION = loadLocalization(new Localization({
   damageCapacity: new LocalizationStrings()
     .ru('Прочность')
     .en('Damage capacity')

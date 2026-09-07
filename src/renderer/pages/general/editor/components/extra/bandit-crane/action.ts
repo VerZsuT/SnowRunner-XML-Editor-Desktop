@@ -1,20 +1,22 @@
 import { LocalizationStrings } from '@localization'
-import type { IFile } from '@modules/renderer'
-import { Config, type TruckAddonSocket, type TruckXML } from '@modules/renderer'
+import type { IFile } from '@modules/files/renderer'
+import type { TruckAddonSocket, TruckXML } from '@modules/xml/renderer'
+import { di } from '@utilities/di/container'
+import { CONFIG_TOKEN } from '@utilities/di/renderer/tokens'
 
 export type BanditCraneData = {
   hasCrane: boolean
 }
 
 /** Вкладка `Банан бандита`. */
-class Action {
+export class BanditCraneAction {
   get name() {
     return new LocalizationStrings()
       .ru('Банан бандита')
       .en('Bandit banana')
       .de('Bananen-Bandit')
       .ch('香蕉大盗')
-      .get(Config)
+      .get(di.resolve(CONFIG_TOKEN))
   }
   readonly id = 'bandit-crane'
   readonly icon = 'banana'
@@ -97,5 +99,3 @@ class Action {
         ?.some(({ Sockets }) => Sockets.some(({ Names }) => Names.includes(this.craneName))))
   }
 }
-
-export default new Action()

@@ -1,4 +1,4 @@
-import { initMain, mainObjectField } from '@utilities/renderer'
+import { INIT_METHOD, initMain, mainObjectField } from '@bridge/renderer'
 import type { IPaths } from './types'
 
 export type * from './types'
@@ -8,16 +8,15 @@ export type * from './types'
  * _renderer process_
  */
 @initMain()
-class Paths {
+export class Paths {
   /** Объект путей. */
   @mainObjectField()
   private readonly object!: IPaths
 
   /**
    * Инициализация класса.
-   * __НЕ ИСПОЛЬЗОВАТЬ__
    */
-  _init() {
+  protected [INIT_METHOD]() {
     for (const key in this.object) {
       Object.defineProperty(this, key, {
         get: () => this.object[key],
@@ -25,13 +24,5 @@ class Paths {
         configurable: false
       })
     }
-
-    return this
   }
 }
-
-/**
- * Пути, используемые в программе.
- * _renderer process_
- */
-export default new Paths()._init() as Paths & IPaths

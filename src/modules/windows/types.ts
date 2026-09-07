@@ -1,6 +1,6 @@
 import type { BrowserWindow } from 'electron'
 import type { Page, ProgramWindow, WindowType } from './enums'
-import type ManagerType from './main'
+import type { Windows } from './main'
 
 /** Главное окно. */
 export interface IGeneralWindow extends BrowserWindow {
@@ -64,7 +64,7 @@ export type WindowParams<T extends BrowserWindow = BrowserWindow> = ICreateWindo
    * @param Manager Менеджер окон.
    * @param args Прочие аргументы.
    */
-  onCreated?(window: T, Manager: typeof ManagerType): void | Promise<void>
+  onCreated?(window: T, Manager: Windows): void | Promise<void>
 
   /**
    * Подписаться на событие после фокуса окна.
@@ -72,7 +72,7 @@ export type WindowParams<T extends BrowserWindow = BrowserWindow> = ICreateWindo
    * @param Manager Менеджер окон.
    * @param args Прочие аргументы.
    */
-  onFocused?(window: T, Manager: typeof ManagerType): void | Promise<void>
+  onFocused?(window: T, Manager: Windows): void | Promise<void>
 
   /**
    * Подписаться на событие перед закрытием окна.
@@ -80,7 +80,7 @@ export type WindowParams<T extends BrowserWindow = BrowserWindow> = ICreateWindo
    * @param Manager Менеджер окон.
    * @param args Прочие аргументы.
   */
-  onClose?(window: T, Manager: typeof ManagerType): void | Promise<void>
+  onClose?(window: T, Manager: Windows): void | Promise<void>
 
   /**
    * Подписаться на событие после показа окна.
@@ -88,7 +88,7 @@ export type WindowParams<T extends BrowserWindow = BrowserWindow> = ICreateWindo
    * @param Manager Менеджер окон.
    * @param args Прочие аргументы.
   */
-  onShowed?(window: T, Manager: typeof ManagerType): void | Promise<void>
+  onShowed?(window: T, Manager: Windows): void | Promise<void>
 
   /**
    * Функция-создатель объекта окна.

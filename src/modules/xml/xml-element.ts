@@ -1,12 +1,13 @@
-import { File } from '@modules/files/renderer'
-import type { IFile } from '@modules/renderer'
-import { hasItems, isString } from '@utilities/renderer'
+import type { IFile } from '@modules/files/renderer'
+import { hasItems, isString } from '@utilities/checks/renderer'
+import { di } from '@utilities/di/container'
+import { FILES_TOKEN } from '@utilities/di/renderer/tokens'
 import type { Cheerio } from 'cheerio'
 import { load } from 'cheerio'
 import xmlFormat from 'xml-formatter'
 
 /** Объект DOM элемента. */
-export default class XMLElement {
+export class XMLElement {
   /** Является ли аргумент `XMLElement`. */
   static isXMLElement(other: any): other is XMLElement {
     return other instanceof XMLElement
@@ -17,7 +18,8 @@ export default class XMLElement {
   /** Создать из содержимого файла. */
   static async from(file: IFile): Promise<XMLElement | undefined>
   static async from(source: IFile | string): Promise<XMLElement | undefined> {
-    const data = File.isFile(source)
+		const files = di.resolve(FILES_TOKEN)
+    const data = files.isFile(source)
       ? await source.read()
       : source as string
     const xml = load(data || '', { xml: true })

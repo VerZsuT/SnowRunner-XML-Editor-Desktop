@@ -1,15 +1,14 @@
-import type { IFile } from '../../../renderer'
-import XMLElement from '../../xml-element'
-import XMLTemplates from '../../xml-templates'
+import type { IFile } from '@modules/files/renderer'
+import { XMLElement } from '../../xml-element'
+import { XMLTemplates } from '../../xml-templates'
 import type { XmlElements } from '../attributes'
-import XMLWithTemplates, { innerElements } from '../xml-with-templates'
-import SuspensionSet from './suspension-set'
+import { XMLWithTemplates, innerElements } from '../xml-with-templates'
+import { SuspensionSet } from './suspension-set'
 
 export * from './suspension-set'
-export { default as SuspensionSet } from './suspension-set'
 
 /** Подвески. */
-export default class Suspensions extends XMLWithTemplates {
+export class Suspensions extends XMLWithTemplates {
   static override async from(str: string): Promise<Suspensions | undefined>
   static override async from(file: IFile): Promise<Suspensions | undefined>
   static override async from(source: string | IFile): Promise<Suspensions | undefined> {

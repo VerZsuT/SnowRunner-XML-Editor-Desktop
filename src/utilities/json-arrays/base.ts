@@ -1,7 +1,7 @@
 /** Базовый класс для массива. */
-export default abstract class ArrayBase<Item, Converted = Item> implements Iterable<Converted> {
+export abstract class ArrayBase<Item, Converted = Item> implements Iterable<Converted> {
   /** Исходный массив. */
-  protected accessor arr: Item[] = []
+  accessor arr: Item[] = []
 
   /** Значение по умолчанию. */
   get default(): Item[] {

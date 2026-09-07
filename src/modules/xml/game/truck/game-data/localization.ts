@@ -1,6 +1,6 @@
 import { loadLocalization, Localization, LocalizationStrings } from '@localization/renderer'
 
-export default loadLocalization(new Localization({
+export const ADDON_SOCKETS_LOCALIZATION = loadLocalization(new Localization({
   country: new LocalizationStrings()
     .ru('Страна')
     .en('Country')

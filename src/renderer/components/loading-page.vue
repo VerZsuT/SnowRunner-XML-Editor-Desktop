@@ -1,20 +1,20 @@
 <template>
   <div
-    v-if="Loading.state.isLoading"
+    v-if="loading.state.isLoading"
     class="wrapper"
   >
     <Title
       class="title"
       :level="4"
     >
-      {{ Loading.state.text }}
+      {{ loading.state.text }}
     </Title>
 
     <AntProgress
-      v-if="Loading.state.stagesCount !== 1"
+      v-if="loading.state.stagesCount !== 1"
       class="progress"
       type="line"
-      :percent="Loading.percent.value"
+      :percent="loading.percent.value"
       :status="progressStatus"
       :show-info="progressStatus !== 'success'"
     />
@@ -26,22 +26,26 @@
 </template>
 
 <script setup lang="ts">
-import { Loading, Messages } from '@modules/renderer'
+import { di } from '@utilities/di/container'
+import { LOADING_TOKEN, MESSAGES_TOKEN } from '@utilities/di/renderer/tokens'
 import type { ProgressProps } from 'ant-design-vue'
 import { Progress as AntProgress, Typography } from 'ant-design-vue'
 import { computed } from 'vue'
 import Spin from './spin.vue'
 
+const loading = di.resolve(LOADING_TOKEN)
+const messages = di.resolve(MESSAGES_TOKEN)
+
 const { Title } = Typography
 
 const progressStatus = computed<ProgressProps['status']>(() => {
-  if (Loading.state.hasError) {
-    Messages.error(Loading.state.error)
+  if (loading.state.hasError) {
+    messages.error(loading.state.error)
 
     return 'exception'
   }
   
-  if (Loading.state.completedCount >= Loading.state.stagesCount) {
+  if (loading.state.completedCount >= loading.state.stagesCount) {
     return 'success'
   }
 

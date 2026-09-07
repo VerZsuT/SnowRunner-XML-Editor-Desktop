@@ -1,6 +1,6 @@
 import { loadLocalization, Localization, LocalizationStrings } from '@localization/renderer'
 
-export default loadLocalization(new Localization({
+export const ADDON_SLOTS_LOCALIZATION = loadLocalization(new Localization({
   quantity: new LocalizationStrings()
     .ru('Кол-во груза')
     .en('Cargo quantity')

@@ -23,6 +23,5 @@
       "@localization/*": ["./utilities/localization/*"],
       "@localization": ["./utilities/localization/index"]
     }
-  },
-  "exclude": ["node_modules"]
+  }
 }

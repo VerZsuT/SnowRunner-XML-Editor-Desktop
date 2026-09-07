@@ -1,11 +1,11 @@
+import { BaseUiDesc } from '@modules/xml/game/base/ui-desc'
 import type { IBooleanAttrDescriptor, XmlElement, XmlValue } from '../../../attributes'
 import { booleanAttr, properties } from '../../../attributes'
-import { BaseUiDesc } from '../../../base'
-import XMLWithTemplates, { innerElement } from '../../../xml-with-templates'
-import texts from './localization'
+import { XMLWithTemplates, innerElement } from '../../../xml-with-templates'
+import { GEARBOX_LOCALIZATION as texts } from './localization'
 
 /** Наличие передач в коробке. */
-export default class GearboxParams extends XMLWithTemplates {
+export class GearboxParams extends XMLWithTemplates {
   /** “H”. Если значение false, кнопка неактивна. */
   @properties({
     get label() { return texts.isHighGearExists },

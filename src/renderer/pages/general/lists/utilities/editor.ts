@@ -1,6 +1,6 @@
+import type { IExportedData } from '@modules/epf/types'
+import type { IFile } from '@modules/files/types'
 import { onMounted, onUnmounted } from 'vue'
-
-import type { IExportedData, IFile } from '@modules/renderer'
 
 export type EveryCallback = () => Promise<void> | void
 
@@ -13,7 +13,7 @@ export type ImportListener = (args: ImportArgs, every?: EveryCallback) => void |
 export type ResetArgs = IFile[]
 export type ResetListener = (args: ResetArgs, every?: EveryCallback) => void | Promise<void>
 
-class EditorUtils {
+export class EditorUtils {
   private exportListener?: ExportListener
   private importListener?: ImportListener
   private resetListener?: ResetListener
@@ -60,4 +60,4 @@ class EditorUtils {
   }
 }
 
-export default new EditorUtils()
+export const editorUtils = new EditorUtils()

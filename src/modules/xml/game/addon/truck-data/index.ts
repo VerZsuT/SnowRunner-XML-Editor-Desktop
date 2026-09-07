@@ -1,11 +1,11 @@
 import type { INumberAttrDescriptor, XmlValue } from '../../attributes'
 import { integerAttr, properties } from '../../attributes'
-import Limit from '../../limit'
-import XMLWithTemplates from '../../xml-with-templates'
-import texts from './localization'
+import { Limit } from '../../limit'
+import { XMLWithTemplates } from '../../xml-with-templates'
+import { TRUCK_DATA_LOCALIZATION as texts } from './localization'
 
 /** Свойства непосредственно аддона. */
-export default class TruckData extends XMLWithTemplates {
+export class AddonTruckData extends XMLWithTemplates {
   /** Объем топлива. */
   @properties({
     get label() { return texts.fuelCapacity },

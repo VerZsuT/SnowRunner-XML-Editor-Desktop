@@ -1,10 +1,10 @@
 import type { IPositionAttrDescriptor, IStringArrayAttrDescriptor, XmlArrayValue, XmlValue } from '../../../attributes'
 import { positionAttr, stringArrayAttr } from '../../../attributes'
-import type Position from '../../../position'
-import XMLWithTemplates from '../../../xml-with-templates'
+import type { Position } from '../../../position'
+import { XMLWithTemplates } from '../../../xml-with-templates'
 
 /** Сдвиг точки установки аддона (трейлера), если уже установлен другой аддон. */
-export default class AddonShift extends XMLWithTemplates {
+export class TruckAddonShift extends XMLWithTemplates {
   /** Имя типа аддона, при установке которого сдвинется описываемый аддон. */
   @stringArrayAttr()
   accessor Types!: XmlArrayValue<string>

@@ -41,22 +41,24 @@
 </template>
 
 <script setup lang="ts">
-import { Config } from '@modules/renderer'
-import { Language } from '@renderer/components'
+import { Language } from '@renderer/components/language'
+import { di } from '@utilities/di/container.js'
+import { CONFIG_TOKEN } from '@utilities/di/renderer/tokens.js'
 import { Button, Modal } from 'ant-design-vue'
 import { ref, watch } from 'vue'
 import BoolSetting from './bool-setting.vue'
-import texts from './localization.js'
+import { SETTINGS_LOCALIZATION as texts } from './localization.js'
 
-const updates = ref(Config.checkUpdates)
-const mods = ref(Config.useMods)
-const advanced = ref(Config.advancedMode)
-const optimizeUnpack = ref(Config.optimizeUnpack)
+const config = di.resolve(CONFIG_TOKEN)
+const updates = ref(config.checkUpdates)
+const mods = ref(config.useMods)
+const advanced = ref(config.advancedMode)
+const optimizeUnpack = ref(config.optimizeUnpack)
 
-watch(updates, () => Config.checkUpdates = updates.value)
-watch(mods, () => Config.useMods = mods.value)
-watch(advanced, () => Config.advancedMode = advanced.value)
-watch(optimizeUnpack, () => Config.optimizeUnpack = optimizeUnpack.value)
+watch(updates, () => config.checkUpdates = updates.value)
+watch(mods, () => config.useMods = mods.value)
+watch(advanced, () => config.advancedMode = advanced.value)
+watch(optimizeUnpack, () => config.optimizeUnpack = optimizeUnpack.value)
 
 /** Открыты ли настройки. */
 const isOpen = defineModel<boolean>({ required: true })

@@ -10,7 +10,7 @@
     <div class="label">
       <Wrap
         :wrapper="popover"
-        :wrap="!!descRef && Config.lang !== Lang.ch"
+        :wrap="!!descRef && config.lang !== Lang.ch"
       >
         <template #content>
           <Text>{{ descRef }}</Text>
@@ -31,18 +31,23 @@
 </template>
 
 <script lang='ts' setup>
-import { Config, Lang, type IExportedData } from '@modules/renderer'
-import { ContextMenu, Wrap } from '@renderer/components'
+import { Lang } from '@modules/data/config/enums'
+import type { IExportedData } from '@modules/epf/types'
+import ContextMenu from '@renderer/components/context-menu.vue'
+import Wrap from '@renderer/components/wrap.vue'
 import type { EmitsToProps } from '@renderer/types'
-import { isNullable, isString } from '@utilities/renderer'
+import { isNullable, isString } from '@utilities/checks/renderer'
+import { di } from '@utilities/di/container'
+import { CONFIG_TOKEN } from '@utilities/di/renderer/tokens'
 import { Popover, Typography } from 'ant-design-vue'
 import { storeToRefs } from 'pinia'
 import { computed, h, ref, toRefs } from 'vue'
-import { useEditorStore } from '../../store'
-import texts from '../localization'
+import { useEditorStore } from '../../store/editor'
+import { EDITOR_LOCALIZATION as texts } from '../localization'
 import type { IParameterProps, ParameterEmits, ParameterValue } from '../types'
-import { ExportUtils, ImportUtils, ResetUtils } from '../utilities'
-import { injectFile } from '../utilities/import'
+import { exportUtils } from '../utilities/export'
+import { importUtils, injectFile } from '../utilities/import'
+import { resetUtils } from '../utilities/reset'
 import { useActive } from './utilities'
 
 const { Text } = Typography
@@ -50,6 +55,7 @@ const popover = h(Popover, { placement: 'topLeft' })
 
 export type ParameterProps = IParameterProps & EmitsToProps<ParameterEmits>
 
+const config = di.resolve(CONFIG_TOKEN)
 const props = defineProps<IParameterProps>()
 const { label, desc, descriptor } = toRefs(props)
 const emit = defineEmits<ParameterEmits>()
@@ -78,8 +84,8 @@ const setValue = (value: ParameterValue) => {
 
 const value = ref(getValue() ?? '')
 
-ResetUtils.onReset(resetValue)
-ImportUtils.onImport(data => {
+resetUtils.onReset(resetValue)
+importUtils.onImport(data => {
   const exportedValue = getExportedValue(data.data)
 
   if (isNullable(exportedValue)) {
@@ -88,8 +94,8 @@ ImportUtils.onImport(data => {
 
   changeValue(exportedValue)
 })
-ExportUtils.onExport(data => {
-  const fileName = ExportUtils.getName(file, info.value.dlc, info.value.mod)
+exportUtils.onExport(data => {
+  const fileName = exportUtils.getName(file, info.value.dlc, info.value.mod)
   const fileData = data.data[fileName] ??= {}
   const selectorData = fileData[descriptor.value.selector] ??= {}
 
@@ -123,11 +129,11 @@ function changeValue(newValue: ParameterValue) {
 }
 
 async function getDefaultValue() {
-  return ResetUtils.getDefaultValue(file, info.value, descriptor.value)
+  return resetUtils.getDefaultValue(file, info.value, descriptor.value)
 }
 
 function getExportedValue(data: IExportedData['data']): string | number | undefined {
-  const name = ImportUtils.getName(file, info.value.dlc, info.value.mod)
+  const name = importUtils.getName(file, info.value.dlc, info.value.mod)
   
   return data[name]
     ?.[descriptor.value.selector]

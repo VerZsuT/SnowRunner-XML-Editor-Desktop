@@ -1,12 +1,15 @@
 import { ErrorText, ProgramError } from '@modules/errors/renderer'
-import Paths from '@modules/paths/renderer'
+import type { IPaths, Paths } from '@modules/paths/renderer'
+import type { XMLElement } from '@modules/xml/renderer'
+import { di, inject } from '@utilities/di/container'
+import { DIRS_TOKEN } from '@utilities/di/main/tokens'
+import { PATHS_TOKEN } from '@utilities/di/renderer/tokens'
 import type { IHasSnapshot } from 'emr-bridge/renderer'
 import type CP from 'node:child_process'
 import type FS from 'node:fs'
 import type { WatchListener } from 'node:fs'
 import type FSP from 'node:fs/promises'
 import type PATH from 'node:path'
-import type { XMLElement } from '../renderer'
 import type { ICheckResult, IDir, IFile, IFindDirsArgs, IFindFilesArgs, IFSEntry, IFSEntryArraySnapshot, IFSEntrySnapshot } from './types'
 export type * from './types'
 
@@ -321,10 +324,6 @@ export class Dir extends FSEntry implements IDir {
  * _renderer process_
 */
 export class File extends FSEntry implements IFile {
-  static isFile(other: any): other is File {
-    return other instanceof File
-  }
-
   get extname() {
     return extname(this.path)
   }
@@ -428,86 +427,121 @@ export class File extends FSEntry implements IFile {
  * Основными папки.
  * _renderer process_
  */
-export const Dirs = {
-  /** Папка `app`. */
-  root: new Dir(Paths.root),
+export class Dirs {
+	/** Пути приложения. */
+  @inject(PATHS_TOKEN)
+	private readonly paths!: Paths & IPaths
 
-  /** Папка `WinRAR`. */
-  winrar: new Dir(Paths.winrar),
+	isDir(other: any): other is Dir {
+    return other instanceof Dir
+  }
 
-  /** Папка со страницами. */
-  pages: new Dir(Paths.pages),
+	new(...pathsToJoin: string[]) {
+		return new Dir(...pathsToJoin)
+	}
 
-  /** Папка с бэкапами. */
-  backupFolder: new Dir(Paths.backupFolder),
+	newArray(...items: IDir[]) {
+		return new DirArray(...items)
+	}
 
-  /** Бэкап данных `initail.pak` перед распаковкой. */
-  backupInitialData: new Dir(Paths.backupInitialData),
+	/** Папка `app`. */
+	root = new Dir(this.paths.root)
 
-  /** Временная папка для основных файлов. */
-  mainTemp: new Dir(Paths.mainTemp),
+	/** Папка `WinRAR`. */
+	winrar = new Dir(this.paths.winrar)
 
-  /** Временная папка для файлов модификаций. */
-  modsTemp: new Dir(Paths.modsTemp),
+	/** Папка со страницами. */
+	pages = new Dir(this.paths.pages)
 
-  /** Временная папка для файлов обновления. */
-  updateTemp: new Dir(Paths.updateTemp),
+	/** Папка с бэкапами. */
+	backupFolder = new Dir(this.paths.backupFolder)
 
-  /** Временная папка `[strings]`. */
-  strings: new Dir(Paths.strings),
+	/** Бэкап данных `initail.pak` перед распаковкой. */
+	backupInitialData = new Dir(this.paths.backupInitialData)
 
-  /** Временная папка `classes`. */
-  classes: new Dir(Paths.classes),
+	/** Временная папка для основных файлов. */
+	mainTemp = new Dir(this.paths.mainTemp)
 
-  /** Временная папка `_templates`. */
-  templates: new Dir(Paths.templates),
+	/** Временная папка для файлов модификаций. */
+	modsTemp = new Dir(this.paths.modsTemp)
 
-  /** Временная папка `_dlc`. */
-  dlc: new Dir(Paths.dlc)
+	/** Временная папка для файлов обновления. */
+	updateTemp = new Dir(this.paths.updateTemp)
+
+	/** Временная папка `[strings]`. */
+	strings = new Dir(this.paths.strings)
+
+	/** Временная папка `classes`. */
+	classes = new Dir(this.paths.classes)
+
+	/** Временная папка `_templates`. */
+	templates = new Dir(this.paths.templates)
+
+	/** Временная папка `_dlc`. */
+	dlc = new Dir(this.paths.dlc)
 }
 
 /**
  * Основными файлы.
  * _renderer process_
  */
-export const Files = {
-  /** `config.json`. */
-  config: new File(Paths.config),
+export class Files {
+@inject(PATHS_TOKEN)
+	private readonly paths!: Paths & IPaths
 
-  /** `sizes.json`. */
-  sizes: new File(Paths.sizes),
+	isFile(other: any): other is File {
+    return other instanceof File
+  }
 
-  /** `mods.json`. */
-  mods: new File(Paths.mods),
+	new(...pathsToJoin: string[]) {
+		return new File(...pathsToJoin)
+	}
 
-  /** `favorites.json`. */
-  favorites: new File(Paths.favorites),
+	newArray(...items: IFile[]) {
+		return new FileArray(...items)
+	}
 
-  /** `edited.json`. */
-  edited: new File(Paths.edited),
+	/** `config.json`. */
+	config = new File(this.paths.config)
 
-  /** Файл-флаг, означающий изменение initial.pak. */
-  editedFlag: Dirs.mainTemp.file('edited'),
+	/** `sizes.json`. */
+	sizes = new File(this.paths.sizes)
 
-  /** `exported.json`. */
-  exported: new File(Paths.exported),
+	/** `mods.json`. */
+	mods = new File(this.paths.mods)
 
-  /** Файл с переводами игры. */
-  initialTexts: new File(Paths.texts),
+	/** `favorites.json`. */
+	favorites = new File(this.paths.favorites)
 
-  /** Иконка программы. */
-  icon: new File(Paths.icon),
+	/** `edited.json`. */
+	edited = new File(this.paths.edited)
 
-  /** Бэкап `initial.pak`. */
-  backupInitial: new File(Paths.backupInitial),
+	/** Файл-флаг, означающий изменение initial.pak. */
+  get editedFlag() {
+		const dirs = di.resolve(DIRS_TOKEN)
 
-  /** Бэкап `initial.pak` с датой-временем. */
-  get backupInitialWithDate() {
-    return new File(Paths.backupInitialWithDate)
-  },
+		return dirs.mainTemp.file('edited')
+	}
 
-  /** Деинсталлятор. */
-  uninstall: new File(Paths.uninstall)
+	/** `exported.json`. */
+	exported = new File(this.paths.exported)
+
+	/** Файл с переводами игры. */
+	initialTexts = new File(this.paths.texts)
+
+	/** Иконка программы. */
+	icon = new File(this.paths.icon)
+
+	/** Бэкап `initial.pak`. */
+	backupInitial = new File(this.paths.backupInitial)
+
+	/** Бэкап `initial.pak` с датой-временем. */
+	get backupInitialWithDate() {
+		return new File(this.paths.backupInitialWithDate)
+	}
+
+	/** Деинсталлятор. */
+	uninstall = new File(this.paths.uninstall)
 }
 
 /**

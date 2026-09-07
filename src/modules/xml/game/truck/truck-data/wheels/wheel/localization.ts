@@ -1,6 +1,6 @@
 import { Localization, LocalizationStrings, loadLocalization } from '@localization/renderer'
 
-export default loadLocalization(new Localization({
+export const WHEEL_LOCALIZATION = loadLocalization(new Localization({
   torque: new LocalizationStrings()
     .ru('Привод')
     .en('Type of wheel drive')

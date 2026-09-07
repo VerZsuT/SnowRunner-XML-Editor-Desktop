@@ -1,7 +1,7 @@
 import { Localization, LocalizationStrings } from '@localization'
 import { loadLocalization } from '@localization/renderer'
 
-export default loadLocalization(new Localization({
+export const EDITOR_LOCALIZATION = loadLocalization(new Localization({
   ok: new LocalizationStrings()
     .ru('Ок')
     .en('Ok')

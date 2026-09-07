@@ -1,4 +1,4 @@
-import { initMain, mainObjectField } from '@utilities/renderer'
+import { initMain, mainObjectField } from '@bridge/renderer'
 import { computed } from 'vue'
 import type { ILoadingState } from './types'
 
@@ -7,7 +7,7 @@ import type { ILoadingState } from './types'
  * _renderer process_
  */
 @initMain()
-class Loading {
+export class Loading {
   /** Состояние загрузки. */
   @mainObjectField()
   readonly state!: ILoadingState
@@ -15,9 +15,3 @@ class Loading {
   /** Процент выполнения. */
   readonly percent = computed(() => Math.round(this.state.completedCount / this.state.stagesCount * 100))
 }
-
-/**
- * Работа с загрузкой программы.
- * _renderer process_
- */
-export default new Loading()

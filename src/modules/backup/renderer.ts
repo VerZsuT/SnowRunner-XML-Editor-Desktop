@@ -1,31 +1,25 @@
 import { initMain, mainMethod } from '@bridge/renderer'
-import type MainBackup from './main'
+import type { Backup as BackupMain } from './main'
 
 /**
  * Работа с бэкапом.
  * _renderer process_
 */
 @initMain()
-class Backup {
+export class Backup {
   /**
    * Сохранить бэкап `initial.pak`.
    *
-   * {@link MainBackup.save|Перейти к методу}
+   * {@link BackupMain['save']|Перейти к методу}
    */
   @mainMethod()
-  save!: typeof MainBackup.save
+  save!: BackupMain['save']
 
   /**
    * Заменить оригинальный `initial.pak` на сохранённый.
    *
-   * {@link MainBackup.recoverFromIt|Перейти к методу}
+   * {@link BackupMain['recoverFromIt']|Перейти к методу}
    */
   @mainMethod()
-  recoverFromIt!: typeof MainBackup.recoverFromIt
+  recoverFromIt!: BackupMain['recoverFromIt']
 }
-
-/**
- * Работа с бэкапом.
- * _renderer process_
-*/
-export default new Backup()

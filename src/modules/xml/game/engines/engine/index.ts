@@ -1,12 +1,12 @@
 import type { INumberAttrDescriptor, IStringAttrDescriptor, XmlElement, XmlValue } from '../../attributes'
 import { floatAttr, integerAttr, properties, stringAttr } from '../../attributes'
-import { BaseGameData } from '../../base'
-import Limit from '../../limit'
-import XMLWithTemplates, { innerElement } from '../../xml-with-templates'
-import texts from './localization'
+import { BaseGameData } from '../../base/game-data'
+import { Limit } from '../../limit'
+import { XMLWithTemplates, innerElement } from '../../xml-with-templates'
+import { ENGINE_LOCALIZATION as texts } from './localization'
 
 /** Двигатель. */
-export default class Engine extends XMLWithTemplates {
+export class Engine extends XMLWithTemplates {
   /** Имя двигателя. */
   @properties({
     get label() { return texts.name }

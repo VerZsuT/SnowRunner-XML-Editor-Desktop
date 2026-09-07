@@ -6,14 +6,11 @@ import type { Plugin, UserConfig } from 'vite'
 /** Папка, в которой находится текущий исполняемый скрипт. */
 const _dirname = dirname(fileURLToPath(import.meta.url))
 
-/** Встроенные модули приложения. */
-const builtins = [
+/** Модули, которые пакуются вместе с приложением. */
+export const external = [
 	'electron',
 	...builtinModules.flatMap(module => [module, `node:${module}`])
 ]
-
-/** Модули, которые пакуются вместе с приложением. */
-export const external = [...builtins]
 
 /** Алиасы путей. */
 export const alias = {

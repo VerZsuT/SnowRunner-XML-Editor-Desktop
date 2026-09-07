@@ -1,7 +1,7 @@
 import { Localization, LocalizationStrings } from '@localization'
 import { loadLocalization } from '@localization/renderer'
 
-export default loadLocalization(new Localization({
+export const MENU_LOCALIZATION = loadLocalization(new Localization({
   /** Текст кнопки открытия. */
   openButton: new LocalizationStrings()
     .ru('Открыть')

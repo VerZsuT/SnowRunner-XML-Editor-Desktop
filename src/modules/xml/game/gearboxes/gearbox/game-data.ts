@@ -1,12 +1,12 @@
 import type { XmlElement } from '../../attributes'
-import { BaseGameData } from '../../base'
+import { BaseGameData } from '../../base/game-data'
 import { innerElement } from '../../xml-with-templates'
-import GearboxParams from './gearbox-params'
+import { GearboxParams } from './gearbox-params'
 
-export { default as GearboxParams } from './gearbox-params'
+export * from './gearbox-params'
 
 /** Информация о взаимодействии коробки передач с окружающим миром. */
-export default class GameData extends BaseGameData {
+export class GearboxGameData extends BaseGameData {
   /** Наличие передач в коробке. */
   @innerElement(GearboxParams)
   readonly GearboxParams: XmlElement<GearboxParams>

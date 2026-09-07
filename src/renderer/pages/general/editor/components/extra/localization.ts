@@ -1,7 +1,7 @@
 import { Localization, LocalizationStrings } from '@localization'
 import { loadLocalization } from '@localization/renderer'
 
-export default loadLocalization(new Localization({
+export const EXTRA_LOCALIZATION = loadLocalization(new Localization({
   openFile: new LocalizationStrings()
     .ru('Открыть файл')
     .en('Open file')

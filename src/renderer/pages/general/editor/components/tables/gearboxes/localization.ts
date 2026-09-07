@@ -1,7 +1,7 @@
 import { Localization, LocalizationStrings } from '@localization'
 import { loadLocalization } from '@localization/renderer'
 
-export default loadLocalization(new Localization({
+export const GEARBOXES_LOCALIZATION = loadLocalization(new Localization({
   gearbox: new LocalizationStrings()
     .ru('КПП')
     .en('Gearbox')

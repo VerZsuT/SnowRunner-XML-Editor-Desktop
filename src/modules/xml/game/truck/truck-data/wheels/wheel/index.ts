@@ -1,9 +1,9 @@
 import type { IBooleanAttrDescriptor, INumberAttrDescriptor, IPositionAttrDescriptor, IStringAttrDescriptor, XmlValue } from '@modules/xml/game/attributes'
 import { booleanAttr, floatAttr, positionAttr, properties, stringAttr } from '@modules/xml/game/attributes'
-import Limit from '@modules/xml/game/limit'
-import type Position from '@modules/xml/game/position'
-import XMLWithTemplates from '@modules/xml/game/xml-with-templates'
-import texts from './localization'
+import { Limit } from '@modules/xml/game/limit'
+import type { Position } from '@modules/xml/game/position'
+import { XMLWithTemplates } from '@modules/xml/game/xml-with-templates'
+import { WHEEL_LOCALIZATION as texts } from './localization'
 
 /** Расположение колеса. */
 export enum WheelLocation {
@@ -21,7 +21,7 @@ export enum WheelTorque {
 }
 
 /** Описание конкретного колеса. */
-export default class Wheel extends XMLWithTemplates {
+export class TruckWheel extends XMLWithTemplates {
   /** Положение левого колеса (координата z обязательно должна быть положительной). */
   @properties({
     limit: { z: Limit.Positive }

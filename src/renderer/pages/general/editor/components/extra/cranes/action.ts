@@ -1,20 +1,22 @@
 import { LocalizationStrings } from '@localization'
-import { Config, type TruckAddonSocket, type TruckXML } from '@modules/renderer'
-import Crane from './crane'
+import type { TruckAddonSocket, TruckXML } from '@modules/xml/renderer'
+import { di } from '@utilities/di/container'
+import { CONFIG_TOKEN } from '@utilities/di/renderer/tokens'
+import { Crane } from './crane'
 
 export type CranesData = {
   hasRUCrane: boolean
   hasUSCrane: boolean
 }
 
-class Action {
+export class CranesAction {
   get name() {
     return new LocalizationStrings()
       .ru('Краны')
       .en('Cranes')
       .de('Kräne')
       .ch('起重机')
-      .get(Config)
+      .get(di.resolve(CONFIG_TOKEN))
   }
   readonly icon = 'crane'
   readonly id = 'cranes'
@@ -116,5 +118,3 @@ class Action {
     ]
   }
 }
-
-export default new Action()

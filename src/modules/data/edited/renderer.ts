@@ -1,9 +1,8 @@
-import Modifications from '@modules/data/modifications/renderer'
-import DLCs from '@modules/dlcs/renderer'
-import { Dirs } from '@modules/files/renderer'
-import type { IFile } from '@modules/renderer'
-import RendArrayBase from '@utilities/json-arrays/renderer'
-import { initMain } from '@utilities/renderer'
+import { initMain } from '@bridge/renderer'
+import type { IFile } from '@modules/files/renderer'
+import { di } from '@utilities/di/container'
+import { DIRS_TOKEN, DLC_TOKEN, MODS_TOKEN } from '@utilities/di/renderer/tokens'
+import { RendArrayBase } from '@utilities/json-arrays/renderer'
 import type { IEditedFile } from './types'
 
 export type * from './types'
@@ -13,18 +12,19 @@ export type * from './types'
  * _renderer process_
  */
 @initMain()
-class Edited extends RendArrayBase<IEditedFile, IFile> {
+export class Edited extends RendArrayBase<IEditedFile, IFile> {
   override convert({ dlc, mod, isTrailer, name }: IEditedFile): IFile {
+		const dirs = di.resolve(DIRS_TOKEN)
     const folder = isTrailer
       ? 'trucks/trailers'
       : 'trucks'
     const fileName = `${name}.xml`
 
     return dlc
-      ? Dirs.dlc.file(dlc, 'classes', folder, fileName)
+      ? dirs.dlc.file(dlc, 'classes', folder, fileName)
       : mod
-        ? Dirs.modsTemp.file(mod, 'classes', folder, fileName)
-        : Dirs.classes.file(folder, fileName)
+        ? dirs.modsTemp.file(mod, 'classes', folder, fileName)
+        : dirs.classes.file(folder, fileName)
   }
 
   /**
@@ -37,11 +37,14 @@ class Edited extends RendArrayBase<IEditedFile, IFile> {
       return
     }
 
+		const dlc = di.resolve(DLC_TOKEN)
+		const mods = di.resolve(MODS_TOKEN)
+
     this.push({
       name: file.name,
       isTrailer,
-      dlc: DLCs.getDLC(file),
-      mod: Modifications.getModID(file)
+      dlc: dlc.getDLC(file),
+      mod: mods.getModID(file)
     })
   }
 
@@ -72,9 +75,3 @@ class Edited extends RendArrayBase<IEditedFile, IFile> {
     return this.some(item => item.name === file.name)
   }
 }
-
-/**
- * Работа с массивом изменённых файлов.
- * _renderer process_
- */
-export default new Edited()

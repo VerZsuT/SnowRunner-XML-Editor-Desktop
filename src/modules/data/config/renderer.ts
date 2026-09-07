@@ -1,8 +1,9 @@
-import { File } from '@modules/files/renderer'
-import type { IFile } from '@modules/renderer'
-import { initMain, mainMethod, mainObjectField } from '@utilities/renderer'
+import { INIT_METHOD, initMain, mainMethod, mainObjectField } from '@bridge/renderer'
+import type { IFile } from '@modules/files/renderer'
+import { di } from '@utilities/di/container'
+import { FILES_TOKEN } from '@utilities/di/renderer/tokens'
 import { BuildType } from './enums'
-import type MainConfig from './main'
+import type { Config as ConfigMain } from './main'
 import type { IConfig } from './types'
 
 export * from './enums'
@@ -13,14 +14,16 @@ export type * from './types'
  * _renderer process_
  */
 @initMain()
-class Config {
+export class Config {
   /** Объект конфигурации. */
   @mainObjectField()
   private object!: IConfig
 
   /** Файл initial.pak. */
   get initial(): IFile {
-    return new File(this.object.initialPath || '')
+		const files = di.resolve(FILES_TOKEN)
+
+    return files.new(this.object.initialPath || '')
   }
 
   /** Программа в режиме разработки. */
@@ -29,7 +32,7 @@ class Config {
   }
 
   /** Инициализация класса. */
-  _init() {
+  protected [INIT_METHOD]() {
     for (const key in this.object) {
       Object.defineProperty(this, key, {
         get: () => this.object[key],
@@ -37,30 +40,22 @@ class Config {
         enumerable: true
       })
     }
-
-    return this
   }
 
   /**
    * Сбросить `config.json` на "заводскую" версию.
    * @param noReload Отмена перезагрузки после завершения.
    *
-   * {@link MainConfig.reset|Перейти к методу}
+   * {@link ConfigMain['reset']|Перейти к методу}
    */
   @mainMethod()
-  reset!: typeof MainConfig.reset
+  reset!: ConfigMain['reset']
 
   /**
    * Сохранить изменения в `config.json`.
    *
-   * {@link MainConfig.save|Перейти к методу}
+   * {@link ConfigMain['save']|Перейти к методу}
   */
   @mainMethod()
-  save!: typeof MainConfig.save
+  save!: ConfigMain['save']
 }
-
-/**
- * Работа с конфигурацией программы.
- * _renderer process_
- */
-export default new Config()._init() as Config & IConfig

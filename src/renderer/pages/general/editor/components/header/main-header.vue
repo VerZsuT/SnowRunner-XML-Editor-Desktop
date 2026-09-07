@@ -31,7 +31,7 @@
               <Text>{{ texts.import }}</Text>
               <ImportOutlined class="menu-item-icon" />
             </Menu.Item>
-            <FilesMenu v-if="Config.advancedMode" />
+            <FilesMenu v-if="config.advancedMode" />
           </Menu>
         </template>
       </Dropdown>
@@ -52,17 +52,25 @@
 
 <script lang='ts' setup>
 import { ExportOutlined, ImportOutlined, MenuFoldOutlined, MenuUnfoldOutlined, SaveOutlined, UndoOutlined } from '@ant-design/icons-vue'
-import type { IFile, TruckXML } from '@modules/renderer'
-import { Archive, Config, Edited, File, GameTexts, Messages, Modifications, Page, TruckFileType } from '@modules/renderer'
-import { Header } from '@renderer/components'
-import { lastItem, prettyString } from '@utilities/renderer'
+import type { IFile } from '@modules/files/types'
+import { Page } from '@modules/windows/enums'
+import { TruckFileType, type TruckXML } from '@modules/xml/renderer'
+import Header from '@renderer/components/header.vue'
+import { EditedAction, useEditorStore } from '@renderer/pages/general/store/editor'
+import { usePageStore } from '@renderer/pages/general/store/page'
+import { lastItem } from '@utilities/checks'
+import { di } from '@utilities/di/container'
+import { ARCHIVE_TOKEN, CONFIG_TOKEN, EDITED_TOKEN, FILES_TOKEN, GAME_TEXTS_TOKEN, MESSAGES_TOKEN, MODS_TOKEN } from '@utilities/di/renderer/tokens'
+import { prettyString } from '@utilities/strings'
 import { Button, Dropdown, Menu, Modal, Typography } from 'ant-design-vue'
 import { storeToRefs } from 'pinia'
 import { ref } from 'vue'
-import { EditedAction, useEditorStore, usePageStore } from '../../../store'
-import texts from '../../localization'
-import { ExportUtils, ImportUtils, ResetUtils, SaveUtils } from '../../utilities'
-import FilesMenu from '../files-menu'
+import { EDITOR_LOCALIZATION as texts } from '../../localization'
+import { exportUtils } from '../../utilities/export'
+import { importUtils } from '../../utilities/import'
+import { resetUtils } from '../../utilities/reset'
+import { saveUtils } from '../../utilities/save'
+import FilesMenu from '../files-menu/files-menu.vue'
 
 const { Text } = Typography
 
@@ -70,6 +78,10 @@ export type MainHeaderProps = {
   xml: TruckXML
   file: IFile
 }
+
+const config = di.resolve(CONFIG_TOKEN)
+const mods = di.resolve(MODS_TOKEN)
+const messages = di.resolve(MESSAGES_TOKEN)
 
 const { xml, file } = defineProps<MainHeaderProps>()
 const { route } = usePageStore()
@@ -85,12 +97,12 @@ defineExpose({
 })
 
 const menuIsOpened = ref(false)
-const mod = Modifications.findByFile(file)
+const mod = mods.findByFile(file)
 const title = getMainTitle()
 
 async function onSave(updateFiles = true) {
   const hideLoading = showMessages.value
-    ? Messages.loading(texts.savingMessage)
+    ? messages.loading(texts.savingMessage)
     : () => {}
 
   setIsSaving(true)
@@ -99,7 +111,7 @@ async function onSave(updateFiles = true) {
     await save(updateFiles)
     success(texts.successSaveFiles)
   } catch (error: any) {
-    Messages.error(error)
+    messages.error(error)
   }
 
   setIsSaving(false)
@@ -107,23 +119,27 @@ async function onSave(updateFiles = true) {
 }
 
 async function save(updateFiles = true) {
-  await SaveUtils.emitSave()
-
+  await saveUtils.emitSave()
+  
   if (updateFiles) {
+    const archive = di.resolve(ARCHIVE_TOKEN)
+
     if (info.value.mod) {
-      await Archive.updateFiles(info.value.mod)
+      await archive.updateFiles(info.value.mod)
     }
 
-    await Archive.updateFiles()
+    await archive.updateFiles()
   }
+
+  const edited = di.resolve(EDITED_TOKEN)
 
   switch (editedAction.value) {
     case EditedAction.markAsEdited:
-      Edited.markAsEdited(file, xml.Type === TruckFileType.trailer)
+      edited.markAsEdited(file, xml.Type === TruckFileType.trailer)
 
       break
     case EditedAction.markAsNotEdited:
-      Edited.markAsNotEdited(file)
+      edited.markAsNotEdited(file)
       
       break
   }
@@ -135,48 +151,49 @@ function getMainTitle(): string {
   if (xml.GameData?.UiDesc) {
     const text = xml.GameData.UiDesc.UiName ?? xml.GameData.UiDesc.DefaultRegion?.UiName
 
-    return GameTexts.get(text, Modifications.getModID(file)) ?? text ?? 'TITLE_ERROR'
+    return di.resolve(GAME_TEXTS_TOKEN).get(text, mods.getModID(file)) ?? text ?? 'TITLE_ERROR'
   }
 
   const separator = file.path.includes('/') ? '/' : '\\'
+  const files = di.resolve(FILES_TOKEN)
 
-  return prettyString(new File(lastItem(file.path.split(separator))!).name).toUpperCase()
+  return prettyString(files.new(lastItem(file.path.split(separator))!).name).toUpperCase()
 }
 
 async function importFile(toImport?: IFile) {
   try {
-    await ImportUtils.importFile(file, toImport)
+    await importUtils.importFile(file, toImport)
     success(texts.wasImported)
   } catch (error: any) {
-    Messages.error(error)
+    messages.error(error)
   }
 }
 
 async function exportFile(toExport?: IFile) {
   try {
-    await ExportUtils.exportFile(file, toExport)
+    await exportUtils.exportFile(file, toExport)
     success(texts.wasExported)
   } catch (error: any) {
-    Messages.error(error)
+    messages.error(error)
   }
 }
 
 async function reset() {
   try {
-    await ResetUtils.emit(ResetUtils.globalID)
+    await resetUtils.emit(resetUtils.globalID)
     setEditedAction(EditedAction.markAsNotEdited)
 
     if (showMessages.value) {
-      Messages.success(texts.successReset)
+      messages.success(texts.successReset)
     }
   } catch (error: any) {
-    Messages.error(error)
+    messages.error(error)
   }
 }
 
 function success(text: string) {
   if (showMessages.value) {
-    Messages.success(text)
+    messages.success(text)
   }
 }
 

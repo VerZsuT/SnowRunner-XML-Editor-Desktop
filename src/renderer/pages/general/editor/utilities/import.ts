@@ -1,8 +1,11 @@
-import type { IExportedData, IFile } from '@modules/renderer'
-import { DLCs, Dialogs, Messages, Modifications, TruckFileType, TruckXML } from '@modules/renderer'
+import type { IExportedData } from '@modules/epf/types'
+import type { IFile } from '@modules/files/types'
+import { TruckFileType, TruckXML } from '@modules/xml/renderer'
+import { di } from '@utilities/di/container'
+import { DIALOGS_TOKEN, DLC_TOKEN, FILES_TOKEN, MESSAGES_TOKEN, MODS_TOKEN } from '@utilities/di/renderer/tokens'
 import type { InjectionKey } from 'vue'
 import { inject, onMounted, onUnmounted, provide } from 'vue'
-import ExportUtils from './export'
+import { exportUtils } from './export'
 
 export type ImportListener = (data: IExportedData) => void | Promise<void>
 
@@ -14,12 +17,13 @@ class ImportUtils {
     onUnmounted(() => this.listeners.delete(listener))
   }
 
-  getName = ExportUtils.getName
+  getName = exportUtils.getName
 
   async importFile(source: IFile, toImport?: IFile) {
-    const chosen = toImport ?? Dialogs.getEPF()
+		const dialogs = di.resolve(DIALOGS_TOKEN)
+    const chosenPath = toImport?.path ?? dialogs.getEPF()
 
-    if (!chosen) {
+    if (!chosenPath) {
       return
     }
 
@@ -29,21 +33,28 @@ class ImportUtils {
       return
     }
 
-    const data = await chosen.readFromJSON<IExportedData>()
+		const files = di.resolve(FILES_TOKEN)
+		const messages = di.resolve(MESSAGES_TOKEN)
 
-    if (data.version !== ExportUtils.EXPORT_VERSION) {
-      Messages.error('Unsupported file version')
+		const chosenFile = files.new(chosenPath)
+    const data = await chosenFile.readFromJSON<IExportedData>()
+
+    if (data.version !== exportUtils.EXPORT_VERSION) {
+      messages.error('Unsupported file version')
 
       return
     }
 
+		const dlcs = di.resolve(DLC_TOKEN)
+		const mods = di.resolve(MODS_TOKEN)
+
     if (!data.info.some(item => (
       item.name === source.name
       && item.isTrailer === (xml.Type === TruckFileType.trailer)
-      && item.dlc === DLCs.getDLC(source)
-      && item.mod === Modifications.getModID(source)
+      && item.dlc === dlcs.getDLC(source)
+      && item.mod === mods.getModID(source)
     ))) {
-      Messages.error('The necessary parameters not found')
+      messages.error('The necessary parameters not found')
 
       return
     }
@@ -52,8 +63,8 @@ class ImportUtils {
   }
 }
 
+export const importUtils = new ImportUtils()
+
 export const fileInjectKey: InjectionKey<IFile> = Symbol()
 export const injectFile = () => inject(fileInjectKey)!
 export const provideFile = (file: IFile) => provide(fileInjectKey, file)
-
-export default new ImportUtils()

@@ -1,30 +1,29 @@
 import { AddonTruckData } from '../../addon'
 import type { INumberAttrDescriptor, IStringAttrDescriptor, XmlElement, XmlElements, XmlValue } from '../../attributes'
 import { floatAttr, properties, stringAttr } from '../../attributes'
-import Limit from '../../limit'
+import { Limit } from '../../limit'
 import { innerElement, innerElements } from '../../xml-with-templates'
-import CompatibleWheels from './compatible-wheels'
-import EngineSocket from './engine-socket'
-import FuelTank from './fuel-tank'
-import GearboxSocket from './gearbox-socket'
-import texts from './localization'
-import SuspensionSocket from './suspension-socket'
-import Wheels from './wheels'
-import Winch from './winch'
-import WinchUpgradeSocket from './winch-upgrade-socket'
+import { TruckCompatibleWheels } from './compatible-wheels'
+import { TruckEngineSocket } from './engine-socket'
+import { TruckFuelTank } from './fuel-tank'
+import { TruckGearboxSocket } from './gearbox-socket'
+import { TRUCK_DATA_LOCALIZATION as texts } from './localization'
+import { TruckSuspensionSocket } from './suspension-socket'
+import { TruckWheels } from './wheels'
+import { TruckWinch } from './winch'
+import { WinchUpgradeSocket } from './winch-upgrade-socket'
 
-export { default as TruckCompatibleWheels } from './compatible-wheels'
-export { default as TruckEngineSocket } from './engine-socket'
-export { default as TruckFuelTank } from './fuel-tank'
-export { default as TruckGearboxSocket } from './gearbox-socket'
-export { default as TruckSuspensionSocket } from './suspension-socket'
+export * from './compatible-wheels'
+export * from './engine-socket'
+export * from './fuel-tank'
+export * from './gearbox-socket'
+export * from './suspension-socket'
 export * from './wheels'
-export { default as TruckWheels } from './wheels'
-export { default as TruckWinch } from './winch'
-export { default as WinchUpgradeSocket } from './winch-upgrade-socket'
+export * from './winch'
+export * from './winch-upgrade-socket'
 
 /** Описание большинства свойств непосредственно трака. */
-export default class TruckData extends AddonTruckData {
+export class TruckData extends AddonTruckData {
   /** Скорость, с которой колёса возвращаются на исходную позицию после поворота. */
   @properties({
     get label() { return texts.backSteerSpeed },
@@ -96,38 +95,38 @@ export default class TruckData extends AddonTruckData {
   declare $TruckType: IStringAttrDescriptor<TruckType>
 
   /** Параметры лебедки. */
-  @innerElement(Winch)
-  readonly Winch: XmlElement<Winch>
+  @innerElement(TruckWinch)
+  readonly Winch: XmlElement<TruckWinch>
 
   /** Секция описания колес. */
-  @innerElement(Wheels)
-  readonly Wheels: XmlElement<Wheels>
+  @innerElement(TruckWheels)
+  readonly Wheels: XmlElement<TruckWheels>
 
-  @innerElement(Wheels)
-  readonly ExtraWheels: XmlElement<Wheels>
+  @innerElement(TruckWheels)
+  readonly ExtraWheels: XmlElement<TruckWheels>
 
   /** Описание доступных подвесок. */
-  @innerElement(SuspensionSocket)
-  readonly SuspensionSocket: XmlElement<SuspensionSocket>
+  @innerElement(TruckSuspensionSocket)
+  readonly SuspensionSocket: XmlElement<TruckSuspensionSocket>
 
   /** Описание доступных коробок передач. */
-  @innerElement(GearboxSocket)
-  readonly GearboxSocket: XmlElement<GearboxSocket>
+  @innerElement(TruckGearboxSocket)
+  readonly GearboxSocket: XmlElement<TruckGearboxSocket>
 
   @innerElement(WinchUpgradeSocket)
   readonly WinchUpgradeSocket: XmlElement<WinchUpgradeSocket>
 
   /** Свойства бензобака. */
-  @innerElement(FuelTank)
-  readonly FuelTank: XmlElement<FuelTank>
+  @innerElement(TruckFuelTank)
+  readonly FuelTank: XmlElement<TruckFuelTank>
 
   /** Описание доступных двигателей. */
-  @innerElement(EngineSocket)
-  readonly EngineSocket: XmlElement<EngineSocket>
+  @innerElement(TruckEngineSocket)
+  readonly EngineSocket: XmlElement<TruckEngineSocket>
 
   /** Доступные колеса. */
-  @innerElements(CompatibleWheels)
-  readonly CompatibleWheels!: XmlElements<CompatibleWheels>
+  @innerElements(TruckCompatibleWheels)
+  readonly CompatibleWheels!: XmlElements<TruckCompatibleWheels>
 }
 
 export enum DiffLockType {

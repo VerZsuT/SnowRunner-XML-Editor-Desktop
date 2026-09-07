@@ -1,10 +1,10 @@
 import type { IStringAttrDescriptor, XmlValue } from '../../attributes'
 import { properties, stringAttr } from '../../attributes'
-import XMLWithTemplates from '../../xml-with-templates'
-import texts from './localization'
+import { XMLWithTemplates } from '../../xml-with-templates'
+import { UI_DESC_LOCALIZATION as texts } from './localization'
 
 /** Блок User Interface (UI). */
-export default class BaseUiDesc extends XMLWithTemplates {
+export class BaseUiDesc extends XMLWithTemplates {
   /** Описание. */
   @properties({
     get label() { return texts.uiDesc },

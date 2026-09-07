@@ -7,10 +7,10 @@ export * from './enums'
 export type * from './types'
 
 /**
- * Работа с сообщениями программы.  
+ * Работа с сообщениями программы.
  * _main process_
  */
-class Messages {
+export class Messages {
   /**
    * Вызвать событие сообщения.
    * @param message Сообщение.
@@ -62,9 +62,3 @@ class Messages {
     return () => this.emitMessageEvent({ type: MainMessageType.stopLoading, text })
   }
 }
-
-/**
- * Работа с сообщениями программы.  
- * _main process_
- */
-export default new Messages()

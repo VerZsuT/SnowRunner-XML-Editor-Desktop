@@ -1,7 +1,7 @@
-import { Spin } from '@renderer/components'
+import Spin from '@renderer/components/spin.vue'
 import { defineAsyncComponent, h } from 'vue'
 
-export default defineAsyncComponent({
-	loader: () => import('./index.vue'),
+export const Editor = defineAsyncComponent({
+	loader: () => import('./editor.vue'),
 	loadingComponent: h(Spin, { center: true })
 })

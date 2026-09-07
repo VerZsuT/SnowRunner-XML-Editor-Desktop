@@ -1,10 +1,12 @@
-import type { FileInfo, IFile, Limit } from '../../renderer'
-import type XMLElement from '../xml-element'
+import type { IFile } from '@modules/files/renderer'
+import type { XMLElement } from '../xml-element'
 import { AttrValue } from '../xml-element'
-import XMLTemplates from '../xml-templates'
-import GameXML from './game-xml'
+import { XMLTemplates } from '../xml-templates'
+import type { FileInfo } from './game-xml'
+import { GameXML } from './game-xml'
+import type { Limit } from './limit'
 
-export default class XMLWithTemplates extends GameXML {
+export class XMLWithTemplates extends GameXML {
   /** Элемент шаблонов. */
   readonly templates?: XMLTemplates
 
@@ -95,7 +97,7 @@ export function innerElement<T extends typeof XMLWithTemplates>(
     context: ClassFieldDecoratorContext<This, Value>
   ) {
     const name = context.name.toString()
-    
+
     context.addInitializer(function(this: This) {
       Object.defineProperty(this, name, {
         get(this: This) {
@@ -104,11 +106,11 @@ export function innerElement<T extends typeof XMLWithTemplates>(
             ? `${this.selector} > ${target}`
             : target
           let element = this.select(target)
-    
+
           if (!element && canAdd) {
             element = this.appendTag(target).select(target)
           }
-    
+
           if (!element) {
             return
           }
@@ -140,7 +142,7 @@ export function innerElements<T extends typeof XMLWithTemplates>(ClassOrFactory:
     context: ClassFieldDecoratorContext<This, Value>
   ) {
     const name = context.name.toString()
-    
+
     context.addInitializer(function(this: This) {
       Object.defineProperty(this, name, {
         get(this: This) {

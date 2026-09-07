@@ -1,6 +1,6 @@
 import { loadLocalization, Localization, LocalizationStrings } from '@localization/renderer'
 
-export default loadLocalization(new Localization({
+export const WHEEL_FRICTION_LOCALIZATION = loadLocalization(new Localization({
   bodyFriction: new LocalizationStrings()
     .ru('Сцепление на бездорожье')
     .en('Body friction')

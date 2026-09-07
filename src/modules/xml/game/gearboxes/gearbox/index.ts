@@ -1,17 +1,16 @@
 import type { INumberAttrDescriptor, IStringAttrDescriptor, XmlElement, XmlElements, XmlValue } from '../../attributes'
 import { floatAttr, integerAttr, properties, stringAttr } from '../../attributes'
-import Limit from '../../limit'
-import XMLWithTemplates, { innerElement, innerElements } from '../../xml-with-templates'
-import GameData from './game-data'
-import Gear from './gear'
-import texts from './localization'
+import { Limit } from '../../limit'
+import { XMLWithTemplates, innerElement, innerElements } from '../../xml-with-templates'
+import { GearboxGameData } from './game-data'
+import { Gear } from './gear'
+import { GEARBOX_LOCALIZATION as texts } from './localization'
 
 export * from './game-data'
-export { default as GearboxGameData } from './game-data'
-export { default as Gear } from './gear'
+export * from './gear'
 
 /** Коробка передач. */
-export default class Gearbox extends XMLWithTemplates {
+export class Gearbox extends XMLWithTemplates {
   /** Коэффициент изменения расхода топлива при использовании полного привода. */
   @properties({
     get label() { return texts.awdConsumptionModifier },
@@ -126,6 +125,6 @@ export default class Gearbox extends XMLWithTemplates {
   readonly Gears!: XmlElements<Gear>
 
   /** Информация о взаимодействии коробки передач с окружающим миром. */
-  @innerElement(GameData)
-  readonly GameData: XmlElement<GameData>
+  @innerElement(GearboxGameData)
+  readonly GameData: XmlElement<GearboxGameData>
 }

@@ -1,12 +1,12 @@
 import { initMain, mainMethod } from '@bridge/renderer'
-import type MainSystem from './main'
+import type { System as SystemMain } from './main'
 
 /**
  * Система.
  * _renderer process_
  */
 @initMain()
-class System {
+export class System {
 	/**
 	 * Returns information about the currently effective user. On POSIX platforms,
 	 * this is typically a subset of the password file. The returned object includes
@@ -20,23 +20,17 @@ class System {
 	 * Throws a [`SystemError`](https://nodejs.org/docs/latest-v22.x/api/errors.html#class-systemerror) if a user has no `username` or `homedir`.
 	 */
 	@mainMethod()
-	userInfo!: typeof MainSystem.userInfo
+	userInfo!: SystemMain['userInfo']
 
 	/** Открыть ссылку. */
 	@mainMethod()
-	openLink!: typeof MainSystem.openLink
+	openLink!: SystemMain['openLink']
 
 	/** Открыть путь. */
 	@mainMethod()
-	openPath!: typeof MainSystem.openPath
+	openPath!: SystemMain['openPath']
 
 	/** Открыть файл. */
 	@mainMethod()
-	openFile!: typeof MainSystem.openFile
+	openFile!: SystemMain['openFile']
 }
-
-/**
- * Система.
- * _renderer process_
- */
-export default new System()

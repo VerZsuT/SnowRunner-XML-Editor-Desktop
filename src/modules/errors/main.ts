@@ -1,5 +1,6 @@
-import Messages from '@modules/messages/main'
-import { formatString } from '@utilities/main'
+import { di } from '@utilities/di/container'
+import { MESSAGES_TOKEN } from '@utilities/di/main/tokens'
+import { formatString } from '@utilities/strings/main'
 
 export * from './enums'
 
@@ -15,8 +16,11 @@ export class ProgramError extends Error {
    * @param formatArgs Аргументы для вставки.
    */
   constructor(text: string, error?: Error | null, ...formatArgs: string[]) {
+		const messages = di.resolve(MESSAGES_TOKEN)
+
     text = formatString(text, ...formatArgs)
-    Messages.error(text)
+    messages.error(text)
+		console.error(error)
 
     super(text, { cause: error })
   }

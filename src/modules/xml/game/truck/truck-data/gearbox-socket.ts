@@ -1,10 +1,10 @@
 import type { IStringAttrDescriptor, XmlValue } from '../../attributes'
 import { stringAttr } from '../../attributes'
-import Gearboxes from '../../gearboxes'
-import XMLWithTemplates from '../../xml-with-templates'
+import { Gearboxes } from '../../gearboxes'
+import { XMLWithTemplates } from '../../xml-with-templates'
 
 /** Описание доступных коробок передач. */
-export default class GearboxSocket extends XMLWithTemplates {
+export class TruckGearboxSocket extends XMLWithTemplates {
   /** Имя xml-файла. */
   @stringAttr()
   accessor Type: XmlValue<string>

@@ -26,12 +26,17 @@
 
 <script lang='ts' setup>
 import { FileFilled, FolderFilled } from '@ant-design/icons-vue'
-import type { IDir, IFile } from '@modules/renderer'
-import { Dialogs, Messages } from '@modules/renderer'
+import type { IDir, IFile } from '@modules/files/renderer'
+import { di } from '@utilities/di/container'
+import { DIALOGS_TOKEN, DIRS_TOKEN, FILES_TOKEN, MESSAGES_TOKEN } from '@utilities/di/renderer/tokens'
 import { Button } from 'ant-design-vue'
-import texts from './localization'
+import { SETUP_LOCALIZATION as texts } from './localization'
 
-const file = defineModel<IFile>()
+const files = di.resolve(FILES_TOKEN)
+const dialogs = di.resolve(DIALOGS_TOKEN)
+const messages = di.resolve(MESSAGES_TOKEN)
+
+const file = defineModel<IFile | undefined>({default: undefined})
 
 async function onFolderClick() {
   const selected = await getFromFolder()
@@ -50,30 +55,37 @@ async function onFileClick() {
 }
 
 async function getInitialPak(): Promise<IFile | undefined> {
-  const selected = Dialogs.getInitial()
+  const selectedPath = dialogs.getInitial()
 
-  if (!selected || selected.basename() !== 'initial.pak' || !await selected.exists()) {
-    Messages.error(texts.invalidInitialError)
+  if (!selectedPath) {
+    return
+  }
+
+  const selectedFile = files.new(selectedPath)
+
+  if (selectedFile.basename() !== 'initial.pak' || !await selectedFile.exists()) {
+    messages.error(texts.invalidInitialError)
 
     return
   }
 
-  return selected
+  return selectedFile
 }
 
 async function getFromFolder(): Promise<IFile | undefined> {
-  const selected = Dialogs.getDir()
+  const selectedPath = dialogs.getDir()
 
-  if (!selected) {
-    Messages.error(texts.invalidFolderError)
+  if (!selectedPath) {
+    messages.error(texts.invalidFolderError)
 
     return
   }
 
-  const found = await findInitial(selected)
+  const dirs = di.resolve(DIRS_TOKEN)
+  const found = await findInitial(dirs.new(selectedPath))
 
   if (!found) {
-    Messages.error(texts.invalidFolderError)
+    messages.error(texts.invalidFolderError)
 
     return
   }

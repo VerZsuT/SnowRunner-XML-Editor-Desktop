@@ -1,7 +1,7 @@
 import { Localization, LocalizationStrings } from '@localization'
 
 /** Тексты работы с EPF. */
-export default new Localization({
+export const EPF_LOCALIZATION = new Localization({
   /** Файлы успешно объединены. */
   successJoin: new LocalizationStrings()
     .ru('Следующие файлы были объединены в один:')

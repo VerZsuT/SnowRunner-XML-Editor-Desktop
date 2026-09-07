@@ -1,7 +1,7 @@
 import { Localization, LocalizationStrings } from '@localization'
 
 /** Локализация архиватора. */
-export default new Localization({
+export const ARCHIVE_LOCALIZATION = new Localization({
   /** Ошибка сохранения мода. */
   saveModError: new LocalizationStrings()
     .ru('Не удалось сохранить файлы модификации. Нет доступа к записи файла.')

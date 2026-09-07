@@ -1,10 +1,10 @@
-import type { IFile } from '@modules/renderer'
+import type { IFile } from '@modules/files/renderer'
 import debounce from 'debounce'
 import type { FSWatcher, WatchListener } from 'node:fs'
 import { storeToRefs } from 'pinia'
 import type { MaybeRef } from 'vue'
 import { onUnmounted, ref, watchEffect } from 'vue'
-import { useEditorStore } from '../../store'
+import { useEditorStore } from '../../store/editor'
 
 export type UpdateListener = () => void | Promise<void>
 
@@ -62,4 +62,4 @@ class FilesUtils {
   }
 }
 
-export default new FilesUtils()
+export const filesUtils = new FilesUtils()

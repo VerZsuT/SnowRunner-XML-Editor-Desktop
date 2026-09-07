@@ -1,42 +1,46 @@
-import { App, Config, Messages } from '@modules/renderer'
+import { di } from '@utilities/di/container'
+import { APP_TOKEN, CONFIG_TOKEN, MESSAGES_TOKEN } from '@utilities/di/renderer/tokens'
 
 /** Шаблон. */
-class Template {
-  /** Создать шаблон. */
-  constructor() {
-    this.changeTitle()
-    this.handleKeys()
-    Messages.handleMessages()
-  }
+export class Template {
+	init() {
+		const messages = di.resolve(MESSAGES_TOKEN)
 
-  /** Изменить заголовок. */
-  changeTitle() {
-    document.title = `SnowRunner XML editor v${Config.version}`
-  }
+		this.changeTitle()
+		this.handleKeys()
+		messages.handleMessages()
+	}
 
-  /** Отследить нажатие горячих клавиш. */
-  handleKeys() {
-    document.addEventListener('keydown', event => {
-      const keyIs = (code: string) => event.code === `Key${code}`
-      const shift = event.shiftKey
-      const ctrl = event.ctrlKey
+	/** Изменить заголовок. */
+	changeTitle() {
+		const config = di.resolve(CONFIG_TOKEN)
 
-      if (!ctrl) {
-        return
-      }
+		document.title = `SnowRunner XML editor v${config.version}`
+	}
 
-      if (keyIs('S')) {
-        // Быстрое сохранение.
-        document.querySelector<HTMLInputElement>('#save')?.click()
-      } else if (keyIs('Q')) {
-        // Быстрое закрытие.
-        App.quit()
-      } else if (keyIs('I') && shift && ctrl) {
-        // Открыть `devtools`.
-        App.toggleDevTools()
-      }
-    })
-  }
+	/** Отследить нажатие горячих клавиш. */
+	handleKeys() {
+		document.addEventListener('keydown', event => {
+			const keyIs = (code: string) => event.code === `Key${code}`
+			const shift = event.shiftKey
+			const ctrl = event.ctrlKey
+
+			if (!ctrl) {
+				return
+			}
+
+			const app = di.resolve(APP_TOKEN)
+
+			if (keyIs('S')) {
+				// Быстрое сохранение.
+				document.querySelector<HTMLInputElement>('#save')?.click()
+			} else if (keyIs('Q')) {
+				// Быстрое закрытие.
+				app.quit()
+			} else if (keyIs('I') && shift && ctrl) {
+				// Открыть `devtools`.
+				app.toggleDevTools()
+			}
+		})
+	}
 }
-
-new Template()

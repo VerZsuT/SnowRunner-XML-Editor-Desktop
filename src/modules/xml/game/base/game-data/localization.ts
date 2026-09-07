@@ -1,6 +1,6 @@
 import { loadLocalization, Localization, LocalizationStrings } from '@localization/renderer'
 
-export default loadLocalization(new Localization({
+export const GAME_DATA_LOCALIZATION = loadLocalization(new Localization({
   price: new LocalizationStrings()
     .ru('Цена')
     .en('Price')

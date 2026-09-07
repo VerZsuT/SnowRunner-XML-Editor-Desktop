@@ -1,6 +1,6 @@
 import { Localization, LocalizationStrings, loadLocalization } from '@localization/renderer'
 
-export default loadLocalization(new Localization({
+export const COMPATIBLE_WHEELS_LOCALIZATION = loadLocalization(new Localization({
   scale: new LocalizationStrings()
     .ru('Размер колеса')
     .en('Wheel size')

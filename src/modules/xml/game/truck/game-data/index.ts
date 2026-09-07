@@ -1,22 +1,22 @@
 import type { IStringArrayAttrDescriptor, XmlArrayValue, XmlElement, XmlElements } from '../../attributes'
 import { properties, stringArrayAttr } from '../../attributes'
-import { BaseGameData } from '../../base'
+import { BaseGameData } from '../../base/game-data'
 import { innerElement, innerElements } from '../../xml-with-templates'
-import AddonSlots from './addon-slots'
-import AddonSockets from './addon-sockets'
-import CraneSocket from './crane-socket'
-import texts from './localization'
-import UiDesc from './ui-desc'
-import WinchSocket from './winch-socket'
+import { TrailerAddonSlots } from './addon-slots'
+import { TruckAddonSockets } from './addon-sockets'
+import { TruckCraneSocket } from './crane-socket'
+import { ADDON_SOCKETS_LOCALIZATION as texts } from './localization'
+import { TruckUiDesc } from './ui-desc'
+import { TruckWinchSocket } from './winch-socket'
 
+export * from './addon-slots'
 export * from './addon-sockets'
-export { default as TrailerAddonSlots, default as TruckAddonSockets } from './addon-sockets'
-export { default as TruckCraneSocket } from './crane-socket'
-export { default as TruckUiDesc } from './ui-desc'
-export { default as TruckWinchSocket } from './winch-socket'
+export * from './crane-socket'
+export * from './ui-desc'
+export * from './winch-socket'
 
 /** Информация о взаимодействии трака с окружающим миром. */
-export default class GameData extends BaseGameData {
+export class TruckGameData extends BaseGameData {
   /** Регион. */
   @properties({
     get label() { return texts.country },
@@ -32,23 +32,23 @@ export default class GameData extends BaseGameData {
   declare $ExcludeAddons: IStringArrayAttrDescriptor
 
   /** Место крепления лебедки. */
-  @innerElements(WinchSocket, 'WinchSocket')
-  readonly WinchSockets!: XmlElements<WinchSocket>
+  @innerElements(TruckWinchSocket, 'WinchSocket')
+  readonly WinchSockets!: XmlElements<TruckWinchSocket>
 
   /** Блок UI. */
-  @innerElement(UiDesc)
-  readonly UiDesc: XmlElement<UiDesc> = undefined
+  @innerElement(TruckUiDesc)
+  readonly UiDesc: XmlElement<TruckUiDesc> = undefined
 
-  @innerElement(AddonSlots)
-  readonly AddonSlots: XmlElement<AddonSlots>
+  @innerElement(TrailerAddonSlots)
+  readonly AddonSlots: XmlElement<TrailerAddonSlots>
 
   /** Место, за которое может цепляться кран. */
-  @innerElements(CraneSocket, 'CraneSocket')
-  readonly CraneSockets!: XmlElements<CraneSocket>
+  @innerElements(TruckCraneSocket, 'CraneSocket')
+  readonly CraneSockets!: XmlElements<TruckCraneSocket>
 
   /** Секция определения взаимного расположения аддонов трака. */
-  @innerElements(AddonSockets)
-  readonly AddonSockets!: XmlElements<AddonSockets>
+  @innerElements(TruckAddonSockets)
+  readonly AddonSockets!: XmlElements<TruckAddonSockets>
 }
 
 /** Страна открытия. */

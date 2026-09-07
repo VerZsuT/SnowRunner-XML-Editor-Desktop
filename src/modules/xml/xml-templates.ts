@@ -1,10 +1,11 @@
-import { Dirs } from '@modules/files/renderer'
-import type { IFile } from '@modules/renderer'
+import type { IFile } from '@modules/files/renderer'
+import { di } from '@utilities/di/container'
+import { DIRS_TOKEN } from '@utilities/di/renderer/tokens'
 import type { Cheerio } from 'cheerio'
-import XMLElement from './xml-element'
+import { XMLElement } from './xml-element'
 
 /** Шаблоны `_templates`. */
-export default class XMLTemplates extends XMLElement {
+export class XMLTemplates extends XMLElement {
   /** Название тега шаблонов. */
   private static readonly tagName = '_templates'
 
@@ -47,7 +48,8 @@ export default class XMLTemplates extends XMLElement {
     let include: XMLTemplates | undefined
 
     if (includeAttr) {
-      const templatesElement = await Dirs.templates.file(`${includeAttr.str}.xml`).readFromXML()
+			const dirs = di.resolve(DIRS_TOKEN)
+      const templatesElement = await dirs.templates.file(`${includeAttr.str}.xml`).readFromXML()
 
       if (templatesElement) {
         include = new XMLTemplates(templatesElement.toCheerio())

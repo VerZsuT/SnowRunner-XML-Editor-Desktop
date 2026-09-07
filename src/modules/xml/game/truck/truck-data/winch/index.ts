@@ -1,11 +1,11 @@
 import type { INumberAttrDescriptor, XmlValue } from '../../../attributes'
 import { floatAttr, properties } from '../../../attributes'
-import Limit from '../../../limit'
-import XMLWithTemplates from '../../../xml-with-templates'
-import texts from './localization'
+import { Limit } from '../../../limit'
+import { XMLWithTemplates } from '../../../xml-with-templates'
+import { WINCH_LOCALIZATION as texts } from './localization'
 
 /** Параметры лебедки. */
-export default class Winch extends XMLWithTemplates {
+export class TruckWinch extends XMLWithTemplates {
   /** Максимальная длина веревки лебедки. */
   @properties({
     get label() { return texts.winchLength },

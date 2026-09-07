@@ -1,13 +1,13 @@
 import type { XmlElement } from '../attributes'
-import { BaseGameData } from '../base'
+import { BaseGameData } from '../base/game-data'
 import { innerElement } from '../xml-with-templates'
-import InstallSocket from './install-socket'
+import { AddonInstallSocket } from './install-socket'
 
-export { default as AddonInstallSocket } from './install-socket'
+export * from './install-socket'
 
 /** Информация о взаимодействии двигателя с окружающим миром. */
-export default class GameData extends BaseGameData {
+export class AddonGameData extends BaseGameData {
   /** Сокет установки аддона. */
-  @innerElement(InstallSocket)
-  readonly InstallSocket: XmlElement<InstallSocket>
+  @innerElement(AddonInstallSocket)
+  readonly InstallSocket: XmlElement<AddonInstallSocket>
 }

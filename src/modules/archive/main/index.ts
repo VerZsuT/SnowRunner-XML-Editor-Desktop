@@ -1,23 +1,34 @@
-import { providePublic, publicMethod } from '@bridge/main'
 import { loadLocalization } from '@localization/main'
-import Config from '@modules/data/config/main'
-import Modifications from '@modules/data/modifications/main'
-import Sizes from '@modules/data/sizes/main'
-import type { IDir, IFile } from '@modules/files/main'
-import { Dir, Dirs, File } from '@modules/files/main'
-import Loading from '@modules/loading/main'
-import Messages from '@modules/messages/main'
-import localization from '../localization'
-import WinRAR from './archiver'
-
-const texts = loadLocalization(localization)
+import type { Config, IConfig } from '@modules/data/config/main'
+import type { Dirs, Files, IDir, IFile } from '@modules/files/main'
+import { di, inject } from '@utilities/di/container'
+import { CONFIG_TOKEN, DIRS_TOKEN, FILES_TOKEN, LOADING_TOKEN, MESSAGES_TOKEN, MODS_TOKEN, SIZES_TOKEN } from '@utilities/di/main/tokens'
+import { ARCHIVE_LOCALIZATION } from '../localization'
+import { WinRAR } from './archiver'
 
 /**
  * Работа с архивами.
  * _main process_
 */
-@providePublic()
-class Archive {
+export class Archive {
+	/** Локализация. */
+	private readonly texts = loadLocalization(ARCHIVE_LOCALIZATION)
+
+	/** Архиватор. */
+	private readonly archiver = new WinRAR()
+
+	/** Конфигурация программы. */
+	@inject(CONFIG_TOKEN)
+	private readonly config!: Config & IConfig
+
+	/** Основные папки. */
+	@inject(DIRS_TOKEN)
+	private readonly dirs!: Dirs
+
+	/** Основные файлы. */
+	@inject(FILES_TOKEN)
+	private readonly files!: Files
+
   /** Выполняется распаковка */
   isInitialUnpacking?: Promise<void>
 
@@ -29,9 +40,9 @@ class Archive {
   async update(dir: IDir, archive: IFile) {
     const marker = dir.file('edited')
 
-    await WinRAR.update(dir, archive)
+    await this.archiver.update(dir, archive)
     await marker.make()
-    await WinRAR.add(marker, archive)
+    await this.archiver.add(marker, archive)
     await this.saveSize(archive)
   }
 
@@ -39,21 +50,23 @@ class Archive {
    * Обновить файлы в архиве.
    * @param modName Название мода.
    */
-  @publicMethod()
   async updateFiles(modName?: string) {
     if (!modName) {
-      return this.update(Dirs.mainTemp, Config.initial)
+      return this.update(this.dirs.mainTemp, this.config.initial)
     }
 
-    const mod = Modifications.find(mod => mod.name === modName)
+		const mods = di.resolve(MODS_TOKEN)
+    const mod = mods.find(mod => mod.name === modName)
 
     if (!mod) {
-      Messages.error(`Mod '${modName}' not found`)
+			const messages = di.resolve(MESSAGES_TOKEN)
+
+      messages.error(`Mod '${modName}' not found`)
 
       return
     }
 
-    await this.update(Dirs.modsTemp.dir(modName), new File(mod.path))
+    await this.update(this.dirs.modsTemp.dir(modName), this.files.new(mod.path))
   }
 
   /**
@@ -61,26 +74,29 @@ class Archive {
    * @param archive Распаковываемый архив.
    * @param dir Папка, в которую будет распаковываться архив.
    */
-  @publicMethod([File, Dir])
-  async unpack(archive: IFile, dir: IDir) {
+  async unpack(archivePath: string, dirPath: string) {
+		const dir = this.dirs.new(dirPath)
+		const archive = this.files.new(archivePath)
+
     await dir.remove()
-    await WinRAR.unpack(archive, dir)
+    await this.archiver.unpack(archive, dir)
   }
 
   /**
    * Распаковать основные XML файлы (+DLC) из `initial.pak`.
    * @param hideLoading Скрывать окно загрузки после окончания.
    */
-  @publicMethod()
   async unpackMain(hideLoading = true) {
     return this.isInitialUnpacking = (async() => {
-      Loading.init(texts.unpacking, undefined, hideLoading)
+			const loading = di.resolve(LOADING_TOKEN)
 
-      await Dirs.mainTemp.clear()
-      await this.unpack(Config.initial, Dirs.mainTemp)
-      await this.saveSize(Config.initial)
+      loading.init(this.texts.unpacking, undefined, hideLoading)
 
-      Loading.completeStage()
+      await this.dirs.mainTemp.clear()
+      await this.unpack(this.config.initial.path, this.dirs.mainTemp.path)
+      await this.saveSize(this.config.initial)
+
+      loading.completeStage()
     })()
   }
 
@@ -90,12 +106,12 @@ class Archive {
    * @param name Название модификации.
    */
   async unpackMod(archive: IFile, name: string) {
-    const modDir = Dirs.modsTemp.dir(name)
+    const modDir = this.dirs.modsTemp.dir(name)
 
-    await Dirs.modsTemp.make()
+    await this.dirs.modsTemp.make()
     await modDir.clear()
     await this.saveSize(archive)
-    await this.unpack(archive, modDir)
+    await this.unpack(archive.path, modDir.path)
   }
 
   /**
@@ -103,18 +119,13 @@ class Archive {
    * @param archive Архив, размер которого будет сохранён.
    */
   private async saveSize(archive: IFile) {
+		const sizes = di.resolve(SIZES_TOKEN)
     const size = await archive.getSize()
 
-    if (!Config.initialPath || archive.path === Config.initialPath) {
-      Sizes.initial = size
+    if (!this.config.initialPath || archive.path === this.config.initialPath) {
+      sizes.initial = size
     } else {
-      Sizes.setModSize(archive, size)
+      sizes.setModSize(archive, size)
     }
   }
 }
-
-/**
- * Работа с архивами.
- * _main process_
-*/
-export default new Archive()

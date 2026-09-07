@@ -27,7 +27,7 @@ export interface IHotKeysParams {
  * @param params Параметры.
  * @param handler Обработчик события.
  */
-export default function useKey(params: IHotKeysParams | IHotKeysParams['key'], handler: (event: KeyboardEvent) => void) {
+export function useKey(params: IHotKeysParams | IHotKeysParams['key'], handler: (event: KeyboardEvent) => void) {
   const {
     key,
     ctrlKey = false,

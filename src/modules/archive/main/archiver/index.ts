@@ -1,13 +1,11 @@
-import Config from '@modules/data/config/main'
-import Env from '@modules/env/main'
 import { ErrorText, ProgramError } from '@modules/errors/main'
-import { Dirs } from '@modules/files/main'
-import type { IDir, IFile } from '@modules/main'
-import Paths from '@modules/paths/main'
+import type { IDir, IFile } from '@modules/files/main'
+import { di } from '@utilities/di/container'
+import { CONFIG_TOKEN, DIRS_TOKEN, ENV_TOKEN, PATHS_TOKEN } from '@utilities/di/main/tokens'
 import { execFile } from 'node:child_process'
 
 /** Работа с WinRAR. */
-class WinRAR {
+export class WinRAR {
   /** Исполняемый файл WinRAR. */
   private readonly exeName = 'WinRAR.exe'
 
@@ -59,7 +57,9 @@ class WinRAR {
    * @returns Аргументы запуска.
    */
   private getRunArgs(isMod = false) {
-    return Env.debugArchiver
+		const env = di.resolve(ENV_TOKEN)
+
+    return env.debugArchiver
       ? []
       : [
         this.flags.inBackground,
@@ -102,10 +102,11 @@ class WinRAR {
    * @param dir Папка, в которую будет происходить распаковка.
    */
   async unpack(archive: IFile, dir: IDir) {
-    const isMod = !!Config.initialPath && archive.path !== Config.initialPath
+		const config = di.resolve(CONFIG_TOKEN)
+    const isMod = !!config.initialPath && archive.path !== config.initialPath
     const list = isMod
       ? this.lists.mods
-      : Config.optimizeUnpack
+      : config.optimizeUnpack
         ? this.lists.mainOptimized
         : this.lists.main
 
@@ -163,14 +164,17 @@ class WinRAR {
    * @param args Параметры запуска.
    */
   async run(...args: (string | string[])[]) {
-    if (!await Dirs.winrar.exists()) {
-      throw new ProgramError(ErrorText.dirNotFound, null, Dirs.winrar.path)
+		const dirs = di.resolve(DIRS_TOKEN)
+		const paths = di.resolve(PATHS_TOKEN)
+
+    if (!await dirs.winrar.exists()) {
+      throw new ProgramError(ErrorText.dirNotFound, null, dirs.winrar.path)
     }
 
     const execArgs = args.flatMap(value => Array.isArray(value) ? value : [value])
     const { promise, resolve, reject } = Promise.withResolvers()
 
-    execFile(this.exeName, execArgs, { cwd: Paths.winrar })
+    execFile(this.exeName, execArgs, { cwd: paths.winrar })
       .once('close', resolve)
       .once('error', error => {
         reject(error.message)
@@ -190,6 +194,3 @@ class WinRAR {
     return `${path}\\`
   }
 }
-
-/** Работа с WinRAR. */
-export default new WinRAR()

@@ -1,10 +1,10 @@
-import DLCs from '@modules/dlcs/renderer'
-import { Dirs } from '@modules/files/renderer'
-import type { IFile } from '@modules/renderer'
-import { lastItem } from '@utilities/renderer'
+import type { Dirs, IFile } from '@modules/files/renderer'
+import { lastItem } from '@utilities/checks/renderer'
+import { di, inject } from '@utilities/di/container'
+import { DIRS_TOKEN, DLC_TOKEN } from '@utilities/di/renderer/tokens'
 import type { AttrValue } from '../xml-element'
-import XMLElement from '../xml-element'
-import type Limit from './limit'
+import { XMLElement } from '../xml-element'
+import type { Limit } from './limit'
 
 /** Информация о файле. */
 export type FileInfo = {
@@ -19,7 +19,10 @@ export type FileInfo = {
 }
 
 /** XML элемент из файлов игры. */
-export default class GameXML extends XMLElement {
+export class GameXML extends XMLElement {
+	@inject(DIRS_TOKEN)
+	protected readonly dirs!: Dirs
+
   constructor(element: XMLElement, selector = '', baseElement = element) {
     super(element.toCheerio(), selector, baseElement.toCheerio())
   }
@@ -129,21 +132,22 @@ export default class GameXML extends XMLElement {
     const { isBackup, mod } = info
 
     const classesDir = isBackup
-      ? Dirs.backupInitialData.dir('[media]\\classes')
-      : Dirs.classes
+      ? this.dirs.backupInitialData.dir('[media]\\classes')
+      : this.dirs.classes
     const dlcDir = isBackup
-      ? Dirs.backupInitialData.dir('[media]\\_dlc')
-      : Dirs.dlc
+      ? this.dirs.backupInitialData.dir('[media]\\_dlc')
+      : this.dirs.dlc
     const modFile = mod
-      ? Dirs.modsTemp.file(mod, `classes/${folder}/${name}.xml`)
+      ? this.dirs.modsTemp.file(mod, `classes/${folder}/${name}.xml`)
       : undefined
 
     const maybe = [
       ...modFile ? [modFile] : [],
       classesDir.file(`${folder}/${name}.xml`)
     ]
+		const dlcs = di.resolve(DLC_TOKEN)
 
-    for (const dlc of DLCs.get()) {
+    for (const dlc of dlcs.get()) {
       if (await dlcDir.dir(dlc.name).exists()) {
         maybe.unshift(dlcDir.file(dlc.name, `classes/${folder}/${name}.xml`))
       }

@@ -1,7 +1,7 @@
 import type { UserConfig } from 'vite'
 import { defineConfig, mergeConfig } from 'vite'
 import { viteStaticCopy } from 'vite-plugin-static-copy'
-import Paths from './paths.js'
+import { paths } from './paths.js'
 import { external, externalizePlugin, getBuildConfig, getBuildDefine, pluginHotRestart } from './vite.base.config.js'
 
 export default defineConfig(forgeEnv => {
@@ -20,7 +20,10 @@ export default defineConfig(forgeEnv => {
 				formats: ['es']
 			},
 			rollupOptions: {
-				external: [...external]
+				output: {
+					manualChunks: undefined
+				},
+				external: [...external, '**/renderer']
 			}
 		},
 		plugins: [
@@ -28,10 +31,10 @@ export default defineConfig(forgeEnv => {
 			pluginHotRestart('restart'),
 			viteStaticCopy({
 				targets: [
-					{ src: Paths.favicon, dest: rootDir, rename: { stripBase: true } },
-					{ src: Paths.readme, dest: rootDir },
-					{ src: Paths.license, dest: rootDir },
-					{ src: `${Paths.winrar}/*`, dest: `${thisDir}/winrar`, rename: { stripBase: true } }
+					{ src: paths.favicon, dest: rootDir, rename: { stripBase: true } },
+					{ src: paths.readme, dest: rootDir },
+					{ src: paths.license, dest: rootDir },
+					{ src: `${paths.winrar}/*`, dest: `${thisDir}/winrar`, rename: { stripBase: true } }
 				]
 			})
 		],

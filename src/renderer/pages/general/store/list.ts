@@ -1,5 +1,7 @@
-import type { IFile, TruckType, TruckXML } from '@modules/renderer'
-import { Edited, Favorites } from '@modules/renderer'
+import type { IFile } from '@modules/files/types'
+import type { TruckType, TruckXML } from '@modules/xml/renderer'
+import { di } from '@utilities/di/container'
+import { EDITED_TOKEN, FAVORITES_TOKEN } from '@utilities/di/renderer/tokens'
 import { defineStore } from 'pinia'
 import { reactive, ref } from 'vue'
 import { Category, ListMode, SourceType } from '../enums'
@@ -28,10 +30,14 @@ export const useListStore = defineStore('list', () => {
       ].toSorted((a, b) => a.name.localeCompare(b.name))
     },
     get [SourceType.favorites]() {
-      return this[SourceType.all].filter(item => Favorites.isFavorite(item))
+			const favorites = di.resolve(FAVORITES_TOKEN)
+
+      return this[SourceType.all].filter(item => favorites.isFavorite(item))
     },
     get [SourceType.edited]() {
-      return this[SourceType.all].filter(item => Edited.isEdited(item))
+			const edited = di.resolve(EDITED_TOKEN)
+
+      return this[SourceType.all].filter(item => edited.isEdited(item))
     }
   })
 
@@ -52,10 +58,12 @@ export const useListStore = defineStore('list', () => {
     },
     /** Изменить статус "избранное" */
     toggleFavorite(file: IFile) {
-      if (Favorites.isFavorite(file)) {
-        Favorites.findAndRemove(item => item === file.name)
+			const favorites = di.resolve(FAVORITES_TOKEN)
+
+      if (favorites.isFavorite(file)) {
+        favorites.findAndRemove(item => item === file.name)
       } else {
-        Favorites.push(file.name)
+        favorites.push(file.name)
       }
     },
     /** Изменить фильтр по названию */

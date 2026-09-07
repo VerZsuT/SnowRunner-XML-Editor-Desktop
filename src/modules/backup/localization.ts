@@ -1,7 +1,7 @@
 import { Localization, LocalizationStrings } from '@localization'
 
 /** Тексты работы с бэкапом. */
-export default new Localization({
+export const BACKUP_LOCALIZATION = new Localization({
   /** Бэкап сохранён успешно. */
   successBackupSave: new LocalizationStrings()
     .ru('Бэкап initial.pak успешно сохранён.')

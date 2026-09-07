@@ -1,6 +1,6 @@
 import { Localization, LocalizationStrings, loadLocalization } from '@localization/renderer'
 
-export default loadLocalization(new Localization({
+export const TRUCK_DATA_LOCALIZATION = loadLocalization(new Localization({
   backSteerSpeed: new LocalizationStrings()
     .ru('Скорость возврата колёс')
     .en('Back steer speed')

@@ -1,3 +1,3 @@
-export { default as useKey } from './use-key'
-export { default as useWindowReady } from './use-window-ready'
+export * from './use-key'
+export * from './use-window-ready'
 

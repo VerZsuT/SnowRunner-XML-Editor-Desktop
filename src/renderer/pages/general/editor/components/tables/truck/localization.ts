@@ -1,7 +1,7 @@
 import { Localization, LocalizationStrings } from '@localization'
 import { loadLocalization } from '@localization/renderer'
 
-export default loadLocalization(new Localization({
+export const TRUCK_LOCALIZATION =  loadLocalization(new Localization({
   physicsWheel: new LocalizationStrings()
     .ru('Дополнительно')
     .en('Extra')

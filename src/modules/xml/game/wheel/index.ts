@@ -1,14 +1,14 @@
-import type { IFile } from '../../../renderer'
-import XMLElement from '../../xml-element'
-import XMLTemplates from '../../xml-templates'
+import type { IFile } from '@modules/files/renderer'
+import { XMLElement } from '../../xml-element'
+import { XMLTemplates } from '../../xml-templates'
 import type { INumberAttrDescriptor, XmlElement, XmlValue } from '../attributes'
 import { floatAttr, integerAttr, properties } from '../attributes'
-import { BaseWheelFriction } from '../base'
-import Limit from '../limit'
-import XMLWithTemplates, { innerElement } from '../xml-with-templates'
+import { BaseWheelFriction } from '../base/wheel-friction'
+import { Limit } from '../limit'
+import { XMLWithTemplates, innerElement } from '../xml-with-templates'
 
 /** Рутовый тег файла класса коробки передач. */
-export default class Wheel extends XMLWithTemplates {
+export class Wheel extends XMLWithTemplates {
   static override async from(str: string): Promise<Wheel | undefined>
   static override async from(file: IFile): Promise<Wheel | undefined>
   static override async from(source: string | IFile): Promise<Wheel | undefined> {

@@ -1,7 +1,7 @@
-import type { InputType, NumberType } from './enums'
-
-import type { IFile, Position, TruckXML } from '@modules/renderer'
+import type { IFile } from '@modules/files/types'
 import type { IStringConvertAttrDescriptor } from '@modules/xml/game/attributes'
+import type { Position, TruckXML } from '@modules/xml/renderer'
+import type { InputType, NumberType } from './enums'
 
 /** Параметры доп. сценария */
 export interface IActionData {

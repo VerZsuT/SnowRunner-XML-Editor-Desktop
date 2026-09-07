@@ -1,20 +1,22 @@
 import { LocalizationStrings } from '@localization'
-import { Config, type TruckAddonSocket, type TruckXML } from '@modules/renderer'
-import Trailer from './trailer'
+import type { TruckAddonSocket, TruckXML } from '@modules/xml/renderer'
+import { di } from '@utilities/di/container'
+import { CONFIG_TOKEN } from '@utilities/di/renderer/tokens'
+import { Trailer } from './trailer'
 
 export type TrailersData = {
   hasScoutTrailer: boolean
   hasTruckTrailer: boolean
 }
 
-class Action {
+export class TrailersAction {
   get name() {
     return new LocalizationStrings()
       .ru('Прицепы')
       .en('Trailers')
       .de('Anhänger')
       .ch('拖车钩')
-      .get(Config)
+      .get(di.resolve(CONFIG_TOKEN))
   }
   readonly icon = 'trailer'
   readonly id = 'trailers'
@@ -119,5 +121,3 @@ class Action {
     ]
   }
 }
-
-export default new Action()

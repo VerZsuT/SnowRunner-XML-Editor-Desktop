@@ -1,12 +1,12 @@
 import type { INumberAttrDescriptor, IStringAttrDescriptor, XmlValue } from '../../attributes'
 import { floatAttr, properties, stringAttr } from '../../attributes'
-import Limit from '../../limit'
+import { Limit } from '../../limit'
 import type { WheelLocation } from '../../truck/truck-data/wheels/wheel'
-import XMLWithTemplates from '../../xml-with-templates'
-import texts from './localization'
+import { XMLWithTemplates } from '../../xml-with-templates'
+import { SUSPENSION_LOCALIZATION as texts } from './localization'
 
 /** Подвеска. */
-export default class Suspension extends XMLWithTemplates {
+export class Suspension extends XMLWithTemplates {
   /** Тип колеса. */
   @stringAttr()
   accessor WheelType: XmlValue<WheelLocation>

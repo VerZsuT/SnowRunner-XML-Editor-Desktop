@@ -1,4 +1,4 @@
-import { Page } from '@modules/renderer'
+import { Page } from '@modules/windows/enums'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 

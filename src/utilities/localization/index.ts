@@ -7,7 +7,7 @@ export class Localization<
   Value = string,
   ToLocalize extends ITextsToLocalize<Value> = ITextsToLocalize<Value>
 > {
-  protected readonly value: ToLocalize
+  readonly value: ToLocalize
 	protected readonly localized = {} satisfies Partial<Record<Lang, LocalizedTexts<typeof this.value>>>
 
   constructor(obj: ToLocalize)

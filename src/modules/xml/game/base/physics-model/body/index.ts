@@ -1,12 +1,12 @@
 import type { INumberAttrDescriptor, IPositionAttrDescriptor, XmlElement, XmlValue } from '../../../attributes'
 import { integerAttr, positionAttr, properties } from '../../../attributes'
-import Limit from '../../../limit'
-import type Position from '../../../position'
-import XMLWithTemplates, { innerElement } from '../../../xml-with-templates'
-import texts from './localization'
+import { Limit } from '../../../limit'
+import type { Position } from '../../../position'
+import { XMLWithTemplates, innerElement } from '../../../xml-with-templates'
+import { BODY_LOCALIZATION as texts } from './localization'
 
 /** Физическая модель. */
-export default class PhysicsBody extends XMLWithTemplates {
+export class PhysicsBody extends XMLWithTemplates {
   /** Масса тела. */
   @properties({
     get label() { return texts.mass },

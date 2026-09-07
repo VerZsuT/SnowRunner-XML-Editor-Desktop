@@ -32,13 +32,13 @@
   </Wrap>
 </template>
 <script setup lang="ts">
-import type { Limit } from '@modules/renderer'
 import type { IAttrDescriptor } from '@modules/xml/game/attributes'
-import { Wrap } from '@renderer/components'
+import type { Limit } from '@modules/xml/renderer'
+import Wrap from '@renderer/components/wrap.vue'
 import { areasToString, formatString } from '@utilities/strings/renderer'
 import { Popover, Typography } from 'ant-design-vue'
 import { computed, h, toRefs } from 'vue'
-import texts from '../../localization'
+import { EDITOR_LOCALIZATION as texts } from '../../localization'
 import type { IInputAreas, InputArea } from '../../types'
 
 const { Text } = Typography

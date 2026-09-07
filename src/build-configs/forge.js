@@ -32,7 +32,7 @@ class ForgeConfig {
 				async prePackage() {
 					console.info('Change version')
 
-					const path = join(_dirname, '../modules/app/index.ts')
+					const path = join(_dirname, '../modules/app/main/index.ts')
 					const constsData = String(await readFile(path))
 
 					await writeFile(path, constsData.replaceAll(/APP_VERSION =.*?\r\n/g, `APP_VERSION = '${version}'\r\n`))
@@ -49,7 +49,6 @@ class ForgeConfig {
 						installer = join(this.out, `${name}.exe`)
 						installerWithVersion = join(this.out, `${name}_v${version}.exe`)
 
-						app = join(this.build, 'resources/app')
 						locales = join(this.build, 'locales')
 
 						winrar = join(_dirname, '../modules/archive/main/archiver/files')
@@ -68,13 +67,6 @@ class ForgeConfig {
 					for (const entry of await readdir(paths.out)) {
 						if (entry !== basename(paths.build)) {
 							await rmdir(join(paths.out, entry))
-						}
-					}
-
-					info('Clear unused source files')
-					for (const entry of await readdir(paths.app)) {
-						if (!['.vite', 'package.json'].includes(entry)) {
-							await rmdir(join(paths.app, entry))
 						}
 					}
 

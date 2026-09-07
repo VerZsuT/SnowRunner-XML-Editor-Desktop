@@ -42,14 +42,16 @@
 </template>
 
 <script setup lang="ts">
-import { Config, TruckType } from '@modules/renderer'
+import { TruckType } from '@modules/xml/renderer'
+import { di } from '@utilities/di/container'
+import { CONFIG_TOKEN } from '@utilities/di/renderer/tokens'
 import type { SelectProps } from 'ant-design-vue'
 import { Input, Select } from 'ant-design-vue'
 import { storeToRefs } from 'pinia'
 import { computed, Transition as VueTransition } from 'vue'
 import { Category, SourceType } from '../../enums'
-import { useListStore } from '../../store'
-import texts from '../localization'
+import { useListStore } from '../../store/list'
+import { LISTS_LOCALIZATION as texts } from '../localization'
 
 export type FiltersProps = {
 	isOpen: boolean
@@ -87,7 +89,7 @@ const sources = computed<SelectProps['options']>(() => [
   {
     label: texts.modsSource,
     value: SourceType.mods,
-    disabled: !Config.useMods
+    disabled: !di.resolve(CONFIG_TOKEN).useMods
   },
   {
     label: texts.favoritesSource,

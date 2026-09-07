@@ -1,11 +1,11 @@
 import type { INumberAttrDescriptor, XmlValue } from '../../../attributes'
 import { floatAttr, properties } from '../../../attributes'
-import Limit from '../../../limit'
-import XMLWithTemplates from '../../../xml-with-templates'
-import texts from './localization'
+import { Limit } from '../../../limit'
+import { XMLWithTemplates } from '../../../xml-with-templates'
+import { GEAR_LOCALIZATION as texts } from './localization'
 
 /** Передача. */
-export default class Gear extends XMLWithTemplates {
+export class Gear extends XMLWithTemplates {
   /** Максимальная угловая скорость колеса на данной передаче. */
   @properties({
     get label() { return texts.angVel },

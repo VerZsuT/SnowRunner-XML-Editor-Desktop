@@ -19,14 +19,23 @@
 </template>
 
 <script lang='ts' setup>
-import { App, Archive, Backup, Config, Files, Messages, Modifications, Page, Paths, System } from '@modules/renderer'
-import { usePageStore } from '@renderer/pages/general/store'
+import { Page } from '@modules/windows/enums'
+import { usePageStore } from '@renderer/pages/general/store/page'
+import { di } from '@utilities/di/container'
+import { APP_TOKEN, ARCHIVE_TOKEN, BACKUP_TOKEN, CONFIG_TOKEN, FILES_TOKEN, MESSAGES_TOKEN, MODS_TOKEN, PATHS_TOKEN, SYSTEM_TOKEN } from '@utilities/di/renderer/tokens'
 import type { ItemType, MenuProps } from 'ant-design-vue'
 import { Menu } from 'ant-design-vue'
 import { computed, nextTick, onMounted, ref } from 'vue'
-import Settings from '../settings'
-import WhatsNew from '../whats-new'
-import texts from './localization'
+import { Settings } from '../settings'
+import { WhatsNew } from '../whats-new'
+import { MENU_LOCALIZATION as texts } from './localization'
+
+const config = di.resolve(CONFIG_TOKEN)
+const system = di.resolve(SYSTEM_TOKEN)
+const paths = di.resolve(PATHS_TOKEN)
+const app = di.resolve(APP_TOKEN)
+const backup = di.resolve(BACKUP_TOKEN)
+const archive = di.resolve(ARCHIVE_TOKEN)
 
 const settingsHasBeenOpened = ref(false)
 const settingsIsOpen = ref(false)
@@ -35,7 +44,7 @@ const whatsNewHasBeenOpened = ref(false)
 const whatsNewIsOpen = ref(false)
 
 /** Отсутствует `initial.pak`. */
-const initialNotFound = !Config.initialPath
+const initialNotFound = !config.initialPath
 const { route } = usePageStore()
 
 /** Ссылки на медиа ресурсы. */
@@ -65,7 +74,7 @@ const items = computed(() => [
           key: 'open_files_folder',
           label: texts.openFilesFolderItemLabel,
           disabled: initialNotFound,
-          onClick: () => System.openPath(Paths.mainTemp)
+          onClick: () => system.openPath(paths.mainTemp)
         },
         {
           key: 'save_files',
@@ -84,7 +93,7 @@ const items = computed(() => [
       {
         key: 'exit',
         label: texts.exitMenuItemLabel,
-        onClick: () => App.quit()
+        onClick: () => app.quit()
       }
     ]
   },
@@ -98,18 +107,18 @@ const items = computed(() => [
       {
         key: 'open_backup',
         label: texts.openButton,
-        onClick: () => System.openPath(Paths.backupFolder)
+        onClick: () => system.openPath(paths.backupFolder)
       },
       { type: 'divider' },
       {
         key: 'save_backup',
         label: texts.saveButton,
-        onClick: () => Backup.save()
+        onClick: () => backup.save()
       },
       {
         key: 'recover_from_backup',
         label: texts.restoreMenuItemLabel,
-        onClick: () => Backup.recoverFromIt()
+        onClick: () => backup.recoverFromIt()
       }
     ]
   },
@@ -130,14 +139,16 @@ const items = computed(() => [
         key: 'reset_settings',
         label: texts.resetMenuItemLabel,
         disabled: initialNotFound,
-        onClick: () => App.resetToDefaults()
+        onClick: () => app.resetToDefaults()
       },
       {
         key: 'uninstall_program',
         label: texts.uninstallMenuItemLabel,
         onClick: async () => {
-          await System.openFile(Files.uninstall.path)
-          App.quit()
+          const files = di.resolve(FILES_TOKEN)
+
+          await system.openFile(files.uninstall.path)
+          app.quit()
         }
       }
     ]
@@ -157,22 +168,22 @@ const items = computed(() => [
       {
         key: 'how_to_use',
         label: texts.howToUseTitle,
-        onClick: () => System.openLink(links.modio)
+        onClick: () => system.openLink(links.modio)
       },
       {
         key: 'github',
         label: texts.githubTitle,
-        onClick: () => System.openLink(links.github)
+        onClick: () => system.openLink(links.github)
       },
       {
         key: 'youtube',
         label: texts.youtubeTitle,
-        onClick: () => System.openLink(links.youtube)
+        onClick: () => system.openLink(links.youtube)
       },
       {
         key: 'donation',
         label: texts.donationTitle,
-        onClick: () => System.openLink(links.donation)
+        onClick: () => system.openLink(links.donation)
       }
     ]
   }
@@ -180,37 +191,40 @@ const items = computed(() => [
 
 onMounted(() => {
   setTimeout(() => {
-    if (Config.openWhatsNew) {
+    if (config.openWhatsNew) {
       openWhatsNew()
-      Config.openWhatsNew = false
+      config.openWhatsNew = false
     }
   }, 1000)
 })
 
 function inAdvancedMode(items: ItemType[]) {
-  return Config.advancedMode
+  return config.advancedMode
     ? items
     : []
 }
 
 async function unpackFiles() {
+  const mods = di.resolve(MODS_TOKEN)
+
   route(Page.none)
   await nextTick()
   await Promise.all([
-    Archive.unpackMain(),
-    Modifications.procMods()
+    archive.unpackMain(),
+    mods.procMods()
   ])
   route(Page.lists)
 }
 
 async function updateFiles() {
-  const hideLoading = Messages.loading(texts.savingMessage)
+  const messages = di.resolve(MESSAGES_TOKEN)
+  const hideLoading = messages.loading(texts.savingMessage)
 
   try {
-    await Archive.updateFiles()
-    Messages.success(texts.successSaveFiles)
+    await archive.updateFiles()
+    messages.success(texts.successSaveFiles)
   } catch (error: any) {
-    Messages.error(error)
+    messages.error(error)
   }
 
   hideLoading()

@@ -1,10 +1,10 @@
-import vue from '@vitejs/plugin-vue'
+import pluginVue from '@vitejs/plugin-vue'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import type { UserConfig } from 'vite'
 import { defineConfig } from 'vite'
 import { viteStaticCopy } from 'vite-plugin-static-copy'
-import Paths from './paths.js'
+import { paths } from './paths.js'
 import { alias, external, externalizePlugin, pluginExposeRenderer } from './vite.base.config.js'
 
 /** Папка, в которой находится текущий исполняемый скрипт. */
@@ -26,19 +26,22 @@ export default defineConfig(forgeEnv => {
 		build: {
 			rollupOptions: {
 				input: { general: getPagePath('general') },
-				output: { dir: '.vite/renderer' },
-				external
+				output: {
+					manualChunks: undefined,
+					dir: '.vite/renderer'
+				},
+				external: [...external, '**/main']
 			}
 		},
 		plugins: [
 			externalizePlugin({ filter: /\/main(\.ts)?$/ }),
 			pluginExposeRenderer('renderer'),
-			vue(),
+			pluginVue(),
 			viteStaticCopy({
 				targets: [
-					{ src: `${Paths.images}/icons/*`, dest: '../src/renderer/pages/images/icons', rename: { stripBase: true } },
-					{ src: `${Paths.images}/trailers/*`, dest: '../src/renderer/pages/images/trailers', rename: { stripBase: true } },
-					{ src: `${Paths.images}/trucks/*`, dest: '../src/renderer/pages/images/trucks', rename: { stripBase: true } }
+					{ src: `${paths.images}/icons/*`, dest: '../src/renderer/pages/images/icons', rename: { stripBase: true } },
+					{ src: `${paths.images}/trailers/*`, dest: '../src/renderer/pages/images/trailers', rename: { stripBase: true } },
+					{ src: `${paths.images}/trucks/*`, dest: '../src/renderer/pages/images/trucks', rename: { stripBase: true } }
 				]
 			})
 		],

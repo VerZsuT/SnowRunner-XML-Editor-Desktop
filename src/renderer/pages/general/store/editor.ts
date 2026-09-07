@@ -1,4 +1,5 @@
-import type { FileInfo, IFile } from '@modules/renderer'
+import type { IFile } from '@modules/files/renderer'
+import type { FileInfo } from '@modules/xml/renderer'
 import { defineStore } from 'pinia'
 import { reactive, ref, shallowRef } from 'vue'
 

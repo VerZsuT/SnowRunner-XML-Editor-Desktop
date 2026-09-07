@@ -1,6 +1,6 @@
-import type { IFile } from '@modules/renderer'
-import RendArrayBase from '@utilities/json-arrays/renderer'
-import { initMain } from '@utilities/renderer'
+import { initMain } from '@bridge/renderer'
+import type { IFile } from '@modules/files/renderer'
+import { RendArrayBase } from '@utilities/json-arrays/renderer'
 import type { FavoriteTruck } from './types'
 
 export type * from './types'
@@ -10,7 +10,7 @@ export type * from './types'
  * _renderer process_
  */
 @initMain()
-class Favorites extends RendArrayBase<FavoriteTruck> {
+export class Favorites extends RendArrayBase<FavoriteTruck> {
   /**
    * Является ли файл избранным.
    * @param file Файл.
@@ -20,9 +20,3 @@ class Favorites extends RendArrayBase<FavoriteTruck> {
     return this.includes(file.name)
   }
 }
-
-/**
- * Работа с массивом избранных авто.
- * _renderer process_
- */
-export default new Favorites()

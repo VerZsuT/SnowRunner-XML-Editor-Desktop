@@ -1,9 +1,11 @@
+import { TruckFileType, TruckXML } from '@modules/xml/renderer'
 import { Category, SourceType } from '../../enums'
 
-import type { IFile } from '@modules/renderer'
-import { Config, DLCs, Dirs, Modifications, TruckFileType, TruckXML } from '@modules/renderer'
+import type { IFile } from '@modules/files/renderer'
+import { di } from '@utilities/di/container'
+import { CONFIG_TOKEN, DIRS_TOKEN, DLC_TOKEN, MODS_TOKEN } from '@utilities/di/renderer/tokens'
 
-class ItemsUtils {
+export class ItemsUtils {
   async getMain(category: Category): Promise<IFile[]> {
     return this.filterByCategory(await this.getList(category, SourceType.main), category)
   }
@@ -13,7 +15,9 @@ class ItemsUtils {
   }
 
   async getMods(category: Category): Promise<IFile[]> {
-    return Config.useMods
+		const config = di.resolve(CONFIG_TOKEN)
+
+    return config.useMods
       ? this.filterByCategory(await this.getList(category, SourceType.mods), category)
       : []
   }
@@ -40,9 +44,10 @@ class ItemsUtils {
 
   private async getList(category: Category, from?: SourceType): Promise<IFile[]> {
     if (from === SourceType.dlc) {
+			const dlcs = di.resolve(DLC_TOKEN)
       const array: IFile[] = []
 
-      for (const dlc of DLCs) {
+      for (const dlc of dlcs) {
         const classes = dlc.dir.dir('classes')
 
         if (category === Category.trucks) {
@@ -59,11 +64,14 @@ class ItemsUtils {
       return array
     }
 
+		const dirs = di.resolve(DIRS_TOKEN)
+
     if (from === SourceType.mods) {
+			const mods = di.resolve(MODS_TOKEN)
       const array: IFile[] = []
 
-      for (const mod of Modifications) {
-        const modClasses = Dirs.modsTemp.dir(mod.name, 'classes')
+      for (const mod of mods) {
+        const modClasses = dirs.modsTemp.dir(mod.name, 'classes')
 
         if (category === Category.trucks) {
           array
@@ -86,15 +94,13 @@ class ItemsUtils {
     }
 
     if (category === Category.trucks) {
-      return Dirs.classes.dir('trucks').findFiles({ ext: 'xml' })
+      return dirs.classes.dir('trucks').findFiles({ ext: 'xml' })
     }
 
     if (category === Category.trailers) {
-      return Dirs.classes.dir('trucks/trailers').findFiles({ ext: 'xml' })
+      return dirs.classes.dir('trucks/trailers').findFiles({ ext: 'xml' })
     }
 
     return []
   }
 }
-
-export default new ItemsUtils()

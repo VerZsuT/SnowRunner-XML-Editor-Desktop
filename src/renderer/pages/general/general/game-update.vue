@@ -13,13 +13,14 @@
 </template>
 
 <script lang='ts' setup>
-import type { IFile } from '@modules/renderer'
-import { Dirs, Edited, Files } from '@modules/renderer'
+import type { IFile } from '@modules/files/renderer'
+import { di } from '@utilities/di/container'
+import { DIRS_TOKEN, EDITED_TOKEN, FILES_TOKEN } from '@utilities/di/renderer/tokens'
 import { Modal, Typography } from 'ant-design-vue'
 import { ref } from 'vue'
-import { EditorUtils } from '../lists/utilities'
-import { useEditorStore } from '../store'
-import texts from './localization'
+import { editorUtils } from '../lists/utilities/editor'
+import { useEditorStore } from '../store/editor'
+import { GENERAL_LOCALIZATION as texts } from './localization'
 
 const { Text } = Typography
 
@@ -32,11 +33,14 @@ const current = ref(0)
 const allCount = ref(0)
 
 async function onOk() {
-  const files: IFile[] = []
+  const filesToExport: IFile[] = []
+  const edited = di.resolve(EDITED_TOKEN)
+  const dirs = di.resolve(DIRS_TOKEN)
+  const files = di.resolve(FILES_TOKEN)
 
   loading.value = true
 
-  for (const { name, dlc, mod, isTrailer } of Edited.get()) {
+  for (const { name, dlc, mod, isTrailer } of edited.get()) {
     if (mod) {
       continue
     }
@@ -47,31 +51,31 @@ async function onOk() {
     const truckFolder = isTrailer
       ? 'trucks/trailers'
       : 'trucks'
-    const file = Dirs.backupInitialData.file('[media]', dlcFolder, 'classes', truckFolder, `${name}.xml`)
+    const file = dirs.backupInitialData.file('[media]', dlcFolder, 'classes', truckFolder, `${name}.xml`)
 
     if (!await file.exists()) {
       continue
     }
     
-    files.push(file)
+    filesToExport.push(file)
   }
   
   setShowMessages(false)
   action.value = texts.export
-  allCount.value = files.length
+  allCount.value = filesToExport.length
 
-  void EditorUtils.export(
-    files.map(file => ({ source: file, toExport: Files.exported })),
+  void editorUtils.export(
+    filesToExport.map(file => ({ source: file, toExport: files.exported })),
     () => void current.value++
   ).then(() => {
-    const nonMods = Edited.filter(item => !item.mod)
+    const nonMods = edited.filter(item => !item.mod)
 
     current.value = 0
     allCount.value = nonMods.length
     action.value = texts.import
 
-    return EditorUtils.import(
-      nonMods.map(item => ({ file: Edited.convert(item), toImport: Files.exported })),
+    return editorUtils.import(
+      nonMods.map(item => ({ file: edited.convert(item), toImport: files.exported })),
       () => void current.value++
     )
   }).then(() => {
@@ -79,7 +83,7 @@ async function onOk() {
     loading.value = false
     open.value = false
 
-    void Dirs.backupInitialData.remove()
+    void dirs.backupInitialData.remove()
   })
 }
 </script>

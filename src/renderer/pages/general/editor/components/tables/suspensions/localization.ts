@@ -1,7 +1,7 @@
 import { Localization, LocalizationStrings } from '@localization'
 import { loadLocalization } from '@localization/renderer'
 
-export default loadLocalization(new Localization({
+export const SUSPENSIONS_LOCALIZATION = loadLocalization(new Localization({
   suspensionSet: new LocalizationStrings()
     .ru('Подвески')
     .en('Suspension set')

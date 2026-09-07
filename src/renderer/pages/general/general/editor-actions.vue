@@ -26,15 +26,15 @@
 </template>
 
 <script lang='ts' setup>
-import type { IFile } from '@modules/renderer'
+import type { IFile } from '@modules/files/renderer'
 import { shallowRef, watch } from 'vue'
-import Editor from '../editor'
-import type { EveryCallback } from '../lists/utilities'
-import { EditorUtils } from '../lists/utilities'
+import { Editor } from '../editor'
+import type { EveryCallback } from '../lists/utilities/editor'
+import { editorUtils } from '../lists/utilities/editor'
 
-const { forAction: forExport, args: exportArgs, editor: exportEditor } = useAction(EditorUtils.onExport)
-const { forAction: forImport, args: importArgs, editor: importEditor } = useAction(EditorUtils.onImport)
-const { forAction: forReset, args: resetArgs, editor: resetEditor } = useAction(EditorUtils.onReset)
+const { forAction: forExport, args: exportArgs, editor: exportEditor } = useAction(editorUtils.onExport)
+const { forAction: forImport, args: importArgs, editor: importEditor } = useAction(editorUtils.onImport)
+const { forAction: forReset, args: resetArgs, editor: resetEditor } = useAction(editorUtils.onReset)
 
 async function exportFile(toExport?: IFile) {
   await exportEditor.value?.export(toExport)

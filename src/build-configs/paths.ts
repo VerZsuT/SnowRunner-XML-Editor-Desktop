@@ -29,4 +29,4 @@ class Paths {
 	readonly readme = normalizePath(resolve(this.root, './README.md'))
 }
 
-export default new Paths()
+export const paths = new Paths()

@@ -1,12 +1,12 @@
 import type { INumberAttrDescriptor, IStringAttrDescriptor, XmlElement, XmlValue } from '../../attributes'
 import { booleanAttr, floatAttr, properties, stringAttr } from '../../attributes'
-import { BaseGameData } from '../../base'
-import Limit from '../../limit'
-import XMLWithTemplates, { innerElement } from '../../xml-with-templates'
-import texts from './localization'
+import { BaseGameData } from '../../base/game-data'
+import { Limit } from '../../limit'
+import { XMLWithTemplates, innerElement } from '../../xml-with-templates'
+import { WINCH_LOCALIZATION as texts } from './localization'
 
 /** Лебёдка. */
-export default class Winch extends XMLWithTemplates {
+export class Winch extends XMLWithTemplates {
   @properties({
     get label() { return texts.name }
   })

@@ -1,10 +1,12 @@
 import { ErrorText, ProgramError } from '@modules/errors/main'
-import Paths from '@modules/paths/main'
+import type { IPaths, Paths } from '@modules/paths/main'
+import { inject } from '@utilities/di/container'
+import { PATHS_TOKEN } from '@utilities/di/main/tokens'
 import type { IHasSnapshot } from 'emr-bridge/main'
-import { execFile } from 'node:child_process'
+import { execFile, execSync } from 'node:child_process'
 import type { WatchListener } from 'node:fs'
-import { watch } from 'node:fs'
-import { access, chmod, constants, copyFile, lstat, mkdir, readdir, readFile, rename, rm, writeFile } from 'node:fs/promises'
+import { accessSync, existsSync, lstatSync, readFileSync, rmSync, watch } from 'node:fs'
+import { access, chmod, constants, copyFile, lstat, mkdir, readdir, rename, writeFile } from 'node:fs/promises'
 import { basename, dirname, extname, join } from 'node:path'
 import type { ICheckResult, IDir, IFile, IFindDirsArgs, IFindFilesArgs, IFSEntry, IFSEntryArraySnapshot, IFSEntrySnapshot } from './types'
 
@@ -17,9 +19,9 @@ export type * from './types'
 export class FSEntry implements IFSEntry, IHasSnapshot<IFSEntrySnapshot> {
   path = ''
 
-  constructor(path?: string, ...partsToJoin: string[]) {
-    if (path) {
-      this.path = join(path, ...partsToJoin)
+  constructor(...partsToJoin: string[]) {
+    if (partsToJoin.length) {
+      this.path = join(...partsToJoin)
     }
   }
 
@@ -45,9 +47,13 @@ export class FSEntry implements IFSEntry, IHasSnapshot<IFSEntrySnapshot> {
     return basename(this.path, extname)
   }
 
-  exists(): Promise<boolean> {
-    return exists(this.path)
+  async exists(): Promise<boolean> {
+    return existsSync(this.path)
   }
+
+	existsSync(): boolean {
+		return existsSync(this.path)
+	}
 
   async hasPermissions(): Promise<boolean> {
     if (!await this.exists()) {
@@ -87,7 +93,11 @@ export class FSEntry implements IFSEntry, IHasSnapshot<IFSEntrySnapshot> {
   }
 
   async isDir(): Promise<boolean> {
-    return (await lstat(this.path)).isDirectory()
+    return this.isDirSync()
+  }
+
+	isDirSync(): boolean {
+    return lstatSync(this.path).isDirectory()
   }
 
   async isFile(): Promise<boolean> {
@@ -95,12 +105,20 @@ export class FSEntry implements IFSEntry, IHasSnapshot<IFSEntrySnapshot> {
   }
 
   async remove() {
-    if (!await this.exists()) {
+    return this.removeSync()
+  }
+
+	removeSync() {
+    if (!this.existsSync()) {
       return
     }
 
     try {
-      await rm(this.path, { recursive: await this.isDir(), force: true })
+			if (this.isDirSync()) {
+				execSync(`rmdir /s /q "${this.path}"`)
+			} else {
+				rmSync(this.path, { maxRetries: 5, retryDelay: 100 })
+			}
     } catch (error: any) {
       throw new ProgramError(ErrorText.removeError, error, this.path)
     }
@@ -340,18 +358,25 @@ export class File extends FSEntry implements IFile {
   }
 
   async read(encoding?: BufferEncoding): Promise<string> {
-    const readResult = await canRead(this.path)
+    return this.readSync(encoding)
+  }
+
+	readSync(encoding?: BufferEncoding): string {
+    const readResult = canReadSync(this.path)
 
     if (!readResult.result) {
       throw new ProgramError(ErrorText.readFileError, readResult.error, this.path)
     }
 
-    return (await readFile(this.path, { encoding }))
-      .toString()
+    return readFileSync(this.path, { encoding }).toString()
   }
 
   async readFromJSON<T extends object = any>() {
-    return <T>JSON.parse(await this.read())
+    return this.readFromJSONSync<T>()
+  }
+
+	readFromJSONSync<T extends object = any>() {
+    return <T>JSON.parse(this.readSync())
   }
 
   async write(data: string, encoding?: BufferEncoding) {
@@ -407,97 +432,105 @@ export class File extends FSEntry implements IFile {
  * Основные файлы.
  * _main process_
  */
-export const Files = {
+export class Files {
+	@inject(PATHS_TOKEN)
+	private readonly paths!: Paths & IPaths
+
+	new(...pathsToJoin: string[]) {
+		return new File(...pathsToJoin)
+	}
+
+	newArray(...items: IFile[]) {
+		return new FileArray(...items)
+	}
+
   /** `config.json`. */
-  config: new File(Paths.config),
+  config = new File(this.paths.config)
 
   /** `sizes.json`. */
-  sizes: new File(Paths.sizes),
+  sizes = new File(this.paths.sizes)
 
   /** `mods.json`. */
-  mods: new File(Paths.mods),
+  mods = new File(this.paths.mods)
 
   /** `favorites.json`. */
-  favorites: new File(Paths.favorites),
+  favorites = new File(this.paths.favorites)
 
   /** `edited.json`. */
-  edited: new File(Paths.edited),
+  edited = new File(this.paths.edited)
 
   /** `exported.json`. */
-  exported: new File(Paths.exported),
+  exported = new File(this.paths.exported)
 
   /** Файл с переводами игры. */
-  initialTexts: new File(Paths.texts),
+  initialTexts = new File(this.paths.texts)
 
   /** Иконка программы. */
-  icon: new File(Paths.icon),
+  icon = new File(this.paths.icon)
 
   /** Бэкап `initial.pak`. */
-  backupInitial: new File(Paths.backupInitial),
+  backupInitial = new File(this.paths.backupInitial)
 
   /** Бэкап `initial.pak` с датой-временем. */
   get backupInitialWithDate() {
-    return new File(Paths.backupInitialWithDate)
-  },
+    return new File(this.paths.backupInitialWithDate)
+  }
 
   /** Деинсталлятор. */
-  uninstall: new File(Paths.uninstall)
+  uninstall = new File(this.paths.uninstall)
 }
 
 /**
  * Основные папки.
  * _main process_
  */
-export const Dirs = {
+export class Dirs {
+	@inject(PATHS_TOKEN)
+	private readonly paths!: Paths & IPaths
+
+	new(...pathsToJoin: string[]) {
+		return new Dir(...pathsToJoin)
+	}
+
+	newArray(...items: IDir[]) {
+		return new DirArray(...items)
+	}
+
   /** Папка `app`. */
-  root: new Dir(Paths.root),
+  root = new Dir(this.paths.root)
 
   /** Папка `WinRAR`. */
-  winrar: new Dir(Paths.winrar),
+  winrar = new Dir(this.paths.winrar)
 
   /** Папка со страницами. */
-  pages: new Dir(Paths.pages),
+  pages = new Dir(this.paths.pages)
 
   /** Папка с бэкапами. */
-  backupFolder: new Dir(Paths.backupFolder),
+  backupFolder = new Dir(this.paths.backupFolder)
 
   /** Бэкап данных `initail.pak` перед распаковкой. */
-  backupInitialData: new Dir(Paths.backupInitialData),
+  backupInitialData = new Dir(this.paths.backupInitialData)
 
   /** Временная папка для основных файлов. */
-  mainTemp: new Dir(Paths.mainTemp),
+  mainTemp = new Dir(this.paths.mainTemp)
 
   /** Временная папка для файлов модификаций. */
-  modsTemp: new Dir(Paths.modsTemp),
+  modsTemp = new Dir(this.paths.modsTemp)
 
   /** Временная папка для файлов обновления. */
-  updateTemp: new Dir(Paths.updateTemp),
+  updateTemp = new Dir(this.paths.updateTemp)
 
   /** Временная папка `[strings]`. */
-  strings: new Dir(Paths.strings),
+  strings = new Dir(this.paths.strings)
 
   /** Временная папка `classes`. */
-  classes: new Dir(Paths.classes),
+  classes = new Dir(this.paths.classes)
 
   /** Временная папка `_templates`. */
-  templates: new Dir(Paths.templates),
+  templates = new Dir(this.paths.templates)
 
   /** Временная папка `_dlc`. */
-  dlc: new Dir(Paths.dlc)
-}
-
-/**
- * Проверить существует ли путь.
- * @param path Путь.
- * @returns Существует ли путь.
- */
-async function exists(path: string): Promise<boolean> {
-  try {
-    await access(path, constants.R_OK)
-    return true
-  } catch {
-    return false
-  }
+  dlc = new Dir(this.paths.dlc)
 }
 
 /**
@@ -506,8 +539,17 @@ async function exists(path: string): Promise<boolean> {
  * @returns Можно ли прочитать по пути.
  */
 async function canRead(path: string): Promise<ICheckResult> {
+	return canReadSync(path)
+}
+
+/**
+ * Проверить можно ли прочитать по пути.
+ * @param path Путь.
+ * @returns Можно ли прочитать по пути.
+ */
+function canReadSync(path: string): ICheckResult {
   try {
-    await access(path, constants.R_OK)
+    accessSync(path, constants.R_OK)
     return { result: true }
   } catch (error: any) {
     return {

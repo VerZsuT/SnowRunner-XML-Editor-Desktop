@@ -1,9 +1,10 @@
 import type { IInputAreas } from '@renderer/pages/general/editor/types'
-import { arrayToString, boolToString, hasItems, numberToString, stringToArray, stringToBoolean, stringToNumber } from '@utilities/renderer'
-import type GameXML from './game-xml'
-import type Limit from './limit'
+import { hasItems } from '@utilities/checks'
+import { arrayToString, boolToString, numberToString, stringToArray, stringToBoolean, stringToNumber } from '@utilities/strings/renderer'
+import type { GameXML } from './game-xml'
+import type { Limit } from './limit'
 import type { PosLimits } from './position'
-import Position from './position'
+import { Position } from './position'
 
 /** Ключ свойства в параметрами атрибутов. */
 const PROPERTIES = Symbol('properties')

@@ -1,9 +1,9 @@
 import type { IStringAttrDescriptor, XmlValue } from '../../attributes'
 import { stringAttr } from '../../attributes'
-import Winches from '../../winches'
-import XMLWithTemplates from '../../xml-with-templates'
+import { WinchVariants } from '../../winches'
+import { XMLWithTemplates } from '../../xml-with-templates'
 
-export default class WinchUpgradeSocket extends XMLWithTemplates {
+export class WinchUpgradeSocket extends XMLWithTemplates {
   /** Имя xml-файла. */
   @stringAttr()
   accessor Type: XmlValue<string>
@@ -15,5 +15,5 @@ export default class WinchUpgradeSocket extends XMLWithTemplates {
   declare $Default: IStringAttrDescriptor
 
   readonly winchesFiles = this.files('winches', () => this.Type)
-  readonly winches = this.filesElementsWithTemplates<Winches>(Winches, this.winchesFiles)
+  readonly winches = this.filesElementsWithTemplates<WinchVariants>(WinchVariants, this.winchesFiles)
 }

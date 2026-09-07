@@ -1,5 +1,6 @@
-import { Files } from '@modules/files/main'
-import type { IFile } from '@modules/main'
+import type { Files, IFile } from '@modules/files/main'
+import { inject } from '@utilities/di/container'
+import { FILES_TOKEN } from '@utilities/di/main/tokens'
 import type { IFileSizes } from './types'
 
 export type * from './types'
@@ -8,9 +9,10 @@ export type * from './types'
  * Работа с массивом размеров архивов.
  * _main process_
  */
-class Sizes {
-  /** Готов ли класс к использованию. */
-  readonly isReady: Promise<typeof this>
+export class Sizes {
+	/** Основные файлы. */
+	@inject(FILES_TOKEN)
+	private readonly files!: Files
 
   /** Значение по умолчанию. */
   readonly default: IFileSizes = {
@@ -25,17 +27,15 @@ class Sizes {
   private mods = this.default.mods
 
   constructor() {
-    this.isReady = this.init()
+    this.init()
   }
 
   /** Инициализировать класс. */
-  private async init() {
-    const { initial, mods } = await this.getFileSizes()
+  private init() {
+    const { initial, mods } = this.getFileSizes()
 
     this.initial = initial
     this.mods = mods
-
-    return this
   }
 
   /**
@@ -73,7 +73,7 @@ class Sizes {
 
   /** Сохранить изменения размеров. */
   async save() {
-    await Files.sizes.writeToJSON({
+    await this.files.sizes.writeToJSON({
       initial: this.initial,
       mods: this.mods
     } satisfies IFileSizes)
@@ -83,10 +83,10 @@ class Sizes {
    * Получить размеры.
    * @returns Размеры.
    */
-  private async getFileSizes(): Promise<IFileSizes> {
-    if (await Files.sizes.exists()) {
+  private getFileSizes(): IFileSizes {
+    if (this.files.sizes.existsSync()) {
       try {
-        return await this.getFromJSON()
+        return this.getFromJSON()
       } catch {
         return this.default
       }
@@ -99,13 +99,7 @@ class Sizes {
    * Получить размеры из JSON.
    * @returns Размеры.
    */
-  private async getFromJSON(): Promise<IFileSizes> {
-    return await Files.sizes.readFromJSON<IFileSizes>()
+  private getFromJSON(): IFileSizes {
+    return this.files.sizes.readFromJSONSync<IFileSizes>()
   }
 }
-
-/**
- * Работа с массивом размеров архивов.
- * _main process_
- */
-export default await new Sizes().isReady

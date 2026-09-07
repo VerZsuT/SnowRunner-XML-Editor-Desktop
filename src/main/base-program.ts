@@ -1,53 +1,47 @@
-import { APP_NAME } from '@modules/app'
-import Env from '@modules/env/main'
+import { di } from '@utilities/di/container'
+import { APP_CONSTANTS_TOKEN, ENV_TOKEN } from '@utilities/di/main/tokens'
 import { app } from 'electron'
 
 /** Базовый класс программы. */
-export default abstract class BaseProgram {
-  /** Готово ли к использованию. */
-  readonly isReady: Promise<void>
-
-  constructor() {
-    this.isReady = this.init()
-      .then(this.afterInit.bind(this))
-      .catch(error => { throw new Error(error) })
-  }
-
+export abstract class BaseProgram {
   /** Инициализировать приложение. */
-  protected async init(): Promise<void> {
+  async init() {
     this.handleExceptions()
-    await this.checkMultipleInstances()
+    this.checkMultipleInstances()
     this.handleQuit()
     this.disableNavigation()
     this.disableSecurityWarns()
     this.setName()
+
+		await this.afterInit()
   }
 
   /** Действие после инициализации. */
-  abstract afterInit(): void | Promise<void>
+  protected abstract afterInit(): Promise<void>
 
   /** Действие при повторном запуске. */
-  abstract onMultipleInstance(): void | Promise<void>
+  protected abstract onMultipleInstance(): void
 
   /** Действие перед закрытием. */
-  abstract beforeQuit(): void | Promise<void>
+  protected abstract beforeQuit(): void | Promise<void>
 
   /** Действие при закрытии всех окон. */
-  abstract onAllWindowsClosed(): void | Promise<void>
+  protected abstract onAllWindowsClosed(): void | Promise<void>
 
   /** Действие при ошибке. */
-  abstract onError(error: Error): void | Promise<void>
+  protected abstract onError(error: Error): void | Promise<void>
 
   /** Проверить другие открытые экземпляры программы. */
-  private async checkMultipleInstances() {
+  private checkMultipleInstances() {
     if (!app.requestSingleInstanceLock()) {
-      await this.onMultipleInstance()
+      this.onMultipleInstance()
     }
   }
 
   /** Установить название. */
   private setName() {
-    app.setAppUserModelId(APP_NAME)
+		const { NAME } = di.resolve(APP_CONSTANTS_TOKEN)
+    app.setAppUserModelId(NAME)
   }
 
 
@@ -84,6 +78,8 @@ export default abstract class BaseProgram {
 
   /** Отключить предупреждения Electron. */
   private disableSecurityWarns() {
-		Env.showSecurityWarnings = false
+		const env = di.resolve(ENV_TOKEN)
+
+		env.showSecurityWarnings = false
   }
 }

@@ -1,11 +1,11 @@
 import type { INumberAttrDescriptor, XmlValue } from '../../../attributes'
 import { integerAttr, properties } from '../../../attributes'
-import Limit from '../../../limit'
-import XMLWithTemplates from '../../../xml-with-templates'
-import texts from './localization'
+import { Limit } from '../../../limit'
+import { XMLWithTemplates } from '../../../xml-with-templates'
+import { FUEL_TANK_LOCALIZATION as texts } from './localization'
 
 /** Свойства бензобака. */
-export default class FuelTank extends XMLWithTemplates {
+export class TruckFuelTank extends XMLWithTemplates {
   /** Размер допустимого ущерба. */
   @properties({
     get label() { return texts.damageCapacity },

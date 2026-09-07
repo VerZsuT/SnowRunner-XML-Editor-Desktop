@@ -6,7 +6,7 @@
       :label="getGameText(Gearbox.GameData?.UiDesc?.UiName, texts.gearbox, info.mod)"
     >
       <Info
-        v-if="Config.advancedMode"
+        v-if="config.advancedMode"
         :descriptor="Gearbox.$Name"
       />
       <Float :descriptor="Gearbox.$AWDConsumptionModifier" />
@@ -94,21 +94,25 @@
 </template>
 
 <script lang='ts' setup>
-import type { IFile } from '@modules/renderer'
-import { Config, type GearboxesXML } from '@modules/renderer'
+import type { IFile } from '@modules/files/renderer'
+import type { Gearboxes as GearboxesXML } from '@modules/xml/renderer'
+import { di } from '@utilities/di/container'
+import { CONFIG_TOKEN } from '@utilities/di/renderer/tokens'
 import { storeToRefs } from 'pinia'
-import { useEditorStore } from '../../../../store'
-import { SaveUtils, provideFile } from '../../../utilities'
+import { useEditorStore } from '../../../../store/editor'
+import { provideFile } from '../../../utilities/import'
+import { saveUtils } from '../../../utilities/save'
 import Accordion from '../../accordion.vue'
-import Group from '../../group'
-import { Info } from '../../info'
-import { Float, Int } from '../../input'
-import Select from '../../select'
+import Group from '../../group/group.vue'
+import Info from '../../info/info.vue'
+import Float from '../../input/variants/float.vue'
+import Int from '../../input/variants/int.vue'
+import Select from '../../select/select.vue'
 import type { ReadyEmits, ReadyProps } from '../../utilities'
 import { getGameText, useReady } from '../../utilities'
-import { GearPreset } from '../gear-preset'
-import UnlockPreset from '../unlock-preset'
-import texts from './localization'
+import GearPreset from '../gear-preset/gear-preset.vue'
+import UnlockPreset from '../unlock-preset/unlock-preset.vue'
+import { GEARBOXES_LOCALIZATION as texts } from './localization'
 
 export type GearboxSetProps = ReadyProps & Props
 
@@ -117,11 +121,12 @@ type Props = {
   file: IFile
 }
 
+const config = di.resolve(CONFIG_TOKEN)
 const { xml, file } = defineProps<Props>()
 const emit = defineEmits<ReadyEmits>()
 const { info } = storeToRefs(useEditorStore())
 
 useReady(emit)
 provideFile(file)
-SaveUtils.useOnSave(() => file.write(xml.baseXML))
+saveUtils.useOnSave(() => file.write(xml.baseXML))
 </script>

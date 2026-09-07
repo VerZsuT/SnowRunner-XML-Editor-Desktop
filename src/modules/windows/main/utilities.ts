@@ -1,8 +1,9 @@
-import { Dirs } from '@modules/files/main'
+import { di } from '@utilities/di/container'
+import { DIRS_TOKEN } from '@utilities/di/main/tokens'
 import type { BrowserWindow } from 'electron'
 import { WindowType } from '../enums'
 import type { WindowParams } from '../types'
-import type Windows from './index'
+import type { Windows } from './index'
 
 /**
  * Создать новый объект окна программы.
@@ -19,7 +20,9 @@ export function newWindow<T extends BrowserWindow = BrowserWindow>(params: Windo
  * @returns Путь к html файлу.
  */
 export function getRenderer(path: string) {
-  return Dirs.pages.file(path).path
+	const dirs = di.resolve(DIRS_TOKEN)
+
+  return dirs.pages.file(path).path
 }
 
 /**
@@ -40,7 +43,7 @@ export class ProgramWin<T extends BrowserWindow = BrowserWindow> {
    * Зарегистрировать окно.
    * @param windows Объект окон программы.
    */
-  register(windows: typeof Windows) {
+  register(windows: Windows) {
     const superCreate = this.params.windowType === WindowType.default
       ? () => windows.createWindow(this.params) as Promise<T>
       : () => windows.createModalWindow(this.params) as Promise<T>

@@ -1,19 +1,13 @@
 import { initMain, mainMethod } from '@bridge/renderer'
-import type MainUpdates from './main'
+import type { Updates as UpdatesMain } from './main'
 
 /**
  * Работа с обновлениями программы
  * _renderer process_
  */
 @initMain()
-class Updates {
+export class Updates {
   /** Запустить процесс обновления программы. */
   @mainMethod()
-  updateApp!: typeof MainUpdates.updateApp
+  updateApp!: UpdatesMain['updateApp']
 }
-
-/**
- * Работа с обновлениями программы
- * _renderer process_
- */
-export default new Updates()

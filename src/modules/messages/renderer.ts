@@ -6,44 +6,44 @@ import { PubKeys } from './public'
 export * from './enums'
 export type * from './types'
 
-/** Мост main-rend. */
-const bridge = Bridge.as<object>()
-
 /**
- * Работа с сообщениями программы.  
+ * Работа с сообщениями программы.
  * _renderer process_
- */
-class Messages {
+*/
+export class Messages {
+	/** Мост main-rend. */
+	private readonly bridge = Bridge.as<object>()
+
   /** Остановить загрузку. */
   private stopLoading?: ReturnType<typeof message.loading>
 
   /** Обработать сообщения из main процесса. */
   handleMessages() {
-    bridge.on(PubKeys.messageEvent, ({ type, text }: {type: MainMessageType, text: string}) => {
+    this.bridge.on(PubKeys.messageEvent, ({ type, text }: {type: MainMessageType, text: string}) => {
       switch (type) {
         case MainMessageType.error:
           this.error(text)
-          
+
           break
         case MainMessageType.info:
           this.info(text)
-          
+
           break
         case MainMessageType.success:
           this.success(text)
-          
+
           break
         case MainMessageType.warning:
           this.warning(text)
-          
+
           break
         case MainMessageType.startLoading:
           this.stopLoading = this.loading(text)
-          
+
           break
         case MainMessageType.stopLoading:
           this.stopLoading?.()
-          
+
           break
       }
     })
@@ -96,9 +96,3 @@ class Messages {
     notification.warning({ message: 'Error', description: text, duration: 10_000 })
   }
 }
-
-/**
- * Работа с сообщениями программы.  
- * _renderer process_
- */
-export default new Messages()

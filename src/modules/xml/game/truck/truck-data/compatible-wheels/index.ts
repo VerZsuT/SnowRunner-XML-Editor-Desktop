@@ -1,13 +1,13 @@
 import type { INumberAttrDescriptor, IStringAttrDescriptor, XmlValue } from '../../../attributes'
 import { floatAttr, properties, stringAttr } from '../../../attributes'
-import Limit from '../../../limit'
-import Wheel from '../../../wheel'
-import Wheels from '../../../wheels'
-import XMLWithTemplates from '../../../xml-with-templates'
-import texts from './localization'
+import { Limit } from '../../../limit'
+import { Wheel } from '../../../wheel'
+import { Wheels } from '../../../wheels'
+import { XMLWithTemplates } from '../../../xml-with-templates'
+import { COMPATIBLE_WHEELS_LOCALIZATION as texts } from './localization'
 
 /** Доступные колеса. */
-export default class CompatibleWheels extends XMLWithTemplates {
+export class TruckCompatibleWheels extends XMLWithTemplates {
   /** Имя XML-класса колес. */
   @properties({
     get label() { return texts.type }

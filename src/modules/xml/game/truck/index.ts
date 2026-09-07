@@ -1,20 +1,18 @@
-import type { IFile } from '../../../renderer'
-import XMLElement from '../../xml-element'
-import XMLTemplates from '../../xml-templates'
+import type { IFile } from '@modules/files/renderer'
+import { XMLElement } from '../../xml-element'
+import { XMLTemplates } from '../../xml-templates'
 import type { IStringAttrDescriptor, XmlElement, XmlValue } from '../attributes'
 import { stringAttr } from '../attributes'
-import BasePhysicsModel from '../base/physics-model'
-import XMLWithTemplates, { innerElement } from '../xml-with-templates'
-import GameData from './game-data'
-import TruckData from './truck-data'
+import { BasePhysicsModel } from '../base/physics-model'
+import { XMLWithTemplates, innerElement } from '../xml-with-templates'
+import { TruckGameData } from './game-data'
+import { TruckData } from './truck-data'
 
 export * from './game-data'
-export { default as TruckGameData } from './game-data'
 export * from './truck-data'
-export { default as TruckData } from './truck-data'
 
 /** XML автомобиля/прицепа. */
-export default class TruckXML extends XMLWithTemplates {
+export class TruckXML extends XMLWithTemplates {
   static override async from(str: string): Promise<TruckXML | undefined>
   static override async from(file: IFile): Promise<TruckXML | undefined>
   static override async from(source: string | IFile): Promise<TruckXML | undefined> {
@@ -42,8 +40,8 @@ export default class TruckXML extends XMLWithTemplates {
   readonly TruckData: XmlElement<TruckData>
 
   /** Информация о взаимодействии трака с окружающим миром. */
-  @innerElement(GameData)
-  readonly GameData: XmlElement<GameData>
+  @innerElement(TruckGameData)
+  readonly GameData: XmlElement<TruckGameData>
 
   /** Физическая модель. */
   @innerElement(BasePhysicsModel)

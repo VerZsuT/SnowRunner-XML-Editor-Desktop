@@ -1,6 +1,6 @@
 import { loadLocalization, Localization, LocalizationStrings } from '@localization/renderer'
 
-export default loadLocalization(new Localization({
+export const GEAR_LOCALIZATION = loadLocalization(new Localization({
   angVel: new LocalizationStrings()
 	  .ru('Макс. угловая скорость колеса')
 	  .en('Max wheel angular velocity')

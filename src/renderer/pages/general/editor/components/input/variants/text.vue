@@ -10,7 +10,7 @@
 import type { EmitsToProps } from '@renderer/types'
 import { InputType } from '../../../enums'
 import type { IInputProps, IParameterProps, ParameterEmits } from '../../../types'
-import Input from '../index.vue'
+import Input from '../input.vue'
 
 export type TextProps = Props & EmitsToProps<ParameterEmits>
 

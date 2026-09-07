@@ -1,4 +1,5 @@
-class Env {
+/** Переменные среды. */
+export class Env {
 	/** Выключить оптимизацию распаковки. */
 	get disableUnpackOptimizer(): boolean {
 		return process.env.DISABLE_UNPACK_OPTIMIZER === 'true'
@@ -43,5 +44,3 @@ class Env {
 		return process.env.HOME
 	}
 }
-
-export default new Env()

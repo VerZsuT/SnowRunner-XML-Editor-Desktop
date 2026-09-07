@@ -1,15 +1,15 @@
 import type { INumberAttrDescriptor, IStringAttrDescriptor, XmlElement, XmlElements, XmlValue } from '../../attributes'
 import { floatAttr, integerAttr, properties, stringAttr } from '../../attributes'
-import { BaseGameData } from '../../base'
-import Limit from '../../limit'
-import XMLWithTemplates, { innerElement, innerElements } from '../../xml-with-templates'
-import Suspension from '../suspension'
-import texts from './localization'
+import { BaseGameData } from '../../base/game-data'
+import { Limit } from '../../limit'
+import { XMLWithTemplates, innerElement, innerElements } from '../../xml-with-templates'
+import { Suspension } from '../suspension'
+import { SUSPENSION_SET_LOCALIZATION as texts } from './localization'
 
-export { default as Suspension } from '../suspension'
+export * from '../suspension'
 
 /** Набор подвесок. */
-export default class SuspensionSet extends XMLWithTemplates {
+export class SuspensionSet extends XMLWithTemplates {
   /** Имя набора подвесок. */
   @properties({
     get label() { return texts.name }

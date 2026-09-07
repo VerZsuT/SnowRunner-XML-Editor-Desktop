@@ -1,13 +1,28 @@
-import { Config, Modifications } from '@modules/data/renderer'
-import { Dir, File } from '@modules/files/renderer'
-import type { IFile, TruckXML } from '@modules/renderer'
+import type { Config, IConfig } from '@modules/data/config/renderer'
+import type { Mods } from '@modules/data/modifications/renderer'
+import type { Dirs, Files, IFile } from '@modules/files/renderer'
+import type { TruckXML } from '@modules/xml/renderer'
 import type { Category } from '@renderer/pages/general/enums'
+import { inject } from '@utilities/di/container'
+import { CONFIG_TOKEN, DIRS_TOKEN, FILES_TOKEN, MODS_TOKEN } from '@utilities/di/renderer/tokens'
 
 /**
  * Работа с картинками.
  * _renderer process_
  */
-class Images {
+export class Images {
+	@inject(MODS_TOKEN)
+	private readonly mods!: Mods
+
+	@inject(CONFIG_TOKEN)
+	private readonly config!: Config & IConfig
+
+	@inject(FILES_TOKEN)
+	private readonly files!: Files
+
+	@inject(DIRS_TOKEN)
+	private readonly dirs!: Dirs
+
   /**
    * Получить путь к картинке для данного файла автомобиля/прицепа.
    * @param category Категория файла.
@@ -16,11 +31,11 @@ class Images {
    * @returns Путь к картинке для данного файла автомобиля/прицепа.
    */
   async getSrc(category: Category, file: IFile, xml: TruckXML): Promise<string> {
-    const images = new Dir(this.getImagePath(category))
+    const images = this.dirs.new(this.getImagePath(category))
     const image = images.file(`${file.name}.webp`)
     const defaultImage = images.file('default.webp')
 
-    const modID = Modifications.getModID(file)
+    const modID = this.mods.getModID(file)
 
     if (modID) {
       const modImage = await this.getModImage(category, file, xml)
@@ -41,7 +56,7 @@ class Images {
    * @returns Путь к картинке по умолчанию.
    */
   getDefault(category: Category): string {
-    return new Dir(this.getImagePath(category)).file('default.webp').path
+    return this.dirs.new(this.getImagePath(category)).file('default.webp').path
   }
 
   /**
@@ -59,7 +74,7 @@ class Images {
    * @returns Путь в папке `images`.
    */
   getImagePath(pathInImagesFolder: string) {
-    const base = Config.isDev
+    const base = this.config.isDev
       ? '/src'
       : '..'
 
@@ -74,17 +89,17 @@ class Images {
    * @returns Модовая картинка.
    */
   private async getModImage(category: Category, file: IFile, xml: TruckXML): Promise<IFile | undefined> {
-    const modName = Modifications.getModID(file)
+    const modName = this.mods.getModID(file)
 
     if (!modName || !xml.GameData?.UiDesc) {
       return
     }
 
-    const images = new Dir(this.getImagePath(category))
+    const images = this.dirs.new(this.getImagePath(category))
     const defaultImage = images.file('default.webp')
 
     const imgName = xml.GameData?.UiDesc?.UiIcon328x458
-    const imgFile = new File(`${'../'.repeat(5)}build/modsTemp/${modName}/ui/textures/${imgName}.png`)
+    const imgFile = this.files.new(`${'../'.repeat(5)}build/modsTemp/${modName}/ui/textures/${imgName}.png`)
 
     return await this.imageExists(imgFile)
       ? imgFile
@@ -106,9 +121,3 @@ class Images {
     })
   }
 }
-
-/**
- * Работа с картинками.
- * _renderer process_
- */
-export default new Images()

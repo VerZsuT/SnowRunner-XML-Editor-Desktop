@@ -1,11 +1,11 @@
 import type { IBooleanAttrDescriptor, INumberAttrDescriptor, XmlValue } from '../../attributes'
 import { booleanAttr, floatAttr, properties } from '../../attributes'
-import Limit from '../../limit'
-import XMLWithTemplates from '../../xml-with-templates'
-import texts from './localization'
+import { Limit } from '../../limit'
+import { XMLWithTemplates } from '../../xml-with-templates'
+import { WHEEL_FRICTION_LOCALIZATION as texts } from './localization'
 
 /** Трение колеса. */
-export default class BaseWheelFriction extends XMLWithTemplates {
+export class BaseWheelFriction extends XMLWithTemplates {
   /** Трение с грунтом, голым террейном без грязи и другими коллизионными объектами. */
   @properties({
     get label() { return texts.bodyFriction },

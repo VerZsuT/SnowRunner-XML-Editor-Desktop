@@ -1,11 +1,11 @@
 <template>
   <div
-    v-if="isActive && Config.advancedMode"
+    v-if="isActive && config.advancedMode"
     class="grid info"
   >
     <div
       class="content"
-      @click="System.openFile(file.path)"
+      @click="system.openFile(file.path)"
     >
       <Text>{{ file.basename() }}</Text>
     </div>
@@ -13,8 +13,9 @@
 </template>
 
 <script lang='ts' setup>
-import type { IFile } from '@modules/renderer'
-import { Config, System } from '@modules/renderer'
+import type { IFile } from '@modules/files/renderer'
+import { di } from '@utilities/di/container'
+import { CONFIG_TOKEN, SYSTEM_TOKEN } from '@utilities/di/renderer/tokens'
 import { Typography } from 'ant-design-vue'
 import { useActive } from '../utilities'
 
@@ -26,6 +27,8 @@ export type FileInfoProps = {
 
 defineProps<FileInfoProps>()
 const { isActive } = useActive()
+const config = di.resolve(CONFIG_TOKEN)
+const system = di.resolve(SYSTEM_TOKEN)
 </script>
 
 <style lang='scss' scoped>

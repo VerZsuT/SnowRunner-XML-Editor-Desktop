@@ -1,7 +1,5 @@
-import { providePublic, publicMethod } from '@bridge/main'
-import Config from '@modules/data/config/main'
-import Env from '@modules/env/main'
-import { Files } from '@modules/files/main'
+import { di } from '@utilities/di/container'
+import { CONFIG_TOKEN, ENV_TOKEN, FILES_TOKEN } from '@utilities/di/main/tokens'
 import { BrowserWindow } from 'electron'
 import { on } from 'emr-bridge/main'
 import { dirname, join } from 'node:path'
@@ -9,13 +7,10 @@ import { fileURLToPath } from 'node:url'
 import { ProgramWindow } from '../enums'
 import { PubKeys } from '../public'
 import type { IGeneralWindow, WindowParams } from '../types'
-import GeneralWindow from './general'
+import { getGeneralWindow } from './general'
 
 export * from '../enums'
 export type * from '../types'
-
-/** Папка, в которой находится текущий исполняемый скрипт. */
-const _dirname = dirname(fileURLToPath(import.meta.url))
 
 /** Объект с окнами. */
 type WindowsObject = Record<keyof ProgramWindow, [WindowParams, WindowCreator]>
@@ -27,8 +22,10 @@ type WindowCreator<T extends BrowserWindow = BrowserWindow> = (...args: any[]) =
  * Работа с окнами программы.
  * _main process_
  */
-@providePublic()
-class Windows {
+export class Windows {
+	/** Папка, в которой находится текущий исполняемый скрипт. */
+	private readonly dirname = dirname(fileURLToPath(import.meta.url))
+
   /** Объект окон. */
   private readonly windows = {} as WindowsObject
 
@@ -59,6 +56,9 @@ class Windows {
    * @returns Созданное окно.
    */
   async createWindow(params: WindowParams): Promise<BrowserWindow> {
+		const config = di.resolve(CONFIG_TOKEN)
+		const files = di.resolve(FILES_TOKEN)
+
     const {
       parent, devURL, name: type, path,
       width = 800,
@@ -78,10 +78,10 @@ class Windows {
       resizable, show,
       parent, modal,
       frame,
-      icon: Files.icon.path,
+      icon: files.icon.path,
       paintWhenInitiallyHidden: false,
       webPreferences: {
-        preload: join(_dirname, 'preload.cjs'),
+        preload: join(this.dirname, 'preload.cjs'),
         contextIsolation: false,
         sandbox: false,
         nodeIntegration: false,
@@ -103,7 +103,7 @@ class Windows {
       await this.showWindow(win, params)
     })
 
-    if (Config.isDev) {
+    if (config.isDev) {
       await win.loadURL(devURL)
       setTimeout(() => hasError && this.showWindow(win, params), 3000)
     } else {
@@ -127,7 +127,6 @@ class Windows {
    * @param windowName Название окна.
    * @param args Аргументы открытия.
    */
-  @publicMethod()
   async openWindow(windowName: ProgramWindow, ...args: any[]) {
     const window = await this.getWindowCreator(windowName)(...args)
 
@@ -156,6 +155,8 @@ class Windows {
    * @param params Параметра окна.
    */
   private async showWindow(window: BrowserWindow, params: WindowParams) {
+		const env = di.resolve(ENV_TOKEN)
+
     if (!window || window.isDestroyed()) {
       return
     }
@@ -166,7 +167,7 @@ class Windows {
     window.focus()
     await params.onFocused?.(window, this)
 
-    if (Env.forceDevTools) {
+    if (env.forceDevTools) {
       window.webContents.toggleDevTools()
     }
   }
@@ -188,7 +189,7 @@ class Windows {
 
   /** Инициализировать окна программы. */
   private initWindows() {
-    GeneralWindow.register(this)
+    getGeneralWindow().register(this)
   }
 }
 
@@ -212,9 +213,3 @@ function notDestroyed() {
     }
   }
 }
-
-/**
- * Работа с окнами программы.
- * _main process_
- */
-export default new Windows()

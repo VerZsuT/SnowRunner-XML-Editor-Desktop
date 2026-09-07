@@ -1,3 +1,3 @@
 import { defineAsyncComponent } from 'vue'
 
-export default defineAsyncComponent(() => import('./index.vue'))
+export const Settings = defineAsyncComponent(() => import('./index.vue'))

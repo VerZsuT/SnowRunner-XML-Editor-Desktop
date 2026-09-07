@@ -1,23 +1,23 @@
 import { initMain, mainMethod } from '@bridge/renderer'
 import { Bridge } from 'emr-bridge/renderer'
 import type { Page, ProgramWindow } from './enums'
-import type MainWindows from './main'
+import type { Windows as WindowsMain } from './main'
 import { PubKeys } from './public'
 
 export * from './enums'
 export type * from './types'
-
-const bridge = Bridge.as<object>()
 
 /**
  * Работа с окнами программы.
  * _renderer process_
  */
 @initMain()
-class Windows {
+export class Windows {
+	private readonly bridge = Bridge.as<object>()
+
   /** Открыть окно программы. */
   @mainMethod()
-  openWindow!: typeof MainWindows.openWindow
+  openWindow!: WindowsMain['openWindow']
 
   /**
    * Обработать событие роутинга.
@@ -25,7 +25,7 @@ class Windows {
    * @returns Функция отписки.
    */
   onRoute(handler: (page: Page) => void) {
-    return bridge.on(PubKeys.routeEvent, handler)
+    return this.bridge.on(PubKeys.routeEvent, handler)
   }
 
   /**
@@ -33,7 +33,7 @@ class Windows {
    * @param window Окно.
    */
   windowReady(window: ProgramWindow) {
-    bridge.emit(PubKeys.windowReadyEvent, window)
+    this.bridge.emit(PubKeys.windowReadyEvent, window)
   }
 }
 

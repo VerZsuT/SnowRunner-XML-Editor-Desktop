@@ -1,7 +1,7 @@
 import { Localization, LocalizationStrings } from '@localization'
 import { loadLocalization } from '@localization/renderer'
 
-export default loadLocalization(new Localization({
+export const LISTS_LOCALIZATION = loadLocalization(new Localization({
   processing: new LocalizationStrings()
     .ru('Выполняется')
     .en('Processing')

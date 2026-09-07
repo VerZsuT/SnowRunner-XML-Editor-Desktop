@@ -25,7 +25,7 @@
 </template>
 
 <script lang='ts' setup>
-import { Position } from '@modules/renderer'
+import { Position } from '@modules/xml/renderer'
 import type { EmitsToProps } from '@renderer/types'
 import { InputNumber, Typography } from 'ant-design-vue'
 import { ref, toRefs, watch } from 'vue'

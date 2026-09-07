@@ -1,7 +1,7 @@
 import { Localization, LocalizationStrings } from '@localization'
 import { loadLocalization } from '@localization/renderer'
 
-export default loadLocalization(new Localization({
+export const ENGINES_LOCALIZATION = loadLocalization(new Localization({
   engine: new LocalizationStrings()
     .ru('Двигатель')
     .en('Engine')

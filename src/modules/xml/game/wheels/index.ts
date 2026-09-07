@@ -1,20 +1,18 @@
-import type { IFile } from '../../../renderer'
-import XMLElement from '../../xml-element'
-import XMLTemplates from '../../xml-templates'
+import type { IFile } from '@modules/files/renderer'
+import { XMLElement } from '../../xml-element'
+import { XMLTemplates } from '../../xml-templates'
 import type { INumberAttrDescriptor, XmlElement, XmlValue } from '../attributes'
 import { floatAttr, integerAttr, properties } from '../attributes'
-import Limit from '../limit'
-import XMLWithTemplates, { innerElement } from '../xml-with-templates'
-import TruckRims from './rims'
-import TruckTires from './tires'
+import { Limit } from '../limit'
+import { XMLWithTemplates, innerElement } from '../xml-with-templates'
+import { TruckRims } from './rims'
+import { TruckTires } from './tires'
 
 export * from './rims'
-export { default as TruckRims } from './rims'
 export * from './tires'
-export { default as TruckTires } from './tires'
 
 /** Рутовый тег файла класса типа колес (набор взаимозаменяемых шин и дисков). */
-export default class Wheels extends XMLWithTemplates {
+export class Wheels extends XMLWithTemplates {
   static override async from(str: string): Promise<Wheels | undefined>
   static override async from(file: IFile): Promise<Wheels | undefined>
   static override async from(source: string | IFile): Promise<Wheels | undefined> {

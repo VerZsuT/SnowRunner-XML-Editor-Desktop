@@ -15,4 +15,4 @@ class SaveUtils {
   }
 }
 
-export default new SaveUtils()
+export const saveUtils = new SaveUtils()

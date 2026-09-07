@@ -1,6 +1,6 @@
 import { loadLocalization, Localization, LocalizationStrings } from '@localization/renderer'
 
-export default loadLocalization(new Localization({
+export const SUSPENSION_LOCALIZATION = loadLocalization(new Localization({
   height: new LocalizationStrings()
     .ru('Высота')
     .en('Height')

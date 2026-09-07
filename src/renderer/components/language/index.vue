@@ -2,7 +2,7 @@
   <div>
     <Segmented 
       v-if="radioMode"
-      :value="Config.lang"
+      :value="config.lang"
       :options="options"
       size="large"
       @change="changeLang(parseStrToLang(String($event)))"
@@ -16,7 +16,7 @@
       </label>
       <Select
         id="lang-select"
-        :value="Config.lang"
+        :value="config.lang"
         :options="options"
         size="large"
         @change="value => changeLang(parseStrToLang(value?.toString() || ''))"
@@ -26,10 +26,12 @@
 </template>
 
 <script lang='ts' setup>
-import { Config, GameTexts, Lang, parseStrToLang } from '@modules/renderer'
+import { Lang, parseStrToLang } from '@modules/data/config/enums'
+import { di } from '@utilities/di/container'
+import { CONFIG_TOKEN, GAME_TEXTS_TOKEN } from '@utilities/di/renderer/tokens'
 import { Segmented, Select } from 'ant-design-vue'
 import { nextTick } from 'vue'
-import texts from './localization'
+import { LANGUAGE_LOCALIZATION as texts } from './localization'
 
 export type LanguageProps = {
   /** Режим горизонтального выбора. */
@@ -39,20 +41,22 @@ export type LanguageProps = {
 defineProps<LanguageProps>()
 
 const options = langToOptions(Lang)
+const config = di.resolve(CONFIG_TOKEN)
+const gameTexts = di.resolve(GAME_TEXTS_TOKEN)
 
 /**
  * Изменить язык.
  * @param newLang Новый язык.
  */
 async function changeLang(newLang: Lang) {
-  if (newLang === Config.lang) {
+  if (newLang === config.lang) {
     return
   }
 
-  Config.lang = newLang
+  config.lang = newLang
   await nextTick()
-  await GameTexts.initFromInitial()
-  await GameTexts.initFromMods()
+  await gameTexts.initFromInitial()
+  await gameTexts.initFromMods()
 }
 
 /**

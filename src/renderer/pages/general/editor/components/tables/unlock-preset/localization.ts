@@ -1,7 +1,7 @@
 import { Localization, LocalizationStrings } from '@localization'
 import { loadLocalization } from '@localization/renderer'
 
-export default loadLocalization(new Localization({
+export const UNLOCK_PRESET_LOCALIZATION = loadLocalization(new Localization({
   unlockGroupName: new LocalizationStrings()
     .ru('Разблокировка')
     .en('Unlock')

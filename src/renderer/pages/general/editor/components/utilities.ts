@@ -1,6 +1,7 @@
-import { GameTexts } from '@modules/renderer'
 import type { EmitsToProps } from '@renderer/types'
-import { hasItems } from '@utilities/renderer'
+import { hasItems } from '@utilities/checks/renderer'
+import { di } from '@utilities/di/container'
+import { GAME_TEXTS_TOKEN } from '@utilities/di/renderer/tokens'
 import type { CollapseProps } from 'ant-design-vue'
 import type { InjectionKey, Ref } from 'vue'
 import { inject, onMounted, provide, reactive, ref, watch } from 'vue'
@@ -15,8 +16,9 @@ export function getGameText(key?: string, preset?: string, mod?: string): string
     return preset ?? 'LABEL_ERROR'
   }
 
-  const gameValue = GameTexts.main[key]
-  const modValue = GameTexts.mods[mod ?? '']?.[key]
+	const gameTexts = di.resolve(GAME_TEXTS_TOKEN)
+  const gameValue = gameTexts.main[key]
+  const modValue = gameTexts.mods[mod ?? '']?.[key]
 
   return modValue ?? gameValue ?? `${preset}: ${key}`
 }

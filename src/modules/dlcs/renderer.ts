@@ -1,6 +1,8 @@
-import { Dir, Dirs } from '@modules/files/renderer'
-import type { IDir, IFile, IFindDirsArgs, IFindFilesArgs } from '@modules/renderer'
-import { initMain, RendArrayBase } from '@utilities/renderer'
+import { initMain } from '@bridge/renderer'
+import type { Dirs, IDir, IFile, IFindDirsArgs, IFindFilesArgs } from '@modules/files/renderer'
+import { inject } from '@utilities/di/container'
+import { DIRS_TOKEN } from '@utilities/di/renderer/tokens'
+import { RendArrayBase } from '@utilities/json-arrays/renderer'
 import type { IDLC } from './types'
 
 export type * from './types'
@@ -10,9 +12,13 @@ export type * from './types'
  * _renderer process_
  */
 @initMain()
-class DLCs extends RendArrayBase<IDLC, IDLC & { dir: IDir }> {
+export class DLCs extends RendArrayBase<IDLC, IDLC & { dir: IDir }> {
+	/** Основные папки. */
+	@inject(DIRS_TOKEN)
+	private readonly dirs!: Dirs
+
   protected override convert(item: IDLC): IDLC & { dir: IDir } {
-    return { ...item, dir: new Dir(item.path) }
+    return { ...item, dir: this.dirs.new(item.path) }
   }
 
   override save = async () => {}
@@ -23,9 +29,9 @@ class DLCs extends RendArrayBase<IDLC, IDLC & { dir: IDir }> {
    * @returns Название DLC.
    */
   getDLC(file: IFile): string | undefined {
-    return file.path.includes(Dirs.dlc.name)
+    return file.path.includes(this.dirs.dlc.name)
       ? file.path
-        .split(Dirs.dlc.name)
+        .split(this.dirs.dlc.name)
         .at(1)
         ?.split('\\')
         .at(1)
@@ -38,7 +44,7 @@ class DLCs extends RendArrayBase<IDLC, IDLC & { dir: IDir }> {
    * @returns Файлы.
    */
   async findFiles(args: IFindFilesArgs): Promise<IFile[]> {
-    return Dirs.dlc.findFiles(args)
+    return this.dirs.dlc.findFiles(args)
   }
 
   /**
@@ -47,12 +53,6 @@ class DLCs extends RendArrayBase<IDLC, IDLC & { dir: IDir }> {
    * @returns Папки.
    */
   async findDirs(args: IFindDirsArgs): Promise<IDir[]> {
-    return Dirs.dlc.findDirs(args)
+    return this.dirs.dlc.findDirs(args)
   }
 }
-
-/**
- * Работа с дополнениями игры.
- * _renderer process_
- */
-export default new DLCs()

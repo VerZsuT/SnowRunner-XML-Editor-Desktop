@@ -1,7 +1,7 @@
 <template>
   <Modal
     v-model:open="isOpen"
-    :title="`${texts.whatsNewTitle} ${APP_VERSION}`"
+    :title="`${texts.whatsNewTitle} ${appConstants.VERSION}`"
   >
     <div class="container">
       <VersionInfo :changes="info" />
@@ -21,12 +21,15 @@
 
 <script lang='ts' setup>
 import { LocalizationStrings } from '@localization'
-import { APP_VERSION } from '@modules/app'
-import { Config } from '@modules/renderer'
+import { di } from '@utilities/di/container'
+import { APP_CONSTANTS_TOKEN, CONFIG_TOKEN } from '@utilities/di/renderer/tokens'
 import { Button, Modal } from 'ant-design-vue'
 import { computed } from 'vue'
-import texts from './localization'
+import { WHATS_NEW_LOCALIZATION as texts } from './localization'
 import VersionInfo from './version-info.vue'
+
+const config = di.resolve(CONFIG_TOKEN)
+const appConstants = di.resolve(APP_CONSTANTS_TOKEN)
 
 /** Открыто ли модальное окно. */
 const isOpen = defineModel<boolean>({ required: true })
@@ -51,7 +54,7 @@ const info = computed(() => new LocalizationStrings<string[]>()
     '新增新车图片',
     '标准参数已更新'
   ])
-  .get(Config)
+  .get(config)
 )
 </script>
 

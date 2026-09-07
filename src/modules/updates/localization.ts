@@ -1,7 +1,7 @@
 import { Localization, LocalizationStrings } from '@localization'
 
 /** Тексты обновления программы. */
-export default new Localization({
+export const UPDATES_LOCALIZATION = new Localization({
   /** Загрузка. */
   downloading: new LocalizationStrings()
     .ru('Загрузка')

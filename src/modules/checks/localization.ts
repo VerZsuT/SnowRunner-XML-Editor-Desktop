@@ -1,7 +1,7 @@
 import { Localization, LocalizationStrings } from '@localization'
 
 /** Тексты проверок. */
-export default new Localization({
+export const CHECKS_LOCALIZATION = new Localization({
   /** Ошибка прав доступа. */
   adminRequiredMessage: new LocalizationStrings()
     .ru('Ошибка запуска. Программа должна быть запущена от имени администратора.')

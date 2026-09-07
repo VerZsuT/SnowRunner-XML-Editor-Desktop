@@ -1,7 +1,7 @@
-import type Limit from './limit'
+import type { Limit } from './limit'
 
 /** Позиция (набор координат). */
-export default class Position {
+export class Position {
   /**
    * Получить позицию с X координатой.
    * @param value X координата.
@@ -113,7 +113,7 @@ export default class Position {
       other.z ?? this._z
     )
   }
-  
+
   /**
    * Равны ли координаты.
    * @param other Другие координаты.

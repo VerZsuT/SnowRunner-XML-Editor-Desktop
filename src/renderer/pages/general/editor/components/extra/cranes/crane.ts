@@ -1,6 +1,4 @@
-enum Crane {
+export enum Crane {
   RU = 'MinicraneRU',
   US = 'MinicraneUS'
 }
-
-export default Crane

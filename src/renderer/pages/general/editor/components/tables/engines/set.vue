@@ -6,7 +6,7 @@
       :label="getGameText(Engine.GameData?.UiDesc?.UiName, texts.engine, info.mod)"
     >
       <Info
-        v-if="Config.advancedMode"
+        v-if="config.advancedMode"
         :descriptor="Engine.$Name"
       />
       <Float :descriptor="Engine.$CriticalDamageThreshold" />
@@ -30,19 +30,23 @@
 </template>
 
 <script lang='ts' setup>
-import type { IFile } from '@modules/renderer'
-import { Config, type EnginesXML } from '@modules/renderer'
+import type { IFile } from '@modules/files/renderer'
+import type { Engines as EnginesXML } from '@modules/xml/renderer'
+import { di } from '@utilities/di/container'
+import { CONFIG_TOKEN } from '@utilities/di/renderer/tokens'
 import { storeToRefs } from 'pinia'
-import { useEditorStore } from '../../../../store'
-import { SaveUtils, provideFile } from '../../../utilities'
+import { useEditorStore } from '../../../../store/editor'
+import { provideFile } from '../../../utilities/import'
+import { saveUtils } from '../../../utilities/save'
 import Accordion from '../../accordion.vue'
-import Group from '../../group'
-import { Info } from '../../info'
-import { Float, Int } from '../../input'
+import Group from '../../group/group.vue'
+import Info from '../../info/info.vue'
+import Float from '../../input/variants/float.vue'
+import Int from '../../input/variants/int.vue'
 import type { ReadyEmits, ReadyProps } from '../../utilities'
 import { getGameText, useReady } from '../../utilities'
-import UnlockPreset from '../unlock-preset'
-import texts from './localization'
+import UnlockPreset from '../unlock-preset/unlock-preset.vue'
+import { ENGINES_LOCALIZATION as texts } from './localization'
 
 export type EngineSetProps = ReadyProps & Props
 
@@ -51,11 +55,12 @@ type Props = {
   file: IFile
 }
 
+const config = di.resolve(CONFIG_TOKEN)
 const { xml, file } = defineProps<Props>()
 const emit = defineEmits<ReadyEmits>()
 const { info } = storeToRefs(useEditorStore())
 
 useReady(emit)
 provideFile(file)
-SaveUtils.useOnSave(() => file.write(xml.baseXML))
+saveUtils.useOnSave(() => file.write(xml.baseXML))
 </script>

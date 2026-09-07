@@ -1,6 +1,7 @@
-import { Config } from '@modules/renderer'
+import { di } from '@utilities/di/container'
+import { CONFIG_TOKEN } from '@utilities/di/renderer/tokens'
 import type { Localization } from './index'
-import type { ITextsToLocalize } from './types'
+import type { ITextsToLocalize, LocalizedTexts } from './types'
 
 export * from './index'
 
@@ -14,5 +15,11 @@ export function loadLocalization<
 	Value = string,
 	ToLocalize extends ITextsToLocalize<Value> = ITextsToLocalize<Value>
 >(locale: Localization<Value, ToLocalize>) {
-	return locale.get(Config)
+	const secretKey = Symbol('Loaded localization')
+
+	return new Proxy({} as LocalizedTexts<ToLocalize>, {
+		get(_, name, __) {
+			return (locale[secretKey] ??= locale.get(di.resolve(CONFIG_TOKEN)))[name.toString()]
+		}
+	})
 }

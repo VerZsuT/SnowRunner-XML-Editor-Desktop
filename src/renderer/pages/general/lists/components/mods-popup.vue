@@ -22,13 +22,13 @@
       />
       <Button
         class="mods-manual-button"
-        @click="async () => addItems(await Modifications.requestPaks())"
+        @click="async () => addItems(await mods.requestPaks())"
       >
         {{ texts.manualMod }}
       </Button>
       <Button
         class="mods-manual-button"
-        @click="async () => addItems(await Modifications.requestDirs())"
+        @click="async () => addItems(await mods.requestDirs())"
       >
         {{ texts.manualModFolder }}
       </Button>
@@ -38,14 +38,15 @@
 </template>
 
 <script lang='ts' setup>
-import type { IFile } from '@modules/renderer'
-import { Modifications } from '@modules/renderer'
-import { Spin } from '@renderer/components'
+import type { IFile } from '@modules/files/renderer'
+import Spin from '@renderer/components/spin.vue'
 import type { EmitsToProps } from '@renderer/types'
+import { di } from '@utilities/di/container'
+import { MODS_TOKEN } from '@utilities/di/renderer/tokens'
 import type { ModalProps, TransferProps } from 'ant-design-vue'
 import { Button, Modal, Transfer } from 'ant-design-vue'
 import { ref, watchEffect } from 'vue'
-import texts from '../localization'
+import { LISTS_LOCALIZATION as texts } from '../localization'
 
 export type ModsPopupProps = Props & EmitsToProps<Emits>
   
@@ -56,6 +57,7 @@ type Emits = {
   hide: [reload: boolean]
 }
 
+const mods = di.resolve(MODS_TOKEN)
 const props = defineProps<Props>()
 const emit = defineEmits<Emits>()
 
@@ -74,7 +76,7 @@ watchEffect(async () => {
     return
   }
     
-  const loaded = await Modifications.getAllMods()
+  const loaded = await mods.getAllMods()
 
   items.value = loaded
   targetKeys.value = getTargetKeys(loaded)
@@ -85,7 +87,7 @@ const saveChanges: ModalProps['onOk'] = () => {
     return
   }
 
-  Modifications.saveFromSelect(targetKeys.value, items.value)
+  mods.saveFromSelect(targetKeys.value, items.value)
   emit('hide', true)
 }
 
@@ -99,14 +101,14 @@ const hidePopup: ModalProps['onCancel'] = () => {
 }
 
 function getTargetKeys(items: [IFile, string][]): string[] {
-  const keys = Modifications.toSelectKeys(items)
+  const keys = mods.toSelectKeys(items)
   
-  return Modifications
+  return mods
     .filter(mod => keys.includes(mod.path))
     .map(mod => mod.path)
 }
 
-async function addItems(newItems?: Awaited<ReturnType<typeof Modifications.requestDirs>>) {
+async function addItems(newItems?: Awaited<ReturnType<typeof mods.requestDirs>>) {
   const modItems = items.value
 
   if (!newItems || !modItems) {

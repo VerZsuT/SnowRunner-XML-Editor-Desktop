@@ -1,9 +1,9 @@
 import type { IStringAttrDescriptor, XmlValue } from '../../attributes'
 import { stringAttr } from '../../attributes'
-import { BaseWheelFriction } from '../../base'
+import { BaseWheelFriction } from '../../base/wheel-friction'
 
 /** Сцепление колеса с дорогой. */
-export default class WheelFriction extends BaseWheelFriction {
+export class TireWheelFriction extends BaseWheelFriction {
   /** Имя типа резины. */
   @stringAttr<WheelName>()
   accessor UiName: XmlValue<WheelName>

@@ -12,7 +12,7 @@
         <MenuOutlined style="font-size: 25px" />
         <template #overlay>
           <Menu mode="vertical">
-            <FilesMenu v-if="Config.advancedMode" />
+            <FilesMenu v-if="config.advancedMode" />
           </Menu>
         </template>
       </Dropdown>
@@ -38,12 +38,15 @@
 
 <script lang='ts' setup>
 import { MenuOutlined, SaveOutlined } from '@ant-design/icons-vue'
-import { Config, Page } from '@modules/renderer'
-import { Header } from '@renderer/components'
+import { Page } from '@modules/windows/enums'
+import Header from '@renderer/components/header.vue'
+import { di } from '@utilities/di/container'
+import { CONFIG_TOKEN } from '@utilities/di/renderer/tokens'
 import { Button, Dropdown, Menu, Tooltip } from 'ant-design-vue'
-import { usePageStore } from '../../../store'
-import texts from '../../localization'
-import FilesMenu from '../files-menu'
+import { usePageStore } from '../../../store/page'
+import { EDITOR_LOCALIZATION as texts } from '../../localization'
+import FilesMenu from '../files-menu/files-menu.vue'
 
 const { route } = usePageStore()
+const config = di.resolve(CONFIG_TOKEN)
 </script>

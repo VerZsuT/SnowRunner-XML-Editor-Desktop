@@ -1,7 +1,7 @@
 import { Localization, LocalizationStrings } from '@localization/main'
 
 /** Тексты приложения. */
-export default new Localization({
+export const MAIN_LOCALIZATION = new Localization({
 	/** Проверка прав администратора. */
 	checkAdminPrivileges: new LocalizationStrings()
 		.ru('Проверка прав администратора')

@@ -83,17 +83,24 @@
 
 <script lang='ts' setup>
 import { EditFilled, StarFilled } from '@ant-design/icons-vue'
-import type { IFile, TruckType } from '@modules/renderer'
-import { Edited, Favorites, GameTexts, Images, Messages, Modifications, Page, TruckXML } from '@modules/renderer'
-import { ContextMenu } from '@renderer/components'
-import { prettyString } from '@utilities/renderer'
+import { ProgramError } from '@modules/errors/renderer'
+import type { IFile } from '@modules/files/types'
+import { Page } from '@modules/windows/enums'
+import type { TruckType } from '@modules/xml/renderer'
+import { TruckXML } from '@modules/xml/renderer'
+import ContextMenu from '@renderer/components/context-menu.vue'
+import { useEditorStore } from '@renderer/pages/general/store/editor'
+import { useListStore } from '@renderer/pages/general/store/list'
+import { usePageStore } from '@renderer/pages/general/store/page'
+import { di } from '@utilities/di/container'
+import { EDITED_TOKEN, FAVORITES_TOKEN, GAME_TEXTS_TOKEN, IMAGES_TOKEN, MESSAGES_TOKEN, MODS_TOKEN } from '@utilities/di/renderer/tokens'
+import { prettyString } from '@utilities/strings/renderer'
 import { Card, Tag, Typography } from 'ant-design-vue'
 import { storeToRefs } from 'pinia'
 import { computed, onMounted, ref, shallowRef, toRefs, watchEffect } from 'vue'
 import { ListMode, SourceType, type Category } from '../../../enums'
-import { useEditorStore, useListStore, usePageStore } from '../../../store'
-import texts from '../../localization'
-import { EditorUtils } from '../../utilities'
+import { LISTS_LOCALIZATION as texts } from '../../localization'
+import { editorUtils } from '../../utilities/editor'
 
 const { Text } = Typography
 
@@ -102,6 +109,11 @@ export type ListItemProps = {
   category: Category
 }
 
+const images = di.resolve(IMAGES_TOKEN)
+const favorites = di.resolve(FAVORITES_TOKEN)
+const edited = di.resolve(EDITED_TOKEN)
+const messages = di.resolve(MESSAGES_TOKEN)
+
 const props = defineProps<ListItemProps>()
 const { file, category } = toRefs(props)
 
@@ -109,15 +121,15 @@ const editorStore = useEditorStore()
 const { file: prevFile } = storeToRefs(editorStore)
 const { clearEditorStore, setFile } = editorStore
 
-const { route } = usePageStore()
-
 const listStore = useListStore()
 const { name: nameFilter, truckType: typeFilter, files, listMode } = storeToRefs(listStore)
 const { toggleFavorite, itemsCache } = listStore
 
+const { route } = usePageStore()
+
 const container = ref<HTMLDivElement | null>(null)
 const xml = shallowRef<TruckXML | null>(null)
-const imgSRC = ref<string>(Images.getDefault(category.value))
+const imgSRC = ref<string>(images.getDefault(category.value))
 const name = ref<string>('')
 const type = ref<TruckType | undefined>()
 
@@ -128,7 +140,10 @@ function getName(file: IFile, xml: TruckXML): string {
     const uiName = xml.GameData?.UiDesc?.UiName
 
     if (uiName) {
-      name = GameTexts.get(uiName, Modifications.getModID(file)) || uiName
+      const gameTexts = di.resolve(GAME_TEXTS_TOKEN)
+      const mods = di.resolve(MODS_TOKEN)
+
+      name = gameTexts.get(uiName, mods.getModID(file)) || uiName
     }
   }
 
@@ -174,7 +189,7 @@ watchEffect(async () => {
     return
   }
 
-  imgSRC.value = await Images.getSrc(category.value, file.value, xml.value)
+  imgSRC.value = await images.getSrc(category.value, file.value, xml.value)
 })
 
 const isShow = computed<boolean>(() => (
@@ -209,8 +224,8 @@ const title = computed(() => {
   }
 })
 
-const isFavorite = computed(() => Favorites.isFavorite(file.value))
-const isEdited = computed(() => Edited.isEdited(file.value))
+const isFavorite = computed(() => favorites.isFavorite(file.value))
+const isEdited = computed(() => edited.isEdited(file.value))
 const contextMenuItems = computed(() => [
   {
     label: isFavorite.value
@@ -237,21 +252,24 @@ const contextMenuItems = computed(() => [
 ])
 
 async function exportFile() {
-  return EditorUtils
+  return editorUtils
     .export([{ source: file.value }])
-    .finally(Messages.loading(texts.processing))
+    .catch(reason => new ProgramError(reason))
+    .finally(messages.loading(texts.processing))
 }
 
 async function importFile() {
-  return EditorUtils
+  return editorUtils
     .import([{ file: file.value }])
-    .finally(Messages.loading(texts.processing))
+    .catch(reason => new ProgramError(reason))
+    .finally(messages.loading(texts.processing))
 }
 
 async function resetFile() {
-  return EditorUtils
+  return editorUtils
     .reset([file.value])
-    .finally(Messages.loading(texts.processing))
+    .catch(reason => new ProgramError(reason))
+    .finally(messages.loading(texts.processing))
 }
 
 function openEditor() {

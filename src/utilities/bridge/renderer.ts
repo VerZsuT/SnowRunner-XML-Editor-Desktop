@@ -1,6 +1,5 @@
 import type { EventUnsubscribe, HasSnapshotClass } from 'emr-bridge/renderer'
 import { Bridge } from 'emr-bridge/renderer'
-import type { Reactive } from 'vue'
 import { reactive, ref, toRaw, watch } from 'vue'
 import { getPublicName } from './helpers'
 
@@ -17,6 +16,8 @@ const CHANGE_HANDLER = Symbol('on change')
 
 /** Название свойства с перечислением обновляемых из main процесса. */
 const UPDATE_FROM_MAIN = Symbol('update from main')
+
+export const INIT_METHOD = Symbol('init method')
 
 /** Свойство с публичными методами. */
 type MainMethodsProperty = {
@@ -53,11 +54,12 @@ export function initMain() {
 
     return class extends target {
       constructor(...args: any[]) {
-        super(...args)
+				super(...args)
+				getChangeHandler(this, className)
 
         for (const {name, returns} of getMainMethods(this)) {
           const publicName = getPublicName(className, name)
-  
+
           this[name] = function(this: Class, ...args: any[]) {
             return returns
               ? bridge.call(bridge[publicName], returns, args)
@@ -67,14 +69,14 @@ export function initMain() {
 
         for (const {name} of getMainFields(this)) {
           const publicName = getPublicName(className, name)
-          
+
           withUpdateFromMain(this, name, () => this[name] = bridge[publicName])
           onMainChangeEvent(publicName, value => {
             withUpdateFromMain(this, name, () => this[name] = value)
           })
         }
-
-        getChangeHandler(this, className)
+				// @ts-expect-error
+				this[INIT_METHOD]?.()
       }
     }
   }
@@ -199,21 +201,21 @@ function getMainRefFieldInitializer(name: string) {
  */
 function getMainObjectFieldInitializer(name: string) {
   return function<This, Value extends object>(this: This) {
-    let sourceObject: Reactive<Value>
+		const secretKey = Symbol(`_${name}`)
 
     getMainFields(this).push({ name })
     Object.defineProperty(this, name, {
-      get() {
-        return sourceObject
+      get(this: This) {
+        return this[secretKey]
       },
-      set(value) {
-        sourceObject ??= initReactive({...value}, newValue => {
+      set(this: This, value: Value) {
+        this[secretKey] ??= initReactive({...value}, newValue => {
           if (!getUpdateFromMain(this).has(name)) {
             getChangeHandler(this)(name, newValue)
           }
         })
 
-        Object.assign(sourceObject, value)
+        Object.assign(this[secretKey], value)
       },
       enumerable: true
     })
@@ -227,22 +229,22 @@ function getMainObjectFieldInitializer(name: string) {
  */
 function getMainArrayFieldInitializer(name: string) {
   return function<This, Value extends Array<unknown>>(this: This) {
-    let sourceArray: Reactive<Value>
+    const secretKey = Symbol(`_${name}`)
 
     getMainFields(this).push({ name })
     Object.defineProperty(this, name, {
-      get() {
-        return sourceArray
+      get(this: This) {
+        return this[secretKey]
       },
-      set(value) {
-        sourceArray ??= initReactive([...value] as Value, newValue => {
+      set(this: This, value: Value) {
+        this[secretKey] ??= initReactive([...value] as Value, newValue => {
           if (!getUpdateFromMain(this).has(name)) {
             getChangeHandler(this)(name, newValue)
           }
         })
 
-        sourceArray.length = 0
-        sourceArray.push(...value)
+        this[secretKey].length = 0
+        this[secretKey].push(...value)
       },
       enumerable: true
     })

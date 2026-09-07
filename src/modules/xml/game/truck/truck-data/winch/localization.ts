@@ -1,6 +1,6 @@
 import { Localization, LocalizationStrings, loadLocalization } from '@localization/renderer'
 
-export default loadLocalization(new Localization({
+export const WINCH_LOCALIZATION = loadLocalization(new Localization({
   winchLength: new LocalizationStrings()
     .ru('Длина лебёдки')
     .en('Winch length')

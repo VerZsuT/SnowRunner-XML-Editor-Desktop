@@ -1,17 +1,16 @@
-import type { IFile } from '../../../renderer'
-import XMLElement from '../../xml-element'
-import XMLTemplates from '../../xml-templates'
+import type { IFile } from '@modules/files/renderer'
+import { XMLElement } from '../../xml-element'
+import { XMLTemplates } from '../../xml-templates'
 import type { XmlElement } from '../attributes'
-import XMLWithTemplates, { innerElement } from '../xml-with-templates'
-import GameData from './game-data'
-import TruckData from './truck-data'
+import { XMLWithTemplates, innerElement } from '../xml-with-templates'
+import { AddonGameData } from './game-data'
+import { AddonTruckData } from './truck-data'
 
 export * from './game-data'
-export { default as AddonGameData } from './game-data'
-export { default as AddonTruckData } from './truck-data'
+export * from './truck-data'
 
 /** Рутовый тег файла класса двигателей. */
-export default class TruckAddon extends XMLWithTemplates {
+export class TruckAddon extends XMLWithTemplates {
   static override async from(str: string): Promise<TruckAddon | undefined>
   static override async from(file: IFile): Promise<TruckAddon | undefined>
   static override async from(source: string | IFile): Promise<TruckAddon | undefined> {
@@ -30,10 +29,10 @@ export default class TruckAddon extends XMLWithTemplates {
   }
 
   /** Свойства непосредственно аддона. */
-  @innerElement(TruckData)
-  readonly TruckData: XmlElement<TruckData>
+  @innerElement(AddonTruckData)
+  readonly TruckData: XmlElement<AddonTruckData>
 
   /** Информация о взаимодействии двигателя с окружающим миром. */
-  @innerElement(GameData)
-  readonly GameData: XmlElement<GameData>
+  @innerElement(AddonGameData)
+  readonly GameData: XmlElement<AddonGameData>
 }

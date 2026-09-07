@@ -1,7 +1,7 @@
 import { Localization, LocalizationStrings } from '@localization'
 import { loadLocalization } from '@localization/renderer'
 
-export default loadLocalization(new Localization({
+export const SETTINGS_LOCALIZATION = loadLocalization(new Localization({
   /** Заголовок. */
   title: new LocalizationStrings()
     .ru('Настройки')
