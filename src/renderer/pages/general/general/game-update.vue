@@ -33,57 +33,57 @@ const current = ref(0)
 const allCount = ref(0)
 
 async function onOk() {
-  const filesToExport: IFile[] = []
-  const edited = di.resolve(EDITED_TOKEN)
-  const dirs = di.resolve(DIRS_TOKEN)
-  const files = di.resolve(FILES_TOKEN)
+	const filesToExport: IFile[] = []
+	const edited = di.resolve(EDITED_TOKEN)
+	const dirs = di.resolve(DIRS_TOKEN)
+	const files = di.resolve(FILES_TOKEN)
 
-  loading.value = true
+	loading.value = true
 
-  for (const { name, dlc, mod, isTrailer } of edited.get()) {
-    if (mod) {
-      continue
-    }
+	for (const { name, dlc, mod, isTrailer } of edited.get()) {
+		if (mod) {
+			continue
+		}
 
-    const dlcFolder = dlc
-      ? `_dlc/${dlc}`
-      : ''
-    const truckFolder = isTrailer
-      ? 'trucks/trailers'
-      : 'trucks'
-    const file = dirs.backupInitialData.file('[media]', dlcFolder, 'classes', truckFolder, `${name}.xml`)
+		const dlcFolder = dlc
+			? `_dlc/${dlc}`
+			: ''
+		const truckFolder = isTrailer
+			? 'trucks/trailers'
+			: 'trucks'
+		const file = dirs.backupInitialData.file('[media]', dlcFolder, 'classes', truckFolder, `${name}.xml`)
 
-    if (!await file.exists()) {
-      continue
-    }
-    
-    filesToExport.push(file)
-  }
-  
-  setShowMessages(false)
-  action.value = texts.export
-  allCount.value = filesToExport.length
+		if (!await file.exists()) {
+			continue
+		}
+		
+		filesToExport.push(file)
+	}
+	
+	setShowMessages(false)
+	action.value = texts.export
+	allCount.value = filesToExport.length
 
-  void editorUtils.export(
-    filesToExport.map(file => ({ source: file, toExport: files.exported })),
-    () => void current.value++
-  ).then(() => {
-    const nonMods = edited.filter(item => !item.mod)
+	void editorUtils.export(
+		filesToExport.map(file => ({ source: file, toExport: files.exported })),
+		() => void current.value++
+	).then(() => {
+		const nonMods = edited.filter(item => !item.mod)
 
-    current.value = 0
-    allCount.value = nonMods.length
-    action.value = texts.import
+		current.value = 0
+		allCount.value = nonMods.length
+		action.value = texts.import
 
-    return editorUtils.import(
-      nonMods.map(item => ({ file: edited.convert(item), toImport: files.exported })),
-      () => void current.value++
-    )
-  }).then(() => {
-    setShowMessages(true)
-    loading.value = false
-    open.value = false
+		return editorUtils.import(
+			nonMods.map(item => ({ file: edited.convert(item), toImport: files.exported })),
+			() => void current.value++
+		)
+	}).then(() => {
+		setShowMessages(true)
+		loading.value = false
+		open.value = false
 
-    void dirs.backupInitialData.remove()
-  })
+		void dirs.backupInitialData.remove()
+	})
 }
 </script>

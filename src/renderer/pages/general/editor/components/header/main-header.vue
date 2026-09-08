@@ -60,7 +60,7 @@ import { EditedAction, useEditorStore } from '@renderer/pages/general/store/edit
 import { usePageStore } from '@renderer/pages/general/store/page'
 import { lastItem } from '@utilities/checks'
 import { di } from '@utilities/di/container'
-import { ARCHIVE_TOKEN, CONFIG_TOKEN, EDITED_TOKEN, FILES_TOKEN, GAME_TEXTS_TOKEN, MESSAGES_TOKEN, MODS_TOKEN } from '@utilities/di/renderer/tokens'
+import { ARCHIVER_TOKEN, CONFIG_TOKEN, EDITED_TOKEN, FILES_TOKEN, GAME_TEXTS_TOKEN, MESSAGES_TOKEN, MODS_TOKEN } from '@utilities/di/renderer/tokens'
 import { prettyString } from '@utilities/strings'
 import { Button, Dropdown, Menu, Modal, Typography } from 'ant-design-vue'
 import { storeToRefs } from 'pinia'
@@ -75,8 +75,8 @@ import FilesMenu from '../files-menu/files-menu.vue'
 const { Text } = Typography
 
 export type MainHeaderProps = {
-  xml: TruckXML
-  file: IFile
+	xml: TruckXML
+	file: IFile
 }
 
 const config = di.resolve(CONFIG_TOKEN)
@@ -90,10 +90,10 @@ const { showMessages, info, editedAction } = storeToRefs(editorStore)
 const { setIsSaving, setEditedAction } = editorStore
 
 defineExpose({
-  save: onSave,
-  reset: reset,
-  import: importFile,
-  export: exportFile
+	save: onSave,
+	reset: reset,
+	import: importFile,
+	export: exportFile
 })
 
 const menuIsOpened = ref(false)
@@ -101,111 +101,111 @@ const mod = mods.findByFile(file)
 const title = getMainTitle()
 
 async function onSave(updateFiles = true) {
-  const hideLoading = showMessages.value
-    ? messages.loading(texts.savingMessage)
-    : () => {}
+	const hideLoading = showMessages.value
+		? messages.loading(texts.savingMessage)
+		: () => {}
 
-  setIsSaving(true)
+	setIsSaving(true)
 
-  try {
-    await save(updateFiles)
-    success(texts.successSaveFiles)
-  } catch (error: any) {
-    messages.error(error)
-  }
+	try {
+		await save(updateFiles)
+		success(texts.successSaveFiles)
+	} catch (error: any) {
+		messages.error(error)
+	}
 
-  setIsSaving(false)
-  hideLoading()
+	setIsSaving(false)
+	hideLoading()
 }
 
 async function save(updateFiles = true) {
-  await saveUtils.emitSave()
-  
-  if (updateFiles) {
-    const archive = di.resolve(ARCHIVE_TOKEN)
+	await saveUtils.emitSave()
+	
+	if (updateFiles) {
+		const archiver = di.resolve(ARCHIVER_TOKEN)
 
-    if (info.value.mod) {
-      await archive.updateFiles(info.value.mod)
-    }
+		if (info.value.mod) {
+			await archiver.updateFiles(info.value.mod)
+		}
 
-    await archive.updateFiles()
-  }
+		await archiver.updateFiles()
+	}
 
-  const edited = di.resolve(EDITED_TOKEN)
+	const edited = di.resolve(EDITED_TOKEN)
 
-  switch (editedAction.value) {
-    case EditedAction.markAsEdited:
-      edited.markAsEdited(file, xml.Type === TruckFileType.trailer)
+	switch (editedAction.value) {
+		case EditedAction.markAsEdited:
+			edited.markAsEdited(file, xml.Type === TruckFileType.trailer)
 
-      break
-    case EditedAction.markAsNotEdited:
-      edited.markAsNotEdited(file)
-      
-      break
-  }
+			break
+		case EditedAction.markAsNotEdited:
+			edited.markAsNotEdited(file)
+			
+			break
+	}
 
-  setEditedAction(EditedAction.markAsEdited)
+	setEditedAction(EditedAction.markAsEdited)
 }
 
 function getMainTitle(): string {
-  if (xml.GameData?.UiDesc) {
-    const text = xml.GameData.UiDesc.UiName ?? xml.GameData.UiDesc.DefaultRegion?.UiName
+	if (xml.GameData?.UiDesc) {
+		const text = xml.GameData.UiDesc.UiName ?? xml.GameData.UiDesc.DefaultRegion?.UiName
 
-    return di.resolve(GAME_TEXTS_TOKEN).get(text, mods.getModID(file)) ?? text ?? 'TITLE_ERROR'
-  }
+		return di.resolve(GAME_TEXTS_TOKEN).get(text, mods.getModID(file)) ?? text ?? 'TITLE_ERROR'
+	}
 
-  const separator = file.path.includes('/') ? '/' : '\\'
-  const files = di.resolve(FILES_TOKEN)
+	const separator = file.path.includes('/') ? '/' : '\\'
+	const files = di.resolve(FILES_TOKEN)
 
-  return prettyString(files.new(lastItem(file.path.split(separator))!).name).toUpperCase()
+	return prettyString(files.newFile(lastItem(file.path.split(separator))!).name).toUpperCase()
 }
 
 async function importFile(toImport?: IFile) {
-  try {
-    await importUtils.importFile(file, toImport)
-    success(texts.wasImported)
-  } catch (error: any) {
-    messages.error(error)
-  }
+	try {
+		await importUtils.importFile(file, toImport)
+		success(texts.wasImported)
+	} catch (error: any) {
+		messages.error(error)
+	}
 }
 
 async function exportFile(toExport?: IFile) {
-  try {
-    await exportUtils.exportFile(file, toExport)
-    success(texts.wasExported)
-  } catch (error: any) {
-    messages.error(error)
-  }
+	try {
+		await exportUtils.exportFile(file, toExport)
+		success(texts.wasExported)
+	} catch (error: any) {
+		messages.error(error)
+	}
 }
 
 async function reset() {
-  try {
-    await resetUtils.emit(resetUtils.globalID)
-    setEditedAction(EditedAction.markAsNotEdited)
+	try {
+		await resetUtils.emit(resetUtils.globalID)
+		setEditedAction(EditedAction.markAsNotEdited)
 
-    if (showMessages.value) {
-      messages.success(texts.successReset)
-    }
-  } catch (error: any) {
-    messages.error(error)
-  }
+		if (showMessages.value) {
+			messages.success(texts.successReset)
+		}
+	} catch (error: any) {
+		messages.error(error)
+	}
 }
 
 function success(text: string) {
-  if (showMessages.value) {
-    messages.success(text)
-  }
+	if (showMessages.value) {
+		messages.success(text)
+	}
 }
 
 function onReset() {
-  if (mod) {
-    return
-  }
+	if (mod) {
+		return
+	}
 
-  Modal.confirm({
-    okText: texts.ok, cancelText: texts.cancel,
-    title: texts.resetConfirmMessage,
-    onOk: reset
-  })
+	Modal.confirm({
+		okText: texts.ok, cancelText: texts.cancel,
+		title: texts.resetConfirmMessage,
+		onOk: reset
+	})
 }
 </script>

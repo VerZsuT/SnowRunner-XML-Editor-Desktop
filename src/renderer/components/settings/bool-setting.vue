@@ -27,11 +27,11 @@ const { Text } = Typography
 const popover = h(Popover, { placement: 'topLeft' })
 
 export type BoolSettingProps = {
-  /** Заголовок. */
+	/** Заголовок. */
 	label: string
 
-  /** Подсказка. */
-  tip?: string
+	/** Подсказка. */
+	tip?: string
 }
 
 defineProps<BoolSettingProps>()
@@ -40,8 +40,8 @@ const value = defineModel<boolean>({ required: true })
 
 <style lang="scss" scoped>
 .label {
-  display: inline-block;
-  margin-bottom: 10px;
-  margin-left: 10px;
+	display: inline-block;
+	margin-bottom: 10px;
+	margin-left: 10px;
 }
 </style>

@@ -1,6 +1,6 @@
-import type { EventUnsubscribe, HasSnapshotClass } from 'emr-bridge/renderer'
+import type { EventUnsubscribe } from 'emr-bridge/renderer'
 import { Bridge } from 'emr-bridge/renderer'
-import { reactive, ref, toRaw, watch } from 'vue'
+import { reactive, toRaw, watch } from 'vue'
 import { getPublicName } from './helpers'
 
 const bridge = Bridge.as<object>()
@@ -19,20 +19,17 @@ const UPDATE_FROM_MAIN = Symbol('update from main')
 
 export const INIT_METHOD = Symbol('init method')
 
-/** Свойство с публичными методами. */
-type MainMethodsProperty = {
-  /** Название метода. */
-  name: string
+/** Публичные методы. */
+interface IMainMethod {
+	/** Название метода. */
+	name: string
+}
 
-  /** Класс возвращаемого значения метода. */
-  returns?: HasSnapshotClass
-}[]
-
-/** Свойство с публичными полями. */
-type MainFieldsProperty = {
-  /** Название поля. */
-  name: string
-}[]
+/** Публичные поля. */
+interface IMainField {
+	/** Название поля. */
+	name: string
+}
 
 /** Обновляемые из main процесса. */
 type UpdateFromMain = Set<string>
@@ -46,152 +43,72 @@ type ChangeHandler = (name: string, value: any) => void
 
 /** Инициализировать main методы и поля класса. */
 export function initMain() {
-  return function<Class extends new (...args: any) => any>(
-    target: Class,
-    context: ClassDecoratorContext<Class>
-  ) {
-    const className = context.name ?? ''
+	return function<Class extends new (...args: any) => any>(
+		target: Class,
+		context: ClassDecoratorContext<Class>
+	) {
+		const className = context.name ?? ''
 
-    return class extends target {
-      constructor(...args: any[]) {
+		return class extends target {
+			constructor(...args: any[]) {
 				super(...args)
 				getChangeHandler(this, className)
 
-        for (const {name, returns} of getMainMethods(this)) {
-          const publicName = getPublicName(className, name)
+				for (const { name } of getMainMethods(this)) {
+					const publicName = getPublicName(className, name)
 
-          this[name] = function(this: Class, ...args: any[]) {
-            return returns
-              ? bridge.call(bridge[publicName], returns, args)
-              : bridge[publicName](...args)
-          }
-        }
+					this[name] = (...args: any[]) => bridge[publicName](...args)
+				}
 
-        for (const {name} of getMainFields(this)) {
-          const publicName = getPublicName(className, name)
+				for (const {name} of getMainFields(this)) {
+					const publicName = getPublicName(className, name)
 
-          withUpdateFromMain(this, name, () => this[name] = bridge[publicName])
-          onMainChangeEvent(publicName, value => {
-            withUpdateFromMain(this, name, () => this[name] = value)
-          })
-        }
+					withUpdateFromMain(this, name, () => this[name] = bridge[publicName])
+					onMainChangeEvent(publicName, value => {
+						withUpdateFromMain(this, name, () => this[name] = value)
+					})
+				}
 				// @ts-expect-error
 				this[INIT_METHOD]?.()
-      }
-    }
-  }
+			}
+		}
+	}
 }
 
-/**
- * Добавить main метод класса.
- * @param returns Класс возвращаемого значения метода.
- */
-export function mainMethod(returns?: HasSnapshotClass) {
-  return function<This, Value>(
-    target: Value,
-    context: ClassFieldDecoratorContext<This>
-  ) {
-    context.addInitializer(function(this: This) {
-      getMainMethods(this).push({
-        name: context.name.toString(),
-        returns
-      })
-    })
-
-    return target
-  }
-}
-
-/** Добавить main ref поле класса. */
-export function mainRefField() {
-  return function<This, Value>(
-    _target: unknown,
-    context: ClassFieldDecoratorContext<This, Value>
-  ) {
-    context.addInitializer(getMainRefFieldInitializer(context.name.toString()))
-  }
-}
-
-/** Добавить main ref поле класса. */
-export function mainRefAccessor() {
-  return function<This, Value>(
-    target: ClassAccessorDecoratorTarget<This, Value>,
-    context: ClassAccessorDecoratorContext<This, Value>
-  ): ClassAccessorDecoratorResult<This, Value> {
-    context.addInitializer(getMainRefFieldInitializer(context.name.toString()))
-
-    return target
-  }
+/** Добавить main метод класса. */
+export function mainMethod() {
+	return function<This, Value>(
+		_target: Value,
+		context: ClassFieldDecoratorContext<This>
+	) {
+		context.addInitializer(function(this: This) {
+			getMainMethods(this).push({
+				name: context.name.toString()
+			})
+		})
+	}
 }
 
 /** Добавить main object поле класса. */
 export function mainObjectField() {
-  return function<This, Value extends object>(
-    _target: unknown,
-    context: ClassFieldDecoratorContext<This, Value>
-  ) {
-    context.addInitializer(getMainObjectFieldInitializer(context.name.toString()))
-  }
-}
-
-/** Добавить main object поле класса. */
-export function mainObjectAccessor() {
-  return function<This, Value extends object>(
-    target: ClassAccessorDecoratorTarget<This, Value>,
-    context: ClassAccessorDecoratorContext<This, Value>
-  ): ClassAccessorDecoratorResult<This, Value> {
-    context.addInitializer(getMainObjectFieldInitializer(context.name.toString()))
-
-    return target
-  }
-}
-
-/** Добавить main array поле класса. */
-export function mainArrayField() {
-  return function<This, Value extends Array<unknown>>(
-    _target: unknown,
-    context: ClassFieldDecoratorContext<This, Value>
-  ) {
-    context.addInitializer(getMainArrayFieldInitializer(context.name.toString()))
-  }
+	return function<This, Value extends object>(
+		_target: unknown,
+		context: ClassFieldDecoratorContext<This, Value>
+	) {
+		context.addInitializer(getMainObjectFieldInitializer(context.name.toString()))
+	}
 }
 
 /** Добавить main array поле класса. */
 export function mainArrayAccessor() {
-  return function<This, Value extends Array<unknown>>(
-    target: ClassAccessorDecoratorTarget<This, Value>,
-    context: ClassAccessorDecoratorContext<This, Value>
-  ): ClassAccessorDecoratorResult<This, Value> {
-    context.addInitializer(getMainArrayFieldInitializer(context.name.toString()))
+	return function<This, Value extends Array<unknown>>(
+		target: ClassAccessorDecoratorTarget<This, Value>,
+		context: ClassAccessorDecoratorContext<This, Value>
+	): ClassAccessorDecoratorResult<This, Value> {
+		context.addInitializer(getMainArrayFieldInitializer(context.name.toString()))
 
-    return target
-  }
-}
-
-/**
- * Получить инициализатор ref поля.
- * @param name Название ref поля.
- * @returns Инициализатор ref поля.
- */
-function getMainRefFieldInitializer(name: string) {
-  return function<This, Value>(this: This) {
-    const sourceRefValue = ref<Value>()
-
-    getMainFields(this).push({ name })
-    Object.defineProperty(this, name, {
-      get() {
-        return sourceRefValue.value
-      },
-      set(newValue) {
-        sourceRefValue.value = newValue
-
-        if (!getUpdateFromMain(this).has(name)) {
-          getChangeHandler(this)(name, newValue)
-        }
-      },
-      enumerable: true
-    })
-  }
+		return target
+	}
 }
 
 /**
@@ -200,26 +117,26 @@ function getMainRefFieldInitializer(name: string) {
  * @returns Инициализатор object поля.
  */
 function getMainObjectFieldInitializer(name: string) {
-  return function<This, Value extends object>(this: This) {
+	return function<This, Value extends object>(this: This) {
 		const secretKey = Symbol(`_${name}`)
 
-    getMainFields(this).push({ name })
-    Object.defineProperty(this, name, {
-      get(this: This) {
-        return this[secretKey]
-      },
-      set(this: This, value: Value) {
-        this[secretKey] ??= initReactive({...value}, newValue => {
-          if (!getUpdateFromMain(this).has(name)) {
-            getChangeHandler(this)(name, newValue)
-          }
-        })
+		getMainFields(this).push({ name })
+		Object.defineProperty(this, name, {
+			get(this: This) {
+				return this[secretKey]
+			},
+			set(this: This, value: Value) {
+				this[secretKey] ??= initReactive({...value}, newValue => {
+					if (!getUpdateFromMain(this).has(name)) {
+						getChangeHandler(this)(name, newValue)
+					}
+				})
 
-        Object.assign(this[secretKey], value)
-      },
-      enumerable: true
-    })
-  }
+				Object.assign(this[secretKey], value)
+			},
+			enumerable: true
+		})
+	}
 }
 
 /**
@@ -228,27 +145,27 @@ function getMainObjectFieldInitializer(name: string) {
  * @returns Инициализатор array поля.
  */
 function getMainArrayFieldInitializer(name: string) {
-  return function<This, Value extends Array<unknown>>(this: This) {
-    const secretKey = Symbol(`_${name}`)
+	return function<This, Value extends Array<unknown>>(this: This) {
+		const secretKey = Symbol(`_${name}`)
 
-    getMainFields(this).push({ name })
-    Object.defineProperty(this, name, {
-      get(this: This) {
-        return this[secretKey]
-      },
-      set(this: This, value: Value) {
-        this[secretKey] ??= initReactive([...value] as Value, newValue => {
-          if (!getUpdateFromMain(this).has(name)) {
-            getChangeHandler(this)(name, newValue)
-          }
-        })
+		getMainFields(this).push({ name })
+		Object.defineProperty(this, name, {
+			get(this: This) {
+				return this[secretKey]
+			},
+			set(this: This, value: Value) {
+				this[secretKey] ??= initReactive([...value] as Value, newValue => {
+					if (!getUpdateFromMain(this).has(name)) {
+						getChangeHandler(this)(name, newValue)
+					}
+				})
 
-        this[secretKey].length = 0
-        this[secretKey].push(...value)
-      },
-      enumerable: true
-    })
-  }
+				this[secretKey].length = 0
+				this[secretKey].push(...value)
+			},
+			enumerable: true
+		})
+	}
 }
 
 /**
@@ -258,11 +175,11 @@ function getMainArrayFieldInitializer(name: string) {
  * @returns Реактивное значение.
  */
 function initReactive<Value extends object>(value: Value, onChange: (newValue: Value) => void) {
-  const reactiveValue = reactive(value)
+	const reactiveValue = reactive(value)
 
-  watch(reactiveValue, value => onChange(toRaw(value) as Value), { flush: 'sync' })
+	watch(reactiveValue, value => onChange(toRaw(value) as Value), { flush: 'sync' })
 
-  return reactiveValue
+	return reactiveValue
 }
 
 /**
@@ -272,9 +189,9 @@ function initReactive<Value extends object>(value: Value, onChange: (newValue: V
  * @param func Действие.
  */
 function withUpdateFromMain(target: any, name: string, func: () => void): void {
-  getUpdateFromMain(target).add(name)
-  func()
-  getUpdateFromMain(target).delete(name)
+	getUpdateFromMain(target).add(name)
+	func()
+	getUpdateFromMain(target).delete(name)
 }
 
 /**
@@ -283,7 +200,7 @@ function withUpdateFromMain(target: any, name: string, func: () => void): void {
  * @returns Список обновляемых из main процесса.
  */
 function getUpdateFromMain(target: any): UpdateFromMain {
-  return target[UPDATE_FROM_MAIN] ??= new Set<string>() satisfies UpdateFromMain
+	return target[UPDATE_FROM_MAIN] ??= new Set<string>()
 }
 
 /**
@@ -293,9 +210,9 @@ function getUpdateFromMain(target: any): UpdateFromMain {
  * @returns Обработчик изменения.
  */
 function getChangeHandler(target: any, className?: string): ChangeHandler {
-  return target[CHANGE_HANDLER] ??= ((name: string, value: any) => {
-    emitRendererChangeEvent(getPublicName(className!, name), value)
-  }) satisfies ChangeHandler
+	return target[CHANGE_HANDLER] ??= ((name: string, value: any) => {
+		emitRendererChangeEvent(getPublicName(className!, name), value)
+	})
 }
 
 /**
@@ -304,7 +221,7 @@ function getChangeHandler(target: any, className?: string): ChangeHandler {
  * @param value Значение поля.
  */
 function emitRendererChangeEvent(name: string, value: any): void {
-  bridge.emit(`${name}/renderer-change-event`, value)
+	bridge.emit(`${name}/renderer-change-event`, value)
 }
 
 /**
@@ -314,7 +231,7 @@ function emitRendererChangeEvent(name: string, value: any): void {
  * @returns Функция отписки.
  */
 function onMainChangeEvent(name: string, handler: (value: any) => void): EventUnsubscribe {
-  return bridge.on(`${name}/main-change-event`, handler)
+	return bridge.on(`${name}/main-change-event`, handler)
 }
 
 /**
@@ -322,8 +239,8 @@ function onMainChangeEvent(name: string, handler: (value: any) => void): EventUn
  * @param target Экземпляр класса.
  * @returns Main поля.
  */
-function getMainFields(target: any): MainFieldsProperty {
-  return target[MAIN_FIELDS_PROPERTY] ??= [] satisfies MainFieldsProperty
+function getMainFields(target: any): IMainField[] {
+	return target[MAIN_FIELDS_PROPERTY] ??= []
 }
 
 /**
@@ -331,6 +248,6 @@ function getMainFields(target: any): MainFieldsProperty {
  * @param target Экземпляр класса.
  * @returns Main методы.
  */
-function getMainMethods(target: any): MainMethodsProperty {
-  return target[MAIN_METHODS_PROPERTY] ??= [] satisfies MainMethodsProperty
+function getMainMethods(target: any): IMainMethod[] {
+	return target[MAIN_METHODS_PROPERTY] ??= []
 }

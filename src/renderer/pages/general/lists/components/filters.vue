@@ -64,113 +64,113 @@ const { category, source, name, truckType } = storeToRefs(listStore)
 const { setSource, setCategory, setName, setTruckType } = listStore
 
 const categories = computed<SelectProps['options']>(() => [
-  {
-    label: texts.trucksCategory,
-    value: Category.trucks
-  },
-  {
-    label: texts.trailersCategory,
-    value: Category.trailers
-  }
+	{
+		label: texts.trucksCategory,
+		value: Category.trucks
+	},
+	{
+		label: texts.trailersCategory,
+		value: Category.trailers
+	}
 ])
 const sources = computed<SelectProps['options']>(() => [
-  {
-    label: texts.allSource,
-    value: SourceType.all
-  },
-  {
-    label: texts.mainSource,
-    value: SourceType.main
-  },
-  {
-    label: texts.dlcSource,
-    value: SourceType.dlc
-  },
-  {
-    label: texts.modsSource,
-    value: SourceType.mods,
-    disabled: !di.resolve(CONFIG_TOKEN).useMods
-  },
-  {
-    label: texts.favoritesSource,
-    value: SourceType.favorites
-  },
-  {
-    label: texts.editedSource,
-    value: SourceType.edited
-  }
+	{
+		label: texts.allSource,
+		value: SourceType.all
+	},
+	{
+		label: texts.mainSource,
+		value: SourceType.main
+	},
+	{
+		label: texts.dlcSource,
+		value: SourceType.dlc
+	},
+	{
+		label: texts.modsSource,
+		value: SourceType.mods,
+		disabled: !di.resolve(CONFIG_TOKEN).useMods
+	},
+	{
+		label: texts.favoritesSource,
+		value: SourceType.favorites
+	},
+	{
+		label: texts.editedSource,
+		value: SourceType.edited
+	}
 ])
 const truckTypes = computed<SelectProps['options']>(() => [
-  {
-    label: texts.allTypes,
-    value: ''
-  },
-  {
-    label: texts.HEAVY_TYPE,
-    value: TruckType.heavy
-  },
-  {
-    label: texts.HEAVY_DUTY_TYPE,
-    value: TruckType.heavyDuty
-  },
-  {
-    label: texts.HIGHWAY_TYPE,
-    value: TruckType.highway
-  },
-  {
-    label: texts.OFFROAD_TYPE,
-    value: TruckType.offroad
-  },
-  {
-    label: texts.SCOUT_TYPE,
-    value: TruckType.scout
-  }
+	{
+		label: texts.allTypes,
+		value: ''
+	},
+	{
+		label: texts.HEAVY_TYPE,
+		value: TruckType.heavy
+	},
+	{
+		label: texts.HEAVY_DUTY_TYPE,
+		value: TruckType.heavyDuty
+	},
+	{
+		label: texts.HIGHWAY_TYPE,
+		value: TruckType.highway
+	},
+	{
+		label: texts.OFFROAD_TYPE,
+		value: TruckType.offroad
+	},
+	{
+		label: texts.SCOUT_TYPE,
+		value: TruckType.scout
+	}
 ])
 </script>
 
 <style lang="scss">
 .filters-enter-active,
 .filters-leave-active {
-  transition: all 0.1s ease-out;
+	transition: all 0.1s ease-out;
 }
 
 .filters-enter-from,
 .filters-leave-to {
-  transform: translateY(-50px);
+	transform: translateY(-50px);
 }
 </style>
 
 <style lang="scss" scoped>
 .filters {
-  display: flex;
-  justify-content: space-around;
-  align-items: flex-start;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  background: white;
-  box-shadow: 0 0 3px 0 rgba(34, 60, 80, 0.6);
-  height: 40px;
-  padding: 5px 0;
-  text-align: center;
-  z-index: 0;
+	display: flex;
+	justify-content: space-around;
+	align-items: flex-start;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	background: white;
+	box-shadow: 0 0 3px 0 rgba(34, 60, 80, 0.6);
+	height: 40px;
+	padding: 5px 0;
+	text-align: center;
+	z-index: 0;
 
-  .filter-select {
-    min-width: 150px;
-  }
+	.filter-select {
+		min-width: 150px;
+	}
 
-  .filter-input {
-    display: inline-block;
-    width: 150px;
-  }
+	.filter-input {
+		display: inline-block;
+		width: 150px;
+	}
 
-  .filter-select,
-  .filter-input {
-    transition: background-color 0.1s ease-in-out;
+	.filter-select,
+	.filter-input {
+		transition: background-color 0.1s ease-in-out;
 
-    &:hover {
-      background: #f4f4f4;
-      border-radius: 5px;
-    }
-  }
+		&:hover {
+			background: #f4f4f4;
+			border-radius: 5px;
+		}
+	}
 }
 </style>

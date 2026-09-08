@@ -55,58 +55,58 @@ const listItems = getItems()
 useScrollResetting()
 
 function hideModsPopup(isReload?: boolean) {
-  isShowMods.value = false
+	isShowMods.value = false
 
-  if (isReload) {
-    const app = di.resolve(APP_TOKEN)
+	if (isReload) {
+		const app = di.resolve(APP_TOKEN)
 
-    setTimeout(() => {
-      Modal.confirm({
-        okText: texts.ok, cancelText: texts.cancel,
-        title: texts.relaunchPrompt,
-        onOk: () => app.reload()
-      })
-    }, 200)
-  }
+		setTimeout(() => {
+			Modal.confirm({
+				okText: texts.ok, cancelText: texts.cancel,
+				title: texts.relaunchPrompt,
+				onOk: () => app.reload()
+			})
+		}, 200)
+	}
 }
 
 function getItems() {
-  return computed(() => files.value[SourceType.all].map(file => ({ file, category: category.value })))
+	return computed(() => files.value[SourceType.all].map(file => ({ file, category: category.value })))
 }
 
 function useScrollResetting() {
-  watch(files, async () => {
-    await nextTick()
-    container.value?.scrollTo({ top: 0 })
-  })
+	watch(files, async () => {
+		await nextTick()
+		container.value?.scrollTo({ top: 0 })
+	})
 }
 </script>
 
 <style lang='scss' scoped>
 .list {
-  display: flex;
-  justify-content: space-evenly;
-  overflow-y: auto;
-  height: 100%;
-  align-content: flex-start;
-  flex-grow: 1;
-  flex-direction: row;
-  flex-wrap: wrap;
-  will-change: auto;
-  gap: 5px;
-  padding: 10px 5px;
+	display: flex;
+	justify-content: space-evenly;
+	overflow-y: auto;
+	height: 100%;
+	align-content: flex-start;
+	flex-grow: 1;
+	flex-direction: row;
+	flex-wrap: wrap;
+	will-change: auto;
+	gap: 5px;
+	padding: 10px 5px;
 }
 
 .mods-button-cont {
-  text-align: center;
+	text-align: center;
 }
 
 .mods-button {
-  margin-bottom: 10px;
+	margin-bottom: 10px;
 
-  &-cont {
-    width: 100%;
-    text-align: center;
-  }
+	&-cont {
+		width: 100%;
+		text-align: center;
+	}
 }
 </style>

@@ -244,8 +244,8 @@ import { TRUCK_LOCALIZATION as texts } from './localization'
 export type TruckProps = ReadyProps & Props
 
 type Props = {
-  xml: TruckXML
-  file: IFile
+	xml: TruckXML
+	file: IFile
 }
 
 const config = di.resolve(CONFIG_TOKEN)
@@ -256,22 +256,22 @@ const { ready, inProgress } = useFilesReady(emit)
 saveUtils.useOnSave(() => file.write(xml.baseXML))
 
 function filterCompat(wheels: TruckCompatibleWheels[]) {
-  const set = new Set<string>()
+	const set = new Set<string>()
 
-  return wheels.filter(item => {
-    if (!item.Type || set.has(item.Type!)) {
-      return false
-    }
-    
-    set.add(item.Type)
-    
-    return true
-  })
+	return wheels.filter(item => {
+		if (!item.Type || set.has(item.Type!)) {
+			return false
+		}
+		
+		set.add(item.Type)
+		
+		return true
+	})
 }
 
 function getCompatibleWheelsLabel(nth: number, type?: string) {
-  return config.advancedMode && type
-    ? type
-    : `${texts.wheelsSet} ${nth}`
+	return config.advancedMode && type
+		? type
+		: `${texts.wheelsSet} ${nth}`
 }
 </script>

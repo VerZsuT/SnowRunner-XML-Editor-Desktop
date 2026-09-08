@@ -9,24 +9,24 @@ export * from './suspension-set'
 
 /** Подвески. */
 export class Suspensions extends XMLWithTemplates {
-  static override async from(str: string): Promise<Suspensions | undefined>
-  static override async from(file: IFile): Promise<Suspensions | undefined>
-  static override async from(source: string | IFile): Promise<Suspensions | undefined> {
-    const rootSelector = 'SuspensionSetVariants'
-    const root = await XMLElement.from(source as IFile)
-    const element = root?.select(rootSelector)
+	static override async from(str: string): Promise<Suspensions | undefined>
+	static override async from(file: IFile): Promise<Suspensions | undefined>
+	static override async from(source: string | IFile): Promise<Suspensions | undefined> {
+		const rootSelector = 'SuspensionSetVariants'
+		const root = await XMLElement.from(source as IFile)
+		const element = root?.select(rootSelector)
 
-    if (root && element) {
-      return new this(
-        element,
-        await XMLTemplates.from(root),
-        rootSelector,
-        root
-      )
-    }
-  }
+		if (root && element) {
+			return new this(
+				element,
+				await XMLTemplates.from(root),
+				rootSelector,
+				root
+			)
+		}
+	}
 
-  /** Наборы подвесок. */
-  @innerElements(SuspensionSet, 'SuspensionSet')
-  readonly Sets!: XmlElements<SuspensionSet>
+	/** Наборы подвесок. */
+	@innerElements(SuspensionSet, 'SuspensionSet')
+	readonly Sets!: XmlElements<SuspensionSet>
 }

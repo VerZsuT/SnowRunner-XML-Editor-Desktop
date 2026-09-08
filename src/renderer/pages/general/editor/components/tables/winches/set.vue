@@ -51,8 +51,8 @@ import { WINCHES_LOCALIZATION as texts } from './localization'
 export type WinchSetProps = ReadyProps & Props
 
 type Props = {
-  xml: WinchVariants
-  file: IFile
+	xml: WinchVariants
+	file: IFile
 }
 
 const config = di.resolve(CONFIG_TOKEN)

@@ -62,40 +62,40 @@ const version = ref('')
 const isOpen = ref(false)
 
 onMounted(async () => {
-  version.value = await checks.checkUpdate() ?? ''
-  isOpen.value = !!version.value
+	version.value = await checks.checkUpdate() ?? ''
+	isOpen.value = !!version.value
 })
 
 const onUpdateClick: MenuProps['onClick'] = ({ key }) => {
-  if (!version.value) {
-    return
-  }
+	if (!version.value) {
+		return
+	}
 
-  const updates = di.resolve(UPDATES_TOKEN)
-  
-  void updates.updateApp(version.value, key === 'portable')
-  isOpen.value = false
+	const updates = di.resolve(UPDATES_TOKEN)
+	
+	void updates.updateApp(version.value, key === 'portable')
+	isOpen.value = false
 }
 
 const onIgnoreClick: ButtonProps['onClick'] = () => {
-  const config = di.resolve(CONFIG_TOKEN)
+	const config = di.resolve(CONFIG_TOKEN)
 
-  config.checkUpdates = false
-  isOpen.value = false
+	config.checkUpdates = false
+	isOpen.value = false
 }
 </script>
 
 <style lang='scss' scoped>
 .alert {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  height: fit-content;
-  width: 400px;
-  z-index: 5;
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	height: fit-content;
+	width: 400px;
+	z-index: 5;
 
-  .buttons {
-    margin-left: 10px;
-  }
+	.buttons {
+		margin-left: 10px;
+	}
 }
 </style>

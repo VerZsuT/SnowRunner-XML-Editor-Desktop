@@ -6,25 +6,25 @@ import { GEAR_LOCALIZATION as texts } from './localization'
 
 /** Передача. */
 export class Gear extends XMLWithTemplates {
-  /** Максимальная угловая скорость колеса на данной передаче. */
-  @properties({
-    get label() { return texts.angVel },
-    get desc() { return texts.angVelDesc },
-    limit: new Limit({ min: 0.1, max: 32.0 }),
-    default: 0.0
-  })
-  @floatAttr()
-  accessor AngVel: XmlValue<number>
-  declare $AngVel: INumberAttrDescriptor
+	/** Максимальная угловая скорость колеса на данной передаче. */
+	@properties({
+		get label() { return texts.angVel },
+		get desc() { return texts.angVelDesc },
+		limit: new Limit({ min: 0.1, max: 32.0 }),
+		default: 0.0
+	})
+	@floatAttr()
+	accessor AngVel: XmlValue<number>
+	declare $AngVel: INumberAttrDescriptor
 
-  /** Множитель потребления топлива на данной передаче. */
-  @properties({
-    get label() { return texts.fuelModifier },
-    get desc() { return texts.fuelModifierDesc },
-    limit: new Limit({ min: 0.0, max: 10.0 }),
-    default: 1.0
-  })
-  @floatAttr()
-  accessor FuelModifier: XmlValue<number>
-  declare $FuelModifier: INumberAttrDescriptor
+	/** Множитель потребления топлива на данной передаче. */
+	@properties({
+		get label() { return texts.fuelModifier },
+		get desc() { return texts.fuelModifierDesc },
+		limit: new Limit({ min: 0.0, max: 10.0 }),
+		default: 1.0
+	})
+	@floatAttr()
+	accessor FuelModifier: XmlValue<number>
+	declare $FuelModifier: INumberAttrDescriptor
 }

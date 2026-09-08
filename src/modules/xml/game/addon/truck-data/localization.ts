@@ -1,47 +1,47 @@
 import { loadLocalization, Localization, LocalizationStrings } from '@localization/renderer'
 
 export const TRUCK_DATA_LOCALIZATION = loadLocalization(new Localization({
-  fuelCapacity: new LocalizationStrings()
-    .ru('Объём')
-    .en('Fuel capacity')
-    .de('Kraftstoffkapazität')
-    .ch('燃油容量'),
+	fuelCapacity: new LocalizationStrings()
+		.ru('Объём')
+		.en('Fuel capacity')
+		.de('Kraftstoffkapazität')
+		.ch('燃油容量'),
 
-  fuelCapacityDesc: new LocalizationStrings()
-    .ru('Объём топлива в аддоне')
-    .en('The amount of fuel in the addon')
-    .de('Kraftstoffmenge im Addon'),
+	fuelCapacityDesc: new LocalizationStrings()
+		.ru('Объём топлива в аддоне')
+		.en('The amount of fuel in the addon')
+		.de('Kraftstoffmenge im Addon'),
 
-  waterCapacity: new LocalizationStrings()
-    .ru('Объём воды')
-    .en('Water capacity')
-    .de('Wasser-Kapazität')
-    .ch('水容量'),
+	waterCapacity: new LocalizationStrings()
+		.ru('Объём воды')
+		.en('Water capacity')
+		.de('Wasser-Kapazität')
+		.ch('水容量'),
 
-  waterCapacityDesc: new LocalizationStrings()
-    .ru('Объём воды в аддоне')
-    .en('The amount of water in the addon')
-    .de('Wassermenge im Addon'),
+	waterCapacityDesc: new LocalizationStrings()
+		.ru('Объём воды в аддоне')
+		.en('The amount of water in the addon')
+		.de('Wassermenge im Addon'),
 
-  repairsCapacity: new LocalizationStrings()
-    .ru('Кол-во запчастей')
-    .en('Repairs capacity')
-    .de('Anzahl der Ersatzteile')
-    .ch('修理零件数量'),
+	repairsCapacity: new LocalizationStrings()
+		.ru('Кол-во запчастей')
+		.en('Repairs capacity')
+		.de('Anzahl der Ersatzteile')
+		.ch('修理零件数量'),
 
-  repairsCapacityDesc: new LocalizationStrings()
-    .ru('Количество ремонтных частей в аддоне')
-    .en('The number of repair parts in the addon')
-    .de('Anzahl der Reparaturteile im Addon'),
+	repairsCapacityDesc: new LocalizationStrings()
+		.ru('Количество ремонтных частей в аддоне')
+		.en('The number of repair parts in the addon')
+		.de('Anzahl der Reparaturteile im Addon'),
 
-  wheelRepairsCapacity: new LocalizationStrings()
-    .ru('Кол-во колёс для ремонта')
-    .en('Wheel repairs capacity')
-    .de('Anzahl der Räder zu reparieren')
-    .ch('备胎数量'),
+	wheelRepairsCapacity: new LocalizationStrings()
+		.ru('Кол-во колёс для ремонта')
+		.en('Wheel repairs capacity')
+		.de('Anzahl der Räder zu reparieren')
+		.ch('备胎数量'),
 
-  wheelRepairsCapacityDesc: new LocalizationStrings()
-    .ru('Количество ремонтных колёс в аддоне')
-    .en('The number of repair wheels in the addon')
-    .de('Anzahl der Reparaturräder im Addon')
+	wheelRepairsCapacityDesc: new LocalizationStrings()
+		.ru('Количество ремонтных колёс в аддоне')
+		.en('The number of repair wheels in the addon')
+		.de('Anzahl der Reparaturräder im Addon')
 }))

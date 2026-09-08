@@ -78,8 +78,8 @@ import { TRAILER_LOCALIZATION as texts } from './localization'
 export type TrailerProps = ReadyProps & Props
 
 type Props = {
-  xml: TruckXML
-  file: IFile
+	xml: TruckXML
+	file: IFile
 }
 
 const { xml, file } = defineProps<Props>()

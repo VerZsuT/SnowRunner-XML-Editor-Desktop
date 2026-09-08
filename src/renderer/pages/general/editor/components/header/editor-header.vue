@@ -27,26 +27,26 @@ import MainHeader from './main-header.vue'
 const { Text } = Typography
 
 type Props = {
-  xml?: TruckXML | null
-  file?: IFile | null
-  hasError: boolean
+	xml?: TruckXML | null
+	file?: IFile | null
+	hasError: boolean
 }
 type MainHeaderExpose = InstanceType<typeof MainHeader>
 
 defineProps<Props>()
 defineExpose({
-  async save(...args: Parameters<MainHeaderExpose['save']>) {
-    return header.value?.save(...args)
-  },
-  async reset() {
-    return header.value?.reset()
-  },
-  async import(...args: Parameters<MainHeaderExpose['import']>) {
-    return header.value?.import(...args)
-  },
-  async export(...args: Parameters<MainHeaderExpose['export']>) {
-    return header.value?.export(...args)
-  }
+	async save(...args: Parameters<MainHeaderExpose['save']>) {
+		return header.value?.save(...args)
+	},
+	async reset() {
+		return header.value?.reset()
+	},
+	async import(...args: Parameters<MainHeaderExpose['import']>) {
+		return header.value?.import(...args)
+	},
+	async export(...args: Parameters<MainHeaderExpose['export']>) {
+		return header.value?.export(...args)
+	}
 })
 
 const header = ref<MainHeaderExpose | null>(null)
@@ -54,28 +54,28 @@ const header = ref<MainHeaderExpose | null>(null)
 
 <style lang='scss'>
 .menu {
-  &-item-icon {
-    float: right;
-    margin-left: 10px;
-    margin-top: 5px;
-  }
+	&-item-icon {
+		float: right;
+		margin-left: 10px;
+		margin-top: 5px;
+	}
 
-  &-save-button {
-    color: white;
-    margin-right: 20px;
-    margin-bottom: 4px;
-  }
+	&-save-button {
+		color: white;
+		margin-right: 20px;
+		margin-bottom: 4px;
+	}
 
-  &-button {
-    color: white;
-    font-size: 25px !important;
-  }
+	&-button {
+		color: white;
+		font-size: 25px !important;
+	}
 }
 </style>
 
 <style lang='scss' scoped>
 .error-container {
-  text-align: center;
-  margin-top: 20px;
+	text-align: center;
+	margin-top: 20px;
 }
 </style>

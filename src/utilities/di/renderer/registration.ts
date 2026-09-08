@@ -1,21 +1,21 @@
-import type { Config, IConfig } from '@modules/data/config/renderer'
-import type { IPaths, Paths } from '@modules/paths/renderer'
 import { di } from '../container'
-import { APP_CONSTANTS_TOKEN, APP_TOKEN, ARCHIVE_TOKEN, BACKUP_TOKEN, CHECKS_TOKEN, CONFIG_TOKEN, DIALOGS_TOKEN, DIRS_TOKEN, DLC_TOKEN, EDITED_TOKEN, EPF_TOKEN, FAVORITES_TOKEN, FILES_TOKEN, GAME_TEXTS_TOKEN, IMAGES_TOKEN, LOADING_TOKEN, MESSAGES_TOKEN, MODS_TOKEN, PATHS_TOKEN, SYSTEM_TOKEN, UPDATES_TOKEN, WINDOWS_TOKEN } from './tokens'
+import { PATHS_MANAGER_TOKEN } from '../main/tokens'
+import { APP_CONSTANTS_TOKEN, APP_TOKEN, ARCHIVER_TOKEN, BACKUP_TOKEN, CHECKS_TOKEN, CONFIG_MANAGER_TOKEN, CONFIG_TOKEN, DIALOGS_TOKEN, DIRS_TOKEN, DLC_TOKEN, EDITED_TOKEN, EPF_TOKEN, FAVORITES_TOKEN, FILES_TOKEN, GAME_TEXTS_TOKEN, IMAGES_TOKEN, LOADING_TOKEN, MESSAGES_TOKEN, MODS_TOKEN, PATHS_TOKEN, SYSTEM_TOKEN, UPDATES_TOKEN, WINDOWS_TOKEN } from './tokens'
 
+/** Зарегистрировать DI. */
 export async function registerDI() {
 	const { AppConstants } = await import('@modules/app/constants')
 	const { App } = await import('@modules/app/renderer')
-	const { Archive } = await import('@modules/archive/renderer')
-	const { Backup } = await import('@modules/backup/renderer')
+	const { Archive } = await import('@modules/archiver/renderer')
+	const { InitialBackup } = await import('@modules/backup/renderer')
 	const { Checks } = await import('@modules/checks/renderer')
 	const { Config } = await import('@modules/data/config/renderer')
 	const { Edited } = await import('@modules/data/edited/renderer')
 	const { Favorites } = await import('@modules/data/favorites/renderer')
 	const { Mods } = await import('@modules/data/modifications/renderer')
 	const { Dialogs } = await import('@modules/dialogs/renderer')
-	const { DLCs } = await import('@modules/dlcs/renderer')
-	const { EPF } = await import('@modules/epf/renderer')
+	const { Dlc } = await import('@modules/dlcs/renderer')
+	const { Epf } = await import('@modules/epf/renderer')
 	const { GameTexts } = await import('@modules/game-texts/renderer')
 	const { Loading } = await import('@modules/loading/renderer')
 	const { Messages } = await import('@modules/messages/renderer')
@@ -27,22 +27,24 @@ export async function registerDI() {
 	const { Dirs, Files } = await import('@modules/files/renderer')
 
 	di.registerLazy(APP_CONSTANTS_TOKEN, () => new AppConstants())
-	di.registerLazy(PATHS_TOKEN, () => new Paths() as Paths & IPaths)
+	di.registerLazy(PATHS_MANAGER_TOKEN, () => new Paths())
+	di.registerLazy(PATHS_TOKEN, () => di.resolve(PATHS_MANAGER_TOKEN).get())
 	di.registerLazy(SYSTEM_TOKEN, () => new System())
 	di.registerLazy(FILES_TOKEN, () => new Files())
 	di.registerLazy(DIRS_TOKEN, () => new Dirs())
-	di.registerLazy(CONFIG_TOKEN, () => new Config() as Config & IConfig)
+	di.registerLazy(CONFIG_MANAGER_TOKEN, () => new Config())
+	di.registerLazy(CONFIG_TOKEN, () => di.resolve(CONFIG_MANAGER_TOKEN).get())
 	di.registerLazy(APP_TOKEN, () => new App())
-	di.registerLazy(ARCHIVE_TOKEN, () => new Archive())
-	di.registerLazy(BACKUP_TOKEN, () => new Backup())
+	di.registerLazy(ARCHIVER_TOKEN, () => new Archive())
+	di.registerLazy(BACKUP_TOKEN, () => new InitialBackup())
 	di.registerLazy(CHECKS_TOKEN, () => new Checks())
 	di.registerLazy(EDITED_TOKEN, () => new Edited())
 	di.registerLazy(FAVORITES_TOKEN, () => new Favorites())
 	di.registerLazy(MODS_TOKEN, () => new Mods())
 	di.registerLazy(DIALOGS_TOKEN, () => new Dialogs())
 	di.registerLazy(MESSAGES_TOKEN, () => new Messages())
-	di.registerLazy(DLC_TOKEN, () => new DLCs())
-	di.registerLazy(EPF_TOKEN, () => new EPF())
+	di.registerLazy(DLC_TOKEN, () => new Dlc())
+	di.registerLazy(EPF_TOKEN, () => new Epf())
 	di.registerLazy(GAME_TEXTS_TOKEN, () => new GameTexts())
 	di.registerLazy(LOADING_TOKEN, () => new Loading())
 	di.registerLazy(UPDATES_TOKEN, () => new Updates())

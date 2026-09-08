@@ -1,64 +1,37 @@
 import { emitEvent } from 'emr-bridge/main'
 import { MainMessageType } from './enums'
 import { PubKeys } from './public'
-import type { IMainMessage } from './types'
+import type { IMainMessage, IMainMessages } from './types'
 
-export * from './enums'
-export type * from './types'
+/** Работа с сообщениями программы. [main] */
+export class Messages implements IMainMessages {
+	error(text: string) {
+		this.emitMessageEvent({ type: MainMessageType.error, text })
+	}
 
-/**
- * Работа с сообщениями программы.
- * _main process_
- */
-export class Messages {
-  /**
-   * Вызвать событие сообщения.
-   * @param message Сообщение.
-   */
-  private emitMessageEvent(message: IMainMessage) {
-    emitEvent(PubKeys.messageEvent, message)
-  }
+	info(text: string) {
+		this.emitMessageEvent({ type: MainMessageType.info, text })
+	}
 
-  /**
-   * Вывести ошибку.
-   * @param text Текст ошибки.
-   */
-  error(text: string) {
-    this.emitMessageEvent({ type: MainMessageType.error, text })
-  }
+	success(text: string) {
+		this.emitMessageEvent({ type: MainMessageType.success, text })
+	}
 
-  /**
-   * Вывести информацию.
-   * @param text Текст информации.
-   */
-  info(text: string) {
-    this.emitMessageEvent({ type: MainMessageType.info, text })
-  }
+	warn(text: string) {
+		this.emitMessageEvent({ type: MainMessageType.warning, text })
+	}
 
-  /**
-   * Вывести сообщение о успехе.
-   * @param text Текст сообщения.
-   */
-  success(text: string) {
-    this.emitMessageEvent({ type: MainMessageType.success, text })
-  }
+	loading(text: string) {
+		this.emitMessageEvent({ type: MainMessageType.startLoading, text })
 
-  /**
-   * Вывести предупреждение.
-   * @param text Текст предупреждения.
-   */
-  warn(text: string) {
-    this.emitMessageEvent({ type: MainMessageType.warning, text })
-  }
+		return () => this.emitMessageEvent({ type: MainMessageType.stopLoading, text })
+	}
 
-  /**
-   * Показать загрузку.
-   * @param text Текст уведомления.
-   * @returns Функция завершения.
-   */
-  loading(text: string) {
-    this.emitMessageEvent({ type: MainMessageType.startLoading, text })
-
-    return () => this.emitMessageEvent({ type: MainMessageType.stopLoading, text })
-  }
+	/**
+	 * Вызвать событие сообщения.
+	 * @param message Сообщение.
+	 */
+	private emitMessageEvent(message: IMainMessage) {
+		emitEvent(PubKeys.messageEvent, message)
+	}
 }

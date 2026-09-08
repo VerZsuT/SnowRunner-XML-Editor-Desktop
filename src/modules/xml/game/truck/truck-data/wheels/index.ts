@@ -8,15 +8,15 @@ export * from './wheel'
 
 /** Секция описания колес. */
 export class TruckWheels extends XMLWithTemplates {
-  /** Имя файла дефолтного класса колес. */
-  @stringAttr()
-  accessor DefaultWheelType: XmlValue<string>
-  declare $DefaultWheelType: IStringAttrDescriptor
+	/** Имя файла дефолтного класса колес. */
+	@stringAttr()
+	accessor DefaultWheelType: XmlValue<string>
+	declare $DefaultWheelType: IStringAttrDescriptor
 
-  /** Описание конкретных колёс. */
-  @innerElements(TruckWheel, 'Wheel')
-  readonly Wheels!: XmlElements<TruckWheel>
+	/** Описание конкретных колёс. */
+	@innerElements(TruckWheel, 'Wheel')
+	readonly Wheels!: XmlElements<TruckWheel>
 
-  readonly defaultWheelFile = this.file('wheels', () => this.DefaultWheelType)
-  readonly defaultWheel = this.fileElementWithTemplates<Wheels>(Wheels, this.defaultWheelFile)
+	readonly defaultWheelFile = this.file('wheels', () => this.DefaultWheelType)
+	readonly defaultWheel = this.fileElementWithTemplates<Wheels>(Wheels, this.defaultWheelFile)
 }

@@ -1,6 +1,6 @@
 export async function publishMain() {
 	const { publishApp } = await import('@modules/app/main/publisher')
-	const { publishArchive } = await import('@modules/archive/main/publisher')
+	const { publishArchive } = await import('@modules/archiver/main/publisher')
 	const { publishBackup } = await import('@modules/backup/main/publisher')
 	const { publishChecks } = await import('@modules/checks/main/publisher')
 	const { publishConfig } = await import('@modules/data/config/main/publisher')

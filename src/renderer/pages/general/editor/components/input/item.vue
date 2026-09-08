@@ -41,10 +41,10 @@ export type InputItemProps = IInputProps & EmitsToProps<ParameterEmits>
 const props = defineProps<IInputProps>()
 const { value: propValue } = toRefs(props)
 const {
-  type, numberType, areas,
-  step = numberType === NumberType.float
-    ? 0.1
-    : 1
+	type, numberType, areas,
+	step = numberType === NumberType.float
+		? 0.1
+		: 1
 } = props
 const emit = defineEmits<ParameterEmits>()
 
@@ -52,81 +52,81 @@ const value = ref(props.value)
 const status = computed<Status>(getStatus)
 
 watch(propValue, () => {
-  if (value.value !== propValue.value) {
-    value.value = propValue.value
-  }
+	if (value.value !== propValue.value) {
+		value.value = propValue.value
+	}
 })
 
 function changeValue(newVal: string | number) {
-  if (newVal === '') {
-    value.value = ''
-    
-    return
-  }
+	if (newVal === '') {
+		value.value = ''
+		
+		return
+	}
 
-  value.value = newVal
+	value.value = newVal
 }
 
 async function setValue() {
-  if (value.value === '') {
-    return
-  }
+	if (value.value === '') {
+		return
+	}
 
-  emit('change', value.value)
-  await nextTick()
-  
-  if (value.value !== propValue.value) {
-    value.value = propValue.value
-  }
+	emit('change', value.value)
+	await nextTick()
+	
+	if (value.value !== propValue.value) {
+		value.value = propValue.value
+	}
 }
 
 function getStatus(): Status {
-  let newValue = +value.value
-  let status: Status = ''
+	let newValue = +value.value
+	let status: Status = ''
 
-  if (isNullable(value.value) || Number.isNaN(+value.value)) {
-    newValue = 0
-  }
+	if (isNullable(value.value) || Number.isNaN(+value.value)) {
+		newValue = 0
+	}
 
-  if (areas) {
-    for (const areaName in areas) {
-      if (!Array.isArray(areas[areaName][0])) {
-        areas[areaName] = [areas[areaName]]
-      }
+	if (areas) {
+		for (const areaName in areas) {
+			if (!Array.isArray(areas[areaName][0])) {
+				areas[areaName] = [areas[areaName]]
+			}
 
-      const areaVal: [number, number][] = areas[areaName]
+			const areaVal: [number, number][] = areas[areaName]
 
-      for (const area of areaVal) {
-        if (newValue >= area[0] && newValue <= area[1]) {
-          switch (areaName) {
-            case 'red':
-              status = 'error'
-              
-              break
-            case 'green':
-              status = ''
-              
-              break
-            case 'yellow':
-              status = 'warning'
-              
-              break
-            default:
-              status = ''
+			for (const area of areaVal) {
+				if (newValue >= area[0] && newValue <= area[1]) {
+					switch (areaName) {
+						case 'red':
+							status = 'error'
+							
+							break
+						case 'green':
+							status = ''
+							
+							break
+						case 'yellow':
+							status = 'warning'
+							
+							break
+						default:
+							status = ''
 
-              break
-          }
-        }
-      }
-    }
-  }
+							break
+					}
+				}
+			}
+		}
+	}
 
-  return status
+	return status
 }
 </script>
 
 <style lang='scss' scoped>
 .input {
-  min-width: 130px;
+	min-width: 130px;
 }
 </style>

@@ -29,8 +29,8 @@ import EngineSet from './set.vue'
 export type EnginesProps = ReadyProps & Props
 
 type Props = {
-  getter?(info: FileInfo): Promise<EnginesXML[]>
-  filesGetter?(info: FileInfo): Promise<IFile[]>
+	getter?(info: FileInfo): Promise<EnginesXML[]>
+	filesGetter?(info: FileInfo): Promise<IFile[]>
 }
 
 const props = defineProps<Props>()
@@ -46,23 +46,23 @@ filesUtils.watch(update, files)
 filesUtils.regFiles(files, allFiles.value.engines)
 
 async function init() {
-  const foundFiles = await props.filesGetter?.(info.value) || []
-  const foundList = await props.getter?.(info.value) || []
-  
-  if (!hasItems(foundFiles) || !hasItems(foundList)) {
-    emit('ready')
-  }
+	const foundFiles = await props.filesGetter?.(info.value) || []
+	const foundList = await props.getter?.(info.value) || []
+	
+	if (!hasItems(foundFiles) || !hasItems(foundList)) {
+		emit('ready')
+	}
 
-  files.value = foundFiles
-  list.value = foundList
+	files.value = foundFiles
+	list.value = foundList
 }
 
 async function update() {
-  files.value = []
-  list.value = []
-  
-  await nextTick()
-  await init()
+	files.value = []
+	list.value = []
+	
+	await nextTick()
+	await init()
 }
 
 </script>

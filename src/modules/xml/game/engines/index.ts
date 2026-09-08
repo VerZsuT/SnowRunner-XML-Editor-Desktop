@@ -9,24 +9,24 @@ export * from './engine'
 
 /** Рутовый тег файла класса двигателей. */
 export class Engines extends XMLWithTemplates {
-  static override async from(str: string): Promise<Engines | undefined>
-  static override async from(file: IFile): Promise<Engines | undefined>
-  static override async from(source: string | IFile): Promise<Engines | undefined> {
-    const rootSelector = 'EngineVariants'
-    const root = await XMLElement.from(source as IFile)
-    const element = root?.select(rootSelector)
+	static override async from(str: string): Promise<Engines | undefined>
+	static override async from(file: IFile): Promise<Engines | undefined>
+	static override async from(source: string | IFile): Promise<Engines | undefined> {
+		const rootSelector = 'EngineVariants'
+		const root = await XMLElement.from(source as IFile)
+		const element = root?.select(rootSelector)
 
-    if (root && element) {
-      return new this(
-        element,
-        await XMLTemplates.from(root),
-        rootSelector,
-        root
-      )
-    }
-  }
+		if (root && element) {
+			return new this(
+				element,
+				await XMLTemplates.from(root),
+				rootSelector,
+				root
+			)
+		}
+	}
 
-  /** Двигатели. */
-  @innerElements(Engine, 'Engine')
-  readonly Engines!: XmlElements<Engine>
+	/** Двигатели. */
+	@innerElements(Engine, 'Engine')
+	readonly Engines!: XmlElements<Engine>
 }

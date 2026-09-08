@@ -1,4 +1,4 @@
 export enum Trailer {
-  scout = 'ScautTrailer',
-  truck = 'Trailer'
+	scout = 'ScautTrailer',
+	truck = 'Trailer'
 }

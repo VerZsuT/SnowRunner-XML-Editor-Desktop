@@ -1,28 +1,27 @@
+import { BuildType } from '@modules/data/config/enums'
+import type { IResettable } from '@src/types'
 import { di } from '@utilities/di/container'
-import { CONFIG_TOKEN, DIRS_TOKEN, EDITED_TOKEN, FAVORITES_TOKEN, FILES_TOKEN, MODS_TOKEN, SIZES_TOKEN } from '@utilities/di/main/tokens'
+import { CONFIG_MANAGER_TOKEN, CONFIG_TOKEN, DIRS_TOKEN, EDITED_TOKEN, FAVORITES_TOKEN, FILES_TOKEN, MODS_TOKEN, SIZES_TOKEN } from '@utilities/di/main/tokens'
 import { app, BrowserWindow } from 'electron'
+import type { IMainApp } from '../types'
 
-export * from '../constants'
-
-/**
- * Приложение.
- * _main process_
- */
-export class App {
-	/**
-	 * Сбросить на "заводскую" версию.
-	 * @param noReload Отмена перезагрузки после завершения.
-	 */
-	async resetToDefaults(noReload = false) {
+/** Приложение. [main] */
+export class App implements IMainApp {
+	get isDev(): boolean {
 		const config = di.resolve(CONFIG_TOKEN)
-		const edited = di.resolve(EDITED_TOKEN)
-		const favorites = di.resolve(FAVORITES_TOKEN)
-		const mods = di.resolve(MODS_TOKEN)
-		const sizes = di.resolve(SIZES_TOKEN)
+		return config.buildType === BuildType.dev
+	}
+
+	async reset() {
+		const config: IResettable = di.resolve(CONFIG_MANAGER_TOKEN)
+		const edited: IResettable = di.resolve(EDITED_TOKEN)
+		const favorites: IResettable = di.resolve(FAVORITES_TOKEN)
+		const mods: IResettable = di.resolve(MODS_TOKEN)
+		const sizes: IResettable = di.resolve(SIZES_TOKEN)
 
 		await Promise.all([
 			this.clearTemp(),
-			config.reset(noReload),
+			config.reset(),
 			sizes.reset(),
 			edited.reset(),
 			favorites.reset(),
@@ -32,7 +31,6 @@ export class App {
 		this.reload()
 	}
 
-	/** Очистить папку для временных файлов программы. */
 	async clearTemp() {
 		const files = di.resolve(FILES_TOKEN)
 		const dirs = di.resolve(DIRS_TOKEN)
@@ -43,18 +41,15 @@ export class App {
 		await dirs.updateTemp.clear()
 	}
 
-	/** Переключить DevTools. */
 	toggleDevTools() {
 		BrowserWindow.getFocusedWindow()?.webContents.toggleDevTools()
 	}
 
-	/** Перезагрузить приложение. */
 	reload() {
 		app.relaunch()
 		this.quit()
 	}
 
-	/** Закрыть приложение. */
 	quit() {
 		app.quit()
 	}

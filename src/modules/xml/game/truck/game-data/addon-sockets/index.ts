@@ -7,12 +7,12 @@ export * from './addon-socket'
 
 /** Секция определения взаимного расположения аддонов трака. */
 export class TruckAddonSockets extends XMLWithTemplates {
-  /** Имя xml-файла дефолтного аддона. */
-  @stringAttr()
-  accessor DefaultAddon: XmlValue<string>
-  declare $DefaultAddon: IStringAttrDescriptor
+	/** Имя xml-файла дефолтного аддона. */
+	@stringAttr()
+	accessor DefaultAddon: XmlValue<string>
+	declare $DefaultAddon: IStringAttrDescriptor
 
-  /** Места крепления аддона на траке. */
-  @innerElements(TruckAddonSocket, 'Socket')
-  readonly Sockets!: XmlElements<TruckAddonSocket>
+	/** Места крепления аддона на траке. */
+	@innerElements(TruckAddonSocket, 'Socket')
+	readonly Sockets!: XmlElements<TruckAddonSocket>
 }

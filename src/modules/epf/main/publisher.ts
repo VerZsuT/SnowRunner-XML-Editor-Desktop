@@ -1,13 +1,14 @@
 import { publishInstanceFunction } from '@utilities/bridge/main'
 import { di } from '@utilities/di/container'
 import { EPF_TOKEN } from '@utilities/di/main/tokens'
-import type { EPF } from './index'
+import type { IMainEpf } from '../types'
+import type { Epf } from './index'
 
-/** Опубликовать {@link EPF}. */
+/** Опубликовать {@link Epf}. */
 export function publishEPF() {
-	let instance: EPF
+	let instance: IMainEpf
 	const getInstance = () => instance ??= di.resolve(EPF_TOKEN)
-	const className = 'EPF'
+	const className = 'Epf'
 
 	publishInstanceFunction(className, 'join', getInstance)
 	publishInstanceFunction(className, 'see', getInstance)

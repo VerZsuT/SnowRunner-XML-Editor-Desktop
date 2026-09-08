@@ -48,9 +48,9 @@ export function makeReactive<
  * @returns Обработчик изменения.
  */
 function getChangeHandler(className: string): ChangeHandler {
-  return ((name: string, value: any) => {
-    emitMainChangeEvent(getPublicName(className, name), value)
-  }) satisfies ChangeHandler
+	return ((name: string, value: any) => {
+		emitMainChangeEvent(getPublicName(className, name), value)
+	}) satisfies ChangeHandler
 }
 
 /**
@@ -59,7 +59,7 @@ function getChangeHandler(className: string): ChangeHandler {
  * @param value Значение.
  */
 function emitMainChangeEvent(name: string, value: any): void {
-  emitEvent(`${name}/main-change-event`, value)
+	emitEvent(`${name}/main-change-event`, value)
 }
 
 /**

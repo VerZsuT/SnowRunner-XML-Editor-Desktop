@@ -1,12 +1,12 @@
 <template>
   <loadingPage />
-  
+	
   <template v-if="!loading.state.isLoading">
     <Menu />
     <EditorActions />
     <Update />
     <GameUpdate v-model="gameUpdateOpened" />
-    
+		
     <Setup v-if="page === Page.setup" />
     <Lists
       v-else-if="page === Page.lists || page !== Page.none"
@@ -21,7 +21,7 @@ import type { IFile } from '@modules/files/renderer'
 import { Page, ProgramWindow } from '@modules/windows/enums'
 import LoadingPage from '@renderer/components/loading-page.vue'
 import { Menu } from '@renderer/components/menu'
-import { useWindowReady } from '@renderer/utilities'
+import { useWindowReady } from '@renderer/utilities/use-window-ready'
 import { hasItems } from '@utilities/checks/renderer'
 import { di } from '@utilities/di/container'
 import { CHECKS_TOKEN, DIRS_TOKEN, DLC_TOKEN, EDITED_TOKEN, FILES_TOKEN, LOADING_TOKEN, SYSTEM_TOKEN, WINDOWS_TOKEN } from '@utilities/di/renderer/tokens'
@@ -54,79 +54,79 @@ useGameUpdate()
 useMainRouting()
 
 function useGameUpdate() {
-  watch(
-    computed(() => loading.state.isLoading),
-    () => {
-      const checks = di.resolve(CHECKS_TOKEN)
-      const edited = di.resolve(EDITED_TOKEN)
+	watch(
+		computed(() => loading.state.isLoading),
+		() => {
+			const checks = di.resolve(CHECKS_TOKEN)
+			const edited = di.resolve(EDITED_TOKEN)
 
-      void checks.checkUpdate()
+			void checks.checkUpdate()
 
-      setTimeout(async () => {
-        if (hasItems(edited)
-          && await dirs.backupInitialData.exists()
-          && !await files.editedFlag.exists()
-        ) {
-          gameUpdateOpened.value = true
-        }    
-      }, 2000)
-    },
-    { once: true }
-  )
+			setTimeout(async () => {
+				if (hasItems(edited)
+					&& await dirs.backupInitialData.exists()
+					&& !await files.editedFlag.exists()
+				) {
+					gameUpdateOpened.value = true
+				}    
+			}, 2000)
+		},
+		{ once: true }
+	)
 }
 
 function useMainRouting() {
-  let unsubscribe: () => void
-  
-  onMounted(() => {
-    const windows = di.resolve(WINDOWS_TOKEN)
+	let unsubscribe: () => void
+	
+	onMounted(() => {
+		const windows = di.resolve(WINDOWS_TOKEN)
 
-    unsubscribe = windows.onRoute(route)
-  })
-  onUnmounted(() => unsubscribe())
+		unsubscribe = windows.onRoute(route)
+	})
+	onUnmounted(() => unsubscribe())
 }
 
 window['exportDefaults'] = async () => {
-  const dlcs = di.resolve(DLC_TOKEN)
-  const filesToExport: IFile[] = []
-  const folders = ['trucks', 'trucks/trailers']
+	const dlcs = di.resolve(DLC_TOKEN)
+	const filesToExport: IFile[] = []
+	const folders = ['trucks', 'trucks/trailers']
 
-  for (const dlcItem of dlcs) {
-    const classes = dlcItem.dir.dir('classes')
+	for (const dlcItem of dlcs) {
+		const classes = dlcItem.dir.dir('classes')
 
-    for (const postfix of folders) {
-      filesToExport.push(...await classes.dir(postfix).findFiles({ ext: 'xml' }))
-    }
-  }
+		for (const postfix of folders) {
+			filesToExport.push(...await classes.dir(postfix).findFiles({ ext: 'xml' }))
+		}
+	}
 
-  for (const postfix of folders) {
-    filesToExport.push(...await dirs.classes.dir(postfix).findFiles({ ext: 'xml' }))
-  }
+	for (const postfix of folders) {
+		filesToExport.push(...await dirs.classes.dir(postfix).findFiles({ ext: 'xml' }))
+	}
 
-  setShowMessages(false)
+	setShowMessages(false)
 
-  let count = 0
+	let count = 0
 
-  await editorUtils.export(
-    filesToExport.map(file => ({ source: file, toExport: files.exported })),
-    () => console.log(count++)
-  )
-  
-  setShowMessages(true)
-  
-  if (await files.exported.exists()) {
-    const system = di.resolve(SYSTEM_TOKEN)
+	await editorUtils.export(
+		filesToExport.map(file => ({ source: file, toExport: files.exported })),
+		() => console.log(count++)
+	)
+	
+	setShowMessages(true)
+	
+	if (await files.exported.exists()) {
+		const system = di.resolve(SYSTEM_TOKEN)
 
-    console.log(texts.exported)
-    await system.openFile(files.exported.path)
-  } else {
-    console.error(texts.exportError)
-  }
+		console.log(texts.exported)
+		await system.openFile(files.exported.path)
+	} else {
+		console.error(texts.exportError)
+	}
 }
 </script>
 
 <style lang="scss">
 body {
-  background-color: #e7ebf0;
+	background-color: #e7ebf0;
 }
 </style>

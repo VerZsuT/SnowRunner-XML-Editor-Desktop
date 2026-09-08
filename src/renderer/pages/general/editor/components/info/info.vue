@@ -24,9 +24,9 @@ import { useActive } from '../utilities'
 const { Text } = Typography
 
 export type InfoProps = {
-  descriptor?: IAttrDescriptor
-  label?: string
-  getter?(): any
+	descriptor?: IAttrDescriptor
+	label?: string
+	getter?(): any
 }
 
 const props = defineProps<InfoProps>()
@@ -36,62 +36,62 @@ const { isActive } = useActive()
 const value = String(getter.value?.() ?? descriptor.value?.get())
 const labelRef = computed(() => label.value ?? descriptor.value?.label)
 </script>
-  
+	
 <style lang='scss' scoped>
 $infoMinWidth: 650px;
 $infoMinWidthAddition: calc($infoMinWidth / 10);
 
 .desc-image img {
-  max-width: 600px;
-  max-height: 500px;
+	max-width: 600px;
+	max-height: 500px;
 }
 
 .info {
-  flex-wrap: nowrap;
-  box-sizing: border-box;
-  align-content: center;
-  justify-content: space-between;
-  align-items: center;
-  flex: 1 1 0;
-  min-width: $infoMinWidth;
-  min-height: 40px;
+	flex-wrap: nowrap;
+	box-sizing: border-box;
+	align-content: center;
+	justify-content: space-between;
+	align-items: center;
+	flex: 1 1 0;
+	min-width: $infoMinWidth;
+	min-height: 40px;
 
-  .label,
-  .content {
-    box-sizing: border-box;
-    width: 50%;
-  }
+	.label,
+	.content {
+		box-sizing: border-box;
+		width: 50%;
+	}
 
-  .label {
-    padding-left: 30px;
-  }
+	.label {
+		padding-left: 30px;
+	}
 
-  .content {
-    display: flex;
-    text-align: center;
-    flex-wrap: wrap;
-    align-content: center;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-  }
+	.content {
+		display: flex;
+		text-align: center;
+		flex-wrap: wrap;
+		align-content: center;
+		align-items: center;
+		justify-content: center;
+		gap: 10px;
+	}
 
-  @media screen and (min-width: calc($infoMinWidth * 2 + $infoMinWidthAddition)) {
-    .content {
-      justify-content: flex-end;
-      padding-right: 40px;
-    }
-  }
+	@media screen and (min-width: calc($infoMinWidth * 2 + $infoMinWidthAddition)) {
+		.content {
+			justify-content: flex-end;
+			padding-right: 40px;
+		}
+	}
 }
 
 @media screen and (min-width: calc($infoMinWidth * 2 + $infoMinWidthAddition)) {
-  .info {
-    width: 50%;
-    min-width: 50%;
+	.info {
+		width: 50%;
+		min-width: 50%;
 
-    &:nth-child(2n+1) {
-      border-right: 1px solid lightgray;
-    }
-  }
+		&:nth-child(2n+1) {
+			border-right: 1px solid lightgray;
+		}
+	}
 }
 </style>

@@ -14,6 +14,7 @@ export const external = [
 
 /** Алиасы путей. */
 export const alias = {
+	'@src': join(_dirname, '../'),
 	'@modules': join(_dirname, '../modules'),
 	'@renderer': join(_dirname, '../renderer'),
 	'@utilities': join(_dirname, '../utilities'),
@@ -23,13 +24,13 @@ export const alias = {
 
 export function externalizePlugin(options): Plugin {
 	return {
-	  name: 'externalize-plugin',
-	  enforce: 'pre',
-	  resolveId(id) {
+		name: 'externalize-plugin',
+		enforce: 'pre',
+		resolveId(id) {
 			return options.filter.test(id.replaceAll('\\', '/'))
 				? { id, external: true }
 				: null
-	  }
+		}
 	}
 }
 

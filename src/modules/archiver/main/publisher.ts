@@ -1,12 +1,13 @@
 import { publishInstanceFunction } from '@utilities/bridge/main'
 import { di } from '@utilities/di/container'
-import { ARCHIVE_TOKEN } from '@utilities/di/main/tokens'
+import { ARCHIVER_TOKEN } from '@utilities/di/main/tokens'
+import type { IMainArchiver } from '../types'
 import type { Archive } from './index'
 
 /** Опубликовать {@link Archive}. */
 export function publishArchive() {
-	let instance: Archive
-	const getInstance = () => instance ??= di.resolve(ARCHIVE_TOKEN)
+	let instance: IMainArchiver
+	const getInstance = () => instance ??= di.resolve(ARCHIVER_TOKEN)
 	const className = 'Archive'
 
 	publishInstanceFunction(className, 'updateFiles', getInstance)

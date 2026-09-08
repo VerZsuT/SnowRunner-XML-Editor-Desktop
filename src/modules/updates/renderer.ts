@@ -1,13 +1,10 @@
 import { initMain, mainMethod } from '@bridge/renderer'
 import type { Updates as UpdatesMain } from './main'
+import type { IRendererUpdates } from './types'
 
-/**
- * Работа с обновлениями программы
- * _renderer process_
- */
+/** Работа с обновлениями программы. [renderer] */
 @initMain()
-export class Updates {
-  /** Запустить процесс обновления программы. */
-  @mainMethod()
-  updateApp!: UpdatesMain['updateApp']
+export class Updates implements IRendererUpdates {
+	@mainMethod()
+	updateApp!: UpdatesMain['updateApp']
 }

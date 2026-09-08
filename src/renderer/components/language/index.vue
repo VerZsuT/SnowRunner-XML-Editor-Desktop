@@ -34,8 +34,8 @@ import { nextTick } from 'vue'
 import { LANGUAGE_LOCALIZATION as texts } from './localization'
 
 export type LanguageProps = {
-  /** Режим горизонтального выбора. */
-  radioMode?: boolean
+	/** Режим горизонтального выбора. */
+	radioMode?: boolean
 }
 
 defineProps<LanguageProps>()
@@ -49,14 +49,14 @@ const gameTexts = di.resolve(GAME_TEXTS_TOKEN)
  * @param newLang Новый язык.
  */
 async function changeLang(newLang: Lang) {
-  if (newLang === config.lang) {
-    return
-  }
+	if (newLang === config.lang) {
+		return
+	}
 
-  config.lang = newLang
-  await nextTick()
-  await gameTexts.initFromInitial()
-  await gameTexts.initFromMods()
+	config.lang = newLang
+	await nextTick()
+	await gameTexts.initFromInitial()
+	await gameTexts.initFromMods()
 }
 
 /**
@@ -65,18 +65,18 @@ async function changeLang(newLang: Lang) {
  * @returns Опции `Select`.
  */
 function langToOptions(lang: typeof Lang): { label: string, value: string }[] {
-  return Object.entries(lang).map(([name, value]) => ({
-    label: name.toUpperCase(),
-    value: value
-  }))
+	return Object.entries(lang).map(([name, value]) => ({
+		label: name.toUpperCase(),
+		value: value
+	}))
 }
 </script>
 
 <style lang='scss' scoped>
 .lang-label {
-  color: black;
-  display: inline-block;
-  margin-right: 15px;
-  font-size: 1rem;
+	color: black;
+	display: inline-block;
+	margin-right: 15px;
+	font-size: 1rem;
 }
 </style>

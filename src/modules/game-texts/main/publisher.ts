@@ -1,10 +1,12 @@
 import { publishInstanceFunction, publishInstanceVariable } from '@utilities/bridge/main'
 import { di } from '@utilities/di/container'
 import { GAME_TEXTS_TOKEN } from '@utilities/di/main/tokens'
+import type { IMainGameTexts } from '../types'
 import type { GameTexts } from './index'
 
+/** Опубликовать {@link GameTexts}. */
 export function publishGameTexts() {
-	let instance: GameTexts
+	let instance: IMainGameTexts
 	const getInstance = () => instance ??= di.resolve(GAME_TEXTS_TOKEN)
 	const className = 'GameTexts'
 

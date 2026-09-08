@@ -1,88 +1,94 @@
-import type { AppConstants } from '@modules/app/constants'
-import type { App } from '@modules/app/renderer'
-import type { Archive } from '@modules/archive/renderer'
-import type { Backup } from '@modules/backup/renderer'
-import type { Checks } from '@modules/checks/renderer'
-import type { Config, IConfig } from '@modules/data/config/renderer'
-import type { Edited } from '@modules/data/edited/renderer'
-import type { Favorites } from '@modules/data/favorites/renderer'
-import type { Mods } from '@modules/data/modifications/renderer'
-import type { Dialogs } from '@modules/dialogs/renderer'
-import type { DLCs } from '@modules/dlcs/renderer'
-import type { EPF } from '@modules/epf/renderer'
-import type { Dirs, Files } from '@modules/files/renderer'
-import type { GameTexts } from '@modules/game-texts/renderer'
-import type { Images } from '@modules/images/renderer'
-import type { Loading } from '@modules/loading/renderer'
-import type { Messages } from '@modules/messages/renderer'
-import type { IPaths, Paths } from '@modules/paths/renderer'
-import type { System } from '@modules/system/renderer'
-import type { Updates } from '@modules/updates/renderer'
-import type { Windows } from '@modules/windows/renderer'
+import type { IAppConstants, IRendererApp } from '@modules/app/types'
+import type { IRendererArchiver } from '@modules/archiver/types'
+import type { IRendererInitialBackup } from '@modules/backup/types'
+import type { IRendererChecks } from '@modules/checks/types'
+import type { IConfig, IRendererConfigManager } from '@modules/data/config/types'
+import type { IRendererEdited } from '@modules/data/edited/types'
+import type { IRendererFavorites } from '@modules/data/favorites/types'
+import type { IRendererMods } from '@modules/data/modifications/types'
+import type { IRendererDialogs } from '@modules/dialogs/types'
+import type { IRendererDlc } from '@modules/dlcs/types'
+import type { IRendererEpf } from '@modules/epf/types'
+import type { IDirs, IFiles } from '@modules/files/types'
+import type { IRendererGameTexts } from '@modules/game-texts/types'
+import type { IImages } from '@modules/images/types'
+import type { IRendererLoading } from '@modules/loading/types'
+import type { IRendererMessages } from '@modules/messages/types'
+import type { IPaths, IRendererPathsManager } from '@modules/paths/types'
+import type { IMainSystem } from '@modules/system/types'
+import type { IRendererUpdates } from '@modules/updates/types'
+import type { IRendererWindows } from '@modules/windows/types'
+import type { ConstructorOf } from '../container'
 import { InjectionToken } from '../token'
 
-/** {@link AppConstants|Перейти к **AppConstants**} */
-export const APP_CONSTANTS_TOKEN = new InjectionToken<typeof AppConstants>('AppConstants')
+/** {@link IAppConstants} */
+export const APP_CONSTANTS_TOKEN = new InjectionToken<ConstructorOf<IAppConstants>>('IAppConstants')
 
-/** {@link App|Перейти к **App**} */
-export const APP_TOKEN = new InjectionToken<typeof App>('App')
+/** {@link IRendererApp} */
+export const APP_TOKEN = new InjectionToken<ConstructorOf<IRendererApp>>('IRendererApp')
 
-/** {@link Archive|Перейти к **Archive**} */
-export const ARCHIVE_TOKEN = new InjectionToken<typeof Archive>('Archive')
+/** {@link IRendererArchiver} */
+export const ARCHIVER_TOKEN = new InjectionToken<ConstructorOf<IRendererArchiver>>('IRendererArchiveManager')
 
-/** {@link Backup|Перейти к **Backup**} */
-export const BACKUP_TOKEN = new InjectionToken<typeof Backup>('Backup')
+/** {@link IRendererInitialBackup} */
+export const BACKUP_TOKEN = new InjectionToken<ConstructorOf<IRendererInitialBackup>>('IRendererInitialBackup')
 
-/** {@link Checks|Перейти к **Checks**} */
-export const CHECKS_TOKEN = new InjectionToken<typeof Checks>('Checks')
+/** {@link IRendererChecks} */
+export const CHECKS_TOKEN = new InjectionToken<ConstructorOf<IRendererChecks>>('IRendererChecks')
 
-/** {@link Config|Перейти к **Config**} */
-export const CONFIG_TOKEN = new InjectionToken<{new(): Config & IConfig}>('Config')
+/** {@link IRendererConfigManager} */
+export const CONFIG_MANAGER_TOKEN = new InjectionToken<ConstructorOf<IRendererConfigManager>>('IRendererConfigManager')
 
-/** {@link Edited|Перейти к **Edited**} */
-export const EDITED_TOKEN = new InjectionToken<typeof Edited>('Edited')
+/** {@link IConfig} */
+export const CONFIG_TOKEN = new InjectionToken<ConstructorOf<IConfig>>('IConfig')
 
-/** {@link Favorites|Перейти к **Favorites**} */
-export const FAVORITES_TOKEN = new InjectionToken<typeof Favorites>('Favorites')
+/** {@link IRendererEdited} */
+export const EDITED_TOKEN = new InjectionToken<ConstructorOf<IRendererEdited>>('IRendererEdited')
 
-/** {@link Mods|Перейти к **Mods**} */
-export const MODS_TOKEN = new InjectionToken<typeof Mods>('Mods')
+/** {@link IRendererFavorites} */
+export const FAVORITES_TOKEN = new InjectionToken<ConstructorOf<IRendererFavorites>>('IRendererFavorites')
 
-/** {@link Dialogs|Перейти к **Dialogs**} */
-export const DIALOGS_TOKEN = new InjectionToken<typeof Dialogs>('Dialogs')
+/** {@link IRendererMods} */
+export const MODS_TOKEN = new InjectionToken<ConstructorOf<IRendererMods>>('IRendererMods')
 
-/** {@link DLCs|Перейти к **DLCs**} */
-export const DLC_TOKEN = new InjectionToken<typeof DLCs>('DLCs')
+/** {@link IRendererDialogs} */
+export const DIALOGS_TOKEN = new InjectionToken<ConstructorOf<IRendererDialogs>>('IRendererDialogs')
 
-/** {@link EPF|Перейти к **EPF**} */
-export const EPF_TOKEN = new InjectionToken<typeof EPF>('EPF')
+/** {@link IRendererDlc} */
+export const DLC_TOKEN = new InjectionToken<ConstructorOf<IRendererDlc>>('IRendererDlc')
 
-/** {@link Files|Перейти к **Files**} */
-export const FILES_TOKEN = new InjectionToken<typeof Files>('Files')
+/** {@link IRendererEpf} */
+export const EPF_TOKEN = new InjectionToken<ConstructorOf<IRendererEpf>>('IRendererEpf')
 
-/** {@link Dirs|Перейти к **Dirs**} */
-export const DIRS_TOKEN = new InjectionToken<typeof Dirs>('Dirs')
+/** {@link IFiles} */
+export const FILES_TOKEN = new InjectionToken<ConstructorOf<IFiles>>('IFiles')
 
-/** {@link GameTexts|Перейти к **GameTexts**} */
-export const GAME_TEXTS_TOKEN = new InjectionToken<typeof GameTexts>('GameTexts')
+/** {@link IDirs} */
+export const DIRS_TOKEN = new InjectionToken<ConstructorOf<IDirs>>('IDirs')
 
-/** {@link Loading|Перейти к **Loading**} */
-export const LOADING_TOKEN = new InjectionToken<typeof Loading>('Loading')
+/** {@link IRendererGameTexts} */
+export const GAME_TEXTS_TOKEN = new InjectionToken<ConstructorOf<IRendererGameTexts>>('IRendererGameTexts')
 
-/** {@link Messages|Перейти к **Messages**} */
-export const MESSAGES_TOKEN = new InjectionToken<typeof Messages>('Messages')
+/** {@link IRendererLoading} */
+export const LOADING_TOKEN = new InjectionToken<ConstructorOf<IRendererLoading>>('IRendererLoading')
 
-/** {@link Paths|Перейти к **Paths**} */
-export const PATHS_TOKEN = new InjectionToken<{new(): Paths & IPaths}>('Paths')
+/** {@link IRendererMessages} */
+export const MESSAGES_TOKEN = new InjectionToken<ConstructorOf<IRendererMessages>>('IRendererMessages')
 
-/** {@link System|Перейти к **System**} */
-export const SYSTEM_TOKEN = new InjectionToken<typeof System>('System')
+/** {@link IRendererPathsManager} */
+export const PATHS_MANAGER_TOKEN = new InjectionToken<ConstructorOf<IRendererPathsManager>>('IRendererPathsManager')
 
-/** {@link Updates|Перейти к **Updates**} */
-export const UPDATES_TOKEN = new InjectionToken<typeof Updates>('Updates')
+/** {@link IPaths} */
+export const PATHS_TOKEN = new InjectionToken<ConstructorOf<IPaths>>('IPaths')
 
-/** {@link Windows|Перейти к **Windows**} */
-export const WINDOWS_TOKEN = new InjectionToken<typeof Windows>('Windows')
+/** {@link IMainSystem} */
+export const SYSTEM_TOKEN = new InjectionToken<ConstructorOf<IMainSystem>>('ISystem')
 
-/** {@link Images|Перейти к **Images**} */
-export const IMAGES_TOKEN = new InjectionToken<typeof Images>('Images')
+/** {@link IRendererUpdates} */
+export const UPDATES_TOKEN = new InjectionToken<ConstructorOf<IRendererUpdates>>('IRendererUpdates')
+
+/** {@link IRendererWindows} */
+export const WINDOWS_TOKEN = new InjectionToken<ConstructorOf<IRendererWindows>>('IRendererWindows')
+
+/** {@link IImages} */
+export const IMAGES_TOKEN = new InjectionToken<ConstructorOf<IImages>>('IImages')

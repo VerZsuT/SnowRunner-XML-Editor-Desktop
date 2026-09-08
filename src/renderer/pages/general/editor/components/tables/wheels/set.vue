@@ -53,8 +53,8 @@ import { WHEELS_LOCALIZATION as texts } from './localization'
 export type WheelSetProps = ReadyProps & Props
 
 type Props = {
-  xml: WheelsXML
-  file: IFile
+	xml: WheelsXML
+	file: IFile
 }
 
 const config = di.resolve(CONFIG_TOKEN)

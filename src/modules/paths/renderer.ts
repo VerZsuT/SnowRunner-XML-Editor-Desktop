@@ -1,28 +1,15 @@
-import { INIT_METHOD, initMain, mainObjectField } from '@bridge/renderer'
-import type { IPaths } from './types'
+import { initMain, mainObjectField } from '@bridge/renderer'
+import type { IPaths, IRendererPathsManager } from './types'
 
 export type * from './types'
 
-/**
- * Пути, используемые в программе.
- * _renderer process_
- */
+/** Пути, используемые в программе. [renderer] */
 @initMain()
-export class Paths {
-  /** Объект путей. */
-  @mainObjectField()
-  private readonly object!: IPaths
+export class Paths implements IRendererPathsManager {
+	@mainObjectField()
+	readonly object!: IPaths
 
-  /**
-   * Инициализация класса.
-   */
-  protected [INIT_METHOD]() {
-    for (const key in this.object) {
-      Object.defineProperty(this, key, {
-        get: () => this.object[key],
-        enumerable: true,
-        configurable: false
-      })
-    }
-  }
+	get() {
+		return Object.freeze(this.object)
+	}
 }

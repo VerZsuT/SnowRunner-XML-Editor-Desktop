@@ -37,59 +37,59 @@ const { forAction: forImport, args: importArgs, editor: importEditor } = useActi
 const { forAction: forReset, args: resetArgs, editor: resetEditor } = useAction(editorUtils.onReset)
 
 async function exportFile(toExport?: IFile) {
-  await exportEditor.value?.export(toExport)
-  exportArgs.value = null
+	await exportEditor.value?.export(toExport)
+	exportArgs.value = null
 }
 
 async function importFile(toImport?: IFile) {
-  await importEditor.value?.import(isLast(), toImport)
-  importArgs.value = null
+	await importEditor.value?.import(isLast(), toImport)
+	importArgs.value = null
 
 }
 async function resetFile() {
-  await resetEditor.value?.reset(isLast())
-  resetArgs.value = null
+	await resetEditor.value?.reset(isLast())
+	resetArgs.value = null
 }
 
 function isLast() {
-  return (forExport.value.length + forImport.value.length + forReset.value.length) === 0
+	return (forExport.value.length + forImport.value.length + forReset.value.length) === 0
 }
 
 function useAction<
-  Listener extends (args: any[], every?: EveryCallback) => Promise<void>
+	Listener extends (args: any[], every?: EveryCallback) => Promise<void>
 >(handleAction: (listener: Listener) => void) {
-  type Args = Parameters<Listener>[0]
+	type Args = Parameters<Listener>[0]
 
-  const forAction = shallowRef<Args>([] as unknown as Args)
-  const actionArgs = shallowRef<Args[number] | null>(null)
-  const editor = shallowRef<InstanceType<typeof Editor> | null>(null)
-  let every: EveryCallback | undefined
+	const forAction = shallowRef<Args>([] as unknown as Args)
+	const actionArgs = shallowRef<Args[number] | null>(null)
+	const editor = shallowRef<InstanceType<typeof Editor> | null>(null)
+	let every: EveryCallback | undefined
 
-  handleAction(((args: Args, callback?: EveryCallback) => {
-    every = callback
-    
-    return new Promise<void>(resolve => {
-      forAction.value = args
-      
-      const inervalID = setInterval(() => {
-        if (!actionArgs.value && forAction.value.length === 0) {
-          clearInterval(inervalID)
-          resolve()
-        }
-      }, 100)
-    })
-  }) as Listener)
+	handleAction(((args: Args, callback?: EveryCallback) => {
+		every = callback
+		
+		return new Promise<void>(resolve => {
+			forAction.value = args
+			
+			const inervalID = setInterval(() => {
+				if (!actionArgs.value && forAction.value.length === 0) {
+					clearInterval(inervalID)
+					resolve()
+				}
+			}, 100)
+		})
+	}) as Listener)
 
-  watch(forAction, () => {
-    actionArgs.value = forAction.value.pop()
-  })
-  
-  watch(actionArgs, async () => {
-    if (actionArgs.value !== null) {
-      await every?.()
-    }
-  })
+	watch(forAction, () => {
+		actionArgs.value = forAction.value.pop()
+	})
+	
+	watch(actionArgs, async () => {
+		if (actionArgs.value !== null) {
+			await every?.()
+		}
+	})
 
-  return { forAction, args: actionArgs, editor }
+	return { forAction, args: actionArgs, editor }
 }
 </script>

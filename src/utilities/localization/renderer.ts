@@ -18,7 +18,7 @@ export function loadLocalization<
 	const secretKey = Symbol('Loaded localization')
 
 	return new Proxy({} as LocalizedTexts<ToLocalize>, {
-		get(_, name, __) {
+		get(_, name) {
 			return (locale[secretKey] ??= locale.get(di.resolve(CONFIG_TOKEN)))[name.toString()]
 		}
 	})

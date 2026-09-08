@@ -95,66 +95,66 @@ const hasUS = ref(hasCranes[1])
 const isActive = action.isActive(xml)
 
 if (isActive) {
-  exportUtils.onExport(exportData)
-  importUtils.onImport(importData)
+	exportUtils.onExport(exportData)
+	importUtils.onImport(importData)
 }
 useReady(emit)
 
 function exportData(data: IExportedData) {
-  const actionsData = data.actionsData[exportUtils.getName(file, info.value.dlc, info.value.mod)] ??= {}
+	const actionsData = data.actionsData[exportUtils.getName(file, info.value.dlc, info.value.mod)] ??= {}
 
-  actionsData[action.id] = action.export(xml)
+	actionsData[action.id] = action.export(xml)
 }
 
 function importData(data: IExportedData) {
-  const actionData = data.actionsData[importUtils.getName(file, info.value.dlc, info.value.mod)]?.[action.id]
+	const actionData = data.actionsData[importUtils.getName(file, info.value.dlc, info.value.mod)]?.[action.id]
 
-  if (actionData) {
-    action.import(xml, actionData)
-  }
+	if (actionData) {
+		action.import(xml, actionData)
+	}
 }
 
 function addCrane(crane: Crane) {
-  if (crane === Crane.RU) {
-    action.addCrane(Crane.RU, Crane.US, xml, value => hasRU.value = value)
-  } else {
-    action.addCrane(Crane.US, Crane.RU, xml, value => hasUS.value = value)
-  }
+	if (crane === Crane.RU) {
+		action.addCrane(Crane.RU, Crane.US, xml, value => hasRU.value = value)
+	} else {
+		action.addCrane(Crane.US, Crane.RU, xml, value => hasUS.value = value)
+	}
 }
 
 function removeCrane(crane: Crane) {
-  if (crane === Crane.RU) {
-    action.removeCrane(Crane.RU, xml, value => hasRU.value = value)
-  } else {
-    action.removeCrane(Crane.US, xml, value => hasUS.value = value)
-  }
+	if (crane === Crane.RU) {
+		action.removeCrane(Crane.RU, xml, value => hasRU.value = value)
+	} else {
+		action.removeCrane(Crane.US, xml, value => hasUS.value = value)
+	}
 }
 </script>
 
 <style lang='scss' scoped>
 .content {
-  text-align: center;
+	text-align: center;
 }
 
 .cranes-grid {
-  flex-wrap: nowrap;
-  align-content: center;
-  justify-content: space-evenly;
-  align-items: center;
+	flex-wrap: nowrap;
+	align-content: center;
+	justify-content: space-evenly;
+	align-items: center;
 }
 
 .warn-title {
-  color: red;
+	color: red;
 }
 
 .warn-content {
-  padding: 0 10px;
-  margin-top: 0;
+	padding: 0 10px;
+	margin-top: 0;
 }
 
 .buttons {
-  text-align: center;
-  margin-left: 5px;
-  margin-right: 5px;
+	text-align: center;
+	margin-left: 5px;
+	margin-right: 5px;
 }
 </style>

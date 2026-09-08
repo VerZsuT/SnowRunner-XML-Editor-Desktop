@@ -20,7 +20,7 @@ class Paths {
 	readonly favicon = normalizePath(resolve(this.images, './favicon.ico'))
 
 	/** Папка с WinRAR. */
-	readonly winrar = normalizePath(resolve(this.src, './modules/archive/main/archiver/files'))
+	readonly winrar = normalizePath(resolve(this.src, './modules/archiver/main/archiver/files'))
 
 	/** Файл лицензии. */
 	readonly license = normalizePath(resolve(this.root, './LICENSE'))

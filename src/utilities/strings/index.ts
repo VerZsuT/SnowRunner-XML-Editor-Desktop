@@ -7,10 +7,10 @@ import { hasItems, isNumber, lastItem } from '../checks'
  * @returns Изменённая строка.
  */
 export function prettyString(str: string): string {
-  const text = str.replaceAll('_', ' ')
-  const firstChar = text[0].toUpperCase()
+	const text = str.replaceAll('_', ' ')
+	const firstChar = text[0].toUpperCase()
 
-  return `${firstChar}${text.slice(1)}`
+	return `${firstChar}${text.slice(1)}`
 }
 
 /**
@@ -19,17 +19,17 @@ export function prettyString(str: string): string {
  * @param args Аргументы для замены "{}".
  */
 export function formatString(str: string, ...args: string[]): string {
-  let result = str
+	let result = str
 
-  for (const element of args) {
-	  result = result.replace('{}', element)
-  }
+	for (const element of args) {
+		result = result.replace('{}', element)
+	}
 
-  if (args.length > 0) {
-	  result = result.replace('{lst}', lastItem(args)!)
-  }
+	if (args.length > 0) {
+		result = result.replace('{lst}', lastItem(args)!)
+	}
 
-  return result
+	return result
 }
 
 /**
@@ -38,9 +38,9 @@ export function formatString(str: string, ...args: string[]): string {
  * @returns Строка.
  */
 export function boolToString(value?: boolean): string {
-  return value === undefined
-    ? ''
-    : String(value)
+	return value === undefined
+		? ''
+		: String(value)
 }
 
 /**
@@ -49,9 +49,9 @@ export function boolToString(value?: boolean): string {
  * @returns Строка.
  */
 export function numberToString(value?: number): string {
-  return value === undefined
-    ? ''
-    : String(value)
+	return value === undefined
+		? ''
+		: String(value)
 }
 
 /**
@@ -60,15 +60,15 @@ export function numberToString(value?: number): string {
  * @returns Строка.
  */
 export function arrayToString<T extends string>(value?: T[]): string {
-  return value === undefined
-    ? ''
-    : value.join(',')
+	return value === undefined
+		? ''
+		: value.join(',')
 }
 
 export function areasToString(value: InputArea | InputArea[]): string {
-  return Array.isArray(value[0])
-    ? value.map(item => areasToString(item)).join('; ')
-    : `${value[0]}-${value[1]}`
+	return Array.isArray(value[0])
+		? value.map(item => areasToString(item)).join('; ')
+		: `${value[0]}-${value[1]}`
 }
 
 /**
@@ -77,7 +77,7 @@ export function areasToString(value: InputArea | InputArea[]): string {
  * @returns Логическое значение.
  */
 export function stringToBoolean(value: string): boolean {
-  return value === 'true'
+	return value === 'true'
 }
 
 /**
@@ -86,9 +86,9 @@ export function stringToBoolean(value: string): boolean {
  * @returns Число.
  */
 export function stringToNumber(value: string | number): number {
-  return isNumber(value)
-    ? value
-    : Number.parseFloat(value)
+	return isNumber(value)
+		? value
+		: Number.parseFloat(value)
 }
 
 /**
@@ -98,26 +98,26 @@ export function stringToNumber(value: string | number): number {
  * @param delimiter Разделитель [default=','].
  */
 export function stringToArray<T extends string>(
-  str?: string,
-  parser = (str: string) => str as T | undefined,
-  delimiter = ','
+	str?: string,
+	parser = (str: string) => str as T | undefined,
+	delimiter = ','
 ): T[] | undefined {
-  const values = str
-    ?.split(delimiter)
-    .map(val => val.trim())
-    ?? []
+	const values = str
+		?.split(delimiter)
+		.map(val => val.trim())
+		?? []
 
-  if (lastItem(values) === '') {
-	  values.pop()
-  }
+	if (lastItem(values) === '') {
+		values.pop()
+	}
 
-  if (!hasItems(values)) {
-	  return
-  }
+	if (!hasItems(values)) {
+		return
+	}
 
-  return values
-    .map(parser)
-    .filter(Boolean) as T[]
+	return values
+		.map(parser)
+		.filter(Boolean) as T[]
 }
 
 /**
@@ -126,11 +126,11 @@ export function stringToArray<T extends string>(
  * @return Подготовленное название файла.
  */
 export function processNameForFilesystem(name: string): string {
-  return name
-    .trim()
-    .replaceAll(' ', '-')
-    .replaceAll(/[!"#$%&'*+/:<=>?@\\`{|}]/gi, '')
-    .toLowerCase()
+	return name
+		.trim()
+		.replaceAll(' ', '-')
+		.replaceAll(/[!"#$%&'*+/:<=>?@\\`{|}]/gi, '')
+		.toLowerCase()
 }
 
 /**
@@ -140,11 +140,11 @@ export function processNameForFilesystem(name: string): string {
  * @returns Начинается ли строка на одну из переданных строк.
  */
 export function startsWith(str: string, array: string[]): boolean {
-  for (const element of array) {
-    if (str.startsWith(element!)) {
-      return true
-    }
-  }
+	for (const element of array) {
+		if (str.startsWith(element!)) {
+			return true
+		}
+	}
 
-  return false
+	return false
 }

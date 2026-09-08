@@ -5,12 +5,12 @@ import { innerElement } from '../../xml-with-templates'
 
 /** Блок UI. */
 export class TruckUiDesc extends BaseUiDesc {
-  /** Реалистичная фотография-скриншот из игры с машиной в выгодном ракурсе. */
-  @stringAttr()
-  accessor UiIcon328x458: XmlValue<string>
-  declare $UiIcon328x458: IStringAttrDescriptor
+	/** Реалистичная фотография-скриншот из игры с машиной в выгодном ракурсе. */
+	@stringAttr()
+	accessor UiIcon328x458: XmlValue<string>
+	declare $UiIcon328x458: IStringAttrDescriptor
 
-  /** Блок UI для региона. */
-  @innerElement(() => TruckUiDesc, 'region\\:default')
-  readonly DefaultRegion: XmlElement<TruckUiDesc>
+	/** Блок UI для региона. */
+	@innerElement(() => TruckUiDesc, 'region\\:default')
+	readonly DefaultRegion: XmlElement<TruckUiDesc>
 }

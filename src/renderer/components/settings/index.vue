@@ -6,7 +6,7 @@
   >
     <div class="settings">
       <Language />
-    
+		
       <div class="checkboxes">
         <BoolSetting
           v-model="updates"
@@ -66,13 +66,13 @@ const isOpen = defineModel<boolean>({ required: true })
 
 <style lang='scss' scoped>
 .settings {
-  text-align: center;
-  margin: 0 50px;
+	text-align: center;
+	margin: 0 50px;
 
-  .checkboxes {
-    margin: 10px auto;
-    text-align: left;
-    width: fit-content;
-  }
+	.checkboxes {
+		margin: 10px auto;
+		text-align: left;
+		width: fit-content;
+	}
 }
 </style>

@@ -83,55 +83,55 @@ const isActive = action.isActive(xml)
 
 useReady(emit)
 if (isActive) {
-  exportUtils.onExport(exportData)
-  importUtils.onImport(importData)
+	exportUtils.onExport(exportData)
+	importUtils.onImport(importData)
 }
 
 function exportData(data: IExportedData) {
-  const actionsData = data.actionsData[exportUtils.getName(file, info.value.dlc, info.value.mod)] ??= {}
+	const actionsData = data.actionsData[exportUtils.getName(file, info.value.dlc, info.value.mod)] ??= {}
 
-  actionsData[action.id] = action.export(xml)
+	actionsData[action.id] = action.export(xml)
 }
 
 function importData(data: IExportedData) {
-  const actionData = data.actionsData[importUtils.getName(file, info.value.dlc, info.value.mod)]?.[action.id]
+	const actionData = data.actionsData[importUtils.getName(file, info.value.dlc, info.value.mod)]?.[action.id]
 
-  if (actionData) {
-    action.import(xml, actionData)
-  }
+	if (actionData) {
+		action.import(xml, actionData)
+	}
 }
 
 function addTrailer(trailer: Trailer) {
-  if (trailer === Trailer.scout) {
-    action.addTrailer(Trailer.scout, Trailer.truck, xml, value => hasScout.value = value)
-  } else {
-    action.addTrailer(Trailer.truck, Trailer.scout, xml, value => hasTruck.value = value)
-  }
+	if (trailer === Trailer.scout) {
+		action.addTrailer(Trailer.scout, Trailer.truck, xml, value => hasScout.value = value)
+	} else {
+		action.addTrailer(Trailer.truck, Trailer.scout, xml, value => hasTruck.value = value)
+	}
 }
 
 function removeTrailer(trailer: Trailer) {
-  if (trailer === Trailer.scout) {
-    action.removeTrailer(Trailer.scout, xml, value => hasScout.value = value)
-  } else {
-    action.removeTrailer(Trailer.truck, xml, value => hasTruck.value = value)
-  }
+	if (trailer === Trailer.scout) {
+		action.removeTrailer(Trailer.scout, xml, value => hasScout.value = value)
+	} else {
+		action.removeTrailer(Trailer.truck, xml, value => hasTruck.value = value)
+	}
 }
 </script>
 
 <style lang='scss' scoped>
 .trailers-grid {
-  text-align: center;
-  margin-top: 10px;
-  flex-wrap: nowrap;
-  align-content: center;
-  justify-content: space-evenly;
-  align-items: center;
-  width: 100%;
+	text-align: center;
+	margin-top: 10px;
+	flex-wrap: nowrap;
+	align-content: center;
+	justify-content: space-evenly;
+	align-items: center;
+	width: 100%;
 }
 
 .buttons {
-  text-align: center;
-  margin-left: 5px;
-  margin-right: 5px;
+	text-align: center;
+	margin-left: 5px;
+	margin-right: 5px;
 }
 </style>

@@ -6,20 +6,20 @@ export type KeyEventName = 'keypress' | 'keyup' | 'keydown'
 
 /** Параметры горячей клавиши. */
 export interface IHotKeysParams {
-  /** Клавиша. */
-  key: string
+	/** Клавиша. */
+	key: string
 
-  /** Название события. */
-  eventName?: KeyEventName
+	/** Название события. */
+	eventName?: KeyEventName
 
-  /** Требуется ли нажатия `CTRL`. */
-  ctrlKey?: boolean
+	/** Требуется ли нажатия `CTRL`. */
+	ctrlKey?: boolean
 
-  /** Требуется ли нажатие `SHIFT`. */
-  shiftKey?: boolean
+	/** Требуется ли нажатие `SHIFT`. */
+	shiftKey?: boolean
 
-  /** Убрать поведение по умолчанию. */
-  prevent?: boolean
+	/** Убрать поведение по умолчанию. */
+	prevent?: boolean
 }
 
 /**
@@ -28,33 +28,33 @@ export interface IHotKeysParams {
  * @param handler Обработчик события.
  */
 export function useKey(params: IHotKeysParams | IHotKeysParams['key'], handler: (event: KeyboardEvent) => void) {
-  const {
-    key,
-    ctrlKey = false,
-    prevent = false,
-    shiftKey = false
-  }: IHotKeysParams = isString(params)
-    ? { key: params }
-    : params
+	const {
+		key,
+		ctrlKey = false,
+		prevent = false,
+		shiftKey = false
+	}: IHotKeysParams = isString(params)
+		? { key: params }
+		: params
 
-  const eventName = key === 'Escape'
-    ? 'keydown'
-    : 'keypress'
+	const eventName = key === 'Escape'
+		? 'keydown'
+		: 'keypress'
 
-  function eventHandler(event: KeyboardEvent) {
-    const keyIsValid = event.code === key
-    const ctrlIsValid = ctrlKey === event.ctrlKey
-    const shiftIsValid = shiftKey === event.shiftKey
+	function eventHandler(event: KeyboardEvent) {
+		const keyIsValid = event.code === key
+		const ctrlIsValid = ctrlKey === event.ctrlKey
+		const shiftIsValid = shiftKey === event.shiftKey
 
-    if (keyIsValid && ctrlIsValid && shiftIsValid) {
-      if (prevent) {
-        event.preventDefault()
-      }
+		if (keyIsValid && ctrlIsValid && shiftIsValid) {
+			if (prevent) {
+				event.preventDefault()
+			}
 
-      handler(event)
-    }
-  }
+			handler(event)
+		}
+	}
 
-  onMounted(() => document.addEventListener(eventName, eventHandler))
-  onUnmounted(() => document.removeEventListener(eventName, eventHandler))
+	onMounted(() => document.addEventListener(eventName, eventHandler))
+	onUnmounted(() => document.removeEventListener(eventName, eventHandler))
 }

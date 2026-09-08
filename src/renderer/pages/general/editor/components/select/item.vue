@@ -22,36 +22,36 @@ const props = defineProps<ISelectProps>()
 const emit = defineEmits<SelectEmits>()
 
 const options = computed(() => props.options.map(option => {
-  const [value, label] = option
+	const [value, label] = option
 
-  return {
-    label,
-    value: String(value),
-    key: String(value)
-  }
+	return {
+		label,
+		value: String(value),
+		key: String(value)
+	}
 }))
 
 const value = computed(() => {
-  if (props.multiple && Array.isArray(props.value)) {
-    return props.value.length === 0 && props.emptyIsAll
-      ? options.value.map(option => option.value)
-      : props.value.map(String)
-  }
+	if (props.multiple && Array.isArray(props.value)) {
+		return props.value.length === 0 && props.emptyIsAll
+			? options.value.map(option => option.value)
+			: props.value.map(String)
+	}
 
-  return String(props.value)
+	return String(props.value)
 })
 
 function onSelect(value: string | string[]) {
-  emit('change', props.emptyIsAll && value.length === options.value.length
-    ? []
-    : value
-  )
+	emit('change', props.emptyIsAll && value.length === options.value.length
+		? []
+		: value
+	)
 }
 </script>
 
 <style lang='scss' scoped>
 .select {
-  min-width: 150;
-  text-align: left;
+	min-width: 150;
+	text-align: left;
 }
 </style>

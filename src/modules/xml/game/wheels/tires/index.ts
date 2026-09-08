@@ -6,7 +6,7 @@ export * from './tire'
 
 /** Секция описания шин. */
 export class TruckTires extends XMLWithTemplates {
-  /** Шины. */
-  @innerElements(TruckTire, 'TruckTire')
-  readonly Tires!: XmlElements<TruckTire>
+	/** Шины. */
+	@innerElements(TruckTire, 'TruckTire')
+	readonly Tires!: XmlElements<TruckTire>
 }

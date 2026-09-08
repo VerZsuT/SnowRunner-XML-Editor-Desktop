@@ -51,7 +51,7 @@ class ForgeConfig {
 
 						locales = join(this.build, 'locales')
 
-						winrar = join(_dirname, '../modules/archive/main/archiver/files')
+						winrar = join(_dirname, '../modules/archiver/main/archiver/files')
 						innoSetup = join(_dirname, '../../inno-setup')
 						innoSetupConfig = join(this.innoSetup, 'installer.config.iss')
 					}

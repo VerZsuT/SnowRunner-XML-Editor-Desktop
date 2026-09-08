@@ -49,12 +49,12 @@ import { ref, watchEffect } from 'vue'
 import { LISTS_LOCALIZATION as texts } from '../localization'
 
 export type ModsPopupProps = Props & EmitsToProps<Emits>
-  
+	
 type Props = {
-  show: boolean
+	show: boolean
 }
 type Emits = {
-  hide: [reload: boolean]
+	hide: [reload: boolean]
 }
 
 const mods = di.resolve(MODS_TOKEN)
@@ -65,88 +65,88 @@ const items = ref<[IFile, string][] | undefined>(undefined)
 const targetKeys = ref<string[]>([])
 
 const transferLocale: TransferProps['locale'] = {
-  itemUnit: '',
-  itemsUnit: '',
-  searchPlaceholder: '',
-  notFoundContent: texts.emptyList
+	itemUnit: '',
+	itemsUnit: '',
+	searchPlaceholder: '',
+	notFoundContent: texts.emptyList
 }
 
 watchEffect(async () => {
-  if (!props.show || items.value) {
-    return
-  }
-    
-  const loaded = await mods.getAllMods()
+	if (!props.show || items.value) {
+		return
+	}
+		
+	const loaded = await mods.getAllMods()
 
-  items.value = loaded
-  targetKeys.value = getTargetKeys(loaded)
+	items.value = loaded
+	targetKeys.value = getTargetKeys(loaded)
 })
 
 const saveChanges: ModalProps['onOk'] = () => {
-  if (!items.value) {
-    return
-  }
+	if (!items.value) {
+		return
+	}
 
-  mods.saveFromSelect(targetKeys.value, items.value)
-  emit('hide', true)
+	mods.saveFromSelect(targetKeys.value, items.value)
+	emit('hide', true)
 }
 
 const hidePopup: ModalProps['onCancel'] = () => {
-  if (!items.value) {
-    return
-  }
-  
-  targetKeys.value = getTargetKeys(items.value)
-  emit('hide', false)
+	if (!items.value) {
+		return
+	}
+	
+	targetKeys.value = getTargetKeys(items.value)
+	emit('hide', false)
 }
 
 function getTargetKeys(items: [IFile, string][]): string[] {
-  const keys = mods.toSelectKeys(items)
-  
-  return mods
-    .filter(mod => keys.includes(mod.path))
-    .map(mod => mod.path)
+	const keys = mods.toSelectKeys(items)
+	
+	return mods
+		.filter(mod => keys.includes(mod.path))
+		.map(mod => mod.path)
 }
 
 async function addItems(newItems?: Awaited<ReturnType<typeof mods.requestDirs>>) {
-  const modItems = items.value
+	const modItems = items.value
 
-  if (!newItems || !modItems) {
-    return
-  }
+	if (!newItems || !modItems) {
+		return
+	}
 
-  const result = [...modItems]
+	const result = [...modItems]
 
-  for (const [file, name] of newItems) {
-    if (!modItems.some(item => item[1] === name)) {
-      result.push([file, name])
-    }
-  }
+	for (const [file, name] of newItems) {
+		if (!modItems.some(item => item[1] === name)) {
+			result.push([file, name])
+		}
+	}
 
-  items.value = result
+	items.value = result
 }
 </script>
 
 
 <style lang='scss' scoped>
 .mods {
-  &-button {
-    margin-bottom: 10px;
-  }
+	&-button {
+		margin-bottom: 10px;
+	}
 
-  &-transfer {
-    justify-content: center;
-  }
+	&-transfer {
+		justify-content: center;
+	}
 
-  &-manual-button {
-    display: block;
-    margin: 10px auto 0;
-  }
+	&-manual-button {
+		display: block;
+		margin: 10px auto 0;
+	}
 
-  &-spin {
-    display: block;
-    font-size: 24px;
-    margin: 0 auto;
-  }
+	&-spin {
+		display: block;
+		font-size: 24px;
+		margin: 0 auto;
+	}
 }
 </style>

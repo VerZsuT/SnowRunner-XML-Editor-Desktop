@@ -45,20 +45,20 @@ Name: "{app}\resources"; Type: filesandordirs
 [Code]
 procedure SetElevationBit(Filename: string);
 var
-  Buffer: string;
-  Stream: TStream;
+	Buffer: string;
+	Stream: TStream;
 begin
-  Filename := ExpandConstant(Filename);
+	Filename := ExpandConstant(Filename);
 
-  Stream := TFileStream.Create(FileName, fmOpenReadWrite);
-  try
-    Stream.Seek(21, soFromBeginning);
-    SetLength(Buffer, 1);
-    Stream.ReadBuffer(Buffer, 1);
-    Buffer[1] := Chr(Ord(Buffer[1]) or $20);
-    Stream.Seek(-1, soFromCurrent);
-    Stream.WriteBuffer(Buffer, 1);
-  finally
-    Stream.Free;
-  end;
+	Stream := TFileStream.Create(FileName, fmOpenReadWrite);
+	try
+		Stream.Seek(21, soFromBeginning);
+		SetLength(Buffer, 1);
+		Stream.ReadBuffer(Buffer, 1);
+		Buffer[1] := Chr(Ord(Buffer[1]) or $20);
+		Stream.Seek(-1, soFromCurrent);
+		Stream.WriteBuffer(Buffer, 1);
+	finally
+		Stream.Free;
+	end;
 end;

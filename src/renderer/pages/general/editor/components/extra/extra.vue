@@ -46,10 +46,10 @@ import { EXTRA_LOCALIZATION as texts } from './localization'
 import Trailers from './trailers/trailers.vue'
 
 enum ReadyType {
-  addonsContent = 'addons-content',
-  banditCrane = 'bandit-crane',
-  cranes = 'cranes',
-  trailers = 'trailers'
+	addonsContent = 'addons-content',
+	banditCrane = 'bandit-crane',
+	cranes = 'cranes',
+	trailers = 'trailers'
 }
 
 export type ExtraActionsProps = IActionProps & ReadyProps
@@ -62,6 +62,6 @@ const { ready, inProgress } = useFilesReady(emit, true)
 
 <style lang="scss" scoped>
 .content {
-  justify-content: center;
+	justify-content: center;
 }
 </style>

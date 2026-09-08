@@ -29,8 +29,8 @@ import WheelsSet from './set.vue'
 export type WheelsProps = ReadyProps & Props
 
 type Props = {
-  getter?(info: FileInfo): Promise<WheelsXML | undefined>
-  fileGetter?(info: FileInfo): Promise<IFile | undefined>
+	getter?(info: FileInfo): Promise<WheelsXML | undefined>
+	fileGetter?(info: FileInfo): Promise<IFile | undefined>
 }
 
 const props = defineProps<Props>()
@@ -48,26 +48,26 @@ filesUtils.watch(update, files)
 filesUtils.regFiles(files, allFiles.value.wheels)
 
 async function init() {
-  const file = await props.fileGetter?.(info.value)
-  const set = await props.getter?.(info.value)
+	const file = await props.fileGetter?.(info.value)
+	const set = await props.getter?.(info.value)
 
-  files.value = file
-    ? [file]
-    : []
-  wheelsSets.value = set
-    ? [set]
-    : []
+	files.value = file
+		? [file]
+		: []
+	wheelsSets.value = set
+		? [set]
+		: []
 
-  if (!hasItems(files.value) || !hasItems(wheelsSets.value)) {
-    emit('ready')
-  }
+	if (!hasItems(files.value) || !hasItems(wheelsSets.value)) {
+		emit('ready')
+	}
 }
 
 async function update() {
-  files.value = []
-  wheelsSets.value = []
+	files.value = []
+	wheelsSets.value = []
 
-  await nextTick()
-  await init()
+	await nextTick()
+	await init()
 }
 </script>

@@ -1,11 +1,12 @@
 import { publishInstanceFunction } from '@utilities/bridge/main'
 import { di } from '@utilities/di/container'
 import { DIALOGS_TOKEN } from '@utilities/di/main/tokens'
+import type { IMainDialogs } from '../types'
 import type { Dialogs } from './index'
 
 /** Опубликовать {@link Dialogs}. */
 export function publishDialogs() {
-	let instance: Dialogs
+	let instance: IMainDialogs
 	const getInstance = () => instance ??= di.resolve(DIALOGS_TOKEN)
 	const className = 'Dialogs'
 

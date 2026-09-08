@@ -23,8 +23,8 @@ import Trailer from './trailer/trailer.vue'
 import Truck from './truck/truck.vue'
 
 type Props = {
-  xml: TruckXML
-  file: IFile
+	xml: TruckXML
+	file: IFile
 }
 
 defineProps<Props>()
@@ -33,13 +33,13 @@ defineEmits<ReadyEmits>()
 
 <style lang='scss' scoped>
 .table {
-  padding: 20px;
-  height: calc(100vh - 150px);
-  overflow-y: auto;
+	padding: 20px;
+	height: calc(100vh - 150px);
+	overflow-y: auto;
 
-  :global(.ant-input),
-  :global(.ant-input-number-input) {
-    width: 150px;
-  }
+	:global(.ant-input),
+	:global(.ant-input-number-input) {
+		width: 150px;
+	}
 }
 </style>

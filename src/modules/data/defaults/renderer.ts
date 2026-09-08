@@ -3,8 +3,6 @@
 
 import type { IDefaults } from './types'
 
-export type * from './types'
-
 /** Стандартные значения параметров таблицы. */
 export const DEFAULT_PARAMETER_VALUES = {
 	"trailer_sideboard_2_default": {

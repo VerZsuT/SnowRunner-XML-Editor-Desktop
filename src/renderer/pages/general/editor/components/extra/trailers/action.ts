@@ -5,119 +5,119 @@ import { CONFIG_TOKEN } from '@utilities/di/renderer/tokens'
 import { Trailer } from './trailer'
 
 export type TrailersData = {
-  hasScoutTrailer: boolean
-  hasTruckTrailer: boolean
+	hasScoutTrailer: boolean
+	hasTruckTrailer: boolean
 }
 
 export class TrailersAction {
-  get name() {
-    return new LocalizationStrings()
-      .ru('Прицепы')
-      .en('Trailers')
-      .de('Anhänger')
-      .ch('拖车钩')
-      .get(di.resolve(CONFIG_TOKEN))
-  }
-  readonly icon = 'trailer'
-  readonly id = 'trailers'
+	get name() {
+		return new LocalizationStrings()
+			.ru('Прицепы')
+			.en('Trailers')
+			.de('Anhänger')
+			.ch('拖车钩')
+			.get(di.resolve(CONFIG_TOKEN))
+	}
+	readonly icon = 'trailer'
+	readonly id = 'trailers'
 
-  isActive(xml: TruckXML): boolean {
-    return this.hasTrailers(xml).includes(true)
-  }
+	isActive(xml: TruckXML): boolean {
+		return this.hasTrailers(xml).includes(true)
+	}
 
-  export(xml: TruckXML): TrailersData {
-    const [hasScoutTrailer, hasTruckTrailer] = this.hasTrailers(xml)
+	export(xml: TruckXML): TrailersData {
+		const [hasScoutTrailer, hasTruckTrailer] = this.hasTrailers(xml)
 
-    return { hasScoutTrailer, hasTruckTrailer }
-  }
+		return { hasScoutTrailer, hasTruckTrailer }
+	}
 
-  import(xml: TruckXML, data: TrailersData) {
-    const [hasScoutTrailer, hasTruckTrailer] = this.hasTrailers(xml)
+	import(xml: TruckXML, data: TrailersData) {
+		const [hasScoutTrailer, hasTruckTrailer] = this.hasTrailers(xml)
 
-    if (data.hasScoutTrailer && !hasScoutTrailer) {
-      this.addTrailer(Trailer.scout, Trailer.truck, xml)
-    }
+		if (data.hasScoutTrailer && !hasScoutTrailer) {
+			this.addTrailer(Trailer.scout, Trailer.truck, xml)
+		}
 
-    if (data.hasTruckTrailer && !hasTruckTrailer) {
-      this.addTrailer(Trailer.truck, Trailer.scout, xml)
-    }
-  }
+		if (data.hasTruckTrailer && !hasTruckTrailer) {
+			this.addTrailer(Trailer.truck, Trailer.scout, xml)
+		}
+	}
 
-  addTrailer(trailer: Trailer, to: Trailer, xml: TruckXML, stateSetter?: (value: boolean) => void) {
-    const AddonSockets = xml.GameData?.AddonSockets ?? []
-    let MainSocket: TruckAddonSocket | undefined
+	addTrailer(trailer: Trailer, to: Trailer, xml: TruckXML, stateSetter?: (value: boolean) => void) {
+		const AddonSockets = xml.GameData?.AddonSockets ?? []
+		let MainSocket: TruckAddonSocket | undefined
 
-    for (const { Sockets } of AddonSockets) {
-      MainSocket ??= Sockets.find(({ Names }) => Names.includes(to))
+		for (const { Sockets } of AddonSockets) {
+			MainSocket ??= Sockets.find(({ Names }) => Names.includes(to))
 
-      if (MainSocket) {
-        break
-      }
-    }
+			if (MainSocket) {
+				break
+			}
+		}
 
-    if (!MainSocket) {
-      throw new Error('socket not found')
-    }
+		if (!MainSocket) {
+			throw new Error('socket not found')
+		}
 
-    MainSocket.Names = [...MainSocket.Names, trailer]
+		MainSocket.Names = [...MainSocket.Names, trailer]
 
-    for (const { Sockets } of AddonSockets) {
-      for (const Socket of Sockets.filter(({ NamesBlock }) => NamesBlock.includes(to))) {
-        Socket.NamesBlock = [...Socket.NamesBlock, trailer]
+		for (const { Sockets } of AddonSockets) {
+			for (const Socket of Sockets.filter(({ NamesBlock }) => NamesBlock.includes(to))) {
+				Socket.NamesBlock = [...Socket.NamesBlock, trailer]
 
-        for (const Shift of Socket.AddonShifts.filter(({ Types }) => Types.includes(to))) {
-          const newTypes = [
-            ...Shift.Types.filter(type => type !== to),
-            trailer
-          ]
+				for (const Shift of Socket.AddonShifts.filter(({ Types }) => Types.includes(to))) {
+					const newTypes = [
+						...Shift.Types.filter(type => type !== to),
+						trailer
+					]
 
-          Shift.after(`
-          <AddonsShift Types="${newTypes.join(', ')}" />
-          `)
-        }
-      }
-    }
+					Shift.after(`
+					<AddonsShift Types="${newTypes.join(', ')}" />
+					`)
+				}
+			}
+		}
 
-    stateSetter?.(true)
-  }
+		stateSetter?.(true)
+	}
 
-  removeTrailer(trailer: Trailer, xml: TruckXML, stateSetter?: (value: boolean) => void) {
-    const AddonSockets = xml.GameData?.AddonSockets ?? []
-    let MainSocket: TruckAddonSocket | undefined
+	removeTrailer(trailer: Trailer, xml: TruckXML, stateSetter?: (value: boolean) => void) {
+		const AddonSockets = xml.GameData?.AddonSockets ?? []
+		let MainSocket: TruckAddonSocket | undefined
 
-    for (const { Sockets } of AddonSockets) {
-      MainSocket ??= Sockets.find(({ Names }) => Names.includes(trailer))
+		for (const { Sockets } of AddonSockets) {
+			MainSocket ??= Sockets.find(({ Names }) => Names.includes(trailer))
 
-      if (MainSocket) {
-        break
-      }
-    }
+			if (MainSocket) {
+				break
+			}
+		}
 
-    if (!MainSocket) {
-      throw new Error('socket not found')
-    }
+		if (!MainSocket) {
+			throw new Error('socket not found')
+		}
 
-    MainSocket.Names = MainSocket.Names.filter(name => name !== trailer)
+		MainSocket.Names = MainSocket.Names.filter(name => name !== trailer)
 
-    for (const { Sockets } of AddonSockets) {
-      for (const Socket of Sockets.filter(({ NamesBlock }) => NamesBlock.includes(trailer))) {
-        Socket.NamesBlock = Socket.NamesBlock.filter(name => name !== trailer)
+		for (const { Sockets } of AddonSockets) {
+			for (const Socket of Sockets.filter(({ NamesBlock }) => NamesBlock.includes(trailer))) {
+				Socket.NamesBlock = Socket.NamesBlock.filter(name => name !== trailer)
 
-        for (const Shift of Socket.AddonShifts.filter(({ Types }) => Types.includes(trailer))) {
-          Shift.remove()
-        }
-      }
-    }
+				for (const Shift of Socket.AddonShifts.filter(({ Types }) => Types.includes(trailer))) {
+					Shift.remove()
+				}
+			}
+		}
 
-    stateSetter?.(false)
-  }
+		stateSetter?.(false)
+	}
 
-  hasTrailers(xml: TruckXML): [hasScout: boolean, hasMain: boolean] {
-    const AddonSockets = xml.GameData?.AddonSockets ?? []
+	hasTrailers(xml: TruckXML): [hasScout: boolean, hasMain: boolean] {
+		const AddonSockets = xml.GameData?.AddonSockets ?? []
 
-    return [
-      Boolean(AddonSockets.some(({ Sockets }) => Sockets.some(({ Names }) => Names.includes('ScautTrailer')))),
-      Boolean(AddonSockets.some(({ Sockets }) => Sockets.some(({ Names }) => Names.includes('Trailer'))))
-    ]
-  }
+		return [
+			Boolean(AddonSockets.some(({ Sockets }) => Sockets.some(({ Names }) => Names.includes('ScautTrailer')))),
+			Boolean(AddonSockets.some(({ Sockets }) => Sockets.some(({ Names }) => Names.includes('Trailer'))))
+		]
+	}
 }

@@ -1,85 +1,85 @@
 import { loadLocalization, Localization, LocalizationStrings } from '@localization/renderer'
 
 export const GEARBOX_LOCALIZATION = loadLocalization(new Localization({
-  name: new LocalizationStrings()
-    .ru('Название')
-    .en('Name')
-    .de('Titel')
-    .ch('标题'),
+	name: new LocalizationStrings()
+		.ru('Название')
+		.en('Name')
+		.de('Titel')
+		.ch('标题'),
 
-  awdConsumptionModifier: new LocalizationStrings()
-    .ru('Модификатор потребления топлива при полном приводе')
-    .en('AWD consumption modifier')
-    .de('AWD-Verbrauchsmodifikator')
-    .ch('全轮驱动打开时油耗的倍数'),
+	awdConsumptionModifier: new LocalizationStrings()
+		.ru('Модификатор потребления топлива при полном приводе')
+		.en('AWD consumption modifier')
+		.de('AWD-Verbrauchsmodifikator')
+		.ch('全轮驱动打开时油耗的倍数'),
 
-  awdConsumptionModifierDesc: new LocalizationStrings()
-    .ru('Коэффициент изменения расхода топлива при использовании полного привода')
-    .en('The coefficient of change in fuel consumption when using all-wheel drive')
-    .de('Änderungskoeffizient des Kraftstoffverbrauchs bei Verwendung eines Allradantriebs'),
+	awdConsumptionModifierDesc: new LocalizationStrings()
+		.ru('Коэффициент изменения расхода топлива при использовании полного привода')
+		.en('The coefficient of change in fuel consumption when using all-wheel drive')
+		.de('Änderungskoeffizient des Kraftstoffverbrauchs bei Verwendung eines Allradantriebs'),
 
-  criticalDamageThreshold: new LocalizationStrings()
-    .ru('Порог критического повреждения')
-    .en('Critical damage threshold')
-    .de('Kritische Schadensschwelle')
-    .ch('损坏阈值'),
+	criticalDamageThreshold: new LocalizationStrings()
+		.ru('Порог критического повреждения')
+		.en('Critical damage threshold')
+		.de('Kritische Schadensschwelle')
+		.ch('损坏阈值'),
 
-  criticalDamageThresholdDesc: new LocalizationStrings()
-    .ru('Порог повреждений, после которого коробка начинает проявлять признаки поломки - вылетающие передачи и увеличение расхода топлива')
-    .en('The damage threshold, after which the box begins to show signs of failure - flying gears and increased fuel consumption')
-    .de('Die Schadensschwelle, nach der die Box Anzeichen von Bruch zeigt - ausfallende Übertragungen und erhöhter Kraftstoffverbrauch'),
+	criticalDamageThresholdDesc: new LocalizationStrings()
+		.ru('Порог повреждений, после которого коробка начинает проявлять признаки поломки - вылетающие передачи и увеличение расхода топлива')
+		.en('The damage threshold, after which the box begins to show signs of failure - flying gears and increased fuel consumption')
+		.de('Die Schadensschwelle, nach der die Box Anzeichen von Bruch zeigt - ausfallende Übertragungen und erhöhter Kraftstoffverbrauch'),
 
-  damageCapacity: new LocalizationStrings()
-    .ru('Прочность')
-    .en('Damage capacity')
-    .de('Schadenskapazität')
-    .ch('血量'),
+	damageCapacity: new LocalizationStrings()
+		.ru('Прочность')
+		.en('Damage capacity')
+		.de('Schadenskapazität')
+		.ch('血量'),
 
-  damageCapacityDesc: new LocalizationStrings()
-    .ru('Размер допустимого ущерба коробке передач')
-    .en('The amount of possible damage to the gearbox')
-    .de('Die Größe des zulässigen Getriebeschadens'),
+	damageCapacityDesc: new LocalizationStrings()
+		.ru('Размер допустимого ущерба коробке передач')
+		.en('The amount of possible damage to the gearbox')
+		.de('Die Größe des zulässigen Getriebeschadens'),
 
-  damagedConsumptionModifier: new LocalizationStrings()
-    .ru('Множитель потребления топлива при повреждении')
-    .en('Damage consumption modifier')
-    .de('Schadensverbrauchsmodifikator')
-    .ch('损伤时油耗增加的倍数'),
+	damagedConsumptionModifier: new LocalizationStrings()
+		.ru('Множитель потребления топлива при повреждении')
+		.en('Damage consumption modifier')
+		.de('Schadensverbrauchsmodifikator')
+		.ch('损伤时油耗增加的倍数'),
 
-  damagedConsumptionModifierDesc: new LocalizationStrings()
-    .ru('Максимальный множитель расхода топлива, к этому множителю расход приходит, когда коробка полностью сломана')
-    .en('The maximum fuel consumption multiplier, the consumption comes to this multiplier when the box is completely broken')
-    .de('Der maximale Kraftstoffverbrauchsmultiplikator, zu diesem Volumenmultiplikator kommt der Verbrauch, wenn die Box vollständig kaputt ist'),
+	damagedConsumptionModifierDesc: new LocalizationStrings()
+		.ru('Максимальный множитель расхода топлива, к этому множителю расход приходит, когда коробка полностью сломана')
+		.en('The maximum fuel consumption multiplier, the consumption comes to this multiplier when the box is completely broken')
+		.de('Der maximale Kraftstoffverbrauchsmultiplikator, zu diesem Volumenmultiplikator kommt der Verbrauch, wenn die Box vollständig kaputt ist'),
 
-  fuelConsumption: new LocalizationStrings()
-    .ru('Потребление топлива')
-    .en('Fuel consumption')
-    .de('Kraftstoffverbrauch')
-    .ch('油耗'),
+	fuelConsumption: new LocalizationStrings()
+		.ru('Потребление топлива')
+		.en('Fuel consumption')
+		.de('Kraftstoffverbrauch')
+		.ch('油耗'),
 
-  fuelConsumptionDesc: new LocalizationStrings()
-    .ru('Базовое потребление топлива коробкой передач')
-    .en('Basic fuel consumption of the gearbox')
-    .de('Basiskraftstoffverbrauch durch Getriebe'),
+	fuelConsumptionDesc: new LocalizationStrings()
+		.ru('Базовое потребление топлива коробкой передач')
+		.en('Basic fuel consumption of the gearbox')
+		.de('Basiskraftstoffverbrauch durch Getriebe'),
 
-  idleFuelConsumption: new LocalizationStrings()
-    .ru('Множитель потребления топлива в бездействии')
-    .en('IDLE fuel consumption')
-    .de('Leerlaufverbrauch')
-    .ch('怠速时的油耗'),
+	idleFuelConsumption: new LocalizationStrings()
+		.ru('Множитель потребления топлива в бездействии')
+		.en('IDLE fuel consumption')
+		.de('Leerlaufverbrauch')
+		.ch('怠速时的油耗'),
 
-  idleFuelConsumptionDesc: new LocalizationStrings()
-    .ru('Множитель потребления топлива, когда автомобиль стоит на месте с заведенным двигателем')
-    .en('Fuel consumption multiplier when the car is stationary with the engine running')
-    .de('Multiplikator des Kraftstoffverbrauchs, wenn das Fahrzeug bei laufendem Motor stillsteht'),
+	idleFuelConsumptionDesc: new LocalizationStrings()
+		.ru('Множитель потребления топлива, когда автомобиль стоит на месте с заведенным двигателем')
+		.en('Fuel consumption multiplier when the car is stationary with the engine running')
+		.de('Multiplikator des Kraftstoffverbrauchs, wenn das Fahrzeug bei laufendem Motor stillsteht'),
 
-  minBreakFreqDesc: new LocalizationStrings()
-    .ru('Минимальная частота вылетания передачи, на момент, когда прочность достигла критического порога')
-    .en('The minimum frequency of transmission failure, at the moment when the strength has reached a critical threshold')
-    .de('Minimale Übertragungsabfangsrate, zu dem Zeitpunkt, an dem die Stärke die kritische Schwelle erreicht hat'),
+	minBreakFreqDesc: new LocalizationStrings()
+		.ru('Минимальная частота вылетания передачи, на момент, когда прочность достигла критического порога')
+		.en('The minimum frequency of transmission failure, at the moment when the strength has reached a critical threshold')
+		.de('Minimale Übertragungsabfangsrate, zu dem Zeitpunkt, an dem die Stärke die kritische Schwelle erreicht hat'),
 
-  maxBreakFreqDesc: new LocalizationStrings()
-    .ru('Максимальная частота вылетания передачи, на момент, когда прочность приближается к нулю')
-    .en('The maximum frequency of transmission failure, at the moment when the strength is approaching zero')
-    .de('Maximale Abfangfrequenz des Getriebes, zu dem Zeitpunkt, an dem sich die Stärke dem Nullpunkt nähert')
+	maxBreakFreqDesc: new LocalizationStrings()
+		.ru('Максимальная частота вылетания передачи, на момент, когда прочность приближается к нулю')
+		.en('The maximum frequency of transmission failure, at the moment when the strength is approaching zero')
+		.de('Maximale Abfangfrequenz des Getriebes, zu dem Zeitpunkt, an dem sich die Stärke dem Nullpunkt nähert')
 }))

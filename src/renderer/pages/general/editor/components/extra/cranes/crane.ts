@@ -1,4 +1,4 @@
 export enum Crane {
-  RU = 'MinicraneRU',
-  US = 'MinicraneUS'
+	RU = 'MinicraneRU',
+	US = 'MinicraneUS'
 }

@@ -45,8 +45,8 @@ const { Text } = Typography
 const popover = h(Popover, { placement: 'topLeft' })
 
 export type InputTipProps = {
-  descriptor: IAttrDescriptor<string | number>
-  areas?: IInputAreas
+	descriptor: IAttrDescriptor<string | number>
+	areas?: IInputAreas
 }
 
 const props = defineProps<InputTipProps>()
@@ -54,38 +54,38 @@ const { descriptor } = toRefs(props)
 
 const areasRef = computed(() => props.areas ?? descriptor.value.areas)
 const valueTips = computed(() => ({
-  min: getValueTip((descriptor.value.limit as Limit)?.minValue, texts.inputMin, Number.NEGATIVE_INFINITY),
-  max: getValueTip((descriptor.value.limit as Limit)?.maxValue, texts.inputMax, Number.POSITIVE_INFINITY),
-  default: getValueTip(descriptor.value.default, texts.inputDefault),
-  get hasAny() {
-    return this.min !== undefined || this.max !== undefined || this.default !== undefined
-  }
+	min: getValueTip((descriptor.value.limit as Limit)?.minValue, texts.inputMin, Number.NEGATIVE_INFINITY),
+	max: getValueTip((descriptor.value.limit as Limit)?.maxValue, texts.inputMax, Number.POSITIVE_INFINITY),
+	default: getValueTip(descriptor.value.default, texts.inputDefault),
+	get hasAny() {
+		return this.min !== undefined || this.max !== undefined || this.default !== undefined
+	}
 }))
 const areaTips = computed(() => ({
-  green: getAreaTip(areasRef.value?.green, texts.inputGreenArea),
-  yellow: getAreaTip(areasRef.value?.yellow, texts.inputYellowArea),
-  red: getAreaTip(areasRef.value?.red, texts.inputRedArea),
-  get hasAny() {
-    return this.green !== undefined || this.yellow !== undefined || this.red !== undefined
-  }
+	green: getAreaTip(areasRef.value?.green, texts.inputGreenArea),
+	yellow: getAreaTip(areasRef.value?.yellow, texts.inputYellowArea),
+	red: getAreaTip(areasRef.value?.red, texts.inputRedArea),
+	get hasAny() {
+		return this.green !== undefined || this.yellow !== undefined || this.red !== undefined
+	}
 }))
 
 function getValueTip(
-  limitValue: string | number | undefined,
-  text: string,
-  exclude?: number
+	limitValue: string | number | undefined,
+	text: string,
+	exclude?: number
 ): string | undefined {
-  return limitValue === undefined || limitValue === exclude
-    ? undefined
-    : formatString(text, String(limitValue))
+	return limitValue === undefined || limitValue === exclude
+		? undefined
+		: formatString(text, String(limitValue))
 }
 
 function getAreaTip(
-  area: InputArea | InputArea[] | undefined,
-  text: string
+	area: InputArea | InputArea[] | undefined,
+	text: string
 ): string | undefined {
-  return area
-    ? formatString(text, areasToString(area))
-    : undefined
+	return area
+		? formatString(text, areasToString(area))
+		: undefined
 }
 </script>

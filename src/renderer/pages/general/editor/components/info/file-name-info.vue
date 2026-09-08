@@ -33,37 +33,37 @@ const system = di.resolve(SYSTEM_TOKEN)
 
 <style lang='scss' scoped>
 .wrapper {
-  width: 100%;
+	width: 100%;
 }
 
 .info {
-  position: relative;
-  top: 10px;
-  flex-wrap: nowrap;
-  box-sizing: border-box;
-  justify-content: flex-start;
-  align-items: center;
-  border: 1px solid lightgray;
-  border-bottom: 0;
-  padding: 5px 0;
-  border-top-left-radius: 5px;
-  border-top-right-radius: 5px;
-  padding-left: 20px;
-  width: 100%;
-  
-  .content {
-    font-weight: normal;
-    transition: font-weight 0.1s ease-in-out;
+	position: relative;
+	top: 10px;
+	flex-wrap: nowrap;
+	box-sizing: border-box;
+	justify-content: flex-start;
+	align-items: center;
+	border: 1px solid lightgray;
+	border-bottom: 0;
+	padding: 5px 0;
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+	padding-left: 20px;
+	width: 100%;
+	
+	.content {
+		font-weight: normal;
+		transition: font-weight 0.1s ease-in-out;
 
-    &:hover {
-      cursor: pointer;
-      font-weight: bold;
-    }
-  }
+		&:hover {
+			cursor: pointer;
+			font-weight: bold;
+		}
+	}
 
-  &:first-of-type {
-    margin-top: -10px;
-  }
+	&:first-of-type {
+		margin-top: -10px;
+	}
 }
 </style>
-  
+	

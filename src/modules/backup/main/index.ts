@@ -1,65 +1,56 @@
 import { loadLocalization } from '@localization/main'
 import { BuildType } from '@modules/data/config/enums'
-import type { Config, IConfig } from '@modules/data/config/main'
-import type { Dirs, Files } from '@modules/files/main'
-import type { Messages } from '@modules/messages/main'
+import type { IFiles } from '@modules/files/main'
+import type { IMainMessages } from '@modules/messages/types'
 import { di, inject } from '@utilities/di/container'
-import { ARCHIVE_TOKEN, CONFIG_TOKEN, DIRS_TOKEN, FILES_TOKEN, MESSAGES_TOKEN } from '@utilities/di/main/tokens'
+import { ARCHIVER_TOKEN, CONFIG_TOKEN, DIRS_TOKEN, FILES_TOKEN, MESSAGES_TOKEN } from '@utilities/di/main/tokens'
 import { BACKUP_LOCALIZATION } from '../localization'
+import type { IMainInitialBackup } from '../types'
 
-/**
- * Работа с бэкапом.
- * _main process_
-*/
-export class Backup {
+/** Работа с бэкапом initial.pak. [main] */
+export class InitialBackup implements IMainInitialBackup {
 	/** Локализация. */
 	private readonly texts = loadLocalization(BACKUP_LOCALIZATION)
 
-	/** Конфигурация. */
-	@inject(CONFIG_TOKEN)
-	private readonly config!: Config & IConfig
-
-	/** Основные папки. */
-	@inject(DIRS_TOKEN)
-	private readonly dirs!: Dirs
-
 	/** Основные файлы. */
 	@inject(FILES_TOKEN)
-	private readonly files!: Files
+	private readonly files!: IFiles
 
 	/** Сообщения. */
 	@inject(MESSAGES_TOKEN)
-	private readonly messages!: Messages
+	private readonly messages!: IMainMessages
 
-  /** Сохранить бэкап `initial.pak`. */
-  async save() {
-    const backupInitialWithDate = this.files.backupInitialWithDate
+	async save() {
+		const config = di.resolve(CONFIG_TOKEN)
+		const dirs = di.resolve(DIRS_TOKEN)
+		const backupInitialWithDate = this.files.backupInitialWithDate
+		const initial = this.files.initial
 
-    await this.dirs.backupFolder.make()
-    await this.files.backupInitial.remove()
-    await backupInitialWithDate.remove()
+		await dirs.backupFolder.make()
+		await this.files.backupInitial.remove()
+		await backupInitialWithDate.remove()
 
-    // Не сохранять бэкап в dev режиме.
-    if (this.config.buildType === BuildType.dev) {
-     return
-    }
+		// Не сохранять бэкап в dev режиме.
+		if (config.buildType === BuildType.dev) {
+		 return
+		}
 
-    await this.config.initial.copyTo(this.files.backupInitial)
-    await this.config.initial.copyTo(backupInitialWithDate)
-    this.messages.info(this.texts.successBackupSave)
-  }
+		await initial.copyTo(this.files.backupInitial)
+		await initial.copyTo(backupInitialWithDate)
+		this.messages.info(this.texts.successBackupSave)
+	}
 
-  /** Заменить оригинальный `initial.pak` на сохранённый. */
-  async recoverFromIt() {
-    if (!await this.files.backupInitial.exists()) {
-      return
-    }
+	async recoverFromIt() {
+		if (!await this.files.backupInitial.exists()) {
+			return
+		}
 
-		const archive = di.resolve(ARCHIVE_TOKEN)
+		const archiver = di.resolve(ARCHIVER_TOKEN)
+		const initial = this.files.initial
 
-    await this.config.initial.remove()
-    await this.files.backupInitial.copyTo(this.config.initial)
-    await archive.unpackMain()
-    this.messages.info(this.texts.successInitialRestore)
-  }
+		await initial.remove()
+		await this.files.backupInitial.copyTo(initial)
+		await archiver.unpackMain()
+		this.messages.info(this.texts.successInitialRestore)
+	}
 }

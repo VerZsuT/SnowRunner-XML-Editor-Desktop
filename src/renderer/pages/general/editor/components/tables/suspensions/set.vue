@@ -56,8 +56,8 @@ import { SUSPENSIONS_LOCALIZATION as texts } from './localization'
 export type SuspensionSetProps = ReadyProps & Props
 
 type Props = {
-  xml: SuspensionsXML
-  file: IFile
+	xml: SuspensionsXML
+	file: IFile
 }
 
 const config = di.resolve(CONFIG_TOKEN)
@@ -70,12 +70,12 @@ provideFile(file)
 saveUtils.useOnSave(() => file.write(xml.baseXML))
 
 function getSuspensionLabel(nth: number, type?: WheelLocation) {
-  const values: Record<WheelLocation, string> = {
-    [WheelLocation.front]: texts.frontSuspension,
-    [WheelLocation.middle]: texts.middleSuspension,
-    [WheelLocation.rear]: texts.rearSuspension
-  }
-  
-  return values[type!] ?? `${texts.suspension} ${nth}`
+	const values: Record<WheelLocation, string> = {
+		[WheelLocation.front]: texts.frontSuspension,
+		[WheelLocation.middle]: texts.middleSuspension,
+		[WheelLocation.rear]: texts.rearSuspension
+	}
+	
+	return values[type!] ?? `${texts.suspension} ${nth}`
 }
 </script>

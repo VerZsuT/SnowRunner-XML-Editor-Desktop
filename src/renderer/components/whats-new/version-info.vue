@@ -18,8 +18,8 @@ import { List, Typography } from 'ant-design-vue'
 const { Text } = Typography
 
 export type VersionInfoProps = {
-  /** Изменения в данной версии. */
-  changes: string[]
+	/** Изменения в данной версии. */
+	changes: string[]
 }
 
 defineProps<VersionInfoProps>()
@@ -27,14 +27,14 @@ defineProps<VersionInfoProps>()
 
 <style scoped lang='scss'>
 .content {
-  margin-left: 20px;
+	margin-left: 20px;
 }
 
 .title {
-  text-align: center;
-  margin-bottom: 20px;
-  font-size: 25px;
-  font-weight: bold;
-  font-family: Arial, Helvetica, sans-serif;
+	text-align: center;
+	margin-bottom: 20px;
+	font-size: 25px;
+	font-weight: bold;
+	font-family: Arial, Helvetica, sans-serif;
 }
 </style>

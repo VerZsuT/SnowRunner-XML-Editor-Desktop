@@ -1,68 +1,28 @@
 import { initMain, mainMethod } from '@bridge/renderer'
 import type { Dialogs as DialogsMain } from './main'
+import type { IRendererDialogs } from './types'
 
-export * from './enums'
-export type * from './types'
-
-/**
- * Вывод системных диалогов.
- * _renderer process_
- */
+/** Вывод системных диалогов. [renderer] */
 @initMain()
-export class Dialogs {
-  /**
-   * Открыть окно выбора `.epf` файла.
-   *
-   * {@link DialogsMain['getEPF']|Перейти к методу}
-   */
-  @mainMethod()
-  getEPF!: DialogsMain['getEPF']
+export class Dialogs implements IRendererDialogs {
+	@mainMethod()
+	getEPF!: DialogsMain['getEPF']
 
-  /**
-   * Открыть окно сохранения `.epf` файла.
-   *
-   * {@link DialogsMain['saveEPF']|Перейти к методу}
-   */
-  @mainMethod()
-  saveEPF!: DialogsMain['saveEPF']
+	@mainMethod()
+	saveEPF!: DialogsMain['saveEPF']
 
-  /**
-   * Открыть окно выбора `initial.pak`.
-   *
-   * {@link DialogsMain['getInitial']|Перейти к методу}
-   */
-  @mainMethod()
-  getInitial!: DialogsMain['getInitial']
+	@mainMethod()
+	getInitial!: DialogsMain['getInitial']
 
-  /**
-   * Открыть окно выбора папки.
-   *
-   * {@link DialogsMain['getDir']|Перейти к методу}
-   */
-  @mainMethod()
-  getDir!: DialogsMain['getDir']
+	@mainMethod()
+	getDir!: DialogsMain['getDir']
 
-  /**
-   * Открыть окно выбора папки.
-   *
-   * {@link DialogsMain['getDirs']|Перейти к методу}
-   */
-  @mainMethod()
-  getDirs!: DialogsMain['getDirs']
+	@mainMethod()
+	getDirs!: DialogsMain['getDirs']
 
-  /**
-   * Открыть окно выбора папки.
-   *
-   * {@link DialogsMain['getPaks']|Перейти к методу}
-   */
-  @mainMethod()
-  getPaks!: DialogsMain['getPaks']
+	@mainMethod()
+	getPaks!: DialogsMain['getPaks']
 
-  /**
-   * Открыть окно выбора `.xml` файла.
-   *
-   * {@link DialogsMain['getXML']|Перейти к методу}
-   */
-  @mainMethod()
-  getXML!: DialogsMain['getXML']
+	@mainMethod()
+	getXML!: DialogsMain['getXML']
 }

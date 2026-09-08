@@ -1,8 +1,8 @@
+import type { IAppConstants } from './types'
+
 /** Константы приложения. */
-export class AppConstants {
-	/** Название приложения. */
+export class AppConstants implements IAppConstants {
 	readonly NAME = 'SnowRunner XML Editor'
 
-	/** Версия приложения. */
 	readonly VERSION = '1.4.0'
 }

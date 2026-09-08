@@ -1,14 +1,13 @@
-import type { Config, IConfig } from '@modules/data/config/main'
-import type { IPaths, Paths } from '@modules/paths/main'
 import { di } from '../container'
-import { APP_CONSTANTS_TOKEN, APP_TOKEN, ARCHIVE_TOKEN, BACKUP_TOKEN, CHECKS_TOKEN, CONFIG_TOKEN, DIALOGS_TOKEN, DIRS_TOKEN, DLC_TOKEN, EDITED_TOKEN, ENV_TOKEN, EPF_TOKEN, FAVORITES_TOKEN, FILES_TOKEN, GAME_TEXTS_TOKEN, LOADING_TOKEN, MESSAGES_TOKEN, MODS_TOKEN, PATHS_TOKEN, QUIT_PARAMS_TOKEN, SIZES_TOKEN, SYSTEM_TOKEN, UPDATES_TOKEN, WINDOWS_TOKEN } from './tokens'
+import { APP_CONSTANTS_TOKEN, APP_TOKEN, ARCHIVER_TOKEN, BACKUP_TOKEN, CHECKS_TOKEN, CONFIG_MANAGER_TOKEN, CONFIG_TOKEN, DIALOGS_TOKEN, DIRS_TOKEN, DLC_TOKEN, EDITED_TOKEN, ENV_TOKEN, EPF_TOKEN, FAVORITES_TOKEN, FILES_TOKEN, GAME_TEXTS_TOKEN, LOADING_TOKEN, MESSAGES_TOKEN, MODS_TOKEN, PATHS_MANAGER_TOKEN, PATHS_TOKEN, QUIT_PARAMS_TOKEN, SIZES_TOKEN, SYSTEM_TOKEN, UPDATES_TOKEN, WINDOWS_TOKEN } from './tokens'
 
+/** Зарегистрировать DI. */
 export async function registerDI() {
 	const { AppConstants } = await import('@modules/app/constants')
 	const { QuitParams } = await import('@modules/quit-params/main')
 	const { App } = await import('@modules/app/main')
-	const { Archive } = await import('@modules/archive/main')
-	const { Backup } = await import('@modules/backup/main')
+	const { Archive } = await import('@modules/archiver/main')
+	const { InitialBackup } = await import('@modules/backup/main')
 	const { Checks } = await import('@modules/checks/main')
 	const { Config } = await import('@modules/data/config/main')
 	const { Edited } = await import('@modules/data/edited/main')
@@ -16,9 +15,9 @@ export async function registerDI() {
 	const { Mods } = await import('@modules/data/modifications/main')
 	const { Sizes } = await import('@modules/data/sizes/main')
 	const { Dialogs } = await import('@modules/dialogs/main')
-	const { DLCs } = await import('@modules/dlcs/main')
+	const { Dlc } = await import('@modules/dlcs/main')
 	const { Env } = await import('@modules/env/main')
-	const { EPF } = await import('@modules/epf/main')
+	const { Epf } = await import('@modules/epf/main')
 	const { GameTexts } = await import('@modules/game-texts/main')
 	const { Loading } = await import('@modules/loading/main')
 	const { Messages } = await import('@modules/messages/main')
@@ -30,15 +29,17 @@ export async function registerDI() {
 
 	di.registerLazy(ENV_TOKEN, () => new Env())
 	di.registerLazy(APP_CONSTANTS_TOKEN, () => new AppConstants())
-	di.registerLazy(PATHS_TOKEN, () => new Paths() as Paths & IPaths)
+	di.registerLazy(PATHS_MANAGER_TOKEN, () => new Paths())
+	di.registerLazy(PATHS_TOKEN, () => di.resolve(PATHS_MANAGER_TOKEN).get())
 	di.registerLazy(QUIT_PARAMS_TOKEN, () => new QuitParams())
 	di.registerLazy(SYSTEM_TOKEN, () => new System())
 	di.registerLazy(FILES_TOKEN, () => new Files())
 	di.registerLazy(DIRS_TOKEN, () => new Dirs())
-	di.registerLazy(CONFIG_TOKEN, () => new Config() as Config & IConfig)
+	di.registerLazy(CONFIG_MANAGER_TOKEN, () => new Config())
+	di.registerLazy(CONFIG_TOKEN, () => di.resolve(CONFIG_MANAGER_TOKEN).get())
 	di.registerLazy(APP_TOKEN, () => new App())
-	di.registerLazy(ARCHIVE_TOKEN, () => new Archive())
-	di.registerLazy(BACKUP_TOKEN, () => new Backup())
+	di.registerLazy(ARCHIVER_TOKEN, () => new Archive())
+	di.registerLazy(BACKUP_TOKEN, () => new InitialBackup())
 	di.registerLazy(CHECKS_TOKEN, () => new Checks())
 	di.registerLazy(SIZES_TOKEN, () => new Sizes())
 	di.registerLazy(EDITED_TOKEN, () => new Edited())
@@ -46,8 +47,8 @@ export async function registerDI() {
 	di.registerLazy(MODS_TOKEN, () => new Mods())
 	di.registerLazy(DIALOGS_TOKEN, () => new Dialogs())
 	di.registerLazy(MESSAGES_TOKEN, () => new Messages())
-	di.registerLazy(DLC_TOKEN, () => new DLCs())
-	di.registerLazy(EPF_TOKEN, () => new EPF())
+	di.registerLazy(DLC_TOKEN, () => new Dlc())
+	di.registerLazy(EPF_TOKEN, () => new Epf())
 	di.registerLazy(GAME_TEXTS_TOKEN, () => new GameTexts())
 	di.registerLazy(LOADING_TOKEN, () => new Loading())
 	di.registerLazy(UPDATES_TOKEN, () => new Updates())

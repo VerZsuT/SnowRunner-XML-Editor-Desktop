@@ -65,7 +65,7 @@ npm run package
       index.ts              стартовый файл.
       tsconfig.json         TS конфигурация для main процесса.
    /modules:            разного рода модули.
-      /archive              работа с архиватором.
+      /archiver             работа с архиватором.
       /backup               работа с бэкапом.
       /checks               основные проверки.
       /data                 сохраняемые данные.

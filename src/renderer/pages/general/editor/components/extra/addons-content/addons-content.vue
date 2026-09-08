@@ -119,312 +119,312 @@ const selectOptions = ref<OptionsType>([])
 let allSelectOptions: OptionsType = []
 
 const content = reactive({
-  wheels: 0,
-  repairs: 0,
-  fuel: 0,
-  water: 0
+	wheels: 0,
+	repairs: 0,
+	fuel: 0,
+	water: 0
 })
 const defaultContent = { ...content }
 const loadStatus = reactive({
-  isLoading: false,
-  count: 0
+	isLoading: false,
+	count: 0
 })
 const label = computed(() => new LocalizationStrings()
-  .ru('Содержимое аддонов')
-  .en('Addons content')
-  .de('Addon-Inhalt')
-  .ch('附加组件')
-  .get(config)
+	.ru('Содержимое аддонов')
+	.en('Addons content')
+	.de('Addon-Inhalt')
+	.ch('附加组件')
+	.get(config)
 )
 
 useReady(emit)
 
 async function changeNameFilter(value = '') {
-  if (!hasItems(files.value) || !allSelectOptions) {
-    return
-  }
+	if (!hasItems(files.value) || !allSelectOptions) {
+		return
+	}
 
-  selectOptions.value = allSelectOptions
-    .filter(({ label }) => label.toLowerCase().includes(value.toLowerCase()))
+	selectOptions.value = allSelectOptions
+		.filter(({ label }) => label.toLowerCase().includes(value.toLowerCase()))
 }
 
 async function selectAddon(addonName: string) {
-  const data = await getAddonData(getFile(addonName))
+	const data = await getAddonData(getFile(addonName))
 
-  addon.value = addonName
-  content.wheels = data.wheels
-  content.repairs = data.repairs
-  content.fuel = data.fuel
-  content.water = data.water
+	addon.value = addonName
+	content.wheels = data.wheels
+	content.repairs = data.repairs
+	content.fuel = data.fuel
+	content.water = data.water
 }
 
 async function loadAddons() {
-  if (hasItems(files.value)) {
-    return
-  }
+	if (hasItems(files.value)) {
+		return
+	}
 
-  loadStatus.isLoading = true
+	loadStatus.isLoading = true
 
-  const onFind = () => void loadStatus.count++
+	const onFind = () => void loadStatus.count++
 
-  const addons = await getAddons(file.name, info.value.mod, isInstalled, onFind)
-  const data = await getAddonData(addons[0])
+	const addons = await getAddons(file.name, info.value.mod, isInstalled, onFind)
+	const data = await getAddonData(addons[0])
 
-  allSelectOptions = selectOptions.value = await initSelectOptions(addons)
-  files.value = addons
-  addon.value = addons[0].name
+	allSelectOptions = selectOptions.value = await initSelectOptions(addons)
+	files.value = addons
+	addon.value = addons[0].name
 
-  content.wheels = data.wheels
-  content.repairs = data.repairs
-  content.fuel = data.fuel
-  content.water = data.water
+	content.wheels = data.wheels
+	content.repairs = data.repairs
+	content.fuel = data.fuel
+	content.water = data.water
 
-  loadStatus.isLoading = false
-  loadStatus.count = 0
+	loadStatus.isLoading = false
+	loadStatus.count = 0
 }
 
 async function saveAddonData() {
-  const item = getFile(addon.value)
-  const xml = await getTruckAddon(item)
+	const item = getFile(addon.value)
+	const xml = await getTruckAddon(item)
 
-  if (!xml) {
-    throw new Error('DOM is undefined')
-  }
+	if (!xml) {
+		throw new Error('DOM is undefined')
+	}
 
-  if (!item) {
-    throw new Error('Path to addon not found')
-  }
-  
-  let TruckData = xml.TruckData
-  let hasAny = false
+	if (!item) {
+		throw new Error('Path to addon not found')
+	}
+	
+	let TruckData = xml.TruckData
+	let hasAny = false
 
-  if (!TruckData) {
-    xml.appendTag('TruckData')
-    TruckData = xml.TruckData!
-  }
+	if (!TruckData) {
+		xml.appendTag('TruckData')
+		TruckData = xml.TruckData!
+	}
 
-  if (content.fuel === 0) {
-    TruckData.FuelCapacity = undefined
-  } else {
-    TruckData.FuelCapacity = content.fuel
-    hasAny = true
-  }
+	if (content.fuel === 0) {
+		TruckData.FuelCapacity = undefined
+	} else {
+		TruckData.FuelCapacity = content.fuel
+		hasAny = true
+	}
 
-  if (content.water === 0) {
-    TruckData.WaterCapacity = undefined
-  } else {
-    TruckData.WaterCapacity = content.water
-    hasAny = true
-  }
+	if (content.water === 0) {
+		TruckData.WaterCapacity = undefined
+	} else {
+		TruckData.WaterCapacity = content.water
+		hasAny = true
+	}
 
-  if (content.wheels === 0) {
-    TruckData.WheelRepairsCapacity = undefined
-  } else {
-    TruckData.WheelRepairsCapacity = content.wheels
-    hasAny = true
-  }
+	if (content.wheels === 0) {
+		TruckData.WheelRepairsCapacity = undefined
+	} else {
+		TruckData.WheelRepairsCapacity = content.wheels
+		hasAny = true
+	}
 
-  if (content.repairs === 0) {
-    TruckData.RepairsCapacity = undefined
-  } else {
-    TruckData.RepairsCapacity = content.repairs
-    hasAny = true
-  }
+	if (content.repairs === 0) {
+		TruckData.RepairsCapacity = undefined
+	} else {
+		TruckData.RepairsCapacity = content.repairs
+		hasAny = true
+	}
 
-  if (!hasAny && !TruckData.hasAttrs()) {
-    TruckData.remove()
-  }
+	if (!hasAny && !TruckData.hasAttrs()) {
+		TruckData.remove()
+	}
 
-  await item.write(xml.baseXML)
-  di.resolve(MESSAGES_TOKEN).success(texts.changed)
+	await item.write(xml.baseXML)
+	di.resolve(MESSAGES_TOKEN).success(texts.changed)
 }
 
 function openFile() {
-  const file = getFile(addon.value)
+	const file = getFile(addon.value)
 
-  if (file) {
-    void di.resolve(SYSTEM_TOKEN).openFile(file.path)
-  }
+	if (file) {
+		void di.resolve(SYSTEM_TOKEN).openFile(file.path)
+	}
 }
 
 function isInstalled(addonXML: TruckAddon): boolean {
-  const InstallSocket = addonXML.GameData?.InstallSocket
+	const InstallSocket = addonXML.GameData?.InstallSocket
 
-  if (!InstallSocket) {
-    return false
-  }
+	if (!InstallSocket) {
+		return false
+	}
 
-  const type = InstallSocket.Type || 'no-type'
+	const type = InstallSocket.Type || 'no-type'
 
-  return Boolean(
-    xml.GameData?.AddonSockets?.some(
-      ({ Sockets }) => Sockets.some(
-        ({ Names }) => Names.includes(type)
-      )
-    )
-  )
+	return Boolean(
+		xml.GameData?.AddonSockets?.some(
+			({ Sockets }) => Sockets.some(
+				({ Names }) => Names.includes(type)
+			)
+		)
+	)
 }
 
 async function initSelectOptions(items: IFile[]): Promise<OptionsType> {
-  return await Promise.all(
-    items.map(async addon => ({
-      value: addon.name,
-      label: await getAddonName(addon)
-    }))
-  )
+	return await Promise.all(
+		items.map(async addon => ({
+			value: addon.name,
+			label: await getAddonName(addon)
+		}))
+	)
 }
 
 async function getAddonName(addon: IFile): Promise<string | undefined> {
-  const xml = await getTruckAddon(addon)
-  const uiDesc = xml?.GameData?.UiDesc
-  const key = uiDesc
-    ? uiDesc.UiName
-    : undefined
+	const xml = await getTruckAddon(addon)
+	const uiDesc = xml?.GameData?.UiDesc
+	const key = uiDesc
+		? uiDesc.UiName
+		: undefined
 
-  return di.resolve(GAME_TEXTS_TOKEN).get(key, info.value.mod) || addon.name
+	return di.resolve(GAME_TEXTS_TOKEN).get(key, info.value.mod) || addon.name
 }
 
 function getFile(name?: string): IFile | undefined {
-  return files.value.find(item => item.name === (name || addon.value))
+	return files.value.find(item => item.name === (name || addon.value))
 }
 
 async function getAddonData(file?: IFile) {
-  if (!file) {
-    return defaultContent
-  }
+	if (!file) {
+		return defaultContent
+	}
 
-  const addonXML = await TruckAddon.from(file)
+	const addonXML = await TruckAddon.from(file)
 
-  if (!addonXML) {
-    return defaultContent
-  }
+	if (!addonXML) {
+		return defaultContent
+	}
 
-  let TruckData = addonXML.TruckData
+	let TruckData = addonXML.TruckData
 
-  if (!TruckData) {
-    addonXML.appendTag('TruckData')
-    TruckData = addonXML.TruckData!
-  }
+	if (!TruckData) {
+		addonXML.appendTag('TruckData')
+		TruckData = addonXML.TruckData!
+	}
 
-  const wheels = TruckData.WheelRepairsCapacity ?? defaultContent.wheels
-  const repairs = TruckData.RepairsCapacity ?? defaultContent.repairs
-  const fuel = TruckData.FuelCapacity ?? defaultContent.fuel
-  const water = TruckData.WaterCapacity ?? defaultContent.water
+	const wheels = TruckData.WheelRepairsCapacity ?? defaultContent.wheels
+	const repairs = TruckData.RepairsCapacity ?? defaultContent.repairs
+	const fuel = TruckData.FuelCapacity ?? defaultContent.fuel
+	const water = TruckData.WaterCapacity ?? defaultContent.water
 
-  return {
-    ...defaultContent,
-    ...wheels ? { wheels } : {},
-    ...repairs ? { repairs } : {},
-    ...fuel ? { fuel } : {},
-    ...water ? { water } : {}
-  }
+	return {
+		...defaultContent,
+		...wheels ? { wheels } : {},
+		...repairs ? { repairs } : {},
+		...fuel ? { fuel } : {},
+		...water ? { water } : {}
+	}
 }
 
 async function getTruckAddon(file?: IFile): Promise<TruckAddon | undefined> {
-  const addonFile = file ?? getFile()
+	const addonFile = file ?? getFile()
 
-  return await addonFile?.exists()
-    ? TruckAddon.from(addonFile!)
-    : undefined
+	return await addonFile?.exists()
+		? TruckAddon.from(addonFile!)
+		: undefined
 }
 
 async function getAddons(
-  truckName: string,
-  mod?: string,
-  filter?: (xml: TruckAddon) => boolean,
-  every?: () => void | Promise<void>
+	truckName: string,
+	mod?: string,
+	filter?: (xml: TruckAddon) => boolean,
+	every?: () => void | Promise<void>
 ): Promise<IFile[]> {
-  const dirs = di.resolve(DIRS_TOKEN)
-  
-  const out: IFile[] = []
-  const tuningDir = dirs.classes.dir(`trucks/${truckName}_tuning`)
-  const inLoading = new Set<Promise<void>>()
+	const dirs = di.resolve(DIRS_TOKEN)
+	
+	const out: IFile[] = []
+	const tuningDir = dirs.classes.dir(`trucks/${truckName}_tuning`)
+	const inLoading = new Set<Promise<void>>()
 
-  function filterFile(file: IFile) {
-    inLoading.add((async () => {
-      async function pushToOut(file: IFile) {
-        out.push(file)
-        await every?.()
-      }
+	function filterFile(file: IFile) {
+		inLoading.add((async () => {
+			async function pushToOut(file: IFile) {
+				out.push(file)
+				await every?.()
+			}
 
-      if (filter) {
-        const xml = await TruckAddon.from(file)
+			if (filter) {
+				const xml = await TruckAddon.from(file)
 
-        if (xml && filter(xml)) {
-          await pushToOut(file)
-        }
-      } else {
-        await pushToOut(file)
-      }
-    })())
-  }
+				if (xml && filter(xml)) {
+					await pushToOut(file)
+				}
+			} else {
+				await pushToOut(file)
+			}
+		})())
+	}
 
-  if (await tuningDir.exists()) {
-    for (const entry of await tuningDir.read()) {
-      if (await entry.isDir()) {
-        continue
-      }
+	if (await tuningDir.exists()) {
+		for (const entry of await tuningDir.read()) {
+			if (await entry.isDir()) {
+				continue
+			}
 
-      filterFile(entry.asFile())
-    }
-  }
+			filterFile(entry.asFile())
+		}
+	}
 
-  const baseDir = dirs.classes.dir('trucks/addons')
-  if (await baseDir.exists()) {
-    for (const entry of await baseDir.read()) {
-      if (await entry.isDir()) {
-        continue
-      }
+	const baseDir = dirs.classes.dir('trucks/addons')
+	if (await baseDir.exists()) {
+		for (const entry of await baseDir.read()) {
+			if (await entry.isDir()) {
+				continue
+			}
 
-      filterFile(entry.asFile())
-    }
-  }
+			filterFile(entry.asFile())
+		}
+	}
 
-  for (const dlc of di.resolve(DLC_TOKEN)) {
-    const DLCTrucks = dlc.dir.dir('classes/trucks')
+	for (const dlc of di.resolve(DLC_TOKEN)) {
+		const DLCTrucks = dlc.dir.dir('classes/trucks')
 
-    if (await DLCTrucks.exists()) {
-      const DLCBasic = DLCTrucks.dir('addons')
+		if (await DLCTrucks.exists()) {
+			const DLCBasic = DLCTrucks.dir('addons')
 
-      if (await DLCBasic.exists()) {
-        for (const entry of await DLCBasic.read()) {
-          if (await entry.isDir()) {
-            continue
-          }
+			if (await DLCBasic.exists()) {
+				for (const entry of await DLCBasic.read()) {
+					if (await entry.isDir()) {
+						continue
+					}
 
-          filterFile(entry.asFile())
-        }
-      }
+					filterFile(entry.asFile())
+				}
+			}
 
-      for (const entry of await DLCTrucks.read()) {
-        if (!await entry.isDir() || !entry.basename().endsWith('_tuning')) {
-          continue
-        }
+			for (const entry of await DLCTrucks.read()) {
+				if (!await entry.isDir() || !entry.basename().endsWith('_tuning')) {
+					continue
+				}
 
-        for (const innerEntry of await entry.asDir().read()) {
-          if (await innerEntry.isDir()) {
-            continue
-          }
+				for (const innerEntry of await entry.asDir().read()) {
+					if (await innerEntry.isDir()) {
+						continue
+					}
 
-          filterFile(innerEntry.asFile())
-        }
-      }
-    }
-  }
+					filterFile(innerEntry.asFile())
+				}
+			}
+		}
+	}
 
-  if (mod) {
-    for (const item of await dirs.modsTemp.dir(mod, 'classes').findFiles({ ext: 'xml', recursive: true })) {
-      const element = await XMLElement.from(item)
-      
-      if (element?.has('TruckAddon')) {
-        filterFile(item)
-      }
-    }
-  }
+	if (mod) {
+		for (const item of await dirs.modsTemp.dir(mod, 'classes').findFiles({ ext: 'xml', recursive: true })) {
+			const element = await XMLElement.from(item)
+			
+			if (element?.has('TruckAddon')) {
+				filterFile(item)
+			}
+		}
+	}
 
-  await Promise.all(inLoading)
-  
-  return out
+	await Promise.all(inLoading)
+	
+	return out
 }
 </script>
 
@@ -432,40 +432,40 @@ async function getAddons(
 .prepare,
 .loading,
 .wrapper {
-  width: 100%;
-  height: 100%;
-  margin-bottom: 10px;
-  text-align: center;
+	width: 100%;
+	height: 100%;
+	margin-bottom: 10px;
+	text-align: center;
 }
 
 .ac-grid {
-  justify-content: space-around;
+	justify-content: space-around;
 }
 
 .open-file-btn,
 .load-btn {
-  display: block !important;
-  margin: 15px auto 0;
+	display: block !important;
+	margin: 15px auto 0;
 }
 
 .addon {
-  &-select {
-    min-width: 200px;
-    margin-top: 10px;
-  }
+	&-select {
+		min-width: 200px;
+		margin-top: 10px;
+	}
 
-  &-filter {
-    width: 200px;
-  }
+	&-filter {
+		width: 200px;
+	}
 }
 
 .wrapper {
-  width: 100%;
-  text-align: center;
+	width: 100%;
+	text-align: center;
 
-  .main {
-    margin-bottom: 10px;
-  }
+	.main {
+		margin-bottom: 10px;
+	}
 }
 </style>
 

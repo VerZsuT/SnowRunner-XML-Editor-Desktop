@@ -105,8 +105,8 @@ import { editorUtils } from '../../utilities/editor'
 const { Text } = Typography
 
 export type ListItemProps = {
-  file: IFile
-  category: Category
+	file: IFile
+	category: Category
 }
 
 const images = di.resolve(IMAGES_TOKEN)
@@ -134,231 +134,231 @@ const name = ref<string>('')
 const type = ref<TruckType | undefined>()
 
 function getName(file: IFile, xml: TruckXML): string {
-  let name = prettyString(file.name)
+	let name = prettyString(file.name)
 
-  if (xml.GameData?.UiDesc) {
-    const uiName = xml.GameData?.UiDesc?.UiName
+	if (xml.GameData?.UiDesc) {
+		const uiName = xml.GameData?.UiDesc?.UiName
 
-    if (uiName) {
-      const gameTexts = di.resolve(GAME_TEXTS_TOKEN)
-      const mods = di.resolve(MODS_TOKEN)
+		if (uiName) {
+			const gameTexts = di.resolve(GAME_TEXTS_TOKEN)
+			const mods = di.resolve(MODS_TOKEN)
 
-      name = gameTexts.get(uiName, mods.getModID(file)) || uiName
-    }
-  }
+			name = gameTexts.get(uiName, mods.getModID(file)) || uiName
+		}
+	}
 
-  return name
+	return name
 }
 
 function getType(xml: TruckXML) {
-  return xml.TruckData?.TruckType
+	return xml.TruckData?.TruckType
 }
 
 onMounted(() => {
-  if (!container.value || !prevFile.value || !isShow.value || prevFile.value.path !== file.value.path) {
-    return
-  }
+	if (!container.value || !prevFile.value || !isShow.value || prevFile.value.path !== file.value.path) {
+		return
+	}
 
-  container.value.scrollIntoView(false)
+	container.value.scrollIntoView(false)
 })
 
 watchEffect(async () => {
-  const cache = itemsCache.get(file.value.path)
-  const xmlRes = cache
-    ? cache.xml as TruckXML
-    : await TruckXML.from(file.value)
+	const cache = itemsCache.get(file.value.path)
+	const xmlRes = cache
+		? cache.xml as TruckXML
+		: await TruckXML.from(file.value)
 
-  if (xmlRes) {
-    itemsCache.set(file.value.path, { xml: xmlRes })
-  }
-  
-  if (!xmlRes) {
-    console.error(`Error on loading xml file ${file.value.path}`)
-    name.value = 'ERROR'
+	if (xmlRes) {
+		itemsCache.set(file.value.path, { xml: xmlRes })
+	}
+	
+	if (!xmlRes) {
+		console.error(`Error on loading xml file ${file.value.path}`)
+		name.value = 'ERROR'
 
-    return
-  }
+		return
+	}
 
-  xml.value = xmlRes
-  name.value = getName(file.value, xmlRes)
-  type.value = getType(xmlRes)
+	xml.value = xmlRes
+	name.value = getName(file.value, xmlRes)
+	type.value = getType(xmlRes)
 })
 
 watchEffect(async () => {
-  if (!xml.value) {
-    return
-  }
+	if (!xml.value) {
+		return
+	}
 
-  imgSRC.value = await images.getSrc(category.value, file.value, xml.value)
+	imgSRC.value = await images.getSrc(category.value, file.value, xml.value)
 })
 
 const isShow = computed<boolean>(() => (
-  (nameFilter.value
-    ? name.value
-        .toLowerCase()
-        .includes(nameFilter.value.toLowerCase())
-    : true
-  )
-  && (typeFilter.value && type.value
-    ? type.value?.toLowerCase() === typeFilter.value.toLowerCase()
-    : true
-  )
+	(nameFilter.value
+		? name.value
+				.toLowerCase()
+				.includes(nameFilter.value.toLowerCase())
+		: true
+	)
+	&& (typeFilter.value && type.value
+		? type.value?.toLowerCase() === typeFilter.value.toLowerCase()
+		: true
+	)
 ))
 
 const title = computed(() => {
-  if (!nameFilter.value) {
-    return {
-      first: name.value,
-      second: '',
-      last: ''
-    }
-  }
+	if (!nameFilter.value) {
+		return {
+			first: name.value,
+			second: '',
+			last: ''
+		}
+	}
 
-  const firstIndex = name.value.toLowerCase().indexOf(nameFilter.value.toLowerCase())
-  const lastIndex = firstIndex + nameFilter.value.length
+	const firstIndex = name.value.toLowerCase().indexOf(nameFilter.value.toLowerCase())
+	const lastIndex = firstIndex + nameFilter.value.length
 
-  return {
-    first: name.value.slice(0, firstIndex),
-    second: name.value.slice(firstIndex, lastIndex),
-    last: name.value.slice(lastIndex, name.value.length)
-  }
+	return {
+		first: name.value.slice(0, firstIndex),
+		second: name.value.slice(firstIndex, lastIndex),
+		last: name.value.slice(lastIndex, name.value.length)
+	}
 })
 
 const isFavorite = computed(() => favorites.isFavorite(file.value))
 const isEdited = computed(() => edited.isEdited(file.value))
 const contextMenuItems = computed(() => [
-  {
-    label: isFavorite.value
-      ? texts.removeFavorite
-      : texts.addFavorite,
-    key: 'toggle-favorite',
-    onClick: toggleFav
-  },
-  {
-    label: texts.export,
-    key: 'export',
-    onClick: exportFile
-  },
-  {
-    label: texts.import,
-    key: 'import',
-    onClick: importFile
-  },
-  {
-    label: texts.reset,
-    key: 'reset',
-    onClick: resetFile
-  }
+	{
+		label: isFavorite.value
+			? texts.removeFavorite
+			: texts.addFavorite,
+		key: 'toggle-favorite',
+		onClick: toggleFav
+	},
+	{
+		label: texts.export,
+		key: 'export',
+		onClick: exportFile
+	},
+	{
+		label: texts.import,
+		key: 'import',
+		onClick: importFile
+	},
+	{
+		label: texts.reset,
+		key: 'reset',
+		onClick: resetFile
+	}
 ])
 
 async function exportFile() {
-  return editorUtils
-    .export([{ source: file.value }])
-    .catch(reason => new ProgramError(reason))
-    .finally(messages.loading(texts.processing))
+	return editorUtils
+		.export([{ source: file.value }])
+		.catch(reason => new ProgramError(reason))
+		.finally(messages.loading(texts.processing))
 }
 
 async function importFile() {
-  return editorUtils
-    .import([{ file: file.value }])
-    .catch(reason => new ProgramError(reason))
-    .finally(messages.loading(texts.processing))
+	return editorUtils
+		.import([{ file: file.value }])
+		.catch(reason => new ProgramError(reason))
+		.finally(messages.loading(texts.processing))
 }
 
 async function resetFile() {
-  return editorUtils
-    .reset([file.value])
-    .catch(reason => new ProgramError(reason))
-    .finally(messages.loading(texts.processing))
+	return editorUtils
+		.reset([file.value])
+		.catch(reason => new ProgramError(reason))
+		.finally(messages.loading(texts.processing))
 }
 
 function openEditor() {
-  clearEditorStore()
-  setFile(file.value)
-  route(Page.editor)
+	clearEditorStore()
+	setFile(file.value)
+	route(Page.editor)
 }
 
 function toggleFav() {
-  toggleFavorite(file.value)
+	toggleFavorite(file.value)
 }
 </script>
 
 <style lang='scss'>
 .ant-card {
-  &-body {
-    padding: 15px !important;
-  }
+	&-body {
+		padding: 15px !important;
+	}
 
-  &-meta-title {
-    text-align: center;
-  }
+	&-meta-title {
+		text-align: center;
+	}
 }
 </style>
 
 <style lang='scss' scoped>
 .card {
-  box-sizing: content-box;
-  width: 250px;
-  height: 400px;
-  margin: auto;
+	box-sizing: content-box;
+	width: 250px;
+	height: 400px;
+	margin: auto;
 
-  &-container {
-    height: fit-content;
-    flex: auto;
+	&-container {
+		height: fit-content;
+		flex: auto;
 
-    .row {
-      display: flex;
-      box-sizing: border-box;
-      min-width: 400px;
-      gap: 20px;
-      flex-direction: row;
-      flex-wrap: nowrap;
-      align-items: center;
-      justify-content: flex-start;
-      background: white;
-      border-radius: 10px;
-      box-shadow: 0 1px 2px 0 rgba(34, 60, 80, 0.6);
-      overflow: hidden;
-      cursor: pointer;
-      transition: background-color 0.1s ease-in-out;
+		.row {
+			display: flex;
+			box-sizing: border-box;
+			min-width: 400px;
+			gap: 20px;
+			flex-direction: row;
+			flex-wrap: nowrap;
+			align-items: center;
+			justify-content: flex-start;
+			background: white;
+			border-radius: 10px;
+			box-shadow: 0 1px 2px 0 rgba(34, 60, 80, 0.6);
+			overflow: hidden;
+			cursor: pointer;
+			transition: background-color 0.1s ease-in-out;
 
-      &:hover {
-        filter: brightness(96%);
-      }
+			&:hover {
+				filter: brightness(96%);
+			}
 
-      img {
-        box-shadow: 1px 0 3px 0 rgba(34, 60, 80, 0.6);
-      }
+			img {
+				box-shadow: 1px 0 3px 0 rgba(34, 60, 80, 0.6);
+			}
 
-      .description {
-        .title {
-          font-size: 16px;
-          font-weight: bold;
-        }
+			.description {
+				.title {
+					font-size: 16px;
+					font-weight: bold;
+				}
 
-        .indicators-tags {
-          margin-top: 10px;
-        }
-      }
-    }
-  }
+				.indicators-tags {
+					margin-top: 10px;
+				}
+			}
+		}
+	}
 
-  .indicators {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-  }
+	.indicators {
+		position: absolute;
+		top: 10px;
+		left: 10px;
+	}
 
-  .favorite-star {
-    color: yellow;
-  }
+	.favorite-star {
+		color: yellow;
+	}
 
-  .edited-mark {
-    color: white;
-  }
+	.edited-mark {
+		color: white;
+	}
 }
 
 .red {
-  color: red;
+	color: red;
 }
 </style>

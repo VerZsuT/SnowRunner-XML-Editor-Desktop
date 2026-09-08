@@ -1,198 +1,144 @@
-import type { Dialogs } from '@modules/dialogs/renderer'
-import type { Dirs, Files, IDir, IFile } from '@modules/files/renderer'
+import type { IRendererDialogs } from '@modules/dialogs/types'
+import type { IDir, IDirs, IFile, IFiles } from '@modules/files/types'
 import { initMain, mainMethod } from '@utilities/bridge/renderer'
 import { di, inject } from '@utilities/di/container'
-import { ARCHIVE_TOKEN, DIALOGS_TOKEN, DIRS_TOKEN, FILES_TOKEN } from '@utilities/di/renderer/tokens'
-import { RendArrayBase } from '@utilities/json-arrays/renderer'
+import { ARCHIVER_TOKEN, DIALOGS_TOKEN, DIRS_TOKEN, FILES_TOKEN } from '@utilities/di/renderer/tokens'
+import { BaseRendererArray } from '@utilities/json-arrays/renderer'
 import { Bridge } from 'emr-bridge/renderer'
 import type { Mods as ModsMain } from './main'
 import type { PubType } from './public'
 import { PubKeys } from './public'
-import type { IMod } from './types'
+import type { IMod, IRendererMods } from './types'
 
-export type * from './types'
-
-/**
- * Работа с массивом модификаций.
- * _renderer process_
- */
+/** Работа с массивом модификаций. [renderer] */
 @initMain()
-export class Mods extends RendArrayBase<IMod, IMod & { file: IFile }> {
+export class Mods extends BaseRendererArray<IMod, IMod & { file: IFile }> implements IRendererMods {
 	/** Мост main-rend. */
 	private readonly bridge = Bridge.as<PubType>()
 
 	/** Основные папки. */
 	@inject(DIRS_TOKEN)
-	private readonly dirs!: Dirs
+	private readonly dirs!: IDirs
 
 	/** Основные файлы. */
 	@inject(FILES_TOKEN)
-	private readonly files!: Files
+	private readonly files!: IFiles
 
 	/** Диалоги. */
 	@inject(DIALOGS_TOKEN)
-	private readonly dialogs!: Dialogs
+	private readonly dialogs!: IRendererDialogs
 
-  protected override convert(item: IMod): IMod & { file: IFile } {
-    return { ...item, file: this.files.new(item.path) }
-  }
+	override convert(item: IMod): IMod & { file: IFile } {
+		return { ...item, file: this.files.newFile(item.path) }
+	}
 
-	/** Обработать добавленные моды. */
-  @mainMethod()
-  procMods!: ModsMain['procMods']
+	@mainMethod()
+	procMods!: ModsMain['procMods']
 
-  /**
-   * Найти `.pak` файлы модификаций в папке.
-   * @param dir Папка.
-   * @returns `.pak` файлы модификаций в папке.
-   */
-  async findMods(dir: IDir): Promise<[file: IFile, name: string][]> {
-    return (await this.bridge[PubKeys.findMods](dir.path))
-      .map(([path, name]) => [this.files.new(path), name])
-  }
+	async findMods(dir: IDir): Promise<[file: IFile, name: string][]> {
+		return (await this.bridge[PubKeys.findMods](dir.path))
+			.map(([path, name]) => [this.files.newFile(path), name])
+	}
 
-  /**
-   * Получить список всех модов (добавленных и в документах).
-   * @returns Список всех модов (добавленных и в документах).
-   */
-  async getAllMods(): Promise<[file: IFile, name: string][]> {
-    return (await this.bridge[PubKeys.getAllMods]())
-      .map(([path, name]) => [this.files.new(path), name])
-  }
+	async getAllMods(): Promise<[file: IFile, name: string][]> {
+		return (await this.bridge[PubKeys.getAllMods]())
+			.map(([path, name]) => [this.files.newFile(path), name])
+	}
 
-  /**
-   * Получить ID мода из пути к файлу.
-   * @param file Файл.
-   * @returns ID мода.
-   */
-  getModID(file: IFile): string | undefined {
-    return file.path.includes(this.dirs.modsTemp.name)
-      ? file.path
-        .split(this.dirs.modsTemp.name)
-        .at(1)
-        ?.split('\\')
-        .at(1)
-      : undefined
-  }
+	getModID(file: IFile): string | undefined {
+		return file.path.includes(this.dirs.modsTemp.name)
+			? file.path
+				.split(this.dirs.modsTemp.name)
+				.at(1)
+				?.split('\\')
+				.at(1)
+			: undefined
+	}
 
-  /**
-   * Найти мод по названию.
-   * @param name Название.
-   * @returns Мод.
-   */
-  findByName(name: string): IMod | undefined {
-    return this.find(mod => mod.name === name)
-  }
+	findByName(name: string): IMod | undefined {
+		return this.find(mod => mod.name === name)
+	}
 
-  /**
-   * Найти мод по XML файлу.
-   * @param file XML файл.
-   * @returns Мод.
-   */
-  findByFile(file: IFile): IMod | undefined {
-    const modName = this.getModID(file)
+	findByFile(file: IFile): IMod | undefined {
+		const modName = this.getModID(file)
 
-    return modName
-      ? this.findByName(modName)
-      : undefined
-  }
+		return modName
+			? this.findByName(modName)
+			: undefined
+	}
 
-  /**
-   * Запросить у пользователя `.pak` файлы модов.
-   * @returns Выбранные `.pak` файлы модов.
-   */
-  async requestPaks() {
-    return await this.getModPaks()
-  }
+	async requestPaks() {
+		return await this.getModPaks()
+	}
 
-  /**
-   * Запросить у пользователя папки с модами.
-   * @returns Выбранные папки с модами.
-  */
-  async requestDirs() {
-    const dirPaths = this.dialogs.getDirs()
+	async requestDirs() {
+		const dirPaths = this.dialogs.getDirs()
 
-    if (!dirPaths) {
-      return
-    }
+		if (!dirPaths) {
+			return
+		}
 
-    const result: [file: IFile, name: string][] = []
+		const result: [file: IFile, name: string][] = []
 
-    for (const dirPath of dirPaths) {
-      result.push(...await this.findMods(this.dirs.new(dirPath)))
-    }
+		for (const dirPath of dirPaths) {
+			result.push(...await this.findMods(this.dirs.newDir(dirPath)))
+		}
 
-    return result
-  }
+		return result
+	}
 
-  /**
-   * Сохранить моды из вариантов `Select`.
-   * @param keys Ключи.
-   * @param items Элементы.
-   */
-  saveFromSelect(keys: string[], items: [IFile, string][]) {
-    this.set(this.fromSelectKeys(keys, items))
-  }
+	saveFromSelect(keys: string[], items: [IFile, string][]) {
+		this.set(this.fromSelectKeys(keys, items))
+	}
 
-  /**
-   * Преобразовать в варианты `Select`.
-   * @param items Элементы.
-   * @returns Варианты `Select`.
-   */
-  toSelectKeys(items: [IFile, string][]): string[] {
-    return items.map(item => item[0].path)
-  }
+	toSelectKeys(items: [IFile, string][]): string[] {
+		return items.map(item => item[0].path)
+	}
 
-  /**
-   * Преобразовать варианты `Select` в `IMod`.
-   * @param keys Ключи.
-   * @param items Элементы.
-   * @returns Модификации.
-   */
-  fromSelectKeys(keys: string[], items: [IFile, string][]): IMod[] {
-    const out: IMod[] = []
+	fromSelectKeys(keys: string[], items: [IFile, string][]): IMod[] {
+		const out: IMod[] = []
 
-    for (const key of keys) {
-      for (const [file, name] of items) {
-        if (file.path === key) {
-          out.push({
-            fileName: file.basename(),
-            path: file.path,
-            name
-          })
-        }
-      }
-    }
+		for (const key of keys) {
+			for (const [file, name] of items) {
+				if (file.path === key) {
+					out.push({
+						fileName: file.basename(),
+						path: file.path,
+						name
+					})
+				}
+			}
+		}
 
-    return out
-  }
+		return out
+	}
 
-  /**
-   * Получить `.pak` файлы модификаций.
-   * @returns `.pak` файлы модификаций.
-   */
-  private async getModPaks(): Promise<[IFile, string][] | undefined> {
-    const pakPaths = this.dialogs.getPaks()
-    const out: [IFile, string][] = []
+	/**
+	 * Получить `.pak` файлы модификаций.
+	 * @returns `.pak` файлы модификаций.
+	 */
+	private async getModPaks(): Promise<[IFile, string][] | undefined> {
+		const pakPaths = this.dialogs.getPaks()
+		const out: [IFile, string][] = []
 
-    if (!pakPaths) {
-      return
-    }
+		if (!pakPaths) {
+			return
+		}
 
-		const archive = di.resolve(ARCHIVE_TOKEN)
+		const archiver = di.resolve(ARCHIVER_TOKEN)
 
-    for (const pakPath of pakPaths) {
-			const pakFile = this.files.new(pakPath)
+		for (const pakPath of pakPaths) {
+			const pakFile = this.files.newFile(pakPath)
 
-      await archive.unpack(pakPath, this.dirs.modsTemp.dir(pakFile.name).path)
+			await archiver.unpack(pakPath, this.dirs.modsTemp.dir(pakFile.name).path)
 
-      if (!await this.dirs.modsTemp.dir(pakFile.name, 'classes').exists()) {
-        return
-      }
+			if (!await this.dirs.modsTemp.dir(pakFile.name, 'classes').exists()) {
+				return
+			}
 
-      out.push([pakFile, pakFile.name])
-    }
+			out.push([pakFile, pakFile.name])
+		}
 
-    return out
-  }
+		return out
+	}
 }

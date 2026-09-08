@@ -5,116 +5,116 @@ import { CONFIG_TOKEN } from '@utilities/di/renderer/tokens'
 import { Crane } from './crane'
 
 export type CranesData = {
-  hasRUCrane: boolean
-  hasUSCrane: boolean
+	hasRUCrane: boolean
+	hasUSCrane: boolean
 }
 
 export class CranesAction {
-  get name() {
-    return new LocalizationStrings()
-      .ru('Краны')
-      .en('Cranes')
-      .de('Kräne')
-      .ch('起重机')
-      .get(di.resolve(CONFIG_TOKEN))
-  }
-  readonly icon = 'crane'
-  readonly id = 'cranes'
+	get name() {
+		return new LocalizationStrings()
+			.ru('Краны')
+			.en('Cranes')
+			.de('Kräne')
+			.ch('起重机')
+			.get(di.resolve(CONFIG_TOKEN))
+	}
+	readonly icon = 'crane'
+	readonly id = 'cranes'
 
-  isActive(xml: TruckXML): boolean {
-    return this.hasCranes(xml).includes(true)
-  }
+	isActive(xml: TruckXML): boolean {
+		return this.hasCranes(xml).includes(true)
+	}
 
-  export(xml: TruckXML): CranesData {
-    const [hasRUCrane, hasUSCrane] = this.hasCranes(xml)
+	export(xml: TruckXML): CranesData {
+		const [hasRUCrane, hasUSCrane] = this.hasCranes(xml)
 
-    return { hasRUCrane, hasUSCrane }
-  }
+		return { hasRUCrane, hasUSCrane }
+	}
 
-  import(xml: TruckXML, data: CranesData) {
-    const [hasRUCrane, hasUSCrane] = this.hasCranes(xml)
+	import(xml: TruckXML, data: CranesData) {
+		const [hasRUCrane, hasUSCrane] = this.hasCranes(xml)
 
-    if (data.hasUSCrane && !hasUSCrane) {
-      this.addCrane(Crane.US, Crane.RU, xml)
-    }
+		if (data.hasUSCrane && !hasUSCrane) {
+			this.addCrane(Crane.US, Crane.RU, xml)
+		}
 
-    if (data.hasRUCrane && !hasRUCrane) {
-      this.addCrane(Crane.RU, Crane.US, xml)
-    }
-  }
+		if (data.hasRUCrane && !hasRUCrane) {
+			this.addCrane(Crane.RU, Crane.US, xml)
+		}
+	}
 
-  addCrane(crane: Crane, to: Crane, xml: TruckXML, stateSetter?: (value: boolean) => void) {
-    const AddonSockets = xml.GameData?.AddonSockets ?? []
-    let MainSocket: TruckAddonSocket | undefined
+	addCrane(crane: Crane, to: Crane, xml: TruckXML, stateSetter?: (value: boolean) => void) {
+		const AddonSockets = xml.GameData?.AddonSockets ?? []
+		let MainSocket: TruckAddonSocket | undefined
 
-    for (const { Sockets } of AddonSockets) {
-      MainSocket ??= Sockets.find(({ Names }) => Names.includes(to))
+		for (const { Sockets } of AddonSockets) {
+			MainSocket ??= Sockets.find(({ Names }) => Names.includes(to))
 
-      if (MainSocket) {
-        break
-      }
-    }
+			if (MainSocket) {
+				break
+			}
+		}
 
-    if (!MainSocket) {
-      throw new Error('socket not found')
-    }
+		if (!MainSocket) {
+			throw new Error('socket not found')
+		}
 
-    MainSocket.Names = [...MainSocket.Names, crane]
+		MainSocket.Names = [...MainSocket.Names, crane]
 
-    for (const { Sockets } of AddonSockets) {
-      for (const Socket of Sockets.filter(({ NamesBlock }) => NamesBlock.includes(to))) {
-        Socket.NamesBlock = [...Socket.NamesBlock, crane]
-      }
+		for (const { Sockets } of AddonSockets) {
+			for (const Socket of Sockets.filter(({ NamesBlock }) => NamesBlock.includes(to))) {
+				Socket.NamesBlock = [...Socket.NamesBlock, crane]
+			}
 
-      for (const Socket of Sockets) {
-        for (const Shift of Socket.AddonShifts.filter(({ Types }) => Types.includes(to))) {
-          Shift.after(Shift.xml.replace(to, crane).trim())
-        }
-      }
-    }
+			for (const Socket of Sockets) {
+				for (const Shift of Socket.AddonShifts.filter(({ Types }) => Types.includes(to))) {
+					Shift.after(Shift.xml.replace(to, crane).trim())
+				}
+			}
+		}
 
-    stateSetter?.(true)
-  }
+		stateSetter?.(true)
+	}
 
-  removeCrane(crane: Crane, xml: TruckXML, stateSetter?: (value: boolean) => void) {
-    const AddonSockets = xml.GameData?.AddonSockets ?? []
-    let MainSocket: TruckAddonSocket | undefined
+	removeCrane(crane: Crane, xml: TruckXML, stateSetter?: (value: boolean) => void) {
+		const AddonSockets = xml.GameData?.AddonSockets ?? []
+		let MainSocket: TruckAddonSocket | undefined
 
-    for (const { Sockets } of AddonSockets) {
-      MainSocket ??= Sockets.find(({ Names }) => Names.includes(crane))
+		for (const { Sockets } of AddonSockets) {
+			MainSocket ??= Sockets.find(({ Names }) => Names.includes(crane))
 
-      if (MainSocket) {
-        break
-      }
-    }
+			if (MainSocket) {
+				break
+			}
+		}
 
-    if (!MainSocket) {
-      throw new Error('socket is not found')
-    }
+		if (!MainSocket) {
+			throw new Error('socket is not found')
+		}
 
-    MainSocket.Names = MainSocket.Names.filter(name => name !== crane)
+		MainSocket.Names = MainSocket.Names.filter(name => name !== crane)
 
-    for (const { Sockets } of AddonSockets) {
-      for (const Socket of Sockets.filter(({ NamesBlock }) => NamesBlock.includes(crane))) {
-        Socket.NamesBlock = Socket.NamesBlock.filter(name => name !== crane)
-      }
+		for (const { Sockets } of AddonSockets) {
+			for (const Socket of Sockets.filter(({ NamesBlock }) => NamesBlock.includes(crane))) {
+				Socket.NamesBlock = Socket.NamesBlock.filter(name => name !== crane)
+			}
 
-      for (const Socket of Sockets) {
-        for (const Shift of Socket.AddonShifts.filter(({ Types }) => Types.includes(crane))) {
-          Shift.remove()
-        }
-      }
-    }
+			for (const Socket of Sockets) {
+				for (const Shift of Socket.AddonShifts.filter(({ Types }) => Types.includes(crane))) {
+					Shift.remove()
+				}
+			}
+		}
 
-    stateSetter?.(false)
-  }
+		stateSetter?.(false)
+	}
 
-  hasCranes(xml: TruckXML): [hasRU: boolean, hasUS: boolean] {
-    const AddonSockets = xml.GameData?.AddonSockets ?? []
+	hasCranes(xml: TruckXML): [hasRU: boolean, hasUS: boolean] {
+		const AddonSockets = xml.GameData?.AddonSockets ?? []
 
-    return [
-      Boolean(AddonSockets.some(({ Sockets }) => Sockets.some(({ Names }) => Names.includes(Crane.RU)))),
-      Boolean(AddonSockets.some(({ Sockets }) => Sockets.some(({ Names }) => Names.includes(Crane.US))))
-    ]
-  }
+		return [
+			Boolean(AddonSockets.some(({ Sockets }) => Sockets.some(({ Names }) => Names.includes(Crane.RU)))),
+			Boolean(AddonSockets.some(({ Sockets }) => Sockets.some(({ Names }) => Names.includes(Crane.US))))
+		]
+	}
 }

@@ -1,105 +1,70 @@
-import type { Files, IFile } from '@modules/files/main'
-import { inject } from '@utilities/di/container'
-import { FILES_TOKEN } from '@utilities/di/main/tokens'
-import type { IFileSizes } from './types'
+import type { IFile } from '@modules/files/main'
+import { SizesRepository } from './repository'
+import type { IFileSizes, ISizes } from './types'
 
-export type * from './types'
+/** Работа с массивом размеров архивов. [main] */
+export class Sizes implements ISizes {
+	/** Репозиторий. */
+	private readonly repository = new SizesRepository()
 
-/**
- * Работа с массивом размеров архивов.
- * _main process_
- */
-export class Sizes {
-	/** Основные файлы. */
-	@inject(FILES_TOKEN)
-	private readonly files!: Files
+	readonly default: IFileSizes = {
+		initial: 0,
+		mods: {}
+	}
 
-  /** Значение по умолчанию. */
-  readonly default: IFileSizes = {
-    initial: 0,
-    mods: {}
-  }
+	initial = this.default.initial
 
-  /** Размер initial.pak. */
-  initial = this.default.initial
+	/** Размеры модов. */
+	private mods = this.default.mods
 
-  /** Размеры модов. */
-  private mods = this.default.mods
+	constructor() {
+		const { initial, mods } = this.getFileSizes()
 
-  constructor() {
-    this.init()
-  }
+		this.initial = initial
+		this.mods = mods
+	}
 
-  /** Инициализировать класс. */
-  private init() {
-    const { initial, mods } = this.getFileSizes()
+	set(sizes: IFileSizes) {
+		this.initial = sizes.initial
+		this.mods = { ...sizes.mods }
+	}
 
-    this.initial = initial
-    this.mods = mods
-  }
+	getModSize(modFile: IFile): number | undefined {
+		return this.mods[modFile.name]
+	}
 
-  /**
-   * Установить размеры.
-   * @param sizes Размеры.
-   */
-  set(sizes: IFileSizes) {
-    this.initial = sizes.initial
-    this.mods = { ...sizes.mods }
-  }
+	setModSize(modFile: IFile, size: number) {
+		this.mods[modFile.name] = size
+	}
 
-  /**
-   * Получить размер мода.
-   * @param modFile Файл мода.
-   * @returns Размер мода.
-   */
-  getModSize(modFile: IFile): number | undefined {
-    return this.mods[modFile.name]
-  }
+	async reset() {
+		this.set(this.default)
+	}
 
-  /**
-   * Установить размер мода.
-   * @param modFile Файл мода.
-   * @param size Размер.
-  */
-  setModSize(modFile: IFile, size: number) {
-    this.mods[modFile.name] = size
-  }
+	save() {
+		return this.repository.save({
+			initial: this.initial,
+			mods: this.mods
+		})
+	}
 
-  /** Сбросить все размеры. */
-  async reset() {
-    this.set(this.default)
-    await this.save()
-  }
+	/**
+	 * Получить размеры.
+	 * @returns Размеры.
+	 */
+	private getFileSizes(): IFileSizes {
+		try {
+			return this.getFromJSON()
+		} catch {
+			return this.default
+		}
+	}
 
-  /** Сохранить изменения размеров. */
-  async save() {
-    await this.files.sizes.writeToJSON({
-      initial: this.initial,
-      mods: this.mods
-    } satisfies IFileSizes)
-  }
-
-  /**
-   * Получить размеры.
-   * @returns Размеры.
-   */
-  private getFileSizes(): IFileSizes {
-    if (this.files.sizes.existsSync()) {
-      try {
-        return this.getFromJSON()
-      } catch {
-        return this.default
-      }
-    }
-
-    return this.default
-  }
-
-  /**
-   * Получить размеры из JSON.
-   * @returns Размеры.
-   */
-  private getFromJSON(): IFileSizes {
-    return this.files.sizes.readFromJSONSync<IFileSizes>()
-  }
+	/**
+	 * Получить размеры из JSON.
+	 * @returns Размеры.
+	 */
+	private getFromJSON(): IFileSizes {
+		return this.repository.readSync() ?? this.default
+	}
 }

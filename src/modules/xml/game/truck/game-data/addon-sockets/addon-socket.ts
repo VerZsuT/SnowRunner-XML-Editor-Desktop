@@ -8,22 +8,22 @@ export * from './addon-shift'
 
 /** Место крепления аддона на траке. */
 export class TruckAddonSocket extends XMLWithTemplates {
-  /** Имена типов аддонов, которые описываются. */
-  @stringArrayAttr()
-  accessor Names!: XmlArrayValue<string>
-  declare $Names: IStringArrayAttrDescriptor
+	/** Имена типов аддонов, которые описываются. */
+	@stringArrayAttr()
+	accessor Names!: XmlArrayValue<string>
+	declare $Names: IStringArrayAttrDescriptor
 
-  /** Положение точки крепления в координатах fbx трака. */
-  @positionAttr()
-  accessor Offset: XmlValue<Position>
-  declare $Offset: IPositionAttrDescriptor
+	/** Положение точки крепления в координатах fbx трака. */
+	@positionAttr()
+	accessor Offset: XmlValue<Position>
+	declare $Offset: IPositionAttrDescriptor
 
-  /** Имена типов аддонов, которые блокируются при установке аддона из этого сокета. */
-  @stringArrayAttr()
-  accessor NamesBlock!: XmlArrayValue<string>
-  declare $NamesBlock: IStringArrayAttrDescriptor
+	/** Имена типов аддонов, которые блокируются при установке аддона из этого сокета. */
+	@stringArrayAttr()
+	accessor NamesBlock!: XmlArrayValue<string>
+	declare $NamesBlock: IStringArrayAttrDescriptor
 
-  /** Сдвиг точки установки аддона (трейлера), если уже установлен другой аддон. */
-  @innerElements(TruckAddonShift, 'AddonsShift')
-  readonly AddonShifts!: XmlElements<TruckAddonShift>
+	/** Сдвиг точки установки аддона (трейлера), если уже установлен другой аддон. */
+	@innerElements(TruckAddonShift, 'AddonsShift')
+	readonly AddonShifts!: XmlElements<TruckAddonShift>
 }

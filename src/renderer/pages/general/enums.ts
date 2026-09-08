@@ -1,38 +1,38 @@
 /** Источник элемента. */
 export enum SourceType {
-  /** Все. */
-  all = 'all',
+	/** Все. */
+	all = 'all',
 
-  /** Модификации. */
-  mods = 'mods',
+	/** Модификации. */
+	mods = 'mods',
 
-  /** Дополнения. */
-  dlc = 'dlc',
+	/** Дополнения. */
+	dlc = 'dlc',
 
-  /** Основной. */
-  main = 'main',
+	/** Основной. */
+	main = 'main',
 
-  /** Избранное. */
-  favorites = 'favorites',
+	/** Избранное. */
+	favorites = 'favorites',
 
-  /** Изменённое. */
-  edited = 'edited'
+	/** Изменённое. */
+	edited = 'edited'
 }
 
 /** Категория в списках. */
 export enum Category {
-  /** Категория автомобилей. */
-  trucks = 'trucks',
-  
-  /** Категория прицепов. */
-  trailers = 'trailers'
+	/** Категория автомобилей. */
+	trucks = 'trucks',
+
+	/** Категория прицепов. */
+	trailers = 'trailers'
 }
 
 /** Режим списка. */
 export enum ListMode {
-  /** Список. */
-  list = 'list',
+	/** Список. */
+	list = 'list',
 
-  /** Карточки. */
-  cards = 'cards'
+	/** Карточки. */
+	cards = 'cards'
 }

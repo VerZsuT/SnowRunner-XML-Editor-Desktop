@@ -61,7 +61,7 @@ const { label, desc, descriptor } = toRefs(props)
 const emit = defineEmits<ParameterEmits>()
 
 defineSlots<{
-  default(props: { value: ParameterValue; onChange(v: ParameterValue): void }): any
+	default(props: { value: ParameterValue; onChange(v: ParameterValue): void }): any
 }>()
 
 const labelRef = computed(() => label.value ?? descriptor.value.label)
@@ -73,71 +73,71 @@ const { isActive } = useActive()
 
 const getValue = props.getter ?? descriptor.value.get
 const setValue = (value: ParameterValue) => {
-  if (isString(value)) {
-    descriptor.value.setStr(value)
-  } else {
-    (props.setter ?? descriptor.value.set)(value)
-  }
+	if (isString(value)) {
+		descriptor.value.setStr(value)
+	} else {
+		(props.setter ?? descriptor.value.set)(value)
+	}
 
-  emit('change', getValue())
+	emit('change', getValue())
 }
 
 const value = ref(getValue() ?? '')
 
 resetUtils.onReset(resetValue)
 importUtils.onImport(data => {
-  const exportedValue = getExportedValue(data.data)
+	const exportedValue = getExportedValue(data.data)
 
-  if (isNullable(exportedValue)) {
-    return
-  }
+	if (isNullable(exportedValue)) {
+		return
+	}
 
-  changeValue(exportedValue)
+	changeValue(exportedValue)
 })
 exportUtils.onExport(data => {
-  const fileName = exportUtils.getName(file, info.value.dlc, info.value.mod)
-  const fileData = data.data[fileName] ??= {}
-  const selectorData = fileData[descriptor.value.selector] ??= {}
+	const fileName = exportUtils.getName(file, info.value.dlc, info.value.mod)
+	const fileData = data.data[fileName] ??= {}
+	const selectorData = fileData[descriptor.value.selector] ??= {}
 
-  selectorData[descriptor.value.name] = descriptor.value.getStr() ?? descriptor.value.get()
+	selectorData[descriptor.value.name] = descriptor.value.getStr() ?? descriptor.value.get()
 })
 
 const contextTarget = ref<HTMLDivElement | null>(null)
 const contextItems = [{
-  key: 'reset-param',
-  label: `${texts.resetMenuItemLabel} "${labelRef.value}"`,
-  onClick: resetValue
+	key: 'reset-param',
+	label: `${texts.resetMenuItemLabel} "${labelRef.value}"`,
+	onClick: resetValue
 }]
 
 async function resetValue() {
-  const defaultVal = await getDefaultValue()
+	const defaultVal = await getDefaultValue()
 
-  if (!defaultVal) {
-    return
-  }
+	if (!defaultVal) {
+		return
+	}
 
-  changeValue(defaultVal)
+	changeValue(defaultVal)
 }
 
 function changeValue(newValue: ParameterValue) {
-  if (value.value === newValue) {
-    return
-  }
-  
-  setValue(newValue)
-  value.value = getValue()
+	if (value.value === newValue) {
+		return
+	}
+	
+	setValue(newValue)
+	value.value = getValue()
 }
 
 async function getDefaultValue() {
-  return resetUtils.getDefaultValue(file, info.value, descriptor.value)
+	return resetUtils.getDefaultValue(file, info.value, descriptor.value)
 }
 
 function getExportedValue(data: IExportedData['data']): string | number | undefined {
-  const name = importUtils.getName(file, info.value.dlc, info.value.mod)
-  
-  return data[name]
-    ?.[descriptor.value.selector]
-    ?.[descriptor.value.name]
+	const name = importUtils.getName(file, info.value.dlc, info.value.mod)
+	
+	return data[name]
+		?.[descriptor.value.selector]
+		?.[descriptor.value.name]
 }
 </script>
 
@@ -146,26 +146,26 @@ $parameterMinWidth: 650px;
 $parameterMinWidthAddition: calc($parameterMinWidth / 10);
 
 .table .ant-collapse-content .ant-collapse-content-box {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  align-content: flex-start;
-  justify-content: center;
-  align-items: center;
-  row-gap: 10px;
-  padding: 10px !important;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	align-content: flex-start;
+	justify-content: center;
+	align-items: center;
+	row-gap: 10px;
+	padding: 10px !important;
 
-  @media screen and (min-width: calc($parameterMinWidth * 2 + $parameterMinWidthAddition)) {
-    > div:nth-last-child(1 of .grid) {
-      flex: 0 0 auto;
-    }
-  }
+	@media screen and (min-width: calc($parameterMinWidth * 2 + $parameterMinWidthAddition)) {
+		> div:nth-last-child(1 of .grid) {
+			flex: 0 0 auto;
+		}
+	}
 }
 
 @media screen and (min-width: calc($parameterMinWidth * 2 + $parameterMinWidthAddition)) {
-  .table .ant-collapse-content .ant-collapse-content-box {
-    justify-content: space-between;
-  }
+	.table .ant-collapse-content .ant-collapse-content-box {
+		justify-content: space-between;
+	}
 }
 </style>
 
@@ -174,60 +174,60 @@ $parameterMinWidth: 650px;
 $parameterMinWidthAddition: calc($parameterMinWidth / 10);
 
 .desc-image img {
-  max-width: 600px;
-  max-height: 500px;
+	max-width: 600px;
+	max-height: 500px;
 }
 
 .parameter {
-  flex-wrap: nowrap;
-  box-sizing: border-box;
-  align-content: center;
-  justify-content: space-between;
-  align-items: center;
-  flex: 1 1 0;
-  min-width: $parameterMinWidth;
-  min-height: 40px;
+	flex-wrap: nowrap;
+	box-sizing: border-box;
+	align-content: center;
+	justify-content: space-between;
+	align-items: center;
+	flex: 1 1 0;
+	min-width: $parameterMinWidth;
+	min-height: 40px;
 
-  .label,
-  .content {
-    box-sizing: border-box;
-    width: 50%;
-  }
+	.label,
+	.content {
+		box-sizing: border-box;
+		width: 50%;
+	}
 
-  .label {
-    padding-left: 30px;
-  }
+	.label {
+		padding-left: 30px;
+	}
 
-  .content {
-    display: flex;
-    text-align: center;
-    flex-wrap: wrap;
-    align-content: center;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-  }
+	.content {
+		display: flex;
+		text-align: center;
+		flex-wrap: wrap;
+		align-content: center;
+		align-items: center;
+		justify-content: center;
+		gap: 10px;
+	}
 
-  @media screen and (min-width: calc($parameterMinWidth * 2 + $parameterMinWidthAddition)) {
-    .content {
-      justify-content: flex-end;
-      padding-right: 40px;
-    }
-  }
+	@media screen and (min-width: calc($parameterMinWidth * 2 + $parameterMinWidthAddition)) {
+		.content {
+			justify-content: flex-end;
+			padding-right: 40px;
+		}
+	}
 }
 
 @media screen and (min-width: calc($parameterMinWidth * 2 + $parameterMinWidthAddition)) {
-  .parameter {
-    width: 50%;
-    min-width: 50%;
+	.parameter {
+		width: 50%;
+		min-width: 50%;
 
-    &:nth-child(2n+1) {
-      border-right: 1px solid lightgray;
-    }
+		&:nth-child(2n+1) {
+			border-right: 1px solid lightgray;
+		}
 
-    &:nth-child(2n) {
-      flex: 1 1 0 !important;
-    }
-  }
+		&:nth-child(2n) {
+			flex: 1 1 0 !important;
+		}
+	}
 }
 </style>

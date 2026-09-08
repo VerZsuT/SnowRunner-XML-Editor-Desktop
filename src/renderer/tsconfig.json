@@ -1,32 +1,33 @@
 {
-  "compilerOptions": {
-    "target": "es2025",
-    "moduleResolution": "Bundler",
-    "lib": ["ESNext", "DOM", "DOM.Iterable"],
-    "module": "esnext",
-    "rootDir": "..",
-    "outDir": "../dist",
-    "newLine": "LF",
-    "strict": true,
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true,
-    "sourceMap": true,
-    "importHelpers": true,
-    "noImplicitAny": false,
-    "skipLibCheck": true,
-    "isolatedModules": true,
-    "paths": {
-      "@modules/*": ["../modules/*"],
-      "@renderer/*": ["../renderer/*"],
-      "@utilities/*": ["../utilities/*"],
-      "@bridge/*": ["../utilities/bridge/*"],
-      "@localization/*": ["../utilities/localization/*"],
-      "@localization": ["../utilities/localization/index"]
-    }
-  },
-  "include": [
-    "**/*.ts",
-    "**/*.d.ts",
-    "**/*.vue"
-  ]
+	"compilerOptions": {
+		"target": "es2025",
+		"moduleResolution": "Bundler",
+		"lib": ["ESNext", "DOM", "DOM.Iterable"],
+		"module": "esnext",
+		"rootDir": "..",
+		"outDir": "../dist",
+		"newLine": "LF",
+		"strict": true,
+		"allowSyntheticDefaultImports": true,
+		"esModuleInterop": true,
+		"sourceMap": true,
+		"importHelpers": true,
+		"noImplicitAny": false,
+		"skipLibCheck": true,
+		"isolatedModules": true,
+		"paths": {
+			"@src/*": ["../*"],
+			"@modules/*": ["../modules/*"],
+			"@renderer/*": ["../renderer/*"],
+			"@utilities/*": ["../utilities/*"],
+			"@bridge/*": ["../utilities/bridge/*"],
+			"@localization/*": ["../utilities/localization/*"],
+			"@localization": ["../utilities/localization/index"]
+		}
+	},
+	"include": [
+		"**/*.ts",
+		"**/*.d.ts",
+		"**/*.vue"
+	]
 }

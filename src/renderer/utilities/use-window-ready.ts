@@ -8,5 +8,5 @@ import { onMounted } from 'vue'
  * @param window Окно.
  */
 export function useWindowReady(window: ProgramWindow) {
-  onMounted(() => di.resolve(WINDOWS_TOKEN).windowReady(window))
+	onMounted(() => di.resolve(WINDOWS_TOKEN).windowReady(window))
 }

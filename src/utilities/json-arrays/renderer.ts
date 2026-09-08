@@ -1,17 +1,16 @@
 import { mainArrayAccessor, mainMethod } from '@bridge/renderer'
-import { ArrayBase } from './base'
-import type { MainArrayBase } from './main'
+import { BaseArray } from './base'
+import type { BaseMainArray } from './main'
+import type { IBaseRendererArray } from './types'
 
 /** Базовый класс для массива в renderer-process. */
-export abstract class RendArrayBase<Item, Extended = Item> extends ArrayBase<Item, Extended> {
-  @mainArrayAccessor()
-  accessor arr: Item[] = []
+export abstract class BaseRendererArray<Item, Extended = Item> extends BaseArray<Item, Extended> implements IBaseRendererArray<Item, Extended> {
+	@mainArrayAccessor()
+	override accessor arr: Item[] = []
 
-  /** Вернуть массив в исходное состояние. */
-  @mainMethod()
-  reset!: MainArrayBase<Item, Extended>['reset']
+	@mainMethod()
+	reset!: BaseMainArray<Item, Extended>['reset']
 
-  /** Сохранить изменения в json. */
-  @mainMethod()
-  save!: MainArrayBase<Item, Extended>['save']
+	@mainMethod()
+	save!: BaseMainArray<Item, Extended>['save']
 }

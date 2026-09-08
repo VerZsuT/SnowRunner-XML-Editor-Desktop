@@ -1,32 +1,27 @@
 import { initMain, mainMethod } from '@bridge/renderer'
+import { di } from '@utilities/di/container'
+import { CONFIG_TOKEN } from '@utilities/di/renderer/tokens'
+import { BuildType } from '../data/config/enums'
 import type { App as MainApp } from './main'
+import type { IRendererApp } from './types'
 
-export * from './constants'
-
-/**
- * Приложение.
- * _renderer process_
- */
+/** Приложение. [renderer] */
 @initMain()
-export class App {
-	/**
-	 * Сбросить на "заводскую" версию.
-	 * @param noReload Отмена перезагрузки после завершения.
-	 *
-	 * {@link MainApp['resetToDefaults']|Перейти к методу}
-	 */
-	@mainMethod()
-	resetToDefaults!: MainApp['resetToDefaults']
+export class App implements IRendererApp {
+	get isDev(): boolean {
+		const config = di.resolve(CONFIG_TOKEN)
+		return config.buildType === BuildType.dev
+	}
 
-	/** Перезагрузить приложение. */
+	@mainMethod()
+	reset!: MainApp['reset']
+
 	@mainMethod()
 	reload!: MainApp['reload']
 
-	/** Закрыть приложение. */
 	@mainMethod()
 	quit!: MainApp['quit']
 
-	/** Переключить devtools. */
 	@mainMethod()
 	toggleDevTools!: MainApp['toggleDevTools']
 }

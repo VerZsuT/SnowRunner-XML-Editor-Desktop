@@ -7,7 +7,7 @@ export * from './install-socket'
 
 /** Информация о взаимодействии двигателя с окружающим миром. */
 export class AddonGameData extends BaseGameData {
-  /** Сокет установки аддона. */
-  @innerElement(AddonInstallSocket)
-  readonly InstallSocket: XmlElement<AddonInstallSocket>
+	/** Сокет установки аддона. */
+	@innerElement(AddonInstallSocket)
+	readonly InstallSocket: XmlElement<AddonInstallSocket>
 }

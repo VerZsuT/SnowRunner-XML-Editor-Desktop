@@ -14,7 +14,7 @@
     :value="coords.y"
     @change="value => changeCoord({ y: Number.parseFloat(String(value)) })"
   />
-  
+	
   <Text> Z: </Text>
   <InputNumber
     class="coordinate"
@@ -42,34 +42,34 @@ const { value: propValue } = toRefs(props)
 const emit = defineEmits<ParameterEmits>()
 
 const {
-  step = props.numberType === NumberType.integer
-    ? 1
-    : 0.1
+	step = props.numberType === NumberType.integer
+		? 1
+		: 0.1
 } = props
 const coords = ref(propValue.value || new Position())
 
 watch(propValue, () => {
-  const newPos = propValue.value || new Position()
-  
-  if (!coords.value.equals(newPos)) {
-    coords.value = newPos
-  }
+	const newPos = propValue.value || new Position()
+	
+	if (!coords.value.equals(newPos)) {
+		coords.value = newPos
+	}
 })
 
 function changeCoord(newCoord: Partial<Position>) {
-  for (const name in newCoord) {
-    if (Number.isNaN(newCoord[name])) {
-      return
-    }
-  }
+	for (const name in newCoord) {
+		if (Number.isNaN(newCoord[name])) {
+			return
+		}
+	}
 
-  coords.value = coords.value.toCompared(newCoord)
-  emit('change', coords.value.toString())
+	coords.value = coords.value.toCompared(newCoord)
+	emit('change', coords.value.toString())
 }
 </script>
 
 <style lang="scss" scoped>
 .coordinate {
-  width: 70px;
+	width: 70px;
 }
 </style>

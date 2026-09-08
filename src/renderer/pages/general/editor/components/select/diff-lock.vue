@@ -27,7 +27,7 @@ import { SELECT_LOCALIZATION as texts } from './localization'
 import Select from './select.vue'
 
 export type DiffLockProps = {
-  descriptor: IStringAttrDescriptor<DiffLockType>
+	descriptor: IStringAttrDescriptor<DiffLockType>
 }
 
 const config = di.resolve(CONFIG_TOKEN)
@@ -38,11 +38,11 @@ const isAlwaysByDefault = ref<boolean>()
 const isAlways = computed(() => props.descriptor.get() === DiffLockType.always)
 
 watchEffect(async () => {
-  const value = await resetUtils.getDefaultValue(file, info.value, props.descriptor)
+	const value = await resetUtils.getDefaultValue(file, info.value, props.descriptor)
 
-  if (value) {
-    isAlwaysByDefault.value = value === DiffLockType.always
-  }
+	if (value) {
+		isAlwaysByDefault.value = value === DiffLockType.always
+	}
 })
 
 defineEmits<ParameterEmits>()

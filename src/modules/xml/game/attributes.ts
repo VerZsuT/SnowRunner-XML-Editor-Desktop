@@ -1,6 +1,6 @@
 import type { IInputAreas } from '@renderer/pages/general/editor/types'
 import { hasItems } from '@utilities/checks'
-import { arrayToString, boolToString, numberToString, stringToArray, stringToBoolean, stringToNumber } from '@utilities/strings/renderer'
+import { arrayToString, boolToString, numberToString, stringToArray, stringToBoolean, stringToNumber } from '@utilities/strings/index'
 import type { GameXML } from './game-xml'
 import type { Limit } from './limit'
 import type { PosLimits } from './position'
@@ -14,54 +14,54 @@ type AttributeProperties = Record<string | symbol, IBaseAttributeProperties>
 
 /** Базовые параметры атрибута. */
 interface IBaseAttributeProperties<Value = unknown> {
-  /** Заголовок. */
-  label?: string
+	/** Заголовок. */
+	label?: string
 
-  /** Описание. */
-  desc?: string
+	/** Описание. */
+	desc?: string
 
-  /** Ограничение. */
-  limit?: Value extends XmlValue<Position>
-    ? PosLimits
-    : Limit
+	/** Ограничение. */
+	limit?: Value extends XmlValue<Position>
+		? PosLimits
+		: Limit
 
-  /** Шаг изменения. */
-  step?: number
+	/** Шаг изменения. */
+	step?: number
 
-  /** Цветовые зоны. */
-  areas?: IInputAreas
+	/** Цветовые зоны. */
+	areas?: IInputAreas
 }
 
 /** Строковый атрибут. */
 export function stringAttr<T extends string>() {
-  type Value = T | undefined
+	type Value = T | undefined
 
-  return function<This extends GameXML>(
-    _target: ClassAccessorDecoratorTarget<This, Value>,
-    context: ClassAccessorDecoratorContext<This, Value>
-  ): ClassAccessorDecoratorResult<This, Value> {
-    const name = context.name.toString()
-    let defaultValue: Value
+	return function<This extends GameXML>(
+		_target: ClassAccessorDecoratorTarget<This, Value>,
+		context: ClassAccessorDecoratorContext<This, Value>
+	): ClassAccessorDecoratorResult<This, Value> {
+		const name = context.name.toString()
+		let defaultValue: Value
 
-    return {
-      init(value) {
-        defaultValue = value
-        Object.defineProperty(this, `$${name}`, {
-          value: createStringAttrDescriptor(name, this, defaultValue),
-          enumerable: true,
-          writable: false
-        })
+		return {
+			init(value) {
+				defaultValue = value
+				Object.defineProperty(this, `$${name}`, {
+					value: createStringAttrDescriptor(name, this, defaultValue),
+					enumerable: true,
+					writable: false
+				})
 
-        return value
-      },
-      get() {
-        return this.procAttr(name)?.str as Value ?? defaultValue
-      },
-      set(value) {
-        this.procAttr(name, value ?? null)
-      }
-    }
-  }
+				return value
+			},
+			get() {
+				return this.procAttr(name)?.str as Value ?? defaultValue
+			},
+			set(value) {
+				this.procAttr(name, value ?? null)
+			}
+		}
+	}
 }
 
 /**
@@ -71,174 +71,174 @@ export function stringAttr<T extends string>() {
  * @param preserve Не удалять атрибут при пустом значении (`false`).
  */
 export function stringArrayAttr<T extends string>(
-  parser = (str: string) => str as T | undefined,
-  preserve = false
+	parser = (str: string) => str as T | undefined,
+	preserve = false
 ) {
-  type Value = T[]
+	type Value = T[]
 
-  return function<This extends GameXML>(
-    _target: ClassAccessorDecoratorTarget<This, Value>,
-    context: ClassAccessorDecoratorContext<This, Value>
-  ): ClassAccessorDecoratorResult<This, Value> {
-    const name = context.name.toString()
-    let defaultValue: Value
+	return function<This extends GameXML>(
+		_target: ClassAccessorDecoratorTarget<This, Value>,
+		context: ClassAccessorDecoratorContext<This, Value>
+	): ClassAccessorDecoratorResult<This, Value> {
+		const name = context.name.toString()
+		let defaultValue: Value
 
-    return {
-      init(value) {
-        defaultValue = value ?? []
-        Object.defineProperty(this, `$${name}`, {
-          value: createStringArrayAttrDescriptor(name, this, defaultValue, parser, preserve),
-          enumerable: true,
-          writable: false
-        })
+		return {
+			init(value) {
+				defaultValue = value ?? []
+				Object.defineProperty(this, `$${name}`, {
+					value: createStringArrayAttrDescriptor(name, this, defaultValue, parser, preserve),
+					enumerable: true,
+					writable: false
+				})
 
-        return value
-      },
-      get() {
-        return stringToArray(this.procAttr(name)?.str, parser) ?? defaultValue
-      },
-      set(value) {
-        this.procAttr(name, hasItems(value)
-          ? arrayToString(value)
-          : (preserve ? '' : null)
-        )
-      }
-    }
-  }
+				return value
+			},
+			get() {
+				return stringToArray(this.procAttr(name)?.str, parser) ?? defaultValue
+			},
+			set(value) {
+				this.procAttr(name, hasItems(value)
+					? arrayToString(value)
+					: (preserve ? '' : null)
+				)
+			}
+		}
+	}
 }
 
 /** Атрибут с позицией. */
 export function positionAttr() {
-  type Value = Position | undefined
+	type Value = Position | undefined
 
-  return function<This extends GameXML>(
-    _target: ClassAccessorDecoratorTarget<This, Value>,
-    context: ClassAccessorDecoratorContext<This, Value>
-  ): ClassAccessorDecoratorResult<This, Value> {
-    const name = context.name.toString()
-    let defaultValue: Value
+	return function<This extends GameXML>(
+		_target: ClassAccessorDecoratorTarget<This, Value>,
+		context: ClassAccessorDecoratorContext<This, Value>
+	): ClassAccessorDecoratorResult<This, Value> {
+		const name = context.name.toString()
+		let defaultValue: Value
 
-    return {
-      init(value) {
-        defaultValue = value
-        Object.defineProperty(this, `$${name}`, {
-          value: createPositionAttrDescriptor(name, this, defaultValue),
-          enumerable: true,
-          writable: false
-        })
+		return {
+			init(value) {
+				defaultValue = value
+				Object.defineProperty(this, `$${name}`, {
+					value: createPositionAttrDescriptor(name, this, defaultValue),
+					enumerable: true,
+					writable: false
+				})
 
-        return value
-      },
-      get() {
-        const str = this.procAttr(name)?.str
+				return value
+			},
+			get() {
+				const str = this.procAttr(name)?.str
 
-        if (!str) {
-          return defaultValue
-        }
+				if (!str) {
+					return defaultValue
+				}
 
-        return Position.from(str, this[PROPERTIES]?.[name]?.limit)
-      },
-      set(value) {
-        this.procAttr(name, value?.toString() ?? null)
-      }
-    }
-  }
+				return Position.from(str, this[PROPERTIES]?.[name]?.limit)
+			},
+			set(value) {
+				this.procAttr(name, value?.toString() ?? null)
+			}
+		}
+	}
 }
 
 /** Целочисленный атрибут. */
 export function integerAttr() {
-  type Value = number | undefined
+	type Value = number | undefined
 
-  return function<This extends GameXML>(
-    _target: ClassAccessorDecoratorTarget<This, Value>,
-    context: ClassAccessorDecoratorContext<This, Value>
-  ): ClassAccessorDecoratorResult<This, Value> {
-    const name = context.name.toString()
-    let defaultValue: Value
+	return function<This extends GameXML>(
+		_target: ClassAccessorDecoratorTarget<This, Value>,
+		context: ClassAccessorDecoratorContext<This, Value>
+	): ClassAccessorDecoratorResult<This, Value> {
+		const name = context.name.toString()
+		let defaultValue: Value
 
-    return {
-      init(value) {
-        defaultValue = value
-        Object.defineProperty(this, `$${name}`, {
-          value: createNumberAttrDescriptor(name, this, defaultValue),
-          enumerable: true,
-          writable: false
-        })
+		return {
+			init(value) {
+				defaultValue = value
+				Object.defineProperty(this, `$${name}`, {
+					value: createNumberAttrDescriptor(name, this, defaultValue),
+					enumerable: true,
+					writable: false
+				})
 
-        return value
-      },
-      get() {
-        return this.procAttr(name)?.int ?? defaultValue
-      },
-      set(value) {
-        this.procAttr(name, value ?? null, this[PROPERTIES]?.[name]?.limit)
-      }
-    }
-  }
+				return value
+			},
+			get() {
+				return this.procAttr(name)?.int ?? defaultValue
+			},
+			set(value) {
+				this.procAttr(name, value ?? null, this[PROPERTIES]?.[name]?.limit)
+			}
+		}
+	}
 }
 
 /** Атрибут с плавающей точкой. */
 export function floatAttr() {
-  type Value = number | undefined
+	type Value = number | undefined
 
-  return function<This extends GameXML>(
-    _target: ClassAccessorDecoratorTarget<This, Value>,
-    context: ClassAccessorDecoratorContext<This, Value>
-  ): ClassAccessorDecoratorResult<This, Value> {
-    const name = context.name.toString()
-    let defaultValue: Value
+	return function<This extends GameXML>(
+		_target: ClassAccessorDecoratorTarget<This, Value>,
+		context: ClassAccessorDecoratorContext<This, Value>
+	): ClassAccessorDecoratorResult<This, Value> {
+		const name = context.name.toString()
+		let defaultValue: Value
 
-    return {
-      init(value) {
-        defaultValue = value
-        Object.defineProperty(this, `$${name}`, {
-          value: createNumberAttrDescriptor(name, this, defaultValue),
-          enumerable: true,
-          writable: false
-        })
+		return {
+			init(value) {
+				defaultValue = value
+				Object.defineProperty(this, `$${name}`, {
+					value: createNumberAttrDescriptor(name, this, defaultValue),
+					enumerable: true,
+					writable: false
+				})
 
-        return value
-      },
-      get() {
-        return this.procAttr(name)?.float ?? defaultValue
-      },
-      set(value) {
-        this.procAttr(name, value ?? null, this[PROPERTIES]?.[name]?.limit)
-      }
-    }
-  }
+				return value
+			},
+			get() {
+				return this.procAttr(name)?.float ?? defaultValue
+			},
+			set(value) {
+				this.procAttr(name, value ?? null, this[PROPERTIES]?.[name]?.limit)
+			}
+		}
+	}
 }
 
 /** Логический атрибут. */
 export function booleanAttr() {
-  type Value = boolean | undefined
+	type Value = boolean | undefined
 
-  return function<This extends GameXML>(
-    _target: ClassAccessorDecoratorTarget<This, Value>,
-    context: ClassAccessorDecoratorContext<This, Value>
-  ): ClassAccessorDecoratorResult<This, Value> {
-    const name = context.name.toString()
-    let defaultValue: Value
+	return function<This extends GameXML>(
+		_target: ClassAccessorDecoratorTarget<This, Value>,
+		context: ClassAccessorDecoratorContext<This, Value>
+	): ClassAccessorDecoratorResult<This, Value> {
+		const name = context.name.toString()
+		let defaultValue: Value
 
-    return {
-      init(value) {
-        defaultValue = value
-        Object.defineProperty(this, `$${name}`, {
-          value: createBooleanAttrDescriptor(name, this, defaultValue),
-          enumerable: true,
-          writable: false
-        })
+		return {
+			init(value) {
+				defaultValue = value
+				Object.defineProperty(this, `$${name}`, {
+					value: createBooleanAttrDescriptor(name, this, defaultValue),
+					enumerable: true,
+					writable: false
+				})
 
-        return value
-      },
-      get() {
-        return this.procAttr(name)?.bool ?? defaultValue
-      },
-      set(value) {
-        this.procAttr(name, value ?? null)
-      }
-    }
-  }
+				return value
+			},
+			get() {
+				return this.procAttr(name)?.bool ?? defaultValue
+			},
+			set(value) {
+				this.procAttr(name, value ?? null)
+			}
+		}
+	}
 }
 
 /**
@@ -246,22 +246,22 @@ export function booleanAttr() {
  * @param properties Параметры.
  */
 export function properties<This, Value>(
-  properties: IBaseAttributeProperties<NoInfer<Value>> & { default?: NoInfer<Value> }
+	properties: IBaseAttributeProperties<NoInfer<Value>> & { default?: NoInfer<Value> }
 ) {
-  return function(
-    _target: ClassAccessorDecoratorTarget<This, Value>,
-    context: ClassAccessorDecoratorContext<This, Value>
-  ): ClassAccessorDecoratorResult<This, Value> {
-    const name = context.name
+	return function(
+		_target: ClassAccessorDecoratorTarget<This, Value>,
+		context: ClassAccessorDecoratorContext<This, Value>
+	): ClassAccessorDecoratorResult<This, Value> {
+		const name = context.name
 
-    return {
-      init(value) {
-        (this[PROPERTIES] ??= {} satisfies AttributeProperties)[name] = properties
+		return {
+			init(value) {
+				(this[PROPERTIES] ??= {} satisfies AttributeProperties)[name] = properties
 
-        return properties.default ?? value
-      }
-    }
-  }
+				return properties.default ?? value
+			}
+		}
+	}
 }
 
 /**
@@ -272,23 +272,23 @@ export function properties<This, Value>(
  * @returns Дескриптор строкового атрибута.
  */
 function createStringAttrDescriptor<
-  This extends GameXML,
-  Value extends string = string
+	This extends GameXML,
+	Value extends string = string
 >(name: string, instance: This, defaultValue?: Value) {
-  const baseDescriptor = createBaseStringConvertAttrDescriptor(
-    name,
-    instance,
-    defaultValue,
-    str => str as Value,
-    str => str ?? ''
-  )
+	const baseDescriptor = createBaseStringConvertAttrDescriptor(
+		name,
+		instance,
+		defaultValue,
+		str => str as Value,
+		str => str ?? ''
+	)
 
-  return mixDescriptors<
-    typeof baseDescriptor,
-    IStringAttrDescriptor<Value>
-  >(baseDescriptor, {
-    attrType: 'string'
-  })
+	return mixDescriptors<
+		typeof baseDescriptor,
+		IStringAttrDescriptor<Value>
+	>(baseDescriptor, {
+		attrType: 'string'
+	})
 }
 
 /**
@@ -301,35 +301,35 @@ function createStringAttrDescriptor<
  * @returns Дескриптор атрибута с массивом строк.
  */
 function createStringArrayAttrDescriptor<
-  This extends GameXML,
-  Value extends string = string
+	This extends GameXML,
+	Value extends string = string
 >(
-  name: string,
-  instance: This,
-  defaultValue?: Value[],
-  parser = (str: string) => str as Value | undefined,
-  preserve = false
+	name: string,
+	instance: This,
+	defaultValue?: Value[],
+	parser = (str: string) => str as Value | undefined,
+	preserve = false
 ) {
-  const baseDescriptor = createBaseAttrDescriptor<Value[]>(
-    name,
-    instance,
-    defaultValue
-  )
+	const baseDescriptor = createBaseAttrDescriptor<Value[]>(
+		name,
+		instance,
+		defaultValue
+	)
 
-  return mixDescriptors<
-    typeof baseDescriptor,
-    IStringArrayAttrDescriptor<Value>
-  >(baseDescriptor, {
-    attrType: 'stringArray',
-    getStr: () => arrayToString(baseDescriptor.get()),
-    setStr: value => baseDescriptor.set(
-      value
-        ? stringToArray(value, parser)
-        : preserve
-            ? []
-            : undefined
-    )
-  })
+	return mixDescriptors<
+		typeof baseDescriptor,
+		IStringArrayAttrDescriptor<Value>
+	>(baseDescriptor, {
+		attrType: 'stringArray',
+		getStr: () => arrayToString(baseDescriptor.get()),
+		setStr: value => baseDescriptor.set(
+			value
+				? stringToArray(value, parser)
+				: preserve
+						? []
+						: undefined
+		)
+	})
 }
 
 /**
@@ -340,22 +340,22 @@ function createStringArrayAttrDescriptor<
  * @returns Дескриптор атрибута с позицией.
  */
 function createPositionAttrDescriptor<
-  This extends GameXML
+	This extends GameXML
 >(name: string, instance: This, defaultValue?: Position) {
-  const baseDescriptor = createBaseStringConvertAttrDescriptor(
-    name,
-    instance,
-    defaultValue,
-    str => Position.from(str),
-    pos => pos?.toString() ?? ''
-  )
+	const baseDescriptor = createBaseStringConvertAttrDescriptor(
+		name,
+		instance,
+		defaultValue,
+		str => Position.from(str),
+		pos => pos?.toString() ?? ''
+	)
 
-  return mixDescriptors<
-    typeof baseDescriptor,
-    IPositionAttrDescriptor
-  >(baseDescriptor, {
-    attrType: 'position'
-  })
+	return mixDescriptors<
+		typeof baseDescriptor,
+		IPositionAttrDescriptor
+	>(baseDescriptor, {
+		attrType: 'position'
+	})
 }
 
 /**
@@ -366,22 +366,22 @@ function createPositionAttrDescriptor<
  * @returns Дескриптор числового атрибута.
  */
 function createNumberAttrDescriptor<
-  This extends GameXML
+	This extends GameXML
 >(name: string, instance: This, defaultValue?: number) {
-  const baseDescriptor = createBaseStringConvertAttrDescriptor(
-    name,
-    instance,
-    defaultValue,
-    stringToNumber,
-    numberToString
-  )
+	const baseDescriptor = createBaseStringConvertAttrDescriptor(
+		name,
+		instance,
+		defaultValue,
+		stringToNumber,
+		numberToString
+	)
 
-  return mixDescriptors<
-    typeof baseDescriptor,
-    INumberAttrDescriptor
-  >(baseDescriptor, {
-    attrType: 'number'
-  })
+	return mixDescriptors<
+		typeof baseDescriptor,
+		INumberAttrDescriptor
+	>(baseDescriptor, {
+		attrType: 'number'
+	})
 }
 
 /**
@@ -392,22 +392,22 @@ function createNumberAttrDescriptor<
  * @returns Дескриптор логического атрибута.
  */
 function createBooleanAttrDescriptor<
-  Instance extends GameXML
+	Instance extends GameXML
 >(name: string, instance: Instance, defaultValue?: boolean) {
-  const baseDescriptor = createBaseStringConvertAttrDescriptor(
-    name,
-    instance,
-    defaultValue,
-    stringToBoolean,
-    boolToString
-  )
+	const baseDescriptor = createBaseStringConvertAttrDescriptor(
+		name,
+		instance,
+		defaultValue,
+		stringToBoolean,
+		boolToString
+	)
 
-  return mixDescriptors<
-    typeof baseDescriptor,
-    IBooleanAttrDescriptor
-  >(baseDescriptor, {
-    attrType: 'boolean'
-  })
+	return mixDescriptors<
+		typeof baseDescriptor,
+		IBooleanAttrDescriptor
+	>(baseDescriptor, {
+		attrType: 'boolean'
+	})
 }
 
 /**
@@ -420,25 +420,25 @@ function createBooleanAttrDescriptor<
  * @returns Базовый дескриптор атрибута.
  */
 function createBaseStringConvertAttrDescriptor<Value>(
-  name: string,
-  instance: GameXML,
-  defaultValue: Value | undefined,
-  fromString: (value: string) => Value,
-  toString: (value?: Value) => string
+	name: string,
+	instance: GameXML,
+	defaultValue: Value | undefined,
+	fromString: (value: string) => Value,
+	toString: (value?: Value) => string
 ) {
-  const baseDescriptor = createBaseAttrDescriptor<Value>(name, instance, defaultValue)
+	const baseDescriptor = createBaseAttrDescriptor<Value>(name, instance, defaultValue)
 
-  return mixDescriptors<
-    typeof baseDescriptor,
-    IStringConvertAttrDescriptor<Value>
-  >(baseDescriptor, {
-    getStr: () => toString(baseDescriptor.get()),
-    setStr: value => baseDescriptor.set(
-    value
-      ? fromString(value)
-      : undefined
-    )
-  })
+	return mixDescriptors<
+		typeof baseDescriptor,
+		IStringConvertAttrDescriptor<Value>
+	>(baseDescriptor, {
+		getStr: () => toString(baseDescriptor.get()),
+		setStr: value => baseDescriptor.set(
+		value
+			? fromString(value)
+			: undefined
+		)
+	})
 }
 
 /**
@@ -449,22 +449,22 @@ function createBaseStringConvertAttrDescriptor<Value>(
  * @returns Базовый дескриптор атрибута.
  */
 function createBaseAttrDescriptor<Value>(
-  name: string,
-  instance: GameXML,
-  defaultValue: Value | undefined
+	name: string,
+	instance: GameXML,
+	defaultValue: Value | undefined
 ): IAttrDescriptor<Value> {
-  return {
-    name,
-    selector: instance.selector,
-    default: defaultValue,
-    get limit() { return instance[PROPERTIES]?.[name]?.limit },
-    get step() { return instance[PROPERTIES]?.[name]?.step },
-    get areas() { return instance[PROPERTIES]?.[name]?.areas },
-    get label() { return instance[PROPERTIES]?.[name]?.label },
-    get desc() { return instance[PROPERTIES]?.[name]?.desc },
-    get: () => instance[name],
-    set: value => instance[name] = value
-  }
+	return {
+		name,
+		selector: instance.selector,
+		default: defaultValue,
+		get limit() { return instance[PROPERTIES]?.[name]?.limit },
+		get step() { return instance[PROPERTIES]?.[name]?.step },
+		get areas() { return instance[PROPERTIES]?.[name]?.areas },
+		get label() { return instance[PROPERTIES]?.[name]?.label },
+		get desc() { return instance[PROPERTIES]?.[name]?.desc },
+		get: () => instance[name],
+		set: value => instance[name] = value
+	}
 }
 
 /**
@@ -474,16 +474,16 @@ function createBaseAttrDescriptor<Value>(
  * @returns Объединённый дескриптор.
  */
 function mixDescriptors<
-  Base extends object,
-  Child extends Base
+	Base extends object,
+	Child extends Base
 >(baseDescriptor: Base, mixin: Omit<Child, keyof Base>) {
-  return new Proxy({...baseDescriptor, ...mixin}, {
-    get(target, key) {
-      return key in baseDescriptor
-        ? baseDescriptor[key]
-        : target[key]
-    }
-  })
+	return new Proxy({...baseDescriptor, ...mixin}, {
+		get(target, key) {
+			return key in baseDescriptor
+				? baseDescriptor[key]
+				: target[key]
+		}
+	})
 }
 
 /** XML значение атрибута. */
@@ -500,88 +500,88 @@ export type XmlElements<T extends GameXML> = T[]
 
 /** Дескриптор атрибута. */
 export interface IAttrDescriptor<Value = unknown> {
-  /** Имя атрибута. */
-  name: string
+	/** Имя атрибута. */
+	name: string
 
-  /** Селектор элемента, который имеет данный атрибут. */
-  selector: string
+	/** Селектор элемента, который имеет данный атрибут. */
+	selector: string
 
-  /** Ограничение значения. */
-  limit?: Value extends Position
-    ? PosLimits
-    : Value extends number
-      ? Limit
-      : PosLimits | Limit
+	/** Ограничение значения. */
+	limit?: Value extends Position
+		? PosLimits
+		: Value extends number
+			? Limit
+			: PosLimits | Limit
 
-  /** Шаг установки. */
-  step?: number
+	/** Шаг установки. */
+	step?: number
 
-  /** Цветовые зоны. */
-  areas?: IInputAreas
+	/** Цветовые зоны. */
+	areas?: IInputAreas
 
-  /** Заголовок. */
-  label?: string
+	/** Заголовок. */
+	label?: string
 
-  /** Описание. */
-  desc?: string
+	/** Описание. */
+	desc?: string
 
-  /** Стандартное значение. */
-  default?: Value
+	/** Стандартное значение. */
+	default?: Value
 
-  /**
-   * Получить значение атрибута.
-   * @returns Значение атрибута.
-   */
-  get(): Value | undefined
+	/**
+	 * Получить значение атрибута.
+	 * @returns Значение атрибута.
+	 */
+	get(): Value | undefined
 
-  /**
-   * Установить значение атрибута.
-   * @param newValue Новое значение.
-   */
-  set(newValue?: Value): void
+	/**
+	 * Установить значение атрибута.
+	 * @param newValue Новое значение.
+	 */
+	set(newValue?: Value): void
 }
 
 /** Дескриптор атрибута с возможностью конвертации в строку. */
 export interface IStringConvertAttrDescriptor<T> extends IAttrDescriptor<T> {
-  /**
-   * Получить строковое значение.
-   * @returns Строковое значение.
-   */
-  getStr(): string | undefined
+	/**
+	 * Получить строковое значение.
+	 * @returns Строковое значение.
+	 */
+	getStr(): string | undefined
 
-  /**
-   * Установить строковое значение атрибута.
-   * @param newValue Новое значение атрибута.
-   */
-  setStr(newValue?: string): void
+	/**
+	 * Установить строковое значение атрибута.
+	 * @param newValue Новое значение атрибута.
+	 */
+	setStr(newValue?: string): void
 }
 
 /** Дескриптор строкового атрибута. */
 export interface IStringAttrDescriptor<T extends string = string> extends IStringConvertAttrDescriptor<T> {
-  /** Тип атрибута. */
-  attrType: 'string'
+	/** Тип атрибута. */
+	attrType: 'string'
 }
 
 /** Дескриптор массива строк. */
 export interface IStringArrayAttrDescriptor<T extends string = string> extends IStringConvertAttrDescriptor<T[]> {
-  /** Тип атрибута. */
-  attrType: 'stringArray'
+	/** Тип атрибута. */
+	attrType: 'stringArray'
 }
 
 /** Дескриптор атрибута с позицией. */
 export interface IPositionAttrDescriptor extends IStringConvertAttrDescriptor<Position> {
-  /** Тип атрибута. */
-  attrType: 'position'
+	/** Тип атрибута. */
+	attrType: 'position'
 }
 
 /** Дескриптор числового атрибута. */
 export interface INumberAttrDescriptor extends IStringConvertAttrDescriptor<number> {
-  /** Тип атрибута. */
-  attrType: 'number'
+	/** Тип атрибута. */
+	attrType: 'number'
 }
 
 /** Дескриптор логического атрибута. */
 export interface IBooleanAttrDescriptor extends IStringConvertAttrDescriptor<boolean> {
-  /** Тип атрибута. */
-  attrType: 'boolean'
+	/** Тип атрибута. */
+	attrType: 'boolean'
 }

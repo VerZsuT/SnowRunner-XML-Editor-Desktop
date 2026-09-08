@@ -4,7 +4,7 @@
  * @returns Является ли значение строкой.
  */
 export function isString(value: unknown): value is string {
-  return typeof value === 'string'
+	return typeof value === 'string'
 }
 
 /**
@@ -13,7 +13,7 @@ export function isString(value: unknown): value is string {
  * @returns Является ли значение числом.
  */
 export function isNumber(value: unknown): value is number {
-  return typeof value === 'number'
+	return typeof value === 'number'
 }
 
 /**
@@ -22,7 +22,7 @@ export function isNumber(value: unknown): value is number {
  * @returns Является ли значение объектом.
  */
 export function isObject(value: unknown): value is object {
-  return typeof value === 'object'
+	return typeof value === 'object'
 }
 
 /**
@@ -31,7 +31,7 @@ export function isObject(value: unknown): value is object {
  * @returns Является ли значение нулевым.
  */
 export function isNullable(value: unknown): value is null | undefined {
-  return value === null || value === undefined
+	return value === null || value === undefined
 }
 
 /**
@@ -40,7 +40,7 @@ export function isNullable(value: unknown): value is null | undefined {
  * @returns Является ли значение ненулевым.
  */
 export function isNonNullable<T>(value: T): value is NonNullable<T> {
-  return !isNullable(value)
+	return !isNullable(value)
 }
 
 /**
@@ -49,7 +49,7 @@ export function isNonNullable<T>(value: T): value is NonNullable<T> {
  * @returns Имеет ли массив элементы.
  */
 export function hasItems<T extends { length?: number }>(object: T | undefined) {
-  return Boolean(object?.length)
+	return Boolean(object?.length)
 }
 
 /**
@@ -58,5 +58,5 @@ export function hasItems<T extends { length?: number }>(object: T | undefined) {
  * @returns последний элемент массива.
  */
 export function lastItem<T>(array: T[]) {
-  return array.at(-1)
+	return array.at(-1)
 }

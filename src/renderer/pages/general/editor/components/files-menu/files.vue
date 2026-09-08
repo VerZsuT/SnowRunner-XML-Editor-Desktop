@@ -19,8 +19,8 @@ import FileItem from './file.vue'
 const { Text } = Typography
 
 type Props = {
-  title: string
-  value: IFile[]
+	title: string
+	value: IFile[]
 }
 
 defineProps<Props>()

@@ -1,189 +1,147 @@
 import { makeReactive } from '@bridge/main'
 import { loadLocalization } from '@localization/main'
 import { LOADING_LOCALIZATION } from '../localization'
-import type { ILoadingState, StageAction } from '../types'
+import type { ILoadingState, IMainLoading, StageAction } from '../types'
 
-/**
- * Работа с загрузкой программы.
- * _main process_
- */
-export class Loading {
+/** Работа с загрузкой программы. [main] */
+export class Loading implements IMainLoading {
 	private readonly texts = loadLocalization(LOADING_LOCALIZATION)
 
-  /** Состояние по умолчанию. */
-  private get default(): ILoadingState {
-    return {
-      isLoading: false,
-      hasError: false,
-      error: '',
-      text: 'Loading',
-      stagesCount: 1,
-      completedCount: 0
-    }
-  }
+	/** Состояние по умолчанию. */
+	private get default(): ILoadingState {
+		return {
+			isLoading: false,
+			hasError: false,
+			error: '',
+			text: 'Loading',
+			stagesCount: 1,
+			completedCount: 0
+		}
+	}
 
-  /** Состояние загрузки. */
-  accessor state = this.default
+	accessor state = this.default
 
-  /** Завершать ли автоматически. */
-  private autoEnd = false
+	/** Завершать ли автоматически. */
+	private autoEnd = false
 
 	constructor() {
 		makeReactive(this, 'Loading', 'state')
 	}
 
-  /**
-   * Инициализировать загрузку.
-   * @param text Текст первой стадии.
-   * @param stagesCount Кол-во стадий.
-   * @param autoEnd Завершать ли автоматически
-   */
-  init(text?: string, stagesCount?: number, autoEnd = false) {
-    if (this.state.isLoading) {
-      return
-    }
+	init(text?: string, stagesCount?: number, autoEnd = false) {
+		if (this.state.isLoading) {
+			return
+		}
 
-    this.reset()
-    this.autoEnd = autoEnd
-    this.set({
-      isLoading: true,
-      stagesCount: stagesCount ?? this.default.stagesCount,
-      text: text
-        ? this.prepareStageText(text)
-        : this.default.text
-    })
-  }
+		this.reset()
+		this.autoEnd = autoEnd
+		this.set({
+			isLoading: true,
+			stagesCount: stagesCount ?? this.default.stagesCount,
+			text: text
+				? this.prepareStageText(text)
+				: this.default.text
+		})
+	}
 
-  /** Показать загрузку. */
-  showLoading() {
-    this.set({ isLoading: true })
-  }
+	showLoading() {
+		this.set({ isLoading: true })
+	}
 
-  /** Скрыть загрузку. */
-  hideLoading() {
-    this.withEndTimeout(this.reset.bind(this))
-  }
+	hideLoading() {
+		this.withEndTimeout(this.reset.bind(this))
+	}
 
-  /**
-   * Установить текст текущей стадии.
-   * @param text Текст.
-   */
-  setText(text: string) {
-    this.set({ text: this.prepareStageText(text) })
-  }
+	setText(text: string) {
+		this.set({ text: this.prepareStageText(text) })
+	}
 
-  /**
-   * Установить автоматическое завершение.
-   * @param value Завершать ли автоматически.
-   */
-  setAutoEnd(value: boolean) {
-    this.autoEnd = value
-  }
+	setAutoEnd(value: boolean) {
+		this.autoEnd = value
+	}
 
-  /**
-   * Запустить обязательную стадию.
-   * @param name Название стадии.
-   * @param action Действие.
-   * @throws {Error} Если действие прошло с ошибкой.
-   */
-  async runRequiredStage(name: string, action: StageAction) {
-    if (!await this.runStage(name, action)) {
-      throw new Error(`Error on required stage ${name}`)
-    }
-  }
+	async runRequiredStage(name: string, action: StageAction) {
+		if (!await this.runStage(name, action)) {
+			throw new Error(`Error on required stage ${name}`)
+		}
+	}
 
-  /**
-   * Запустить стадию.
-   * @param name Название стадии.
-   * @param action Действие.
-   * @returns Результат завершения.
-   */
-  async runStage(name: string, action: StageAction): Promise<boolean> {
-    this.set({ text: this.prepareStageText(name) })
+	async runStage(name: string, action: StageAction): Promise<boolean> {
+		this.set({ text: this.prepareStageText(name) })
 
-    try {
-      const result = await action() ?? true
+		try {
+			const result = await action() ?? true
 
 			this.completeStage()
 
 			return result
-    } catch (error: unknown) {
-      this.errorOnStage(error as Error)
+		} catch (error: unknown) {
+			this.errorOnStage(error as Error)
 
-      throw error
-    }
-  }
+			throw error
+		}
+	}
 
-  /**
-   * Установить кол-во стадий.
-   * @param count Кол-во стадий.
-   */
-  setStagesCount(count: number) {
-    this.set({ stagesCount: count, completedCount: 0 })
-  }
+	setStagesCount(count: number) {
+		this.set({ stagesCount: count, completedCount: 0 })
+	}
 
-  /**
-   * Установить кол-во завершённых стадий.
-   * @param count Кол-во завершённых стадий.
-   */
-  setCompletedCount(count: number) {
-    this.set({ completedCount: count })
-  }
+	setCompletedCount(count: number) {
+		this.set({ completedCount: count })
+	}
 
-  /** Завершить стадию. */
-  completeStage() {
-    const isLoading = this.autoEnd
-      ? this.state.completedCount + 1 < this.state.stagesCount
-      : this.state.isLoading
+	completeStage() {
+		const isLoading = this.autoEnd
+			? this.state.completedCount + 1 < this.state.stagesCount
+			: this.state.isLoading
 
-    this.set({
-      completedCount: this.state.completedCount + 1,
-      text: isLoading
-        ? this.state.text
-        : this.texts.completed
-    })
+		this.set({
+			completedCount: this.state.completedCount + 1,
+			text: isLoading
+				? this.state.text
+				: this.texts.completed
+		})
 
-    if (!isLoading) {
-      this.hideLoading()
-    }
-  }
+		if (!isLoading) {
+			this.hideLoading()
+		}
+	}
 
-  /** Установить признак ошибки на стадии. */
-  errorOnStage(error: Error) {
-    this.set({ hasError: true, error: error.message })
-  }
+	errorOnStage(error: Error) {
+		this.set({ hasError: true, error: error.message })
+	}
 
-  /**
-   * Установить новое состояние.
-   * @param newState Новое состояние.
-   */
-  private set(newState: Partial<ILoadingState>) {
-    this.state = {
-      ...this.state,
-      ...newState
-    }
-  }
+	/**
+	 * Установить новое состояние.
+	 * @param newState Новое состояние.
+	 */
+	private set(newState: Partial<ILoadingState>) {
+		this.state = {
+			...this.state,
+			...newState
+		}
+	}
 
-  /** Сбросить состояние. */
-  private reset() {
-    this.set(this.default)
-    this.autoEnd = false
-  }
+	/** Сбросить состояние. */
+	private reset() {
+		this.set(this.default)
+		this.autoEnd = false
+	}
 
-  /**
-   * Выполнить действие после задержки завершения загрузки.
-   * @param func Действие.
-   */
-  private withEndTimeout(func: () => void) {
-    setTimeout(func, 1000)
-  }
+	/**
+	 * Выполнить действие после задержки завершения загрузки.
+	 * @param func Действие.
+	 */
+	private withEndTimeout(func: () => void) {
+		setTimeout(func, 1000)
+	}
 
-  /**
-   * Подготовить название стадии.
-   * @param text Название стадии.
-   * @returns Подготовленное название.
-   */
-  private prepareStageText(text: string) {
-    return `${text  }...`
-  }
+	/**
+	 * Подготовить название стадии.
+	 * @param text Название стадии.
+	 * @returns Подготовленное название.
+	 */
+	private prepareStageText(text: string) {
+		return `${text  }...`
+	}
 }

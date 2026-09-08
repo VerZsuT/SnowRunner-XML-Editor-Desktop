@@ -39,7 +39,7 @@
 import { AppstoreOutlined, FilterOutlined, MenuOutlined } from '@ant-design/icons-vue'
 import type { IFile } from '@modules/files/renderer'
 import Header from '@renderer/components/header.vue'
-import { useKey } from '@renderer/utilities'
+import { useKey } from '@renderer/utilities/use-key'
 import { di } from '@utilities/di/container'
 import { APP_TOKEN } from '@utilities/di/renderer/tokens'
 import { Button } from 'ant-design-vue'
@@ -60,86 +60,86 @@ const { clearFiles, setListMode } = listStore
 const filtersIsOpen = ref(true)
 
 watch(category, async () => {
-  clearFiles()
-  await loadFiles()
+	clearFiles()
+	await loadFiles()
 })
 
 useKey('Escape', () => app.quit())
 onMounted(async () => {
-  if (files.value[SourceType.main].length === 0) {
-    await loadFiles()
-  }
+	if (files.value[SourceType.main].length === 0) {
+		await loadFiles()
+	}
 })
 
 async function loadFiles() {
-  const itemsUtils = new ItemsUtils()
+	const itemsUtils = new ItemsUtils()
 
-  const [main, dlc, mods] = await Promise.all([
-    itemsUtils.getMain(category.value),
-    itemsUtils.getDLC(category.value),
-    itemsUtils.getMods(category.value)
-  ])
+	const [main, dlc, mods] = await Promise.all([
+		itemsUtils.getMain(category.value),
+		itemsUtils.getDLC(category.value),
+		itemsUtils.getMods(category.value)
+	])
 
-  addFiles(SourceType.main, main)
-  addFiles(SourceType.dlc, dlc)
-  addFiles(SourceType.mods, mods)
+	addFiles(SourceType.main, main)
+	addFiles(SourceType.dlc, dlc)
+	addFiles(SourceType.mods, mods)
 }
 
 function addFiles(sourceType: SourceType, newFiles: IFile[]) {
-  files.value[sourceType].push(...newFiles)
-  files.value[sourceType].sort(sortByName)
+	files.value[sourceType].push(...newFiles)
+	files.value[sourceType].sort(sortByName)
 }
 
 function sortByName(a: IFile, b: IFile) {
-  return a.name.localeCompare(b.name)
+	return a.name.localeCompare(b.name)
 }
 
 function toggleFiltersPanel() {
-  filtersIsOpen.value = !filtersIsOpen.value
+	filtersIsOpen.value = !filtersIsOpen.value
 }
 
 function toggleListMode() {
-  setListMode(listMode.value === ListMode.cards
-    ? ListMode.list
-    : ListMode.cards
-  )
+	setListMode(listMode.value === ListMode.cards
+		? ListMode.list
+		: ListMode.cards
+	)
 }
 </script>
 
 <style lang='scss'>
 .ant-tabs-nav-list {
-  justify-content: space-evenly;
-  width: 100%;
+	justify-content: space-evenly;
+	width: 100%;
 }
 
 .ant-btn-circle,
 .anticon-arrow-left,
 .anticon-menu.menu-button.ant-dropdown-trigger {
-  color: white;
-  background: inherit;
-  border: none;
+	color: white;
+	background: inherit;
+	border: none;
 
-  &:hover {
-    color: lightgray !important;
-  }
+	&:hover {
+		color: lightgray !important;
+	}
 }
 </style>
 
 <style lang='scss' scoped>
 .lists {
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  height: calc(100vh - 100px);
+	display: flex;
+	flex-direction: column;
+	flex-grow: 1;
+	height: calc(100vh - 100px);
 
-  .header-button {
-    position: relative;
-    right: 20px;
+	.header-button {
+		position: relative;
+		right: 20px;
 
-    .button-icon {
-      font-size: 25px;
-    }
-  }
+		.button-icon {
+			font-size: 25px;
+		}
+	}
 }
 
 </style>

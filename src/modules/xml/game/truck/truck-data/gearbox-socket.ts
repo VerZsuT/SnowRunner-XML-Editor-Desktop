@@ -5,16 +5,16 @@ import { XMLWithTemplates } from '../../xml-with-templates'
 
 /** Описание доступных коробок передач. */
 export class TruckGearboxSocket extends XMLWithTemplates {
-  /** Имя xml-файла. */
-  @stringAttr()
-  accessor Type: XmlValue<string>
-  declare $Type: IStringAttrDescriptor
+	/** Имя xml-файла. */
+	@stringAttr()
+	accessor Type: XmlValue<string>
+	declare $Type: IStringAttrDescriptor
 
-  /** Имя дефолтной коробки. */
-  @stringAttr()
-  accessor Default: XmlValue<string>
-  declare $Default: IStringAttrDescriptor
+	/** Имя дефолтной коробки. */
+	@stringAttr()
+	accessor Default: XmlValue<string>
+	declare $Default: IStringAttrDescriptor
 
-  readonly gearboxesFiles = this.files('gearboxes', () => this.Type)
-  readonly gearboxes = this.filesElementsWithTemplates<Gearboxes>(Gearboxes, this.gearboxesFiles)
+	readonly gearboxesFiles = this.files('gearboxes', () => this.Type)
+	readonly gearboxes = this.filesElementsWithTemplates<Gearboxes>(Gearboxes, this.gearboxesFiles)
 }

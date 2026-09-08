@@ -1,25 +1,13 @@
 import { initMain, mainMethod } from '@bridge/renderer'
-import type { Backup as BackupMain } from './main'
+import type { InitialBackup as BackupMain } from './main'
+import type { IRendererInitialBackup } from './types'
 
-/**
- * Работа с бэкапом.
- * _renderer process_
-*/
+/** Работа с бэкапом initial.pak. [renderer] */
 @initMain()
-export class Backup {
-  /**
-   * Сохранить бэкап `initial.pak`.
-   *
-   * {@link BackupMain['save']|Перейти к методу}
-   */
-  @mainMethod()
-  save!: BackupMain['save']
+export class InitialBackup implements IRendererInitialBackup {
+	@mainMethod()
+	save!: BackupMain['save']
 
-  /**
-   * Заменить оригинальный `initial.pak` на сохранённый.
-   *
-   * {@link BackupMain['recoverFromIt']|Перейти к методу}
-   */
-  @mainMethod()
-  recoverFromIt!: BackupMain['recoverFromIt']
+	@mainMethod()
+	recoverFromIt!: BackupMain['recoverFromIt']
 }

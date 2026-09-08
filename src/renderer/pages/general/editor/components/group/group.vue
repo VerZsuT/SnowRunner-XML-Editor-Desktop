@@ -51,7 +51,7 @@ const { Panel } = Collapse
 export type GroupProps = IGroupProps & EmitsToProps<GroupEmits>
 
 type GroupEmits = {
-  click: []
+	click: []
 }
 
 const images = di.resolve(IMAGES_TOKEN)
@@ -63,9 +63,9 @@ const contextTarget = ref<HTMLDivElement | null>(null)
 const attrs = useAttrs()
 const panelKey = String(attrs['panelKey']) || ''
 const contextItems = [{
-  key: 'reset-group',
-  label: `${texts.resetMenuItemLabel} "${label}"`,
-  onClick: onReset
+	key: 'reset-group',
+	label: `${texts.resetMenuItemLabel} "${label}"`,
+	onClick: onReset
 }]
 
 const { isParentActive } = provideGroupActive(panelKey)
@@ -74,20 +74,20 @@ const resetID = resetUtils.provide()
 resetUtils.onReset(onReset)
 
 function onReset() {
-  return resetUtils.emit(resetID)
+	return resetUtils.emit(resetID)
 }
 </script>
 
 <style lang="scss">
 .table .ant-collapse-header {
-  &:hover {
-    background: #e9e9e9;
-  }
+	&:hover {
+		background: #e9e9e9;
+	}
 }
 </style>
 
 <style lang="scss" scoped>
 .group {
-  width: 100%;
+	width: 100%;
 }
 </style>

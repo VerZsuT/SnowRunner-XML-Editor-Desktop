@@ -6,7 +6,7 @@ export * from './body'
 
 /** Физическая модель. */
 export class BasePhysicsModel extends XMLWithTemplates {
-  /** Физическое тело. */
-  @innerElement(PhysicsBody)
-  readonly Body: XmlElement<PhysicsBody>
+	/** Физическое тело. */
+	@innerElement(PhysicsBody)
+	readonly Body: XmlElement<PhysicsBody>
 }

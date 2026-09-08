@@ -1,67 +1,48 @@
-import type { Dirs, IDir, IFile, IFindDirsArgs, IFindFilesArgs } from '@modules/files/main'
+import type { IDir, IDirs, IFile, IFindDirsArgs, IFindFilesArgs } from '@modules/files/types'
 import { makeReactive } from '@utilities/bridge/main'
 import { inject } from '@utilities/di/container'
 import { DIRS_TOKEN } from '@utilities/di/main/tokens'
-import { ArrayBase } from '@utilities/json-arrays/base'
-import type { IDLC } from '../types'
+import { BaseArray } from '@utilities/json-arrays/base'
+import type { IDLC, IMainDlc } from '../types'
 
-export type * from '../types'
-
-/**
- * Работа с дополнениями игры.
- * _main process_
- */
-export class DLCs extends ArrayBase<IDLC, IDLC & { dir: IDir }> {
+/** Работа с дополнениями игры. [main] */
+export class Dlc extends BaseArray<IDLC, IDLC & { dir: IDir }> implements IMainDlc {
 	/** Основные папки. */
 	@inject(DIRS_TOKEN)
-	private readonly dirs!: Dirs
-
-  override accessor arr: IDLC[] = []
+	private readonly dirs!: IDirs
 
 	constructor() {
 		super()
 		makeReactive(this, 'DLCs', 'arr')
 	}
 
-  protected override convert(item: IDLC): IDLC & { dir: IDir } {
-    return { ...item, dir: this.dirs.new(item.path) }
-  }
+	override convert(item: IDLC): IDLC & { dir: IDir } {
+		return { ...item, dir: this.dirs.newDir(item.path) }
+	}
 
-  /** Инициализировать класс. */
-  async init() {
-    const dlcs: IDLC[] = []
+	async init() {
+		const dlcs: IDLC[] = []
 
-    for (const entry of await this.dirs.dlc.read()) {
-      if (await entry.isFile()) {
-        continue
-      }
+		for (const entry of await this.dirs.dlc.read()) {
+			if (await entry.isFile()) {
+				continue
+			}
 
-      dlcs.push({ name: entry.asDir().name, path: entry.path })
-    }
+			dlcs.push({ name: entry.asDir().name, path: entry.path })
+		}
 
-    this.set(dlcs)
-  }
+		this.set(dlcs)
+	}
 
-  /** Сбросить массив до исходного состояния. */
-  reset() {
-    this.set(this.default)
-  }
+	async reset() {
+		this.set(this.default)
+	}
 
-  /**
-   * Найти файлы.
-   * @param args Аргументы поиска.
-   * @returns Файлы.
-   */
-  async findFiles(args: IFindFilesArgs): Promise<IFile[]> {
-    return this.dirs.dlc.findFiles(args)
-  }
+	async findFiles(args: IFindFilesArgs): Promise<IFile[]> {
+		return this.dirs.dlc.findFiles(args)
+	}
 
-  /**
-   * Найти папки.
-   * @param args Аргументы поиска.
-   * @returns Папки.
-   */
-  async findDirs(args: IFindDirsArgs): Promise<IDir[]> {
-    return this.dirs.dlc.findDirs(args)
-  }
+	async findDirs(args: IFindDirsArgs): Promise<IDir[]> {
+		return this.dirs.dlc.findDirs(args)
+	}
 }

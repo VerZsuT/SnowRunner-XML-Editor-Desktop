@@ -4,16 +4,16 @@ import { BaseWheelFriction } from '../../base/wheel-friction'
 
 /** Сцепление колеса с дорогой. */
 export class TireWheelFriction extends BaseWheelFriction {
-  /** Имя типа резины. */
-  @stringAttr<WheelName>()
-  accessor UiName: XmlValue<WheelName>
-  declare $UiName: IStringAttrDescriptor<WheelName>
+	/** Имя типа резины. */
+	@stringAttr<WheelName>()
+	accessor UiName: XmlValue<WheelName>
+	declare $UiName: IStringAttrDescriptor<WheelName>
 }
 
 export enum WheelName {
-  highway = 'UI_TIRE_TYPE_HIGHWAY_NAME',
-  allterrain = 'UI_TIRE_TYPE_ALLTERRAIN_NAME',
-  offroad = 'UI_TIRE_TYPE_OFFROAD_NAME',
-  chains = 'UI_TIRE_TYPE_CHAINS_NAME',
-  mudtires = 'UI_TIRE_TYPE_MUDTIRES_NAME'
+	highway = 'UI_TIRE_TYPE_HIGHWAY_NAME',
+	allterrain = 'UI_TIRE_TYPE_ALLTERRAIN_NAME',
+	offroad = 'UI_TIRE_TYPE_OFFROAD_NAME',
+	chains = 'UI_TIRE_TYPE_CHAINS_NAME',
+	mudtires = 'UI_TIRE_TYPE_MUDTIRES_NAME'
 }

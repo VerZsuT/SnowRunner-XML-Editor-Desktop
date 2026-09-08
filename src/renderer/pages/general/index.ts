@@ -9,7 +9,7 @@ async function runApp() {
 
 	createApp(General)
 		.use(createPinia())
-  	.mount('#main')
+		.mount('#main')
 }
 
 async function prepareApp() {

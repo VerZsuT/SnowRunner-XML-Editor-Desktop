@@ -117,8 +117,8 @@ import { GEARBOXES_LOCALIZATION as texts } from './localization'
 export type GearboxSetProps = ReadyProps & Props
 
 type Props = {
-  xml: GearboxesXML
-  file: IFile
+	xml: GearboxesXML
+	file: IFile
 }
 
 const config = di.resolve(CONFIG_TOKEN)

@@ -15,8 +15,8 @@ import { MenuItem, Typography } from 'ant-design-vue'
 const { Text } = Typography
 
 type Props = {
-  value: IFile
-  title?: string
+	value: IFile
+	title?: string
 }
 
 defineProps<Props>()

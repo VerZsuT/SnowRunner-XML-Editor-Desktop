@@ -26,7 +26,7 @@
 
 <script lang='ts' setup>
 import { FileFilled, FolderFilled } from '@ant-design/icons-vue'
-import type { IDir, IFile } from '@modules/files/renderer'
+import type { IDir, IFile } from '@modules/files/types'
 import { di } from '@utilities/di/container'
 import { DIALOGS_TOKEN, DIRS_TOKEN, FILES_TOKEN, MESSAGES_TOKEN } from '@utilities/di/renderer/tokens'
 import { Button } from 'ant-design-vue'
@@ -39,82 +39,82 @@ const messages = di.resolve(MESSAGES_TOKEN)
 const file = defineModel<IFile | undefined>({default: undefined})
 
 async function onFolderClick() {
-  const selected = await getFromFolder()
+	const selected = await getFromFolder()
 
-  if (selected) {
-    file.value = selected
-  }
+	if (selected) {
+		file.value = selected
+	}
 }
 
 async function onFileClick() {
-  const selected = await getInitialPak()
+	const selected = await getInitialPak()
 
-  if (selected) {
-    file.value = selected
-  }
+	if (selected) {
+		file.value = selected
+	}
 }
 
 async function getInitialPak(): Promise<IFile | undefined> {
-  const selectedPath = dialogs.getInitial()
+	const selectedPath = dialogs.getInitial()
 
-  if (!selectedPath) {
-    return
-  }
+	if (!selectedPath) {
+		return
+	}
 
-  const selectedFile = files.new(selectedPath)
+	const selectedFile = files.newFile(selectedPath)
 
-  if (selectedFile.basename() !== 'initial.pak' || !await selectedFile.exists()) {
-    messages.error(texts.invalidInitialError)
+	if (selectedFile.basename() !== 'initial.pak' || !await selectedFile.exists()) {
+		messages.error(texts.invalidInitialError)
 
-    return
-  }
+		return
+	}
 
-  return selectedFile
+	return selectedFile
 }
 
 async function getFromFolder(): Promise<IFile | undefined> {
-  const selectedPath = dialogs.getDir()
+	const selectedPath = dialogs.getDir()
 
-  if (!selectedPath) {
-    messages.error(texts.invalidFolderError)
+	if (!selectedPath) {
+		messages.error(texts.invalidFolderError)
 
-    return
-  }
+		return
+	}
 
-  const dirs = di.resolve(DIRS_TOKEN)
-  const found = await findInitial(dirs.new(selectedPath))
+	const dirs = di.resolve(DIRS_TOKEN)
+	const found = await findInitial(dirs.newDir(selectedPath))
 
-  if (!found) {
-    messages.error(texts.invalidFolderError)
+	if (!found) {
+		messages.error(texts.invalidFolderError)
 
-    return
-  }
+		return
+	}
 
-  return found
+	return found
 }
 
 async function findInitial(dir: IDir): Promise<IFile | undefined> {
-  const parts = ['steamapps', 'common', 'SnowRunner', 'en_us', 'preload', 'paks', 'client', 'initial.pak']
-  const len = parts.length
+	const parts = ['steamapps', 'common', 'SnowRunner', 'en_us', 'preload', 'paks', 'client', 'initial.pak']
+	const len = parts.length
 
-  for (let i = 0; i < len; i++) {
-    const file = dir.file(...parts)
-    
-    if (await file.exists()) {
-      return file
-    }
-    
-    parts.shift()
-  }
+	for (let i = 0; i < len; i++) {
+		const file = dir.file(...parts)
+		
+		if (await file.exists()) {
+			return file
+		}
+		
+		parts.shift()
+	}
 }
 </script>
 
 <style lang='scss' scoped>
 .game-folder {
-  margin-top: 40px;
+	margin-top: 40px;
 
-  .folder-button {
-    margin-right: 30px;
-  }
+	.folder-button {
+		margin-right: 30px;
+	}
 }
 </style>

@@ -1,85 +1,85 @@
 html, body, #main {
-  margin: 0;
-  padding: 0;
-  height: 100vh;
-  width: 100vw;
+	margin: 0;
+	padding: 0;
+	height: 100vh;
+	width: 100vw;
 }
 
 html, body {
-  overflow: hidden;
+	overflow: hidden;
 }
 
 #main {
-  display: flex;
-  flex-direction: column;
+	display: flex;
+	flex-direction: column;
 }
 
 body {
-  font-family: Arial, Helvetica, sans-serif;
+	font-family: Arial, Helvetica, sans-serif;
 }
 
 .grid {
-  display: flex;
-  flex-wrap: wrap;
-  box-sizing: border-box;
+	display: flex;
+	flex-wrap: wrap;
+	box-sizing: border-box;
 }
 
 .ant-menu-submenu-popup {
-  top: 30px !important;
+	top: 30px !important;
 }
 
 .ant-notification {
-  text-align: left;
+	text-align: left;
 }
 
 ::-webkit-resizer {
-  width: 4px;
-  height: 0;
+	width: 4px;
+	height: 0;
 }
 
 ::-webkit-scrollbar {
-  width: 4px;
+	width: 4px;
 
-  &-thumb {
-    border-radius: 0;
-    background-color: #808080;
+	&-thumb {
+		border-radius: 0;
+		background-color: #808080;
 
-    &:hover {
-      background-color: #c7cfc1;
-    }
-  }
+		&:hover {
+			background-color: #c7cfc1;
+		}
+	}
 
-  &-track {
-    background-color: #535151;
-  }
+	&-track {
+		background-color: #535151;
+	}
 
-  &-button {
-    width: 5px;
-    height: 0;
-  }
+	&-button {
+		width: 5px;
+		height: 0;
+	}
 }
 
 .ant-select-dropdown {
-  width: auto !important;
+	width: auto !important;
 }
 
 .ant-menu {
-  border: none;
+	border: none;
 
-  &-item {
-    width: auto !important;
-  }
+	&-item {
+		width: auto !important;
+	}
 }
 
 li[role="menuitem"] {
-  margin: 0 auto !important;
-  color: #5c5c5c;
+	margin: 0 auto !important;
+	color: #5c5c5c;
 
-  &:hover {
-    background-color: #e9f5ff;
+	&:hover {
+		background-color: #e9f5ff;
 
-    span {
-      color: black;
-    }
-  }
+		span {
+			color: black;
+		}
+	}
 }

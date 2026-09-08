@@ -22,19 +22,19 @@ import type { EmitsToProps } from '../types'
 export type ContextMenuProps = Props & EmitsToProps<Emits>
 
 type Props = {
-  /** Элементы меню. */
-  items: ItemType[]
+	/** Элементы меню. */
+	items: ItemType[]
 
-  /** Таргет контекстного меню. */
-  target: ComponentPublicInstance | HTMLElement | null
+	/** Таргет контекстного меню. */
+	target: ComponentPublicInstance | HTMLElement | null
 }
 
 type Emits = {
-  /** Событие закрытия меню. */
-  close: []
+	/** Событие закрытия меню. */
+	close: []
 
-  /** Событие показа меню. */
-  show: []
+	/** Событие показа меню. */
+	show: []
 }
 
 const props = defineProps<Props>()
@@ -45,61 +45,61 @@ const isShow = ref(false)
 const position = ref({ x: 50, y: 50 })
 
 const menuItems = computed(() => items.value.map(item => {
-  return {
-    ...item,
-    onClick() {
-      item?.['onClick']?.()
-      hide()
-    }
-  } as ItemType
+	return {
+		...item,
+		onClick() {
+			item?.['onClick']?.()
+			hide()
+		}
+	} as ItemType
 }))
 
 watch(target, handleTarget)
 
 function handleTarget() {
-  const value = target.value
+	const value = target.value
 
-  if (!value) {
-    return
-  }
+	if (!value) {
+		return
+	}
 
-  const element = '$el' in value
-    ? value.$el
-    : value
+	const element = '$el' in value
+		? value.$el
+		: value
 
-  element.addEventListener('contextmenu', (event: MouseEvent) => {
-    event.preventDefault()
-    event.stopPropagation()
+	element.addEventListener('contextmenu', (event: MouseEvent) => {
+		event.preventDefault()
+		event.stopPropagation()
 
-    position.value = { x: event.clientX, y: event.clientY }
-    isShow.value = true
+		position.value = { x: event.clientX, y: event.clientY }
+		isShow.value = true
 
-    emit('show')
-  })
+		emit('show')
+	})
 }
 
 function hide(event?: MouseEvent) {
-  event?.stopPropagation()
-  isShow.value = false
+	event?.stopPropagation()
+	isShow.value = false
 
-  emit('close')
+	emit('close')
 }
 </script>
 
 <style lang='scss' scoped>
 .context {
-  height: 100vh;
-  width: 100vw;
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 10;
-  
-  &-menu {
-    border: 1px solid lightgray;
-    position: absolute;
-    border-radius: 8px;
-    border-inline-end-color: lightgray !important;
-  }
+	height: 100vh;
+	width: 100vw;
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: 10;
+	
+	&-menu {
+		border: 1px solid lightgray;
+		position: absolute;
+		border-radius: 8px;
+		border-inline-end-color: lightgray !important;
+	}
 }
 </style>

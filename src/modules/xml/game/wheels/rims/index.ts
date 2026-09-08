@@ -6,7 +6,7 @@ export * from './rim'
 
 /** Секция описания дисков. */
 export class TruckRims extends XMLWithTemplates {
-  /** Диски. */
-  @innerElements(TruckRim, 'TruckRim')
-  readonly Rims!: XmlElements<TruckRim>
+	/** Диски. */
+	@innerElements(TruckRim, 'TruckRim')
+	readonly Rims!: XmlElements<TruckRim>
 }

@@ -51,8 +51,8 @@ import { ENGINES_LOCALIZATION as texts } from './localization'
 export type EngineSetProps = ReadyProps & Props
 
 type Props = {
-  xml: EnginesXML
-  file: IFile
+	xml: EnginesXML
+	file: IFile
 }
 
 const config = di.resolve(CONFIG_TOKEN)

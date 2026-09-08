@@ -66,7 +66,7 @@ Project directories:
       index.ts              the start file.
       tsconfig.json         TS configuration for the main process.
    /modules:            different kinds of modules.
-      /archive              working with the archiver.
+      /archiver             working with the archiver.
       /backup               working with backup.
       /checks               basic checks.
       /data                 stored data.

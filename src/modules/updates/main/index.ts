@@ -1,34 +1,27 @@
 import { loadLocalization } from '@localization/main'
 import { ProgramError } from '@modules/errors/main'
-import type { Loading } from '@modules/loading/main'
+import type { IMainLoading } from '@modules/loading/types'
 import { di, inject } from '@utilities/di/container'
 import { APP_TOKEN, DIRS_TOKEN, LOADING_TOKEN, PATHS_TOKEN } from '@utilities/di/main/tokens'
 import { app, shell } from 'electron'
 import { open } from 'node:fs/promises'
 import { get } from 'node:https'
 import { UPDATES_LOCALIZATION } from '../localization'
+import type { IMainUpdates } from '../types'
 
-/**
- * Работа с обновлениями программы.
- * _main process_
- */
-export class Updates {
+/** Работа с обновлениями программы. [main] */
+export class Updates implements IMainUpdates {
+	/** Локализация. */
 	private readonly texts = loadLocalization(UPDATES_LOCALIZATION)
 
+	/** Работа с загрузкой.. */
 	@inject(LOADING_TOKEN)
-	private readonly loading!: Loading
+	private readonly loading!: IMainLoading
 
-  /**
-   * Загрузить файл из сети.
-   * @param url URL файла.
-   * @param path Путь в файловой системе.
-   * @param inMemory Сохранять в памяти.
-   * @returns Содержимое файла (при `inMemory=true`).
-   */
-  download(url: string, path: string): Promise<string | void> {
-    const { promise, resolve, reject } = Promise.withResolvers<string | void>()
+	download(url: string, path: string): Promise<string | void> {
+		const { promise, resolve, reject } = Promise.withResolvers<string | void>()
 
-    get(url, async response => {
+		get(url, async response => {
 			const location = response.headers.location
 
 			if (!location) {
@@ -53,14 +46,13 @@ export class Updates {
 					writeStream.close(() => resolve())
 				})
 			})
-    })
+		})
 
-    return promise
-  }
+		return promise
+	}
 
-  /** Запустить процесс обновления программы. */
-  async updateApp(version: string, portable = false) {
-    this.loading.init(this.texts.downloading)
+	async updateApp(version: string, portable = false) {
+		this.loading.init(this.texts.downloading)
 
 		try {
 			const app = di.resolve(APP_TOKEN)
@@ -93,5 +85,5 @@ export class Updates {
 
 			throw new ProgramError(error)
 		}
-  }
+	}
 }

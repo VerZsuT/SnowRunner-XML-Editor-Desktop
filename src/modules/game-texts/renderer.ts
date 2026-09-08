@@ -1,56 +1,43 @@
 import { initMain, mainMethod, mainObjectField } from '@bridge/renderer'
 import type { GameTexts as GameTextsMain } from './main'
-import type { IGameTexts } from './types'
+import type { IGameTexts, IRendererGameTexts } from './types'
 
-export type * from './types'
-
-/**
- * Работа с игровой локализацией.
- * _renderer process_
- */
+/** Работа с игровой локализацией. [renderer] */
 @initMain()
-export class GameTexts implements IGameTexts {
-  /** Объект текстов. */
-  @mainObjectField()
-  private readonly object!: IGameTexts
+export class GameTexts implements IRendererGameTexts {
+	/** Объект текстов. */
+	@mainObjectField()
+	private readonly object!: IGameTexts
 
-  /** Тексты из модификаций. */
-  get mods() {
-    return this.object.mods
-  }
+	/** Обработать файл с переводом из `initial.pak` (текущий выбранный язык в программе). */
+	@mainMethod()
+	initFromInitial!: GameTextsMain['initFromInitial']
 
-  /** Тексты из `initial.pak`. */
-  get main() {
-    return this.object.main
-  }
+	/** Обработать файл с переводом из `.pak` файлов модов (текущий выбранный язык в программе). */
+	@mainMethod()
+	initFromMods!: GameTextsMain['initFromMods']
 
-  /** Обработать файл с переводом из `initial.pak` (текущий выбранный язык в программе). */
-  @mainMethod()
-  initFromInitial!: GameTextsMain['initFromInitial']
+	/**
+	* Возвращает игровой перевод по ключу.
+	* @param key Ключ.
+	* @param modID - id модификации.
+	* @returns Игровой перевод.
+	*/
+	get(key: string | undefined, modID?: string): string | undefined {
+		let value: string | undefined
 
-  /** Обработать файл с переводом из `.pak` файлов модов (текущий выбранный язык в программе). */
-  @mainMethod()
-  initFromMods!: GameTextsMain['initFromMods']
+		if (!key) {
+			return
+		}
 
-  /**
-  * Возвращает игровой перевод по ключу.
-  * @param key Ключ.
-  * @param modID - id модификации.
-  * @returns Игровой перевод.
-  */
-  get(key: string | undefined, modID?: string): string | undefined {
-    let value: string | undefined
+		const { mods, main } = this.object
 
-    if (!key) {
-      return
-    }
+		if (modID && modID in mods && key in mods[modID]) {
+			value = mods[modID][key]
+		} else if (key in main) {
+			value = main[key]
+		}
 
-    if (modID && modID in this.mods && key in this.mods[modID]) {
-      value = this.mods[modID][key]
-    } else if (key in this.main) {
-      value = this.main[key]
-    }
-
-    return value
-  }
+		return value
+	}
 }

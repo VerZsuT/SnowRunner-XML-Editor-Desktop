@@ -60,47 +60,47 @@ const hasCrane = ref(action.hasCrane(xml))
 const isActive = action.isActive(file)
 
 if (isActive) {
-  exportUtils.onExport(exportData)
-  importUtils.onImport(importData)
+	exportUtils.onExport(exportData)
+	importUtils.onImport(importData)
 }
 useReady(emit)
 
 function exportData(data: IExportedData) {
-  const actionsData = data.actionsData[exportUtils.getName(file, info.value.dlc, info.value.mod)] ??= {}
+	const actionsData = data.actionsData[exportUtils.getName(file, info.value.dlc, info.value.mod)] ??= {}
 
-  actionsData[action.id] = action.export(xml)
+	actionsData[action.id] = action.export(xml)
 }
 
 function importData(data: IExportedData) {
-  const actionData = data.actionsData[importUtils.getName(file, info.value.dlc, info.value.mod)]?.[action.id]
+	const actionData = data.actionsData[importUtils.getName(file, info.value.dlc, info.value.mod)]?.[action.id]
 
-  if (actionData) {
-    action.import(xml, actionData)
-  }
+	if (actionData) {
+		action.import(xml, actionData)
+	}
 }
 
 function addCrane() {
-  action.addCrane(xml)
-  hasCrane.value = true
+	action.addCrane(xml)
+	hasCrane.value = true
 }
 
 function removeCrane() {
-  action.removeCrane(xml)
-  hasCrane.value = false
+	action.removeCrane(xml)
+	hasCrane.value = false
 }
 </script>
 
 <style lang='scss' scoped>
 .buttons {
-  padding-top: 10px;
-  text-align: center;
+	padding-top: 10px;
+	text-align: center;
 }
 
 .content {
-  text-align: center;
+	text-align: center;
 }
 
 .warn-title {
-  color: red;
+	color: red;
 }
 </style>
