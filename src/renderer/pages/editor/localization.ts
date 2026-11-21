@@ -184,6 +184,10 @@ export const EDITOR_PAGE_LOCALIZATION = loadLocalization(new Localization({
 		.ru('Топливный бак')
 		.en('Fuel tank'),
 
+	physicsModel: new LocalizationStrings()
+		.ru('Физическая модель')
+		.en('Physics model'),
+
 	unlock: new LocalizationStrings()
 		.ru('Разблокировка')
 		.en('Unlock'),

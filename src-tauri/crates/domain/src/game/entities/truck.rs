@@ -6,6 +6,7 @@ use specta::Type;
 use crate::game::attributes::AttrReader;
 use crate::game::entities::BaseGameData;
 use crate::game::entities::addon::AddonTruckData;
+use crate::game::entities::physics::PhysicsModel;
 use crate::game::entities::truck_data::{
 	TruckCompatibleWheels, TruckFuelTank, TruckSocket, TruckWheels, TruckWinch,
 };
@@ -46,6 +47,12 @@ pub struct Truck {
 	pub truck_data: Option<TruckData>,
 	/// Информация о взаимодействии с окружающим миром.
 	pub game_data: Option<TruckGameData>,
+	/// Физическая модель.
+	pub physics_model: Option<PhysicsModel>,
+	/// Физическая модель топлива.
+	pub fuel_mass: Option<PhysicsModel>,
+	/// Физическая модель воды.
+	pub water_mass: Option<PhysicsModel>,
 }
 
 impl Truck {
@@ -64,6 +71,15 @@ impl Truck {
 			game_data: reader
 				.child("GameData")
 				.map(|reader| TruckGameData::read(&reader)),
+			physics_model: reader
+				.child("PhysicsModel")
+				.map(|reader| PhysicsModel::read(&reader)),
+			fuel_mass: reader
+				.child("FuelMass")
+				.map(|reader| PhysicsModel::read(&reader)),
+			water_mass: reader
+				.child("WaterMass")
+				.map(|reader| PhysicsModel::read(&reader)),
 		}
 	}
 

@@ -578,6 +578,22 @@ export type PathsDto = {
 	updateUrl: string,
 };
 
+/**  Физическое тело: масса, смещение центра масс и вложенное тело. */
+export type PhysicsBody = {
+	/**  Масса тела. */
+	mass: Field<number>,
+	/**  Смещение центра масс. */
+	centerOfMassOffset: Field<Position>,
+	/**  Вложенное тело. */
+	body: PhysicsBody | null,
+};
+
+/**  Физическая модель. */
+export type PhysicsModel = {
+	/**  Физическое тело. */
+	body: PhysicsBody | null,
+};
+
 /**  Позиция (`Pos`, `Offset`, `Origin`). */
 export type Position = {
 	/**  Координата X. */
@@ -672,6 +688,12 @@ export type Truck = {
 	truckData: TruckData | null,
 	/**  Информация о взаимодействии с окружающим миром. */
 	gameData: TruckGameData | null,
+	/**  Физическая модель. */
+	physicsModel: PhysicsModel | null,
+	/**  Физическая модель топлива. */
+	fuelMass: PhysicsModel | null,
+	/**  Физическая модель воды. */
+	waterMass: PhysicsModel | null,
 };
 
 /**  Аддон трака. */

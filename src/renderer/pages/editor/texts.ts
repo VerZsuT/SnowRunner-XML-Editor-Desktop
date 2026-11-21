@@ -4,6 +4,7 @@ import { TRUCK_DATA_LOCALIZATION as ADDON_TRUCK_DATA_LOCALIZATION } from '@modul
 import { GAME_DATA_LOCALIZATION } from '@modules/xml/game/base/game-data/localization'
 import { UI_DESC_LOCALIZATION } from '@modules/xml/game/base/ui-desc/localization'
 import { WHEEL_FRICTION_LOCALIZATION } from '@modules/xml/game/base/wheel-friction/localization'
+import { BODY_LOCALIZATION } from '@modules/xml/game/base/physics-model/body/localization'
 import { ENGINE_LOCALIZATION } from '@modules/xml/game/engines/engine/localization'
 import { GEARBOX_LOCALIZATION } from '@modules/xml/game/gearboxes/gearbox/localization'
 import { GEAR_LOCALIZATION } from '@modules/xml/game/gearboxes/gearbox/gear/localization'
@@ -29,6 +30,10 @@ import { EDITOR_PAGE_LOCALIZATION as page } from './localization'
 const FIELD_TEXTS: Record<string, () => string> = {
 	// Трак.
 	'truck.type': () => 'Тип',
+
+	// Физическая модель.
+	'physics.body.mass': () => BODY_LOCALIZATION.mass,
+	'physics.body.centerOfMassOffset': () => BODY_LOCALIZATION.centerOfMassOffset,
 
 	// TruckData.
 	'truckData.fuelCapacity': () => ADDON_TRUCK_DATA_LOCALIZATION.fuelCapacity,

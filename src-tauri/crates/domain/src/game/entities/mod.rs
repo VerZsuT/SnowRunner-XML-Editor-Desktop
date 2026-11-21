@@ -4,6 +4,7 @@ pub mod addon;
 pub mod base;
 pub mod engine;
 pub mod gearbox;
+pub mod physics;
 pub mod suspension;
 pub mod truck;
 pub mod truck_data;
@@ -15,6 +16,7 @@ pub use addon::{AddonGameData, AddonInstallSocket, AddonTruckData, TruckAddon};
 pub use base::{BaseGameData, BaseUiDesc};
 pub use engine::Engine;
 pub use gearbox::{Gear, Gearbox, GearboxGameData, GearboxParams};
+pub use physics::{PhysicsBody, PhysicsModel};
 pub use suspension::{Suspension, SuspensionSet};
 pub use truck::{Truck, TruckData, TruckGameData};
 pub use truck_data::{

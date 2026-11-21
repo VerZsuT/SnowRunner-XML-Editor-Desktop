@@ -1,4 +1,4 @@
-import type { Truck } from '@renderer/api/bindings'
+import type { PhysicsBody, Truck } from '@renderer/api/bindings'
 import type { DocumentSession } from '@renderer/api/documents'
 import { DocumentField, InfoField } from './field'
 import { Group } from './group'
@@ -124,6 +124,12 @@ export function TruckTable({ session, truck, related }: TruckTableProps) {
 				</Group>
 			)}
 
+			{truck.physicsModel?.body && (
+				<Group label={texts.physicsModel}>
+					<PhysicsBodyFields session={session} body={truck.physicsModel.body} />
+				</Group>
+			)}
+
 			{gameData && (
 				<Group label={texts.unlock}>
 					<DocumentField session={session} field={gameData.country} />
@@ -137,6 +143,21 @@ export function TruckTable({ session, truck, related }: TruckTableProps) {
 				</Group>
 			)}
 
+		</>
+	)
+}
+
+/** Тело физической модели и вложенные тела. */
+function PhysicsBodyFields({ session, body }: { session: DocumentSession, body: PhysicsBody }) {
+	return (
+		<>
+			<DocumentField session={session} field={body.mass} />
+			<DocumentField session={session} field={body.centerOfMassOffset} />
+			{body.body && (
+				<Group nested label={texts.physicsModel}>
+					<PhysicsBodyFields session={session} body={body.body} />
+				</Group>
+			)}
 		</>
 	)
 }

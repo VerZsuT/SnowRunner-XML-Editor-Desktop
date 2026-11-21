@@ -9,7 +9,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 function field(
 	name: string,
 	selector: string,
-	value: string | number | boolean | string[] | null,
+	value: string | number | boolean | string[] | { x: number, y: number, z: number } | null,
 	attrType = 'string',
 	label: string | null = null
 ) {
@@ -35,6 +35,21 @@ function truck() {
 	return {
 		fileType: field('Type', '/Truck', 'Truck'),
 		truckData: null,
+		physicsModel: {
+			body: {
+				mass: field('Mass', '/Truck/PhysicsModel/Body', 6000, 'integer', 'physics.body.mass'),
+				centerOfMassOffset: field(
+					'CenterOfMassOffset',
+					'/Truck/PhysicsModel/Body',
+					{ x: -0.3, y: 0, z: 0 },
+					'position',
+					'physics.body.centerOfMassOffset'
+				),
+				body: null
+			}
+		},
+		fuelMass: null,
+		waterMass: null,
 		gameData: {
 			price: field('Price', '/Truck/GameData', 1000, 'integer', 'gameData.price'),
 			unlockByExploration: field('UnlockByExploration', '/Truck/GameData', true, 'boolean'),
@@ -98,6 +113,8 @@ describe('EditorPage', () => {
 
 		expect(await screen.findByText('Разблокировка')).toBeInTheDocument()
 		expect(screen.getByText('ANK MK38')).toBeInTheDocument()
+		expect(screen.getByText('Физическая модель')).toBeInTheDocument()
+		expect(screen.getByText('Смещение центра масс')).toBeInTheDocument()
 	})
 
 	it('показывает ошибку открытия', async () => {

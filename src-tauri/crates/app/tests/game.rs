@@ -58,6 +58,20 @@ fn находит_траки_и_двигатели_фикстуры() {
 	));
 
 	let truck = files.open_truck("ank_mk38").unwrap();
+	let physics = truck
+		.physics_model
+		.as_ref()
+		.expect("физическая модель")
+		.body
+		.as_ref()
+		.expect("тело");
+
+	assert_eq!(physics.mass.value, Some(6000));
+	assert_eq!(
+		physics.body.as_ref().and_then(|body| body.mass.value),
+		Some(4000)
+	);
+
 	let data = truck.truck_data.unwrap();
 
 	let ank = trucks

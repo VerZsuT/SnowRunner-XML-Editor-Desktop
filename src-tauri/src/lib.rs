@@ -15,11 +15,11 @@ use sxmle_app::texts::GameTexts;
 use sxmle_domain::game::descriptor::{AttrDescriptor, AttrKind};
 use sxmle_domain::game::entities::{
 	AddonGameData, AddonInstallSocket, AddonTruckData, BaseGameData, BaseUiDesc, BaseWheelFriction,
-	Engine, Gear, Gearbox, GearboxGameData, GearboxParams, Suspension, SuspensionSet,
-	TireWheelFriction, TrailerAddonSlots, Truck, TruckAddon, TruckAddonShift, TruckAddonSocket,
-	TruckAddonSockets, TruckCompatibleWheels, TruckCraneSocket, TruckData, TruckFuelTank,
-	TruckGameData, TruckRim, TruckSocket, TruckTire, TruckUiDesc, TruckWheel, TruckWheels,
-	TruckWinch, TruckWinchSocket, Wheel, Wheels, Winch,
+	Engine, Gear, Gearbox, GearboxGameData, GearboxParams, PhysicsBody, PhysicsModel, Suspension,
+	SuspensionSet, TireWheelFriction, TrailerAddonSlots, Truck, TruckAddon, TruckAddonShift,
+	TruckAddonSocket, TruckAddonSockets, TruckCompatibleWheels, TruckCraneSocket, TruckData,
+	TruckFuelTank, TruckGameData, TruckRim, TruckSocket, TruckTire, TruckUiDesc, TruckWheel,
+	TruckWheels, TruckWinch, TruckWinchSocket, Wheel, Wheels, Winch,
 };
 use sxmle_domain::game::field::Field;
 use sxmle_domain::game::limit::Limit;
@@ -37,6 +37,8 @@ pub fn specta_builder() -> tauri_specta::Builder<tauri::Wry> {
 		.typ::<TruckData>()
 		.typ::<TruckGameData>()
 		.typ::<TruckUiDesc>()
+		.typ::<PhysicsModel>()
+		.typ::<PhysicsBody>()
 		.typ::<TruckWinch>()
 		.typ::<TruckWheels>()
 		.typ::<TruckWheel>()
