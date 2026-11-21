@@ -21,6 +21,12 @@ There are two versions in the releases:
 
 The difference between the versions is only in the installation method.
 
+### Where the data is stored
+
+- The installed version keeps settings, backups and temporary folders in `%APPDATA%\SnowRunner XML Editor` and does not require administrator rights at startup.
+- The portable version keeps data in the `data` folder next to the `.exe` when the `portable.txt` marker is present (it is included in the portable archive). Without the marker, data is written to `%APPDATA%`.
+- On the first run of a version with the new data folder, existing json files are copied from the installation folder to the new one; the originals are not deleted.
+
 ## How to use
 
 You can read about how to use the program in the [guide at the link](https://snowrunner.mod.io/guides/snowrunner-xml-editor).

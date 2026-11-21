@@ -7,11 +7,13 @@ export type * from './types'
 /** Разного рода проверки. [renderer] */
 @initMain()
 export class Checks implements IRendererChecks {
+	/** Явное имя сущности в мосте. */
+	static readonly pubName = 'Checks'
 	@mainMethod()
 	checkUpdate!: ChecksMain['checkUpdate']
 
 	@mainMethod()
-	hasAdminPrivileges!: ChecksMain['hasAdminPrivileges']
+	checkDataAccess!: ChecksMain['checkDataAccess']
 
 	@mainMethod()
 	checkInitialChanges!: ChecksMain['checkInitialChanges']

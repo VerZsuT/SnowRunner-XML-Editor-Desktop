@@ -1,5 +1,5 @@
-import type { IFile } from '@modules/files/renderer'
-import { XMLElement } from '../../xml-element'
+import type { IGameContext } from '../game-xml'
+import { XMLElement, parseXML } from '../../xml-element'
 import { XMLTemplates } from '../../xml-templates'
 import type { INumberAttrDescriptor, XmlElement, XmlValue } from '../attributes'
 import { floatAttr, integerAttr, properties } from '../attributes'
@@ -9,19 +9,18 @@ import { XMLWithTemplates, innerElement } from '../xml-with-templates'
 
 /** Рутовый тег файла класса коробки передач. */
 export class Wheel extends XMLWithTemplates {
-	static override async from(str: string): Promise<Wheel | undefined>
-	static override async from(file: IFile): Promise<Wheel | undefined>
-	static override async from(source: string | IFile): Promise<Wheel | undefined> {
+	static override async from(source: string | XMLElement, context?: IGameContext): Promise<Wheel | undefined> {
 		const rootSelector = 'TruckWheel'
-		const root = await XMLElement.from(source as IFile)
+		const root = XMLElement.isXMLElement(source) ? source : parseXML(source)
 		const element = root?.select(rootSelector)
 
 		if (root && element) {
 			return new this(
 				element,
-				await XMLTemplates.from(root),
+				await XMLTemplates.from(root, context),
 				rootSelector,
-				root
+				root,
+				context
 			)
 		}
 	}

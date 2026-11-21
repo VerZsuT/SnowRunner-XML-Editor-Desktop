@@ -66,6 +66,11 @@ export function General() {
 	}, [loadingState.isLoading])
 
 	useEffect(() => {
+		// Отладочный хук не должен попадать в prod-сборку.
+		if (!import.meta.env.DEV) {
+			return
+		}
+
 		window['exportDefaults'] = exportDefaults
 
 		return () => {

@@ -11,6 +11,8 @@ import type { IDialogAlertParams, IDialogParams, IMainDialogs, IOpenDialogParams
 
 /** Вывод системных диалогов. [main] */
 export class Dialogs implements IMainDialogs {
+	/** Явное имя сущности в мосте. */
+	static readonly pubName = 'Dialogs'
 	/** Локализация. */
 	private readonly texts = loadLocalization(DIALOGS_LOCALIZATION)
 

@@ -8,6 +8,8 @@ import type { IRendererApp } from './types'
 /** Приложение. [renderer] */
 @initMain()
 export class App implements IRendererApp {
+	/** Явное имя сущности в мосте. */
+	static readonly pubName = 'App'
 	get isDev(): boolean {
 		const config = di.resolve(CONFIG_TOKEN)
 		return config.buildType === BuildType.dev

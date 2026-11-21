@@ -6,6 +6,8 @@ export type * from './types'
 /** Пути, используемые в программе. [renderer] */
 @initMain()
 export class Paths implements IRendererPathsManager {
+	/** Явное имя сущности в мосте. */
+	static readonly pubName = 'Paths'
 	@mainObjectField()
 	readonly object!: IPaths
 

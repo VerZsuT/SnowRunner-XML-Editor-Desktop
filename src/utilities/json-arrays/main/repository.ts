@@ -1,11 +1,10 @@
 import { ErrorText } from '@modules/errors/enums'
-import { ProgramError } from '@modules/errors/main'
+import { createProgramError } from '@modules/errors/main'
 import type { IMainFile as IFile } from '@modules/files/types'
-import type { IRepository } from '@src/types'
-import type { IArrayJSON } from '../types'
+import type { IArrayJSON, IArrayRepository } from '../types'
 
 /** Репозиторий базового массива. [main] */
-export class BaseMainArrayRepository implements IRepository<IArrayJSON> {
+export class BaseMainArrayRepository implements IArrayRepository {
 	/** Файл для записи/чтения массива. */
 	private readonly jsonFile: IFile
 
@@ -21,17 +20,13 @@ export class BaseMainArrayRepository implements IRepository<IArrayJSON> {
 		try {
 			this.jsonFile.writeToJSONSync(value)
 		} catch (error: any) {
-			throw new ProgramError(ErrorText.saveJsonError, error)
+			throw createProgramError(ErrorText.saveJsonError, error)
 		}
 	}
 
-	async read(): Promise<IArrayJSON | undefined> {
-		return this.readSync()
-	}
-
-	readSync(): IArrayJSON | undefined {
+	readSync(): unknown {
 		if (this.jsonFile.existsSync()) {
-			return this.jsonFile.readFromJSONSync<IArrayJSON>()
+			return this.jsonFile.readFromJSONSync<object>()
 		}
 	}
 }

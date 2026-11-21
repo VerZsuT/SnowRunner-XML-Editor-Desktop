@@ -1,13 +1,14 @@
-import { ProgramError } from '@modules/errors/main'
+import { createProgramError, ProgramError } from '@modules/errors/main'
 import type { IPaths } from '@modules/paths/main'
 import { di, inject } from '@utilities/di/container'
 import { CONFIG_TOKEN, DIRS_TOKEN, PATHS_TOKEN } from '@utilities/di/main/tokens'
 import type { WatchListener } from 'node:fs'
-import { accessSync, existsSync, lstatSync, mkdirSync, readFileSync, rmSync, watch, writeFileSync } from 'node:fs'
+import { accessSync, copyFileSync, existsSync, lstatSync, mkdirSync, readFileSync, rmSync, watch, writeFileSync } from 'node:fs'
 import { access, constants } from 'node:fs/promises'
 import { basename, dirname, extname, join } from 'node:path'
 import { ErrorText } from '../errors/enums'
 import type { XMLElement } from '../xml/renderer'
+import { writeFileAtomic } from './atomic'
 import { FsError, fsService } from './service'
 import type { ICheckResult, IFindDirsArgs, IFindFilesArgs, IFSEntry, IMainDir, IMainDirs, IMainFile, IMainFiles, IMainFSEntry } from './types'
 
@@ -52,9 +53,9 @@ export class FSEntry implements IMainFSEntry {
 		const writeResult = await this.canWrite()
 
 		if (!readResult.result) {
-			throw new ProgramError(ErrorText.readFileError, readResult.error, this.path)
+			throw createProgramError(ErrorText.readFileError, readResult.error, this.path)
 		} else if (!writeResult.result) {
-			throw new ProgramError(ErrorText.writeFileError, writeResult.error, this.path)
+			throw createProgramError(ErrorText.writeFileError, writeResult.error, this.path)
 		}
 
 		return true
@@ -121,7 +122,7 @@ export class FSEntry implements IMainFSEntry {
 				retryDelay: 100
 			})
 		} catch (error: any) {
-			throw new ProgramError(ErrorText.removeError, error, this.path)
+			throw createProgramError(ErrorText.removeError, error, this.path)
 		}
 	}
 
@@ -201,7 +202,7 @@ export class Dir extends FSEntry implements IMainDir {
 		try {
 			mkdirSync(this.path, { recursive: true })
 		} catch (error: any) {
-			throw new ProgramError(ErrorText.makeDirError, error, this.path)
+			throw createProgramError(ErrorText.makeDirError, error, this.path)
 		}
 	}
 
@@ -286,13 +287,13 @@ export class File extends FSEntry implements IMainFile {
 		const readResult = canReadSync(this.path)
 
 		if (!readResult.result) {
-			throw new ProgramError(ErrorText.readFileError, readResult.error, this.path)
+			throw createProgramError(ErrorText.readFileError, readResult.error, this.path)
 		}
 
 		try {
 			return readFileSync(this.path, { encoding }).toString()
 		} catch (error: any) {
-			throw new ProgramError(ErrorText.readFileError, error, this.path)
+			throw createProgramError(ErrorText.readFileError, error, this.path)
 		}
 	}
 
@@ -303,7 +304,13 @@ export class File extends FSEntry implements IMainFile {
 	readFromJSONSync<T extends object = any>() {
 		// Ошибку разбора JSON не оборачиваем в ProgramError: иначе вместе с ней
 		// показывалось бы лишнее уведомление, а вызывающий код отчитывается сам.
-		return <T>JSON.parse(this.readSync())
+		try {
+			return <T>JSON.parse(this.readSync())
+		} catch (error: unknown) {
+			this.backupCorrupt()
+
+			throw error
+		}
 	}
 
 	readFromXML(): Promise<XMLElement | undefined> {
@@ -324,13 +331,13 @@ export class File extends FSEntry implements IMainFile {
 		const writeResult = canWriteSync(this.path)
 
 		if (!writeResult.result) {
-			throw new ProgramError(ErrorText.writeFileError, writeResult.error, this.path)
+			throw createProgramError(ErrorText.writeFileError, writeResult.error, this.path)
 		}
 
 		try {
 			writeFileSync(this.path, data, encoding)
 		} catch (error: any) {
-			throw new ProgramError(ErrorText.writeFileError, error, this.path)
+			throw createProgramError(ErrorText.writeFileError, error, this.path)
 		}
 	}
 
@@ -339,7 +346,36 @@ export class File extends FSEntry implements IMainFile {
 	}
 
 	writeToJSONSync(data: any) {
-		this.writeSync(JSON.stringify(data, undefined, '\t'))
+		this.makeSync()
+
+		const writeResult = canWriteSync(this.path)
+
+		if (!writeResult.result) {
+			throw createProgramError(ErrorText.writeFileError, writeResult.error, this.path)
+		}
+
+		try {
+			writeFileAtomic(this.path, JSON.stringify(data, undefined, '\t'))
+		} catch (error: any) {
+			throw createProgramError(ErrorText.writeFileError, error, this.path)
+		}
+	}
+
+	/** Сохранить копию повреждённого json файла. */
+	private backupCorrupt() {
+		try {
+			if (!this.existsSync()) {
+				return
+			}
+
+			const timestamp = new Date().toISOString().replaceAll(/[:.]/g, '-')
+			const corruptPath = join(this.dirname, `${this.name}.corrupt-${timestamp}.json`)
+
+			copyFileSync(this.path, corruptPath)
+			console.error(`Corrupted json file saved to '${corruptPath}'`)
+		} catch (error: unknown) {
+			console.error('Cannot save corrupted json file', error)
+		}
 	}
 
 	async copyTo(file: IFSEntry): Promise<void>
@@ -377,7 +413,7 @@ export class File extends FSEntry implements IMainFile {
 			this.root.makeSync()
 			writeFileSync(this.path, '')
 		} catch (error: any) {
-			throw new ProgramError(ErrorText.makeFileError, error, this.path)
+			throw createProgramError(ErrorText.makeFileError, error, this.path)
 		}
 	}
 
@@ -416,7 +452,7 @@ export class Files implements IMainFiles {
 		const { initialPath } = di.resolve(CONFIG_TOKEN)
 
 		if (!initialPath) {
-			throw new ProgramError('Path to initial.pak not found')
+			throw createProgramError('Path to initial.pak not found')
 		}
 
 		return new File(initialPath)
@@ -477,7 +513,7 @@ function toProgramError(error: unknown, text: ErrorText, ...formatArgs: string[]
 		? error
 		: new Error(String(error))
 
-	return new ProgramError(text, cause, ...formatArgs)
+	return createProgramError(text, cause, ...formatArgs)
 }
 
 /**

@@ -89,6 +89,9 @@ class ForgeConfig {
 						await cp(paths.installer, paths.installerWithVersion)
 					}
 
+					info('Create portable marker')
+					await writeFile(join(paths.renamedBuild, 'portable.txt'), '')
+
 					info('Archive build')
 					archive(paths.renamedBuild, paths.buildArchive)
 					if (existsSync(paths.installerWithVersion)) {

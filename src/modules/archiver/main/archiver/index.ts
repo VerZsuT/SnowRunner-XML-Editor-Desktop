@@ -1,5 +1,5 @@
 import { ErrorText } from '@modules/errors/enums'
-import { ProgramError } from '@modules/errors/main'
+import { createProgramError } from '@modules/errors/main'
 import type { IMainDir as IDir, IMainFile as IFile } from '@modules/files/types'
 import { di } from '@utilities/di/container'
 import { CONFIG_TOKEN, DIRS_TOKEN, ENV_TOKEN, PATHS_TOKEN } from '@utilities/di/main/tokens'
@@ -103,9 +103,9 @@ export class WinRAR implements ISystemArchiver {
 		const dirReadResult = await dir.canRead()
 
 		if (!archiveWriteResult.result) {
-			throw new ProgramError(ErrorText.writeFileError, archiveWriteResult.error, archive.path)
+			throw createProgramError(ErrorText.writeFileError, archiveWriteResult.error, archive.path)
 		} else if (!dirReadResult.result) {
-			throw new ProgramError(ErrorText.readDirError, dirReadResult.error, dir.path)
+			throw createProgramError(ErrorText.readDirError, dirReadResult.error, dir.path)
 		}
 
 		await this.run(
@@ -130,7 +130,7 @@ export class WinRAR implements ISystemArchiver {
 		const readResult = await archive.canRead()
 
 		if (!readResult.result) {
-			throw new ProgramError(ErrorText.readFileError, readResult.error, archive.path)
+			throw createProgramError(ErrorText.readFileError, readResult.error, archive.path)
 		}
 
 		await dir.make()
@@ -138,7 +138,7 @@ export class WinRAR implements ISystemArchiver {
 		const writeResult = await dir.canWrite()
 
 		if (!writeResult.result) {
-			throw new ProgramError(ErrorText.writeDirError, writeResult.error, dir.path)
+			throw createProgramError(ErrorText.writeDirError, writeResult.error, dir.path)
 		}
 
 		await this.run(
@@ -157,9 +157,9 @@ export class WinRAR implements ISystemArchiver {
 		const writeResult = await archive.canWrite()
 
 		if (!readResult.result) {
-			throw new ProgramError(ErrorText.readFileError, readResult.error, file.path)
+			throw createProgramError(ErrorText.readFileError, readResult.error, file.path)
 		} else if (!writeResult.result) {
-			throw new ProgramError(ErrorText.writeFileError, writeResult.error, archive.path)
+			throw createProgramError(ErrorText.writeFileError, writeResult.error, archive.path)
 		}
 
 		await this.run(
@@ -180,7 +180,7 @@ export class WinRAR implements ISystemArchiver {
 		const paths = di.resolve(PATHS_TOKEN)
 
 		if (!await dirs.winrar.exists()) {
-			throw new ProgramError(ErrorText.dirNotFound, null, dirs.winrar.path)
+			throw createProgramError(ErrorText.dirNotFound, null, dirs.winrar.path)
 		}
 
 		const execArgs = args.flatMap(value => Array.isArray(value) ? value : [value])
@@ -197,7 +197,7 @@ export class WinRAR implements ISystemArchiver {
 				},
 				error => {
 					if (error && isWinRarFailure((error as any).code)) {
-						reject(new ProgramError(ErrorText.winRarCommandError, error, execArgs.join(' ')))
+						reject(createProgramError(ErrorText.winRarCommandError, error, execArgs.join(' ')))
 
 						return
 					}

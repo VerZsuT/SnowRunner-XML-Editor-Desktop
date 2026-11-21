@@ -1,5 +1,5 @@
 import { loadLocalization } from '@localization/main'
-import { ProgramError } from '@modules/errors/main'
+import { createProgramError, ProgramError } from '@modules/errors/main'
 import type { IMainLoading } from '@modules/loading/types'
 import { di, inject } from '@utilities/di/container'
 import { APP_TOKEN, DIRS_TOKEN, LOADING_TOKEN, PATHS_TOKEN } from '@utilities/di/main/tokens'
@@ -14,6 +14,8 @@ import type { IMainUpdates } from '../types'
 
 /** Работа с обновлениями программы. [main] */
 export class Updates implements IMainUpdates {
+	/** Явное имя сущности в мосте. */
+	static readonly pubName = 'Updates'
 	/** Локализация. */
 	private readonly texts = loadLocalization(UPDATES_LOCALIZATION)
 
@@ -107,7 +109,7 @@ export class Updates implements IMainUpdates {
 
 	async updateApp(version: string, portable = false) {
 		if (!/^\d+\.\d+\.\d+[-\w.]*$/.test(version)) {
-			throw new ProgramError(`Invalid application version '${version}'`)
+			throw createProgramError(`Invalid application version '${version}'`)
 		}
 
 		this.loading.init(this.texts.downloading)
@@ -141,7 +143,7 @@ export class Updates implements IMainUpdates {
 			app.quit()
 		} catch (error: any) {
 			if (!(error instanceof ProgramError)) {
-				new ProgramError(error?.message ?? String(error), error)
+				createProgramError(error?.message ?? String(error), error)
 			}
 
 			// Перезапуск возвращает программу в рабочее состояние после неудачного обновления.

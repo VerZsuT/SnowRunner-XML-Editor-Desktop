@@ -1,3 +1,4 @@
+import { ErrorBoundary } from '@renderer/components/error-boundary'
 import { createRoot } from 'react-dom/client'
 
 await prepareApp()
@@ -11,7 +12,11 @@ async function runApp() {
 		throw new Error('Container #main was not found')
 	}
 
-	createRoot(container).render(<General />)
+	createRoot(container).render(
+		<ErrorBoundary>
+			<General />
+		</ErrorBoundary>
+	)
 }
 
 async function prepareApp() {

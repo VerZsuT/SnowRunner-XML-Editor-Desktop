@@ -1,8 +1,7 @@
 import type { IFile } from '@modules/files/types'
-import type { XMLElement } from '../xml-element'
-import { AttrValue } from '../xml-element'
+import { AttrValue, parseXML, XMLElement } from '../xml-element'
 import { XMLTemplates } from '../xml-templates'
-import type { FileInfo } from './game-xml'
+import type { FileInfo, IGameContext } from './game-xml'
 import { GameXML } from './game-xml'
 import type { Limit } from './limit'
 
@@ -10,20 +9,22 @@ export class XMLWithTemplates extends GameXML {
 	/** Элемент шаблонов. */
 	readonly templates?: XMLTemplates
 
-	/** Создать из строки. */
-	static override async from(str: string): Promise<XMLWithTemplates | undefined>
-	/** Создать из содержимого файла. */
-	static override async from(file: IFile): Promise<XMLWithTemplates | undefined>
-	static override async from(source: string | IFile): Promise<XMLWithTemplates | undefined> {
-		const element = await super.from(source as IFile)
+	/**
+	 * Создать из строки или элемента.
+	 * @param source XML строка или элемент.
+	 * @param context Контекст игры.
+	 * @returns Элемент или `undefined`.
+	 */
+	static override async from(source: string | XMLElement, context?: IGameContext): Promise<XMLWithTemplates | undefined> {
+		const root = XMLElement.isXMLElement(source) ? source : parseXML(source)
 
-		if (element) {
-			return new XMLWithTemplates(element, await XMLTemplates.from(source as IFile))
+		if (root) {
+			return new XMLWithTemplates(root, await XMLTemplates.from(root, context), '', root, context)
 		}
 	}
 
-	constructor(element: XMLElement, templates?: XMLTemplates, selector = '', baseElement = element) {
-		super(element, selector, baseElement)
+	constructor(element: XMLElement, templates?: XMLTemplates, selector = '', baseElement = element, context?: IGameContext) {
+		super(element, selector, baseElement, context)
 		this.templates = templates
 	}
 
@@ -120,7 +121,12 @@ export function innerElement<T extends typeof XMLWithTemplates>(
 						? ClassOrFactory()
 						: ClassOrFactory
 
-					return new Class(element, this.templates, innerSelector) as Value
+					const instance = new Class(element, this.templates, innerSelector) as Value & { context?: IGameContext }
+
+					// Вложенные элементы наследуют контекст родителя.
+					instance.context ??= this.context
+
+					return instance
 				},
 				enumerable: true,
 				configurable: true
@@ -153,13 +159,19 @@ export function innerElements<T extends typeof XMLWithTemplates>(ClassOrFactory:
 							? ClassOrFactory()
 							: ClassOrFactory
 
-					return elements.map((element, index) => new Class(
-						element,
-						this.templates,
-						this.selector
-							? `${this.selector} > ${target}:nth-of-type(${index + 1})`
-							: undefined
-					)) as Value
+					return elements.map((element, index) => {
+						const instance = new Class(
+							element,
+							this.templates,
+							this.selector
+								? `${this.selector} > ${target}:nth-of-type(${index + 1})`
+								: undefined
+						) as InstanceType<T> & { context?: IGameContext }
+
+						instance.context ??= this.context
+
+						return instance as InstanceType<T>
+					}) as Value
 				},
 				enumerable: true,
 				configurable: true

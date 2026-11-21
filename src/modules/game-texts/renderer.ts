@@ -5,6 +5,8 @@ import type { IGameTexts, IRendererGameTexts } from './types'
 /** Работа с игровой локализацией. [renderer] */
 @initMain()
 export class GameTexts implements IRendererGameTexts {
+	/** Явное имя сущности в мосте. */
+	static readonly pubName = 'GameTexts'
 	/** Объект текстов. */
 	@mainObjectField()
 	private readonly object!: IGameTexts

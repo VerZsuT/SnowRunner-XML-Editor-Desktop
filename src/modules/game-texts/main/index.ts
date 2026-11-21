@@ -8,6 +8,8 @@ import type { IGameTexts, IMainGameTexts, ITranslation } from '../types'
 
 /** Работа с игровой локализацией. [main] */
 export class GameTexts implements IMainGameTexts {
+	/** Явное имя сущности в мосте. */
+	static readonly pubName = 'GameTexts'
 	/** Конфигурация программы. */
 	@inject(CONFIG_TOKEN)
 	private readonly config!: IConfig
@@ -36,7 +38,7 @@ export class GameTexts implements IMainGameTexts {
 	private watcherRetry?: NodeJS.Timeout
 
 	constructor() {
-		makeReactive(this, 'GameTexts', 'object')
+		makeReactive(this, 'object')
 	}
 
 	async initFromInitial() {

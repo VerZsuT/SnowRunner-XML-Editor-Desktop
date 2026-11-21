@@ -1,5 +1,6 @@
+import { reportError } from '@modules/errors/renderer'
 import { di } from '@utilities/di/container'
-import { LOADING_TOKEN, MESSAGES_TOKEN } from '@utilities/di/renderer/tokens'
+import { LOADING_TOKEN } from '@utilities/di/renderer/tokens'
 import { useLoadingState } from '@renderer/utilities/use-reactive'
 import { Progress, Typography } from 'antd'
 import { useEffect } from 'react'
@@ -11,7 +12,6 @@ type ProgressStatus = 'success' | 'exception' | 'normal' | 'active'
 /** Страница загрузки. */
 export function LoadingPage() {
 	const loading = di.resolve(LOADING_TOKEN)
-	const messages = di.resolve(MESSAGES_TOKEN)
 	const state = useLoadingState()
 
 	const progressStatus: ProgressStatus = state.hasError
@@ -22,9 +22,9 @@ export function LoadingPage() {
 
 	useEffect(() => {
 		if (state.hasError) {
-			messages.error(state.error)
+			reportError(state.error, 'background')
 		}
-	}, [state.hasError, state.error, messages])
+	}, [state.hasError, state.error])
 
 	if (!state.isLoading) {
 		return null

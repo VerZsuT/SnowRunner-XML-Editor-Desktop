@@ -8,6 +8,8 @@ import type { IRendererWindows } from './types'
 /** Работа с окнами программы. [renderer] */
 @initMain()
 export class Windows implements IRendererWindows {
+	/** Явное имя сущности в мосте. */
+	static readonly pubName = 'Windows'
 	/** Мост main-renderer. */
 	private readonly bridge = Bridge.as<object>()
 

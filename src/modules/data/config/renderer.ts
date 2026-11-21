@@ -5,6 +5,8 @@ import type { IConfig, IRendererConfigManager } from './types'
 /** Работа с конфигурацией программы. [renderer] */
 @initMain()
 export class Config implements IRendererConfigManager {
+	/** Явное имя сущности в мосте. */
+	static readonly pubName = 'Config'
 	@mainObjectField()
 	private readonly object!: IConfig
 

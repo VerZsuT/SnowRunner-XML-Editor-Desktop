@@ -1,4 +1,5 @@
 import { ExportOutlined, ImportOutlined, MenuFoldOutlined, MenuUnfoldOutlined, SaveOutlined, UndoOutlined } from '@ant-design/icons'
+import { reportError } from '@modules/errors/renderer'
 import type { IFile } from '@modules/files/types'
 import { Page } from '@modules/windows/enums'
 import { TruckFileType } from '@modules/xml/renderer'
@@ -113,7 +114,7 @@ export const MainHeader = forwardRef<MainHeaderHandle, MainHeaderProps>(function
 			await save(updateFiles)
 			success(texts.successSaveFiles)
 		} catch (error: any) {
-			messages.error(error)
+			reportError(error, 'ui')
 		}
 
 		state.setIsSaving(false)
@@ -169,7 +170,7 @@ export const MainHeader = forwardRef<MainHeaderHandle, MainHeaderProps>(function
 			await importUtils.importFile(file, toImport)
 			success(texts.wasImported)
 		} catch (error: any) {
-			messages.error(error)
+			reportError(error, 'ui')
 		}
 	}
 
@@ -178,7 +179,7 @@ export const MainHeader = forwardRef<MainHeaderHandle, MainHeaderProps>(function
 			await exportUtils.exportFile(file, toExport)
 			success(texts.wasExported)
 		} catch (error: any) {
-			messages.error(error)
+			reportError(error, 'ui')
 		}
 	}
 
@@ -191,7 +192,7 @@ export const MainHeader = forwardRef<MainHeaderHandle, MainHeaderProps>(function
 				messages.success(texts.successReset)
 			}
 		} catch (error: any) {
-			messages.error(error)
+			reportError(error, 'ui')
 		}
 	}
 

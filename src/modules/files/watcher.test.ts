@@ -127,7 +127,7 @@ describe('наблюдение за файлом [renderer]', () => {
 		const file = new File(root, 'absent.txt')
 
 		await expect(async () => file.watch(() => {})).rejects.toThrow()
-		expect(messages.error).toHaveBeenCalledTimes(1)
+		expect(messages.error).not.toHaveBeenCalled()
 		expect(fsService.watchersCount).toBe(0)
 	})
 })

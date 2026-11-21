@@ -1,3 +1,4 @@
+import { reportError } from '@modules/errors/renderer'
 import { Page } from '@modules/windows/enums'
 import { usePageStore } from '@renderer/pages/general/store/page'
 import { useConfig } from '@renderer/utilities/use-reactive'
@@ -84,7 +85,7 @@ export function Menu() {
 			await archiver.updateFiles()
 			messages.success(texts.successSaveFiles)
 		} catch (error: any) {
-			messages.error(error)
+			reportError(error, 'ui')
 		}
 
 		hideLoading()

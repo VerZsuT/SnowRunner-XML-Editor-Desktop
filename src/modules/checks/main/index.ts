@@ -1,7 +1,7 @@
 import { loadLocalization } from '@localization/main'
 import type { IMainDialogs } from '@modules/dialogs/types'
 import { ErrorText } from '@modules/errors/enums'
-import { ProgramError } from '@modules/errors/main'
+import { createProgramError, reportError } from '@modules/errors/main'
 import type { IMainDirs as IDirs, IMainFiles as IFiles } from '@modules/files/main'
 import { di, inject } from '@utilities/di/container'
 import { ARCHIVER_TOKEN, BACKUP_TOKEN, CONFIG_TOKEN, DIALOGS_TOKEN, DIRS_TOKEN, FILES_TOKEN, PATHS_TOKEN, SIZES_TOKEN } from '@utilities/di/main/tokens'
@@ -14,6 +14,8 @@ import type { IMainChecks, IPubFile } from '../types'
 
 /** Разного рода проверки. [main] */
 export class Checks implements IMainChecks {
+	/** Явное имя сущности в мосте. */
+	static readonly pubName = 'Checks'
 	/** Локализация. */
 	private readonly texts = loadLocalization(CHECKS_LOCALIZATION)
 
@@ -41,7 +43,9 @@ export class Checks implements IMainChecks {
 	/** Максимальный размер ответа. */
 	private readonly MAX_RESPONSE_SIZE = 64 * 1024
 
-	async hasAdminPrivileges(): Promise<boolean> {
+	async checkDataAccess(): Promise<boolean> {
+		const paths = di.resolve(PATHS_TOKEN)
+
 		try {
 			await this.files.config.make()
 
@@ -55,7 +59,7 @@ export class Checks implements IMainChecks {
 			return true
 		} catch (error: any) {
 			void this.dialogs.alert({
-				message: `${this.texts.adminRequiredMessage}\nError: ${error?.message}`,
+				message: `${this.texts.dataAccessDeniedMessage}\n${paths.dataRoot}\nError: ${error?.message}`,
 				type: 'warning',
 				buttons: ['Exit'],
 				title: 'Error'
@@ -119,11 +123,11 @@ export class Checks implements IMainChecks {
 			try {
 				data = JSON.parse(rawData)
 			} catch (error: any) {
-				throw new ProgramError(ErrorText.gitHubConnectError, error)
+				throw createProgramError(ErrorText.gitHubConnectError, error)
 			}
 
 			if (!data || typeof data.latestVersion !== 'string' || !data.latestVersion.trim()) {
-				throw new ProgramError(ErrorText.gitHubConnectError)
+				throw createProgramError(ErrorText.gitHubConnectError)
 			}
 
 			return compareVersions(config.version, data.latestVersion) < 0
@@ -131,9 +135,7 @@ export class Checks implements IMainChecks {
 				: undefined
 		} catch (error: any) {
 			// Отсутствие сети не должно приводить к необработанному отклонению промиса.
-			if (!(error instanceof ProgramError)) {
-				new ProgramError(error?.message ?? ErrorText.gitHubConnectError, error)
-			}
+			reportError(error, 'background')
 
 			return undefined
 		}
@@ -143,7 +145,7 @@ export class Checks implements IMainChecks {
 	private async checkGitHubAvailable(): Promise<void> {
 		await new Promise<void>((resolve, reject) => {
 			const timer = setTimeout(
-				() => reject(new ProgramError(ErrorText.gitHubConnectError)),
+				() => reject(createProgramError(ErrorText.gitHubConnectError)),
 				this.REQUEST_TIMEOUT
 			)
 
@@ -151,7 +153,7 @@ export class Checks implements IMainChecks {
 				clearTimeout(timer)
 
 				if (error) {
-					reject(new ProgramError(ErrorText.gitHubConnectError, error))
+					reject(createProgramError(ErrorText.gitHubConnectError, error))
 
 					return
 				}
@@ -180,7 +182,7 @@ export class Checks implements IMainChecks {
 						this.requestText(new URL(location, url).toString(), redirects - 1)
 							.then(resolve, reject)
 					} catch (error: any) {
-						reject(new ProgramError(ErrorText.gitHubConnectError, error))
+						reject(createProgramError(ErrorText.gitHubConnectError, error))
 					}
 
 					return
@@ -188,7 +190,7 @@ export class Checks implements IMainChecks {
 
 				if (status < 200 || status >= 300) {
 					response.resume()
-					reject(new ProgramError(`${ErrorText.gitHubConnectError} (HTTP ${status})`))
+					reject(createProgramError(`${ErrorText.gitHubConnectError} (HTTP ${status})`))
 
 					return
 				}

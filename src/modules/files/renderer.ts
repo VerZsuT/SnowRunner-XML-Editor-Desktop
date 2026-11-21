@@ -1,4 +1,4 @@
-import { ProgramError } from '@modules/errors/renderer'
+import { createProgramError, type ProgramError } from '@modules/errors/renderer'
 import type { IPaths } from '@modules/paths/renderer'
 import type { XMLElement } from '@modules/xml/renderer'
 import { getBridge, initMain, INIT_METHOD, mainMethod } from '@utilities/bridge/renderer'
@@ -14,6 +14,8 @@ export type * from './types'
 /** Клиент файловой системы из main процесса. [renderer] */
 @initMain()
 export class Fs implements IFs {
+	/** Явное имя сущности в мосте. */
+	static readonly pubName = 'Fs'
 	@mainMethod()
 	list!: IFs['list']
 
@@ -123,7 +125,7 @@ function unwrap<T>(result: FsResult<T>, text: ErrorText, ...formatArgs: string[]
  * @returns Ошибка программы.
  */
 function createError(error: FsFailure, text: ErrorText, ...formatArgs: string[]): ProgramError {
-	return new ProgramError(text, new Error(`[${error.code}] ${error.message}`), ...formatArgs)
+	return createProgramError(text, new Error(`[${error.code}] ${error.message}`), ...formatArgs)
 }
 
 /** Подписаться на события наблюдения из main процесса. */
@@ -338,7 +340,7 @@ export class File extends FSEntry implements IFile {
 		const info = unwrap(await fsClient().stat(this.path), ErrorText.readFileError, this.path)
 
 		if (!info) {
-			throw new ProgramError(ErrorText.readFileError, undefined, this.path)
+			throw createProgramError(ErrorText.readFileError, undefined, this.path)
 		}
 
 		return info.size
@@ -448,7 +450,7 @@ export class Files implements IFiles {
 		const { initialPath } = di.resolve(CONFIG_TOKEN)
 
 		if (!initialPath) {
-			throw new ProgramError('Path to initial.pak not found')
+			throw createProgramError('Path to initial.pak not found')
 		}
 
 		return new File(initialPath)

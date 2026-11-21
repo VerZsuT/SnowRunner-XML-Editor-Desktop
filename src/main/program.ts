@@ -45,7 +45,7 @@ export class Program extends BaseProgram {
 		try {
 			loading.init(undefined, 6, true)
 			await windows.openWindow(ProgramWindow.general)
-			await loading.runRequiredStage(this.texts.checkAdminPrivileges, checks.hasAdminPrivileges.bind(checks))
+			await loading.runRequiredStage(this.texts.checkDataAccess, checks.checkDataAccess.bind(checks))
 
 			if (!await loading.runStage(this.texts.checkInitial, () => !!config.initialPath)) {
 				getGeneralWindow().route(Page.setup)

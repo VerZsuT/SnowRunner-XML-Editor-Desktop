@@ -8,6 +8,8 @@ import type { IEditedFile, IRendererEdited } from './types'
 /** Работа с массивом изменённых файлов. [renderer] */
 @initMain()
 export class Edited extends BaseRendererArray<IEditedFile, IFile> implements IRendererEdited {
+	/** Явное имя сущности в мосте. */
+	static readonly pubName = 'Edited'
 	override convert({ dlc, mod, isTrailer, name }: IEditedFile): IFile {
 		const dirs = di.resolve(DIRS_TOKEN)
 		const folder = isTrailer

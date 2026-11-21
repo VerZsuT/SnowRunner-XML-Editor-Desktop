@@ -1,9 +1,9 @@
 import { EditFilled, StarFilled } from '@ant-design/icons'
-import { ProgramError } from '@modules/errors/renderer'
+import { reportError } from '@modules/errors/renderer'
 import type { IFile } from '@modules/files/types'
 import { Page } from '@modules/windows/enums'
 import type { TruckType } from '@modules/xml/renderer'
-import { TruckXML } from '@modules/xml/renderer'
+import { readTruckXML, type TruckXML } from '@modules/xml/renderer'
 import { ContextMenu } from '@renderer/components/context-menu'
 import { useEditorStore } from '@renderer/pages/general/store/editor'
 import { useListStore } from '@renderer/pages/general/store/list'
@@ -72,7 +72,7 @@ export function ListItem({ file, category, visible = true }: ListItemProps) {
 			const cache = useListStore.getState().itemsCache.get(file.path)
 			const xmlRes = cache
 				? cache.xml
-				: await TruckXML.from(file)
+				: await readTruckXML(file)
 
 			if (cancelled) {
 				return
@@ -166,21 +166,21 @@ export function ListItem({ file, category, visible = true }: ListItemProps) {
 	async function exportFile() {
 		return editorUtils
 			.export([{ source: file }])
-			.catch(reason => new ProgramError(reason))
+			.catch(reason => reportError(reason, 'ui'))
 			.finally(messages.loading(texts.processing))
 	}
 
 	async function importFile() {
 		return editorUtils
 			.import([{ file }])
-			.catch(reason => new ProgramError(reason))
+			.catch(reason => reportError(reason, 'ui'))
 			.finally(messages.loading(texts.processing))
 	}
 
 	async function resetFile() {
 		return editorUtils
 			.reset([file])
-			.catch(reason => new ProgramError(reason))
+			.catch(reason => reportError(reason, 'ui'))
 			.finally(messages.loading(texts.processing))
 	}
 

@@ -1,6 +1,6 @@
 import type { IFile } from '@modules/files/renderer'
 import { Page } from '@modules/windows/enums'
-import { TruckXML } from '@modules/xml/renderer'
+import { readTruckXML, type TruckXML } from '@modules/xml/renderer'
 import { Spin } from '@renderer/components/spin'
 import { useKey } from '@renderer/utilities/use-key'
 import { di } from '@utilities/di/container'
@@ -107,7 +107,7 @@ export const Editor = forwardRef<EditorHandle, EditorProps>(function Editor({ fi
 		}
 
 		async function init() {
-			const result = await TruckXML.from(file!)
+			const result = await readTruckXML(file!)
 
 			if (cancelled) {
 				return
@@ -135,7 +135,7 @@ export const Editor = forwardRef<EditorHandle, EditorProps>(function Editor({ fi
 			return
 		}
 
-		const result = await TruckXML.from(file)
+		const result = await readTruckXML(file)
 
 		if (result) {
 			setXml(result)

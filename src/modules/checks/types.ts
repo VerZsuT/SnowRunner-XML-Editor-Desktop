@@ -19,10 +19,10 @@ export type IRendererChecks = IPublicChecks
 /** Разного рода проверки. [public] */
 export interface IPublicChecks {
 	/**
-	 * Проверить наличие прав администратора у программы (требуется для чтения/записи файлов).
+	 * Проверить доступ на запись в каталог данных программы.
 	 * Выводит уведомление и закрывает программу при неудаче.
 	 */
-	hasAdminPrivileges(): Promise<boolean>
+	checkDataAccess(): Promise<boolean>
 
 	/**
 	 * Проверить на стороннее изменение `initial.pak`.

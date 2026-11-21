@@ -32,8 +32,8 @@ Name: "ru"; MessagesFile: "compiler:Languages/Russian.isl"
 Source: "..\out\{#MyAppName}\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Icons]
-Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; AfterInstall: SetElevationBit('{autodesktop}\{#MyAppName}.lnk')
-Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; AfterInstall: SetElevationBit('{group}\{#MyAppName}.lnk')
+Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
+Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
 Name: "{group}\Uninstall {#MyAppName}"; Filename: "{uninstallexe}"
 
 [Run]
@@ -42,23 +42,3 @@ Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChang
 [UninstallDelete]
 Name: "{app}\resources"; Type: filesandordirs
 
-[Code]
-procedure SetElevationBit(Filename: string);
-var
-	Buffer: string;
-	Stream: TStream;
-begin
-	Filename := ExpandConstant(Filename);
-
-	Stream := TFileStream.Create(FileName, fmOpenReadWrite);
-	try
-		Stream.Seek(21, soFromBeginning);
-		SetLength(Buffer, 1);
-		Stream.ReadBuffer(Buffer, 1);
-		Buffer[1] := Chr(Ord(Buffer[1]) or $20);
-		Stream.Seek(-1, soFromCurrent);
-		Stream.WriteBuffer(Buffer, 1);
-	finally
-		Stream.Free;
-	end;
-end;

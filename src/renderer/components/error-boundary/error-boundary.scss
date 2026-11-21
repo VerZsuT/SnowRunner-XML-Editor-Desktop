@@ -1,0 +1,20 @@
+.error-boundary {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 12px;
+	height: 100vh;
+	padding: 24px;
+	box-sizing: border-box;
+	text-align: center;
+
+	&__message {
+		max-width: 720px;
+		max-height: 240px;
+		overflow: auto;
+		white-space: pre-wrap;
+		word-break: break-word;
+		font-family: monospace;
+	}
+}

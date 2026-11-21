@@ -1,3 +1,6 @@
+/** Режим хранения данных программы. */
+export type DataMode = 'installed' | 'portable' | 'dev'
+
 /** Менеджер путей. [main] */
 export interface IMainPathsManager {
 	/** Объект путей. */
@@ -21,8 +24,14 @@ export interface IPaths {
 	/** URL релизов программы. */
 	update: string,
 
-	/** Папка `app`. */
+	/** Папка `app` (только чтение). */
 	root: string
+
+	/** Каталог данных программы (запись). */
+	dataRoot: string
+
+	/** Режим хранения данных. */
+	dataMode: DataMode
 
 	/** Папка с страницами. */
 	pages: string

@@ -1,5 +1,4 @@
 import type { IMainFile as IFile } from '@modules/files/main'
-import { makeReactive } from '@utilities/bridge/main'
 import { di } from '@utilities/di/container'
 import { DIRS_TOKEN, FILES_TOKEN } from '@utilities/di/main/tokens'
 import { BaseMainArray } from '@utilities/json-arrays/main'
@@ -7,11 +6,12 @@ import type { IEditedFile, IMainEdited } from '../types'
 
 /** Работа с массивом изменённых файлов. [main] */
 export class Edited extends BaseMainArray<IEditedFile, IFile> implements IMainEdited {
+	/** Явное имя сущности в мосте. */
+	static readonly pubName = 'Edited'
 	protected override jsonFile = di.resolve(FILES_TOKEN).edited
 
 	constructor() {
 		super()
-		makeReactive(this, 'Edited', 'arr')
 		this.init()
 	}
 

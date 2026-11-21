@@ -9,58 +9,63 @@ import { NodeFs } from './node-fs'
 beforeEach(() => {
 	di.register(FS_TOKEN, new NodeFs())
 })
+if (typeof window !== 'undefined') {
 
-// antd 6 опрашивает медиа-запросы при рендере.
-if (typeof window.matchMedia !== 'function') {
-	Object.defineProperty(window, 'matchMedia', {
-		configurable: true,
-		writable: true,
-		value: (query: string) => ({
-			matches: false,
-			media: query,
-			onchange: null,
-			addListener() {},
-			removeListener() {},
-			addEventListener() {},
-			removeEventListener() {},
-			dispatchEvent: () => false
-		} as MediaQueryList)
-	})
-}
-
-// В jsdom нет ResizeObserver/IntersectionObserver, а antd 6 их использует.
-class ResizeObserverMock {
-	observe() {}
-	unobserve() {}
-	disconnect() {}
-}
-
-class IntersectionObserverMock {
-	readonly root = null
-	readonly rootMargin = '0px'
-	readonly thresholds = [0]
-
-	observe() {}
-	unobserve() {}
-	disconnect() {}
-	takeRecords() {
-		return []
+	// antd 6 опрашивает медиа-запросы при рендере.
+	if (typeof window.matchMedia !== 'function') {
+		Object.defineProperty(window, 'matchMedia', {
+			configurable: true,
+			writable: true,
+			value: (query: string) => ({
+				matches: false,
+				media: query,
+				onchange: null,
+				addListener() {},
+				removeListener() {},
+				addEventListener() {},
+				removeEventListener() {},
+				dispatchEvent: () => false
+			} as MediaQueryList)
+		})
 	}
-}
 
-if (typeof globalThis.ResizeObserver !== 'function') {
-	globalThis.ResizeObserver = ResizeObserverMock as unknown as typeof ResizeObserver
-}
+	// В jsdom нет ResizeObserver/IntersectionObserver, а antd 6 их использует.
+	class ResizeObserverMock {
+		observe() {}
+		unobserve() {}
+		disconnect() {}
+	}
 
-if (typeof globalThis.IntersectionObserver !== 'function') {
-	globalThis.IntersectionObserver = IntersectionObserverMock as unknown as typeof IntersectionObserver
-}
+	class IntersectionObserverMock {
+		readonly root = null
+		readonly rootMargin = '0px'
+		readonly thresholds = [0]
 
-// jsdom не реализует прокрутку и пишет "Not implemented" в консоль.
-window.scrollTo = (() => {}) as typeof window.scrollTo
-Element.prototype.scrollTo = (() => {}) as typeof Element.prototype.scrollTo
+		observe() {}
+		unobserve() {}
+		disconnect() {}
+		takeRecords() {
+			return []
+		}
+	}
+
+	if (typeof globalThis.ResizeObserver !== 'function') {
+		globalThis.ResizeObserver = ResizeObserverMock as unknown as typeof ResizeObserver
+	}
+
+	if (typeof globalThis.IntersectionObserver !== 'function') {
+		globalThis.IntersectionObserver = IntersectionObserverMock as unknown as typeof IntersectionObserver
+	}
+
+	// jsdom не реализует прокрутку и пишет "Not implemented" в консоль.
+	window.scrollTo = (() => {}) as typeof window.scrollTo
+	Element.prototype.scrollTo = (() => {}) as typeof Element.prototype.scrollTo
+}
 
 afterEach(() => {
-	cleanup()
+	if (typeof window !== 'undefined') {
+		cleanup()
+	}
+
 	di.clear()
 })

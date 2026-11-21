@@ -1,22 +1,38 @@
 import type { IMainFile as IFile } from '@modules/files/main'
-import type { IRepository } from '@src/types'
-import { compareVersions } from '@utilities/strings/main'
+import { createAutoSaver } from '@utilities/autosave/main'
+import { makeReactive } from '@utilities/bridge/main'
+import { STORAGE_VERSION, toVersionedJSON, toVersionNumber } from '@utilities/storage'
 import { BaseArray } from '../base'
-import type { IArrayJSON, IBaseMainArray } from '../types'
+import type { IArrayRepository, IBaseMainArray } from '../types'
 import { BaseMainArrayRepository } from './repository'
 
 /** Базовый класс для массива в main-process. */
 export abstract class BaseMainArray<Item, Extended = Item>
 	extends BaseArray<Item, Extended>
 	implements IBaseMainArray<Item, Extended> {
-	/** Версия JSON файла. */
-	protected readonly VERSION = '1.0'
+	/** Версия формата JSON файла. */
+	protected readonly VERSION = STORAGE_VERSION
 
 	/** Репозиторий. */
-	protected repository!: IRepository<IArrayJSON>
+	protected repository!: IArrayRepository
 
 	/** Файл для записи/чтения массива. */
 	protected abstract jsonFile: IFile
+
+	/** Автосохранение после изменения массива. */
+	private readonly autoSaver = createAutoSaver(() => this.save())
+
+	/** Разрешено ли автосохранение (после загрузки данных). */
+	private autoSaveEnabled = false
+
+	protected constructor() {
+		super()
+		makeReactive(this, 'arr', () => {
+			if (this.autoSaveEnabled) {
+				this.autoSaver.schedule()
+			}
+		})
+	}
 
 	/**
 	 * Инициализировать экземпляр класса.
@@ -25,6 +41,7 @@ export abstract class BaseMainArray<Item, Extended = Item>
 	protected init() {
 		this.repository = new BaseMainArrayRepository(this.jsonFile)
 		this.set(this.getArray())
+		this.autoSaveEnabled = true
 	}
 
 	async reset() {
@@ -32,10 +49,14 @@ export abstract class BaseMainArray<Item, Extended = Item>
 	}
 
 	async save() {
-		await this.repository.save({
-			version: this.VERSION,
-			data: this.get()
-		})
+		this.autoSaver.cancel()
+		await this.repository.save(toVersionedJSON(this.get()))
+	}
+
+	/** Сохранить данные немедленно (без ожидания автосохранения). */
+	async flush() {
+		this.autoSaver.cancel()
+		await this.save()
 	}
 
 	/**
@@ -60,18 +81,31 @@ export abstract class BaseMainArray<Item, Extended = Item>
 	}
 
 	/**
-	 * Получить массив из JSON.
+	 * Получить массив из JSON. Принимает новый и legacy форматы.
 	 * @returns Массив.
 	 */
 	private getFromJSON(): Item[] {
-		const fromJson = this.repository.readSync()
+		const raw = this.repository.readSync()
 
-		if (!fromJson || !Array.isArray(fromJson.data)) {
+		// Legacy: голый массив.
+		if (Array.isArray(raw)) {
+			return this.convertToNewest(raw)
+		}
+
+		if (!raw || typeof raw !== 'object') {
 			return this.default
 		}
 
-		return compareVersions(fromJson.version, this.VERSION) < 0
-			? this.convertToNewest(fromJson.data)
-			: fromJson.data
+		const file = raw as { version?: unknown; items?: unknown; data?: unknown }
+		// Legacy: { version, data }, новый: { version, items }.
+		const items = file.items ?? file.data
+
+		if (!Array.isArray(items)) {
+			return this.default
+		}
+
+		return toVersionNumber(file.version) < this.VERSION
+			? this.convertToNewest(items)
+			: items
 	}
 }

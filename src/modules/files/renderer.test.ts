@@ -86,7 +86,8 @@ describe('File/Dir [renderer] поверх IFs', () => {
 		expect(await file.isFile()).toBe(false)
 
 		await expect(file.read()).rejects.toThrow()
-		expect(messages.error).toHaveBeenCalledTimes(1)
+		// Уведомление показывает граница UI, а не конструктор ошибки.
+		expect(messages.error).not.toHaveBeenCalled()
 	})
 
 	it('remove рекурсивно удаляет дерево и не бросает для отсутствующего пути', async () => {
@@ -184,7 +185,7 @@ describe('File/Dir [renderer] поверх IFs', () => {
 		const ghost = new File(root, 'ghost.txt')
 
 		await expect(ghost.rename('other.txt')).rejects.toThrow()
-		expect(messages.error).toHaveBeenCalledTimes(1)
+		expect(messages.error).not.toHaveBeenCalled()
 
 		await chmod(join(root, 'blocked'), 0o700)
 	})

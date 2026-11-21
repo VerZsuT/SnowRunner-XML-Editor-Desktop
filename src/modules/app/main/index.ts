@@ -7,6 +7,8 @@ import type { IMainApp } from '../types'
 
 /** Приложение. [main] */
 export class App implements IMainApp {
+	/** Явное имя сущности в мосте. */
+	static readonly pubName = 'App'
 	get isDev(): boolean {
 		const config = di.resolve(CONFIG_TOKEN)
 		return config.buildType === BuildType.dev

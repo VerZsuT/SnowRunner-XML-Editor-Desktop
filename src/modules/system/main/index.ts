@@ -8,6 +8,8 @@ import type { IMainSystem } from '../types'
 
 /** Система. [main] */
 export class System implements IMainSystem {
+	/** Явное имя сущности в мосте. */
+	static readonly pubName = 'System'
 	/** Сообщения. */
 	@inject(MESSAGES_TOKEN)
 	private readonly messages!: IMainMessages

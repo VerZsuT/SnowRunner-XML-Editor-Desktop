@@ -4,6 +4,8 @@ import type { ILoadingState, IRendererLoading } from './types'
 /** Работа с загрузкой программы. [renderer] */
 @initMain()
 export class Loading implements IRendererLoading {
+	/** Явное имя сущности в мосте. */
+	static readonly pubName = 'Loading'
 	@mainObjectField()
 	readonly state!: ILoadingState
 

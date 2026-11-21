@@ -1,8 +1,6 @@
-import { di } from '@utilities/di/container'
-import { DIRS_TOKEN, FILES_TOKEN } from '@utilities/di/renderer/tokens'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { XMLElement } from './xml-element'
-import { XMLTemplates } from './xml-templates'
+import { XMLTemplates, XMLTemplatesCache } from './xml-templates'
 
 /** Основной XML с блоком `_templates`. */
 const SOURCE = `<Truck>
@@ -30,30 +28,24 @@ const SOURCE_SELF = `<Truck>
 	</_templates>
 </Truck>`
 
-/** Сколько раз файл шаблона читался с диска. */
+/** Сколько раз файл шаблона читался. */
 let reads = 0
 
 /**
- * Зарегистрировать поддельные зависимости.
+ * Создать кэш шаблонов по содержимому файлов.
  * @param templates Содержимое файлов шаблонов по имени.
+ * @returns Кэш.
  */
-function registerDeps(templates: Record<string, string>) {
-	di.register(FILES_TOKEN, { isFile: () => false } as any)
-	di.register(DIRS_TOKEN, {
-		templates: {
-			file: (fileName: string) => ({
-				readFromXML: async () => {
-					reads++
+function makeCache(templates: Record<string, string>) {
+	return new XMLTemplatesCache(async name => {
+		reads++
 
-					const xml: string | undefined = templates[fileName.replace(/\.xml$/, '')]
+		const xml: string | undefined = templates[name.replace(/\.xml$/, '')]
 
-					return xml === undefined
-						? undefined
-						: await XMLElement.from(xml)
-				}
-			})
-		}
-	} as any)
+		return xml === undefined
+			? undefined
+			: await XMLElement.from(xml)
+	})
 }
 
 /**
@@ -67,14 +59,16 @@ async function getTemplateElement(source: string) {
 }
 
 describe('XMLTemplates', () => {
+	/** Кэш на тест. */
+	let cache: XMLTemplatesCache
+
 	beforeEach(() => {
 		reads = 0
-		XMLTemplates.clearCache()
-		registerDeps({ trucks: TRUCKS_XML, self: SELF_XML })
+		cache = makeCache({ trucks: TRUCKS_XML, self: SELF_XML })
 	})
 
 	it('from(string) не уходит в бесконечную рекурсию', async () => {
-		const templates = await XMLTemplates.from(SOURCE)
+		const templates = await XMLTemplates.from(SOURCE, { templates: cache })
 		const element = await getTemplateElement(SOURCE)
 
 		expect(templates).toBeInstanceOf(XMLTemplates)
@@ -82,24 +76,24 @@ describe('XMLTemplates', () => {
 	})
 
 	it('читает файл шаблона один раз для повторных Include', async () => {
-		await XMLTemplates.from(SOURCE)
-		await XMLTemplates.from(SOURCE)
+		await XMLTemplates.from(SOURCE, { templates: cache })
+		await XMLTemplates.from(SOURCE, { templates: cache })
 
 		expect(reads).toBe(1)
 	})
 
-	it('clearCache сбрасывает кэш шаблонов', async () => {
-		await XMLTemplates.from(SOURCE)
+	it('clear сбрасывает кэш шаблонов', async () => {
+		await XMLTemplates.from(SOURCE, { templates: cache })
 		expect(reads).toBe(1)
 
-		XMLTemplates.clearCache()
-		await XMLTemplates.from(SOURCE)
+		cache.clear()
+		await XMLTemplates.from(SOURCE, { templates: cache })
 
 		expect(reads).toBe(2)
 	})
 
 	it('самоссылающийся шаблон не зависает', async () => {
-		const templates = await XMLTemplates.from(SOURCE_SELF)
+		const templates = await XMLTemplates.from(SOURCE_SELF, { templates: cache })
 		const element = await getTemplateElement(SOURCE_SELF)
 
 		expect(templates).toBeInstanceOf(XMLTemplates)

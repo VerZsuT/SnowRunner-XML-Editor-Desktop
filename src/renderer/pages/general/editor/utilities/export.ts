@@ -1,6 +1,6 @@
 import type { IExportedData } from '@modules/epf/types'
 import type { IFile } from '@modules/files/types'
-import { TruckFileType, TruckXML } from '@modules/xml/renderer'
+import { readTruckXML, TruckFileType } from '@modules/xml/renderer'
 import { di } from '@utilities/di/container'
 import { DIALOGS_TOKEN, DLC_TOKEN, FILES_TOKEN, MODS_TOKEN } from '@utilities/di/renderer/tokens'
 
@@ -36,7 +36,7 @@ class ExportUtils {
 			return
 		}
 
-		const xml = await TruckXML.from(file)
+		const xml = await readTruckXML(file)
 
 		if (!xml) {
 			return

@@ -1,5 +1,5 @@
-import type { IFile } from '@modules/files/renderer'
-import { XMLElement } from '../../xml-element'
+import type { IGameContext } from '../game-xml'
+import { XMLElement, parseXML } from '../../xml-element'
 import { XMLTemplates } from '../../xml-templates'
 import type { XmlElements } from '../attributes'
 import { XMLWithTemplates, innerElements } from '../xml-with-templates'
@@ -9,19 +9,18 @@ export * from './suspension-set'
 
 /** Подвески. */
 export class Suspensions extends XMLWithTemplates {
-	static override async from(str: string): Promise<Suspensions | undefined>
-	static override async from(file: IFile): Promise<Suspensions | undefined>
-	static override async from(source: string | IFile): Promise<Suspensions | undefined> {
+	static override async from(source: string | XMLElement, context?: IGameContext): Promise<Suspensions | undefined> {
 		const rootSelector = 'SuspensionSetVariants'
-		const root = await XMLElement.from(source as IFile)
+		const root = XMLElement.isXMLElement(source) ? source : parseXML(source)
 		const element = root?.select(rootSelector)
 
 		if (root && element) {
 			return new this(
 				element,
-				await XMLTemplates.from(root),
+				await XMLTemplates.from(root, context),
 				rootSelector,
-				root
+				root,
+				context
 			)
 		}
 	}

@@ -2,12 +2,12 @@ import { Localization, LocalizationStrings } from '@localization'
 
 /** Тексты проверок. */
 export const CHECKS_LOCALIZATION = new Localization({
-	/** Ошибка прав доступа. */
-	adminRequiredMessage: new LocalizationStrings()
-		.ru('Ошибка запуска. Программа должна быть запущена от имени администратора.')
-		.en('Startup error. The program must be run as an administrator.')
-		.de('Startfehler. Das Programm muss als administrator ausgeführt.')
-		.ch('启动错误。该程序必须以管理员身份启动。'),
+	/** Ошибка доступа к каталогу данных. */
+	dataAccessDeniedMessage: new LocalizationStrings()
+		.ru('Нет доступа к каталогу данных:')
+		.en('No access to the data directory:')
+		.de('Kein Zugriff auf das Datenverzeichnis:')
+		.ch('无法访问数据目录：'),
 
 	/** Доступна новая версия. */
 	allowNewVersion: new LocalizationStrings()

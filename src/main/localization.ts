@@ -2,12 +2,12 @@ import { Localization, LocalizationStrings } from '@localization/main'
 
 /** Тексты приложения. */
 export const MAIN_LOCALIZATION = new Localization({
-	/** Проверка прав администратора. */
-	checkAdminPrivileges: new LocalizationStrings()
-		.ru('Проверка прав администратора')
-		.en('Checking admin privileges')
-		.de('Überprüfen von Administratorrechten')
-		.ch('检查管理员权限'),
+	/** Проверка доступа к каталогу данных. */
+	checkDataAccess: new LocalizationStrings()
+		.ru('Проверка доступа к данным')
+		.en('Checking data access')
+		.de('Datenzugriff wird geprüft')
+		.ch('检查数据访问'),
 
 	/** Проверка initial.pak. */
 	checkInitial: new LocalizationStrings()

@@ -5,6 +5,8 @@ import type { IRendererUpdates } from './types'
 /** Работа с обновлениями программы. [renderer] */
 @initMain()
 export class Updates implements IRendererUpdates {
+	/** Явное имя сущности в мосте. */
+	static readonly pubName = 'Updates'
 	@mainMethod()
 	updateApp!: UpdatesMain['updateApp']
 }

@@ -5,6 +5,8 @@ import type { IRendererEpf } from './types'
 /** Работа с файлами .epf. [renderer]*/
 @initMain()
 export class Epf implements IRendererEpf {
+	/** Явное имя сущности в мосте. */
+	static readonly pubName = 'Epf'
 	@mainMethod()
 	join!: EPFMain['join']
 

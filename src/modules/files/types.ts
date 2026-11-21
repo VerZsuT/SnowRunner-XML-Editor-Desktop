@@ -205,6 +205,22 @@ export interface IFs {
 	unwatch(id: string): FsResult<void>
 }
 
+/** Список методов файловой системы, опубликованных в мосте. */
+export const FS_METHODS = [
+	'list', 'scan', 'scanMany',
+	'stat', 'statMany',
+	'readFile', 'readMany',
+	'writeFile', 'writeMany',
+	'makeDir', 'remove', 'move', 'copy', 'chmod',
+	'watch', 'unwatch'
+] as const
+
+/** Метод файловой системы. */
+export type FsMethod = (typeof FS_METHODS)[number]
+
+/** Проверка полноты списка: метод, добавленный в `IFs`, но не в `FS_METHODS`, ломает компиляцию. */
+export const FS_METHODS_ARE_COMPLETE: Record<Exclude<keyof IFs, FsMethod>, never> = {}
+
 /** Сущность в файловой системе. */
 export interface IFSEntry {
 	/** Путь к сущности. */

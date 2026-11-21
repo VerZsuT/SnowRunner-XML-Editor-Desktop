@@ -5,6 +5,8 @@ import type { IRendererDialogs } from './types'
 /** Вывод системных диалогов. [renderer] */
 @initMain()
 export class Dialogs implements IRendererDialogs {
+	/** Явное имя сущности в мосте. */
+	static readonly pubName = 'Dialogs'
 	@mainMethod()
 	getEPF!: DialogsMain['getEPF']
 

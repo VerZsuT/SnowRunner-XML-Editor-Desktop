@@ -1,6 +1,6 @@
-import type { IFile } from '@modules/files/renderer'
-import { XMLElement } from '../../xml-element'
+import { XMLElement, parseXML } from '../../xml-element'
 import { XMLTemplates } from '../../xml-templates'
+import type { IGameContext } from '../game-xml'
 import type { IStringAttrDescriptor, XmlElement, XmlValue } from '../attributes'
 import { stringAttr } from '../attributes'
 import { BasePhysicsModel } from '../base/physics-model'
@@ -13,19 +13,18 @@ export * from './truck-data'
 
 /** XML автомобиля/прицепа. */
 export class TruckXML extends XMLWithTemplates {
-  static override async from(str: string): Promise<TruckXML | undefined>
-  static override async from(file: IFile): Promise<TruckXML | undefined>
-  static override async from(source: string | IFile): Promise<TruckXML | undefined> {
+  static override async from(source: string | XMLElement, context?: IGameContext): Promise<TruckXML | undefined> {
     const rootSelector = 'Truck'
-    const root = await XMLElement.from(source as IFile)
+    const root = XMLElement.isXMLElement(source) ? source : parseXML(source)
     const element = root?.select(rootSelector)
 
     if (root && element) {
       return new this(
         element,
-        await XMLTemplates.from(root),
+        await XMLTemplates.from(root, context),
         rootSelector,
-        root
+        root,
+        context
       )
     }
   }

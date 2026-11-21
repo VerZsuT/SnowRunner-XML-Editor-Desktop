@@ -13,6 +13,8 @@ import type { IMod, IRendererMods } from './types'
 /** Работа с массивом модификаций. [renderer] */
 @initMain()
 export class Mods extends BaseRendererArray<IMod, IMod & { file: IFile }> implements IRendererMods {
+	/** Явное имя сущности в мосте. */
+	static readonly pubName = 'Mods'
 	/** Мост main-rend. */
 	private readonly bridge = Bridge.as<PubType>()
 

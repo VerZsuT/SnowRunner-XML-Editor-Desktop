@@ -1,5 +1,5 @@
 import { ErrorText } from '@modules/errors/enums'
-import { ProgramError } from '@modules/errors/main'
+import { createProgramError } from '@modules/errors/main'
 import type { IMainFiles as IFiles } from '@modules/files/types'
 import type { IRepository } from '@src/types'
 import { inject } from '@utilities/di/container'
@@ -20,7 +20,7 @@ export class ConfigRepository implements IRepository<IConfig> {
 		try {
 			this.files.config.writeToJSONSync(value)
 		} catch (error: any) {
-			throw new ProgramError(ErrorText.saveJsonError, error)
+			throw createProgramError(ErrorText.saveJsonError, error)
 		}
 	}
 

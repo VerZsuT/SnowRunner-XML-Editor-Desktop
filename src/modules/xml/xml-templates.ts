@@ -1,69 +1,24 @@
-import type { IFile } from '@modules/files/renderer'
-import { di } from '@utilities/di/container'
-import { DIRS_TOKEN } from '@utilities/di/renderer/tokens'
 import type { Cheerio } from 'cheerio'
 import { XMLElement } from './xml-element'
 
-/** Шаблоны `_templates`. */
-export class XMLTemplates extends XMLElement {
-	/** Название тега шаблонов. */
-	private static readonly tagName = '_templates'
-
-	/** Название атрибута с включающим шаблоном. */
-	private static readonly includeAttr = 'Include'
-
-	/** Название атрибута с именем шаблона. */
-	private static readonly attrName = '_template'
-
-	/** Кэш шаблонов: `null` — файл отсутствует или не разобран. */
-	private static readonly cache = new Map<string, XMLTemplates | null>()
+/** Кэш шаблонов `_templates`, создаётся на сессию редактора. */
+export class XMLTemplatesCache {
+	/** Кэш: `null` — файл отсутствует или не разобран. */
+	private readonly values = new Map<string, XMLTemplates | null>()
 
 	/** Загружаемые сейчас шаблоны (защита от циклических Include). */
-	private static readonly loading = new Set<string>()
+	private readonly loading = new Set<string>()
 
-	/** Включающий шаблон. */
-	private readonly include: XMLTemplates | undefined
+	/**
+	 * Создать кэш.
+	 * @param read Функция чтения файла шаблона по имени.
+	 */
+	constructor(private readonly read: (name: string) => Promise<XMLElement | undefined>) {}
 
-	/** Создать из элемента. */
-	static override async from(xml: XMLElement): Promise<XMLTemplates | undefined>
-	/** Создать из строки. */
-	static override async from(str: string): Promise<XMLTemplates | undefined>
-	/** Создать из содержимого файла. */
-	static override async from(file: IFile): Promise<XMLTemplates | undefined>
-	static override async from(source: string | IFile | XMLElement): Promise<XMLTemplates | undefined> {
-		if (this.isXMLElement(source)) {
-			return this.fromXML(source)
-		}
-
-		const res = await super.from(source as string)
-
-		return res
-			? this.fromXML(res)
-			: undefined
-	}
-
-	/** Найти `_templates` и создать объект. */
-	private static async fromXML(xml: XMLElement) {
-		const templates = xml.clone().select(this.tagName)
-
-		if (!templates) {
-			return
-		}
-
-		const includeAttr = templates.getAttr(this.includeAttr)
-		let include: XMLTemplates | undefined
-
-		if (includeAttr) {
-			include = await this.loadTemplate(includeAttr.str)
-		}
-
-		return new XMLTemplates(templates.toCheerio(), include)
-	}
-
-	/** Очистить кэш шаблонов. */
-	static clearCache(): void {
-		XMLTemplates.cache.clear()
-		XMLTemplates.loading.clear()
+	/** Очистить кэш. */
+	clear(): void {
+		this.values.clear()
+		this.loading.clear()
 	}
 
 	/**
@@ -71,23 +26,22 @@ export class XMLTemplates extends XMLElement {
 	 * @param name Имя шаблона без расширения `.xml`.
 	 * @returns Шаблон или `undefined`, если файл отсутствует, не разобран или обнаружен цикл.
 	 */
-	private static async loadTemplate(name: string): Promise<XMLTemplates | undefined> {
-		if (XMLTemplates.cache.has(name)) {
-			return XMLTemplates.cache.get(name) ?? undefined
+	async load(name: string): Promise<XMLTemplates | undefined> {
+		if (this.values.has(name)) {
+			return this.values.get(name) ?? undefined
 		}
 
-		if (XMLTemplates.loading.has(name)) {
+		if (this.loading.has(name)) {
 			return
 		}
 
-		XMLTemplates.loading.add(name)
+		this.loading.add(name)
 
 		try {
-			const dirs = di.resolve(DIRS_TOKEN)
-			const element = await dirs.templates.file(`${name}.xml`).readFromXML()
+			const element = await this.read(name)
 
 			if (!element) {
-				XMLTemplates.cache.set(name, null)
+				this.values.set(name, null)
 
 				return
 			}
@@ -97,18 +51,74 @@ export class XMLTemplates extends XMLElement {
 			const templates = new XMLTemplates(
 				element.toCheerio(),
 				nestedName
-					? await this.loadTemplate(nestedName)
+					? await this.load(nestedName)
 					: undefined
 			)
 
-			XMLTemplates.cache.set(name, templates)
+			this.values.set(name, templates)
 
 			return templates
 		} catch {
-			XMLTemplates.cache.set(name, null)
+			this.values.set(name, null)
 		} finally {
-			XMLTemplates.loading.delete(name)
+			this.loading.delete(name)
 		}
+	}
+}
+
+/** Поставщик кэша шаблонов (читается только при наличии Include). */
+export interface ITemplatesProvider {
+	/** Кэш шаблонов. */
+	readonly templates?: XMLTemplatesCache
+}
+
+/** Шаблоны `_templates`. */
+export class XMLTemplates extends XMLElement {
+	/** Название тега шаблонов. */
+	static readonly tagName = '_templates'
+
+	/** Название атрибута с включающим шаблоном. */
+	static readonly includeAttr = 'Include'
+
+	/** Название атрибута с именем шаблона. */
+	private static readonly attrName = '_template'
+
+	/** Включающий шаблон. */
+	private readonly include: XMLTemplates | undefined
+
+	/**
+	 * Создать из строки или элемента.
+	 * @param source XML строка или элемент.
+	 * @param provider Поставщик кэша шаблонов.
+	 * @returns Шаблоны или `undefined`.
+	 */
+	static async from(source: string | XMLElement, provider?: ITemplatesProvider): Promise<XMLTemplates | undefined> {
+		const xml = XMLElement.isXMLElement(source)
+			? source
+			: await XMLElement.from(source)
+
+		if (!xml) {
+			return
+		}
+
+		const templates = xml.clone().select(XMLTemplates.tagName)
+
+		if (!templates) {
+			return
+		}
+
+		const includeName = templates.getAttr(XMLTemplates.includeAttr)?.str
+		let include: XMLTemplates | undefined
+
+		if (includeName) {
+			const cache = provider?.templates
+
+			include = cache
+				? await cache.load(includeName)
+				: undefined
+		}
+
+		return new XMLTemplates(templates.toCheerio(), include)
 	}
 
 	constructor(element: Cheerio<any>, include?: XMLTemplates) {
@@ -177,7 +187,7 @@ export class XMLTemplates extends XMLElement {
 					? `${target.tagName} ${templateName}`
 					: `${target.tagName} ${templateName} ${element.tagName}`
 
-					break
+				break
 			}
 		}
 

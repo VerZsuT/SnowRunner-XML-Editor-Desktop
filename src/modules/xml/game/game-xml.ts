@@ -1,9 +1,9 @@
-import type { IDirs, IFile } from '@modules/files/renderer'
-import { lastItem } from '@utilities/checks/renderer'
-import { di, inject } from '@utilities/di/container'
-import { DIRS_TOKEN, DLC_TOKEN, FS_TOKEN } from '@utilities/di/renderer/tokens'
+import type { IDLC } from '@modules/dlcs/types'
+import type { IDirs, IFile, IFsStat } from '@modules/files/types'
+import { lastItem } from '@utilities/checks'
 import type { AttrValue } from '../xml-element'
 import { XMLElement } from '../xml-element'
+import type { XMLTemplatesCache } from '../xml-templates'
 import type { Limit } from './limit'
 
 /** Информация о файле. */
@@ -18,12 +18,35 @@ export type FileInfo = {
 	isBackup?: boolean
 }
 
+/** Контекст игры, передаваемый из renderer-адаптера. */
+export interface IGameContext {
+	/** Основные папки. */
+	readonly dirs: IDirs
+
+	/** Список DLC. */
+	readonly dlcs: IDLC[]
+
+	/** Кэш шаблонов на сессию редактора. */
+	readonly templates: XMLTemplatesCache
+
+	/**
+	 * Прочитать файлы пачкой.
+	 * @param paths Пути к файлам.
+	 * @returns Содержимое; `null` для отсутствующего файла.
+	 */
+	readMany(paths: string[]): Promise<Array<string | null>>
+
+	/**
+	 * Получить информацию о файлах пачкой.
+	 * @param paths Пути к файлам.
+	 * @returns Информация; `null` для отсутствующего файла.
+	 */
+	statMany(paths: string[]): Promise<Array<IFsStat | null>>
+}
+
 /** XML элемент из файлов игры. */
 export class GameXML extends XMLElement {
-	@inject(DIRS_TOKEN)
-	protected readonly dirs!: IDirs
-
-	constructor(element: XMLElement, selector = '', baseElement = element) {
+	constructor(element: XMLElement, selector = '', baseElement = element, public context?: IGameContext) {
 		super(element.toCheerio(), selector, baseElement.toCheerio())
 	}
 
@@ -110,15 +133,16 @@ export class GameXML extends XMLElement {
 			return []
 		}
 
-		const contents = await di.resolve(FS_TOKEN).readMany(files.map(file => file.path))
+		const context = this.context
 
-		if (!contents.ok) {
+		if (!context) {
 			return []
 		}
 
+		const contents = await context.readMany(files.map(file => file.path))
 		const result: T[] = []
 
-		for (const data of contents.value) {
+		for (const data of contents) {
 			if (data === null) {
 				continue
 			}
@@ -166,30 +190,32 @@ export class GameXML extends XMLElement {
 	 * @param info Информация о файле.
 	 */
 	private async getFile(folder: string, name: string, info: FileInfo): Promise<IFile | undefined> {
-		const { isBackup, mod } = info
+		const context = this.context
 
+		if (!context) {
+			return
+		}
+
+		const { isBackup, mod } = info
+		const { dirs } = context
 		const classesDir = isBackup
-			? this.dirs.backupInitialData.dir('[media]\\classes')
-			: this.dirs.classes
+			? dirs.backupInitialData.dir('[media]\\classes')
+			: dirs.classes
 		const dlcDir = isBackup
-			? this.dirs.backupInitialData.dir('[media]\\_dlc')
-			: this.dirs.dlc
-		const dlcs = di.resolve(DLC_TOKEN).get()
+			? dirs.backupInitialData.dir('[media]\\_dlc')
+			: dirs.dlc
+		const dlcs = context.dlcs
 
 		// Порядок как раньше: DLC (в обратном порядке), затем мод, затем classes.
 		const maybe: IFile[] = [
 			...[...dlcs].reverse().map(dlc => dlcDir.file(dlc.name, `classes/${folder}/${name}.xml`)),
-			...mod ? [this.dirs.modsTemp.file(mod, `classes/${folder}/${name}.xml`)] : [],
+			...mod ? [dirs.modsTemp.file(mod, `classes/${folder}/${name}.xml`)] : [],
 			classesDir.file(`${folder}/${name}.xml`)
 		]
-		const stats = await di.resolve(FS_TOKEN).statMany(maybe.map(file => file.path))
-
-		if (!stats.ok) {
-			return
-		}
+		const stats = await context.statMany(maybe.map(file => file.path))
 
 		for (let index = 0; index < maybe.length; index += 1) {
-			if (stats.value[index]) {
+			if (stats[index]) {
 				return maybe[index]
 			}
 		}

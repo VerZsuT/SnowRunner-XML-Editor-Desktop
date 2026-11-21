@@ -1,6 +1,5 @@
 import type { IMainArchiver } from '@modules/archiver/types'
 import type { IMainDir as IDir, IMainDirs as IDirs, IMainFile as IFile, IMainFiles as IFiles } from '@modules/files/types'
-import { makeReactive } from '@utilities/bridge/main'
 import { hasItems } from '@utilities/checks/main'
 import { di, inject } from '@utilities/di/container'
 import { ARCHIVER_TOKEN, CONFIG_TOKEN, DIRS_TOKEN, ENV_TOKEN, FILES_TOKEN, GAME_TEXTS_TOKEN, SIZES_TOKEN } from '@utilities/di/main/tokens'
@@ -11,6 +10,8 @@ import type { IMainMods, IMod } from '../types'
 
 /** Работа с массивом модификаций. [main] */
 export class Mods extends BaseMainArray<IMod, IMod & { file: IFile }> implements IMainMods {
+	/** Явное имя сущности в мосте. */
+	static readonly pubName = 'Mods'
 	/** Архиватор. */
 	@inject(ARCHIVER_TOKEN)
 	private readonly archiver!: IMainArchiver
@@ -27,7 +28,6 @@ export class Mods extends BaseMainArray<IMod, IMod & { file: IFile }> implements
 
 	constructor() {
 		super()
-		makeReactive(this, 'Mods', 'arr')
 		this.init()
 	}
 

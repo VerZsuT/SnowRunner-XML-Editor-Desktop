@@ -2,7 +2,7 @@ import { di } from '@utilities/di/container'
 import { DIALOGS_TOKEN, DLC_TOKEN, FILES_TOKEN, MESSAGES_TOKEN, MODS_TOKEN } from '@utilities/di/renderer/tokens'
 import type { IExportedData } from '@modules/epf/types'
 import type { IFile } from '@modules/files/types'
-import { TruckFileType, TruckXML } from '@modules/xml/renderer'
+import { readTruckXML, TruckFileType } from '@modules/xml/renderer'
 import { createContext, useContext } from 'react'
 import type { ReactNode } from 'react'
 import { exportUtils } from './export'
@@ -36,7 +36,7 @@ class ImportUtils {
 			return
 		}
 
-		const xml = await TruckXML.from(source)
+		const xml = await readTruckXML(source)
 
 		if (!xml) {
 			return

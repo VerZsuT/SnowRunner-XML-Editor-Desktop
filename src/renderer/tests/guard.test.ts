@@ -153,11 +153,42 @@ describe('sandbox guard: renderer без Node и fast-fs', () => {
 		).toEqual([])
 	})
 
-	it('production-сборка renderer сохраняет имена классов для моста', () => {
-		const source = readFileSync(join(SRC_DIR, 'build-configs/vite.renderer.config.ts'), 'utf8')
+	it('каждый @initMain класс объявляет явное pubName', () => {
+		const files = walk(SRC_DIR).filter(file => CODE_EXTENSIONS.has(extname(file)))
+		const violations = files
+			.filter(file => readFileSync(file, 'utf8').includes('@initMain()'))
+			.filter(file => !/static readonly pubName = '[^']+'/.test(readFileSync(file, 'utf8')))
+			.map(file => `${toRelative(file)}: нет static readonly pubName`)
 
-		// Имена сущностей моста строятся из имени класса, иначе окно остаётся пустым.
-		expect(source).toContain('keepNames: true')
+		expect(violations, `Имя сущности моста не должно зависеть от минификации:\n${violations.join('\n')}`).toEqual([])
+	})
+
+	it('мост не использует имя класса из контекста декоратора', () => {
+		const source = readFileSync(join(SRC_DIR, 'utilities/bridge/renderer.ts'), 'utf8')
+
+		expect(source).toContain('getClassName(target)')
+		expect(source).not.toContain('context.name ??')
+	})
+
+	it('XML ядро не зависит от DI, DOM и node:fs', () => {
+		const files = walk(join(SRC_DIR, 'modules/xml/core')).filter(file => CODE_EXTENSIONS.has(extname(file)))
+		const violations: string[] = []
+
+		for (const file of files) {
+			const source = readFileSync(file, 'utf8')
+
+			for (const { specifier, line } of findImports(file)) {
+				if (specifier.startsWith('node:') || specifier.startsWith('@utilities/di') || specifier.startsWith('@modules/files') || specifier === 'electron') {
+					violations.push(`${toRelative(file)}:${line}: импорт "${specifier}"`)
+				}
+			}
+
+			if (/\bdocument\./.test(source)) {
+				violations.push(`${toRelative(file)}: использование document`)
+			}
+		}
+
+		expect(violations, `XML ядро должно быть чистым:\n${violations.join('\n')}`).toEqual([])
 	})
 
 	it('окно создаётся с включённой изоляцией и sandbox', () => {

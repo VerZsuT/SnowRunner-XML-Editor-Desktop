@@ -8,6 +8,8 @@ import type { IDLC, IRendererDlc } from './types'
 /** Работа с дополнениями игры. [renderer] */
 @initMain()
 export class Dlc extends BaseRendererArray<IDLC, IDLC & { dir: IDir }> implements IRendererDlc {
+	/** Явное имя сущности в мосте. */
+	static readonly pubName = 'Dlc'
 	/** Основные папки. */
 	@inject(DIRS_TOKEN)
 	private readonly dirs!: IDirs

@@ -146,8 +146,8 @@ describe('Epf: объединение .epf файлов', () => {
 		await new Epf().join()
 
 		expect(dialogs.error).toHaveBeenCalledTimes(1)
-		// Ошибка записи, как и раньше, дополнительно уходит уведомлением.
-		expect(messages.error).toHaveBeenCalledTimes(1)
+		// Уведомление показывает только граница обработки (диалог), конструктор ошибки молчит.
+		expect(messages.error).not.toHaveBeenCalled()
 		expect(dialogs.alert).not.toHaveBeenCalled()
 	})
 })

@@ -6,6 +6,8 @@ import type { FavoriteTruck, IRendererFavorites } from './types'
 /** Работа с массивом избранных авто. [renderer] */
 @initMain()
 export class Favorites extends BaseRendererArray<FavoriteTruck> implements IRendererFavorites {
+	/** Явное имя сущности в мосте. */
+	static readonly pubName = 'Favorites'
 	isFavorite(file: IFile) {
 		return this.includes(file.name)
 	}

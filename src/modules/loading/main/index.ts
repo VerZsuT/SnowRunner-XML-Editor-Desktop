@@ -5,6 +5,8 @@ import type { ILoadingState, IMainLoading, StageAction } from '../types'
 
 /** Работа с загрузкой программы. [main] */
 export class Loading implements IMainLoading {
+	/** Явное имя сущности в мосте. */
+	static readonly pubName = 'Loading'
 	private readonly texts = loadLocalization(LOADING_LOCALIZATION)
 
 	/** Состояние по умолчанию. */
@@ -28,7 +30,7 @@ export class Loading implements IMainLoading {
 	private endTimer?: NodeJS.Timeout
 
 	constructor() {
-		makeReactive(this, 'Loading', 'state')
+		makeReactive(this, 'state')
 	}
 
 	init(text?: string, stagesCount?: number, autoEnd = false) {

@@ -1,4 +1,5 @@
 import { makeReactive } from '@bridge/main'
+import { createAutoSaver } from '@utilities/autosave/main'
 import type { IEnv } from '@modules/env/types'
 import type { IMainDirs as IDirs } from '@modules/files/main'
 import type { IMainSystem } from '@modules/system/types'
@@ -11,6 +12,8 @@ import { ConfigRepository } from './repository'
 
 /** Работа с конфигурацией программы. [main] */
 export class Config implements IMainConfigManager {
+	/** Явное имя сущности в мосте. */
+	static readonly pubName = 'Config'
 	/** Переменные среды. */
 	@inject(ENV_TOKEN)
 	private readonly env!: IEnv
@@ -25,6 +28,12 @@ export class Config implements IMainConfigManager {
 
 	/** Репозиторий. */
 	private readonly repository = new ConfigRepository()
+
+	/** Автосохранение после изменения конфигурации. */
+	private readonly autoSaver = createAutoSaver(() => this.save())
+
+	/** Разрешено ли автосохранение (после загрузки конфигурации). */
+	private autoSaveEnabled = false
 
 	/** Стандартное значение конфигурации для `prod`. */
 	private readonly prodDefault: IConfig = {
@@ -65,12 +74,18 @@ export class Config implements IMainConfigManager {
 	accessor object!: IConfig
 
 	constructor() {
-		makeReactive(this, 'Config', 'object')
+		makeReactive(this, 'object', () => {
+			if (this.autoSaveEnabled) {
+				this.autoSaver.schedule()
+			}
+		})
 		this.object = this.getConfig()
+		this.autoSaveEnabled = true
 	}
 
 	/** Сохранить изменения в `config.json`. */
 	async save() {
+		this.autoSaver.cancel()
 		await this.repository.save(this.object)
 	}
 

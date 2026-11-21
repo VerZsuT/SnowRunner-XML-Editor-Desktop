@@ -9,6 +9,8 @@ import type { IMainEpf } from '../types'
 
 /** Работа с файлами .epf. [main] */
 export class Epf implements IMainEpf {
+	/** Явное имя сущности в мосте. */
+	static readonly pubName = 'Epf'
 	/** Локализация. */
 	private readonly texts = loadLocalization(EPF_LOCALIZATION)
 

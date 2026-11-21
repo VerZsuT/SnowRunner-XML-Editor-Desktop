@@ -1,10 +1,9 @@
-import { di } from '@utilities/di/container'
-import { DIRS_TOKEN, DLC_TOKEN, FILES_TOKEN, FS_TOKEN } from '@utilities/di/renderer/tokens'
-import { join } from 'node:path'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { XMLElement } from '../xml-element'
 import type { IFile } from '@modules/files/types'
-import { GameXML } from './game-xml'
+import { XMLElement } from '@modules/xml/xml-element'
+import { XMLTemplatesCache } from '@modules/xml/xml-templates'
+import { join } from 'node:path'
+import { describe, expect, it, vi } from 'vitest'
+import { GameXML, type IGameContext } from './game-xml'
 
 /** Корень поддельной файловой системы. */
 const GAME_DIR = 'C:\\game'
@@ -24,6 +23,28 @@ const dirs = {
 			file: (...parts: string[]) => fakeFile(GAME_DIR, 'backup', sub, ...parts)
 		})
 	}
+}
+
+/** Создать контекст игры для теста. */
+function makeContext(
+	statMany: IGameContext['statMany'],
+	readMany: IGameContext['readMany'] = async () => []
+): IGameContext {
+	return {
+		dirs: dirs as any,
+		dlcs: [{ name: 'dlc_1', path: 'dlc_1' }, { name: 'dlc_2', path: 'dlc_2' }],
+		templates: new XMLTemplatesCache(async () => undefined),
+		statMany,
+		readMany
+	}
+}
+
+/**
+ * Создать XML с контекстом.
+ * @param context Контекст игры.
+ */
+async function makeTestXML(context: IGameContext) {
+	return new TestXML((await XMLElement.from('<Truck/>'))!, '', undefined, context)
 }
 
 /** XML с доступом к резолву файлов. */
@@ -47,23 +68,11 @@ class TestListXML extends GameXML {
 }
 
 describe('GameXML.getFile', () => {
-	beforeEach(() => {
-		di.register(FILES_TOKEN, { isFile: () => false } as any)
-		di.register(DIRS_TOKEN, dirs as any)
-		di.register(DLC_TOKEN, { get: () => [{ name: 'dlc_1' }, { name: 'dlc_2' }] } as any)
-	})
-
 	it('резолвит файл одним statMany в прежнем порядке приоритетов', async () => {
-		const statMany = vi.fn(async (paths: string[]) => ({
-			ok: true as const,
-			value: paths.map(path => path.includes('dlc_2')
-				? { path, name: 'ank.xml', kind: 'file' as const, size: 1 }
-				: null)
-		}))
-
-		di.register(FS_TOKEN, { statMany } as any)
-
-		const xml = new TestXML((await XMLElement.from('<Truck/>'))!)
+		const statMany = vi.fn(async (paths: string[]) => paths.map(path => path.includes('dlc_2')
+			? { path, name: 'ank.xml', kind: 'file' as const, size: 1 }
+			: null))
+		const xml = await makeTestXML(makeContext(statMany))
 		const file = await xml.resolveTruck({ isBackup: false })
 
 		expect(statMany).toHaveBeenCalledTimes(1)
@@ -77,12 +86,9 @@ describe('GameXML.getFile', () => {
 
 	it('использует уже найденный файл без повторного statMany', async () => {
 		const statMany = vi.fn()
-		const readMany = vi.fn(async () => ({ ok: true as const, value: ['<Truck/>'] }))
+		const readMany = vi.fn(async () => ['<Truck/>'])
 		const file = fakeFile(GAME_DIR, 'classes', 'trucks', 'ank.xml')
-
-		di.register(FS_TOKEN, { statMany, readMany } as any)
-
-		const xml = new TestElementXML((await XMLElement.from('<Truck/>'))!)
+		const xml = new TestElementXML((await XMLElement.from('<Truck/>'))!, '', undefined, makeContext(statMany, readMany))
 		const result = await xml.resolveElement({ isBackup: false }, file)
 
 		expect(result).toEqual({})
@@ -92,12 +98,9 @@ describe('GameXML.getFile', () => {
 
 	it('использует уже найденный список файлов без повторного statMany', async () => {
 		const statMany = vi.fn()
-		const readMany = vi.fn(async () => ({ ok: true as const, value: ['<Truck/>'] }))
+		const readMany = vi.fn(async () => ['<Truck/>'])
 		const file = fakeFile(GAME_DIR, 'classes', 'trucks', 'ank.xml')
-
-		di.register(FS_TOKEN, { statMany, readMany } as any)
-
-		const xml = new TestListXML((await XMLElement.from('<Truck/>'))!)
+		const xml = new TestListXML((await XMLElement.from('<Truck/>'))!, '', undefined, makeContext(statMany, readMany))
 		const result = await xml.resolveList({ isBackup: false }, [file])
 
 		expect(result).toEqual([{}])

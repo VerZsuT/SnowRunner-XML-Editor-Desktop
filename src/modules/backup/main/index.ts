@@ -9,6 +9,8 @@ import type { IMainInitialBackup } from '../types'
 
 /** Работа с бэкапом initial.pak. [main] */
 export class InitialBackup implements IMainInitialBackup {
+	/** Явное имя сущности в мосте. */
+	static readonly pubName = 'InitialBackup'
 	/** Локализация. */
 	private readonly texts = loadLocalization(BACKUP_LOCALIZATION)
 

@@ -2,11 +2,23 @@ import type { IResettable } from '@src/types'
 
 /** JSON файл массива. */
 export interface IArrayJSON {
-	/** Версия файла. */
-	version: string
+	/** Версия формата. */
+	version: number
 
 	/** Данные массива. */
-	data: any
+	items: any
+}
+
+/** Репозиторий массива. */
+export interface IArrayRepository {
+	/**
+	 * Сохранить данные.
+	 * @param value Данные.
+	 */
+	save(value: IArrayJSON): Promise<void>
+
+	/** Прочитать сырые данные (новый или legacy формат). */
+	readSync(): unknown
 }
 
 /** Базовый массив. */

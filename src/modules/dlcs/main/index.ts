@@ -7,13 +7,15 @@ import type { IDLC, IMainDlc } from '../types'
 
 /** Работа с дополнениями игры. [main] */
 export class Dlc extends BaseArray<IDLC, IDLC & { dir: IDir }> implements IMainDlc {
+	/** Явное имя сущности в мосте. */
+	static readonly pubName = 'Dlc'
 	/** Основные папки. */
 	@inject(DIRS_TOKEN)
 	private readonly dirs!: IDirs
 
 	constructor() {
 		super()
-		makeReactive(this, 'DLCs', 'arr')
+		makeReactive(this, 'arr')
 	}
 
 	override convert(item: IDLC): IDLC & { dir: IDir } {

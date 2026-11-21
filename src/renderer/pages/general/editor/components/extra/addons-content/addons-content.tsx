@@ -1,6 +1,6 @@
 import { LocalizationStrings } from '@localization'
 import { File, type IDir, type IFile } from '@modules/files/renderer'
-import { TruckAddon } from '@modules/xml/renderer'
+import { readTruckAddon, type TruckAddon } from '@modules/xml/renderer'
 import { Spin } from '@renderer/components/spin'
 import { useConfig } from '@renderer/utilities/use-reactive'
 import { hasItems } from '@utilities/checks/renderer'
@@ -224,7 +224,7 @@ export function AddonsContent({ file, xml, onReady, onMount }: AddonsContentProp
 			return { ...DEFAULT_CONTENT }
 		}
 
-		const addonXML = await TruckAddon.from(addonFile)
+		const addonXML = await readTruckAddon(addonFile)
 
 		if (!addonXML) {
 			return { ...DEFAULT_CONTENT }
@@ -249,7 +249,7 @@ export function AddonsContent({ file, xml, onReady, onMount }: AddonsContentProp
 		const file = addonFile ?? getFile()
 
 		return await file?.exists()
-			? TruckAddon.from(file!)
+			? readTruckAddon(file!)
 			: undefined
 	}
 
@@ -330,7 +330,7 @@ export function AddonsContent({ file, xml, onReady, onMount }: AddonsContentProp
 						continue
 					}
 
-					const addonXml = await TruckAddon.from(data)
+					const addonXml = await readTruckAddon(data)
 
 					if (!addonXml || (filter && !filter(addonXml))) {
 						continue

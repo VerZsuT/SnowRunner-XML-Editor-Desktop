@@ -1,7 +1,8 @@
 import type { EventUnsubscribe } from 'emr-bridge/renderer'
 import { Bridge } from 'emr-bridge/renderer'
 import { proxy, snapshot, subscribe } from 'valtio/vanilla'
-import { getPublicName } from './helpers'
+import { getClassName, getPublicName } from './helpers'
+import type { IPubNamed } from './types'
 
 /** Лениво созданный мост main-renderer. */
 let bridgeInstance: MainBridge | undefined
@@ -64,15 +65,17 @@ type ChangeHandler = (name: string, value: any) => void
 
 /** Инициализировать main методы и поля класса. */
 export function initMain() {
-	return function<Class extends new (...args: any) => any>(
+	return function<Class extends IPubNamed & (new (...args: any) => any)>(
 		target: Class,
-		context: ClassDecoratorContext<Class>
+		_context: ClassDecoratorContext<Class>
 	) {
-		const className = context.name ?? ''
-
 		return class extends target {
 			constructor(...args: any[]) {
 				super(...args)
+
+				// static pubName инициализируется после применения декоратора.
+				const className = getClassName(target)
+
 				getChangeHandler(this, className)
 
 				for (const { name } of getMainMethods(this)) {

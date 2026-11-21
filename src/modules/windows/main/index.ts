@@ -17,6 +17,8 @@ type WindowCreator<T extends BrowserWindow = BrowserWindow> = (...args: any[]) =
 
 /** Работа с окнами программы. [main] */
 export class Windows implements IMainWindows {
+	/** Явное имя сущности в мосте. */
+	static readonly pubName = 'Windows'
 	/** Папка, в которой находится текущий исполняемый скрипт. */
 	private readonly dirname = dirname(fileURLToPath(import.meta.url))
 

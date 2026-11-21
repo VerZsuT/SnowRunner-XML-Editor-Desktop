@@ -1,6 +1,6 @@
 import { loadLocalization } from '@localization/main'
 import { ErrorText } from '@modules/errors/enums'
-import { ProgramError } from '@modules/errors/main'
+import { createProgramError } from '@modules/errors/main'
 import type { IMainDir as IDir, IMainDirs as IDirs, IMainFile as IFile, IMainFiles as IFiles } from '@modules/files/types'
 import { di, inject } from '@utilities/di/container'
 import { CONFIG_TOKEN, DIRS_TOKEN, FILES_TOKEN, LOADING_TOKEN, MESSAGES_TOKEN, MODS_TOKEN, SIZES_TOKEN } from '@utilities/di/main/tokens'
@@ -11,6 +11,8 @@ import type { ISystemArchiver } from './archiver/types'
 
 /** Работа с архивами. [main] */
 export class Archive implements IMainArchiver {
+	/** Явное имя сущности в мосте. */
+	static readonly pubName = 'Archive'
 	/** Локализация. */
 	private readonly texts = loadLocalization(ARCHIVE_LOCALIZATION)
 
@@ -60,7 +62,7 @@ export class Archive implements IMainArchiver {
 		const archive = this.files.newFile(archivePath)
 
 		if (!await archive.exists()) {
-			throw new ProgramError(ErrorText.readFileError, null, archive.path)
+			throw createProgramError(ErrorText.readFileError, null, archive.path)
 		}
 
 		await dir.remove()

@@ -5,6 +5,8 @@ import type { IRendererArchiver } from './types'
 /** Работа с архивами. [renderer] */
 @initMain()
 export class Archive implements IRendererArchiver {
+	/** Явное имя сущности в мосте. */
+	static readonly pubName = 'Archive'
 	@mainMethod()
 	unpack!: ArchiveMain['unpack']
 

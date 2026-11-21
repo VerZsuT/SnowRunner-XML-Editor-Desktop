@@ -98,5 +98,4 @@ PLAN-*.md
 build-scripts/out
 test.js
 dist
-package-lock.json
 initialpak/
