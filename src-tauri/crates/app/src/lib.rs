@@ -7,3 +7,4 @@ pub mod game;
 pub mod info;
 pub mod lists;
 pub mod paths;
+pub mod texts;

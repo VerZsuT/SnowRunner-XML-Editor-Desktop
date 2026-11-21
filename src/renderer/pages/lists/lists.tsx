@@ -1,9 +1,10 @@
 import { EditFilled, ReloadOutlined, SettingOutlined, StarFilled, StarOutlined } from '@ant-design/icons'
 import { unpackInitial } from '@renderer/api/archive'
-import type { VehicleFile } from '@renderer/api/bindings'
+import type { GameTexts, VehicleFile } from '@renderer/api/bindings'
 import type { UserLists } from '@renderer/api/lists'
 import { loadUserLists, toggleFavorite as toggleFavoriteFile } from '@renderer/api/lists'
 import { loadConfig, saveConfig } from '@renderer/api/settings'
+import { loadGameTexts, translate } from '@renderer/api/texts'
 import { applyConfig, fromConfigDto } from '@renderer/config'
 import type { VehicleCategory } from '@renderer/api/vehicles'
 import { listVehicles } from '@renderer/api/vehicles'
@@ -33,6 +34,9 @@ export interface ListsPageProps {
 
 	/** Переключатель избранного: подменяется в тестах. */
 	toggle?(name: string): Promise<boolean>
+
+	/** Загрузчик игровых переводов: подменяется в тестах. */
+	texts?(): Promise<GameTexts>
 }
 
 /** Страница списков траков и прицепов. */
@@ -41,7 +45,8 @@ export function ListsPage({
 	onSetup,
 	load = listVehicles,
 	lists = loadUserLists,
-	toggle = toggleFavoriteFile
+	toggle = toggleFavoriteFile,
+	texts: loadTexts = loadGameTexts
 }: ListsPageProps) {
 	const { message } = AntApp.useApp()
 	const [category, setCategory] = useState<VehicleCategory>('trucks')
@@ -53,6 +58,27 @@ export function ListsPage({
 	const [reload, setReload] = useState(0)
 	const [busy, setBusy] = useState(false)
 	const [userLists, setUserLists] = useState<UserLists>({ favorites: [], edited: [] })
+	const [gameTexts, setGameTexts] = useState<GameTexts | null>(null)
+
+	useEffect(() => {
+		let cancelled = false
+
+		void (async () => {
+			try {
+				const value = await loadTexts()
+
+				if (!cancelled) {
+					setGameTexts(value)
+				}
+			} catch {
+				// Переводы не обязательны: без них остаются ключи и имена файлов.
+			}
+		})()
+
+		return () => {
+			cancelled = true
+		}
+	}, [loadTexts])
 
 	useEffect(() => {
 		let cancelled = false
@@ -279,7 +305,8 @@ export function ListsPage({
 												/>
 											</Tooltip>
 											<div className="lists-item-name">
-												{prettyString(file.name).toUpperCase()}
+												{translate(gameTexts, file.uiName, file.modName)
+													?? prettyString(file.name).toUpperCase()}
 											</div>
 											<div className="lists-item-tags">
 												{edited.has(file.name) && (

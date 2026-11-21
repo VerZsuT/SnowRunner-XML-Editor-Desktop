@@ -102,6 +102,9 @@ pub struct VehicleFile {
 
 	/// Мод, из которого взят файл.
 	pub mod_name: Option<String>,
+
+	/// Ключ перевода названия из блока UiDesc.
+	pub ui_name: Option<String>,
 }
 
 /// Файлы игры и порядок их поиска.
@@ -325,6 +328,10 @@ impl GameFiles {
 					.and_then(|data| data.string("TruckType", None).value),
 				dlc: dlc.map(str::to_owned),
 				mod_name: mod_name.map(str::to_owned),
+				ui_name: reader
+					.child("GameData")
+					.and_then(|data| data.child("UiDesc"))
+					.and_then(|desc| desc.string("UiName", None).value),
 			});
 		}
 

@@ -10,6 +10,7 @@ pub mod documents;
 pub mod game;
 pub mod library;
 pub mod paths;
+pub mod texts;
 
 /// Все команды приложения.
 pub fn collect() -> Commands<Wry> {
@@ -38,6 +39,7 @@ pub fn collect() -> Commands<Wry> {
 		game::open_wheels,
 		game::open_wheel,
 		game::open_addon,
+		texts::game_texts,
 		documents::open_document,
 		documents::document_info,
 		documents::list_documents,

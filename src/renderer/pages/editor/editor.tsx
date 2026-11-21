@@ -1,7 +1,8 @@
 import { ReloadOutlined, SaveOutlined, UndoOutlined } from '@ant-design/icons'
-import type { Truck } from '@renderer/api/bindings'
+import type { GameTexts, Truck } from '@renderer/api/bindings'
 import type { DocumentClient, DocumentSession } from '@renderer/api/documents'
 import { DocumentSession as Session, documentClient } from '@renderer/api/documents'
+import { loadGameTexts, translate } from '@renderer/api/texts'
 import { Header } from '@renderer/components/header'
 import { prettyString } from '@utilities/strings'
 import { App, Button, Result, Spin, Tooltip } from 'antd'
@@ -37,15 +38,25 @@ export interface EditorPageProps {
 
 	/** Клиент команд: подменяется в тестах. */
 	client?: DocumentClient
+
+	/** Загрузчик игровых переводов: подменяется в тестах. */
+	texts?(): Promise<GameTexts>
 }
 
 /** Страница редактора трака. */
-export function EditorPage({ name, kind = 'truck', onBack, client = documentClient }: EditorPageProps) {
+export function EditorPage({
+	name,
+	kind = 'truck',
+	onBack,
+	client = documentClient,
+	texts: loadTexts = loadGameTexts
+}: EditorPageProps) {
 	const { message, modal } = App.useApp()
 	const [data, setData] = useState<EditorData | null>(null)
 	const [error, setError] = useState<string | null>(null)
 	const [reload, setReload] = useState(0)
 	const [busy, setBusy] = useState(false)
+	const [gameTexts, setGameTexts] = useState<GameTexts | null>(null)
 	const [, forceRender] = useReducer((value: number) => value + 1, 0)
 	const sessions = data ? [data.session, ...data.related.map(item => item.session)] : []
 
@@ -86,8 +97,28 @@ export function EditorPage({ name, kind = 'truck', onBack, client = documentClie
 		}
 	}, [data])
 
+	useEffect(() => {
+		let cancelled = false
+
+		void (async () => {
+			try {
+				const value = await loadTexts()
+
+				if (!cancelled) {
+					setGameTexts(value)
+				}
+			} catch {
+				// Переводы не обязательны: без них остаются ключи и имена файлов.
+			}
+		})()
+
+		return () => {
+			cancelled = true
+		}
+	}, [loadTexts])
+
 	const dirty = sessions.some(session => session.dirty)
-	const title = getTitle(data, name)
+	const title = getTitle(data, name, gameTexts)
 
 	async function save() {
 		setBusy(true)
@@ -201,15 +232,13 @@ export function EditorPage({ name, kind = 'truck', onBack, client = documentClie
 	)
 }
 
-/** Заголовок редактора: имя трака из UI-блока или имя файла. */
-function getTitle(data: EditorData | null, name: string): string {
+/** Заголовок редактора: перевод имени из UI-блока, ключ или имя файла. */
+function getTitle(data: EditorData | null, name: string, texts: GameTexts | null): string {
 	const uiDesc = data?.truck.gameData?.uiDesc
 	const uiName = uiDesc?.defaultRegion?.uiName ?? uiDesc?.uiName
-	const text = uiName ? uiName.value ?? uiName.defaultValue : null
+	const key = uiName ? uiName.value ?? uiName.defaultValue : null
 
-	return text
-		? String(text)
-		: prettyString(name).toUpperCase()
+	return translate(texts, key) ?? (key ? String(key) : prettyString(name).toUpperCase())
 }
 
 /** Текст ошибки. */

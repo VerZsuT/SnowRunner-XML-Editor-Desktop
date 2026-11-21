@@ -53,6 +53,8 @@ export const commands = {
 	openWheel: (name: string, options?: InvokeOptions) => typedError<Wheel, CommandError>(__TAURI_INVOKE("open_wheel", { name }, options)),
 	/**  Открывает аддон по имени файла без расширения. */
 	openAddon: (name: string, options?: InvokeOptions) => typedError<TruckAddon, CommandError>(__TAURI_INVOKE("open_addon", { name }, options)),
+	/**  Игровые переводы языка интерфейса: строки игры и распакованных модов. */
+	gameTexts: (lang: string, options?: InvokeOptions) => __TAURI_INVOKE<GameTexts>("game_texts", { lang }, options),
 	/**  Открывает документ игры и регистрирует его в реестре. */
 	openDocument: (kind: DocumentKind, name: string, options?: InvokeOptions) => typedError<DocumentInfo, CommandError>(__TAURI_INVOKE("open_document", { kind, name }, options)),
 	/**  Сведения об открытом документе. */
@@ -369,6 +371,14 @@ export type Field<T> = {
 	defaultValue: T | null,
 	/**  Дескриптор атрибута. */
 	descriptor: AttrDescriptor,
+};
+
+/**  Игровые переводы. */
+export type GameTexts = {
+	/**  Строки самой игры. */
+	main: { [key in string]: string },
+	/**  Строки модов по имени мода. */
+	mods: { [key in string]: { [key in string]: string } },
 };
 
 /**  Передача. */
@@ -888,6 +898,8 @@ export type VehicleFile = {
 	dlc: string | null,
 	/**  Мод, из которого взят файл. */
 	modName: string | null,
+	/**  Ключ перевода названия из блока UiDesc. */
+	uiName: string | null,
 };
 
 /**  Отчёт о проверке архива. */

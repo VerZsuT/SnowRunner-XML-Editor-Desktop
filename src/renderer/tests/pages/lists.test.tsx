@@ -10,7 +10,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 /** Файл автомобиля. */
 function file(
 	name: string,
-	options: { dlc?: string; modName?: string; truckType?: string } = {}
+	options: { dlc?: string; modName?: string; truckType?: string; uiName?: string } = {}
 ): VehicleFile {
 	return {
 		name,
@@ -18,7 +18,8 @@ function file(
 		archiveName: `[media]\\classes\\trucks\\${name}.xml`,
 		truckType: options.truckType ?? null,
 		dlc: options.dlc ?? null,
-		modName: options.modName ?? null
+		modName: options.modName ?? null,
+		uiName: options.uiName ?? null
 	}
 }
 
@@ -61,6 +62,22 @@ describe('ListsPage', () => {
 		await userEvent.click(await screen.findByRole('button', { name: /star/ }))
 
 		expect(toggle).toHaveBeenCalledWith('ank_mk38')
+	})
+
+	it('показывает игровой перевод названия', async () => {
+		render(
+			<AntApp>
+				<ListsPage
+					lists={async () => ({ favorites: [], edited: [] })}
+					texts={async () => ({ main: { UI_NAME: 'Разведчик' }, mods: {} })}
+					load={async () => [file('ank_mk38', { uiName: 'UI_NAME' })]}
+					onOpen={() => {}}
+				/>
+			</AntApp>
+		)
+
+		expect(await screen.findByText('Разведчик')).toBeInTheDocument()
+		expect(screen.queryByText('ANK MK38')).not.toBeInTheDocument()
 	})
 
 	it('показывает только избранное', async () => {
