@@ -1,5 +1,6 @@
 //! Прикладной слой: сценарии использования (открыть архив, документ, сохранить).
 
+pub mod actions;
 pub mod archive;
 pub mod config;
 pub mod documents;

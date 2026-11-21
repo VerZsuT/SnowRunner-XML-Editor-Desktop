@@ -158,3 +158,45 @@ fn открывает_остальные_сущности_фикстуры() {
 		Some("UI_ADDON_FRAME_SIDEBOARD_2_NAME")
 	);
 }
+
+#[test]
+fn перечисляет_аддоны_трака() {
+	let Some(dirs) = dirs() else {
+		eprintln!("фикстура отсутствует, тест пропущен");
+
+		return;
+	};
+	let files = GameFiles::new(dirs, None, false);
+	let addons = files.addon_files("ank_mk38").unwrap();
+
+	assert!(!addons.is_empty());
+	assert!(addons.iter().all(|addon| addon.path.ends_with(".xml")));
+	assert!(addons[0].installed, "установленные аддоны идут первыми");
+
+	eprintln!("аддонов найдено: {}", addons.len());
+
+	let sideboard = addons
+		.iter()
+		.find(|addon| addon.name == "ank_mk38_sideboard_2")
+		.expect("аддон фикстуры");
+
+	assert_eq!(sideboard.install_type.as_deref(), Some("ankMk38FrameAddon"));
+	assert!(!sideboard.installed);
+
+	let bumper = addons
+		.iter()
+		.find(|addon| addon.name == "ank_mk38_bumper_1")
+		.expect("аддон тюнинга");
+
+	assert_eq!(bumper.install_type.as_deref(), Some("AnkMk38Bumper"));
+	assert!(bumper.installed);
+	assert!(bumper.tuning);
+	assert!(files.is_game_file(Path::new(&sideboard.path)));
+	assert!(
+		addons
+			.iter()
+			.any(|addon| addon.tuning && addon.name.starts_with("ank_mk38_"))
+	);
+	assert!(addons.iter().any(|addon| addon.dlc.is_some()));
+	assert!(!addons.iter().any(|addon| addon.path.is_empty()));
+}

@@ -274,5 +274,121 @@ export const EDITOR_PAGE_LOCALIZATION = loadLocalization(new Localization({
 
 	drive: new LocalizationStrings()
 		.ru('Привод')
-		.en('Drive')
+		.en('Drive'),
+
+	addonsContent: new LocalizationStrings()
+		.ru('Содержимое аддонов')
+		.en('Addons content'),
+
+	loadAddons: new LocalizationStrings()
+		.ru('Загрузить аддоны')
+		.en('Load addons'),
+
+	loadingAddons: new LocalizationStrings()
+		.ru('Загрузка аддонов...')
+		.en('Loading addons...'),
+
+	addonFilter: new LocalizationStrings()
+		.ru('Фильтр по имени')
+		.en('Filter by name'),
+
+	noAddons: new LocalizationStrings()
+		.ru('Аддоны не найдены')
+		.en('No addons found'),
+
+	allAddons: new LocalizationStrings()
+		.ru('Все')
+		.en('All'),
+
+	installedAddons: new LocalizationStrings()
+		.ru('Установленные')
+		.en('Installed'),
+
+	installedAddon: new LocalizationStrings()
+		.ru('Установлен')
+		.en('Installed'),
+
+	notInstalledAddon: new LocalizationStrings()
+		.ru('Не установлен')
+		.en('Not installed'),
+
+	createTruckData: new LocalizationStrings()
+		.ru('Создать блок TruckData')
+		.en('Create TruckData'),
+
+	addonSockets: new LocalizationStrings()
+		.ru('Сокеты аддонов')
+		.en('Addon sockets'),
+
+	socket: new LocalizationStrings()
+		.ru('Сокет')
+		.en('Socket'),
+
+	shift: new LocalizationStrings()
+		.ru('Сдвиг')
+		.en('Shift'),
+
+	addSocket: new LocalizationStrings()
+		.ru('Добавить сокет')
+		.en('Add socket'),
+
+	addShift: new LocalizationStrings()
+		.ru('Добавить сдвиг')
+		.en('Add shift'),
+
+	moveUp: new LocalizationStrings()
+		.ru('Выше')
+		.en('Move up'),
+
+	moveDown: new LocalizationStrings()
+		.ru('Ниже')
+		.en('Move down'),
+
+	removeConfirm: new LocalizationStrings()
+		.ru('Удалить элемент?')
+		.en('Delete the element?'),
+
+	cranes: new LocalizationStrings()
+		.ru('Краны')
+		.en('Cranes'),
+
+	crane: new LocalizationStrings()
+		.ru('кран')
+		.en('crane'),
+
+	cranesWarnTitle: new LocalizationStrings()
+		.ru('Внимание!')
+		.en('Attention!'),
+
+	cranesWarnMessage: new LocalizationStrings()
+		.ru('Перед удалением крана требуется обязательно его снять с машины.')
+		.en('Before removing the crane, be sure to remove it from the truck.'),
+
+	banditCrane: new LocalizationStrings()
+		.ru('Банан бандита')
+		.en('Bandit banana'),
+
+	banditWarnMessage: new LocalizationStrings()
+		.ru('Для использования требуется купленное DLC с автомобилем KRS 58 "Бандит".')
+		.en('The purchased DLC with the KRS 58 Bandit car is required for use.'),
+
+	trailers: new LocalizationStrings()
+		.ru('Прицепы')
+		.en('Trailers'),
+
+	scoutTrailers: new LocalizationStrings()
+		.ru('Прицепы для скаута')
+		.en('Scout trailers'),
+
+	truckTrailers: new LocalizationStrings()
+		.ru('Обычные прицепы')
+		.en('Conventional trailers'),
+
+	add: new LocalizationStrings()
+		.ru('Добавить')
+		.en('Add'),
+
+	remove: new LocalizationStrings()
+		.ru('Удалить')
+		.en('Delete')
 }))

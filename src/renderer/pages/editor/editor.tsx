@@ -1,12 +1,13 @@
 import { ReloadOutlined, SaveOutlined, UndoOutlined } from '@ant-design/icons'
-import type { GameTexts, Truck } from '@renderer/api/bindings'
+import type { AddonFile, GameTexts, Truck } from '@renderer/api/bindings'
 import type { DocumentClient, DocumentSession } from '@renderer/api/documents'
 import { DocumentSession as Session, documentClient } from '@renderer/api/documents'
 import { loadGameTexts, translate } from '@renderer/api/texts'
 import { Header } from '@renderer/components/header'
 import { prettyString } from '@utilities/strings'
 import { App, Button, Result, Spin, Tooltip } from 'antd'
-import { useEffect, useReducer, useState } from 'react'
+import { useEffect, useReducer, useRef, useState } from 'react'
+import type { AddonDocument } from './components/addons'
 import type { RelatedDocument } from './components/related'
 import { loadRelated } from './components/related'
 import { TruckTable } from './components/truck-table'
@@ -23,6 +24,9 @@ interface EditorData {
 
 	/** Открытые связанные документы. */
 	related: RelatedDocument[]
+
+	/** Открытые аддоны. */
+	addons: AddonDocument[]
 }
 
 /** Параметры страницы редактора. */
@@ -62,10 +66,22 @@ export function EditorPage({
 	const [busy, setBusy] = useState(false)
 	const [gameTexts, setGameTexts] = useState<GameTexts | null>(null)
 	const [, forceRender] = useReducer((value: number) => value + 1, 0)
-	const sessions = data ? [data.session, ...data.related.map(item => item.session)] : []
+	const opening = useRef(new Set<string>())
+	const identity = `${kind}:${name}:${modName ?? ''}`
+	const identityRef = useRef(identity)
+	const sessions = data
+		? [
+			data.session,
+			...data.related.map(item => item.session),
+			...data.addons.map(item => item.session)
+		]
+		: []
 
 	useEffect(() => {
 		let cancelled = false
+		const sameTruck = identityRef.current === identity
+
+		identityRef.current = identity
 
 		void (async () => {
 			try {
@@ -74,7 +90,12 @@ export function EditorPage({
 				const related = await loadRelated(client, truck, session.modName)
 
 				if (!cancelled) {
-					setData({ session, truck, related })
+					setData(previous => ({
+						session,
+						truck,
+						related,
+						addons: sameTruck ? previous?.addons ?? [] : []
+					}))
 					setError(null)
 				}
 			} catch (reason) {
@@ -88,10 +109,16 @@ export function EditorPage({
 		return () => {
 			cancelled = true
 		}
-	}, [client, kind, modName, name, reload])
+	}, [client, identity, kind, modName, name, reload])
 
 	useEffect(() => {
-		const opened = data ? [data.session, ...data.related.map(item => item.session)] : []
+		const opened = data
+			? [
+				data.session,
+				...data.related.map(item => item.session),
+				...data.addons.map(item => item.session)
+			]
+			: []
 		const unsubscribers = opened.map(session => session.subscribe(forceRender))
 
 		return () => {
@@ -124,6 +151,62 @@ export function EditorPage({
 	const dirty = sessions.some(session => session.dirty)
 	const title = getTitle(data, name, gameTexts)
 
+	/** Открывает аддон трака; повторный выбор возвращает уже открытый. */
+	async function openAddon(addon: AddonFile) {
+		if (!data || data.addons.some(item => item.addon.path === addon.path)) {
+			return
+		}
+
+		if (opening.current.has(addon.path)) {
+			return
+		}
+
+		opening.current.add(addon.path)
+
+		try {
+			const session = await Session.openAt(addon.path, client)
+			const model = await session.readAddon()
+
+			setData(previous => {
+				if (!previous || previous.addons.some(item => item.addon.path === addon.path)) {
+					return previous
+				}
+
+				return {
+					...previous,
+					addons: [...previous.addons, { addon, session, model }]
+				}
+			})
+		} finally {
+			opening.current.delete(addon.path)
+		}
+	}
+
+	/** Перечитывает модель открытого аддона после правки его дерева. */
+	async function refreshAddon(doc: AddonDocument) {
+		const model = await doc.session.readAddon()
+
+		setData(previous => previous
+			? {
+				...previous,
+				addons: previous.addons.map(item => item.session.docId === doc.session.docId
+					? { ...item, model }
+					: item)
+			}
+			: previous)
+	}
+
+	/** Перечитывает модель трака после действия с аддонами. */
+	async function refreshTruck() {
+		if (!data) {
+			return
+		}
+
+		const truck = await data.session.readTruck()
+
+		setData(previous => previous ? { ...previous, truck } : previous)
+	}
+
 	async function save() {
 		setBusy(true)
 
@@ -151,6 +234,8 @@ export function EditorPage({
 			onOk: async () => {
 				try {
 					await Promise.all(sessions.map(async session => session.reset()))
+					await Promise.all(data?.addons.map(async item => item.session.close(true).catch(() => false)) ?? [])
+					setData(previous => previous ? { ...previous, addons: [] } : previous)
 					setReload(value => value + 1)
 					message.success(texts.resetDone)
 				} catch (reason) {
@@ -229,7 +314,19 @@ export function EditorPage({
 						/>
 					)
 					: data
-						? <TruckTable key={reload} session={data.session} truck={data.truck} related={data.related} />
+						? (
+							<TruckTable
+								key={reload}
+								session={data.session}
+								truck={data.truck}
+								related={data.related}
+								addons={data.addons}
+								gameTexts={gameTexts}
+								onOpenAddon={openAddon}
+								onRefreshAddon={refreshAddon}
+								onRefresh={refreshTruck}
+							/>
+						)
 						: <Spin className="editor-page-spin" size="large" />}
 			</div>
 		</div>

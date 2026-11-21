@@ -4,9 +4,10 @@ mod commands;
 mod error;
 mod state;
 
+use sxmle_app::actions::{Crane, Trailer};
 use sxmle_app::config::Config;
 use sxmle_app::documents::{DocumentInfo, DocumentKind, MutationResult, SaveResult};
-use sxmle_app::game::VehicleFile;
+use sxmle_app::game::{AddonFile, VehicleFile};
 use sxmle_app::lists::EditedFile;
 use sxmle_app::mods::ModEntry;
 
@@ -87,6 +88,9 @@ pub fn specta_builder() -> tauri_specta::Builder<tauri::Wry> {
 		.typ::<ModEntry>()
 		.typ::<SwitchModeDto>()
 		.typ::<VehicleFile>()
+		.typ::<AddonFile>()
+		.typ::<Crane>()
+		.typ::<Trailer>()
 		.typ::<DocumentKind>()
 		.typ::<DocumentInfo>()
 		.typ::<MutationResult>()

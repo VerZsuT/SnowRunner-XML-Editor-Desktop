@@ -225,6 +225,7 @@ impl From<sxmle_app::documents::DocumentError> for CommandError {
 				Self::io(source).with_path(path.display().to_string())
 			}
 			DocumentError::Game(error) => error.into(),
+			DocumentError::Action(error) => Self::not_found(error),
 		}
 	}
 }

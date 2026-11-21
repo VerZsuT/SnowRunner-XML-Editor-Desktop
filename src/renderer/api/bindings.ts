@@ -53,6 +53,8 @@ export const commands = {
 	listTrucks: (options?: InvokeOptions) => typedError<VehicleFile[], CommandError>(__TAURI_INVOKE("list_trucks", undefined, options)),
 	/**  Прицепы из основной игры, DLC и модов. */
 	listTrailers: (options?: InvokeOptions) => typedError<VehicleFile[], CommandError>(__TAURI_INVOKE("list_trailers", undefined, options)),
+	/**  Аддоны трака: <трак>_tuning, trucks/addons, DLC и моды. */
+	listAddons: (truck: string, options?: InvokeOptions) => typedError<AddonFile[], CommandError>(__TAURI_INVOKE("list_addons", { truck }, options)),
 	/**  Открывает трак по имени файла без расширения. */
 	openTruck: (name: string, options?: InvokeOptions) => typedError<Truck, CommandError>(__TAURI_INVOKE("open_truck", { name }, options)),
 	/**  Открывает двигатели файла по имени без расширения. */
@@ -73,6 +75,8 @@ export const commands = {
 	gameTexts: (lang: string, options?: InvokeOptions) => __TAURI_INVOKE<GameTexts>("game_texts", { lang }, options),
 	/**  Открывает документ игры и регистрирует его в реестре. */
 	openDocument: (kind: DocumentKind, name: string, modName: string | null, options?: InvokeOptions) => typedError<DocumentInfo, CommandError>(__TAURI_INVOKE("open_document", { kind, name, modName }, options)),
+	/**  Открывает аддон по пути из списка аддонов. */
+	openAddonDocument: (path: string, options?: InvokeOptions) => typedError<DocumentInfo, CommandError>(__TAURI_INVOKE("open_addon_document", { path }, options)),
 	/**  Сведения об открытом документе. */
 	documentInfo: (docId: string, options?: InvokeOptions) => typedError<DocumentInfo, CommandError>(__TAURI_INVOKE("document_info", { docId }, options)),
 	/**  Открытые документы. */
@@ -107,6 +111,12 @@ export const commands = {
 	removeElement: (docId: string, revision: number, selector: string, options?: InvokeOptions) => typedError<MutationResult, CommandError>(__TAURI_INVOKE("remove_element", { docId, revision, selector }, options)),
 	/**  Переставляет элемент в списке одноимённых соседей. */
 	moveElement: (docId: string, revision: number, selector: string, to: number, options?: InvokeOptions) => typedError<MutationResult, CommandError>(__TAURI_INVOKE("move_element", { docId, revision, selector, to }, options)),
+	/**  Добавляет или убирает кран трака. */
+	setCrane: (docId: string, revision: number, crane: Crane, enabled: boolean, options?: InvokeOptions) => typedError<MutationResult, CommandError>(__TAURI_INVOKE("set_crane", { docId, revision, crane, enabled }, options)),
+	/**  Добавляет или убирает прицеп трака. */
+	setTrailer: (docId: string, revision: number, trailer: Trailer, enabled: boolean, options?: InvokeOptions) => typedError<MutationResult, CommandError>(__TAURI_INVOKE("set_trailer", { docId, revision, trailer, enabled }, options)),
+	/**  Добавляет или убирает кран «Банан бандита». */
+	setBanditCrane: (docId: string, revision: number, enabled: boolean, options?: InvokeOptions) => typedError<MutationResult, CommandError>(__TAURI_INVOKE("set_bandit_crane", { docId, revision, enabled }, options)),
 	/**  Сохраняет документ на диск в форматированном виде. */
 	saveDocument: (docId: string, options?: InvokeOptions) => typedError<SaveResult, CommandError>(__TAURI_INVOKE("save_document", { docId }, options)),
 	/**  Сохраняет все изменённые документы. */
@@ -116,6 +126,28 @@ export const commands = {
 };
 
 /* Types */
+/**  Файл аддона для списка содержимого аддонов. */
+export type AddonFile = {
+	/**  Имя файла без расширения. */
+	name: string,
+	/**  Путь файла на диске. */
+	path: string,
+	/**  Имя записи архива, в которую файл попадает при сохранении. */
+	archiveName: string,
+	/**  Ключ перевода названия из блока UiDesc. */
+	uiName: string | null,
+	/**  Тип сокета установки из блока InstallSocket. */
+	installType: string | null,
+	/**  Файл лежит в каталоге <трак>_tuning. */
+	tuning: boolean,
+	/**  Аддон устанавливается в сокет трака. */
+	installed: boolean,
+	/**  DLC, из которого взят файл. */
+	dlc: string | null,
+	/**  Мод, из которого взят файл. */
+	modName: string | null,
+};
+
 /**  Информация о взаимодействии аддона с окружающим миром (GameData). */
 export type AddonGameData = {
 	/**  Цена. */
@@ -264,6 +296,13 @@ export type Config = {
 	/**  Оптимизировать распаковку. */
 	optimizeUnpack?: boolean,
 };
+
+/**  Кран, который устанавливается в сокет трака. */
+export type Crane = 
+/**  Кран RU. */
+"ru" | 
+/**  Кран US. */
+"us";
 
 /**  Режим хранения данных программы. */
 export type DataMode = 
@@ -673,6 +712,13 @@ export type TireWheelFriction = {
 	/**  Имя типа резины. */
 	uiName: Field<string>,
 };
+
+/**  Прицеп, который цепляется к траку. */
+export type Trailer = 
+/**  Прицеп для скаута. */
+"scout" | 
+/**  Обычный прицеп. */
+"truck";
 
 /**  Количество слотов для груза (AddonSlots). */
 export type TrailerAddonSlots = {

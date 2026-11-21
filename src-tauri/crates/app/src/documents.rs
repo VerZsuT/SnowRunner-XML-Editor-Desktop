@@ -24,6 +24,7 @@ use sxmle_domain::xml::{
 };
 use thiserror::Error;
 
+use crate::actions::{self, ActionError, Crane, Trailer};
 use crate::game::{GameError, GameFiles};
 
 /// Вид документа игры: определяет каталог внутри classes.
@@ -186,6 +187,10 @@ pub enum DocumentError {
 	/// Ошибка чтения файла игры.
 	#[error(transparent)]
 	Game(#[from] GameError),
+
+	/// Действие с аддонами не применимо к документу.
+	#[error(transparent)]
+	Action(#[from] ActionError),
 }
 
 /// Кэш файлов шаблонов _templates.
@@ -278,6 +283,21 @@ impl Document {
 			dirty: true,
 		}
 	}
+
+	/// Результат действия: версия растёт только при изменении документа.
+	fn action_result(&mut self, changed: bool, selector: &str) -> MutationResult {
+		if changed {
+			return self.mutated(selector, None);
+		}
+
+		MutationResult {
+			doc_id: self.info.doc_id.clone(),
+			revision: self.info.revision,
+			selector: selector.to_owned(),
+			value: None,
+			dirty: self.info.dirty,
+		}
+	}
 }
 
 /// Реестр открытых документов.
@@ -311,6 +331,39 @@ impl Documents {
 			.resolve(kind.folder(), name)
 			.ok_or_else(|| GameError::NotFound(format!("{}/{name}.xml", kind.folder())))?;
 
+		self.register(files, kind, name, &path)
+	}
+
+	/// Открывает документ по пути внутри распакованных данных игры.
+	///
+	/// Путь приходит из списка аддонов: файлы лежат не только в trucks/addons,
+	/// но и в <трак>_tuning, DLC и модах. Открыть можно только файл игры.
+	pub fn open_at(
+		&mut self,
+		files: &GameFiles,
+		kind: DocumentKind,
+		path: &Path,
+	) -> Result<DocumentInfo, DocumentError> {
+		if !files.is_game_file(path) {
+			return Err(GameError::NotFound(path.display().to_string()).into());
+		}
+
+		let name = path
+			.file_stem()
+			.and_then(|stem| stem.to_str())
+			.ok_or_else(|| GameError::NotFound(path.display().to_string()))?;
+
+		self.register(files, kind, name, path)
+	}
+
+	/// Регистрирует документ; повторное открытие возвращает прежнюю запись.
+	fn register(
+		&mut self,
+		files: &GameFiles,
+		kind: DocumentKind,
+		name: &str,
+		path: &Path,
+	) -> Result<DocumentInfo, DocumentError> {
 		if let Some(existing) = self
 			.items
 			.values()
@@ -319,15 +372,15 @@ impl Documents {
 			return Ok(existing.info.clone());
 		}
 
-		let document = files.read_document(&path)?;
+		let document = files.read_document(path)?;
 		let templates = self.read_templates(files, &document);
-		let (dlc, mod_name) = files.source_of(&path);
+		let (dlc, mod_name) = files.source_of(path);
 		let info = DocumentInfo {
 			doc_id: self.new_id(),
 			kind,
 			name: name.to_owned(),
 			path: path.to_string_lossy().into_owned(),
-			archive_name: files.archive_name(&path),
+			archive_name: files.archive_name(path),
 			dlc,
 			mod_name,
 			revision: 0,
@@ -470,6 +523,47 @@ impl Documents {
 		let selector = xml_move_element(&mut document.document, selector, to)?;
 
 		Ok(document.mutated(&selector, None))
+	}
+
+	/// Добавляет или убирает кран трака.
+	pub fn set_crane(
+		&mut self,
+		doc_id: &str,
+		revision: u32,
+		crane: Crane,
+		enabled: bool,
+	) -> Result<MutationResult, DocumentError> {
+		let document = self.document_mut(doc_id, revision)?;
+		let changed = actions::set_crane(&mut document.document, crane, enabled)?;
+
+		Ok(document.action_result(changed, "/Truck/GameData"))
+	}
+
+	/// Добавляет или убирает прицеп трака.
+	pub fn set_trailer(
+		&mut self,
+		doc_id: &str,
+		revision: u32,
+		trailer: Trailer,
+		enabled: bool,
+	) -> Result<MutationResult, DocumentError> {
+		let document = self.document_mut(doc_id, revision)?;
+		let changed = actions::set_trailer(&mut document.document, trailer, enabled)?;
+
+		Ok(document.action_result(changed, "/Truck/GameData"))
+	}
+
+	/// Добавляет или убирает кран «Банан бандита».
+	pub fn set_bandit_crane(
+		&mut self,
+		doc_id: &str,
+		revision: u32,
+		enabled: bool,
+	) -> Result<MutationResult, DocumentError> {
+		let document = self.document_mut(doc_id, revision)?;
+		let changed = actions::set_bandit_crane(&mut document.document, enabled)?;
+
+		Ok(document.action_result(changed, "/Truck/GameData"))
 	}
 
 	/// Сохраняет документ в форматированном виде в исходной кодировке.
@@ -983,6 +1077,95 @@ mod tests {
 			}
 			other => panic!("ожидалась ошибка поиска, получено {other:?}"),
 		}
+
+		let _ = fs::remove_dir_all(&dir);
+	}
+
+	#[test]
+	fn открывает_аддон_по_пути() {
+		let dir = work_dir();
+		let addons = dir.join("[media]/classes/trucks/addons");
+
+		fs::create_dir_all(&addons).unwrap();
+		let path = addons.join("addon.xml");
+		fs::write(
+			&path,
+			"<TruckAddon>\r\n\t<TruckData FuelCapacity=\"10\" />\r\n</TruckAddon>\r\n",
+		)
+		.unwrap();
+
+		let files = files(&dir);
+		let mut documents = Documents::new();
+		let info = documents
+			.open_at(&files, DocumentKind::Addon, &path)
+			.unwrap();
+
+		assert_eq!(info.kind, DocumentKind::Addon);
+		assert_eq!(info.name, "addon");
+		assert_eq!(
+			info.archive_name,
+			"[media]\\classes\\trucks\\addons\\addon.xml"
+		);
+
+		let result = documents
+			.set_attr(
+				&info.doc_id,
+				info.revision,
+				"/TruckAddon/TruckData",
+				"FuelCapacity",
+				Some("20"),
+			)
+			.unwrap();
+
+		assert_eq!(result.revision, 1);
+
+		let outside = dir.join("outside.xml");
+		fs::write(&outside, "<TruckAddon />").unwrap();
+
+		assert!(matches!(
+			documents.open_at(&files, DocumentKind::Addon, &outside),
+			Err(DocumentError::Game(GameError::NotFound(_)))
+		));
+
+		let _ = fs::remove_dir_all(&dir);
+	}
+
+	#[test]
+	fn действия_крана_меняют_версию_только_при_изменении() {
+		let dir = work_dir();
+		write_truck(
+			&dir,
+			"truck",
+			"<Truck><GameData><AddonSockets><Socket Names=\"MinicraneRU\" NamesBlock=\"FrameAddon\" /></AddonSockets></GameData></Truck>",
+		);
+
+		let files = files(&dir);
+		let mut documents = Documents::new();
+		let info = documents
+			.open(&files, DocumentKind::Truck, "truck")
+			.unwrap();
+		let result = documents
+			.set_crane(&info.doc_id, 0, Crane::Us, true)
+			.unwrap();
+
+		assert_eq!(result.revision, 1);
+		assert!(result.dirty);
+
+		let again = documents
+			.set_crane(&info.doc_id, 1, Crane::Us, true)
+			.unwrap();
+
+		assert_eq!(again.revision, 1);
+		assert!(again.dirty);
+
+		let document = documents.get(&info.doc_id).unwrap().document();
+		let socket =
+			sxmle_domain::xml::resolve(document, "/Truck/GameData/AddonSockets/Socket").unwrap();
+
+		assert_eq!(
+			socket.attr_value("Names").as_deref(),
+			Some("MinicraneRU, MinicraneUS")
+		);
 
 		let _ = fs::remove_dir_all(&dir);
 	}

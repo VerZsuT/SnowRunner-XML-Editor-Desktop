@@ -1,0 +1,17 @@
+.editor-addons-controls {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin-bottom: 8px;
+}
+
+.editor-addons-select {
+	flex: 1;
+	min-width: 0;
+}
+
+.editor-addons-loading {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}

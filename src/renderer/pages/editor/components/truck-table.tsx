@@ -1,5 +1,9 @@
-import type { PhysicsBody, Truck } from '@renderer/api/bindings'
+import type { AddonFile, GameTexts, PhysicsBody, Truck } from '@renderer/api/bindings'
 import type { DocumentSession } from '@renderer/api/documents'
+import type { AddonDocument } from './addons'
+import { AddonSocketsGroup } from './addon-sockets'
+import { AddonsContent } from './addons'
+import { BanditCraneGroup, CranesGroup, TrailersGroup } from './actions'
 import { DocumentField, InfoField } from './field'
 import { Group } from './group'
 import type { RelatedDocument } from './related'
@@ -16,10 +20,34 @@ export interface TruckTableProps {
 
 	/** Открытые связанные документы. */
 	related: RelatedDocument[]
+
+	/** Открытые аддоны. */
+	addons: AddonDocument[]
+
+	/** Игровые переводы. */
+	gameTexts: GameTexts | null
+
+	/** Открывает аддон. */
+	onOpenAddon(addon: AddonFile): Promise<void>
+
+	/** Перечитывает модель открытого аддона. */
+	onRefreshAddon(doc: AddonDocument): Promise<void>
+
+	/** Перечитывает модель трака. */
+	onRefresh(): Promise<void>
 }
 
 /** Таблица параметров трака. */
-export function TruckTable({ session, truck, related }: TruckTableProps) {
+export function TruckTable({
+	session,
+	truck,
+	related,
+	addons,
+	gameTexts,
+	onOpenAddon,
+	onRefreshAddon,
+	onRefresh
+}: TruckTableProps) {
 	const data = truck.truckData
 	const gameData = truck.gameData
 	const region = gameData?.uiDesc?.defaultRegion ?? gameData?.uiDesc
@@ -142,6 +170,20 @@ export function TruckTable({ session, truck, related }: TruckTableProps) {
 					<DocumentField session={session} field={gameData.unlockByRank} />
 				</Group>
 			)}
+
+			<AddonsContent
+				key={session.name}
+				truckName={session.name}
+				docs={addons}
+				gameTexts={gameTexts}
+				onOpen={onOpenAddon}
+				onRefresh={onRefreshAddon}
+			/>
+
+			<AddonSocketsGroup session={session} truck={truck} onRefresh={onRefresh} />
+			<CranesGroup session={session} truck={truck} onRefresh={onRefresh} />
+			<TrailersGroup session={session} truck={truck} onRefresh={onRefresh} />
+			<BanditCraneGroup session={session} truck={truck} onRefresh={onRefresh} />
 
 		</>
 	)

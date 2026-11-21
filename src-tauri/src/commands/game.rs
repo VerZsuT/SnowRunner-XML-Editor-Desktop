@@ -1,6 +1,6 @@
 //! Команды доменной модели: списки и открытие сущностей игры.
 
-use sxmle_app::game::{GameDirs, GameFiles, VehicleFile};
+use sxmle_app::game::{AddonFile, GameDirs, GameFiles, VehicleFile};
 use sxmle_domain::game::entities::{
 	Engine, Gearbox, SuspensionSet, Truck, TruckAddon, Wheel, Wheels, Winch,
 };
@@ -36,6 +36,20 @@ fn vehicles(state: &AppState, trailers: bool) -> AppResult<Vec<VehicleFile>> {
 
 	Ok(files(state, None)
 		.vehicle_files(trailers)
+		.map_err(CommandError::io)?
+		.into_iter()
+		.filter(|file| use_mods || file.mod_name.is_none())
+		.collect())
+}
+
+/// Аддоны трака: <трак>_tuning, trucks/addons, DLC и моды.
+#[tauri::command]
+#[specta::specta]
+pub fn list_addons(state: State<'_, AppState>, truck: String) -> AppResult<Vec<AddonFile>> {
+	let use_mods = state.config().use_mods;
+
+	Ok(files(&state, None)
+		.addon_files(&truck)
 		.map_err(CommandError::io)?
 		.into_iter()
 		.filter(|file| use_mods || file.mod_name.is_none())

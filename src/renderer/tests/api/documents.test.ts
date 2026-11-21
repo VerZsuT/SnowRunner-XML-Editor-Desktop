@@ -27,6 +27,7 @@ function mutation(revision: number, value: string | null = null): MutationResult
 function createClient(overrides: Partial<DocumentClient> = {}): DocumentClient {
 	return {
 		open: vi.fn(async () => info()),
+		openAt: vi.fn(async () => info()),
 		info: vi.fn(async () => info()),
 		list: vi.fn(async () => [info()]),
 		dirty: vi.fn(async () => []),
@@ -44,6 +45,9 @@ function createClient(overrides: Partial<DocumentClient> = {}): DocumentClient {
 		addElement: vi.fn(async () => mutation(1)),
 		removeElement: vi.fn(async () => mutation(1)),
 		moveElement: vi.fn(async () => mutation(1)),
+		setCrane: vi.fn(async () => mutation(1)),
+		setTrailer: vi.fn(async () => mutation(1)),
+		setBanditCrane: vi.fn(async () => mutation(1)),
 		save: vi.fn(async () => ({ docId: 'doc-1', path: 'ank_mk38.xml', bytes: 100, revision: 0 })),
 		saveAll: vi.fn(async () => []),
 		reset: vi.fn(async () => info(5)),
@@ -152,6 +156,27 @@ describe('DocumentSession', () => {
 		await session.close()
 
 		expect(close).toHaveBeenCalledWith('doc-1', false)
+	})
+
+	it('открывает аддон по пути', async () => {
+		const openAt = vi.fn(async () => ({ ...info(), kind: 'addon' as const }))
+		const client = createClient({ openAt })
+		const session = await DocumentSession.openAt('D:\\data\\addon.xml', client)
+
+		expect(openAt).toHaveBeenCalledWith('D:\\data\\addon.xml')
+		expect(session.kind).toBe('addon')
+	})
+
+	it('передаёт действие крана с актуальной версией', async () => {
+		const setCrane = vi.fn(async () => mutation(2))
+		const client = createClient({ setCrane })
+		const session = new DocumentSession(info(1), client)
+
+		await session.setCrane('us', true)
+
+		expect(setCrane).toHaveBeenCalledWith('doc-1', 1, 'us', true)
+		expect(session.revision).toBe(2)
+		expect(session.dirty).toBe(true)
 	})
 
 	it('оповещает подписчиков об изменениях', async () => {

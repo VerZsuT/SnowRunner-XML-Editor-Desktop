@@ -1,6 +1,6 @@
 //! Доступ к файлам игры: резолв DLC → мод → `classes`, чтение и разбор сущностей.
 
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use std::fs;
 use std::io;
 use std::path::{Path, PathBuf};
@@ -107,6 +107,38 @@ pub struct VehicleFile {
 	pub ui_name: Option<String>,
 }
 
+/// Файл аддона для списка содержимого аддонов.
+#[derive(Debug, Clone, PartialEq, Serialize, Type)]
+#[serde(rename_all = "camelCase")]
+pub struct AddonFile {
+	/// Имя файла без расширения.
+	pub name: String,
+
+	/// Путь файла на диске.
+	pub path: String,
+
+	/// Имя записи архива, в которую файл попадает при сохранении.
+	pub archive_name: String,
+
+	/// Ключ перевода названия из блока UiDesc.
+	pub ui_name: Option<String>,
+
+	/// Тип сокета установки из блока InstallSocket.
+	pub install_type: Option<String>,
+
+	/// Файл лежит в каталоге <трак>_tuning.
+	pub tuning: bool,
+
+	/// Аддон устанавливается в сокет трака.
+	pub installed: bool,
+
+	/// DLC, из которого взят файл.
+	pub dlc: Option<String>,
+
+	/// Мод, из которого взят файл.
+	pub mod_name: Option<String>,
+}
+
 /// Файлы игры и порядок их поиска.
 #[derive(Debug, Clone)]
 pub struct GameFiles {
@@ -162,11 +194,19 @@ impl GameFiles {
 	}
 
 	/// Имя записи архива для файла: путь относительно корня распакованных данных.
+	///
+	/// Для файла мода имя записи считается от каталога мода, даже если мод
+	/// не является активным: так аддон, открытый из списка, пишется в свой архив.
 	pub fn archive_name(&self, path: &Path) -> String {
 		let relative = self
 			.mod_name
 			.as_ref()
 			.and_then(|name| path.strip_prefix(self.dirs.mods.join(name)).ok())
+			.or_else(|| {
+				read_dirs(&self.dirs.mods)
+					.into_iter()
+					.find_map(|name| path.strip_prefix(self.dirs.mods.join(name)).ok())
+			})
 			.or_else(|| path.strip_prefix(&self.dirs.root).ok())
 			.unwrap_or(path);
 
@@ -338,6 +378,180 @@ impl GameFiles {
 		Ok(())
 	}
 
+	/// Файлы аддонов трака: каталог <трак>_tuning, trucks/addons, DLC и моды.
+	///
+	/// Признак installed отмечает аддоны, тип сокета которых есть у трака:
+	/// прежний интерфейс показывал только их. Файлы без корня TruckAddon
+	/// пропускаются.
+	pub fn addon_files(&self, truck: &str) -> io::Result<Vec<AddonFile>> {
+		let installed = self.installed_addon_types(truck);
+		let mut candidates = Vec::new();
+		let mut seen = HashSet::new();
+
+		self.collect_addon_dir(
+			&self
+				.dirs
+				.classes
+				.join("trucks")
+				.join(format!("{truck}_tuning")),
+			false,
+			None,
+			None,
+			&mut seen,
+			&mut candidates,
+		);
+		self.collect_addon_dir(
+			&self.dirs.classes.join("trucks/addons"),
+			false,
+			None,
+			None,
+			&mut seen,
+			&mut candidates,
+		);
+
+		for dlc in &self.dlcs {
+			self.collect_addon_dir(
+				&self.dirs.dlc.join(dlc).join("classes/trucks"),
+				true,
+				Some(dlc),
+				None,
+				&mut seen,
+				&mut candidates,
+			);
+		}
+
+		for mod_name in read_dirs(&self.dirs.mods) {
+			self.collect_addon_dir(
+				&self.dirs.mods.join(&mod_name).join("classes"),
+				true,
+				None,
+				Some(&mod_name),
+				&mut seen,
+				&mut candidates,
+			);
+		}
+
+		let mut files = Vec::new();
+
+		for (path, dlc, mod_name) in candidates {
+			let Ok(document) = self.read_document(&path) else {
+				continue;
+			};
+			let Some(element) = document.element("TruckAddon") else {
+				continue;
+			};
+			let Some(name) = path.file_stem() else {
+				continue;
+			};
+			// Список читает только сокет установки и ключ названия: шаблоны
+			// для этого не нужны, а их загрузка на каждый файл замедляет список.
+			let addon = TruckAddon::read(element, None);
+			let game_data = addon.game_data.as_ref();
+			let install_type = game_data
+				.and_then(|data| data.install_socket.as_ref())
+				.and_then(|socket| socket.addon_type.value.clone());
+			let ui_name = game_data
+				.and_then(|data| data.ui_desc.as_ref())
+				.and_then(|desc| desc.ui_name.value.clone());
+			let installed = install_type
+				.as_ref()
+				.is_some_and(|kind| installed.iter().any(|name| name == kind));
+
+			files.push(AddonFile {
+				name: name.to_string_lossy().into_owned(),
+				path: path.to_string_lossy().into_owned(),
+				archive_name: self.archive_name(&path),
+				ui_name,
+				install_type,
+				tuning: path
+					.components()
+					.any(|part| part.as_os_str().to_string_lossy().ends_with("_tuning")),
+				installed,
+				dlc,
+				mod_name,
+			});
+		}
+
+		files.sort_by(|left, right| {
+			right
+				.installed
+				.cmp(&left.installed)
+				.then_with(|| right.tuning.cmp(&left.tuning))
+				.then_with(|| left.name.cmp(&right.name))
+				.then_with(|| left.path.cmp(&right.path))
+		});
+
+		Ok(files)
+	}
+
+	/// Собирает XML-файлы аддонов из каталога.
+	#[allow(clippy::too_many_arguments)]
+	fn collect_addon_dir(
+		&self,
+		dir: &Path,
+		recursive: bool,
+		dlc: Option<&str>,
+		mod_name: Option<&str>,
+		seen: &mut HashSet<PathBuf>,
+		candidates: &mut Vec<(PathBuf, Option<String>, Option<String>)>,
+	) {
+		let Ok(entries) = fs::read_dir(dir) else {
+			return;
+		};
+
+		for entry in entries.flatten() {
+			let path = entry.path();
+
+			if path.is_dir() {
+				if recursive {
+					self.collect_addon_dir(&path, true, dlc, mod_name, seen, candidates);
+				}
+
+				continue;
+			}
+
+			if !path.extension().is_some_and(|extension| extension == "xml") {
+				continue;
+			}
+
+			if dlc.is_some() && !is_dlc_addon_path(&path) {
+				continue;
+			}
+
+			if seen.insert(path.clone()) {
+				candidates.push((path, dlc.map(str::to_owned), mod_name.map(str::to_owned)));
+			}
+		}
+	}
+
+	/// Типы сокетов установки, которые принимает трак.
+	fn installed_addon_types(&self, truck: &str) -> Vec<String> {
+		let Ok(model) = self.open_truck(truck) else {
+			return Vec::new();
+		};
+
+		model
+			.game_data
+			.as_ref()
+			.map(|data| data.addon_sockets.as_slice())
+			.unwrap_or_default()
+			.iter()
+			.flat_map(|sockets| sockets.sockets.iter())
+			.flat_map(|socket| socket.names.value.clone().unwrap_or_default())
+			.collect()
+	}
+
+	/// Файл лежит внутри распакованных данных игры, DLC или мода.
+	pub fn is_game_file(&self, path: &Path) -> bool {
+		let Ok(path) = path.canonicalize() else {
+			return false;
+		};
+
+		[&self.dirs.classes, &self.dirs.dlc, &self.dirs.mods]
+			.iter()
+			.any(|root| root.canonicalize().is_ok_and(|root| path.starts_with(root)))
+	}
+
 	/// Открывает документ игры по папке внутри каталога классов и имени файла.
 	fn open(
 		&self,
@@ -427,6 +641,16 @@ impl GameFiles {
 		TruckAddon::from_document(&document, templates.as_ref())
 			.ok_or_else(|| GameError::NotFound(format!("{source}: элемент TruckAddon")))
 	}
+}
+
+/// Путь аддона внутри дерева DLC: каталог addons или <трак>_tuning.
+fn is_dlc_addon_path(path: &Path) -> bool {
+	let value = path.to_string_lossy().to_lowercase();
+
+	value.contains("\\addons\\")
+		|| value.contains("_tuning\\")
+		|| value.contains("/addons/")
+		|| value.contains("_tuning/")
 }
 
 /// Каталоги внутри каталога, по имени.

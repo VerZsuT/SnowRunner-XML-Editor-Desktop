@@ -9,6 +9,7 @@
 import { commands } from './bindings'
 import type {
 	AttrDescriptor,
+	Crane,
 	DocumentInfo,
 	DocumentKind,
 	Engine,
@@ -16,6 +17,7 @@ import type {
 	MutationResult,
 	SaveResult,
 	SuspensionSet,
+	Trailer,
 	Truck,
 	TruckAddon,
 	Wheel,
@@ -28,6 +30,9 @@ import { call } from './invoke'
 export interface DocumentClient {
 	/** Открывает документ и возвращает его в реестре. */
 	open(kind: DocumentKind, name: string, modName?: string | null): Promise<DocumentInfo>
+
+	/** Открывает документ по пути из списка аддонов. */
+	openAt(path: string): Promise<DocumentInfo>
 
 	/** Сведения об открытом документе. */
 	info(docId: string): Promise<DocumentInfo>
@@ -80,6 +85,15 @@ export interface DocumentClient {
 	/** Переставляет элемент среди одноимённых соседей. */
 	moveElement(docId: string, revision: number, selector: string, to: number): Promise<MutationResult>
 
+	/** Добавляет или убирает кран трака. */
+	setCrane(docId: string, revision: number, crane: Crane, enabled: boolean): Promise<MutationResult>
+
+	/** Добавляет или убирает прицеп трака. */
+	setTrailer(docId: string, revision: number, trailer: Trailer, enabled: boolean): Promise<MutationResult>
+
+	/** Добавляет или убирает кран «Банан бандита». */
+	setBanditCrane(docId: string, revision: number, enabled: boolean): Promise<MutationResult>
+
 	/** Сохраняет документ на диск. */
 	save(docId: string): Promise<SaveResult>
 
@@ -93,6 +107,7 @@ export interface DocumentClient {
 /** Клиент команд Tauri. */
 export const documentClient: DocumentClient = {
 	open: (kind, name, modName = null) => call(commands.openDocument(kind, name, modName ?? null)),
+	openAt: path => call(commands.openAddonDocument(path)),
 	info: docId => call(commands.documentInfo(docId)),
 	list: () => commands.listDocuments(),
 	dirty: () => commands.dirtyDocuments(),
@@ -110,6 +125,9 @@ export const documentClient: DocumentClient = {
 	addElement: (docId, revision, parent, name, index) => call(commands.addElement(docId, revision, parent, name, index)),
 	removeElement: (docId, revision, selector) => call(commands.removeElement(docId, revision, selector)),
 	moveElement: (docId, revision, selector, to) => call(commands.moveElement(docId, revision, selector, to)),
+	setCrane: (docId, revision, crane, enabled) => call(commands.setCrane(docId, revision, crane, enabled)),
+	setTrailer: (docId, revision, trailer, enabled) => call(commands.setTrailer(docId, revision, trailer, enabled)),
+	setBanditCrane: (docId, revision, enabled) => call(commands.setBanditCrane(docId, revision, enabled)),
 	save: docId => call(commands.saveDocument(docId)),
 	saveAll: () => call(commands.saveAllDocuments()),
 	reset: docId => call(commands.resetDocument(docId))
@@ -123,6 +141,14 @@ export class DocumentSession {
 
 	constructor(info: DocumentInfo, private readonly client: DocumentClient = documentClient) {
 		this.infoValue = info
+	}
+
+	/** Открывает документ по пути и создаёт сессию. */
+	static async openAt(
+		path: string,
+		client: DocumentClient = documentClient
+	) {
+		return new DocumentSession(await client.openAt(path), client)
 	}
 
 	/** Открывает документ и создаёт сессию. */
@@ -243,6 +269,21 @@ export class DocumentSession {
 	/** Переставляет элемент среди одноимённых соседей. */
 	moveElement(selector: string, to: number): Promise<MutationResult> {
 		return this.mutate(revision => this.client.moveElement(this.docId, revision, selector, to))
+	}
+
+	/** Добавляет или убирает кран трака. */
+	setCrane(crane: Crane, enabled: boolean): Promise<MutationResult> {
+		return this.mutate(revision => this.client.setCrane(this.docId, revision, crane, enabled))
+	}
+
+	/** Добавляет или убирает прицеп трака. */
+	setTrailer(trailer: Trailer, enabled: boolean): Promise<MutationResult> {
+		return this.mutate(revision => this.client.setTrailer(this.docId, revision, trailer, enabled))
+	}
+
+	/** Добавляет или убирает кран «Банан бандита». */
+	setBanditCrane(enabled: boolean): Promise<MutationResult> {
+		return this.mutate(revision => this.client.setBanditCrane(this.docId, revision, enabled))
 	}
 
 	/** Сохраняет документ на диск. */

@@ -4,6 +4,9 @@
 //! адресуются идентификатором docId, а мутации — ещё и ожидаемой версией
 //! revision, поэтому устаревшая правка не будет применена молча.
 
+use std::path::Path;
+
+use sxmle_app::actions::{Crane, Trailer};
 use sxmle_app::documents::{Document, DocumentInfo, DocumentKind, MutationResult, SaveResult};
 use sxmle_app::lists::EditedFile;
 use sxmle_domain::game::entities::{
@@ -36,6 +39,16 @@ pub fn open_document(
 	let mut documents = state.documents();
 
 	Ok(documents.open(&files, kind, &name)?)
+}
+
+/// Открывает аддон по пути из списка аддонов.
+#[tauri::command]
+#[specta::specta]
+pub fn open_addon_document(state: State<'_, AppState>, path: String) -> AppResult<DocumentInfo> {
+	let files = files(&state, None);
+	let mut documents = state.documents();
+
+	Ok(documents.open_at(&files, DocumentKind::Addon, Path::new(&path))?)
 }
 
 /// Сведения об открытом документе.
@@ -241,6 +254,50 @@ pub fn move_element(
 	let mut documents = state.documents();
 
 	Ok(documents.move_element(&doc_id, revision, &selector, to as usize)?)
+}
+
+/// Добавляет или убирает кран трака.
+#[tauri::command]
+#[specta::specta]
+pub fn set_crane(
+	state: State<'_, AppState>,
+	doc_id: String,
+	revision: u32,
+	crane: Crane,
+	enabled: bool,
+) -> AppResult<MutationResult> {
+	let mut documents = state.documents();
+
+	Ok(documents.set_crane(&doc_id, revision, crane, enabled)?)
+}
+
+/// Добавляет или убирает прицеп трака.
+#[tauri::command]
+#[specta::specta]
+pub fn set_trailer(
+	state: State<'_, AppState>,
+	doc_id: String,
+	revision: u32,
+	trailer: Trailer,
+	enabled: bool,
+) -> AppResult<MutationResult> {
+	let mut documents = state.documents();
+
+	Ok(documents.set_trailer(&doc_id, revision, trailer, enabled)?)
+}
+
+/// Добавляет или убирает кран «Банан бандита».
+#[tauri::command]
+#[specta::specta]
+pub fn set_bandit_crane(
+	state: State<'_, AppState>,
+	doc_id: String,
+	revision: u32,
+	enabled: bool,
+) -> AppResult<MutationResult> {
+	let mut documents = state.documents();
+
+	Ok(documents.set_bandit_crane(&doc_id, revision, enabled)?)
 }
 
 /// Сохраняет документ на диск в форматированном виде.
