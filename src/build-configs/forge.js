@@ -32,10 +32,10 @@ class ForgeConfig {
 				async prePackage() {
 					console.info('Change version')
 
-					const path = join(_dirname, '../modules/app/main/index.ts')
+					const path = join(_dirname, '../modules/app/constants.ts')
 					const constsData = String(await readFile(path))
 
-					await writeFile(path, constsData.replaceAll(/APP_VERSION =.*?\r\n/g, `APP_VERSION = '${version}'\r\n`))
+					await writeFile(path, constsData.replace(/readonly VERSION = '[^']*'/, `readonly VERSION = '${version}'`))
 				},
 				async postPackage(_, { outputPaths }) {
 					class Paths {

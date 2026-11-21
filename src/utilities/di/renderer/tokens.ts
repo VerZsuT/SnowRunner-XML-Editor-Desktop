@@ -9,7 +9,7 @@ import type { IRendererMods } from '@modules/data/modifications/types'
 import type { IRendererDialogs } from '@modules/dialogs/types'
 import type { IRendererDlc } from '@modules/dlcs/types'
 import type { IRendererEpf } from '@modules/epf/types'
-import type { IDirs, IFiles } from '@modules/files/types'
+import type { IDirs, IFiles, IFs } from '@modules/files/types'
 import type { IRendererGameTexts } from '@modules/game-texts/types'
 import type { IImages } from '@modules/images/types'
 import type { IRendererLoading } from '@modules/loading/types'
@@ -65,6 +65,9 @@ export const FILES_TOKEN = new InjectionToken<ConstructorOf<IFiles>>('IFiles')
 
 /** {@link IDirs} */
 export const DIRS_TOKEN = new InjectionToken<ConstructorOf<IDirs>>('IDirs')
+
+/** {@link IFs} */
+export const FS_TOKEN = new InjectionToken<ConstructorOf<IFs>>('IFs')
 
 /** {@link IRendererGameTexts} */
 export const GAME_TEXTS_TOKEN = new InjectionToken<ConstructorOf<IRendererGameTexts>>('IRendererGameTexts')

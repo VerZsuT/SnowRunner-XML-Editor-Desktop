@@ -81,6 +81,12 @@ export enum ErrorText {
 	 */
 	writeDirError = 'Error on writing into directory "{}"',
 
+	/**
+	 * Ошибка разбора JSON.
+	 * 1. Путь к файлу.
+	 */
+	readJsonError = 'Error on parsing JSON file "{}"',
+
 	/** Ошибка сохранения JSON. */
 	saveJsonError = 'Saving json error',
 

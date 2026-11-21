@@ -1,5 +1,6 @@
-import type { IFile } from '@modules/files/main'
+import type { IMainFile as IFile } from '@modules/files/main'
 import type { IRepository } from '@src/types'
+import { compareVersions } from '@utilities/strings/main'
 import { BaseArray } from '../base'
 import type { IArrayJSON, IBaseMainArray } from '../types'
 import { BaseMainArrayRepository } from './repository'
@@ -65,11 +66,11 @@ export abstract class BaseMainArray<Item, Extended = Item>
 	private getFromJSON(): Item[] {
 		const fromJson = this.repository.readSync()
 
-		if (!fromJson) {
+		if (!fromJson || !Array.isArray(fromJson.data)) {
 			return this.default
 		}
 
-		return fromJson.version < this.VERSION
+		return compareVersions(fromJson.version, this.VERSION) < 0
 			? this.convertToNewest(fromJson.data)
 			: fromJson.data
 	}

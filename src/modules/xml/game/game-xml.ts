@@ -1,7 +1,7 @@
 import type { IDirs, IFile } from '@modules/files/renderer'
 import { lastItem } from '@utilities/checks/renderer'
 import { di, inject } from '@utilities/di/container'
-import { DIRS_TOKEN, DLC_TOKEN } from '@utilities/di/renderer/tokens'
+import { DIRS_TOKEN, DLC_TOKEN, FS_TOKEN } from '@utilities/di/renderer/tokens'
 import type { AttrValue } from '../xml-element'
 import { XMLElement } from '../xml-element'
 import type { Limit } from './limit'
@@ -72,9 +72,7 @@ export class GameXML extends XMLElement {
 		return async (info: FileInfo): Promise<T[]> => {
 			const files = await filesGetter(info)
 
-			return (await Promise.all(
-				files.map(async file => this.fileElement(Class, async () => file)(info))
-			)).filter(Boolean) as T[]
+			return this.elementsFromFiles<T>(files, async data => await Class.from(data) as T | undefined)
 		}
 	}
 
@@ -91,9 +89,48 @@ export class GameXML extends XMLElement {
 			const file = await fileGetter(info)
 
 			if (file) {
-				return await Class.from(file) as T
+				const [element] = await this.elementsFromFiles<T>([file], async data => await Class.from(data) as T | undefined)
+
+				return element
 			}
 		}
+	}
+
+	/**
+	 * Прочитать пачку файлов одним запросом и создать из них элементы.
+	 * @param files Файлы.
+	 * @param create Создатель элемента из содержимого файла.
+	 * @returns Элементы.
+	 */
+	private async elementsFromFiles<T>(
+		files: IFile[],
+		create: (data: string) => Promise<T | undefined>
+	): Promise<T[]> {
+		if (!files.length) {
+			return []
+		}
+
+		const contents = await di.resolve(FS_TOKEN).readMany(files.map(file => file.path))
+
+		if (!contents.ok) {
+			return []
+		}
+
+		const result: T[] = []
+
+		for (const data of contents.value) {
+			if (data === null) {
+				continue
+			}
+
+			const element = await create(data)
+
+			if (element) {
+				result.push(element)
+			}
+		}
+
+		return result
 	}
 
 	/**

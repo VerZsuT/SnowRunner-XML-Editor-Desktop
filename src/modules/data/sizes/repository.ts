@@ -1,6 +1,6 @@
 import { ErrorText } from '@modules/errors/enums'
 import { ProgramError } from '@modules/errors/main'
-import type { IFiles } from '@modules/files/main'
+import type { IMainFiles as IFiles } from '@modules/files/main'
 import type { IRepository } from '@src/types'
 import { inject } from '@utilities/di/container'
 import { FILES_TOKEN } from '@utilities/di/main/tokens'

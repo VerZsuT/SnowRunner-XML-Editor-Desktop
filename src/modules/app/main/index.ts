@@ -1,7 +1,7 @@
 import { BuildType } from '@modules/data/config/enums'
 import type { IResettable } from '@src/types'
 import { di } from '@utilities/di/container'
-import { CONFIG_MANAGER_TOKEN, CONFIG_TOKEN, DIRS_TOKEN, EDITED_TOKEN, FAVORITES_TOKEN, FILES_TOKEN, MODS_TOKEN, SIZES_TOKEN } from '@utilities/di/main/tokens'
+import { CONFIG_MANAGER_TOKEN, CONFIG_TOKEN, DIRS_TOKEN, EDITED_TOKEN, FAVORITES_TOKEN, MODS_TOKEN, SIZES_TOKEN } from '@utilities/di/main/tokens'
 import { app, BrowserWindow } from 'electron'
 import type { IMainApp } from '../types'
 
@@ -19,7 +19,7 @@ export class App implements IMainApp {
 		const mods: IResettable = di.resolve(MODS_TOKEN)
 		const sizes: IResettable = di.resolve(SIZES_TOKEN)
 
-		await Promise.all([
+		const results = await Promise.allSettled([
 			this.clearTemp(),
 			config.reset(),
 			sizes.reset(),
@@ -28,14 +28,18 @@ export class App implements IMainApp {
 			mods.reset()
 		])
 
+		for (const result of results) {
+			if (result.status === 'rejected') {
+				console.error(result.reason)
+			}
+		}
+
 		this.reload()
 	}
 
 	async clearTemp() {
-		const files = di.resolve(FILES_TOKEN)
 		const dirs = di.resolve(DIRS_TOKEN)
 
-		await files.backupInitial.remove()
 		await dirs.mainTemp.clear()
 		await dirs.modsTemp.clear()
 		await dirs.updateTemp.clear()

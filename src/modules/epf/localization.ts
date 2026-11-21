@@ -14,5 +14,19 @@ export const EPF_LOCALIZATION = new Localization({
 		.ru('В данном файле находятся параметры следующих файлов:')
 		.en('This file contains the parameters of the following files:')
 		.de('Diese Datei enthält die Einstellungen der folgenden Dateien:')
-		.ch('该文件包含以下文件的参数')
+		.ch('该文件包含以下文件的参数'),
+
+	/** Ошибка чтения файла. */
+	readError: new LocalizationStrings()
+		.ru('Не удалось прочитать файл')
+		.en('Cannot read file')
+		.de('Datei konnte nicht gelesen werden')
+		.ch('无法读取文件'),
+
+	/** Ошибка записи файла. */
+	writeError: new LocalizationStrings()
+		.ru('Не удалось записать файл')
+		.en('Cannot write file')
+		.de('Datei konnte nicht geschrieben werden')
+		.ch('无法写入文件')
 })

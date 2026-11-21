@@ -1,6 +1,6 @@
 import { di } from '../container'
 import { PATHS_MANAGER_TOKEN } from '../main/tokens'
-import { APP_CONSTANTS_TOKEN, APP_TOKEN, ARCHIVER_TOKEN, BACKUP_TOKEN, CHECKS_TOKEN, CONFIG_MANAGER_TOKEN, CONFIG_TOKEN, DIALOGS_TOKEN, DIRS_TOKEN, DLC_TOKEN, EDITED_TOKEN, EPF_TOKEN, FAVORITES_TOKEN, FILES_TOKEN, GAME_TEXTS_TOKEN, IMAGES_TOKEN, LOADING_TOKEN, MESSAGES_TOKEN, MODS_TOKEN, PATHS_TOKEN, SYSTEM_TOKEN, UPDATES_TOKEN, WINDOWS_TOKEN } from './tokens'
+import { APP_CONSTANTS_TOKEN, APP_TOKEN, ARCHIVER_TOKEN, BACKUP_TOKEN, CHECKS_TOKEN, CONFIG_MANAGER_TOKEN, CONFIG_TOKEN, DIALOGS_TOKEN, DIRS_TOKEN, DLC_TOKEN, EDITED_TOKEN, EPF_TOKEN, FAVORITES_TOKEN, FILES_TOKEN, FS_TOKEN, GAME_TEXTS_TOKEN, IMAGES_TOKEN, LOADING_TOKEN, MESSAGES_TOKEN, MODS_TOKEN, PATHS_TOKEN, SYSTEM_TOKEN, UPDATES_TOKEN, WINDOWS_TOKEN } from './tokens'
 
 /** Зарегистрировать DI. */
 export async function registerDI() {
@@ -24,12 +24,13 @@ export async function registerDI() {
 	const { Updates } = await import('@modules/updates/renderer')
 	const { Windows } = await import('@modules/windows/renderer')
 	const { Images } = await import('@modules/images/renderer')
-	const { Dirs, Files } = await import('@modules/files/renderer')
+	const { Dirs, Files, Fs } = await import('@modules/files/renderer')
 
 	di.registerLazy(APP_CONSTANTS_TOKEN, () => new AppConstants())
 	di.registerLazy(PATHS_MANAGER_TOKEN, () => new Paths())
 	di.registerLazy(PATHS_TOKEN, () => di.resolve(PATHS_MANAGER_TOKEN).get())
 	di.registerLazy(SYSTEM_TOKEN, () => new System())
+	di.registerLazy(FS_TOKEN, () => new Fs())
 	di.registerLazy(FILES_TOKEN, () => new Files())
 	di.registerLazy(DIRS_TOKEN, () => new Dirs())
 	di.registerLazy(CONFIG_MANAGER_TOKEN, () => new Config())

@@ -26,7 +26,10 @@ export default defineConfig(forgeEnv => {
 				input: { general: getPagePath('general') },
 				output: {
 					manualChunks: undefined,
-					dir: '.vite/renderer'
+					dir: '.vite/renderer',
+					// Публичные имена сущностей моста строятся из имени класса (`@initMain`),
+					// поэтому минификация не должна переименовывать классы и функции.
+					keepNames: true
 				},
 				external: [...external, '**/main']
 			}

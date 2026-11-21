@@ -2,7 +2,7 @@ import type { IFile } from '@modules/files/renderer'
 import type { EditorFilesKey } from '@renderer/pages/general/store/editor'
 import { useEditorStore } from '@renderer/pages/general/store/editor'
 import debounce from 'debounce'
-import type { FSWatcher } from 'node:fs'
+import type { IWatcher } from '@modules/files/types'
 import { useEffect, useRef } from 'react'
 
 /** Слушатель изменения файлов. */
@@ -32,7 +32,7 @@ export function useFilesWatch(files: IFile[], listener: UpdateListener) {
 	listenerRef.current = listener
 
 	useEffect(() => {
-		const watchers: FSWatcher[] = []
+		const watchers: IWatcher[] = []
 		const watchListener = debounce((event: string, fileName: string | null) => {
 			if (!useEditorStore.getState().isSaving) {
 				void listenerRef.current(event, fileName)

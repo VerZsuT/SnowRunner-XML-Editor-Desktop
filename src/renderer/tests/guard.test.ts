@@ -1,5 +1,5 @@
+import { basename, extname, join, relative } from 'node:path'
 import { readdirSync, readFileSync } from 'node:fs'
-import { extname, join, relative } from 'node:path'
 import { describe, expect, it } from 'vitest'
 
 /** Папка с исходниками (Vitest запускается из корня проекта). */
@@ -12,7 +12,22 @@ const FORBIDDEN_PACKAGES = ['vue', 'ant-design-vue', 'pinia', 'vue-tsc']
 const CODE_EXTENSIONS = new Set(['.ts', '.tsx', '.js', '.jsx', '.mjs', '.cjs'])
 
 /** Спецификаторы импортов: `from`, `import()`, `require()` и `import '...'`. */
-const IMPORT_SPECIFIER = /(?:from\s*|import\s*\(\s*|require\s*\(\s*|import\s+)['"]([^'"]+)['"]/g
+const IMPORT_SPECIFIER = /(from\s*|import\s*\(\s*|require\s*\(\s*|import\s+)['"]([^'"]+)['"]/g
+
+/** Импорт из файла. */
+interface ImportInfo {
+	/** Спецификатор. */
+	specifier: string
+
+	/** Номер строки. */
+	line: number
+
+	/** Импорт только типа. */
+	isTypeOnly: boolean
+
+	/** Динамический импорт. */
+	isDynamic: boolean
+}
 
 /** Рекурсивно собрать файлы. */
 function walk(dir: string): string[] {
@@ -30,24 +45,47 @@ function toRelative(path: string) {
 	return relative(SRC_DIR, path).replaceAll('\\', '/')
 }
 
-/** Найти в файле импорты Vue-пакетов. */
-function findVueImports(file: string) {
-	const violations: string[] = []
+/**
+ * Тестовый файл: в тестах Node разрешён.
+ * @param path Путь к файлу.
+ * @returns Является ли файл тестом.
+ */
+function isTestFile(path: string) {
+	return /\.test\.[tj]sx?$/.test(path)
+}
+
+/** Найти импорты в файле. */
+function findImports(file: string): ImportInfo[] {
+	const result: ImportInfo[] = []
 
 	readFileSync(file, 'utf8').split('\n').forEach((line, index) => {
 		for (const match of line.matchAll(IMPORT_SPECIFIER)) {
-			const specifier = match[1]
-			const pkg = FORBIDDEN_PACKAGES.find(item => (
-				specifier === item || specifier.startsWith(`${item}/`)
-			))
-
-			if (pkg) {
-				violations.push(`${toRelative(file)}:${index + 1}: импорт "${specifier}"`)
-			}
+			result.push({
+				specifier: match[2],
+				line: index + 1,
+				isTypeOnly: /\bimport\s+type\b/.test(line),
+				isDynamic: match[1].includes('(')
+			})
 		}
 	})
 
-	return violations
+	return result
+}
+
+/** Найти в файле импорты Vue-пакетов. */
+function findVueImports(file: string) {
+	return findImports(file)
+		.filter(({ specifier }) => FORBIDDEN_PACKAGES.some(item => (
+			specifier === item || specifier.startsWith(`${item}/`)
+		)))
+		.map(({ specifier, line }) => `${toRelative(file)}:${line}: импорт "${specifier}"`)
+}
+
+/** Проверить, что файл не тянет Node и fast-fs. */
+function findNodeImports(file: string) {
+	return findImports(file)
+		.filter(({ specifier }) => specifier.startsWith('node:') || specifier === 'fast-fs')
+		.map(({ specifier, line }) => `${toRelative(file)}:${line}: импорт "${specifier}"`)
 }
 
 describe('миграционный guard: следы Vue', () => {
@@ -68,5 +106,66 @@ describe('миграционный guard: следы Vue', () => {
 			violations,
 			`Миграция Vue -> React не завершена, найдены следы Vue:\n${violations.join('\n')}`
 		).toEqual([])
+	})
+})
+
+describe('sandbox guard: renderer без Node и fast-fs', () => {
+	it('в renderer-исходниках нет импортов node: и fast-fs', () => {
+		const files = [
+			...walk(join(SRC_DIR, 'renderer')).filter(file => !toRelative(file).startsWith('renderer/tests/') && !isTestFile(file)),
+			...walk(join(SRC_DIR, 'modules')).filter(file => basename(file) === 'renderer.ts')
+		]
+		const violations = files
+			.filter(file => CODE_EXTENSIONS.has(extname(file)))
+			.flatMap(findNodeImports)
+
+		expect(
+			violations,
+			`Renderer не должен работать с Node напрямую:\n${violations.join('\n')}`
+		).toEqual([])
+	})
+
+	it('в renderer нет runtime-импортов main-модулей', () => {
+		const files = walk(join(SRC_DIR, 'renderer'))
+			.filter(file => !toRelative(file).startsWith('renderer/tests/'))
+			.filter(file => CODE_EXTENSIONS.has(extname(file)))
+		const violations = files
+			.flatMap(file => findImports(file).map(importInfo => ({ file, ...importInfo })))
+			.filter(({ specifier }) => /^@modules\/.+\/main(\/|$)/.test(specifier))
+			.filter(({ isTypeOnly }) => !isTypeOnly)
+			.map(({ file, specifier, line }) => `${toRelative(file)}:${line}: импорт "${specifier}"`)
+
+		expect(
+			violations,
+			`Renderer не должен импортировать main-модули в runtime:\n${violations.join('\n')}`
+		).toEqual([])
+	})
+
+	it('preload импортирует только electron и emr-bridge', () => {
+		const file = join(SRC_DIR, 'renderer/preload.ts')
+		const violations = findImports(file)
+			.filter(({ specifier }) => !(specifier === 'electron' || specifier.startsWith('emr-bridge/')))
+			.map(({ specifier, line }) => `${toRelative(file)}:${line}: импорт "${specifier}"`)
+
+		expect(
+			violations,
+			`Preload запускается в sandbox и может импортировать только electron и emr-bridge:\n${violations.join('\n')}`
+		).toEqual([])
+	})
+
+	it('production-сборка renderer сохраняет имена классов для моста', () => {
+		const source = readFileSync(join(SRC_DIR, 'build-configs/vite.renderer.config.ts'), 'utf8')
+
+		// Имена сущностей моста строятся из имени класса, иначе окно остаётся пустым.
+		expect(source).toContain('keepNames: true')
+	})
+
+	it('окно создаётся с включённой изоляцией и sandbox', () => {
+		const source = readFileSync(join(SRC_DIR, 'modules/windows/main/index.ts'), 'utf8')
+
+		expect(source).toContain('contextIsolation: true')
+		expect(source).toContain('sandbox: true')
+		expect(source).toContain('nodeIntegration: false')
+		expect(source).toContain('webviewTag: false')
 	})
 })

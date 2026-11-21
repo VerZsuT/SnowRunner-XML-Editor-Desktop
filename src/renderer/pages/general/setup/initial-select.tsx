@@ -30,14 +30,14 @@ export function InitialSelect({ onChange }: InitialSelectProps) {
 	}
 
 	async function onFileClick() {
-		const selected = getInitialPak()
+		const selected = await getInitialPak()
 
 		if (selected) {
 			onChange?.(selected)
 		}
 	}
 
-	function getInitialPak(): IFile | undefined {
+	async function getInitialPak(): Promise<IFile | undefined> {
 		const selectedPath = dialogs.getInitial()
 
 		if (!selectedPath) {
@@ -46,7 +46,7 @@ export function InitialSelect({ onChange }: InitialSelectProps) {
 
 		const selectedFile = files.newFile(selectedPath)
 
-		if (selectedFile.basename() !== 'initial.pak' || !selectedFile.existsSync()) {
+		if (selectedFile.basename() !== 'initial.pak' || !await selectedFile.exists()) {
 			messages.error(texts.invalidInitialError)
 
 			return

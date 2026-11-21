@@ -11,7 +11,7 @@ import type { IMainDialogs } from '@modules/dialogs/types'
 import type { IMainDlc } from '@modules/dlcs/types'
 import type { IEnv } from '@modules/env/types'
 import type { IMainEpf } from '@modules/epf/types'
-import type { IDirs, IFiles } from '@modules/files/types'
+import type { IMainDirs, IMainFiles } from '@modules/files/types'
 import type { IMainGameTexts } from '@modules/game-texts/types'
 import type { IMainLoading } from '@modules/loading/types'
 import type { IMainMessages } from '@modules/messages/types'
@@ -68,11 +68,11 @@ export const DLC_TOKEN = new InjectionToken<ConstructorOf<IMainDlc>>('IMainDlc')
 /** {@link IMainEpf} */
 export const EPF_TOKEN = new InjectionToken<ConstructorOf<IMainEpf>>('IMainEpf')
 
-/** {@link IFiles} */
-export const FILES_TOKEN = new InjectionToken<ConstructorOf<IFiles>>('IFiles')
+/** {@link IMainFiles} */
+export const FILES_TOKEN = new InjectionToken<ConstructorOf<IMainFiles>>('IMainFiles')
 
-/** {@link IDirs} */
-export const DIRS_TOKEN = new InjectionToken<ConstructorOf<IDirs>>('IDirs')
+/** {@link IMainDirs} */
+export const DIRS_TOKEN = new InjectionToken<ConstructorOf<IMainDirs>>('IMainDirs')
 
 /** {@link IMainGameTexts} */
 export const GAME_TEXTS_TOKEN = new InjectionToken<ConstructorOf<IMainGameTexts>>('IMainGameTexts')

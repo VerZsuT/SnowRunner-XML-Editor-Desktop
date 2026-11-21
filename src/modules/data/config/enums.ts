@@ -33,8 +33,10 @@ export function strToLang(str?: string): Lang | undefined {
 		return
 	}
 
+	const normalized = str.toUpperCase()
+
 	for (const value of Object.values(Lang)) {
-		if (str === value) {
+		if (normalized === value) {
 			return value
 		}
 	}
@@ -52,6 +54,10 @@ export function localeToLang(locale?: string): Lang | undefined {
 	}
 
 	const langStr = locale.toLowerCase()
+
+	if (langStr.startsWith('zh')) {
+		return Lang.ch
+	}
 
 	for (const value of Object.values(Lang)) {
 		if (langStr.includes(value.toLowerCase())) {

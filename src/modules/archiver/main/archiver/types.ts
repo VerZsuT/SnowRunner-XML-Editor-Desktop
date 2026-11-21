@@ -1,4 +1,4 @@
-import type { IDir, IFile } from '@modules/files/types'
+import type { IMainDir as IDir, IMainFile as IFile } from '@modules/files/types'
 
 /** Архиватор (системный). */
 export interface ISystemArchiver {

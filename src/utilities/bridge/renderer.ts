@@ -3,7 +3,28 @@ import { Bridge } from 'emr-bridge/renderer'
 import { proxy, snapshot, subscribe } from 'valtio/vanilla'
 import { getPublicName } from './helpers'
 
-const bridge = Bridge.as<object>()
+/** Лениво созданный мост main-renderer. */
+let bridgeInstance: MainBridge | undefined
+
+/** Мост main-renderer. */
+type MainBridge = ReturnType<typeof createBridge>
+
+/**
+ * Получить мост main-renderer.
+ * Создаётся лениво, чтобы импорт модуля не падал без предоставленного провайдера.
+ * @returns Мост main-renderer.
+ */
+export function getBridge(): MainBridge {
+	return bridgeInstance ??= createBridge()
+}
+
+/**
+ * Создать мост main-renderer.
+ * @returns Мост main-renderer.
+ */
+function createBridge() {
+	return Bridge.as<object>()
+}
 
 /** Название свойства с main методами. */
 const MAIN_METHODS_PROPERTY = Symbol('main methods')
@@ -57,13 +78,13 @@ export function initMain() {
 				for (const { name } of getMainMethods(this)) {
 					const publicName = getPublicName(className, name)
 
-					this[name] = (...args: any[]) => bridge[publicName](...args)
+					this[name] = (...args: any[]) => getBridge()[publicName](...args)
 				}
 
 				for (const {name} of getMainFields(this)) {
 					const publicName = getPublicName(className, name)
 
-					withUpdateFromMain(this, name, () => this[name] = bridge[publicName])
+					withUpdateFromMain(this, name, () => this[name] = getBridge()[publicName])
 					onMainChangeEvent(publicName, value => {
 						withUpdateFromMain(this, name, () => this[name] = value)
 					})
@@ -221,7 +242,7 @@ function getChangeHandler(target: any, className?: string): ChangeHandler {
  * @param value Значение поля.
  */
 function emitRendererChangeEvent(name: string, value: any): void {
-	bridge.emit(`${name}/renderer-change-event`, value)
+	getBridge().emit(`${name}/renderer-change-event`, value)
 }
 
 /**
@@ -231,7 +252,7 @@ function emitRendererChangeEvent(name: string, value: any): void {
  * @returns Функция отписки.
  */
 function onMainChangeEvent(name: string, handler: (value: any) => void): EventUnsubscribe {
-	return bridge.on(`${name}/main-change-event`, handler)
+	return getBridge().on(`${name}/main-change-event`, handler)
 }
 
 /**

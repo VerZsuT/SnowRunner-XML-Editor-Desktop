@@ -1,6 +1,6 @@
 import { ErrorText } from '@modules/errors/enums'
 import { ProgramError } from '@modules/errors/main'
-import type { IFile } from '@modules/files/types'
+import type { IMainFile as IFile } from '@modules/files/types'
 import type { IRepository } from '@src/types'
 import type { IArrayJSON } from '../types'
 

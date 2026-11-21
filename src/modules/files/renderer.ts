@@ -1,28 +1,146 @@
 import { ProgramError } from '@modules/errors/renderer'
 import type { IPaths } from '@modules/paths/renderer'
 import type { XMLElement } from '@modules/xml/renderer'
+import { getBridge, initMain, mainMethod } from '@utilities/bridge/renderer'
 import { di, inject } from '@utilities/di/container'
-import { DIRS_TOKEN } from '@utilities/di/main/tokens'
-import { CONFIG_TOKEN, PATHS_TOKEN } from '@utilities/di/renderer/tokens'
-import type CP from 'node:child_process'
-import type FS from 'node:fs'
-import type { WatchListener } from 'node:fs'
-import type FSP from 'node:fs/promises'
-import type PATH from 'node:path'
+import { CONFIG_TOKEN, DIRS_TOKEN, FS_TOKEN, PATHS_TOKEN } from '@utilities/di/renderer/tokens'
+import { basename, dirname, extname, joinPath } from '@utilities/paths/renderer'
 import { ErrorText } from '../errors/enums'
-import type { ICheckResult, IDir, IDirs, IFile, IFiles, IFindDirsArgs, IFindFilesArgs, IFSEntry } from './types'
+import type { FsFailure, FsResult, IDir, IDirs, IFile, IFiles, IFindDirsArgs, IFindFilesArgs, IFs, IFSEntry, IWatcher, IWatcherEvent, WatcherListener } from './types'
+
 export type * from './types'
 
-const {
-	cp: { execFile, execSync },
-	fs: { watch, existsSync, lstatSync, rmSync, readFileSync, accessSync, mkdirSync, writeFileSync },
-	fsp: { access, chmod, constants, copyFile, lstat, readdir, rename, writeFile },
-	path: { basename, dirname, extname, join }
-} = window['fast-fs'] as {
-	cp: typeof CP
-	fs: typeof FS
-	fsp: typeof FSP
-	path: typeof PATH
+/** Клиент файловой системы из main процесса. [renderer] */
+@initMain()
+export class Fs implements IFs {
+	@mainMethod()
+	list!: IFs['list']
+
+	@mainMethod()
+	scan!: IFs['scan']
+
+	@mainMethod()
+	stat!: IFs['stat']
+
+	@mainMethod()
+	readFile!: IFs['readFile']
+
+	@mainMethod()
+	readMany!: IFs['readMany']
+
+	@mainMethod()
+	writeFile!: IFs['writeFile']
+
+	@mainMethod()
+	writeMany!: IFs['writeMany']
+
+	@mainMethod()
+	makeDir!: IFs['makeDir']
+
+	@mainMethod()
+	remove!: IFs['remove']
+
+	@mainMethod()
+	move!: IFs['move']
+
+	@mainMethod()
+	copy!: IFs['copy']
+
+	@mainMethod()
+	chmod!: IFs['chmod']
+
+	@mainMethod()
+	watch!: IFs['watch']
+
+	@mainMethod()
+	unwatch!: IFs['unwatch']
+}
+
+/** Слушатели событий наблюдения по идентификаторам. */
+const watcherListeners = new Map<string, Set<WatcherListener>>()
+
+/** Отписка от события наблюдения из main процесса. */
+let watcherSubscription: (() => void) | undefined
+
+/**
+ * Получить клиент файловой системы.
+ * @returns Клиент файловой системы.
+ */
+function fsClient(): IFs {
+	return di.resolve(FS_TOKEN)
+}
+
+/**
+ * Развернуть результат операции.
+ * @param result Результат операции.
+ * @param text Текст ошибки.
+ * @param formatArgs Аргументы для вставки.
+ * @returns Значение результата.
+ */
+function unwrap<T>(result: FsResult<T>, text: ErrorText, ...formatArgs: string[]): T {
+	if (result.ok) {
+		return result.value
+	}
+
+	throw createError(result.error, text, ...formatArgs)
+}
+
+/**
+ * Создать ошибку программы из ошибки файловой системы.
+ * @param error Ошибка файловой системы.
+ * @param text Текст ошибки.
+ * @param formatArgs Аргументы для вставки.
+ * @returns Ошибка программы.
+ */
+function createError(error: FsFailure, text: ErrorText, ...formatArgs: string[]): ProgramError {
+	return new ProgramError(text, new Error(`[${error.code}] ${error.message}`), ...formatArgs)
+}
+
+/** Подписаться на события наблюдения из main процесса. */
+function subscribeWatcherEvents() {
+	if (watcherSubscription) {
+		return
+	}
+
+	watcherSubscription = getBridge().on<IWatcherEvent>('Fs/watch', event => {
+		const listeners = watcherListeners.get(event.id)
+
+		if (listeners) {
+			for (const listener of listeners) {
+				listener(event.event, event.filename)
+			}
+		}
+	})
+}
+
+/**
+ * Создать наблюдатель за файлом.
+ * @param path Путь к файлу.
+ * @param listener Обработчик изменения.
+ * @returns Наблюдатель.
+ */
+function createWatcher(path: string, listener: WatcherListener): IWatcher {
+	const id = unwrap(fsClient().watch(path), ErrorText.readFileError, path)
+	const listeners = new Set<WatcherListener>([listener])
+	let closed = false
+
+	watcherListeners.set(id, listeners)
+	subscribeWatcherEvents()
+
+	return {
+		close() {
+			if (closed) {
+				return
+			}
+
+			closed = true
+			watcherListeners.delete(id)
+			fsClient().unwatch(id)
+		},
+		removeAllListeners() {
+			listeners.clear()
+		}
+	}
 }
 
 /** Сущность в файловой системе. [renderer] */
@@ -31,7 +149,7 @@ export class FSEntry implements IFSEntry {
 
 	constructor(...partsToJoin: string[]) {
 		if (partsToJoin.length) {
-			this.path = join(...partsToJoin)
+			this.path = joinPath(...partsToJoin)
 		}
 	}
 
@@ -48,36 +166,7 @@ export class FSEntry implements IFSEntry {
 	}
 
 	async exists(): Promise<boolean> {
-		return this.existsSync()
-	}
-
-	existsSync(): boolean {
-		return existsSync(this.path)
-	}
-
-	async hasPermissions(): Promise<boolean> {
-		if (!await this.exists()) {
-			return false
-		}
-
-		const readResult = await this.canRead()
-		const writeResult = await this.canWrite()
-
-		if (!readResult.result) {
-			throw new ProgramError(ErrorText.readFileError, readResult.error, this.path)
-		} else if (!writeResult.result) {
-			throw new ProgramError(ErrorText.writeFileError, writeResult.error, this.path)
-		}
-
-		return true
-	}
-
-	canRead() {
-		return canRead(this.path)
-	}
-
-	canWrite() {
-		return canWrite(this.path)
+		return unwrap(await fsClient().stat(this.path), ErrorText.readFileError, this.path) !== null
 	}
 
 	asFile() {
@@ -88,40 +177,16 @@ export class FSEntry implements IFSEntry {
 		return new Dir(this.path)
 	}
 
-	async chmod(mod: number) {
-		return chmod(this.path, mod)
-	}
-
 	async isDir(): Promise<boolean> {
-		return this.isDirSync()
-	}
-
-	isDirSync(): boolean {
-		return lstatSync(this.path).isDirectory()
+		return unwrap(await fsClient().stat(this.path), ErrorText.readFileError, this.path)?.kind === 'dir'
 	}
 
 	async isFile(): Promise<boolean> {
-		return (await lstat(this.path)).isFile()
+		return unwrap(await fsClient().stat(this.path), ErrorText.readFileError, this.path)?.kind === 'file'
 	}
 
 	async remove() {
-		return this.removeSync()
-	}
-
-	removeSync() {
-		if (!this.existsSync()) {
-			return
-		}
-
-		try {
-			if (this.isDirSync()) {
-				execSync(`rmdir /s /q "${this.path}"`)
-			} else {
-				rmSync(this.path, { maxRetries: 5, retryDelay: 100 })
-			}
-		} catch (error: any) {
-			throw new ProgramError(ErrorText.removeError, error, this.path)
-		}
+		unwrap(await fsClient().remove(this.path), ErrorText.removeError, this.path)
 	}
 
 	async move(path: string): Promise<void>
@@ -131,11 +196,7 @@ export class FSEntry implements IFSEntry {
 			? arg.path
 			: arg as string
 
-		try {
-			await rename(this.path, path)
-		} catch (error: any) {
-			throw new ProgramError(ErrorText.moveError, error, this.path, path)
-		}
+		unwrap(await fsClient().move(this.path, path), ErrorText.moveError, this.path, path)
 	}
 
 	async rename(entry: IFSEntry): Promise<void>
@@ -144,11 +205,10 @@ export class FSEntry implements IFSEntry {
 		const newName = arg instanceof FSEntry
 			? arg.basename()
 			: arg as string
+		const result = await fsClient().move(this.path, joinPath(this.dirname, newName))
 
-		try {
-			await this.move(join(this.dirname, newName))
-		} catch (error: any) {
-			throw new ProgramError(ErrorText.renameError, error, this.basename(), newName)
+		if (!result.ok) {
+			throw createError(result.error, ErrorText.renameError, this.basename(), newName)
 		}
 	}
 }
@@ -160,43 +220,34 @@ export class Dir extends FSEntry implements IDir {
 	}
 
 	dir(...path: string[]) {
-		return new Dir(join(this.path, join(...path)))
+		return new Dir(joinPath(this.path, ...path))
 	}
 
 	file(...path: string[]) {
-		return new File(join(this.path, join(...path)))
+		return new File(joinPath(this.path, ...path))
 	}
 
 	entry(...path: string[]) {
-		return new FSEntry(join(this.path, join(...path)))
+		return new FSEntry(joinPath(this.path, ...path))
 	}
 
 	async read(): Promise<FSEntry[]> {
-		if (!await this.exists()) {
-			return []
+		const result = await fsClient().list(this.path)
+
+		if (!result.ok) {
+			// Отсутствующая папка — как и раньше, пустой результат.
+			if (result.error.code === 'ENOENT') {
+				return []
+			}
+
+			throw createError(result.error, ErrorText.readDirError, this.path)
 		}
 
-		try {
-			return (await readdir(this.path)).map(name => this.entry(name))
-		} catch (error: any) {
-			throw new ProgramError(ErrorText.readDirError, error, this.path)
-		}
+		return result.value.map(info => this.entry(info.name))
 	}
 
 	async make() {
-		return this.makeSync()
-	}
-
-	makeSync() {
-		if (this.existsSync()) {
-			return
-		}
-
-		try {
-			mkdirSync(this.path, { recursive: true })
-		} catch (error: any) {
-			throw new ProgramError(ErrorText.makeDirError, error, this.path)
-		}
+		unwrap(await fsClient().makeDir(this.path), ErrorText.makeDirError, this.path)
 	}
 
 	async clear() {
@@ -206,64 +257,34 @@ export class Dir extends FSEntry implements IDir {
 
 	async findFiles(args: IFindFilesArgs): Promise<File[]> {
 		const { ext, name, recursive } = args
-		const result: File[] = []
 
 		if (!name && !ext) {
 			return []
 		}
 
-		for (const entry of await this.read()) {
-			if (await entry.isDir() && recursive) {
-				result.push(...await entry.asDir().findFiles(args))
+		const found = unwrap(
+			await fsClient().scan(this.path, { ext, name, recursive, kind: 'files' }),
+			ErrorText.readDirError,
+			this.path
+		)
 
-				continue
-			}
-
-			const file = entry.asFile()
-
-			if (file.name === name || (ext && file.isExt(ext))) {
-				result.push(file)
-			}
-		}
-
-		return result
+		return found.map(info => new File(info.path))
 	}
 
 	async findDirs(args: IFindDirsArgs): Promise<Dir[]> {
 		const { name, recursive } = args
-		const result: Dir[] = []
+		const found = unwrap(
+			await fsClient().scan(this.path, { name, recursive, kind: 'dirs' }),
+			ErrorText.readDirError,
+			this.path
+		)
 
-		for (const entry of await this.read()) {
-			if (await entry.isFile()) {
-				continue
-			}
-
-			const dir = entry.asDir()
-
-			if (dir.name === name) {
-				result.push(dir)
-			}
-
-			if (recursive) {
-				result.push(...await dir.findDirs(args))
-			}
-		}
-
-		return result
+		return found.map(info => new Dir(info.path))
 	}
 }
 
 /** Файл в файловой системе. [renderer] */
 export class File extends FSEntry implements IFile {
-	writeToJSONSync<T extends object>(obj: T): Promise<void> {
-		throw new Error('Method not implemented.')
-	}
-	readFromJSONSync<T extends object = any>(): T {
-		throw new Error('Method not implemented.')
-	}
-	removeSync(): void {
-		throw new Error('Method not implemented.')
-	}
 	get extname() {
 		return extname(this.path)
 	}
@@ -272,40 +293,35 @@ export class File extends FSEntry implements IFile {
 		return basename(this.path, this.extname)
 	}
 
-	isExt(extension: string) {
-		return this.extname.split('.')[1] === extension
+	isExt(extension: string): boolean {
+		const normalized = String(extension ?? '').replace(/^\./, '').toLowerCase()
+
+		return normalized.length > 0
+			&& this.extname.toLowerCase() === `.${normalized}`
 	}
 
-	watch(listener: WatchListener<string>) {
-		return watch(this.path, { persistent: false }, listener)
-	}
-
-	async exec() {
-		const execResult = await canExecute(this.path)
-
-		if (!execResult.result) {
-			throw new ProgramError(ErrorText.executeFileError, execResult.error, this.path)
-		}
-
-		return execFile(this.path)
+	watch(listener: WatcherListener): IWatcher {
+		return createWatcher(this.path, listener)
 	}
 
 	async getSize(): Promise<number> {
-		return (await lstat(this.path)).size
+		const info = unwrap(await fsClient().stat(this.path), ErrorText.readFileError, this.path)
+
+		if (!info) {
+			throw new ProgramError(ErrorText.readFileError, undefined, this.path)
+		}
+
+		return info.size
 	}
 
 	async read(encoding?: BufferEncoding): Promise<string> {
-		return this.readSync(encoding)
+		return unwrap(await fsClient().readFile(this.path, encoding), ErrorText.readFileError, this.path)
 	}
 
-	readSync(encoding?: BufferEncoding): string {
-		const readResult = canReadSync(this.path)
-
-		if (!readResult.result) {
-			throw new ProgramError(ErrorText.readFileError, readResult.error, this.path)
-		}
-
-		return readFileSync(this.path, { encoding }).toString()
+	async readFromJSON<T extends object = any>(): Promise<T> {
+		// Ошибку разбора JSON не оборачиваем в ProgramError: вызывающий код
+		// показывает своё сообщение и не должен получать второе.
+		return <T>JSON.parse(await this.read())
 	}
 
 	async readFromXML(): Promise<XMLElement | undefined> {
@@ -313,55 +329,30 @@ export class File extends FSEntry implements IFile {
 			.XMLElement.from(await this.read())
 	}
 
-	async readFromJSON<T extends object = object>() {
-		return <T>JSON.parse(await this.read())
+	async write(data: string): Promise<void> {
+		unwrap(await fsClient().writeFile(this.path, data), ErrorText.writeFileError, this.path)
 	}
 
-	async write(data: string, encoding?: BufferEncoding) {
-		await this.make()
-
-		const writeResult = await canWrite(this.path)
-
-		if (!writeResult.result) {
-			throw new ProgramError(ErrorText.writeFileError, writeResult.error, this.path)
-		}
-
-		await writeFile(this.path, data, encoding)
+	async writeToJSON<T extends object>(obj: T): Promise<void> {
+		await this.write(JSON.stringify(obj, undefined, '\t'))
 	}
 
-	async writeToJSON(data: any) {
-		await this.write(JSON.stringify(data, undefined, '\t'))
-	}
-
-	async copyTo(file: IFSEntry): Promise<void>
+	async copyTo(entry: IFSEntry): Promise<void>
 	async copyTo(path: string): Promise<void>
 	async copyTo(arg: string | IFSEntry): Promise<void> {
 		const path = arg instanceof FSEntry
 			? arg.path
 			: arg as string
 
-		try {
-			await copyFile(this.path, path)
-		} catch (error: any) {
-			throw new ProgramError(ErrorText.copyFileError, error, this.path, path)
-		}
+		unwrap(await fsClient().copy(this.path, path), ErrorText.copyFileError, this.path, path)
 	}
 
-	async make() {
-		return this.makeSync()
-	}
-
-	makeSync() {
-		if (this.existsSync()) {
+	async make(): Promise<void> {
+		if (await this.exists()) {
 			return
 		}
 
-		try {
-			this.root.makeSync()
-			writeFileSync(this.path, '')
-		} catch (error: any) {
-			throw new ProgramError(ErrorText.makeFileError, error, this.path)
-		}
+		unwrap(await fsClient().writeFile(this.path, ''), ErrorText.makeFileError, this.path)
 	}
 
 	async clear() {
@@ -441,71 +432,5 @@ export class Files implements IFiles {
 
 	get backupInitialWithDate() {
 		return new File(this.paths.backupInitialWithDate)
-	}
-}
-
-/**
- * Проверить можно ли прочитать по пути.
- * @param path Путь.
- * @returns Можно ли прочитать по пути.
- */
-async function canRead(path: string): Promise<ICheckResult> {
-	return canReadSync(path)
-}
-
-/**
- * Проверить можно ли прочитать по пути.
- * @param path Путь.
- * @returns Можно ли прочитать по пути.
- */
-function canReadSync(path: string): ICheckResult {
-	try {
-		accessSync(path, constants.R_OK)
-		return { result: true }
-	} catch (error: any) {
-		return {
-			result: false,
-			error
-		}
-	}
-}
-
-/**
- * Проверить можно ли записать по пути.
- * @param path Путь.
- * @returns Можно ли записать по пути.
- */
-async function canWrite(path: string): Promise<ICheckResult> {
-	return canWriteSync(path)
-}
-
-/**
- * Проверить можно ли записать по пути.
- * @param path Путь.
- * @returns Можно ли записать по пути.
- */
-function canWriteSync(path: string): ICheckResult {
-	try {
-		accessSync(path, constants.W_OK)
-		return { result: true }
-	} catch (error: any) {
-		return { result: false, error }
-	}
-}
-
-/**
- * Проверить можно ли исполнить по пути.
- * @param path Путь.
- * @returns Можно ли исполнить по пути.
- */
-async function canExecute(path: string): Promise<ICheckResult> {
-	try {
-		await access(path, constants.X_OK)
-		return { result: true }
-	} catch (error: any) {
-		return {
-			result: false,
-			error
-		}
 	}
 }

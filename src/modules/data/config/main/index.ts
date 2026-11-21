@@ -1,10 +1,10 @@
 import { makeReactive } from '@bridge/main'
 import type { IEnv } from '@modules/env/types'
-import type { IDirs } from '@modules/files/main'
+import type { IMainDirs as IDirs } from '@modules/files/main'
 import type { IMainSystem } from '@modules/system/types'
-import { isNullable } from '@utilities/checks/main'
 import { di, inject } from '@utilities/di/container'
 import { APP_CONSTANTS_TOKEN, DIRS_TOKEN, ENV_TOKEN, SYSTEM_TOKEN } from '@utilities/di/main/tokens'
+import { compareVersions } from '@utilities/strings/main'
 import { BuildType, Lang, strToLang } from '../enums'
 import type { IConfig, IMainConfigManager } from '../types'
 import { ConfigRepository } from './repository'
@@ -87,9 +87,10 @@ export class Config implements IMainConfigManager {
 
 	/** Установить конфигурацию. */
 	set(newObject: Partial<IConfig>) {
-		for (const key in newObject) {
-			this.object[key] = newObject[key]
-		}
+		this.object = this.sanitize({
+			...this.object,
+			...newObject
+		})
 	}
 
 	async reset() {
@@ -113,28 +114,57 @@ export class Config implements IMainConfigManager {
 	 * @returns Объект конфигурации.
 	 */
 	private getFromJSON(): IConfig {
-		let config = this.repository.readSync()
+		const config = this.repository.readSync()
 
-		if (!config) {
+		if (!config || typeof config !== 'object') {
 			return this.default
 		}
 
-		if (config.version === this.default.version) {
-			config = { ...this.default, ...config }
-		} else if (config.version < this.default.version) {
-			config = this.convertToNewest(config)
+		const versionComparison = compareVersions(config.version, this.default.version)
+
+		if (versionComparison > 0) {
+			return this.default
+		}
+
+		if (versionComparison < 0) {
 			this.dirs.mainTemp.removeSync()
-		} else {
-			config = this.default
 		}
 
-		config.version = this.default.version
+		return this.sanitize(versionComparison < 0
+			? this.convertToNewest(config)
+			: config
+		)
+	}
 
-		if (isNullable(config.lang)) {
-			config.lang = this.default.lang
+	/**
+	 * Привести конфигурацию к валидному виду.
+	 * @param config Конфигурация.
+	 * @returns Валидная конфигурация.
+	 */
+	private sanitize(config: Partial<IConfig>): IConfig {
+		const fallback = this.default
+		const bool = (value: unknown, defaultValue: boolean) => (
+			typeof value === 'boolean' ? value : defaultValue
+		)
+		const trimmedInitialPath = typeof config.initialPath === 'string'
+			? config.initialPath.trim()
+			: ''
+		const initialPath = trimmedInitialPath || null
+		const buildType = config.buildType === BuildType.dev || config.buildType === BuildType.prod
+			? config.buildType
+			: fallback.buildType
+
+		return {
+			version: fallback.version,
+			lang: strToLang(config.lang) ?? fallback.lang,
+			buildType,
+			initialPath,
+			checkUpdates: bool(config.checkUpdates, fallback.checkUpdates),
+			useMods: bool(config.useMods, fallback.useMods),
+			openWhatsNew: bool(config.openWhatsNew, fallback.openWhatsNew),
+			advancedMode: bool(config.advancedMode, fallback.advancedMode),
+			optimizeUnpack: bool(config.optimizeUnpack, fallback.optimizeUnpack)
 		}
-
-		return config
 	}
 
 	/**
@@ -145,14 +175,12 @@ export class Config implements IMainConfigManager {
 	private convertToNewest(data: IConfig): IConfig {
 		const minConvertibleVersion = '1.0.0'
 
-		return data.version < minConvertibleVersion
+		return compareVersions(data.version, minConvertibleVersion) < 0
 			? this.default
 			: {
 				...this.default,
 				...data,
-				initialPath: data.initialPath !== undefined
-					? data.initialPath
-					: null
+				version: this.default.version
 			}
 	}
 }

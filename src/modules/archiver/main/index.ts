@@ -1,5 +1,7 @@
 import { loadLocalization } from '@localization/main'
-import type { IDir, IDirs, IFile, IFiles } from '@modules/files/types'
+import { ErrorText } from '@modules/errors/enums'
+import { ProgramError } from '@modules/errors/main'
+import type { IMainDir as IDir, IMainDirs as IDirs, IMainFile as IFile, IMainFiles as IFiles } from '@modules/files/types'
 import { di, inject } from '@utilities/di/container'
 import { CONFIG_TOKEN, DIRS_TOKEN, FILES_TOKEN, LOADING_TOKEN, MESSAGES_TOKEN, MODS_TOKEN, SIZES_TOKEN } from '@utilities/di/main/tokens'
 import { ARCHIVE_LOCALIZATION } from '../localization'
@@ -57,23 +59,48 @@ export class Archive implements IMainArchiver {
 		const dir = this.dirs.newDir(dirPath)
 		const archive = this.files.newFile(archivePath)
 
+		if (!await archive.exists()) {
+			throw new ProgramError(ErrorText.readFileError, null, archive.path)
+		}
+
 		await dir.remove()
 		await this.archiver.unpack(archive, dir)
 	}
 
 	async unpackMain(hideLoading = true) {
-		return this.isInitialUnpacking = (async() => {
-			const loading = di.resolve(LOADING_TOKEN)
+		if (this.isInitialUnpacking) {
+			return this.isInitialUnpacking
+		}
+
+		const loading = di.resolve(LOADING_TOKEN)
+		const unpacking = (async() => {
 			const initial = this.files.initial
 
 			loading.init(this.texts.unpacking, undefined, hideLoading)
 
-			await this.dirs.mainTemp.clear()
-			await this.unpack(initial.path, this.dirs.mainTemp.path)
-			await this.saveSize(initial)
+			try {
+				await this.dirs.mainTemp.clear()
+				await this.unpack(initial.path, this.dirs.mainTemp.path)
+				await this.saveSize(initial)
 
-			loading.completeStage()
+				loading.completeStage()
+			} catch (error: any) {
+				loading.errorOnStage(error)
+				loading.hideLoading()
+
+				throw error
+			}
 		})()
+
+		this.isInitialUnpacking = unpacking
+
+		try {
+			await unpacking
+		} finally {
+			if (this.isInitialUnpacking === unpacking) {
+				this.isInitialUnpacking = undefined
+			}
+		}
 	}
 
 	async unpackMod(archive: IFile, name: string) {
@@ -93,8 +120,9 @@ export class Archive implements IMainArchiver {
 		const sizes = di.resolve(SIZES_TOKEN)
 		const config = di.resolve(CONFIG_TOKEN)
 		const size = await archive.getSize()
+		const isInitial = !!config.initialPath && archive.path === config.initialPath
 
-		if (!config.initialPath || archive.path === config.initialPath) {
+		if (isInitial) {
 			sizes.initial = size
 		} else {
 			sizes.setModSize(archive, size)

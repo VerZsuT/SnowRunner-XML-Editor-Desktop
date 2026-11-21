@@ -24,6 +24,9 @@ export class Loading implements IMainLoading {
 	/** Завершать ли автоматически. */
 	private autoEnd = false
 
+	/** Таймер скрытия загрузки. */
+	private endTimer?: NodeJS.Timeout
+
 	constructor() {
 		makeReactive(this, 'Loading', 'state')
 	}
@@ -33,6 +36,7 @@ export class Loading implements IMainLoading {
 			return
 		}
 
+		this.clearEndTimer()
 		this.reset()
 		this.autoEnd = autoEnd
 		this.set({
@@ -49,7 +53,11 @@ export class Loading implements IMainLoading {
 	}
 
 	hideLoading() {
-		this.withEndTimeout(this.reset.bind(this))
+		this.clearEndTimer()
+		this.endTimer = setTimeout(() => {
+			this.endTimer = undefined
+			this.reset()
+		}, 1000)
 	}
 
 	setText(text: string) {
@@ -108,7 +116,11 @@ export class Loading implements IMainLoading {
 	}
 
 	errorOnStage(error: Error) {
-		this.set({ hasError: true, error: error.message })
+		const message = error instanceof Error
+			? error.message
+			: String(error)
+
+		this.set({ hasError: true, error: message })
 	}
 
 	/**
@@ -128,12 +140,12 @@ export class Loading implements IMainLoading {
 		this.autoEnd = false
 	}
 
-	/**
-	 * Выполнить действие после задержки завершения загрузки.
-	 * @param func Действие.
-	 */
-	private withEndTimeout(func: () => void) {
-		setTimeout(func, 1000)
+	/** Отменить отложенное скрытие загрузки. */
+	private clearEndTimer() {
+		if (this.endTimer) {
+			clearTimeout(this.endTimer)
+			this.endTimer = undefined
+		}
 	}
 
 	/**

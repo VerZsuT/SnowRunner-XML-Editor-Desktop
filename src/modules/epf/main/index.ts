@@ -1,7 +1,7 @@
 import { loadLocalization } from '@localization/main'
 import type { IAppConstants } from '@modules/app/types'
 import type { IMainDialogs } from '@modules/dialogs/types'
-import type { IFiles } from '@modules/files/main'
+import type { IMainFiles as IFiles } from '@modules/files/main'
 import { inject } from '@utilities/di/container'
 import { APP_CONSTANTS_TOKEN, DIALOGS_TOKEN, FILES_TOKEN } from '@utilities/di/main/tokens'
 import { EPF_LOCALIZATION } from '../localization'
@@ -35,28 +35,44 @@ export class Epf implements IMainEpf {
 		}
 
 		const result: any[] = []
-		const names: string[] = []
+		const names = new Set<string>()
 
 		for (const file of files) {
-			const fileObject = await file.readFromJSON()
+			let fileObject: any
 
-			if (Array.isArray(fileObject)) {
-				for (const object of fileObject) {
-					if (!names.includes(object.fileName)) {
-						result.push(object)
-						names.push(object.fileName)
-					}
+			try {
+				fileObject = await file.readFromJSON()
+			} catch (error: any) {
+				void this.dialogs.error(`${this.texts.readError}\n${file.path}\n${error?.message}`)
+
+				continue
+			}
+
+			const objects = Array.isArray(fileObject)
+				? fileObject
+				: [fileObject]
+
+			for (const object of objects) {
+				const fileName = object?.fileName
+
+				if (typeof fileName === 'string' && !names.has(fileName)) {
+					result.push(object)
+					names.add(fileName)
 				}
-			} else if (!names.includes(fileObject.fileName)) {
-				result.push(fileObject)
-				names.push(fileObject.fileName)
 			}
 		}
 
 		const pathToSave = this.dialogs.saveEPF(this.DEFAULT_FILE_NAME)
 
 		if (pathToSave) {
-			await this.files.newFile(pathToSave).writeToJSON(result)
+			try {
+				await this.files.newFile(pathToSave).writeToJSON(result)
+			} catch (error: any) {
+				void this.dialogs.error(`${this.texts.writeError}\n${pathToSave}\n${error?.message}`)
+
+				return
+			}
+
 			void this.dialogs.alert({
 				title: this.appConstants.NAME,
 				message: `${this.texts.successJoin}\n- ${files.map(value => value.basename()).join('\n- ')}`
@@ -71,16 +87,22 @@ export class Epf implements IMainEpf {
 			return
 		}
 
-		const fileObject = await this.files.newFile(path).readFromJSON()
-		const result: string[] = []
+		let fileObject: any
 
-		if (Array.isArray(fileObject)) {
-			for (const item of fileObject) {
-				result.push(item.fileName)
-			}
-		} else {
-			result.push(fileObject.fileName)
+		try {
+			fileObject = await this.files.newFile(path).readFromJSON()
+		} catch (error: any) {
+			void this.dialogs.error(`${this.texts.readError}\n${path}\n${error?.message}`)
+
+			return
 		}
+
+		const items = Array.isArray(fileObject)
+			? fileObject
+			: [fileObject]
+		const result = items
+			.map(item => item?.fileName)
+			.filter((name): name is string => typeof name === 'string')
 
 		void this.dialogs.alert({
 			title: this.appConstants.NAME,

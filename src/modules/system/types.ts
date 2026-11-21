@@ -30,8 +30,11 @@ export interface IPublicSystem {
 	/** Открыть ссылку. */
 	openLink: typeof shell.openExternal
 
-	/** Открыть файл. */
-	openFile: typeof shell.openExternal
+	/**
+	 * Открыть файл программой по умолчанию.
+	 * @param path Путь к файлу.
+	 */
+	openFile(path: string): Promise<void>
 
 	/** Открыть путь. */
 	openPath: typeof shell.openPath

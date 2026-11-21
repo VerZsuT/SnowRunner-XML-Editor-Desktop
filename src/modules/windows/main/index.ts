@@ -65,8 +65,8 @@ export class Windows implements IMainWindows {
 			paintWhenInitiallyHidden: false,
 			webPreferences: {
 				preload: join(this.dirname, 'preload.cjs'),
-				contextIsolation: false,
-				sandbox: false,
+				contextIsolation: true,
+				sandbox: true,
 				nodeIntegration: false,
 				webviewTag: false
 			}
@@ -76,19 +76,29 @@ export class Windows implements IMainWindows {
 		win.removeMenu()
 
 		let hasError = true
+		let showTimer: NodeJS.Timeout | undefined
 		const unsubscribe = this.onWindowReady(async readyType => {
 			if (type !== readyType) {
 				return
 			}
 
 			unsubscribe()
+			clearTimeout(showTimer)
 			hasError = false
 			await this.showWindow(win, params)
 		})
 
+		win.once('closed', () => {
+			unsubscribe()
+			clearTimeout(showTimer)
+		})
+
 		if (app.isDev) {
 			await win.loadURL(devURL)
-			setTimeout(() => hasError && this.showWindow(win, params), 3000)
+
+			if (hasError) {
+				showTimer = setTimeout(() => hasError && this.showWindow(win, params), 3000)
+			}
 		} else {
 			await win.loadFile(path)
 		}
@@ -110,7 +120,41 @@ export class Windows implements IMainWindows {
 				break
 		}
 
-		return new Promise<void>(resolve => window.once('ready-to-show', resolve))
+		if (window.isDestroyed() || window.isVisible()) {
+			return
+		}
+
+		await new Promise<void>((resolve, reject) => {
+			const timer: { value?: NodeJS.Timeout } = {}
+			let settled = false
+			const cleanup = () => {
+				clearTimeout(timer.value)
+				window.removeListener('ready-to-show', done)
+				window.removeListener('closed', done)
+			}
+			const done = () => {
+				if (settled) {
+					return
+				}
+
+				settled = true
+				cleanup()
+				resolve()
+			}
+			const fail = () => {
+				if (settled) {
+					return
+				}
+
+				settled = true
+				cleanup()
+				reject(new Error('Window loading timeout'))
+			}
+			timer.value = setTimeout(fail, 15_000)
+
+			window.once('ready-to-show', done)
+			window.once('closed', done)
+		})
 	}
 
 	/**
@@ -130,17 +174,21 @@ export class Windows implements IMainWindows {
 	private async showWindow(window: BrowserWindow, params: IWindowParams) {
 		const env = di.resolve(ENV_TOKEN)
 
-		if (!window || window.isDestroyed()) {
+		if (!window || window.isDestroyed() || window.isVisible()) {
 			return
 		}
 
 		window.show()
 		await params.onShowed?.(window, this)
 
+		if (window.isDestroyed()) {
+			return
+		}
+
 		window.focus()
 		await params.onFocused?.(window, this)
 
-		if (env.forceDevTools) {
+		if (env.forceDevTools && !window.isDestroyed()) {
 			window.webContents.toggleDevTools()
 		}
 	}
@@ -151,7 +199,7 @@ export class Windows implements IMainWindows {
 	 * @returns Функция-создатель окна.
 	 */
 	private getWindowCreator<T extends BrowserWindow = BrowserWindow>(window: ProgramWindow): WindowCreator<T> | never {
-		const creator = this.windows[window][1]
+		const creator = this.windows[window]?.[1]
 
 		if (!creator) {
 			throw new Error(`Window creator for '${window}' is not defined`)

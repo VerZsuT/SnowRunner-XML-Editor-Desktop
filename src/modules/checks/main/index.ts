@@ -2,9 +2,10 @@ import { loadLocalization } from '@localization/main'
 import type { IMainDialogs } from '@modules/dialogs/types'
 import { ErrorText } from '@modules/errors/enums'
 import { ProgramError } from '@modules/errors/main'
-import type { IDirs, IFiles } from '@modules/files/main'
+import type { IMainDirs as IDirs, IMainFiles as IFiles } from '@modules/files/main'
 import { di, inject } from '@utilities/di/container'
 import { ARCHIVER_TOKEN, BACKUP_TOKEN, CONFIG_TOKEN, DIALOGS_TOKEN, DIRS_TOKEN, FILES_TOKEN, PATHS_TOKEN, SIZES_TOKEN } from '@utilities/di/main/tokens'
+import { compareVersions } from '@utilities/strings/main'
 import { app } from 'electron'
 import dns from 'node:dns'
 import { get } from 'node:https'
@@ -34,6 +35,12 @@ export class Checks implements IMainChecks {
 	/** Url сайта GitHub. */
 	private readonly GITHUB_URL = 'github.com'
 
+	/** Таймаут сетевых запросов. */
+	private readonly REQUEST_TIMEOUT = 10_000
+
+	/** Максимальный размер ответа. */
+	private readonly MAX_RESPONSE_SIZE = 64 * 1024
+
 	async hasAdminPrivileges(): Promise<boolean> {
 		try {
 			await this.files.config.make()
@@ -52,7 +59,9 @@ export class Checks implements IMainChecks {
 				type: 'warning',
 				buttons: ['Exit'],
 				title: 'Error'
-			}).then(app.quit)
+			})
+				.catch((dialogError: unknown) => console.error(dialogError))
+				.finally(() => app.quit())
 
 			return false
 		}
@@ -62,11 +71,14 @@ export class Checks implements IMainChecks {
 		const sizes = di.resolve(SIZES_TOKEN)
 		const initial = this.files.initial
 
-		const hasInitial = await initial.exists()
+		if (!await initial.exists()) {
+			return
+		}
+
 		const hasContent = await this.dirs.mainTemp.dir(this.MEDIA_FOLDER).exists()
 		const withoutChanges = await initial.getSize() === sizes.initial
 
-		if (!hasInitial || (hasContent && withoutChanges)) {
+		if (hasContent && withoutChanges) {
 			return
 		}
 
@@ -92,42 +104,113 @@ export class Checks implements IMainChecks {
 
 	async checkUpdate(whateverCheck?: boolean): Promise<string | undefined> {
 		const config = di.resolve(CONFIG_TOKEN)
-		const { promise, resolve, reject } = Promise.withResolvers<string | undefined>()
 
 		if (!config.checkUpdates && !whateverCheck) {
 			return
 		}
 
-		dns.resolve(this.GITHUB_URL, error => {
-			if (error) {
-				return reject(new ProgramError(ErrorText.gitHubConnectError, error))
-			}
+		try {
+			await this.checkGitHubAvailable()
 
 			const paths = di.resolve(PATHS_TOKEN)
+			const rawData = await this.requestText(paths.publicInfo)
+			let data: IPubFile
 
-			get(paths.publicInfo, response => {
-				let rawData = ''
+			try {
+				data = JSON.parse(rawData)
+			} catch (error: any) {
+				throw new ProgramError(ErrorText.gitHubConnectError, error)
+			}
 
-				response
-					.setEncoding('utf8')
-					.on('data', chunk => rawData += chunk)
-					.on('end', async () => {
-						const data: IPubFile = JSON.parse(rawData)
-						const version = config.version
-						const hasNewVersion = version < data.latestVersion
-						const isBetaNewVersion = version.includes('-beta') && version.split('-beta')[0] === data.latestVersion
+			if (!data || typeof data.latestVersion !== 'string' || !data.latestVersion.trim()) {
+				throw new ProgramError(ErrorText.gitHubConnectError)
+			}
 
-						resolve(hasNewVersion || isBetaNewVersion
-							? data.latestVersion
-							: undefined
-						)
-					})
-			}).on('error', error => {
-				reject(new ProgramError(ErrorText.gitHubConnectError, error))
+			return compareVersions(config.version, data.latestVersion) < 0
+				? data.latestVersion
+				: undefined
+		} catch (error: any) {
+			// Отсутствие сети не должно приводить к необработанному отклонению промиса.
+			if (!(error instanceof ProgramError)) {
+				new ProgramError(error?.message ?? ErrorText.gitHubConnectError, error)
+			}
+
+			return undefined
+		}
+	}
+
+	/** Проверить доступность GitHub. */
+	private async checkGitHubAvailable(): Promise<void> {
+		await new Promise<void>((resolve, reject) => {
+			const timer = setTimeout(
+				() => reject(new ProgramError(ErrorText.gitHubConnectError)),
+				this.REQUEST_TIMEOUT
+			)
+
+			dns.resolve(this.GITHUB_URL, error => {
+				clearTimeout(timer)
+
+				if (error) {
+					reject(new ProgramError(ErrorText.gitHubConnectError, error))
+
+					return
+				}
+
+				resolve()
 			})
 		})
+	}
 
-		return promise
+	/**
+	 * Загрузить текст по URL.
+	 * @param url URL.
+	 * @param redirects Оставшееся количество переходов.
+	 * @returns Текст ответа.
+	 */
+	private requestText(url: string, redirects = 5): Promise<string> {
+		return new Promise<string>((resolve, reject) => {
+			const request = get(url, { timeout: this.REQUEST_TIMEOUT }, response => {
+				const status = response.statusCode ?? 0
+				const location = response.headers.location
+
+				if (status >= 300 && status < 400 && location && redirects > 0) {
+					response.resume()
+
+					try {
+						this.requestText(new URL(location, url).toString(), redirects - 1)
+							.then(resolve, reject)
+					} catch (error: any) {
+						reject(new ProgramError(ErrorText.gitHubConnectError, error))
+					}
+
+					return
+				}
+
+				if (status < 200 || status >= 300) {
+					response.resume()
+					reject(new ProgramError(`${ErrorText.gitHubConnectError} (HTTP ${status})`))
+
+					return
+				}
+
+				let rawData = ''
+
+				response.setEncoding('utf8')
+				response.on('data', (chunk: string) => {
+					rawData += chunk
+
+					if (rawData.length > this.MAX_RESPONSE_SIZE) {
+						response.destroy(new Error('Response is too large'))
+					}
+				})
+				response.on('error', reject)
+				response.on('aborted', () => reject(new Error('Response was aborted')))
+				response.on('end', () => resolve(rawData))
+			})
+
+			request.on('timeout', () => request.destroy(new Error('Request timeout')))
+			request.on('error', reject)
+		})
 	}
 
 	/**

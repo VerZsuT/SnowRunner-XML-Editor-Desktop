@@ -1,4 +1,4 @@
-import type { IFile } from '@modules/files/main'
+import type { IMainFile as IFile } from '@modules/files/main'
 import { SizesRepository } from './repository'
 import type { IFileSizes, ISizes } from './types'
 
@@ -15,7 +15,7 @@ export class Sizes implements ISizes {
 	initial = this.default.initial
 
 	/** Размеры модов. */
-	private mods = this.default.mods
+	private mods = { ...this.default.mods }
 
 	constructor() {
 		const { initial, mods } = this.getFileSizes()
@@ -25,15 +25,23 @@ export class Sizes implements ISizes {
 	}
 
 	set(sizes: IFileSizes) {
-		this.initial = sizes.initial
-		this.mods = { ...sizes.mods }
+		const valid = this.sanitize(sizes)
+
+		this.initial = valid.initial
+		this.mods = valid.mods
 	}
 
 	getModSize(modFile: IFile): number | undefined {
-		return this.mods[modFile.name]
+		return Object.hasOwn(this.mods, modFile.name)
+			? this.mods[modFile.name]
+			: undefined
 	}
 
 	setModSize(modFile: IFile, size: number) {
+		if (!Number.isFinite(size) || size < 0) {
+			return
+		}
+
 		this.mods[modFile.name] = size
 	}
 
@@ -65,6 +73,28 @@ export class Sizes implements ISizes {
 	 * @returns Размеры.
 	 */
 	private getFromJSON(): IFileSizes {
-		return this.repository.readSync() ?? this.default
+		return this.sanitize(this.repository.readSync())
+	}
+
+	/**
+	 * Привести размеры к валидному виду.
+	 * @param sizes Размеры.
+	 * @returns Валидные размеры.
+	 */
+	private sanitize(sizes?: Partial<IFileSizes> | null): IFileSizes {
+		const initial = typeof sizes?.initial === 'number' && Number.isFinite(sizes.initial) && sizes.initial >= 0
+			? sizes.initial
+			: 0
+		const mods: IFileSizes['mods'] = Object.create(null)
+
+		if (sizes?.mods && typeof sizes.mods === 'object' && !Array.isArray(sizes.mods)) {
+			for (const [name, size] of Object.entries(sizes.mods)) {
+				if (typeof size === 'number' && Number.isFinite(size) && size >= 0) {
+					mods[name] = size
+				}
+			}
+		}
+
+		return { initial, mods }
 	}
 }

@@ -1,15 +1,13 @@
 import '@testing-library/jest-dom/vitest'
 import { cleanup } from '@testing-library/react'
-import cp from 'node:child_process'
-import fs from 'node:fs'
-import fsp from 'node:fs/promises'
-import path from 'node:path'
+import { FS_TOKEN } from '@utilities/di/renderer/tokens'
 import { di } from '@utilities/di/container'
-import { afterEach } from 'vitest'
+import { afterEach, beforeEach } from 'vitest'
+import { NodeFs } from './node-fs'
 
-// `@modules/files/renderer` берёт node-модули из preload-объекта.
-Object.assign(window, {
-	'fast-fs': { cp, fs, fsp, path }
+// В renderer процесса нет node:fs — там клиент моста к main; в тестах его подменяет NodeFs.
+beforeEach(() => {
+	di.register(FS_TOKEN, new NodeFs())
 })
 
 // antd 6 опрашивает медиа-запросы при рендере.

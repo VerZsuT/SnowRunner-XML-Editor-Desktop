@@ -4,8 +4,11 @@ import type { IMainLoading } from '@modules/loading/types'
 import { di, inject } from '@utilities/di/container'
 import { APP_TOKEN, DIRS_TOKEN, LOADING_TOKEN, PATHS_TOKEN } from '@utilities/di/main/tokens'
 import { app, shell } from 'electron'
-import { open } from 'node:fs/promises'
+import { createWriteStream } from 'node:fs'
+import { rm } from 'node:fs/promises'
+import type { IncomingMessage } from 'node:http'
 import { get } from 'node:https'
+import { pipeline } from 'node:stream/promises'
 import { UPDATES_LOCALIZATION } from '../localization'
 import type { IMainUpdates } from '../types'
 
@@ -18,40 +21,95 @@ export class Updates implements IMainUpdates {
 	@inject(LOADING_TOKEN)
 	private readonly loading!: IMainLoading
 
-	download(url: string, path: string): Promise<string | void> {
-		const { promise, resolve, reject } = Promise.withResolvers<string | void>()
+	async download(url: string, path: string): Promise<void> {
+		const response = await this.request(url)
+		const contentLength = Number.parseInt(response.headers['content-length'] ?? '', 10)
+		const length = Number.isFinite(contentLength) && contentLength > 0
+			? contentLength
+			: 0
+		const writeStream = createWriteStream(path)
+		let current = 0
 
-		get(url, async response => {
-			const location = response.headers.location
+		this.loading.setStagesCount(100)
+		this.loading.setCompletedCount(0)
 
-			if (!location) {
-				return reject(`The file on GitHub is not available for download. URL: '${url}'`)
+		response.on('data', (chunk: Buffer) => {
+			current += chunk.length
+
+			if (length) {
+				this.loading.setCompletedCount(Math.min(99, Math.floor(100 * (current / length))))
 			}
-
-			get(location, async response => {
-				const file = await open(path, 'w')
-				const writeStream = file.createWriteStream()
-				const length = Number.parseInt(response.headers['content-length']!, 10)
-				let current = 0
-
-				this.loading.setStagesCount(100)
-				response.pipe(writeStream)
-				response.on('data', chunk => {
-					current += chunk.length
-					this.loading.setCompletedCount(Math.floor(100 * (current / length)))
-				})
-				response.on('error', reject)
-				response.on('end', () => {
-					this.loading.completeStage()
-					writeStream.close(() => resolve())
-				})
-			})
 		})
 
-		return promise
+		try {
+			await pipeline(response, writeStream)
+		} catch (error: any) {
+			await rm(path, { force: true }).catch(() => undefined)
+
+			throw error
+		}
+
+		this.loading.setCompletedCount(100)
+		this.loading.completeStage()
+	}
+
+	/**
+	 * Выполнить GET запрос с переходом по редиректам.
+	 * @param url URL.
+	 * @param redirects Оставшееся количество переходов.
+	 * @returns Ответ.
+	 */
+	private request(url: string, redirects = 5): Promise<IncomingMessage> {
+		let parsedUrl: URL
+
+		try {
+			parsedUrl = new URL(url)
+		} catch (error: any) {
+			return Promise.reject(new Error(`Invalid download URL '${url}'`, { cause: error }))
+		}
+
+		if (parsedUrl.protocol !== 'https:') {
+			return Promise.reject(new Error(`Unsupported download URL protocol '${parsedUrl.protocol}'`))
+		}
+
+		return new Promise<IncomingMessage>((resolve, reject) => {
+			const request = get(parsedUrl, { timeout: 30_000 }, response => {
+				const status = response.statusCode ?? 0
+				const location = response.headers.location
+
+				if (status >= 300 && status < 400 && location && redirects > 0) {
+					response.resume()
+
+					try {
+						this.request(new URL(location, parsedUrl).toString(), redirects - 1)
+							.then(resolve, reject)
+					} catch (error: any) {
+						reject(error)
+					}
+
+					return
+				}
+
+				if (status !== 200) {
+					response.resume()
+					reject(new Error(`Failed to download file: HTTP ${status}. URL: '${url}'`))
+
+					return
+				}
+
+				resolve(response)
+			})
+
+			request.on('timeout', () => request.destroy(new Error('Download request timeout')))
+			request.on('error', reject)
+		})
 	}
 
 	async updateApp(version: string, portable = false) {
+		if (!/^\d+\.\d+\.\d+[-\w.]*$/.test(version)) {
+			throw new ProgramError(`Invalid application version '${version}'`)
+		}
+
 		this.loading.init(this.texts.downloading)
 
 		try {
@@ -72,18 +130,25 @@ export class Updates implements IMainUpdates {
 
 			if (portable) {
 				shell.showItemInFolder(file.path)
-			} else if (await shell.openPath(file.path)) {
-				shell.showItemInFolder(file.path)
+			} else {
+				const openError = await shell.openPath(file.path)
+
+				if (openError) {
+					shell.showItemInFolder(file.path)
+				}
 			}
 
 			app.quit()
 		} catch (error: any) {
+			if (!(error instanceof ProgramError)) {
+				new ProgramError(error?.message ?? String(error), error)
+			}
+
+			// Перезапуск возвращает программу в рабочее состояние после неудачного обновления.
 			setTimeout(() => {
 				app.relaunch()
 				app.quit()
 			}, 2000)
-
-			throw new ProgramError(error)
 		}
 	}
 }

@@ -15,6 +15,12 @@ export class XMLTemplates extends XMLElement {
 	/** Название атрибута с именем шаблона. */
 	private static readonly attrName = '_template'
 
+	/** Кэш шаблонов: `null` — файл отсутствует или не разобран. */
+	private static readonly cache = new Map<string, XMLTemplates | null>()
+
+	/** Загружаемые сейчас шаблоны (защита от циклических Include). */
+	private static readonly loading = new Set<string>()
+
 	/** Включающий шаблон. */
 	private readonly include: XMLTemplates | undefined
 
@@ -29,7 +35,7 @@ export class XMLTemplates extends XMLElement {
 			return this.fromXML(source)
 		}
 
-		const res = await this.from(source as IFile)
+		const res = await super.from(source as string)
 
 		return res
 			? this.fromXML(res)
@@ -48,15 +54,61 @@ export class XMLTemplates extends XMLElement {
 		let include: XMLTemplates | undefined
 
 		if (includeAttr) {
-			const dirs = di.resolve(DIRS_TOKEN)
-			const templatesElement = await dirs.templates.file(`${includeAttr.str}.xml`).readFromXML()
-
-			if (templatesElement) {
-				include = new XMLTemplates(templatesElement.toCheerio())
-			}
+			include = await this.loadTemplate(includeAttr.str)
 		}
 
 		return new XMLTemplates(templates.toCheerio(), include)
+	}
+
+	/** Очистить кэш шаблонов. */
+	static clearCache(): void {
+		XMLTemplates.cache.clear()
+		XMLTemplates.loading.clear()
+	}
+
+	/**
+	 * Загрузить шаблон по имени.
+	 * @param name Имя шаблона без расширения `.xml`.
+	 * @returns Шаблон или `undefined`, если файл отсутствует, не разобран или обнаружен цикл.
+	 */
+	private static async loadTemplate(name: string): Promise<XMLTemplates | undefined> {
+		if (XMLTemplates.cache.has(name)) {
+			return XMLTemplates.cache.get(name) ?? undefined
+		}
+
+		if (XMLTemplates.loading.has(name)) {
+			return
+		}
+
+		XMLTemplates.loading.add(name)
+
+		try {
+			const dirs = di.resolve(DIRS_TOKEN)
+			const element = await dirs.templates.file(`${name}.xml`).readFromXML()
+
+			if (!element) {
+				XMLTemplates.cache.set(name, null)
+
+				return
+			}
+
+			// Файл шаблона может включать другой шаблон (цикл отсекается через `loading`).
+			const nestedName = element.select(XMLTemplates.tagName)?.getAttr(XMLTemplates.includeAttr)?.str
+			const templates = new XMLTemplates(
+				element.toCheerio(),
+				nestedName
+					? await this.loadTemplate(nestedName)
+					: undefined
+			)
+
+			XMLTemplates.cache.set(name, templates)
+
+			return templates
+		} catch {
+			XMLTemplates.cache.set(name, null)
+		} finally {
+			XMLTemplates.loading.delete(name)
+		}
 	}
 
 	constructor(element: Cheerio<any>, include?: XMLTemplates) {

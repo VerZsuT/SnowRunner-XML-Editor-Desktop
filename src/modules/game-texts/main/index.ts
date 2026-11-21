@@ -1,10 +1,9 @@
 import { makeReactive } from '@bridge/main'
 import { Lang } from '@modules/data/config/enums'
 import type { IConfig } from '@modules/data/config/types'
-import type { IDirs } from '@modules/files/main'
+import type { IMainDirs as IDirs, IMainWatcher } from '@modules/files/main'
 import { di, inject } from '@utilities/di/container'
 import { ARCHIVER_TOKEN, CONFIG_TOKEN, DIRS_TOKEN, MODS_TOKEN } from '@utilities/di/main/tokens'
-import type { FSWatcher } from 'node:fs'
 import type { IGameTexts, IMainGameTexts, ITranslation } from '../types'
 
 /** Работа с игровой локализацией. [main] */
@@ -30,11 +29,22 @@ export class GameTexts implements IMainGameTexts {
 		main: {}
 	}
 
+	/** Наблюдатель за файлом перевода. */
+	private watcher?: IMainWatcher
+
+	/** Таймер повторной подписки на файл перевода. */
+	private watcherRetry?: NodeJS.Timeout
+
 	constructor() {
 		makeReactive(this, 'GameTexts', 'object')
 	}
 
 	async initFromInitial() {
+		this.watcher?.close()
+		this.watcher = undefined
+		clearTimeout(this.watcherRetry)
+		this.watcherRetry = undefined
+
 		if (!await this.dirs.strings.exists()) {
 			return
 		}
@@ -42,26 +52,43 @@ export class GameTexts implements IMainGameTexts {
 		const archiver = di.resolve(ARCHIVER_TOKEN)
 		const stringsFile = this.dirs.strings.file(`strings_${this.locals[this.config.lang]}.str`)
 		const parse = async () => {
+			try {
 				await archiver.isInitialUnpacking
 
 				if (await stringsFile.exists()) {
 					this.set({ main: this.parseFile(await stringsFile.read('utf16le')) })
 				}
+			} catch (error: any) {
+				console.error(error)
+			}
 		}
 
 		if (!await stringsFile.exists()) {
 			return
 		}
 
-		let watcher: FSWatcher | undefined
-
 		const watchAndParse = async () => {
 			try {
 				await archiver.isInitialUnpacking
-				watcher?.close()
-				watcher = stringsFile.watch(parse).on('error', watchAndParse)
+				this.watcher?.close()
+				this.watcher = stringsFile.watch(parse)
+				this.watcher.on('error', async (error: Error) => {
+					console.error(error)
+					this.watcher?.close()
+					this.watcher = undefined
+
+					// Файл могли заменить во время распаковки — пробуем подписаться снова.
+					if (!this.watcherRetry && await stringsFile.exists()) {
+						this.watcherRetry = setTimeout(() => {
+							this.watcherRetry = undefined
+							void watchAndParse()
+						}, 1000)
+					}
+				})
 				await parse()
-			} catch {}
+			} catch (error: any) {
+				console.error(error)
+			}
 		}
 
 		await watchAndParse()
@@ -69,7 +96,7 @@ export class GameTexts implements IMainGameTexts {
 
 	async initFromMods() {
 		const mods = di.resolve(MODS_TOKEN)
-		const result: IGameTexts['mods'] = {}
+		const result: IGameTexts['mods'] = Object.create(null)
 
 		for (const mod of mods) {
 			if (!await this.dirs.modsTemp.dir(mod.name, 'texts').exists()) {
@@ -94,8 +121,9 @@ export class GameTexts implements IMainGameTexts {
 	 * @returns Игровой перевод.
 	 */
 	private parseFile(data: string): ITranslation {
-		const strings = {}
-		const lines = data.match(/[^\n\r]+/g)
+		// null-prototype защищает от изменения прототипа ключами вида `__proto__`.
+		const strings: ITranslation = Object.create(null)
+		const lines = String(data ?? '').match(/[^\n\r]+/g)
 
 		if (!lines) {
 			return strings

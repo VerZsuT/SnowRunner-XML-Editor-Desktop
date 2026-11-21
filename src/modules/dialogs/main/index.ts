@@ -1,5 +1,5 @@
 import { loadLocalization } from '@localization/main'
-import type { IFile, IFiles } from '@modules/files/main'
+import type { IMainFile as IFile, IMainFiles as IFiles } from '@modules/files/main'
 import { hasItems } from '@utilities/checks/main'
 import { inject } from '@utilities/di/container'
 import { FILES_TOKEN } from '@utilities/di/main/tokens'
@@ -84,7 +84,7 @@ export class Dialogs implements IMainDialogs {
 	getPaks(): string[] | undefined {
 		return this.openDialog<string[]>({
 			properties: ['multiSelections', 'openFile'],
-			extention: '.pak'
+			extention: 'pak'
 		})
 	}
 
@@ -120,29 +120,33 @@ export class Dialogs implements IMainDialogs {
 
 		if (extention) {
 			dialogParams.filters = [{
-				name: this.extNames[extention],
+				name: this.extNames[extention] ?? extention,
 				extensions: [extention]
 			}]
 		}
 
-		if (type === DialogType.open) {
-			const result = dialog.showOpenDialogSync(dialogParams)
+		try {
+			if (type === DialogType.open) {
+				const result = dialog.showOpenDialogSync(dialogParams)
 
-			if (Array.isArray(result)) {
-				return (properties.includes('multiSelections')
-					? result
-					: result[0]
-				) as T
-			}
-		} else {
-			const result = dialog.showSaveDialogSync({
-				defaultPath,
-				filters: dialogParams.filters
-			})
+				if (Array.isArray(result)) {
+					return (properties.includes('multiSelections')
+						? result
+						: result[0]
+					) as T
+				}
+			} else {
+				const result = dialog.showSaveDialogSync({
+					defaultPath,
+					filters: dialogParams.filters
+				})
 
-			if (result) {
-				return result as T
+				if (result) {
+					return result as T
+				}
 			}
+		} catch (error: any) {
+			console.error(error)
 		}
 	}
 }

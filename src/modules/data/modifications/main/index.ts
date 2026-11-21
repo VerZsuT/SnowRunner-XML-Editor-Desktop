@@ -1,5 +1,5 @@
 import type { IMainArchiver } from '@modules/archiver/types'
-import type { IDir, IDirs, IFile, IFiles } from '@modules/files/types'
+import type { IMainDir as IDir, IMainDirs as IDirs, IMainFile as IFile, IMainFiles as IFiles } from '@modules/files/types'
 import { makeReactive } from '@utilities/bridge/main'
 import { hasItems } from '@utilities/checks/main'
 import { di, inject } from '@utilities/di/container'
@@ -48,26 +48,38 @@ export class Mods extends BaseMainArray<IMod, IMod & { file: IFile }> implements
 		}
 
 		for (const { file, name } of this.converted) {
-			if (!await file.exists() || !await file.hasPermissions()) {
+			try {
+				if (!await file.exists()) {
+					deleteFromList(name)
+
+					continue
+				}
+
+				const hasPermissions = await file.hasPermissions()
+
+				if (!hasPermissions) {
+					deleteFromList(name)
+
+					continue
+				}
+
+				const sizeChanged = await file.getSize() !== sizes.getModSize(file)
+				const hasDir = await this.dirs.modsTemp.dir(name).exists()
+
+				if (!sizeChanged && hasDir) {
+					continue
+				}
+
+				await this.archiver.unpackMod(file, name)
+				const hasClasses = await this.dirs.modsTemp.dir(name, 'classes').exists()
+
+				if (!hasClasses) {
+					deleteFromList(name)
+				}
+			} catch (error: any) {
+				// Один повреждённый мод не должен блокировать запуск программы.
+				console.error(`Cannot process mod '${name}'`, error)
 				deleteFromList(name)
-
-				continue
-			}
-
-			const sizeChanged = await file.getSize() !== sizes.getModSize(file)
-			const hasDir = await this.dirs.modsTemp.dir(name).exists()
-
-			if (!sizeChanged && hasDir) {
-				continue
-			}
-
-			await this.archiver.unpackMod(file, name)
-			const hasClasses = await this.dirs.modsTemp.dir(name, 'classes').exists()
-
-			if (!hasClasses) {
-				deleteFromList(name)
-
-				continue
 			}
 		}
 
@@ -88,41 +100,59 @@ export class Mods extends BaseMainArray<IMod, IMod & { file: IFile }> implements
 				return
 			}
 
+			if (!file.isExt('pak')) {
+				return
+			}
+
 			const tempDir = this.dirs.modsTemp.dir(file.name)
 
-			if (file.isExt('pak')) {
+			try {
 				await this.archiver.unpack(file.path, tempDir.path)
 
-				if (await tempDir.dir('classes').exists()) {
-					const modioFile = dir.file('modio.json')
-					let name = file.name
+				if (!await tempDir.dir('classes').exists()) {
+					await tempDir.remove()
 
-					if (await modioFile.exists()) {
-						const modIoName = (await modioFile.readFromJSON()).name
-						const procedName = processNameForFilesystem(modIoName)
-
-						if (!out.some(([, fileName]) => fileName === procedName)) {
-							name = modIoName
-						}
-					}
-
-					out.push([file, processNameForFilesystem(name)])
+					return
 				}
+
+				const modioFile = dir.file('modio.json')
+				let name = file.name
+
+				if (await modioFile.exists()) {
+					try {
+						const modioData = await modioFile.readFromJSON()
+						const modIoName = modioData?.name
+
+						if (typeof modIoName === 'string' && modIoName.trim()) {
+							const procedName = processNameForFilesystem(modIoName)
+
+							if (!out.some(([, fileName]) => fileName === procedName)) {
+								name = modIoName
+							}
+						}
+					} catch (error: any) {
+						console.error(`Cannot read modio.json in '${dir.path}'`, error)
+					}
+				}
+
+				out.push([file, processNameForFilesystem(name)])
+			} catch (error: any) {
+				console.error(`Cannot unpack mod '${file.path}'`, error)
 			}
 		}
 
 		for (const entry of await dir.read()) {
 			if (await entry.isFile()) {
-				await processFile(entry.asFile(), dir)
+				await processFile(entry.asFile() as IFile, dir)
 			} else {
-				const innerDir = entry.asDir()
+				const innerDir = entry.asDir() as IDir
 
 				for (const innerEntry of await innerDir.read()) {
 					if (await innerEntry.isDir()) {
 						continue
 					}
 
-					await processFile(innerEntry.asFile(), innerDir)
+					await processFile(innerEntry.asFile() as IFile, innerDir)
 				}
 			}
 		}
@@ -132,11 +162,28 @@ export class Mods extends BaseMainArray<IMod, IMod & { file: IFile }> implements
 
 	async getAllMods(): Promise<[IFile, string][]> {
 		const env = di.resolve(ENV_TOKEN)
+		let homeDir = ''
 
-		const userDir = this.dirs.newDir(userInfo().homedir || homedir() || env.home || '')
+		try {
+			homeDir = userInfo().homedir
+		} catch (error: any) {
+			console.error('Cannot get user info', error)
+		}
+
+		if (!homeDir) {
+			try {
+				homeDir = homedir()
+			} catch (error: any) {
+				console.error('Cannot get home directory', error)
+			}
+		}
+
+		homeDir ||= env.home || ''
+
+		const userDir = this.dirs.newDir(homeDir)
 		const out: [IFile, string][] = []
 
-		if (await userDir.exists()) {
+		if (homeDir && await userDir.exists()) {
 			let existedDir: IDir | undefined
 
 			const getModsDir = (gamesDir: string) => `Documents/${gamesDir}/SnowRunner/base/Mods/.modio/mods`

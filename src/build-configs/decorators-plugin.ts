@@ -4,11 +4,15 @@ import type { Plugin } from 'vite'
 /** Строка с декоратором. */
 const DECORATOR = /^\s*@[A-Za-z_$][\w$]*\s*(?:\([^)]*\))?\s*$/m
 
+/** Строка с полем `accessor`. */
+const ACCESSOR = /^\s*(?:static\s+)?accessor\s+[A-Za-z_$]/m
+
 /**
  * Плагин для преобразования стандартных декораторов TypeScript.
  *
- * Oxc (Vite 8) не опускает стандартные декораторы, поэтому такие файлы
- * транспилируются средствами TypeScript до обработки остальными плагинами.
+ * Oxc (Vite 8) не опускает ни стандартные декораторы, ни поля `accessor`,
+ * поэтому такие файлы транспилируются средствами TypeScript до обработки
+ * остальными плагинами.
  * @returns Плагин Vite.
  */
 export function pluginDecorators(): Plugin {
@@ -24,7 +28,7 @@ export function pluginDecorators(): Plugin {
 				return
 			}
 
-			if (!DECORATOR.test(code)) {
+			if (!DECORATOR.test(code) && !ACCESSOR.test(code)) {
 				return
 			}
 

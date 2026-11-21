@@ -1,4 +1,4 @@
-import type { IDir, IDirs, IFile, IFindDirsArgs, IFindFilesArgs } from '@modules/files/types'
+import type { IMainDir as IDir, IMainDirs as IDirs, IMainFile as IFile, IFindDirsArgs, IFindFilesArgs } from '@modules/files/types'
 import { makeReactive } from '@utilities/bridge/main'
 import { inject } from '@utilities/di/container'
 import { DIRS_TOKEN } from '@utilities/di/main/tokens'

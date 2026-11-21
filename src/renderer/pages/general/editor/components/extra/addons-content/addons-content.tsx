@@ -1,11 +1,11 @@
 import { LocalizationStrings } from '@localization'
-import type { IFile } from '@modules/files/renderer'
-import { TruckAddon, XMLElement } from '@modules/xml/renderer'
+import { File, type IDir, type IFile } from '@modules/files/renderer'
+import { TruckAddon } from '@modules/xml/renderer'
 import { Spin } from '@renderer/components/spin'
 import { useConfig } from '@renderer/utilities/use-reactive'
 import { hasItems } from '@utilities/checks/renderer'
 import { di } from '@utilities/di/container'
-import { DIRS_TOKEN, DLC_TOKEN, GAME_TEXTS_TOKEN, MESSAGES_TOKEN, SYSTEM_TOKEN } from '@utilities/di/renderer/tokens'
+import { DIRS_TOKEN, DLC_TOKEN, FS_TOKEN, GAME_TEXTS_TOKEN, MESSAGES_TOKEN, SYSTEM_TOKEN } from '@utilities/di/renderer/tokens'
 import type { SelectProps } from 'antd'
 import { Button, Input, Select, Typography } from 'antd'
 import { useRef, useState } from 'react'
@@ -19,6 +19,9 @@ import { ContentField } from './content-field'
 import './addons-content.scss'
 
 const { Text } = Typography
+
+/** Размер пачки файлов при массовом чтении. */
+const READ_CHUNK = 100
 
 /** Параметры содержимого аддонов. */
 export type AddonsContentProps = ReadyProps & IActionProps
@@ -257,96 +260,92 @@ export function AddonsContent({ file, xml, onReady, onMount }: AddonsContentProp
 		every?: () => void | Promise<void>
 	): Promise<IFile[]> {
 		const dirs = di.resolve(DIRS_TOKEN)
+		const fs = di.resolve(FS_TOKEN)
+		const candidates: IFile[] = []
 
-		const out: IFile[] = []
-		const tuningDir = dirs.classes.dir(`trucks/${truckName}_tuning`)
-		const inLoading = new Set<Promise<void>>()
+		async function collectFiles(dir: IDir) {
+			if (!await dir.exists()) {
+				return
+			}
 
-		function filterFile(item: IFile) {
-			inLoading.add((async () => {
-				async function pushToOut(file: IFile) {
-					out.push(file)
-					await every?.()
-				}
-
-				if (filter) {
-					const addonXML = await TruckAddon.from(item)
-
-					if (addonXML && filter(addonXML)) {
-						await pushToOut(item)
-					}
-				} else {
-					await pushToOut(item)
-				}
-			})())
+			candidates.push(...await dir.findFiles({ ext: 'xml' }))
 		}
 
-		if (await tuningDir.exists()) {
-			for (const entry of await tuningDir.read()) {
-				if (await entry.isDir()) {
+		async function collectTree(dir: IDir, filterPath: boolean) {
+			const found = await fs.scan(dir.path, { kind: 'all', recursive: true })
+
+			if (!found.ok) {
+				return
+			}
+
+			const prefix = dir.path.toLowerCase()
+
+			for (const info of found.value) {
+				if (info.kind !== 'file' || !info.name.toLowerCase().endsWith('.xml')) {
 					continue
 				}
 
-				filterFile(entry.asFile())
-			}
-		}
+				if (filterPath) {
+					const relative = info.path.toLowerCase().slice(prefix.length)
 
-		const baseDir = dirs.classes.dir('trucks/addons')
-		if (await baseDir.exists()) {
-			for (const entry of await baseDir.read()) {
-				if (await entry.isDir()) {
-					continue
-				}
-
-				filterFile(entry.asFile())
-			}
-		}
-
-		for (const dlc of di.resolve(DLC_TOKEN)) {
-			const DLCTrucks = dlc.dir.dir('classes/trucks')
-
-			if (await DLCTrucks.exists()) {
-				const DLCBasic = DLCTrucks.dir('addons')
-
-				if (await DLCBasic.exists()) {
-					for (const entry of await DLCBasic.read()) {
-						if (await entry.isDir()) {
-							continue
-						}
-
-						filterFile(entry.asFile())
-					}
-				}
-
-				for (const entry of await DLCTrucks.read()) {
-					if (!await entry.isDir() || !entry.basename().endsWith('_tuning')) {
+					if (!relative.includes('\\addons\\') && !relative.includes('_tuning\\')) {
 						continue
 					}
-
-					for (const innerEntry of await entry.asDir().read()) {
-						if (await innerEntry.isDir()) {
-							continue
-						}
-
-						filterFile(innerEntry.asFile())
-					}
 				}
+
+				candidates.push(new File(info.path))
 			}
+		}
+
+		await collectFiles(dirs.classes.dir(`trucks/${truckName}_tuning`))
+		await collectFiles(dirs.classes.dir('trucks/addons'))
+
+		for (const dlc of di.resolve(DLC_TOKEN)) {
+			await collectTree(dlc.dir.dir('classes/trucks'), true)
 		}
 
 		if (mod) {
-			for (const item of await dirs.modsTemp.dir(mod, 'classes').findFiles({ ext: 'xml', recursive: true })) {
-				const element = await XMLElement.from(item)
-
-				if (element?.has('TruckAddon')) {
-					filterFile(item)
-				}
-			}
+			await collectTree(dirs.modsTemp.dir(mod, 'classes'), false)
 		}
 
-		await Promise.all(inLoading)
+		return await filterCandidates(candidates)
 
-		return out
+		/**
+		 * Прочитать пачку файлов и оставить подходящие аддоны.
+		 * @param files Файлы.
+		 * @returns Подходящие файлы.
+		 */
+		async function filterCandidates(files: IFile[]): Promise<IFile[]> {
+			const out: IFile[] = []
+
+			for (let index = 0; index < files.length; index += READ_CHUNK) {
+				const chunk = files.slice(index, index + READ_CHUNK)
+				const contents = await fs.readMany(chunk.map(file => file.path))
+
+				if (!contents.ok) {
+					continue
+				}
+
+				for (let position = 0; position < chunk.length; position++) {
+					const data = contents.value[position]
+
+					if (data === null) {
+						continue
+					}
+
+					const addonXml = await TruckAddon.from(data)
+
+					if (!addonXml || (filter && !filter(addonXml))) {
+						continue
+					}
+
+					out.push(chunk[position])
+					await every?.()
+				}
+			}
+
+			return out
+		}
 	}
 
 	return (

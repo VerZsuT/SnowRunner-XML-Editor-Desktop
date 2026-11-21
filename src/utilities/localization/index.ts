@@ -22,7 +22,7 @@ export class Localization<
 	 * @returns Локализованный объект.
 	 */
 	get(config: { lang: Lang }): LocalizedTexts<ToLocalize> {
-		if (config.lang in this.localized) {
+		if (Object.hasOwn(this.localized, config.lang)) {
 			return this.localized[config.lang]
 		}
 
@@ -50,7 +50,11 @@ export class LocalizationStrings<T = string> {
 	 * @returns Локализованное значение.
 	 */
 	get(config: { lang: Lang }) {
-		return this.obj[config.lang] ?? this.obj[Lang.en]!
+		const value = Object.hasOwn(this.obj, config.lang)
+			? this.obj[config.lang]
+			: undefined
+
+		return value ?? this.obj[Lang.en]!
 	}
 
 	/**

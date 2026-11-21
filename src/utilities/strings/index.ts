@@ -8,7 +8,7 @@ import { hasItems, isNumber, lastItem } from '../checks'
  */
 export function prettyString(str: string): string {
 	const text = str.replaceAll('_', ' ')
-	const firstChar = text[0].toUpperCase()
+	const firstChar = text[0]?.toUpperCase() ?? ''
 
 	return `${firstChar}${text.slice(1)}`
 }
@@ -19,14 +19,14 @@ export function prettyString(str: string): string {
  * @param args Аргументы для замены "{}".
  */
 export function formatString(str: string, ...args: string[]): string {
-	let result = str
+	let result = String(str ?? '')
 
 	for (const element of args) {
-		result = result.replace('{}', element)
+		result = result.replace('{}', String(element ?? ''))
 	}
 
 	if (args.length > 0) {
-		result = result.replace('{lst}', lastItem(args)!)
+		result = result.replace('{lst}', String(lastItem(args) ?? ''))
 	}
 
 	return result
@@ -126,11 +126,96 @@ export function stringToArray<T extends string>(
  * @return Подготовленное название файла.
  */
 export function processNameForFilesystem(name: string): string {
-	return name
+	const processed = String(name ?? '')
 		.trim()
 		.replaceAll(' ', '-')
 		.replaceAll(/[!"#$%&'*+/:<=>?@\\`{|}]/gi, '')
+		.replaceAll(/\.{2,}/g, '.')
+		.replaceAll(/^[.-]+|[.-]+$/g, '')
 		.toLowerCase()
+		.slice(0, 80)
+
+	if (!processed) {
+		return 'mod'
+	}
+
+	// Имена вроде `CON` или `NUL` зарезервированы Windows и не могут быть папками.
+	return /^(con|prn|aux|nul|com[1-9]|lpt[1-9])$/.test(processed)
+		? `_${processed}`
+		: processed
+}
+
+/**
+ * Сравнить версии в формате `major.minor.patch[-prerelease]`.
+ * @param a Первая версия.
+ * @param b Вторая версия.
+ * @returns `-1`, `0` или `1`.
+ */
+export function compareVersions(a: string, b: string): number {
+	const parse = (version: string) => {
+		const [core = '', prerelease = ''] = String(version ?? '')
+			.trim()
+			.replace(/^v/i, '')
+			.split('-', 2)
+		const numbers = core.split('.').map(part => Number.parseInt(part, 10) || 0)
+		const parts = prerelease
+			? prerelease.split('.').map(part => /^\d+$/.test(part) ? Number(part) : part)
+			: []
+
+		return { numbers, parts }
+	}
+	const pa = parse(a)
+	const pb = parse(b)
+	const length = Math.max(pa.numbers.length, pb.numbers.length)
+
+	for (let i = 0; i < length; i++) {
+		const diff = (pa.numbers[i] ?? 0) - (pb.numbers[i] ?? 0)
+
+		if (diff) {
+			return Math.sign(diff)
+		}
+	}
+
+	if (!pa.parts.length && !pb.parts.length) {
+		return 0
+	}
+
+	if (!pa.parts.length) {
+		return 1
+	}
+
+	if (!pb.parts.length) {
+		return -1
+	}
+
+	const partsLength = Math.max(pa.parts.length, pb.parts.length)
+
+	for (let i = 0; i < partsLength; i++) {
+		const left = pa.parts[i]
+		const right = pb.parts[i]
+
+		if (left === undefined) {
+			return -1
+		}
+
+		if (right === undefined) {
+			return 1
+		}
+
+		if (left === right) {
+			continue
+		}
+
+		if (typeof left === 'number' && typeof right === 'number') {
+			return Math.sign(left - right)
+		}
+
+		return String(left) > String(right)
+			? 1
+			: -1
+	}
+
+	return 0
 }
 
 /**

@@ -14,12 +14,17 @@ export class ProgramError extends Error {
 	 * @param formatArgs Аргументы для вставки.
 	 */
 	constructor(text: string, error?: Error | null, ...formatArgs: string[]) {
+		const normalText = (text as unknown) instanceof Error
+			? (text as unknown as Error).message
+			: formatString(text, ...formatArgs)
 		const messages = di.resolve(MESSAGES_TOKEN)
 
-		text = formatString(text, ...formatArgs)
-		messages.error(text)
-		console.error(error)
+		messages.error(normalText)
 
-		super(text, { cause: error })
+		if (error) {
+			console.error(error)
+		}
+
+		super(normalText, { cause: error })
 	}
 }

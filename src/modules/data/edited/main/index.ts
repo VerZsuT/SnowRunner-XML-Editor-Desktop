@@ -1,4 +1,4 @@
-import type { IFile } from '@modules/files/main'
+import type { IMainFile as IFile } from '@modules/files/main'
 import { makeReactive } from '@utilities/bridge/main'
 import { di } from '@utilities/di/container'
 import { DIRS_TOKEN, FILES_TOKEN } from '@utilities/di/main/tokens'

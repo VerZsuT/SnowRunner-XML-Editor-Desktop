@@ -10,6 +10,7 @@ export async function publishMain() {
 	const { publishDialogs } = await import('@modules/dialogs/main/publisher')
 	const { publishDLCs } = await import('@modules/dlcs/main/publisher')
 	const { publishEPF } = await import('@modules/epf/main/publisher')
+	const { publishFiles } = await import('@modules/files/publisher')
 	const { publishGameTexts } = await import('@modules/game-texts/main/publisher')
 	const { publishLoading } = await import('@modules/loading/main/publisher')
 	const { publishPaths } = await import('@modules/paths/main/publisher')
@@ -19,6 +20,7 @@ export async function publishMain() {
 
 	publishApp()
 	publishPaths()
+	publishFiles()
 	publishSystem()
 	publishArchive()
 	publishBackup()

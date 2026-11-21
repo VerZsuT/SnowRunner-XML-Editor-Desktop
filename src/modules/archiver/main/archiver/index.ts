@@ -1,10 +1,35 @@
 import { ErrorText } from '@modules/errors/enums'
 import { ProgramError } from '@modules/errors/main'
-import type { IDir, IFile } from '@modules/files/types'
+import type { IMainDir as IDir, IMainFile as IFile } from '@modules/files/types'
 import { di } from '@utilities/di/container'
 import { CONFIG_TOKEN, DIRS_TOKEN, ENV_TOKEN, PATHS_TOKEN } from '@utilities/di/main/tokens'
 import { execFile } from 'node:child_process'
+import { join } from 'node:path'
 import type { ISystemArchiver } from './types'
+
+/**
+ * Коды завершения WinRAR, которые не являются ошибкой.
+ * _0_ — успех, _1_ — предупреждение, _10_ — не найдено файлов по списку.
+ */
+const NON_FATAL_CODES = new Set([0, 1, 10])
+
+/**
+ * Проверить, является ли код завершения ошибкой.
+ * @param code Код завершения.
+ * @returns `true`, если это ошибка.
+ */
+export function isWinRarFailure(code: unknown): boolean {
+	const value = typeof code === 'string' && /^\d+$/u.test(code)
+		? Number(code)
+		: code
+
+	if (value === null || value === undefined) {
+		// Ошибка запуска процесса (нет файла, таймаут и т.п.) приходит без кода.
+		return true
+	}
+
+	return !NON_FATAL_CODES.has(value as number)
+}
 
 /** Работа с WinRAR. */
 export class WinRAR implements ISystemArchiver {
@@ -74,13 +99,13 @@ export class WinRAR implements ISystemArchiver {
 	async update(dir: IDir, archive: IFile) {
 		await archive.chmod(0o777)
 
-		const readResult = await archive.canWrite()
-		const writeResult = await dir.canRead()
+		const archiveWriteResult = await archive.canWrite()
+		const dirReadResult = await dir.canRead()
 
-		if (!writeResult.result) {
-			throw new ProgramError(ErrorText.writeFileError, writeResult.error, archive.path)
-		} else if (!readResult.result) {
-			throw new ProgramError(ErrorText.readDirError, readResult.error, dir.path)
+		if (!archiveWriteResult.result) {
+			throw new ProgramError(ErrorText.writeFileError, archiveWriteResult.error, archive.path)
+		} else if (!dirReadResult.result) {
+			throw new ProgramError(ErrorText.readDirError, dirReadResult.error, dir.path)
 		}
 
 		await this.run(
@@ -150,7 +175,7 @@ export class WinRAR implements ISystemArchiver {
 	 * Запустить `WinRAR`.
 	 * @param args Параметры запуска.
 	 */
-	private async run(...args: (string | string[])[]) {
+	private async run(...args: (string | string[])[]): Promise<void> {
 		const dirs = di.resolve(DIRS_TOKEN)
 		const paths = di.resolve(PATHS_TOKEN)
 
@@ -159,17 +184,28 @@ export class WinRAR implements ISystemArchiver {
 		}
 
 		const execArgs = args.flatMap(value => Array.isArray(value) ? value : [value])
-		const { promise, resolve, reject } = Promise.withResolvers()
+		const exePath = join(dirs.winrar.path, this.exeName)
 
-		execFile(this.exeName, execArgs, { cwd: paths.winrar })
-			.once('close', resolve)
-			.once('error', error => {
-				reject(error.message)
+		await new Promise<void>((resolve, reject) => {
+			execFile(
+				exePath,
+				execArgs,
+				{
+					cwd: paths.winrar,
+					windowsHide: true,
+					timeout: 10 * 60 * 1000
+				},
+				error => {
+					if (error && isWinRarFailure((error as any).code)) {
+						reject(new ProgramError(ErrorText.winRarCommandError, error, execArgs.join(' ')))
 
-				throw new ProgramError(ErrorText.winRarCommandError, error, args.join(','))
-			})
+						return
+					}
 
-		return promise
+					resolve()
+				}
+			)
+		})
 	}
 
 	/**

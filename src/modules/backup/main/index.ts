@@ -1,6 +1,6 @@
 import { loadLocalization } from '@localization/main'
 import { BuildType } from '@modules/data/config/enums'
-import type { IFiles } from '@modules/files/main'
+import type { IMainFiles as IFiles } from '@modules/files/main'
 import type { IMainMessages } from '@modules/messages/types'
 import { di, inject } from '@utilities/di/container'
 import { ARCHIVER_TOKEN, CONFIG_TOKEN, DIRS_TOKEN, FILES_TOKEN, MESSAGES_TOKEN } from '@utilities/di/main/tokens'
@@ -26,14 +26,14 @@ export class InitialBackup implements IMainInitialBackup {
 		const backupInitialWithDate = this.files.backupInitialWithDate
 		const initial = this.files.initial
 
+		// Не сохранять бэкап в dev режиме и не удалять уже существующий.
+		if (config.buildType === BuildType.dev) {
+			return
+		}
+
 		await dirs.backupFolder.make()
 		await this.files.backupInitial.remove()
 		await backupInitialWithDate.remove()
-
-		// Не сохранять бэкап в dev режиме.
-		if (config.buildType === BuildType.dev) {
-		 return
-		}
 
 		await initial.copyTo(this.files.backupInitial)
 		await initial.copyTo(backupInitialWithDate)
