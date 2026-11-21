@@ -1,4 +1,3 @@
-/* eslint-disable camelcase -- ключи данных экспорта — имена файлов вида `${name}_${dlc}` */
 import type { IExportedData } from '@modules/epf/types'
 import { File } from '@modules/files/renderer'
 import { importUtils } from '@renderer/pages/general/editor/utilities/import'

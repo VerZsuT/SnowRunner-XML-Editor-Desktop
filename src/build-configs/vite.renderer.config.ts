@@ -35,7 +35,7 @@ export default defineConfig(forgeEnv => {
 			pluginDecorators(),
 			externalizePlugin({ filter: /\/main(\.ts)?$/ }),
 			pluginExposeRenderer('renderer'),
-			pluginReact(),
+			pluginReact({ compiler: true }),
 			viteStaticCopy({
 				targets: [
 					{ src: `${paths.images}/icons/*`, dest: '../src/renderer/pages/images/icons', rename: { stripBase: true } },

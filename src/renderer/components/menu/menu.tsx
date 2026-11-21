@@ -1,6 +1,7 @@
 import { reportError } from '@modules/errors/renderer'
 import { Page } from '@modules/windows/enums'
 import { usePageStore } from '@renderer/pages/general/store/page'
+import { useLatestRef } from '@renderer/utilities/use-latest-ref'
 import { useConfig } from '@renderer/utilities/use-reactive'
 import { di } from '@utilities/di/container'
 import { APP_TOKEN, ARCHIVER_TOKEN, BACKUP_TOKEN, CONFIG_TOKEN, FILES_TOKEN, MESSAGES_TOKEN, MODS_TOKEN, PATHS_TOKEN, SYSTEM_TOKEN } from '@utilities/di/renderer/tokens'
@@ -47,17 +48,23 @@ export function Menu() {
 		donation: 'https://www.donationalerts.com/r/verzsut'
 	}
 
+	const openWhatsNewRef = useLatestRef(openWhatsNew)
+
+	function openWhatsNew() {
+		setWhatsNewHasBeenOpened(true)
+		setWhatsNewIsOpen(true)
+	}
+
 	useEffect(() => {
 		const timeout = setTimeout(() => {
 			if (config.openWhatsNew) {
-				openWhatsNew()
+				openWhatsNewRef.current()
 				config.openWhatsNew = false
 			}
 		}, 1000)
 
 		return () => clearTimeout(timeout)
-		// Намеренно один раз после монтирования.
-	}, [])
+	}, [config, openWhatsNewRef])
 
 	function inAdvancedMode(items: ItemType[]) {
 		return configState.advancedMode
@@ -94,11 +101,6 @@ export function Menu() {
 	function openSettings() {
 		setSettingsHasBeenOpened(true)
 		setSettingsIsOpen(true)
-	}
-
-	function openWhatsNew() {
-		setWhatsNewHasBeenOpened(true)
-		setWhatsNewIsOpen(true)
 	}
 
 	/** Элементы меню. */

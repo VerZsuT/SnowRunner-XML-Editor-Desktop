@@ -1,6 +1,6 @@
 import { Position } from '@modules/xml/renderer'
 import { InputNumber, Typography } from 'antd'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { NumberType } from '../../enums'
 import type { ParameterValue, PositionProps } from '../../types'
 import './item.scss'
@@ -16,12 +16,12 @@ export interface CoordsItemProps extends PositionProps {
 /** Поля ввода координат. */
 export function CoordsItem({ value, numberType, step = numberType === NumberType.integer ? 1 : 0.1, onChange }: CoordsItemProps) {
 	const [coords, setCoords] = useState<Position>(() => value || new Position())
+	const [previous, setPrevious] = useState(value)
 
-	useEffect(() => {
-		const newPosition = value || new Position()
-
-		setCoords(previous => previous.equals(newPosition) ? previous : newPosition)
-	}, [value])
+	if (previous !== value) {
+		setPrevious(value)
+		setCoords(value || new Position())
+	}
 
 	function changeCoord(newCoord: Partial<Position>) {
 		for (const name in newCoord) {

@@ -66,7 +66,7 @@ export const MainHeader = forwardRef<MainHeaderHandle, MainHeaderProps>(function
 		reset,
 		import: importFile,
 		export: exportFile
-	}), [xml, file, resetBucket])
+	}))
 
 	const menuItems: MenuProps['items'] = [
 		{

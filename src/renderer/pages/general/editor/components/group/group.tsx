@@ -3,7 +3,7 @@ import { ContextMenu } from '@renderer/components/context-menu'
 import { di } from '@utilities/di/container'
 import { IMAGES_TOKEN } from '@utilities/di/renderer/tokens'
 import type { MenuProps } from 'antd'
-import { useId, useRef, useState } from 'react'
+import { useId, useState } from 'react'
 import type { ReactNode } from 'react'
 import { EDITOR_LOCALIZATION as texts } from '../../localization'
 import { emitReset, ResetProvider, useResetListener } from '../../utilities/reset'
@@ -30,8 +30,7 @@ export interface GroupProps {
 export function Group({ label, icon, children, groups }: GroupProps) {
 	const accordion = useAccordion()
 	const id = useId()
-	const bucketRef = useRef<ResetBucket | null>(null)
-	const bucket = bucketRef.current ??= new Set()
+	const [bucket] = useState<ResetBucket>(() => new Set())
 	const [target, setTarget] = useState<HTMLDivElement | null>(null)
 	const isActive = accordion ? accordion.activeKey === id : true
 	const images = di.resolve(IMAGES_TOKEN)

@@ -45,8 +45,9 @@ typings/
 # Optional npm cache directory
 .npm
 
-# Optional eslint cache
+# Optional linter cache
 .eslintcache
+.oxlintcache
 
 # Optional REPL history
 .node_repl_history
@@ -99,3 +100,7 @@ build-scripts/out
 test.js
 dist
 initialpak/
+
+# Rust / Tauri
+src-tauri/target/
+src-tauri/gen/schemas/

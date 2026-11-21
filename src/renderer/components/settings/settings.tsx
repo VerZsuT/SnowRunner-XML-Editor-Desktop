@@ -1,8 +1,7 @@
+import { updateConfig } from '@renderer/config'
 import { Language } from '@renderer/components/language'
-import { di } from '@utilities/di/container'
-import { CONFIG_TOKEN } from '@utilities/di/renderer/tokens'
+import { useConfig } from '@renderer/utilities/use-reactive'
 import { Button, Modal } from 'antd'
-import { useEffect, useState } from 'react'
 import { BoolSetting } from './bool-setting'
 import { SETTINGS_LOCALIZATION as texts } from './localization'
 import './settings.scss'
@@ -18,41 +17,22 @@ export interface SettingsProps {
 
 /** Окно настроек. */
 export function Settings({ open, onOpenChange }: SettingsProps) {
-	const config = di.resolve(CONFIG_TOKEN)
-	const [updates, setUpdates] = useState(config.checkUpdates)
-	const [mods, setMods] = useState(config.useMods)
-	const [optimizeUnpack, setOptimizeUnpack] = useState(config.optimizeUnpack)
-	const [advanced, setAdvanced] = useState(config.advancedMode)
-
-	useEffect(() => {
-		if (!open) {
-			return
-		}
-
-		setUpdates(config.checkUpdates)
-		setMods(config.useMods)
-		setOptimizeUnpack(config.optimizeUnpack)
-		setAdvanced(config.advancedMode)
-	}, [open, config])
+	const config = useConfig()
 
 	function changeUpdates(value: boolean) {
-		setUpdates(value)
-		config.checkUpdates = value
+		updateConfig('checkUpdates', value)
 	}
 
 	function changeMods(value: boolean) {
-		setMods(value)
-		config.useMods = value
+		updateConfig('useMods', value)
 	}
 
 	function changeOptimizeUnpack(value: boolean) {
-		setOptimizeUnpack(value)
-		config.optimizeUnpack = value
+		updateConfig('optimizeUnpack', value)
 	}
 
 	function changeAdvanced(value: boolean) {
-		setAdvanced(value)
-		config.advancedMode = value
+		updateConfig('advancedMode', value)
 	}
 
 	return (
@@ -72,23 +52,23 @@ export function Settings({ open, onOpenChange }: SettingsProps) {
 
 				<div className="checkboxes">
 					<BoolSetting
-						checked={updates}
+						checked={config.checkUpdates}
 						label={texts.updatesLabel}
 						onChange={changeUpdates}
 					/>
 					<BoolSetting
-						checked={mods}
+						checked={config.useMods}
 						label={texts.modsLabel}
 						onChange={changeMods}
 					/>
 					<BoolSetting
-						checked={optimizeUnpack}
+						checked={config.optimizeUnpack}
 						label={texts.optimizeUnpackLabel}
 						tip={texts.optimizeUnpackTip}
 						onChange={changeOptimizeUnpack}
 					/>
 					<BoolSetting
-						checked={advanced}
+						checked={config.advancedMode}
 						label={texts.advancedModeLabel}
 						onChange={changeAdvanced}
 					/>

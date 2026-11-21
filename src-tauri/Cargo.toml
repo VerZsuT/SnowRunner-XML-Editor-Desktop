@@ -1,0 +1,63 @@
+[package]
+name = "sxmle"
+version = "1.4.0"
+description = "SnowRunner XML Editor"
+edition = "2024"
+rust-version = "1.85"
+publish = false
+
+[lib]
+name = "sxmle"
+path = "src/lib.rs"
+
+[[bin]]
+name = "sxmle"
+path = "src/main.rs"
+
+[[bin]]
+name = "typegen"
+path = "src/bin/typegen.rs"
+
+[build-dependencies]
+tauri-build = { version = "2.7", features = [] }
+
+[dependencies]
+sxmle-app = { workspace = true }
+sxmle-domain = { workspace = true }
+sxmle-storage = { workspace = true }
+tauri = { version = "2.12", features = [] }
+tauri-plugin-dialog = "2.8"
+tauri-specta = { version = "=2.0.0-rc.29", features = ["derive", "typescript"] }
+specta = { workspace = true }
+specta-typescript = "0.0.15"
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+
+[features]
+default = ["custom-protocol"]
+custom-protocol = ["tauri/custom-protocol"]
+
+[workspace]
+members = ["crates/app", "crates/domain", "crates/storage"]
+resolver = "3"
+
+[workspace.package]
+version = "1.4.0"
+edition = "2024"
+rust-version = "1.85"
+license = "MIT"
+publish = false
+
+[workspace.dependencies]
+specta = { version = "=2.0.0-rc.28", features = ["derive"] }
+serde = { version = "1.0.229", features = ["derive"] }
+serde_json = "1.0"
+thiserror = "2.0"
+quick-xml = "0.42"
+encoding_rs = "0.8"
+flate2 = "1.1"
+crc32fast = "1.5"
+sxmle-app = { path = "crates/app" }
+sxmle-domain = { path = "crates/domain" }
+sxmle-storage = { path = "crates/storage" }

@@ -1,0 +1,39 @@
+{
+	"$schema": "https://schema.tauri.app/config/2",
+	"productName": "SnowRunnerXMLEditor",
+	"version": "1.4.0",
+	"identifier": "com.verzsut.snowrunner-xml-editor",
+	"build": {
+		"beforeDevCommand": "npm run dev",
+		"devUrl": "http://localhost:1420",
+		"beforeBuildCommand": "npm run build",
+		"frontendDist": "../dist"
+	},
+	"app": {
+		"windows": [
+			{
+				"label": "general",
+				"title": "SnowRunner XML Editor",
+				"width": 1280,
+				"height": 800,
+				"minWidth": 1024,
+				"minHeight": 640,
+				"center": true,
+				"visible": false
+			}
+		],
+		"security": {
+			"csp": "default-src 'self'; img-src 'self' asset: http://asset.localhost data:; style-src 'self' 'unsafe-inline'"
+		}
+	},
+	"bundle": {
+		"active": true,
+		"targets": ["nsis"],
+		"icon": ["icons/icon.ico"],
+		"windows": {
+			"nsis": {
+				"installMode": "currentUser"
+			}
+		}
+	}
+}

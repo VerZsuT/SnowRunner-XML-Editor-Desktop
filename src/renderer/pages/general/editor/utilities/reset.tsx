@@ -1,7 +1,8 @@
 import type { IFile } from '@modules/files/types'
 import type { IAttrDescriptor } from '@modules/xml/game/attributes'
 import type { FileInfo } from '@modules/xml/renderer'
-import { createContext, useContext, useEffect, useRef } from 'react'
+import { useLatestRef } from '@renderer/utilities/use-latest-ref'
+import { createContext, useContext, useEffect } from 'react'
 import type { ReactNode } from 'react'
 import { importUtils } from './import'
 
@@ -53,9 +54,7 @@ export function useResetBucket() {
  */
 export function useResetListener(listener: ResetListener) {
 	const bucket = useResetBucket()
-	const listenerRef = useRef(listener)
-
-	listenerRef.current = listener
+	const listenerRef = useLatestRef(listener)
 
 	useEffect(() => {
 		if (!bucket) {
@@ -69,7 +68,7 @@ export function useResetListener(listener: ResetListener) {
 		return () => {
 			bucket.delete(handler)
 		}
-	}, [bucket])
+	}, [bucket, listenerRef])
 }
 
 /**
@@ -81,5 +80,5 @@ export async function emitReset(bucket: ResetBucket | null) {
 		return
 	}
 
-	await Promise.all([...bucket].map(listener => listener()))
+	await Promise.all([...bucket].map(async listener => listener()))
 }

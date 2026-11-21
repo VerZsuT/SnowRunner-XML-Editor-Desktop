@@ -1,4 +1,7 @@
-import ts from 'typescript'
+// TypeScript 7 не содержит JS API, а стандартные декораторы и `accessor`
+// умеет опускать только компилятор TypeScript. Это временный шим для
+// Electron-сборки; основной `tsc` и проверка типов используют TypeScript 7.
+import ts from '@typescript/typescript6'
 import type { Plugin } from 'vite'
 
 /** Строка с декоратором. */

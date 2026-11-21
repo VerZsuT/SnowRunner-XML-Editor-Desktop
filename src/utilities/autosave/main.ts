@@ -19,7 +19,7 @@ export interface IAutoSaver {
  * @param delay Задержка, мс.
  * @returns Автосохранение.
  */
-export function createAutoSaver(save: () => Promise<unknown> | unknown, delay = STORAGE_AUTOSAVE_DELAY): IAutoSaver {
+export function createAutoSaver(save: () => unknown, delay = STORAGE_AUTOSAVE_DELAY): IAutoSaver {
 	let timer: NodeJS.Timeout | undefined
 	let running = false
 	let queued = false

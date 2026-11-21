@@ -1,0 +1,142 @@
+import type { Truck } from '@renderer/api/bindings'
+import type { DocumentSession } from '@renderer/api/documents'
+import { DocumentField, InfoField } from './field'
+import { Group } from './group'
+import type { RelatedDocument } from './related'
+import { EnginesField, GearboxesField, SuspensionsField, WheelsField, WinchesField } from './related'
+import { texts } from '../texts'
+
+/** Параметры таблицы трака. */
+export interface TruckTableProps {
+	/** Документ трака. */
+	session: DocumentSession
+
+	/** Модель трака. */
+	truck: Truck
+
+	/** Открытые связанные документы. */
+	related: RelatedDocument[]
+}
+
+/** Таблица параметров трака. */
+export function TruckTable({ session, truck, related }: TruckTableProps) {
+	const data = truck.truckData
+	const gameData = truck.gameData
+	const region = gameData?.uiDesc?.defaultRegion ?? gameData?.uiDesc
+
+	return (
+		<>
+			{region && (
+				<Group label={texts.texts}>
+					<DocumentField session={session} field={region.uiName} />
+					<DocumentField session={session} field={region.uiDesc} />
+					{gameData?.uiDesc?.uiIcon328x458 && (
+						<DocumentField session={session} field={gameData.uiDesc.uiIcon328x458} />
+					)}
+				</Group>
+			)}
+
+			{data && (
+				<Group label={texts.control}>
+					<DocumentField session={session} field={data.responsiveness} />
+					<DocumentField session={session} field={data.backSteerSpeed} />
+					<DocumentField session={session} field={data.steerSpeed} />
+				</Group>
+			)}
+
+			{data && (
+				<Group label={texts.winch}>
+					{data.winch && (
+						<>
+							<DocumentField session={session} field={data.winch.length} />
+							<DocumentField session={session} field={data.winch.strengthMult} />
+						</>
+					)}
+					<WinchesField documents={related} />
+				</Group>
+			)}
+
+			{data && (
+				<Group label={texts.wheels}>
+					{data.wheels && (
+						<Group nested label={texts.wheels}>
+							<DocumentField session={session} field={data.wheels.defaultWheelType} />
+							{data.wheels.wheels.map((wheel, index) => (
+								<Group key={index} nested label={`${texts.wheel} ${index + 1}`}>
+									<DocumentField session={session} field={wheel.torque} />
+									<DocumentField session={session} field={wheel.steeringAngle} />
+								</Group>
+							))}
+						</Group>
+					)}
+
+					{data.extraWheels && (
+						<Group nested label={texts.extraWheel}>
+							{data.extraWheels.wheels.map((wheel, index) => (
+								<Group key={index} nested label={`${texts.extraWheel} ${index + 1}`}>
+									<DocumentField session={session} field={wheel.torque} />
+									<DocumentField session={session} field={wheel.steeringAngle} />
+								</Group>
+							))}
+						</Group>
+					)}
+
+					{data.compatibleWheels.length > 0 && (
+						<Group nested label={texts.wheelSizes}>
+							{data.compatibleWheels.map((wheels, index) => (
+								<Group key={index} nested label={`${texts.wheelSet} ${index + 1}`}>
+									<InfoField field={wheels.type} />
+									<DocumentField session={session} field={wheels.scale} />
+								</Group>
+							))}
+						</Group>
+					)}
+
+					<WheelsField documents={related} />
+				</Group>
+			)}
+
+			{data && (
+				<Group label={texts.suspensions}>
+					<DocumentField session={session} field={data.diffLockType} />
+					<SuspensionsField documents={related} />
+				</Group>
+			)}
+
+			{data && (
+				<Group label={texts.gearboxes}>
+					<GearboxesField documents={related} />
+				</Group>
+			)}
+
+			{data && (
+				<Group label={texts.engines}>
+					<DocumentField session={session} field={data.engineStartDelay} />
+					<DocumentField session={session} field={data.exhaustStartTime} />
+					<EnginesField documents={related} />
+				</Group>
+			)}
+
+			{data && (
+				<Group label={texts.fuel}>
+					{data.fuelTank && <DocumentField session={session} field={data.fuelTank.damageCapacity} />}
+					<DocumentField session={session} field={data.fuelCapacity} />
+				</Group>
+			)}
+
+			{gameData && (
+				<Group label={texts.unlock}>
+					<DocumentField session={session} field={gameData.country} />
+					<DocumentField session={session} field={gameData.price} />
+					<DocumentField
+						session={session}
+						field={gameData.unlockByExploration}
+						labels={{ true: texts.findOnMap, false: texts.byRank }}
+					/>
+					<DocumentField session={session} field={gameData.unlockByRank} />
+				</Group>
+			)}
+
+		</>
+	)
+}

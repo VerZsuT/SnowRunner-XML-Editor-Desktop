@@ -66,9 +66,13 @@ export function arrayToString<T extends string>(value?: T[]): string {
 }
 
 export function areasToString(value: InputArea | InputArea[]): string {
-	return Array.isArray(value[0])
-		? value.map(item => areasToString(item)).join('; ')
-		: `${value[0]}-${value[1]}`
+	if (Array.isArray(value[0])) {
+		return value.map(item => areasToString(item)).join('; ')
+	}
+
+	const [start, end] = value as InputArea
+
+	return `${start}-${end}`
 }
 
 /**

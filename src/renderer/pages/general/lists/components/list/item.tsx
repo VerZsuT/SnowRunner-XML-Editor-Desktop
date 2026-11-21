@@ -121,8 +121,8 @@ export function ListItem({ file, category, visible = true }: ListItemProps) {
 		}
 
 		container.scrollIntoView?.(false)
-		// Намеренно только после монтирования.
-	}, [container])
+		// Прокрутка нужна при появлении элемента и смене открытого файла.
+	}, [container, file.path])
 
 	const nameMatches = nameFilter
 		? name.toLowerCase().includes(nameFilter.toLowerCase())

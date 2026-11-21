@@ -1,0 +1,38 @@
+.setup {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	overflow: hidden;
+
+	&-content {
+		flex: 1;
+		overflow: auto;
+		padding: 16px;
+	}
+
+	&-spin {
+		display: block;
+		margin: 48px auto;
+	}
+
+	&-sections {
+		display: flex;
+		width: 100%;
+	}
+
+	&-section {
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+	}
+
+	&-archive {
+		max-width: 720px;
+	}
+
+	&-option {
+		display: flex;
+		gap: 8px;
+		align-items: center;
+	}
+}

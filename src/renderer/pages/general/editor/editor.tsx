@@ -5,7 +5,8 @@ import { Spin } from '@renderer/components/spin'
 import { useKey } from '@renderer/utilities/use-key'
 import { di } from '@utilities/di/container'
 import { DIRS_TOKEN, DLC_TOKEN, MODS_TOKEN } from '@utilities/di/renderer/tokens'
-import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
+import { useLatestRef } from '@renderer/utilities/use-latest-ref'
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react'
 import { useEditorStore } from '../store/editor'
 import { usePageStore } from '../store/page'
 import { EditorHeader } from './components/header/editor-header'
@@ -52,16 +53,14 @@ export const Editor = forwardRef<EditorHandle, EditorProps>(function Editor({ fi
 	const [xml, setXml] = useState<TruckXML | null>(null)
 	const [hasError, setHasError] = useState(false)
 	const headerRef = useRef<EditorHeaderHandle>(null)
-	const resetBucket = useRef<ResetBucket>(new Set()).current
-	const onReadyRef = useRef(onReady)
-
-	onReadyRef.current = onReady
+	const [resetBucket] = useState<ResetBucket>(() => new Set())
+	const onReadyRef = useLatestRef(onReady)
 
 	const dlcs = di.resolve(DLC_TOKEN)
 	const mods = di.resolve(MODS_TOKEN)
 	const dirs = di.resolve(DIRS_TOKEN)
 
-	const watchedFiles = useMemo(() => file ? [file] : [], [file])
+	const watchedFiles = file ? [file] : []
 
 	useImperativeHandle(ref, () => ({
 		async save(updateFiles = true) {
@@ -100,12 +99,6 @@ export const Editor = forwardRef<EditorHandle, EditorProps>(function Editor({ fi
 
 		let cancelled = false
 
-		void init()
-
-		return () => {
-			cancelled = true
-		}
-
 		async function init() {
 			const result = await readTruckXML(file!)
 
@@ -122,7 +115,13 @@ export const Editor = forwardRef<EditorHandle, EditorProps>(function Editor({ fi
 				onReadyRef.current?.()
 			}
 		}
-	}, [file])
+
+		void init()
+
+		return () => {
+			cancelled = true
+		}
+	}, [file, onReadyRef])
 
 	useFilesWatch(watchedFiles, update)
 	useKey('Escape', () => route(Page.lists))

@@ -92,7 +92,7 @@ async function runWithPool<T, R>(
 	pool: number,
 	action: (item: T) => Promise<R>
 ): Promise<R[]> {
-	const result = new Array<R>(items.length)
+	const result: R[] = []
 	let next = 0
 	const worker = async () => {
 		while (next < items.length) {
@@ -473,7 +473,7 @@ export class FsService {
 
 	/** Прекратить все наблюдения. */
 	closeAll(): void {
-		for (const id of [...this.watchers.keys()]) {
+		for (const id of this.watchers.keys()) {
 			this.closeWatcher(id)
 		}
 	}

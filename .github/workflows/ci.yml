@@ -25,6 +25,37 @@ jobs:
       - run: npm run lint
       - run: npm test
 
+  rust:
+    name: cargo test, clippy
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+
+      - run: npm ci
+      - run: npx vite build
+
+      - name: Типы для TS не расходятся с Rust
+        run: |
+          cargo run --manifest-path src-tauri/Cargo.toml --bin typegen
+          git diff --exit-code src/renderer/api/bindings.ts
+
+      - run: cargo test --manifest-path src-tauri/Cargo.toml --workspace --all-targets
+      - run: cargo clippy --manifest-path src-tauri/Cargo.toml --workspace --all-targets -- -D warnings
+      - run: cargo fmt --manifest-path src-tauri/Cargo.toml --check
+
   package:
     name: package
     if: github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/')

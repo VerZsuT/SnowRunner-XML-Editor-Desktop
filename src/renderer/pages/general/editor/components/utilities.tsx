@@ -1,5 +1,6 @@
 import { di } from '@utilities/di/container'
 import { GAME_TEXTS_TOKEN } from '@utilities/di/renderer/tokens'
+import { useLatestRef } from '@renderer/utilities/use-latest-ref'
 import { createContext, useContext, useEffect, useRef } from 'react'
 import type { ReactNode } from 'react'
 
@@ -32,9 +33,7 @@ export interface ReadyProps {
 export function useFilesReady({ onReady, onMount, dynamic = false }: ReadyProps & { dynamic?: boolean }) {
 	const readyRef = useRef<Set<string>>(new Set())
 	const inProgressRef = useRef<Set<string>>(new Set())
-	const callbacksRef = useRef({ onReady, onMount })
-
-	callbacksRef.current = { onReady, onMount }
+	const callbacksRef = useLatestRef({ onReady, onMount })
 
 	useEffect(() => {
 		callbacksRef.current.onMount?.()
@@ -42,7 +41,7 @@ export function useFilesReady({ onReady, onMount, dynamic = false }: ReadyProps 
 		if (inProgressRef.current.size === 0 && !dynamic) {
 			callbacksRef.current.onReady?.()
 		}
-	}, [dynamic])
+	}, [dynamic, callbacksRef])
 
 	return {
 		ready: (type: string) => {
@@ -60,11 +59,13 @@ export function useFilesReady({ onReady, onMount, dynamic = false }: ReadyProps 
 
 /** Сигнализировать о готовности сразу после монтирования. */
 export function useReady({ onReady, onMount }: ReadyProps) {
+	const callbacksRef = useLatestRef({ onReady, onMount })
+
 	useEffect(() => {
-		onMount?.()
-		onReady?.()
+		callbacksRef.current.onMount?.()
+		callbacksRef.current.onReady?.()
 		// Намеренно только после монтирования.
-	}, [])
+	}, [callbacksRef])
 }
 
 /** Контекст активности параметра. */

@@ -1,3 +1,4 @@
+import type { IRendererMods } from '@modules/data/modifications/types'
 import type { IFile } from '@modules/files/renderer'
 import { Spin } from '@renderer/components/spin'
 import { di } from '@utilities/di/container'
@@ -33,6 +34,15 @@ export interface ModsPopupProps {
 	onHide(reload: boolean): void
 }
 
+/** Получить ключи выбранных модификаций. */
+function getTargetKeys(mods: IRendererMods, source: ModItem[]): string[] {
+	const keys = mods.toSelectKeys(source)
+
+	return mods
+		.filter(mod => keys.includes(mod.path))
+		.map(mod => mod.path)
+}
+
 /** Окно выбора модификаций. */
 export function ModsPopup({ open, onHide }: ModsPopupProps) {
 	const mods = di.resolve(MODS_TOKEN)
@@ -61,7 +71,7 @@ export function ModsPopup({ open, onHide }: ModsPopupProps) {
 			}
 
 			setItems(loaded)
-			setTargetKeys(getTargetKeys(loaded))
+			setTargetKeys(getTargetKeys(mods, loaded))
 		})()
 
 		return () => {
@@ -83,16 +93,8 @@ export function ModsPopup({ open, onHide }: ModsPopupProps) {
 			return
 		}
 
-		setTargetKeys(getTargetKeys(items))
+		setTargetKeys(getTargetKeys(mods, items))
 		onHide(false)
-	}
-
-	function getTargetKeys(source: ModItem[]): string[] {
-		const keys = mods.toSelectKeys(source)
-
-		return mods
-			.filter(mod => keys.includes(mod.path))
-			.map(mod => mod.path)
 	}
 
 	async function addItems(newItems?: ModItem[]) {

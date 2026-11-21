@@ -3,6 +3,7 @@ import { Page, ProgramWindow } from '@modules/windows/enums'
 import { LoadingPage } from '@renderer/components/loading-page'
 import { Menu } from '@renderer/components/menu'
 import { useConfig, useLoadingState } from '@renderer/utilities/use-reactive'
+import { useLatestRef } from '@renderer/utilities/use-latest-ref'
 import { useWindowReady } from '@renderer/utilities/use-window-ready'
 import { hasItems } from '@utilities/checks/renderer'
 import { di } from '@utilities/di/container'
@@ -30,6 +31,7 @@ export function General() {
 	const setShowMessages = useEditorStore(state => state.setShowMessages)
 	const [gameUpdateOpened, setGameUpdateOpened] = useState(false)
 	const initializedRef = useRef(false)
+	const exportDefaultsRef = useLatestRef(exportDefaults)
 
 	useWindowReady(ProgramWindow.general)
 
@@ -71,13 +73,14 @@ export function General() {
 			return
 		}
 
-		window['exportDefaults'] = exportDefaults
+		const handler = () => void exportDefaultsRef.current()
+
+		window['exportDefaults'] = handler
 
 		return () => {
 			delete window['exportDefaults']
 		}
-		// Намеренно один раз.
-	}, [])
+	}, [exportDefaultsRef])
 
 	async function exportDefaults() {
 		const dlcs = di.resolve(DLC_TOKEN)

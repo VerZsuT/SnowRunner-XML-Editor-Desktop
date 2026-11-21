@@ -1,6 +1,3 @@
-/* eslint-disable quote-props */
-/* eslint-disable quotes */
-
 import type { IDefaults } from './types'
 
 /** Стандартные значения параметров таблицы. */

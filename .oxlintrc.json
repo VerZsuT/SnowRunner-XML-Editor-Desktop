@@ -1,0 +1,84 @@
+{
+	"$schema": "./node_modules/oxlint/configuration_schema.json",
+	"plugins": [
+		"eslint",
+		"typescript",
+		"unicorn",
+		"oxc",
+		"react"
+	],
+	"options": {
+		"typeAware": true
+	},
+	"categories": {
+		"correctness": "error"
+	},
+	"rules": {
+		"eqeqeq": [
+			"warn",
+			"always"
+		],
+		"no-extra-bind": "warn",
+		"no-extra-label": "warn",
+		"no-lone-blocks": "warn",
+		"no-lonely-if": "warn",
+		"no-sequences": "warn",
+		"no-useless-call": "warn",
+		"operator-assignment": "warn",
+		"prefer-const": "warn",
+		"prefer-template": "warn",
+		"prefer-rest-params": "error",
+		"one-var": [
+			"error",
+			"never"
+		],
+		"no-useless-return": "error",
+		"no-var": "error",
+		"no-unneeded-ternary": "error",
+		"no-proto": "error",
+		"no-extend-native": "error",
+		"no-alert": "error",
+		"typescript/consistent-type-imports": "error",
+		"typescript/no-floating-promises": "warn",
+		"typescript/no-unused-vars": [
+			"warn",
+			{
+				"vars": "all",
+				"args": "after-used",
+				"varsIgnorePattern": "_+"
+			}
+		],
+		"typescript/no-namespace": "off",
+		"typescript/unbound-method": "off",
+		"typescript/no-base-to-string": "off",
+		"typescript/ban-types": "off",
+		"typescript/ban-ts-comment": "off",
+		"typescript/no-empty-function": "off",
+		"typescript/no-explicit-any": "off",
+		"typescript/no-var-requires": "off",
+		"typescript/no-this-alias": "off",
+		"typescript/no-non-null-assertion": "off",
+		"eslint/no-undef": "off",
+		"eslint/no-empty": "off",
+		"eslint/no-empty-function": "off",
+		"eslint/no-param-reassign": "off",
+		"eslint/no-void": "off",
+		"eslint/no-unused-expressions": "off",
+		"eslint/no-unused-vars": "off",
+		"unicorn/no-static-only-class": "off",
+		"unicorn/prefer-top-level-await": "off",
+		"unicorn/no-process-exit": "off",
+		"unicorn/no-array-reduce": "off",
+		"unicorn/no-array-callback-reference": "off",
+		"unicorn/no-zero-fractions": "off",
+		"unicorn/no-null": "off",
+		"unicorn/no-await-expression-member": "off",
+		"unicorn/consistent-function-scoping": "off",
+		"react/rules-of-hooks": "error",
+		"react/exhaustive-deps": "warn",
+		"react/set-state-in-effect": "warn"
+	},
+	"ignorePatterns": [
+		"src/renderer/api/bindings.ts"
+	]
+}

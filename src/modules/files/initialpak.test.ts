@@ -107,12 +107,23 @@ describe.skipIf(allXml.length === 0 || truckFiles.length === 0)('FsService на 
 			return performance.now() - startedAt
 		}
 
-		const sequential = await measure(async () => {
+		/** Лучший из прогонов: при параллельных воркерах одиночный замер шумит. */
+		const best = async (action: () => Promise<unknown>, runs = 3) => {
+			let value = Number.POSITIVE_INFINITY
+
+			for (let run = 0; run < runs; run++) {
+				value = Math.min(value, await measure(action))
+			}
+
+			return value
+		}
+
+		const sequential = await best(async () => {
 			for (const path of truckFiles) {
 				await fsService.readFile(path)
 			}
 		})
-		const batched = await measure(async () => {
+		const batched = await best(async () => {
 			await fsService.readMany(truckFiles)
 		})
 

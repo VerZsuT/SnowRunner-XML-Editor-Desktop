@@ -1,0 +1,27 @@
+.editor-page {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	overflow: hidden;
+
+	&-button {
+		font-size: 20px;
+	}
+
+	&-dirty {
+		margin-right: 8px;
+		font-size: 12px;
+		opacity: 0.65;
+	}
+
+	&-content {
+		flex: 1;
+		overflow: auto;
+		padding: 8px 16px 24px;
+	}
+
+	&-spin {
+		display: block;
+		margin: 48px auto;
+	}
+}

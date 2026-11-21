@@ -1,4 +1,5 @@
-import { useEffect, useRef } from 'react'
+import { useLatestRef } from '@renderer/utilities/use-latest-ref'
+import { useEffect } from 'react'
 import type { ExportListener } from './export'
 import { exportUtils } from './export'
 import type { ImportListener } from './import'
@@ -10,29 +11,23 @@ import { saveUtils } from './save'
 
 /** Подписаться на экспорт. */
 export function useExportListener(listener: ExportListener) {
-	const listenerRef = useRef(listener)
+	const listenerRef = useLatestRef(listener)
 
-	listenerRef.current = listener
-
-	useEffect(() => exportUtils.onExport(data => listenerRef.current(data)), [])
+	useEffect(() => exportUtils.onExport(data => listenerRef.current(data)), [listenerRef])
 }
 
 /** Подписаться на импорт. */
 export function useImportListener(listener: ImportListener) {
-	const listenerRef = useRef(listener)
+	const listenerRef = useLatestRef(listener)
 
-	listenerRef.current = listener
-
-	useEffect(() => importUtils.onImport(data => listenerRef.current(data)), [])
+	useEffect(() => importUtils.onImport(data => listenerRef.current(data)), [listenerRef])
 }
 
 /** Подписаться на сохранение. */
 export function useSaveListener(listener: SaveEventListener) {
-	const listenerRef = useRef(listener)
+	const listenerRef = useLatestRef(listener)
 
-	listenerRef.current = listener
-
-	useEffect(() => saveUtils.onSave(() => listenerRef.current()), [])
+	useEffect(() => saveUtils.onSave(() => listenerRef.current()), [listenerRef])
 }
 
 /** Подписаться на сброс в текущем наборе. */

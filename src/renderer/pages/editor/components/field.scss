@@ -1,0 +1,27 @@
+.editor-field {
+	display: grid;
+	grid-template-columns: minmax(200px, 1fr) minmax(160px, 1fr);
+	gap: 12px;
+	align-items: center;
+	padding: 3px 4px;
+
+	&-label {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		cursor: default;
+	}
+
+	&-content {
+		min-width: 0;
+	}
+
+	&-input {
+		width: 100%;
+	}
+
+	&-position {
+		display: flex;
+		gap: 6px;
+	}
+}

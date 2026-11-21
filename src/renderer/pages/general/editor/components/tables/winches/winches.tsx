@@ -1,7 +1,8 @@
 import type { IFile } from '@modules/files/renderer'
 import type { FileInfo, WinchVariants } from '@modules/xml/renderer'
 import { hasItems } from '@utilities/checks/renderer'
-import { Fragment, useEffect, useRef, useState } from 'react'
+import { useLatestRef } from '@renderer/utilities/use-latest-ref'
+import { Fragment, useEffect, useState } from 'react'
 import { useEditorStore } from '../../../../store/editor'
 import { useFilesReg, useFilesWatch } from '../../../utilities/files'
 import { FileNameInfo } from '../../info/file-name-info'
@@ -25,9 +26,7 @@ export function Winches({ getter, filesGetter, onReady, onMount }: WinchesProps)
 	const [files, setFiles] = useState<IFile[]>([])
 	const [reloadToken, setReloadToken] = useState(0)
 	const { ready, inProgress } = useFilesReady({ onReady, onMount, dynamic: true })
-	const onReadyRef = useRef(onReady)
-
-	onReadyRef.current = onReady
+	const onReadyRef = useLatestRef(onReady)
 
 	useFilesReg(files, 'winches')
 	useFilesWatch(files, update)
@@ -56,7 +55,7 @@ export function Winches({ getter, filesGetter, onReady, onMount }: WinchesProps)
 			setFiles(foundFiles)
 			setList(foundList)
 		}
-	}, [info, getter, filesGetter, reloadToken])
+	}, [info, getter, filesGetter, reloadToken, onReadyRef])
 
 	function update() {
 		setFiles([])

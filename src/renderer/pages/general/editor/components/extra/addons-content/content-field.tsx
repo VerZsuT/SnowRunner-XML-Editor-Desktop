@@ -1,6 +1,6 @@
 import { Input, Typography } from 'antd'
 import type { ChangeEvent } from 'react'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import './content-field.scss'
 
 const { Text } = Typography
@@ -23,8 +23,12 @@ export interface ContentFieldProps {
 /** Поле содержимого аддона. */
 export function ContentField({ text, value, onChange, onBlur }: ContentFieldProps) {
 	const [val, setVal] = useState(() => String(value))
+	const [previous, setPrevious] = useState(value)
 
-	useEffect(() => setVal(String(value)), [value])
+	if (previous !== value) {
+		setPrevious(value)
+		setVal(String(value))
+	}
 
 	function changeValue(event: ChangeEvent<HTMLInputElement>) {
 		const inputVal = event.target.value

@@ -1,5 +1,6 @@
 import { isString } from '@utilities/checks/renderer'
-import { useEffect, useRef } from 'react'
+import { useEffect } from 'react'
+import { useLatestRef } from './use-latest-ref'
 
 /** Название события клавиши. */
 export type KeyEventName = 'keypress' | 'keyup' | 'keydown'
@@ -40,9 +41,7 @@ export function useKey(params: IHotKeysParams | IHotKeysParams['key'], handler: 
 	const eventName = key === 'Escape'
 		? 'keydown'
 		: 'keypress'
-	const handlerRef = useRef(handler)
-
-	handlerRef.current = handler
+	const handlerRef = useLatestRef(handler)
 
 	useEffect(() => {
 		function eventHandler(event: KeyboardEvent) {
@@ -62,5 +61,5 @@ export function useKey(params: IHotKeysParams | IHotKeysParams['key'], handler: 
 		document.addEventListener(eventName, eventHandler)
 
 		return () => document.removeEventListener(eventName, eventHandler)
-	}, [key, ctrlKey, prevent, shiftKey, eventName])
+	}, [key, ctrlKey, prevent, shiftKey, eventName, handlerRef])
 }

@@ -7,7 +7,7 @@ import { SelectItem } from './item'
 /** Параметры выпадающего списка-параметра. */
 export type SelectProps = IParameterProps<
 	string | boolean,
-	IStringConvertAttrDescriptor<string | boolean | (string | boolean)[] | boolean>
+	IStringConvertAttrDescriptor<string | boolean | (string | boolean)[]>
 > & Omit<ISelectProps, 'value'> & {
 	/** Событие изменения значения. */
 	onChange?(value: ParameterValue): void

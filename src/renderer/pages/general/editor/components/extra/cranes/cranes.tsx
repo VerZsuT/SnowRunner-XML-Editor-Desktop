@@ -1,7 +1,7 @@
 import type { IExportedData } from '@modules/epf/types'
 import { useConfig } from '@renderer/utilities/use-reactive'
 import { Button, Typography } from 'antd'
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { useEditorStore } from '../../../../store/editor'
 import type { IActionProps } from '../../../types'
 import { exportUtils } from '../../../utilities/export'
@@ -22,14 +22,15 @@ export type CranesProps = ReadyProps & IActionProps
 
 /** Вкладка `Краны`. */
 export function Cranes({ file, xml, onReady, onMount }: CranesProps) {
-	const config = useConfig()
+	// Подписка на смену языка: подпись группы вычисляется в геттере.
+	useConfig()
 	const info = useEditorStore(state => state.info)
-	const action = useMemo(() => new CranesAction(), [])
-	const hasCranes = useMemo(() => action.hasCranes(xml), [action, xml])
+	const action = new CranesAction()
+	const hasCranes = action.hasCranes(xml)
 	const [hasRU, setHasRU] = useState(hasCranes[0])
 	const [hasUS, setHasUS] = useState(hasCranes[1])
 	const isActive = action.isActive(xml)
-	const label = useMemo(() => action.name, [config.lang])
+	const label = action.name
 
 	useReady({ onReady, onMount })
 
@@ -38,7 +39,13 @@ export function Cranes({ file, xml, onReady, onMount }: CranesProps) {
 			return
 		}
 
-		const actionsData = data.actionsData[exportUtils.getName(file, info.dlc, info.mod)] ??= {}
+		const name = exportUtils.getName(file, info.dlc, info.mod)
+
+		if (!data.actionsData[name]) {
+			data.actionsData[name] = {}
+		}
+
+		const actionsData = data.actionsData[name]
 
 		actionsData[action.id] = action.export(xml)
 	})

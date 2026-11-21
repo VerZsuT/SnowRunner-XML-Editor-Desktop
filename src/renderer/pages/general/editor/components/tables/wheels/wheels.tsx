@@ -1,7 +1,8 @@
 import type { IFile } from '@modules/files/renderer'
 import type { FileInfo, Wheels as WheelsXML } from '@modules/xml/renderer'
 import { hasItems } from '@utilities/checks/renderer'
-import { Fragment, useEffect, useRef, useState } from 'react'
+import { useLatestRef } from '@renderer/utilities/use-latest-ref'
+import { Fragment, useEffect, useState } from 'react'
 import { useEditorStore } from '../../../../store/editor'
 import { useFilesReg, useFilesWatch } from '../../../utilities/files'
 import { FileNameInfo } from '../../info/file-name-info'
@@ -25,9 +26,7 @@ export function Wheels({ getter, fileGetter, onReady, onMount }: WheelsProps) {
 	const [files, setFiles] = useState<IFile[]>([])
 	const [reloadToken, setReloadToken] = useState(0)
 	const { ready, inProgress } = useFilesReady({ onReady, onMount, dynamic: true })
-	const onReadyRef = useRef(onReady)
-
-	onReadyRef.current = onReady
+	const onReadyRef = useLatestRef(onReady)
 
 	useFilesReg(files, 'wheels')
 	useFilesWatch(files, update)
@@ -62,7 +61,7 @@ export function Wheels({ getter, fileGetter, onReady, onMount }: WheelsProps) {
 			setFiles(foundFiles)
 			setWheelsSets(foundSets)
 		}
-	}, [info, getter, fileGetter, reloadToken])
+	}, [info, getter, fileGetter, reloadToken, onReadyRef])
 
 	function update() {
 		setFiles([])

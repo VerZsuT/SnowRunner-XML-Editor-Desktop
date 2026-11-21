@@ -1,7 +1,7 @@
 import type { IExportedData } from '@modules/epf/types'
 import { useConfig } from '@renderer/utilities/use-reactive'
 import { Button, Typography } from 'antd'
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { useEditorStore } from '../../../../store/editor'
 import type { IActionProps } from '../../../types'
 import { exportUtils } from '../../../utilities/export'
@@ -21,12 +21,13 @@ export type BanditCraneProps = ReadyProps & IActionProps
 
 /** Вкладка `Банан бандита`. */
 export function BanditCrane({ file, xml, onReady, onMount }: BanditCraneProps) {
-	const config = useConfig()
+	// Подписка на смену языка: подпись группы вычисляется в геттере.
+	useConfig()
 	const info = useEditorStore(state => state.info)
-	const action = useMemo(() => new BanditCraneAction(), [])
+	const action = new BanditCraneAction()
 	const isActive = action.isActive(file)
 	const [hasCrane, setHasCrane] = useState(() => action.hasCrane(xml))
-	const label = useMemo(() => action.name, [config.lang])
+	const label = action.name
 
 	useReady({ onReady, onMount })
 
@@ -35,7 +36,13 @@ export function BanditCrane({ file, xml, onReady, onMount }: BanditCraneProps) {
 			return
 		}
 
-		const actionsData = data.actionsData[exportUtils.getName(file, info.dlc, info.mod)] ??= {}
+		const name = exportUtils.getName(file, info.dlc, info.mod)
+
+		if (!data.actionsData[name]) {
+			data.actionsData[name] = {}
+		}
+
+		const actionsData = data.actionsData[name]
 
 		actionsData[action.id] = action.export(xml)
 	})

@@ -1,6 +1,6 @@
 import { isNullable } from '@utilities/checks/renderer'
 import { Input, InputNumber } from 'antd'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { InputType } from '../../enums'
 import type { IInputProps } from '../../types'
 import './item.scss'
@@ -25,10 +25,12 @@ export function InputItem(props: InputItemProps) {
 		max
 	} = props
 	const [value, setValue] = useState<number | string>(props.value)
+	const [previous, setPrevious] = useState(props.value)
 
-	useEffect(() => {
-		setValue(previous => previous === props.value ? previous : props.value)
-	}, [props.value])
+	if (previous !== props.value) {
+		setPrevious(props.value)
+		setValue(props.value)
+	}
 
 	const status: Status = getStatus(value, areas)
 

@@ -1,7 +1,8 @@
 import { Lang, parseStrToLang } from '@modules/data/config/enums'
-import { di } from '@utilities/di/container'
-import { CONFIG_TOKEN, GAME_TEXTS_TOKEN } from '@utilities/di/renderer/tokens'
+import { updateConfig } from '@renderer/config'
 import { useConfig } from '@renderer/utilities/use-reactive'
+import { di } from '@utilities/di/container'
+import { GAME_TEXTS_TOKEN } from '@utilities/di/renderer/tokens'
 import { Segmented, Select } from 'antd'
 import { LANGUAGE_LOCALIZATION as texts } from './localization'
 import './language.scss'
@@ -14,7 +15,6 @@ export interface LanguageProps {
 
 /** Выбор языка. */
 export function Language({ radioMode }: LanguageProps) {
-	const config = di.resolve(CONFIG_TOKEN)
 	const configState = useConfig()
 	const gameTexts = di.resolve(GAME_TEXTS_TOKEN)
 	const options = langToOptions(Lang)
@@ -24,11 +24,11 @@ export function Language({ radioMode }: LanguageProps) {
 	 * @param newLang Новый язык.
 	 */
 	async function changeLang(newLang: Lang) {
-		if (newLang === config.lang) {
+		if (newLang === configState.lang) {
 			return
 		}
 
-		config.lang = newLang
+		updateConfig('lang', newLang)
 
 		await new Promise(resolve => setTimeout(resolve, 0))
 		await gameTexts.initFromInitial()

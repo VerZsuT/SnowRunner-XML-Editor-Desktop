@@ -3,7 +3,8 @@ import type { EditorFilesKey } from '@renderer/pages/general/store/editor'
 import { useEditorStore } from '@renderer/pages/general/store/editor'
 import debounce from 'debounce'
 import type { IWatcher } from '@modules/files/types'
-import { useEffect, useRef } from 'react'
+import { useLatestRef } from '@renderer/utilities/use-latest-ref'
+import { useEffect } from 'react'
 
 /** Слушатель изменения файлов. */
 export type UpdateListener = (event: string, fileName: string | null) => void | Promise<void>
@@ -27,9 +28,7 @@ export function useFilesReg(files: IFile[], key: EditorFilesKey) {
  * @param listener Слушатель.
  */
 export function useFilesWatch(files: IFile[], listener: UpdateListener) {
-	const listenerRef = useRef(listener)
-
-	listenerRef.current = listener
+	const listenerRef = useLatestRef(listener)
 
 	useEffect(() => {
 		const watchers: IWatcher[] = []
@@ -51,5 +50,5 @@ export function useFilesWatch(files: IFile[], listener: UpdateListener) {
 
 			watchListener.clear()
 		}
-	}, [files])
+	}, [files, listenerRef])
 }

@@ -1,5 +1,5 @@
 import { useConfig } from '@renderer/utilities/use-reactive'
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import type { IActionProps } from '../../types'
 import { Accordion } from '../accordion'
 import { Group } from '../group/group'
@@ -23,9 +23,10 @@ export type ExtraActionsProps = IActionProps & ReadyProps
 
 /** Группа `Дополнительно`. */
 export function Extra({ file, xml, onReady, onMount }: ExtraActionsProps) {
-	const config = useConfig()
+	// Подписка на смену языка: подпись группы вычисляется в геттере.
+	useConfig()
 	const { ready, inProgress } = useFilesReady({ onReady, onMount, dynamic: true })
-	const label = useMemo(() => texts.extra, [config.lang])
+	const label = texts.extra
 
 	// Регистрируем все вложенные группы до монтирования детей,
 	// чтобы готовность не срабатывала после первой же группы.
