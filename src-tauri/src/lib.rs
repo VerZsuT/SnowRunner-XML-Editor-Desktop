@@ -7,6 +7,7 @@ mod state;
 use sxmle_app::config::Config;
 use sxmle_app::documents::{DocumentInfo, DocumentKind, MutationResult, SaveResult};
 use sxmle_app::game::VehicleFile;
+use sxmle_app::lists::EditedFile;
 use sxmle_domain::game::descriptor::{AttrDescriptor, AttrKind};
 use sxmle_domain::game::entities::{
 	AddonGameData, AddonInstallSocket, AddonTruckData, BaseGameData, BaseUiDesc, BaseWheelFriction,
@@ -75,6 +76,7 @@ pub fn specta_builder() -> tauri_specta::Builder<tauri::Wry> {
 		.typ::<Limit>()
 		.typ::<Position>()
 		.typ::<Config>()
+		.typ::<EditedFile>()
 		.typ::<VehicleFile>()
 		.typ::<DocumentKind>()
 		.typ::<DocumentInfo>()

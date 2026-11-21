@@ -174,6 +174,24 @@ impl GameFiles {
 			.join("\\")
 	}
 
+	/// Источник файла: DLC и мод, в каталогах которых он лежит.
+	///
+	/// Используется при пометке изменённых файлов: сохранённый из DLC или мода
+	/// файл должен остаться в списке своего источника.
+	pub fn source_of(&self, path: &Path) -> (Option<String>, Option<String>) {
+		let dlc = self
+			.dlcs
+			.iter()
+			.rev()
+			.find(|dlc| path.starts_with(self.dirs.dlc.join(dlc)))
+			.cloned();
+		let mod_name = read_dirs(&self.dirs.mods)
+			.into_iter()
+			.find(|name| path.starts_with(self.dirs.mods.join(name)));
+
+		(dlc, mod_name)
+	}
+
 	/// Читает и разбирает XML-файл.
 	pub fn read_document(&self, path: &Path) -> Result<XmlDocument, GameError> {
 		let source = fs::read(path).map_err(|source| GameError::Read {
@@ -454,6 +472,25 @@ mod tests {
 				PathBuf::from("game/mods/my_mod/classes/trucks/ank_mk38.xml"),
 				PathBuf::from("game/classes/trucks/ank_mk38.xml"),
 			]
+		);
+	}
+
+	#[test]
+	fn источник_определяется_по_каталогу() {
+		let files = GameFiles {
+			dirs: dirs(),
+			dlcs: vec!["dlc_1".to_owned()],
+			mod_name: Some("my_mod".to_owned()),
+			backup: false,
+		};
+
+		assert_eq!(
+			files.source_of(Path::new("game/_dlc/dlc_1/classes/trucks/t.xml")),
+			(Some("dlc_1".to_owned()), None)
+		);
+		assert_eq!(
+			files.source_of(Path::new("game/classes/trucks/t.xml")),
+			(None, None)
 		);
 	}
 

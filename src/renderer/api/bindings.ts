@@ -25,6 +25,14 @@ export const commands = {
 	backupArchive: (archivePath: string, suffix: string | null, options?: InvokeOptions) => typedError<string, CommandError>(__TAURI_INVOKE("backup_archive", { archivePath, suffix }, options)),
 	/**  Восстанавливает `initial.pak` из бэкапа каталога данных. */
 	restoreBackup: (archivePath: string, options?: InvokeOptions) => typedError<number | null, CommandError>(__TAURI_INVOKE("restore_backup", { archivePath }, options)),
+	/**  Избранные файлы. */
+	listFavorites: (options?: InvokeOptions) => __TAURI_INVOKE<string[]>("list_favorites", undefined, options),
+	/**  Переключает избранное и возвращает новое состояние файла. */
+	toggleFavorite: (name: string, options?: InvokeOptions) => typedError<boolean, CommandError>(__TAURI_INVOKE("toggle_favorite", { name }, options)),
+	/**  Изменённые файлы. */
+	listEdited: (options?: InvokeOptions) => __TAURI_INVOKE<EditedFile[]>("list_edited", undefined, options),
+	/**  Снимает пометку изменённого файла. */
+	unmarkEdited: (name: string, options?: InvokeOptions) => typedError<boolean, CommandError>(__TAURI_INVOKE("unmark_edited", { name }, options)),
 	/**  Траки из основной игры, DLC и модов. */
 	listTrucks: (options?: InvokeOptions) => typedError<VehicleFile[], CommandError>(__TAURI_INVOKE("list_trucks", undefined, options)),
 	/**  Прицепы из основной игры, DLC и модов. */
@@ -286,6 +294,18 @@ export type DocumentKind =
 "wheel" | 
 /**  Аддон. */
 "addon";
+
+/**  Изменённый пользователем файл игры. */
+export type EditedFile = {
+	/**  Имя файла без расширения. */
+	name: string,
+	/**  Файл прицепа. */
+	isTrailer?: boolean,
+	/**  DLC, из которого взят файл. */
+	dlc?: string | null,
+	/**  Мод, из которого взят файл. */
+	mod?: string | null,
+};
 
 /**  Двигатель. */
 export type Engine = {

@@ -36,6 +36,26 @@ export const LISTS_PAGE_LOCALIZATION = loadLocalization(new Localization({
 		.ru('Моды')
 		.en('Mods'),
 
+	favoritesSource: new LocalizationStrings()
+		.ru('Избранное')
+		.en('Favorites'),
+
+	editedSource: new LocalizationStrings()
+		.ru('Изменённые')
+		.en('Edited'),
+
+	addFavorite: new LocalizationStrings()
+		.ru('Добавить в избранное')
+		.en('Add to favorites'),
+
+	removeFavorite: new LocalizationStrings()
+		.ru('Убрать из избранного')
+		.en('Remove from favorites'),
+
+	editedMark: new LocalizationStrings()
+		.ru('Файл изменён')
+		.en('File is edited'),
+
 	allTypes: new LocalizationStrings()
 		.ru('Все классы')
 		.en('All types'),

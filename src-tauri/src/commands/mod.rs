@@ -8,6 +8,7 @@ pub mod archive;
 pub mod config;
 pub mod documents;
 pub mod game;
+pub mod library;
 pub mod paths;
 
 /// Все команды приложения.
@@ -23,6 +24,10 @@ pub fn collect() -> Commands<Wry> {
 		archive::verify_archive,
 		archive::backup_archive,
 		archive::restore_backup,
+		library::list_favorites,
+		library::toggle_favorite,
+		library::list_edited,
+		library::unmark_edited,
 		game::list_trucks,
 		game::list_trailers,
 		game::open_truck,

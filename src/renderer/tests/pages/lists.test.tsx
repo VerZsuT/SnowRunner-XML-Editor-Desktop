@@ -44,6 +44,45 @@ describe('ListsPage', () => {
 		expect(onOpen).toHaveBeenCalledWith('ank_mk38', 'truck')
 	})
 
+	it('переключает избранное файла', async () => {
+		const toggle = vi.fn(async () => true)
+
+		render(
+			<AntApp>
+				<ListsPage
+					lists={async () => ({ favorites: [], edited: [] })}
+					load={async () => [file('ank_mk38')]}
+					toggle={toggle}
+					onOpen={() => {}}
+				/>
+			</AntApp>
+		)
+
+		await userEvent.click(await screen.findByRole('button', { name: /star/ }))
+
+		expect(toggle).toHaveBeenCalledWith('ank_mk38')
+	})
+
+	it('показывает только избранное', async () => {
+		render(
+			<AntApp>
+				<ListsPage
+					lists={async () => ({ favorites: ['kenworth_963'], edited: [] })}
+					load={async () => [file('ank_mk38'), file('kenworth_963')]}
+					onOpen={() => {}}
+				/>
+			</AntApp>
+		)
+
+		expect(await screen.findByText('ANK MK38')).toBeInTheDocument()
+
+		await userEvent.click(screen.getByText('Все источники'))
+		await userEvent.click(await screen.findByText('Избранное'))
+
+		expect(screen.queryByText('ANK MK38')).not.toBeInTheDocument()
+		expect(screen.getByText('KENWORTH 963')).toBeInTheDocument()
+	})
+
 	it('переключает категорию на прицепы', async () => {
 		const load = vi.fn(async (category: 'trucks' | 'trailers') => [
 			category === 'trailers' ? file('scout_trailer_flatbed_1') : file('ank_mk38')
@@ -79,6 +118,21 @@ describe('фильтры списка', () => {
 		expect(filterVehicles(files, { source: 'dlc', truckType: '', search: '' })).toEqual([files[1]])
 		expect(filterVehicles(files, { source: 'all', truckType: 'OFFROAD', search: '' })).toEqual([files[0]])
 		expect(filterVehicles(files, { source: 'all', truckType: '', search: 'ANk' })).toEqual([files[0]])
+	})
+
+	it('фильтрует по избранному и изменённым', () => {
+		expect(filterVehicles(files, {
+			source: 'favorites',
+			truckType: '',
+			search: '',
+			favorites: new Set(['mod_truck'])
+		})).toEqual([files[2]])
+		expect(filterVehicles(files, {
+			source: 'edited',
+			truckType: '',
+			search: '',
+			edited: new Set(['ank_mk38'])
+		})).toEqual([files[0]])
 	})
 
 	it('сортирует по источнику и имени', () => {

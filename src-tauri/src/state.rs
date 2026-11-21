@@ -5,6 +5,7 @@ use std::sync::{Mutex, MutexGuard, PoisonError};
 use crate::error::AppResult;
 use sxmle_app::config::{Config, ConfigError, ConfigStore};
 use sxmle_app::documents::Documents;
+use sxmle_app::lists::Library;
 use sxmle_app::paths::{Paths, PathsContext};
 use tauri::{AppHandle, Manager};
 
@@ -13,17 +14,20 @@ pub struct AppState {
 	paths: Paths,
 	config: Mutex<Config>,
 	documents: Mutex<Documents>,
+	library: Mutex<Library>,
 }
 
 impl AppState {
 	/// Создаёт состояние по путям и читает конфигурацию.
 	pub fn new(paths: Paths) -> Self {
 		let config = load_config(&paths);
+		let library = Library::load(paths.json("favorites"), paths.json("edited"));
 
 		Self {
 			paths,
 			config: Mutex::new(config),
 			documents: Mutex::new(Documents::new()),
+			library: Mutex::new(library),
 		}
 	}
 
@@ -53,6 +57,11 @@ impl AppState {
 		*current = next.clone();
 
 		Ok(next)
+	}
+
+	/// Избранное и изменённые файлы.
+	pub fn library(&self) -> MutexGuard<'_, Library> {
+		self.library.lock().unwrap_or_else(PoisonError::into_inner)
 	}
 
 	/// Реестр открытых документов.

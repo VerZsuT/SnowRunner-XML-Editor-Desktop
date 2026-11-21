@@ -1,6 +1,8 @@
-import { ReloadOutlined, SettingOutlined } from '@ant-design/icons'
+import { EditFilled, ReloadOutlined, SettingOutlined, StarFilled, StarOutlined } from '@ant-design/icons'
 import { unpackInitial } from '@renderer/api/archive'
 import type { VehicleFile } from '@renderer/api/bindings'
+import type { UserLists } from '@renderer/api/lists'
+import { loadUserLists, toggleFavorite as toggleFavoriteFile } from '@renderer/api/lists'
 import { loadConfig, saveConfig } from '@renderer/api/settings'
 import { applyConfig, fromConfigDto } from '@renderer/config'
 import type { VehicleCategory } from '@renderer/api/vehicles'
@@ -25,10 +27,22 @@ export interface ListsPageProps {
 
 	/** Загрузчик списка: подменяется в тестах. */
 	load?(category: VehicleCategory): Promise<VehicleFile[]>
+
+	/** Загрузчик избранного и изменённых файлов: подменяется в тестах. */
+	lists?(): Promise<UserLists>
+
+	/** Переключатель избранного: подменяется в тестах. */
+	toggle?(name: string): Promise<boolean>
 }
 
 /** Страница списков траков и прицепов. */
-export function ListsPage({ onOpen, onSetup, load = listVehicles }: ListsPageProps) {
+export function ListsPage({
+	onOpen,
+	onSetup,
+	load = listVehicles,
+	lists = loadUserLists,
+	toggle = toggleFavoriteFile
+}: ListsPageProps) {
 	const { message } = AntApp.useApp()
 	const [category, setCategory] = useState<VehicleCategory>('trucks')
 	const [source, setSource] = useState<VehicleSource>('all')
@@ -38,6 +52,24 @@ export function ListsPage({ onOpen, onSetup, load = listVehicles }: ListsPagePro
 	const [error, setError] = useState<string | null>(null)
 	const [reload, setReload] = useState(0)
 	const [busy, setBusy] = useState(false)
+	const [userLists, setUserLists] = useState<UserLists>({ favorites: [], edited: [] })
+
+	useEffect(() => {
+		let cancelled = false
+
+		void lists().then(
+			value => {
+				if (!cancelled) {
+					setUserLists(value)
+				}
+			},
+			() => {}
+		)
+
+		return () => {
+			cancelled = true
+		}
+	}, [lists, reload])
 
 	useEffect(() => {
 		let cancelled = false
@@ -61,9 +93,11 @@ export function ListsPage({ onOpen, onSetup, load = listVehicles }: ListsPagePro
 		}
 	}, [category, load, reload])
 
+	const favorites = useMemo(() => new Set(userLists.favorites), [userLists.favorites])
+	const edited = useMemo(() => new Set(userLists.edited), [userLists.edited])
 	const visible = useMemo(
-		() => filterVehicles(files ?? [], { source, truckType, search }),
-		[files, search, source, truckType]
+		() => filterVehicles(files ?? [], { source, truckType, search, favorites, edited }),
+		[edited, favorites, files, search, source, truckType]
 	)
 
 	const categories = [
@@ -75,7 +109,9 @@ export function ListsPage({ onOpen, onSetup, load = listVehicles }: ListsPagePro
 		{ label: texts.allSources, value: 'all' },
 		{ label: texts.mainSource, value: 'main' },
 		{ label: texts.dlcSource, value: 'dlc' },
-		{ label: texts.modsSource, value: 'mods' }
+		{ label: texts.modsSource, value: 'mods' },
+		{ label: texts.favoritesSource, value: 'favorites' },
+		{ label: texts.editedSource, value: 'edited' }
 	]
 
 	const types = [
@@ -116,6 +152,21 @@ export function ListsPage({ onOpen, onSetup, load = listVehicles }: ListsPagePro
 		}
 
 		setBusy(false)
+	}
+
+	async function toggleFavorite(name: string) {
+		try {
+			const favorite = await toggle(name)
+
+			setUserLists(current => ({
+				...current,
+				favorites: favorite
+					? [...current.favorites.filter(item => item !== name), name]
+					: current.favorites.filter(item => item !== name)
+			}))
+		} catch (reason) {
+			message.error(toMessage(reason))
+		}
 	}
 
 	function typeLabel(value: string | null): string | null {
@@ -207,23 +258,43 @@ export function ListsPage({ onOpen, onSetup, load = listVehicles }: ListsPagePro
 						)
 						: (
 							<div className="lists-list">
-								{visible.map(file => (
-									<div
-										key={[file.name, file.dlc, file.modName].filter(Boolean).join('/')}
-										className="lists-item"
-										onClick={() => onOpen(file.name, category === 'trailers' ? 'trailer' : 'truck')}
-									>
-										<div className="lists-item-name">
-											{prettyString(file.name).toUpperCase()}
+								{visible.map(file => {
+									const favorite = favorites.has(file.name)
+
+									return (
+										<div
+											key={[file.name, file.dlc, file.modName].filter(Boolean).join('/')}
+											className="lists-item"
+											onClick={() => onOpen(file.name, category === 'trailers' ? 'trailer' : 'truck')}
+										>
+											<Tooltip title={favorite ? texts.removeFavorite : texts.addFavorite}>
+												<Button
+													className="lists-item-favorite"
+													type="text"
+													icon={favorite ? <StarFilled /> : <StarOutlined />}
+													onClick={event => {
+														event.stopPropagation()
+														void toggleFavorite(file.name)
+													}}
+												/>
+											</Tooltip>
+											<div className="lists-item-name">
+												{prettyString(file.name).toUpperCase()}
+											</div>
+											<div className="lists-item-tags">
+												{edited.has(file.name) && (
+													<Tooltip title={texts.editedMark}>
+														<EditFilled className="lists-item-edited" />
+													</Tooltip>
+												)}
+												{typeLabel(file.truckType) && <Tag>{typeLabel(file.truckType)}</Tag>}
+												<Tag color={file.dlc ? 'blue' : file.modName ? 'green' : undefined}>
+													{file.dlc ?? file.modName ?? texts.mainSource}
+												</Tag>
+											</div>
 										</div>
-										<div className="lists-item-tags">
-											{typeLabel(file.truckType) && <Tag>{typeLabel(file.truckType)}</Tag>}
-											<Tag color={file.dlc ? 'blue' : file.modName ? 'green' : undefined}>
-												{file.dlc ?? file.modName ?? texts.mainSource}
-											</Tag>
-										</div>
-									</div>
-								))}
+									)
+								})}
 							</div>
 						)}
 			</div>

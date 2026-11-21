@@ -4,7 +4,10 @@
 //! адресуются идентификатором docId, а мутации — ещё и ожидаемой версией
 //! revision, поэтому устаревшая правка не будет применена молча.
 
+use std::path::Path;
+
 use sxmle_app::documents::{Document, DocumentInfo, DocumentKind, MutationResult, SaveResult};
+use sxmle_app::lists::EditedFile;
 use sxmle_domain::game::entities::{
 	Engine, Gearbox, SuspensionSet, Truck, TruckAddon, Wheel, Wheels, Winch,
 };
@@ -245,18 +248,56 @@ pub fn move_element(
 #[tauri::command]
 #[specta::specta]
 pub fn save_document(state: State<'_, AppState>, doc_id: String) -> AppResult<SaveResult> {
-	let mut documents = state.documents();
+	let saved = state.documents().save(&doc_id)?;
 
-	Ok(documents.save(&doc_id)?)
+	mark_edited(&state, std::slice::from_ref(&saved))?;
+
+	Ok(saved)
 }
 
 /// Сохраняет все изменённые документы.
 #[tauri::command]
 #[specta::specta]
 pub fn save_all_documents(state: State<'_, AppState>) -> AppResult<Vec<SaveResult>> {
-	let mut documents = state.documents();
+	let saved = state.documents().save_all()?;
 
-	Ok(documents.save_all()?)
+	mark_edited(&state, &saved)?;
+
+	Ok(saved)
+}
+
+/// Помечает сохранённые траки и прицепы изменёнными.
+fn mark_edited(state: &AppState, saved: &[SaveResult]) -> AppResult<()> {
+	let files = files(state);
+	let documents = state.documents();
+	let mut entries = Vec::new();
+
+	for item in saved {
+		let info = documents.get(&item.doc_id)?.info();
+
+		if !matches!(info.kind, DocumentKind::Truck | DocumentKind::Trailer) {
+			continue;
+		}
+
+		let (dlc, mod_name) = files.source_of(Path::new(&info.path));
+
+		entries.push(EditedFile {
+			name: info.name.clone(),
+			is_trailer: info.kind == DocumentKind::Trailer,
+			dlc,
+			mod_name,
+		});
+	}
+
+	drop(documents);
+
+	let mut library = state.library();
+
+	for entry in entries {
+		library.mark_edited(entry)?;
+	}
+
+	Ok(())
 }
 
 /// Читает документ заново с диска, отбрасывая правки в памяти.

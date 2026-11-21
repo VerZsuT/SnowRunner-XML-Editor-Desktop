@@ -58,6 +58,19 @@
 		}
 	}
 
+	&-item-favorite {
+		flex-shrink: 0;
+		width: 24px;
+		height: 24px;
+		padding: 0;
+		color: var(--ant-color-warning);
+	}
+
+	&-item-edited {
+		align-self: center;
+		color: var(--ant-color-text-tertiary);
+	}
+
 	&-item-name {
 		min-width: 0;
 		overflow: hidden;

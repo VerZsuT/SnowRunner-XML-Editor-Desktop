@@ -5,4 +5,5 @@ pub mod config;
 pub mod documents;
 pub mod game;
 pub mod info;
+pub mod lists;
 pub mod paths;

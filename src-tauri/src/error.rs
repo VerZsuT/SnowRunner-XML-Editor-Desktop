@@ -155,6 +155,19 @@ impl From<sxmle_app::config::ConfigError> for CommandError {
 	}
 }
 
+impl From<sxmle_app::lists::LibraryError> for CommandError {
+	fn from(error: sxmle_app::lists::LibraryError) -> Self {
+		use sxmle_app::lists::LibraryError;
+
+		match error {
+			LibraryError::Write { path, source } => {
+				Self::io(source).with_path(path.display().to_string())
+			}
+			LibraryError::Serialize(error) => Self::internal(error),
+		}
+	}
+}
+
 impl From<sxmle_app::documents::DocumentError> for CommandError {
 	fn from(error: sxmle_app::documents::DocumentError) -> Self {
 		use sxmle_app::documents::DocumentError;
