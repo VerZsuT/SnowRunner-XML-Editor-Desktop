@@ -3,7 +3,7 @@ import { registerConfig } from '@renderer/config'
 import type { SetupClient } from '@renderer/pages/setup/client'
 import { SetupPage } from '@renderer/pages/setup'
 import { App as AntApp } from 'antd'
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
@@ -75,7 +75,14 @@ function client(): SetupClient {
 		mods: vi.fn(async () => []),
 		addMod: vi.fn(async () => []),
 		removeMod: vi.fn(async () => []),
-		syncMods: vi.fn(async () => [])
+		syncMods: vi.fn(async () => []),
+		switchMode: vi.fn(async (portable: boolean) => ({
+			mode: portable ? 'portable' as const : 'installed' as const,
+			dataRoot: 'C:/data',
+			copied: 2
+		})),
+		restart: vi.fn(async () => {}),
+		reload: vi.fn()
 	}
 }
 
@@ -128,6 +135,47 @@ describe('SetupPage', () => {
 		await userEvent.click(screen.getByTitle('Убрать мод из списка'))
 
 		expect(fake.removeMod).toHaveBeenCalledWith('my_mod')
+	})
+
+	it('сохраняет язык интерфейса и перезагружает экран', async () => {
+		const fake = client()
+
+		render(
+			<AntApp>
+				<SetupPage client={fake} onBack={() => {}} />
+			</AntApp>
+		)
+
+		await userEvent.click(await screen.findByRole('combobox'))
+
+		await userEvent.click(await screen.findByTitle('English'))
+
+		expect(fake.saveConfig).toHaveBeenCalledWith(expect.objectContaining({ lang: 'EN' }))
+		expect(fake.reload).toHaveBeenCalled()
+	})
+
+	it('переключает режим хранения данных и перезапускает программу', async () => {
+		const fake = client()
+
+		render(
+			<AntApp>
+				<SetupPage client={fake} onBack={() => {}} />
+			</AntApp>
+		)
+
+		const switches = await screen.findAllByRole('switch')
+
+		await userEvent.click(switches[2])
+
+		const dialog = await screen.findByRole('dialog')
+
+		await userEvent.click(within(dialog).getByRole('button', { name: /Портативн/ }))
+
+		expect(fake.switchMode).toHaveBeenCalledWith(true)
+
+		await userEvent.click(await screen.findByRole('button', { name: 'Перезапустить' }))
+
+		expect(fake.restart).toHaveBeenCalled()
 	})
 
 	it('делает бэкап выбранного архива', async () => {

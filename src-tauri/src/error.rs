@@ -168,6 +168,21 @@ impl From<sxmle_app::lists::LibraryError> for CommandError {
 	}
 }
 
+impl From<sxmle_app::paths::SwitchError> for CommandError {
+	fn from(error: sxmle_app::paths::SwitchError) -> Self {
+		use sxmle_app::paths::SwitchError;
+
+		match error {
+			SwitchError::Io { path, source } => {
+				Self::io(source).with_path(path.display().to_string())
+			}
+			SwitchError::Dev => {
+				Self::invalid_argument("в режиме разработки каталог данных не переключается")
+			}
+		}
+	}
+}
+
 impl From<sxmle_app::mods::ModsError> for CommandError {
 	fn from(error: sxmle_app::mods::ModsError) -> Self {
 		use sxmle_app::mods::ModsError;

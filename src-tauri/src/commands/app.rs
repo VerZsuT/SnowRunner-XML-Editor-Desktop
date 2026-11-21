@@ -20,6 +20,13 @@ pub fn app_info(state: State<'_, AppState>) -> AppResult<AppInfo> {
 	))
 }
 
+/// Перезапускает программу: нужно после смены режима хранения данных.
+#[tauri::command]
+#[specta::specta]
+pub fn restart_app(app: AppHandle) -> AppResult<()> {
+	app.restart();
+}
+
 /// Открывает инструменты разработчика у главного окна.
 #[tauri::command]
 #[specta::specta]

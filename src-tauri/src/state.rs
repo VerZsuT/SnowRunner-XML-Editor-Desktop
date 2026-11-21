@@ -87,14 +87,19 @@ fn load_config(paths: &Paths) -> Config {
 		.load(Config::new(env!("CARGO_PKG_VERSION"), tauri::is_dev()))
 }
 
-/// Строит пути программы по окружению Tauri.
-pub fn resolve_paths(app: &AppHandle) -> AppResult<Paths> {
-	let context = PathsContext {
+/// Строит контекст путей по окружению Tauri.
+pub fn paths_context(app: &AppHandle) -> AppResult<PathsContext> {
+	Ok(PathsContext {
 		resource_dir: app.path().resource_dir()?,
 		exe_path: std::env::current_exe()?,
 		roaming_dir: app.path().data_dir()?,
 		is_dev: tauri::is_dev(),
-	};
+	})
+}
+
+/// Строит пути программы по окружению Tauri.
+pub fn resolve_paths(app: &AppHandle) -> AppResult<Paths> {
+	let context = paths_context(app)?;
 
 	Ok(Paths::resolve(&context, |path| path.is_file()))
 }

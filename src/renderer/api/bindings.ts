@@ -9,8 +9,12 @@ export const commands = {
 	appInfo: (options?: InvokeOptions) => typedError<AppInfo, CommandError>(__TAURI_INVOKE("app_info", undefined, options)),
 	/**  Открывает инструменты разработчика у главного окна. */
 	openDevtools: (options?: InvokeOptions) => typedError<null, CommandError>(__TAURI_INVOKE("open_devtools", undefined, options)),
+	/**  Перезапускает программу: нужно после смены режима хранения данных. */
+	restartApp: (options?: InvokeOptions) => typedError<null, CommandError>(__TAURI_INVOKE("restart_app", undefined, options)),
 	/**  Пути программы: каталоги данных, json-файлы, URL. */
 	paths: (options?: InvokeOptions) => typedError<PathsDto, CommandError>(__TAURI_INVOKE("paths", undefined, options)),
+	/**  Переключает режим хранения данных; применяется после перезапуска программы. */
+	switchDataMode: (portable: boolean, options?: InvokeOptions) => typedError<SwitchModeDto, CommandError>(__TAURI_INVOKE("switch_data_mode", { portable }, options)),
 	/**  Текущая конфигурация программы. */
 	config: (options?: InvokeOptions) => typedError<Config, CommandError>(__TAURI_INVOKE("config", undefined, options)),
 	/**  Сохраняет конфигурацию и возвращает её после проверки. */
@@ -628,6 +632,16 @@ export type SuspensionSet = {
 	suspensions: Suspension[],
 	/**  Информация о взаимодействии с окружающим миром. */
 	gameData: BaseGameData | null,
+};
+
+/**  Отчёт о смене режима хранения данных. */
+export type SwitchModeDto = {
+	/**  Новый режим. */
+	mode: DataMode,
+	/**  Новый каталог данных. */
+	dataRoot: string,
+	/**  Сколько json-файлов перенесено. */
+	copied: number,
 };
 
 /**  Сцепление шины с поверхностью. */

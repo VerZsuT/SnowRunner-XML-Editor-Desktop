@@ -3,7 +3,7 @@ import { Header } from '@renderer/components/header'
 import { applyConfig, fromConfigDto } from '@renderer/config'
 import { open } from '@tauri-apps/plugin-dialog'
 import { formatString } from '@utilities/strings'
-import { App as AntApp, Button, Descriptions, Input, Result, Space, Spin, Switch, Typography } from 'antd'
+import { App as AntApp, Button, Descriptions, Input, Result, Select, Space, Spin, Switch, Typography } from 'antd'
 import { useEffect, useState } from 'react'
 import type { Config, ModEntry, PathsDto } from '@renderer/api/bindings'
 import type { SetupClient } from './client'
@@ -12,7 +12,7 @@ import { SETUP_PAGE_LOCALIZATION as texts } from './localization'
 import './setup.scss'
 
 /** Действие экрана настройки, выполняемое сейчас. */
-type SetupAction = 'unpack' | 'backup' | 'verify' | 'restore' | 'update' | 'mods'
+type SetupAction = 'unpack' | 'backup' | 'verify' | 'restore' | 'update' | 'mods' | 'mode'
 
 /** Параметры экрана настройки. */
 export interface SetupPageProps {
@@ -192,6 +192,43 @@ export function SetupPage({ onBack, client = setupClient }: SetupPageProps) {
 		setBusy(null)
 	}
 
+	async function changeLang(lang: string) {
+		try {
+			await update({ lang })
+			message.success(texts.saved)
+			client.reload()
+		} catch (reason) {
+			message.error(toMessage(reason))
+		}
+	}
+
+	function confirmMode(portable: boolean) {
+		modal.confirm({
+			title: texts.modeConfirm,
+			okText: portable ? texts.modePortable : texts.modeInstalled,
+			cancelText: texts.cancel,
+			onOk: async () => {
+				setBusy('mode')
+
+				try {
+					const result = await client.switchMode(portable)
+
+					message.success(formatString(texts.modeSwitched, String(result.copied)))
+					modal.confirm({
+						title: texts.restartConfirm,
+						okText: texts.restart,
+						cancelText: texts.cancel,
+						onOk: () => client.restart()
+					})
+				} catch (reason) {
+					message.error(toMessage(reason))
+				}
+
+				setBusy(null)
+			}
+		})
+	}
+
 	function confirm(action: 'unpack' | 'restore') {
 		modal.confirm({
 			title: action === 'unpack' ? texts.unpackConfirm : texts.restoreConfirm,
@@ -349,6 +386,28 @@ export function SetupPage({ onBack, client = setupClient }: SetupPageProps) {
 											onChange={value => void toggle('advancedMode', value)}
 										/>
 										<Typography.Text>{texts.advancedMode}</Typography.Text>
+									</div>
+									<div className="setup-option">
+										<Switch
+											checked={paths.mode === 'portable'}
+											disabled={paths.mode === 'dev' || busy === 'mode'}
+											onChange={value => confirmMode(value)}
+										/>
+										<Typography.Text>{texts.portableMode}</Typography.Text>
+									</div>
+									<div className="setup-option">
+										<Typography.Text>{texts.language}</Typography.Text>
+										<Select
+											className="setup-language"
+											value={config.lang}
+											options={[
+												{ label: 'Русский', value: 'RU' },
+												{ label: 'English', value: 'EN' },
+												{ label: 'Deutsch', value: 'DE' },
+												{ label: '中文', value: 'CH' }
+											]}
+											onChange={value => void changeLang(value)}
+										/>
 									</div>
 								</section>
 							</Space>

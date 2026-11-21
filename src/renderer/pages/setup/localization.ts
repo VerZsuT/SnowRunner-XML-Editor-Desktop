@@ -140,6 +140,30 @@ export const SETUP_PAGE_LOCALIZATION = loadLocalization(new Localization({
 		.ru('Убрать мод из списка')
 		.en('Remove mod from the list'),
 
+	language: new LocalizationStrings()
+		.ru('Язык интерфейса')
+		.en('Interface language'),
+
+	portableMode: new LocalizationStrings()
+		.ru('Портативный режим')
+		.en('Portable mode'),
+
+	modeConfirm: new LocalizationStrings()
+		.ru('Сменить режим хранения данных? JSON-файлы программы будут перенесены в новый каталог, файлы игры и бэкапы нужно будет распаковать заново.')
+		.en('Switch the data storage mode? The program JSON files will be moved to the new directory; game files and backups must be unpacked again.'),
+
+	modeSwitched: new LocalizationStrings()
+		.ru('Режим изменён. Перенесено файлов: {}. Перезапустите программу.')
+		.en('Mode changed. Files moved: {}. Restart the program.'),
+
+	restartConfirm: new LocalizationStrings()
+		.ru('Перезапустить программу сейчас?')
+		.en('Restart the program now?'),
+
+	restart: new LocalizationStrings()
+		.ru('Перезапустить')
+		.en('Restart'),
+
 	options: new LocalizationStrings()
 		.ru('Параметры')
 		.en('Options'),

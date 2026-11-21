@@ -214,6 +214,138 @@ impl Paths {
 	}
 }
 
+/// Отчёт о смене режима хранения данных.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct SwitchReport {
+	/// Новый режим.
+	pub mode: DataMode,
+
+	/// Новый каталог данных.
+	pub data_root: PathBuf,
+
+	/// Сколько json-файлов перенесено.
+	pub copied: usize,
+}
+
+/// Ошибка смены режима хранения данных.
+#[derive(Debug, thiserror::Error)]
+pub enum SwitchError {
+	/// Файл или каталог не записан.
+	#[error("ошибка файловой системы {path}: {source}")]
+	Io {
+		/// Путь.
+		path: PathBuf,
+		/// Ошибка ввода-вывода.
+		#[source]
+		source: io::Error,
+	},
+
+	/// В режиме разработки каталог данных задаётся сборкой.
+	#[error("в режиме разработки каталог данных не переключается")]
+	Dev,
+}
+
+/// Переключает режим хранения данных и переносит json-файлы программы.
+///
+/// Портативный режим отмечается файлом `portable.txt` рядом с exe, поэтому
+/// установленная в Program Files программа вернёт ошибку записи маркера.
+/// Каталоги `mainTemp`, `modsTemp` и бэкапы не копируются: после смены
+/// режима файлы игры распаковываются в новое место.
+pub fn switch_data_mode(
+	context: &PathsContext,
+	portable: bool,
+) -> Result<SwitchReport, SwitchError> {
+	if context.is_dev {
+		return Err(SwitchError::Dev);
+	}
+
+	let location = resolve_data_location(
+		&LocationContext {
+			is_dev: false,
+			exe_path: context.exe_path.clone(),
+			roaming_dir: context.roaming_dir.clone(),
+		},
+		|path| path.is_file(),
+	);
+	let exe_dir = context.exe_path.parent().unwrap_or(Path::new(""));
+	let marker = exe_dir.join(PORTABLE_MARKER);
+	let data_root = if portable {
+		exe_dir.join("data")
+	} else {
+		context.roaming_dir.join(APP_DIR_NAME)
+	};
+
+	let copied = copy_jsons(&location.data_root.join("jsons"), &data_root.join("jsons"))?;
+
+	if portable {
+		fs::write(&marker, b"portable").map_err(|source| SwitchError::Io {
+			path: marker.clone(),
+			source,
+		})?;
+	} else {
+		match fs::remove_file(&marker) {
+			Ok(()) => {}
+			Err(error) if error.kind() == io::ErrorKind::NotFound => {}
+			Err(source) => {
+				return Err(SwitchError::Io {
+					path: marker,
+					source,
+				});
+			}
+		}
+	}
+
+	Ok(SwitchReport {
+		mode: if portable {
+			DataMode::Portable
+		} else {
+			DataMode::Installed
+		},
+		data_root,
+		copied,
+	})
+}
+
+/// Копирует json-файлы программы, не перезаписывая существующие.
+fn copy_jsons(from: &Path, to: &Path) -> Result<usize, SwitchError> {
+	let Ok(entries) = fs::read_dir(from) else {
+		return Ok(0);
+	};
+
+	let mut copied = 0;
+
+	for entry in entries.flatten() {
+		let path = entry.path();
+
+		if !path.is_file()
+			|| !path
+				.extension()
+				.is_some_and(|extension| extension == "json")
+		{
+			continue;
+		}
+
+		let target = to.join(entry.file_name());
+
+		if target.exists() {
+			continue;
+		}
+
+		fs::create_dir_all(to).map_err(|source| SwitchError::Io {
+			path: to.to_path_buf(),
+			source,
+		})?;
+		fs::copy(&path, &target).map_err(|source| SwitchError::Io {
+			path: target,
+			source,
+		})?;
+
+		copied += 1;
+	}
+
+	Ok(copied)
+}
+
 /// Переносит json-файлы из каталога установки в каталог данных.
 ///
 /// Выполняется один раз: если в каталоге данных уже есть json-файлы, ничего не копируется.

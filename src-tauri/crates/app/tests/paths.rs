@@ -4,8 +4,8 @@ use std::fs;
 use std::path::{Path, PathBuf};
 
 use sxmle_app::paths::{
-	DataMode, LocationContext, PORTABLE_MARKER, Paths, PathsContext, migrate_legacy_data,
-	resolve_data_location,
+	DataMode, LocationContext, PORTABLE_MARKER, Paths, PathsContext, SwitchError,
+	migrate_legacy_data, resolve_data_location, switch_data_mode,
 };
 
 /// Каталог установки.
@@ -145,6 +145,56 @@ fn migrate_keeps_existing_data() {
 
 	assert!(migrate_legacy_data(&legacy, &data).unwrap().is_empty());
 	assert_eq!(fs::read_to_string(data.join("config.json")).unwrap(), "new");
+}
+
+#[test]
+fn switch_to_portable_copies_json_and_creates_marker() {
+	let root = make_dir("switch-portable");
+	let exe_dir = root.join("app");
+	let roaming = root.join("roaming");
+	let installed = roaming.join("SnowRunner XML Editor/jsons");
+
+	fs::create_dir_all(&installed).unwrap();
+	fs::write(installed.join("config.json"), "{}").unwrap();
+	fs::write(installed.join("favorites.json"), "[]").unwrap();
+
+	let context = PathsContext {
+		resource_dir: exe_dir.clone(),
+		exe_path: exe_dir.join("SnowRunnerXMLEditor.exe"),
+		roaming_dir: roaming.clone(),
+		is_dev: false,
+	};
+	let report = switch_data_mode(&context, true).unwrap();
+
+	assert_eq!(report.mode, DataMode::Portable);
+	assert_eq!(report.data_root, exe_dir.join("data"));
+	assert_eq!(report.copied, 2);
+	assert!(exe_dir.join(PORTABLE_MARKER).is_file());
+	assert!(exe_dir.join("data/jsons/config.json").is_file());
+	assert!(exe_dir.join("data/jsons/favorites.json").is_file());
+
+	let back = switch_data_mode(&context, false).unwrap();
+
+	assert_eq!(back.mode, DataMode::Installed);
+	assert_eq!(back.data_root, roaming.join("SnowRunner XML Editor"));
+	assert_eq!(back.copied, 0);
+	assert!(!exe_dir.join(PORTABLE_MARKER).exists());
+}
+
+#[test]
+fn switch_in_dev_is_rejected() {
+	let root = make_dir("switch-dev");
+	let context = PathsContext {
+		resource_dir: root.clone(),
+		exe_path: root.join("app.exe"),
+		roaming_dir: root.clone(),
+		is_dev: true,
+	};
+
+	assert!(matches!(
+		switch_data_mode(&context, true),
+		Err(SwitchError::Dev)
+	));
 }
 
 #[test]

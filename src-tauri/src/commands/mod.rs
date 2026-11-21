@@ -18,7 +18,9 @@ pub fn collect() -> Commands<Wry> {
 	collect_commands![
 		app::app_info,
 		app::open_devtools,
+		app::restart_app,
 		paths::paths,
+		paths::switch_data_mode,
 		config::config,
 		config::save_config,
 		archive::unpack_initial,

@@ -1,7 +1,7 @@
 import { backupArchive, restoreBackup, unpackInitial, updateArchive, verifyArchive } from '@renderer/api/archive'
-import type { Config, ModEntry, PathsDto } from '@renderer/api/bindings'
+import type { Config, ModEntry, PathsDto, SwitchModeDto } from '@renderer/api/bindings'
 import { addMod, listMods, removeMod, syncMods } from '@renderer/api/mods'
-import { loadConfig, loadPaths, saveConfig } from '@renderer/api/settings'
+import { loadConfig, loadPaths, restartApp, saveConfig, switchDataMode } from '@renderer/api/settings'
 
 /** Клиент экрана настройки: подменяется в тестах. */
 export interface SetupClient {
@@ -40,6 +40,15 @@ export interface SetupClient {
 
 	/** Пересобирает распакованные файлы модов. */
 	syncMods(): Promise<ModEntry[]>
+
+	/** Переключает режим хранения данных. */
+	switchMode(portable: boolean): Promise<SwitchModeDto>
+
+	/** Перезапускает программу. */
+	restart(): Promise<void>
+
+	/** Перезагружает интерфейс: нужен после смены языка. */
+	reload(): void
 }
 
 /** Клиент команд ядра. */
@@ -55,5 +64,8 @@ export const setupClient: SetupClient = {
 	mods: listMods,
 	addMod,
 	removeMod,
-	syncMods
+	syncMods,
+	switchMode: switchDataMode,
+	restart: restartApp,
+	reload: () => window.location.reload()
 }

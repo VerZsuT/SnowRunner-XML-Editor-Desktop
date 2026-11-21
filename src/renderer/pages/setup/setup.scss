@@ -51,6 +51,10 @@
 		}
 	}
 
+	&-language {
+		min-width: 160px;
+	}
+
 	&-option {
 		display: flex;
 		gap: 8px;

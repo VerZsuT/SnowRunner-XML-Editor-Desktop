@@ -9,6 +9,8 @@ use sxmle_app::documents::{DocumentInfo, DocumentKind, MutationResult, SaveResul
 use sxmle_app::game::VehicleFile;
 use sxmle_app::lists::EditedFile;
 use sxmle_app::mods::ModEntry;
+
+use crate::commands::paths::SwitchModeDto;
 use sxmle_app::texts::GameTexts;
 use sxmle_domain::game::descriptor::{AttrDescriptor, AttrKind};
 use sxmle_domain::game::entities::{
@@ -81,6 +83,7 @@ pub fn specta_builder() -> tauri_specta::Builder<tauri::Wry> {
 		.typ::<EditedFile>()
 		.typ::<GameTexts>()
 		.typ::<ModEntry>()
+		.typ::<SwitchModeDto>()
 		.typ::<VehicleFile>()
 		.typ::<DocumentKind>()
 		.typ::<DocumentInfo>()
