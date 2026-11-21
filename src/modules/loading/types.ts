@@ -1,5 +1,3 @@
-import type { ComputedRef } from 'vue'
-
 /** Состояние загрузки. */
 export interface ILoadingState {
 	/** Происходит загрузка. */
@@ -33,7 +31,7 @@ export interface IPublicLoading {
 /** Работа с загрузкой программы. [renderer] */
 export interface IRendererLoading extends IPublicLoading {
 	/** Процент выполнения. */
-	percent: ComputedRef<number>
+	readonly percent: number
 }
 
 /** Работа с загрузкой программы. [main] */

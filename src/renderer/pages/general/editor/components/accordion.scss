@@ -1,0 +1,46 @@
+.accordion {
+	width: 100%;
+}
+
+.panel {
+	border-bottom: 1px solid #f0f0f0;
+
+	&-header {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		padding: 0 16px;
+		cursor: pointer;
+		transition: background-color 0.2s;
+
+		&:hover {
+			background-color: #f5f5f5;
+		}
+	}
+
+	&-arrow {
+		display: inline-flex;
+		align-items: center;
+		color: rgba(0, 0, 0, 0.45);
+		transition: transform 0.2s;
+	}
+
+	&-icon {
+		width: 32px;
+		height: 32px;
+		margin-left: auto;
+		object-fit: contain;
+	}
+
+	&-content {
+		overflow: hidden;
+
+		&-box {
+			padding: 16px;
+		}
+	}
+}
+
+.group-label {
+	display: inline-block;
+}

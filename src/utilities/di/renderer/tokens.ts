@@ -15,7 +15,7 @@ import type { IImages } from '@modules/images/types'
 import type { IRendererLoading } from '@modules/loading/types'
 import type { IRendererMessages } from '@modules/messages/types'
 import type { IPaths, IRendererPathsManager } from '@modules/paths/types'
-import type { IMainSystem } from '@modules/system/types'
+import type { IRendererSystem } from '@modules/system/types'
 import type { IRendererUpdates } from '@modules/updates/types'
 import type { IRendererWindows } from '@modules/windows/types'
 import type { ConstructorOf } from '../container'
@@ -81,8 +81,8 @@ export const PATHS_MANAGER_TOKEN = new InjectionToken<ConstructorOf<IRendererPat
 /** {@link IPaths} */
 export const PATHS_TOKEN = new InjectionToken<ConstructorOf<IPaths>>('IPaths')
 
-/** {@link IMainSystem} */
-export const SYSTEM_TOKEN = new InjectionToken<ConstructorOf<IMainSystem>>('ISystem')
+/** {@link IRendererSystem} */
+export const SYSTEM_TOKEN = new InjectionToken<ConstructorOf<IRendererSystem>>('ISystem')
 
 /** {@link IRendererUpdates} */
 export const UPDATES_TOKEN = new InjectionToken<ConstructorOf<IRendererUpdates>>('IRendererUpdates')

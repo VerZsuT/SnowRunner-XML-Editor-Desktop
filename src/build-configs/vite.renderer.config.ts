@@ -1,10 +1,11 @@
-import pluginVue from '@vitejs/plugin-vue'
+import pluginReact from '@vitejs/plugin-react'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import type { UserConfig } from 'vite'
 import { defineConfig } from 'vite'
 import { viteStaticCopy } from 'vite-plugin-static-copy'
 import { paths } from './paths.js'
+import { pluginDecorators } from './decorators-plugin.js'
 import { alias, external, externalizePlugin, pluginExposeRenderer } from './vite.base.config.js'
 
 /** Папка, в которой находится текущий исполняемый скрипт. */
@@ -19,11 +20,8 @@ export default defineConfig(forgeEnv => {
 		root,
 		mode,
 		base: './',
-		esbuild: {
-			target: 'es2025',
-			supported: { 'top-level-await': true }
-		},
 		build: {
+			target: 'es2025',
 			rollupOptions: {
 				input: { general: getPagePath('general') },
 				output: {
@@ -34,9 +32,10 @@ export default defineConfig(forgeEnv => {
 			}
 		},
 		plugins: [
+			pluginDecorators(),
 			externalizePlugin({ filter: /\/main(\.ts)?$/ }),
 			pluginExposeRenderer('renderer'),
-			pluginVue(),
+			pluginReact(),
 			viteStaticCopy({
 				targets: [
 					{ src: `${paths.images}/icons/*`, dest: '../src/renderer/pages/images/icons', rename: { stripBase: true } },

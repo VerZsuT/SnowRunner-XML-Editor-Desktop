@@ -1,0 +1,26 @@
+.list {
+	display: flex;
+	justify-content: space-evenly;
+	overflow-y: auto;
+	height: 100%;
+	align-content: flex-start;
+	flex-grow: 1;
+	flex-direction: row;
+	flex-wrap: wrap;
+	will-change: auto;
+	gap: 5px;
+	padding: 10px 5px;
+}
+
+.mods-button-cont {
+	text-align: center;
+}
+
+.mods-button {
+	margin-bottom: 10px;
+
+	&-cont {
+		width: 100%;
+		text-align: center;
+	}
+}

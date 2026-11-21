@@ -1,31 +1,27 @@
 import js from '@eslint/js'
 import unicorn from 'eslint-plugin-unicorn'
-import vue from 'eslint-plugin-vue'
 import ts from 'typescript-eslint'
-import vueParser from 'vue-eslint-parser'
 
 export default [
 	js.configs.recommended,
 	ts.configs.eslintRecommended,
 	...ts.configs.recommended,
-	...vue.configs["flat/recommended"],
 	{
+	files: ['**/*.{js,ts,tsx}'],
 	languageOptions: {
-		parser: vueParser,
+		parser: ts.parser,
 		parserOptions: {
-			parser: '@typescript-eslint/parser',
 			ecmaVersion: 'latest',
 			sourceType: 'module',
+			ecmaFeatures: { jsx: true },
 			project: [
 				'src/tsconfig.json',
 				'src/main/tsconfig.json',
 				'src/renderer/tsconfig.json',
 			],
-			extraFileExtensions: ['.vue'],
 		},
 	},
 	plugins: {
-		'vue': vue,
 		'unicorn': unicorn,
 	},
 	rules: {
@@ -108,7 +104,6 @@ export default [
 		'unicorn/no-await-expression-member': 'off',
 		'unicorn/consistent-function-scoping': 'off',
 		'unicorn/consistent-destructuring': 'off',
-		'vue/multi-word-component-names': 'off',
 	},
 	ignores: [
 		'images',

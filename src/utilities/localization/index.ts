@@ -1,5 +1,4 @@
 import { Lang } from '@modules/data/config/enums'
-import { computed } from 'vue'
 import type { ITextsToLocalize, LocalizedTexts } from './types'
 
 /** Локализация. */
@@ -51,7 +50,7 @@ export class LocalizationStrings<T = string> {
 	 * @returns Локализованное значение.
 	 */
 	get(config: { lang: Lang }) {
-		return computed(() => this.obj[config.lang] ?? this.obj[Lang.en]!).value
+		return this.obj[config.lang] ?? this.obj[Lang.en]!
 	}
 
 	/**

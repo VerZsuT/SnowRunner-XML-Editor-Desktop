@@ -1,5 +1,5 @@
 import { isString } from '@utilities/checks/renderer'
-import { onMounted, onUnmounted } from 'vue'
+import { useEffect, useRef } from 'react'
 
 /** Название события клавиши. */
 export type KeyEventName = 'keypress' | 'keyup' | 'keydown'
@@ -40,21 +40,27 @@ export function useKey(params: IHotKeysParams | IHotKeysParams['key'], handler: 
 	const eventName = key === 'Escape'
 		? 'keydown'
 		: 'keypress'
+	const handlerRef = useRef(handler)
 
-	function eventHandler(event: KeyboardEvent) {
-		const keyIsValid = event.code === key
-		const ctrlIsValid = ctrlKey === event.ctrlKey
-		const shiftIsValid = shiftKey === event.shiftKey
+	handlerRef.current = handler
 
-		if (keyIsValid && ctrlIsValid && shiftIsValid) {
-			if (prevent) {
-				event.preventDefault()
+	useEffect(() => {
+		function eventHandler(event: KeyboardEvent) {
+			const keyIsValid = event.code === key
+			const ctrlIsValid = ctrlKey === event.ctrlKey
+			const shiftIsValid = shiftKey === event.shiftKey
+
+			if (keyIsValid && ctrlIsValid && shiftIsValid) {
+				if (prevent) {
+					event.preventDefault()
+				}
+
+				handlerRef.current(event)
 			}
-
-			handler(event)
 		}
-	}
 
-	onMounted(() => document.addEventListener(eventName, eventHandler))
-	onUnmounted(() => document.removeEventListener(eventName, eventHandler))
+		document.addEventListener(eventName, eventHandler)
+
+		return () => document.removeEventListener(eventName, eventHandler)
+	}, [key, ctrlKey, prevent, shiftKey, eventName])
 }

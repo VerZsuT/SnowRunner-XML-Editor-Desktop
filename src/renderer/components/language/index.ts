@@ -1,2 +1,1 @@
-export { default as Language } from './index.vue'
-
+export { Language } from './language'

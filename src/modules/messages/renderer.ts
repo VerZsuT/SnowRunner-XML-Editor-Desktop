@@ -1,4 +1,4 @@
-import { message, notification } from 'ant-design-vue'
+import { message, notification } from 'antd'
 import { Bridge } from 'emr-bridge/renderer'
 import { MainMessageType } from './enums'
 import { PubKeys } from './public'

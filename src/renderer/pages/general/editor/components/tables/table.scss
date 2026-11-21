@@ -1,0 +1,10 @@
+.table {
+	padding: 20px;
+	height: calc(100vh - 150px);
+	overflow-y: auto;
+
+	.ant-input,
+	.ant-input-number-input {
+		width: 150px;
+	}
+}

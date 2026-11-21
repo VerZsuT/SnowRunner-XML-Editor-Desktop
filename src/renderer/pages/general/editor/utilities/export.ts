@@ -3,17 +3,25 @@ import type { IFile } from '@modules/files/types'
 import { TruckFileType, TruckXML } from '@modules/xml/renderer'
 import { di } from '@utilities/di/container'
 import { DIALOGS_TOKEN, DLC_TOKEN, FILES_TOKEN, MODS_TOKEN } from '@utilities/di/renderer/tokens'
-import { onMounted, onUnmounted } from 'vue'
 
+/** Слушатель экспорта. */
 export type ExportListener = (data: IExportedData) => void | Promise<void>
 
 class ExportUtils {
 	readonly EXPORT_VERSION = '3.0'
 	private readonly listeners = new Set<ExportListener>()
 
+	/**
+	 * Добавить слушателя экспорта.
+	 * @param listener Слушатель.
+	 * @returns Функция отписки.
+	 */
 	onExport(listener: ExportListener) {
-		onMounted(() => this.listeners.add(listener))
-		onUnmounted(() => this.listeners.delete(listener))
+		this.listeners.add(listener)
+
+		return () => {
+			this.listeners.delete(listener)
+		}
 	}
 
 	getName(file: IFile, dlc?: string, mod?: string) {
@@ -45,10 +53,10 @@ class ExportUtils {
 		const chosenFile = files.newFile(chosenPath)
 
 		if (await chosenFile.exists()) {
-			const chosedData = await chosenFile.readFromJSON<IExportedData>()
+			const chosenData = await chosenFile.readFromJSON<IExportedData>()
 
-			if (chosedData.version === this.EXPORT_VERSION) {
-				additionData = chosedData
+			if (chosenData.version === this.EXPORT_VERSION) {
+				additionData = chosenData
 			}
 		}
 
@@ -60,7 +68,7 @@ class ExportUtils {
 		const isTrailer = xml.Type === TruckFileType.trailer
 		const data: IExportedData = {
 			version: this.EXPORT_VERSION,
-			info: [...additionData.info ],
+			info: [...additionData.info],
 			data: { ...additionData.data },
 			actionsData: { ...additionData.actionsData }
 		}

@@ -1,0 +1,428 @@
+import { LocalizationStrings } from '@localization'
+import type { IFile } from '@modules/files/renderer'
+import { TruckAddon, XMLElement } from '@modules/xml/renderer'
+import { Spin } from '@renderer/components/spin'
+import { useConfig } from '@renderer/utilities/use-reactive'
+import { hasItems } from '@utilities/checks/renderer'
+import { di } from '@utilities/di/container'
+import { DIRS_TOKEN, DLC_TOKEN, GAME_TEXTS_TOKEN, MESSAGES_TOKEN, SYSTEM_TOKEN } from '@utilities/di/renderer/tokens'
+import type { SelectProps } from 'antd'
+import { Button, Input, Select, Typography } from 'antd'
+import { useRef, useState } from 'react'
+import { useEditorStore } from '../../../../store/editor'
+import type { IActionProps } from '../../../types'
+import { Group } from '../../group/group'
+import type { ReadyProps } from '../../utilities'
+import { useReady } from '../../utilities'
+import { EXTRA_LOCALIZATION as texts } from '../localization'
+import { ContentField } from './content-field'
+import './addons-content.scss'
+
+const { Text } = Typography
+
+/** Параметры содержимого аддонов. */
+export type AddonsContentProps = ReadyProps & IActionProps
+
+/** Содержимое аддона. */
+interface AddonContent {
+	/** Колёса. */
+	wheels: number
+
+	/** Запчасти. */
+	repairs: number
+
+	/** Топливо. */
+	fuel: number
+
+	/** Вода. */
+	water: number
+}
+
+type OptionsType = SelectProps['options']
+
+const DEFAULT_CONTENT: AddonContent = {
+	wheels: 0,
+	repairs: 0,
+	fuel: 0,
+	water: 0
+}
+
+const labelStrings = new LocalizationStrings()
+	.ru('Содержимое аддонов')
+	.en('Addons content')
+	.de('Addon-Inhalt')
+	.ch('附加组件')
+
+/** Содержимое аддонов. */
+export function AddonsContent({ file, xml, onReady, onMount }: AddonsContentProps) {
+	const config = useConfig()
+	const info = useEditorStore(state => state.info)
+	const [files, setFiles] = useState<IFile[]>([])
+	const [addon, setAddon] = useState('')
+	const [selectOptions, setSelectOptions] = useState<OptionsType>([])
+	const allSelectOptions = useRef<OptionsType>([])
+	const [content, setContent] = useState<AddonContent>(() => ({ ...DEFAULT_CONTENT }))
+	const [loadStatus, setLoadStatus] = useState({ isLoading: false, count: 0 })
+
+	useReady({ onReady, onMount })
+
+	function changeContent(key: keyof AddonContent, value: number) {
+		setContent(state => ({ ...state, [key]: value }))
+	}
+
+	function changeNameFilter(value = '') {
+		if (!hasItems(files) || !allSelectOptions.current) {
+			return
+		}
+
+		setSelectOptions(allSelectOptions.current
+			.filter(({ label }) => String(label).toLowerCase().includes(value.toLowerCase())))
+	}
+
+	async function selectAddon(addonName: string) {
+		const data = await getAddonData(getFile(addonName))
+
+		setAddon(addonName)
+		setContent(data)
+	}
+
+	async function loadAddons() {
+		if (hasItems(files)) {
+			return
+		}
+
+		setLoadStatus({ isLoading: true, count: 0 })
+
+		const onFind = () => setLoadStatus(state => ({ ...state, count: state.count + 1 }))
+
+		const addons = await getAddons(file.name, info.mod, isInstalled, onFind)
+		const data = await getAddonData(addons[0])
+
+		allSelectOptions.current = await initSelectOptions(addons)
+		setSelectOptions(allSelectOptions.current)
+		setFiles(addons)
+
+		if (addons[0]) {
+			setAddon(addons[0].name)
+		}
+
+		setContent(data)
+		setLoadStatus({ isLoading: false, count: 0 })
+	}
+
+	async function saveAddonData() {
+		const item = getFile()
+
+		if (!item) {
+			throw new Error('Path to addon not found')
+		}
+
+		const addonXML = await getTruckAddon(item)
+
+		if (!addonXML) {
+			throw new Error('DOM is undefined')
+		}
+
+		let TruckData = addonXML.TruckData
+		let hasAny = false
+
+		if (!TruckData) {
+			addonXML.appendTag('TruckData')
+			TruckData = addonXML.TruckData!
+		}
+
+		if (content.fuel === 0) {
+			TruckData.FuelCapacity = undefined
+		} else {
+			TruckData.FuelCapacity = content.fuel
+			hasAny = true
+		}
+
+		if (content.water === 0) {
+			TruckData.WaterCapacity = undefined
+		} else {
+			TruckData.WaterCapacity = content.water
+			hasAny = true
+		}
+
+		if (content.wheels === 0) {
+			TruckData.WheelRepairsCapacity = undefined
+		} else {
+			TruckData.WheelRepairsCapacity = content.wheels
+			hasAny = true
+		}
+
+		if (content.repairs === 0) {
+			TruckData.RepairsCapacity = undefined
+		} else {
+			TruckData.RepairsCapacity = content.repairs
+			hasAny = true
+		}
+
+		if (!hasAny && !TruckData.hasAttrs()) {
+			TruckData.remove()
+		}
+
+		await item.write(addonXML.baseXML)
+		di.resolve(MESSAGES_TOKEN).success(texts.changed)
+	}
+
+	function openFile() {
+		const addonFile = getFile()
+
+		if (addonFile) {
+			void di.resolve(SYSTEM_TOKEN).openFile(addonFile.path)
+		}
+	}
+
+	function isInstalled(addonXML: TruckAddon): boolean {
+		const InstallSocket = addonXML.GameData?.InstallSocket
+
+		if (!InstallSocket) {
+			return false
+		}
+
+		const type = InstallSocket.Type || 'no-type'
+
+		return Boolean(
+			xml.GameData?.AddonSockets?.some(
+				({ Sockets }) => Sockets.some(
+					({ Names }) => Names.includes(type)
+				)
+			)
+		)
+	}
+
+	async function initSelectOptions(items: IFile[]): Promise<OptionsType> {
+		return await Promise.all(
+			items.map(async addon => ({
+				value: addon.name,
+				label: await getAddonName(addon)
+			}))
+		)
+	}
+
+	async function getAddonName(addonFile: IFile): Promise<string | undefined> {
+		const addonXML = await getTruckAddon(addonFile)
+		const uiDesc = addonXML?.GameData?.UiDesc
+		const key = uiDesc
+			? uiDesc.UiName
+			: undefined
+
+		return di.resolve(GAME_TEXTS_TOKEN).get(key, info.mod) || addonFile.name
+	}
+
+	function getFile(name?: string): IFile | undefined {
+		return files.find(item => item.name === (name || addon))
+	}
+
+	async function getAddonData(addonFile?: IFile): Promise<AddonContent> {
+		if (!addonFile) {
+			return { ...DEFAULT_CONTENT }
+		}
+
+		const addonXML = await TruckAddon.from(addonFile)
+
+		if (!addonXML) {
+			return { ...DEFAULT_CONTENT }
+		}
+
+		let TruckData = addonXML.TruckData
+
+		if (!TruckData) {
+			addonXML.appendTag('TruckData')
+			TruckData = addonXML.TruckData!
+		}
+
+		return {
+			wheels: TruckData.WheelRepairsCapacity ?? DEFAULT_CONTENT.wheels,
+			repairs: TruckData.RepairsCapacity ?? DEFAULT_CONTENT.repairs,
+			fuel: TruckData.FuelCapacity ?? DEFAULT_CONTENT.fuel,
+			water: TruckData.WaterCapacity ?? DEFAULT_CONTENT.water
+		}
+	}
+
+	async function getTruckAddon(addonFile?: IFile): Promise<TruckAddon | undefined> {
+		const file = addonFile ?? getFile()
+
+		return await file?.exists()
+			? TruckAddon.from(file!)
+			: undefined
+	}
+
+	async function getAddons(
+		truckName: string,
+		mod?: string,
+		filter?: (xml: TruckAddon) => boolean,
+		every?: () => void | Promise<void>
+	): Promise<IFile[]> {
+		const dirs = di.resolve(DIRS_TOKEN)
+
+		const out: IFile[] = []
+		const tuningDir = dirs.classes.dir(`trucks/${truckName}_tuning`)
+		const inLoading = new Set<Promise<void>>()
+
+		function filterFile(item: IFile) {
+			inLoading.add((async () => {
+				async function pushToOut(file: IFile) {
+					out.push(file)
+					await every?.()
+				}
+
+				if (filter) {
+					const addonXML = await TruckAddon.from(item)
+
+					if (addonXML && filter(addonXML)) {
+						await pushToOut(item)
+					}
+				} else {
+					await pushToOut(item)
+				}
+			})())
+		}
+
+		if (await tuningDir.exists()) {
+			for (const entry of await tuningDir.read()) {
+				if (await entry.isDir()) {
+					continue
+				}
+
+				filterFile(entry.asFile())
+			}
+		}
+
+		const baseDir = dirs.classes.dir('trucks/addons')
+		if (await baseDir.exists()) {
+			for (const entry of await baseDir.read()) {
+				if (await entry.isDir()) {
+					continue
+				}
+
+				filterFile(entry.asFile())
+			}
+		}
+
+		for (const dlc of di.resolve(DLC_TOKEN)) {
+			const DLCTrucks = dlc.dir.dir('classes/trucks')
+
+			if (await DLCTrucks.exists()) {
+				const DLCBasic = DLCTrucks.dir('addons')
+
+				if (await DLCBasic.exists()) {
+					for (const entry of await DLCBasic.read()) {
+						if (await entry.isDir()) {
+							continue
+						}
+
+						filterFile(entry.asFile())
+					}
+				}
+
+				for (const entry of await DLCTrucks.read()) {
+					if (!await entry.isDir() || !entry.basename().endsWith('_tuning')) {
+						continue
+					}
+
+					for (const innerEntry of await entry.asDir().read()) {
+						if (await innerEntry.isDir()) {
+							continue
+						}
+
+						filterFile(innerEntry.asFile())
+					}
+				}
+			}
+		}
+
+		if (mod) {
+			for (const item of await dirs.modsTemp.dir(mod, 'classes').findFiles({ ext: 'xml', recursive: true })) {
+				const element = await XMLElement.from(item)
+
+				if (element?.has('TruckAddon')) {
+					filterFile(item)
+				}
+			}
+		}
+
+		await Promise.all(inLoading)
+
+		return out
+	}
+
+	return (
+		<Group label={labelStrings.get(config)} icon="wrench">
+			{!hasItems(files)
+				? loadStatus.isLoading
+					? (
+						<div className="addons-content loading">
+							<Spin />
+							<Text>{texts.foundAddons}: {loadStatus.count}</Text><br />
+						</div>
+					)
+					: (
+						<div className="addons-content prepare">
+							<Button
+								className="load-btn"
+								type="primary"
+								onClick={() => void loadAddons()}
+							>
+								{texts.load}
+							</Button>
+						</div>
+					)
+				: (
+					<div className="addons-content wrapper">
+						<div className="main">
+							<Input
+								className="addon-filter"
+								type="text"
+								placeholder={texts.addonFilter}
+								onBlur={event => changeNameFilter(event.target.value)}
+							/><br />
+							<Select
+								className="addon-select"
+								value={addon || undefined}
+								options={selectOptions}
+								onChange={value => void selectAddon(String(value))}
+							/>
+						</div>
+						<div className="grid ac-grid">
+							<ContentField
+								value={content.wheels}
+								text={texts.addonWheels}
+								onChange={value => changeContent('wheels', value)}
+								onBlur={() => void saveAddonData()}
+							/>
+							<ContentField
+								value={content.repairs}
+								text={texts.addonRepairs}
+								onChange={value => changeContent('repairs', value)}
+								onBlur={() => void saveAddonData()}
+							/>
+							<ContentField
+								value={content.fuel}
+								text={texts.addonFuel}
+								onChange={value => changeContent('fuel', value)}
+								onBlur={() => void saveAddonData()}
+							/>
+							<ContentField
+								value={content.water}
+								text={texts.addonWater}
+								onChange={value => changeContent('water', value)}
+								onBlur={() => void saveAddonData()}
+							/>
+						</div>
+						{config.advancedMode && (
+							<Button
+								className="open-file-btn"
+								type="primary"
+								onClick={openFile}
+							>
+								{texts.openFile}
+							</Button>
+						)}
+					</div>
+				)}
+		</Group>
+	)
+}

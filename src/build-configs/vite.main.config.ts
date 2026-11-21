@@ -14,6 +14,7 @@ export default defineConfig(forgeEnv => {
 
 	const config: UserConfig = {
 		build: {
+			target: 'node25',
 			lib: {
 				entry: forgeConfig['entry'],
 				fileName: () => '[name].js',
@@ -38,10 +39,6 @@ export default defineConfig(forgeEnv => {
 				]
 			})
 		],
-		esbuild: {
-			supported: { 'top-level-await': true },
-			target: 'node25'
-		},
 		define,
 		resolve: {
 			mainFields: ['module', 'jsnext:main', 'jsnext']

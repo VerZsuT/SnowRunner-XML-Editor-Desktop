@@ -1,65 +1,55 @@
 import type { IFile } from '@modules/files/renderer'
+import type { EditorFilesKey } from '@renderer/pages/general/store/editor'
+import { useEditorStore } from '@renderer/pages/general/store/editor'
 import debounce from 'debounce'
-import type { FSWatcher, WatchListener } from 'node:fs'
-import { storeToRefs } from 'pinia'
-import type { MaybeRef } from 'vue'
-import { onUnmounted, ref, watchEffect } from 'vue'
-import { useEditorStore } from '../../store/editor'
+import type { FSWatcher } from 'node:fs'
+import { useEffect, useRef } from 'react'
 
-export type UpdateListener = () => void | Promise<void>
+/** Слушатель изменения файлов. */
+export type UpdateListener = (event: string, fileName: string | null) => void | Promise<void>
 
-/** Работа с файлами в таблице. */
-class FilesUtils {
-	/** Добавить файлы в список. */
-	regFiles(source: MaybeRef<IFile[]>, direction: IFile[]) {
-		const sourceRef = ref(source)
+/**
+ * Добавить файлы в общий набор редактора.
+ * @param files Файлы.
+ * @param key Название набора.
+ */
+export function useFilesReg(files: IFile[], key: EditorFilesKey) {
+	useEffect(() => {
+		if (files.length) {
+			useEditorStore.getState().addAllFiles(key, files)
+		}
+	}, [files, key])
+}
 
-		watchEffect(() => {
-			for (const file of sourceRef.value) {
-				if (!direction.some(({ path }) => file.path === path)) {
-					direction.push(file)
-				}
-			}
-		})
-	}
+/**
+ * Отследить изменения файлов.
+ * @param files Файлы.
+ * @param listener Слушатель.
+ */
+export function useFilesWatch(files: IFile[], listener: UpdateListener) {
+	const listenerRef = useRef(listener)
 
-	/** Отследить изменения файлов. */
-	watch(listener: WatchListener<string>, files: MaybeRef<IFile[]>) {
-		const { isSaving } = storeToRefs(useEditorStore())
-		const filesRef = ref(files)
+	listenerRef.current = listener
 
+	useEffect(() => {
 		const watchers: FSWatcher[] = []
-		const watched: IFile[] = []
-
-		const watchListener = debounce((event, fileName) => {
-			if (!isSaving.value) {
-				listener(event, fileName)
+		const watchListener = debounce((event: string, fileName: string | null) => {
+			if (!useEditorStore.getState().isSaving) {
+				void listenerRef.current(event, fileName)
 			}
 		}, 200)
 
-		const watchFile = (file: IFile) => {
-			watchers.push(file.watch((...args) => watchListener(...args)))
-			watched.push(file)
+		for (const file of files) {
+			watchers.push(file.watch((event, fileName) => watchListener(event, fileName)))
 		}
 
-		watchEffect(() => {
-			for (const file of filesRef.value) {
-				if (!watched.some(({ path }) => file.path === path)) {
-					watchFile(file)
-				}
-			}
-		})
-
-		onUnmounted(() => {
+		return () => {
 			for (const watcher of watchers) {
 				watcher.removeAllListeners()
 				watcher.close()
 			}
 
 			watchListener.clear()
-			watchers.length = 0
-		})
-	}
+		}
+	}, [files])
 }
-
-export const filesUtils = new FilesUtils()

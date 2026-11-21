@@ -1,13 +1,20 @@
-import { onMounted, onUnmounted } from 'vue'
-
+/** Слушатель сохранения. */
 export type SaveEventListener = () => void | Promise<void>
 
 class SaveUtils {
 	private readonly listeners = new Set<SaveEventListener>()
 
-	useOnSave(listener: SaveEventListener) {
-		onMounted(() => this.listeners.add(listener))
-		onUnmounted(() => this.listeners.delete(listener))
+	/**
+	 * Добавить слушателя сохранения.
+	 * @param listener Слушатель.
+	 * @returns Функция отписки.
+	 */
+	onSave(listener: SaveEventListener) {
+		this.listeners.add(listener)
+
+		return () => {
+			this.listeners.delete(listener)
+		}
 	}
 
 	async emitSave() {

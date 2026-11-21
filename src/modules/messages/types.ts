@@ -1,4 +1,3 @@
-import type { MessageType } from 'ant-design-vue/es/message'
 import type { MainMessageType } from './enums'
 
 /** Сообщение из main-process. */
@@ -43,6 +42,11 @@ export interface IMainMessages {
 	 * @returns Функция завершения.
 	 */
 	loading(text: string): () => void
+}
+
+/** Уведомление о загрузке. */
+export interface MessageType extends PromiseLike<boolean> {
+	(): void
 }
 
 /** Работа с сообщениями программы. [renderer] */

@@ -2,6 +2,7 @@ import { builtinModules } from 'node:module'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import type { Plugin, UserConfig } from 'vite'
+import { pluginDecorators } from './decorators-plugin.js'
 
 /** Папка, в которой находится текущий исполняемый скрипт. */
 const _dirname = dirname(fileURLToPath(import.meta.url))
@@ -49,6 +50,7 @@ export function getBuildConfig(env: any): UserConfig {
 			minify: ['package', 'build'].includes(command)
 		},
 		resolve: { alias },
+		plugins: [pluginDecorators()],
 		clearScreen: false
 	}
 }
@@ -109,11 +111,13 @@ export function pluginHotRestart(command: 'reload' | 'restart'): Plugin {
 	return {
 		name: '@electron-forge/plugin-vite:hot-restart',
 		closeBundle() {
+			const servers = Object.values(process.viteDevServers ?? {})
+
 			if (command === 'reload') {
-				for (const server of Object.values(process.viteDevServers)) {
+				for (const server of servers) {
 					server.hot.send({ type: 'full-reload' })
 				}
-			} else {
+			} else if (servers.length) {
 				process.stdin.emit('data', 'rs')
 			}
 		}

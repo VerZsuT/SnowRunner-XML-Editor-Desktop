@@ -1,0 +1,39 @@
+.page-header {
+	display: flex;
+	width: 100%;
+	box-sizing: border-box;
+	align-items: center;
+	justify-content: space-between;
+	padding: 4px 5px 5px 5px;
+	max-height: 55px;
+	background-color: #1c7dca;
+	box-shadow: 0 0 3px 0 rgba(34, 60, 80, 0.6);
+	z-index: 1;
+
+	&-left {
+		display: flex;
+		align-items: center;
+		min-width: 0;
+	}
+
+	&-title {
+		width: 100vw;
+		text-align: center;
+		color: #fafafa;
+		padding: 0;
+		margin: 0;
+	}
+
+	&-back {
+		color: white;
+		margin-right: -20px;
+		left: 20px;
+	}
+
+	&-extra {
+		display: flex;
+		align-items: center;
+		margin: 0;
+		flex-shrink: 0;
+	}
+}

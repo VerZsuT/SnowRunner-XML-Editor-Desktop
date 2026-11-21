@@ -1,6 +1,5 @@
 import type { IExportedData } from '@modules/epf/types'
 import type { IFile } from '@modules/files/types'
-import { onMounted, onUnmounted } from 'vue'
 
 export type EveryCallback = () => Promise<void> | void
 
@@ -18,19 +17,49 @@ export class EditorUtils {
 	private importListener?: ImportListener
 	private resetListener?: ResetListener
 
-	onExport = (listener: ExportListener) => {
-		onMounted(() => this.exportListener = listener)
-		onUnmounted(() => this.exportListener = undefined)
+	/**
+	 * Подписаться на экспорт.
+	 * @param listener Слушатель.
+	 * @returns Функция отписки.
+	 */
+	onExport = (listener: ExportListener): (() => void) => {
+		this.exportListener = listener
+
+		return () => {
+			if (this.exportListener === listener) {
+				this.exportListener = undefined
+			}
+		}
 	}
 
-	onImport = (listener: ImportListener) => {
-		onMounted(() => this.importListener = listener)
-		onUnmounted(() => this.importListener = undefined)
+	/**
+	 * Подписаться на импорт.
+	 * @param listener Слушатель.
+	 * @returns Функция отписки.
+	 */
+	onImport = (listener: ImportListener): (() => void) => {
+		this.importListener = listener
+
+		return () => {
+			if (this.importListener === listener) {
+				this.importListener = undefined
+			}
+		}
 	}
 
-	onReset = (listener: ResetListener) => {
-		onMounted(() => this.resetListener = listener)
-		onUnmounted(() => this.resetListener = undefined)
+	/**
+	 * Подписаться на сброс.
+	 * @param listener Слушатель.
+	 * @returns Функция отписки.
+	 */
+	onReset = (listener: ResetListener): (() => void) => {
+		this.resetListener = listener
+
+		return () => {
+			if (this.resetListener === listener) {
+				this.resetListener = undefined
+			}
+		}
 	}
 
 	async export(args: ExportArgs, every?: EveryCallback) {

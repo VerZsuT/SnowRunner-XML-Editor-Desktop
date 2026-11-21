@@ -6,11 +6,8 @@ export default defineConfig(forgeEnv => {
 	const { forgeConfigSelf } = forgeEnv
 	const forgeConfig = forgeConfigSelf as any
 	const config: UserConfig = {
-		esbuild: {
-			target: 'node25',
-			supported: { 'top-level-await': true }
-		},
 		build: {
+			target: 'node25',
 			rollupOptions: {
 				external: [...external, '**/renderer'],
 				input: forgeConfig['entry'],

@@ -1,6 +1,6 @@
 import type { EventUnsubscribe } from 'emr-bridge/renderer'
 import { Bridge } from 'emr-bridge/renderer'
-import { reactive, toRaw, watch } from 'vue'
+import { proxy, snapshot, subscribe } from 'valtio/vanilla'
 import { getPublicName } from './helpers'
 
 const bridge = Bridge.as<object>()
@@ -175,9 +175,9 @@ function getMainArrayFieldInitializer(name: string) {
  * @returns Реактивное значение.
  */
 function initReactive<Value extends object>(value: Value, onChange: (newValue: Value) => void) {
-	const reactiveValue = reactive(value)
+	const reactiveValue = proxy(value)
 
-	watch(reactiveValue, value => onChange(toRaw(value) as Value), { flush: 'sync' })
+	subscribe(reactiveValue, () => onChange(snapshot(reactiveValue) as Value), true)
 
 	return reactiveValue
 }

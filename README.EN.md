@@ -3,7 +3,7 @@
 This program allows you to edit the XML files of the SnowRunner game by editing the visual parameter table.  
 The editor unpacks the necessary files from _initial.pak_ to a temporary folder, after which it goes to work with them. When saving, changes are made to the archive.  
 To work with _initial.pak_, the program uses a portable version of _WinRar_ for 64-bit systems.  
-Everything works using **Electron**, **Vite**, **Vue**, **Typescript**.
+Everything works using **Electron**, **Vite**, **React**, **Typescript**.
 
 The editor has the following functionality:
 

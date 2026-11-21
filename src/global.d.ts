@@ -1,2 +1,5 @@
-/** Vue модуль. */
-declare module '*.vue'
+/** Модуль стилей. */
+declare module '*.scss' {
+	const classes: Record<string, string>
+	export default classes
+}

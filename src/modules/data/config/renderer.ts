@@ -12,13 +12,7 @@ export class Config implements IRendererConfigManager {
 		return this.object.buildType === BuildType.dev
 	}
 
-	get() {
-		return new Proxy({} as IConfig, {
-			get: (_target, p) => this.object[p],
-			set: (_target, p, newValue) => {
-				this.object[p] = newValue
-				return true
-			}
-		})
+	get(): IConfig {
+		return this.object
 	}
 }

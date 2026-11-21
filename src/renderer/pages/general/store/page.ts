@@ -1,16 +1,16 @@
 import { Page } from '@modules/windows/enums'
-import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { create } from 'zustand'
 
-export const usePageStore = defineStore('page', () => {
-	const page = ref(Page.lists)
+/** Состояние страниц. */
+interface PageState {
+	/** Текущая страница. */
+	page: Page
 
-	return {
-		/** Изменить текущую страницу */
-		route(newPage: Page) {
-			page.value = newPage
-		},
-		/** Текущая страница */
-		page
-	}
-})
+	/** Изменить текущую страницу. */
+	route(page: Page): void
+}
+
+export const usePageStore = create<PageState>()(set => ({
+	page: Page.lists,
+	route: page => set({ page })
+}))

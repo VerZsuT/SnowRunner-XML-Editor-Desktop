@@ -1,0 +1,75 @@
+.ant-card {
+	&-body {
+		padding: 15px !important;
+	}
+
+	&-meta-title {
+		text-align: center;
+	}
+}
+
+.card {
+	box-sizing: content-box;
+	width: 250px;
+	height: 400px;
+	margin: auto;
+
+	&-container {
+		height: fit-content;
+		flex: auto;
+
+		.row {
+			display: flex;
+			box-sizing: border-box;
+			min-width: 400px;
+			gap: 20px;
+			flex-direction: row;
+			flex-wrap: nowrap;
+			align-items: center;
+			justify-content: flex-start;
+			background: white;
+			border-radius: 10px;
+			box-shadow: 0 1px 2px 0 rgba(34, 60, 80, 0.6);
+			overflow: hidden;
+			cursor: pointer;
+			transition: background-color 0.1s ease-in-out;
+
+			&:hover {
+				filter: brightness(96%);
+			}
+
+			img {
+				box-shadow: 1px 0 3px 0 rgba(34, 60, 80, 0.6);
+			}
+
+			.description {
+				.title {
+					font-size: 16px;
+					font-weight: bold;
+				}
+
+				.indicators-tags {
+					margin-top: 10px;
+				}
+			}
+		}
+	}
+
+	.indicators {
+		position: absolute;
+		top: 10px;
+		left: 10px;
+	}
+
+	.favorite-star {
+		color: yellow;
+	}
+
+	.edited-mark {
+		color: white;
+	}
+}
+
+.red {
+	color: red;
+}

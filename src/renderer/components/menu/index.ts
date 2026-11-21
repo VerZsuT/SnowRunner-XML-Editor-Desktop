@@ -1,2 +1,1 @@
-export { default as Menu } from './index.vue'
-
+export { Menu } from './menu'
