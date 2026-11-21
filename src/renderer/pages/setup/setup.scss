@@ -30,6 +30,27 @@
 		max-width: 720px;
 	}
 
+	&-mods {
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+		max-width: 720px;
+	}
+
+	&-mod {
+		display: flex;
+		gap: 8px;
+		align-items: center;
+		justify-content: space-between;
+		padding: 2px 4px 2px 8px;
+		border-radius: 6px;
+		background: var(--ant-color-fill-quaternary);
+
+		.ant-typography {
+			min-width: 0;
+		}
+	}
+
 	&-option {
 		display: flex;
 		gap: 8px;

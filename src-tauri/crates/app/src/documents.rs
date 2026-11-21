@@ -93,6 +93,12 @@ pub struct DocumentInfo {
 	/// Имя записи архива, в которую файл попадает при сохранении.
 	pub archive_name: String,
 
+	/// DLC, из которого взят файл.
+	pub dlc: Option<String>,
+
+	/// Мод, из которого взят файл.
+	pub mod_name: Option<String>,
+
 	/// Версия документа: увеличивается каждой успешной мутацией и сбросом.
 	pub revision: u32,
 
@@ -315,12 +321,15 @@ impl Documents {
 
 		let document = files.read_document(&path)?;
 		let templates = self.read_templates(files, &document);
+		let (dlc, mod_name) = files.source_of(&path);
 		let info = DocumentInfo {
 			doc_id: self.new_id(),
 			kind,
 			name: name.to_owned(),
 			path: path.to_string_lossy().into_owned(),
 			archive_name: files.archive_name(&path),
+			dlc,
+			mod_name,
 			revision: 0,
 			dirty: false,
 		};

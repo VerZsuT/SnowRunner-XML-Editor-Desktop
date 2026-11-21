@@ -11,6 +11,8 @@ function info(revision = 0, dirty = false): DocumentInfo {
 		name: 'ank_mk38',
 		path: 'D:\\data\\[media]\\classes\\trucks\\ank_mk38.xml',
 		archiveName: '[media]\\classes\\trucks\\ank_mk38.xml',
+		dlc: null,
+		modName: null,
 		revision,
 		dirty
 	}
@@ -54,7 +56,7 @@ describe('DocumentSession', () => {
 		const client = createClient()
 		const session = await DocumentSession.open('truck', 'ank_mk38', client)
 
-		expect(client.open).toHaveBeenCalledWith('truck', 'ank_mk38')
+		expect(client.open).toHaveBeenCalledWith('truck', 'ank_mk38', null)
 		expect(session.docId).toBe('doc-1')
 		expect(session.kind).toBe('truck')
 		expect(session.name).toBe('ank_mk38')

@@ -63,7 +63,7 @@ describe('поля документа', () => {
 
 	it('пишет значение поля в документ', async () => {
 		const documentClient = client()
-		const session = new DocumentSession({ docId: 'doc-1', kind: 'truck', name: 'truck', path: 'truck.xml', archiveName: 'truck.xml', revision: 0, dirty: false }, documentClient)
+		const session = new DocumentSession({ docId: 'doc-1', kind: 'truck', name: 'truck', path: 'truck.xml', archiveName: 'truck.xml', dlc: null, modName: null, revision: 0, dirty: false }, documentClient)
 
 		await writeField(session, field<number>(null, 5), 210)
 
@@ -72,7 +72,7 @@ describe('поля документа', () => {
 
 	it('сбрасывает поле к значению по умолчанию', async () => {
 		const documentClient = client()
-		const session = new DocumentSession({ docId: 'doc-1', kind: 'truck', name: 'truck', path: 'truck.xml', archiveName: 'truck.xml', revision: 0, dirty: false }, documentClient)
+		const session = new DocumentSession({ docId: 'doc-1', kind: 'truck', name: 'truck', path: 'truck.xml', archiveName: 'truck.xml', dlc: null, modName: null, revision: 0, dirty: false }, documentClient)
 
 		await resetField(session, field<number>(210, 5))
 
@@ -81,7 +81,7 @@ describe('поля документа', () => {
 
 	it('сбрасывает поле без значения по умолчанию в null', async () => {
 		const documentClient = client()
-		const session = new DocumentSession({ docId: 'doc-1', kind: 'truck', name: 'truck', path: 'truck.xml', archiveName: 'truck.xml', revision: 0, dirty: false }, documentClient)
+		const session = new DocumentSession({ docId: 'doc-1', kind: 'truck', name: 'truck', path: 'truck.xml', archiveName: 'truck.xml', dlc: null, modName: null, revision: 0, dirty: false }, documentClient)
 
 		await resetField(session, field<string>('value', null))
 

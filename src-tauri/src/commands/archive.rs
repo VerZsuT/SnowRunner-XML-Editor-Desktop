@@ -83,14 +83,28 @@ pub async fn unpack_initial(
 }
 
 /// Обновляет архив файлами из каталога данных и добавляет маркер `edited`.
+///
+/// `mod_name` задаёт мод: его файлы берутся из `modsTemp/<мод>`.
 #[tauri::command]
 #[specta::specta]
 pub async fn update_archive(
 	state: State<'_, AppState>,
 	archive_path: String,
+	mod_name: Option<String>,
 ) -> AppResult<UpdateResultDto> {
 	let archive_path = PathBuf::from(archive_path);
-	let dir = state.paths().main_temp();
+	let dir = match mod_name {
+		Some(name) => {
+			if name.is_empty() || name == ".." || name.contains(['/', '\\', ':']) {
+				return Err(CommandError::invalid_argument(format!(
+					"некорректное имя мода: {name}"
+				)));
+			}
+
+			state.paths().mods_temp().join(name)
+		}
+		None => state.paths().main_temp(),
+	};
 
 	tauri::async_runtime::spawn_blocking(move || {
 		let result = archive::update_from_dir(&archive_path, &dir)?;

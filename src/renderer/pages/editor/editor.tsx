@@ -33,6 +33,9 @@ export interface EditorPageProps {
 	/** Вид документа: трак или прицеп. */
 	kind?: 'truck' | 'trailer'
 
+	/** Мод, из которого открыт файл. */
+	modName?: string | null
+
 	/** Вернуться к списку. */
 	onBack(): void
 
@@ -47,6 +50,7 @@ export interface EditorPageProps {
 export function EditorPage({
 	name,
 	kind = 'truck',
+	modName = null,
 	onBack,
 	client = documentClient,
 	texts: loadTexts = loadGameTexts
@@ -65,9 +69,9 @@ export function EditorPage({
 
 		void (async () => {
 			try {
-				const session = await Session.open(kind, name, client)
+				const session = await Session.open(kind, name, client, modName)
 				const truck = await session.readTruck()
-				const related = await loadRelated(client, truck)
+				const related = await loadRelated(client, truck, session.modName)
 
 				if (!cancelled) {
 					setData({ session, truck, related })
@@ -84,7 +88,7 @@ export function EditorPage({
 		return () => {
 			cancelled = true
 		}
-	}, [client, kind, name, reload])
+	}, [client, kind, modName, name, reload])
 
 	useEffect(() => {
 		const opened = data ? [data.session, ...data.related.map(item => item.session)] : []
@@ -238,7 +242,8 @@ function getTitle(data: EditorData | null, name: string, texts: GameTexts | null
 	const uiName = uiDesc?.defaultRegion?.uiName ?? uiDesc?.uiName
 	const key = uiName ? uiName.value ?? uiName.defaultValue : null
 
-	return translate(texts, key) ?? (key ? String(key) : prettyString(name).toUpperCase())
+	return translate(texts, key, data?.session.modName)
+		?? (key ? String(key) : prettyString(name).toUpperCase())
 }
 
 /** Текст ошибки. */

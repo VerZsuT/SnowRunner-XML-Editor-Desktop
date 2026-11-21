@@ -13,6 +13,13 @@ export async function backupArchive(archivePath: string): Promise<string> {
 	return call(commands.backupArchive(archivePath, null))
 }
 
+/** Обновляет архив файлами из каталога данных; возвращает число записей. */
+export async function updateArchive(archivePath: string, modName: string | null = null): Promise<number> {
+	const result = await call(commands.updateArchive(archivePath, modName))
+
+	return result.changed.length + result.added.length
+}
+
 /** Проверяет целостность архива; возвращает число записей. */
 export async function verifyArchive(archivePath: string): Promise<number> {
 	const result = await call(commands.verifyArchive(archivePath))

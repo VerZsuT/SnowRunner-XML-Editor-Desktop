@@ -27,7 +27,7 @@ import { call } from './invoke'
 /** Клиент команд документов. */
 export interface DocumentClient {
 	/** Открывает документ и возвращает его в реестре. */
-	open(kind: DocumentKind, name: string): Promise<DocumentInfo>
+	open(kind: DocumentKind, name: string, modName?: string | null): Promise<DocumentInfo>
 
 	/** Сведения об открытом документе. */
 	info(docId: string): Promise<DocumentInfo>
@@ -92,7 +92,7 @@ export interface DocumentClient {
 
 /** Клиент команд Tauri. */
 export const documentClient: DocumentClient = {
-	open: (kind, name) => call(commands.openDocument(kind, name)),
+	open: (kind, name, modName = null) => call(commands.openDocument(kind, name, modName ?? null)),
 	info: docId => call(commands.documentInfo(docId)),
 	list: () => commands.listDocuments(),
 	dirty: () => commands.dirtyDocuments(),
@@ -126,8 +126,13 @@ export class DocumentSession {
 	}
 
 	/** Открывает документ и создаёт сессию. */
-	static async open(kind: DocumentKind, name: string, client: DocumentClient = documentClient) {
-		return new DocumentSession(await client.open(kind, name), client)
+	static async open(
+		kind: DocumentKind,
+		name: string,
+		client: DocumentClient = documentClient,
+		modName: string | null = null
+	) {
+		return new DocumentSession(await client.open(kind, name, modName), client)
 	}
 
 	/** Сведения о документе. */
@@ -158,6 +163,11 @@ export class DocumentSession {
 	/** Имя записи архива. */
 	get archiveName(): string {
 		return this.infoValue.archiveName
+	}
+
+	/** Мод, из которого взят файл. */
+	get modName(): string | null {
+		return this.infoValue.modName ?? null
 	}
 
 	/** Текущая версия документа. */

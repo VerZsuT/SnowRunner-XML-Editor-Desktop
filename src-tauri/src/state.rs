@@ -6,6 +6,7 @@ use crate::error::AppResult;
 use sxmle_app::config::{Config, ConfigError, ConfigStore};
 use sxmle_app::documents::Documents;
 use sxmle_app::lists::Library;
+use sxmle_app::mods::Mods;
 use sxmle_app::paths::{Paths, PathsContext};
 use tauri::{AppHandle, Manager};
 
@@ -15,6 +16,7 @@ pub struct AppState {
 	config: Mutex<Config>,
 	documents: Mutex<Documents>,
 	library: Mutex<Library>,
+	mods: Mutex<Mods>,
 }
 
 impl AppState {
@@ -22,12 +24,14 @@ impl AppState {
 	pub fn new(paths: Paths) -> Self {
 		let config = load_config(&paths);
 		let library = Library::load(paths.json("favorites"), paths.json("edited"));
+		let mods = Mods::load(paths.json("mods"));
 
 		Self {
 			paths,
 			config: Mutex::new(config),
 			documents: Mutex::new(Documents::new()),
 			library: Mutex::new(library),
+			mods: Mutex::new(mods),
 		}
 	}
 
@@ -62,6 +66,11 @@ impl AppState {
 	/// Избранное и изменённые файлы.
 	pub fn library(&self) -> MutexGuard<'_, Library> {
 		self.library.lock().unwrap_or_else(PoisonError::into_inner)
+	}
+
+	/// Установленные модификации.
+	pub fn mods(&self) -> MutexGuard<'_, Mods> {
+		self.mods.lock().unwrap_or_else(PoisonError::into_inner)
 	}
 
 	/// Реестр открытых документов.

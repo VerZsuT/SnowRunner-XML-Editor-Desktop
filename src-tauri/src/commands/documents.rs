@@ -4,8 +4,6 @@
 //! адресуются идентификатором docId, а мутации — ещё и ожидаемой версией
 //! revision, поэтому устаревшая правка не будет применена молча.
 
-use std::path::Path;
-
 use sxmle_app::documents::{Document, DocumentInfo, DocumentKind, MutationResult, SaveResult};
 use sxmle_app::lists::EditedFile;
 use sxmle_domain::game::entities::{
@@ -32,8 +30,9 @@ pub fn open_document(
 	state: State<'_, AppState>,
 	kind: DocumentKind,
 	name: String,
+	mod_name: Option<String>,
 ) -> AppResult<DocumentInfo> {
-	let files = files(&state);
+	let files = files(&state, mod_name);
 	let mut documents = state.documents();
 
 	Ok(documents.open(&files, kind, &name)?)
@@ -268,7 +267,6 @@ pub fn save_all_documents(state: State<'_, AppState>) -> AppResult<Vec<SaveResul
 
 /// Помечает сохранённые траки и прицепы изменёнными.
 fn mark_edited(state: &AppState, saved: &[SaveResult]) -> AppResult<()> {
-	let files = files(state);
 	let documents = state.documents();
 	let mut entries = Vec::new();
 
@@ -279,13 +277,11 @@ fn mark_edited(state: &AppState, saved: &[SaveResult]) -> AppResult<()> {
 			continue;
 		}
 
-		let (dlc, mod_name) = files.source_of(Path::new(&info.path));
-
 		entries.push(EditedFile {
 			name: info.name.clone(),
 			is_trailer: info.kind == DocumentKind::Trailer,
-			dlc,
-			mod_name,
+			dlc: info.dlc.clone(),
+			mod_name: info.mod_name.clone(),
 		});
 	}
 
@@ -304,7 +300,7 @@ fn mark_edited(state: &AppState, saved: &[SaveResult]) -> AppResult<()> {
 #[tauri::command]
 #[specta::specta]
 pub fn reset_document(state: State<'_, AppState>, doc_id: String) -> AppResult<DocumentInfo> {
-	let files = files(&state);
+	let files = files(&state, None);
 	let mut documents = state.documents();
 
 	Ok(documents.reset(&doc_id, &files)?)

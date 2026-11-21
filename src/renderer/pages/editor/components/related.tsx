@@ -44,8 +44,15 @@ export function wheelNames(truck: Truck): string[] {
 	return [...names]
 }
 
-/** Открывает связанные документы трака: двигатели, коробки, подвески, лебёдки, колёса. */
-export async function loadRelated(client: DocumentClient, truck: Truck): Promise<RelatedDocument[]> {
+/**
+ * Открывает связанные документы трака: двигатели, коробки, подвески, лебёдки, колёса.
+ * `modName` задаёт мод, из которого открыт трак.
+ */
+export async function loadRelated(
+	client: DocumentClient,
+	truck: Truck,
+	modName: string | null = null
+): Promise<RelatedDocument[]> {
 	const data = truck.truckData
 	const sockets: Array<[RelatedKind, Field<string> | null | undefined]> = [
 		['engines', data?.engineSocket?.type],
@@ -57,12 +64,12 @@ export async function loadRelated(client: DocumentClient, truck: Truck): Promise
 
 	for (const [kind, field] of sockets) {
 		for (const name of socketNames(field)) {
-			requests.push(openRelated(client, kind, name))
+			requests.push(openRelated(client, kind, name, modName))
 		}
 	}
 
 	for (const name of wheelNames(truck)) {
-		requests.push(openRelated(client, 'wheels', name))
+		requests.push(openRelated(client, 'wheels', name, modName))
 	}
 
 	const documents = await Promise.all(requests)
@@ -71,9 +78,14 @@ export async function loadRelated(client: DocumentClient, truck: Truck): Promise
 }
 
 /** Открывает один связанный документ; отсутствующий файл пропускается. */
-async function openRelated(client: DocumentClient, kind: RelatedKind, name: string): Promise<RelatedDocument | null> {
+async function openRelated(
+	client: DocumentClient,
+	kind: RelatedKind,
+	name: string,
+	modName: string | null
+): Promise<RelatedDocument | null> {
 	try {
-		const session = await Session.open(kind, name, client)
+		const session = await Session.open(kind, name, client, modName)
 
 		switch (kind) {
 			case 'engines':

@@ -10,8 +10,10 @@ use crate::error::{AppResult, CommandError};
 use crate::state::AppState;
 
 /// Файлы игры по текущим путям программы.
-pub(super) fn files(state: &AppState) -> GameFiles {
-	GameFiles::new(GameDirs::from_paths(state.paths(), false), None, false)
+///
+/// `mod_name` задаёт мод, файлы которого ищутся раньше основной игры.
+pub(super) fn files(state: &AppState, mod_name: Option<String>) -> GameFiles {
+	GameFiles::new(GameDirs::from_paths(state.paths(), false), mod_name, false)
 }
 
 /// Траки из основной игры, DLC и модов.
@@ -30,62 +32,67 @@ pub fn list_trailers(state: State<'_, AppState>) -> AppResult<Vec<VehicleFile>> 
 
 /// Файлы траков или прицепов по текущим путям программы.
 fn vehicles(state: &AppState, trailers: bool) -> AppResult<Vec<VehicleFile>> {
-	files(state)
+	let use_mods = state.config().use_mods;
+
+	Ok(files(state, None)
 		.vehicle_files(trailers)
-		.map_err(CommandError::io)
+		.map_err(CommandError::io)?
+		.into_iter()
+		.filter(|file| use_mods || file.mod_name.is_none())
+		.collect())
 }
 
 /// Открывает трак по имени файла без расширения.
 #[tauri::command]
 #[specta::specta]
 pub fn open_truck(state: State<'_, AppState>, name: String) -> AppResult<Truck> {
-	Ok(files(&state).open_truck(&name)?)
+	Ok(files(&state, None).open_truck(&name)?)
 }
 
 /// Открывает двигатели файла по имени без расширения.
 #[tauri::command]
 #[specta::specta]
 pub fn open_engines(state: State<'_, AppState>, name: String) -> AppResult<Vec<Engine>> {
-	Ok(files(&state).open_engines(&name)?)
+	Ok(files(&state, None).open_engines(&name)?)
 }
 /// Открывает коробки передач файла по имени без расширения.
 #[tauri::command]
 #[specta::specta]
 pub fn open_gearboxes(state: State<'_, AppState>, name: String) -> AppResult<Vec<Gearbox>> {
-	Ok(files(&state).open_gearboxes(&name)?)
+	Ok(files(&state, None).open_gearboxes(&name)?)
 }
 
 /// Открывает наборы подвесок файла по имени без расширения.
 #[tauri::command]
 #[specta::specta]
 pub fn open_suspensions(state: State<'_, AppState>, name: String) -> AppResult<Vec<SuspensionSet>> {
-	Ok(files(&state).open_suspensions(&name)?)
+	Ok(files(&state, None).open_suspensions(&name)?)
 }
 
 /// Открывает лебёдки файла по имени без расширения.
 #[tauri::command]
 #[specta::specta]
 pub fn open_winches(state: State<'_, AppState>, name: String) -> AppResult<Vec<Winch>> {
-	Ok(files(&state).open_winches(&name)?)
+	Ok(files(&state, None).open_winches(&name)?)
 }
 
 /// Открывает набор шин и дисков по имени файла без расширения.
 #[tauri::command]
 #[specta::specta]
 pub fn open_wheels(state: State<'_, AppState>, name: String) -> AppResult<Wheels> {
-	Ok(files(&state).open_wheels(&name)?)
+	Ok(files(&state, None).open_wheels(&name)?)
 }
 
 /// Открывает одиночное колесо по имени файла без расширения.
 #[tauri::command]
 #[specta::specta]
 pub fn open_wheel(state: State<'_, AppState>, name: String) -> AppResult<Wheel> {
-	Ok(files(&state).open_wheel(&name)?)
+	Ok(files(&state, None).open_wheel(&name)?)
 }
 
 /// Открывает аддон по имени файла без расширения.
 #[tauri::command]
 #[specta::specta]
 pub fn open_addon(state: State<'_, AppState>, name: String) -> AppResult<TruckAddon> {
-	Ok(files(&state).open_addon(&name)?)
+	Ok(files(&state, None).open_addon(&name)?)
 }

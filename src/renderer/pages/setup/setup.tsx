@@ -1,17 +1,18 @@
+import { DeleteOutlined, SaveOutlined } from '@ant-design/icons'
 import { Header } from '@renderer/components/header'
 import { applyConfig, fromConfigDto } from '@renderer/config'
 import { open } from '@tauri-apps/plugin-dialog'
 import { formatString } from '@utilities/strings'
 import { App as AntApp, Button, Descriptions, Input, Result, Space, Spin, Switch, Typography } from 'antd'
 import { useEffect, useState } from 'react'
-import type { Config, PathsDto } from '@renderer/api/bindings'
+import type { Config, ModEntry, PathsDto } from '@renderer/api/bindings'
 import type { SetupClient } from './client'
 import { setupClient } from './client'
 import { SETUP_PAGE_LOCALIZATION as texts } from './localization'
 import './setup.scss'
 
 /** Действие экрана настройки, выполняемое сейчас. */
-type SetupAction = 'unpack' | 'backup' | 'verify' | 'restore'
+type SetupAction = 'unpack' | 'backup' | 'verify' | 'restore' | 'update' | 'mods'
 
 /** Параметры экрана настройки. */
 export interface SetupPageProps {
@@ -27,17 +28,19 @@ export function SetupPage({ onBack, client = setupClient }: SetupPageProps) {
 	const { message, modal } = AntApp.useApp()
 	const [paths, setPaths] = useState<PathsDto | null>(null)
 	const [config, setConfig] = useState<Config | null>(null)
+	const [mods, setMods] = useState<ModEntry[]>([])
 	const [error, setError] = useState<string | null>(null)
 	const [busy, setBusy] = useState<SetupAction | null>(null)
 
 	useEffect(() => {
 		let cancelled = false
 
-		Promise.all([client.paths(), client.config()]).then(
-			([nextPaths, nextConfig]) => {
+		Promise.all([client.paths(), client.config(), client.mods()]).then(
+			([nextPaths, nextConfig, nextMods]) => {
 				if (!cancelled) {
 					setPaths(nextPaths)
 					setConfig(nextConfig)
+					setMods(nextMods)
 				}
 			},
 			reason => {
@@ -107,12 +110,81 @@ export function SetupPage({ onBack, client = setupClient }: SetupPageProps) {
 				message.success(formatString(texts.unpacked, String(await client.unpack(path))))
 			} else if (action === 'backup') {
 				message.success(formatString(texts.backedUp, await client.backup(path)))
+			} else if (action === 'update') {
+				message.success(formatString(texts.updated, String(await client.update(path, null))))
 			} else if (action === 'verify') {
 				message.success(formatString(texts.verified, String(await client.verify(path))))
 			} else {
 				await client.restore(path)
 				message.success(texts.restored)
 			}
+		} catch (reason) {
+			message.error(toMessage(reason))
+		}
+
+		setBusy(null)
+	}
+
+	async function addMods() {
+		const selected = await open({
+			multiple: true,
+			directory: false,
+			filters: [{ name: 'mods', extensions: ['pak'] }]
+		})
+		const files = typeof selected === 'string' ? [selected] : selected
+
+		if (!files?.length) {
+			return
+		}
+
+		setBusy('mods')
+
+		try {
+			let next = mods
+
+			for (const path of files) {
+				next = await client.addMod(path)
+			}
+
+			setMods(next)
+			message.success(texts.saved)
+		} catch (reason) {
+			message.error(toMessage(reason))
+		}
+
+		setBusy(null)
+	}
+
+	async function updateMod(mod: ModEntry) {
+		setBusy('mods')
+
+		try {
+			message.success(formatString(texts.updated, String(await client.update(mod.path, mod.name))))
+		} catch (reason) {
+			message.error(toMessage(reason))
+		}
+
+		setBusy(null)
+	}
+
+	async function removeMod(name: string) {
+		setBusy('mods')
+
+		try {
+			setMods(await client.removeMod(name))
+		} catch (reason) {
+			message.error(toMessage(reason))
+		}
+
+		setBusy(null)
+	}
+
+	async function syncMods() {
+		setBusy('mods')
+
+		try {
+			setMods(await client.syncMods())
+			message.success(texts.saved)
 		} catch (reason) {
 			message.error(toMessage(reason))
 		}
@@ -189,6 +261,13 @@ export function SetupPage({ onBack, client = setupClient }: SetupPageProps) {
 											{texts.unpack}
 										</Button>
 										<Button
+											loading={busy === 'update'}
+											disabled={!config.initialPath}
+											onClick={() => void run('update')}
+										>
+											{texts.update}
+										</Button>
+										<Button
 											loading={busy === 'backup'}
 											disabled={!config.initialPath}
 											onClick={() => void run('backup')}
@@ -209,6 +288,48 @@ export function SetupPage({ onBack, client = setupClient }: SetupPageProps) {
 											onClick={() => confirm('restore')}
 										>
 											{texts.restore}
+										</Button>
+									</Space>
+								</section>
+
+								<section className="setup-section">
+									<Typography.Title level={5}>{texts.mods}</Typography.Title>
+									{mods.length === 0
+										? <Typography.Text type="secondary">{texts.noMods}</Typography.Text>
+										: (
+											<div className="setup-mods">
+												{mods.map(mod => (
+													<div key={mod.name} className="setup-mod">
+														<Typography.Text ellipsis={{ tooltip: mod.path }}>
+															{mod.name}
+														</Typography.Text>
+														<Space size={2}>
+															<Button
+																type="text"
+																size="small"
+																icon={<SaveOutlined />}
+																title={texts.updateMod}
+																onClick={() => void updateMod(mod)}
+															/>
+															<Button
+																type="text"
+																size="small"
+																danger
+																icon={<DeleteOutlined />}
+																title={texts.removeMod}
+																onClick={() => void removeMod(mod.name)}
+															/>
+														</Space>
+													</div>
+												))}
+											</div>
+										)}
+									<Space wrap>
+										<Button type="primary" loading={busy === 'mods'} onClick={() => void addMods()}>
+											{texts.addMod}
+										</Button>
+										<Button loading={busy === 'mods'} onClick={() => void syncMods()}>
+											{texts.syncMods}
 										</Button>
 									</Space>
 								</section>

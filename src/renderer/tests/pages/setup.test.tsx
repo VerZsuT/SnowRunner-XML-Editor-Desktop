@@ -1,4 +1,4 @@
-import type { Config, PathsDto } from '@renderer/api/bindings'
+import type { Config, ModEntry, PathsDto } from '@renderer/api/bindings'
 import { registerConfig } from '@renderer/config'
 import type { SetupClient } from '@renderer/pages/setup/client'
 import { SetupPage } from '@renderer/pages/setup'
@@ -51,6 +51,16 @@ function config(): Config {
 	}
 }
 
+/** Запись мода. */
+function mod(): ModEntry {
+	return {
+		fileName: 'my_mod.pak',
+		name: 'my_mod',
+		path: 'D:/mods/my_mod.pak',
+		size: 1
+	}
+}
+
 /** Клиент с подставными ответами. */
 function client(): SetupClient {
 	return {
@@ -59,8 +69,13 @@ function client(): SetupClient {
 		saveConfig: vi.fn(async (next: Config) => next),
 		unpack: vi.fn(async () => 12),
 		backup: vi.fn(async () => 'C:/data/backups/initial.pak'),
+		update: vi.fn(async () => 2),
 		verify: vi.fn(async () => 120),
-		restore: vi.fn()
+		restore: vi.fn(),
+		mods: vi.fn(async () => []),
+		addMod: vi.fn(async () => []),
+		removeMod: vi.fn(async () => []),
+		syncMods: vi.fn(async () => [])
 	}
 }
 
@@ -94,6 +109,25 @@ describe('SetupPage', () => {
 		await userEvent.click(mods)
 
 		expect(fake.saveConfig).toHaveBeenCalledWith(expect.objectContaining({ useMods: false }))
+	})
+
+	it('показывает моды и убирает их из списка', async () => {
+		const fake = client()
+
+		fake.mods = vi.fn(async () => [mod()])
+		fake.removeMod = vi.fn(async () => [])
+
+		render(
+			<AntApp>
+				<SetupPage client={fake} onBack={() => {}} />
+			</AntApp>
+		)
+
+		expect(await screen.findByText('my_mod')).toBeInTheDocument()
+
+		await userEvent.click(screen.getByTitle('Убрать мод из списка'))
+
+		expect(fake.removeMod).toHaveBeenCalledWith('my_mod')
 	})
 
 	it('делает бэкап выбранного архива', async () => {

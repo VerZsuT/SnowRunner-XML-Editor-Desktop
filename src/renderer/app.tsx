@@ -10,6 +10,9 @@ interface Selection {
 
 	/** Вид документа. */
 	kind: 'truck' | 'trailer'
+
+	/** Мод, из которого открыт файл. */
+	modName: string | null
 }
 
 /**
@@ -26,6 +29,7 @@ export function App() {
 			<EditorPage
 				name={selected.name}
 				kind={selected.kind}
+				modName={selected.modName}
 				onBack={() => setSelected(null)}
 			/>
 		)
@@ -37,7 +41,7 @@ export function App() {
 
 	return (
 		<ListsPage
-			onOpen={(name, kind) => setSelected({ name, kind })}
+			onOpen={(name, kind, modName) => setSelected({ name, kind, modName })}
 			onSetup={() => setSetup(true)}
 		/>
 	)

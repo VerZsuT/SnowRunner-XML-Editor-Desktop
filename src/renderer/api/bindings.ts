@@ -17,8 +17,12 @@ export const commands = {
 	saveConfig: (config: Config, options?: InvokeOptions) => typedError<Config, CommandError>(__TAURI_INVOKE("save_config", { config }, options)),
 	/**  Распаковывает файлы игры из архива в каталог данных приложения. */
 	unpackInitial: (archivePath: string, list: UnpackListKind, options?: InvokeOptions) => typedError<UnpackResultDto, CommandError>(__TAURI_INVOKE("unpack_initial", { archivePath, list }, options)),
-	/**  Обновляет архив файлами из каталога данных и добавляет маркер `edited`. */
-	updateArchive: (archivePath: string, options?: InvokeOptions) => typedError<UpdateResultDto, CommandError>(__TAURI_INVOKE("update_archive", { archivePath }, options)),
+	/**
+	 *  Обновляет архив файлами из каталога данных и добавляет маркер `edited`.
+	 * 
+	 *  `mod_name` задаёт мод: его файлы берутся из `modsTemp/<мод>`.
+	 */
+	updateArchive: (archivePath: string, modName: string | null, options?: InvokeOptions) => typedError<UpdateResultDto, CommandError>(__TAURI_INVOKE("update_archive", { archivePath, modName }, options)),
 	/**  Проверяет целостность всех записей архива. */
 	verifyArchive: (archivePath: string, options?: InvokeOptions) => typedError<VerifyResultDto, CommandError>(__TAURI_INVOKE("verify_archive", { archivePath }, options)),
 	/**  Делает бэкап архива в каталог данных приложения. */
@@ -33,6 +37,14 @@ export const commands = {
 	listEdited: (options?: InvokeOptions) => __TAURI_INVOKE<EditedFile[]>("list_edited", undefined, options),
 	/**  Снимает пометку изменённого файла. */
 	unmarkEdited: (name: string, options?: InvokeOptions) => typedError<boolean, CommandError>(__TAURI_INVOKE("unmark_edited", { name }, options)),
+	/**  Установленные моды. */
+	listMods: (options?: InvokeOptions) => __TAURI_INVOKE<ModEntry[]>("list_mods", undefined, options),
+	/**  Добавляет `.pak` моду: распаковывает файлы игры и сохраняет запись в списке. */
+	addMod: (path: string, options?: InvokeOptions) => typedError<ModEntry[], CommandError>(__TAURI_INVOKE("add_mod", { path }, options)),
+	/**  Убирает мод из списка; `.pak` и распакованные файлы остаются на диске. */
+	removeMod: (name: string, options?: InvokeOptions) => typedError<ModEntry[], CommandError>(__TAURI_INVOKE("remove_mod", { name }, options)),
+	/**  Пересобирает распакованные файлы модов, которых нет на диске или которые изменились. */
+	syncMods: (options?: InvokeOptions) => typedError<ModEntry[], CommandError>(__TAURI_INVOKE("sync_mods", undefined, options)),
 	/**  Траки из основной игры, DLC и модов. */
 	listTrucks: (options?: InvokeOptions) => typedError<VehicleFile[], CommandError>(__TAURI_INVOKE("list_trucks", undefined, options)),
 	/**  Прицепы из основной игры, DLC и модов. */
@@ -56,7 +68,7 @@ export const commands = {
 	/**  Игровые переводы языка интерфейса: строки игры и распакованных модов. */
 	gameTexts: (lang: string, options?: InvokeOptions) => __TAURI_INVOKE<GameTexts>("game_texts", { lang }, options),
 	/**  Открывает документ игры и регистрирует его в реестре. */
-	openDocument: (kind: DocumentKind, name: string, options?: InvokeOptions) => typedError<DocumentInfo, CommandError>(__TAURI_INVOKE("open_document", { kind, name }, options)),
+	openDocument: (kind: DocumentKind, name: string, modName: string | null, options?: InvokeOptions) => typedError<DocumentInfo, CommandError>(__TAURI_INVOKE("open_document", { kind, name, modName }, options)),
 	/**  Сведения об открытом документе. */
 	documentInfo: (docId: string, options?: InvokeOptions) => typedError<DocumentInfo, CommandError>(__TAURI_INVOKE("document_info", { docId }, options)),
 	/**  Открытые документы. */
@@ -270,6 +282,10 @@ export type DocumentInfo = {
 	path: string,
 	/**  Имя записи архива, в которую файл попадает при сохранении. */
 	archiveName: string,
+	/**  DLC, из которого взят файл. */
+	dlc: string | null,
+	/**  Мод, из которого взят файл. */
+	modName: string | null,
 	/**  Версия документа: увеличивается каждой успешной мутацией и сбросом. */
 	revision: number,
 	/**  Есть несохранённые правки. */
@@ -480,6 +496,18 @@ export type Limit = {
 	max: number | null,
 	/**  Округлять значение до целого. */
 	fixed?: boolean,
+};
+
+/**  Модификация. */
+export type ModEntry = {
+	/**  Имя `.pak` файла. */
+	fileName: string,
+	/**  Название: имя каталога с распакованными файлами. */
+	name: string,
+	/**  Путь к `.pak` файлу. */
+	path: string,
+	/**  Размер `.pak` при последней распаковке. */
+	size?: number | null,
 };
 
 /**  Результат мутации. */

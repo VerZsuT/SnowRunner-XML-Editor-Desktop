@@ -9,6 +9,7 @@ pub mod config;
 pub mod documents;
 pub mod game;
 pub mod library;
+pub mod mods;
 pub mod paths;
 pub mod texts;
 
@@ -29,6 +30,10 @@ pub fn collect() -> Commands<Wry> {
 		library::toggle_favorite,
 		library::list_edited,
 		library::unmark_edited,
+		mods::list_mods,
+		mods::add_mod,
+		mods::remove_mod,
+		mods::sync_mods,
 		game::list_trucks,
 		game::list_trailers,
 		game::open_truck,

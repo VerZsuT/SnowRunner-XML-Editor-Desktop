@@ -88,6 +88,18 @@ export const SETUP_PAGE_LOCALIZATION = loadLocalization(new Localization({
 		.ru('Бэкап сохранён: {}')
 		.en('Backup saved: {}'),
 
+	update: new LocalizationStrings()
+		.ru('Обновить архив')
+		.en('Update archive'),
+
+	updateMod: new LocalizationStrings()
+		.ru('Записать мод в .pak')
+		.en('Write mod into .pak'),
+
+	updated: new LocalizationStrings()
+		.ru('Записей обновлено: {}')
+		.en('Entries updated: {}'),
+
 	verify: new LocalizationStrings()
 		.ru('Проверить')
 		.en('Verify'),
@@ -107,6 +119,26 @@ export const SETUP_PAGE_LOCALIZATION = loadLocalization(new Localization({
 	restored: new LocalizationStrings()
 		.ru('Архив восстановлен из бэкапа')
 		.en('Archive restored from backup'),
+
+	mods: new LocalizationStrings()
+		.ru('Моды')
+		.en('Mods'),
+
+	noMods: new LocalizationStrings()
+		.ru('Моды не добавлены')
+		.en('No mods added'),
+
+	addMod: new LocalizationStrings()
+		.ru('Добавить мод (.pak)')
+		.en('Add mod (.pak)'),
+
+	syncMods: new LocalizationStrings()
+		.ru('Обновить моды')
+		.en('Refresh mods'),
+
+	removeMod: new LocalizationStrings()
+		.ru('Убрать мод из списка')
+		.en('Remove mod from the list'),
 
 	options: new LocalizationStrings()
 		.ru('Параметры')

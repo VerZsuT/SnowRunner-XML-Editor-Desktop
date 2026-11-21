@@ -168,6 +168,24 @@ impl From<sxmle_app::lists::LibraryError> for CommandError {
 	}
 }
 
+impl From<sxmle_app::mods::ModsError> for CommandError {
+	fn from(error: sxmle_app::mods::ModsError) -> Self {
+		use sxmle_app::mods::ModsError;
+
+		match error {
+			ModsError::Archive(error) => Self::archive(error),
+			ModsError::Io { path, source } => {
+				Self::io(source).with_path(path.display().to_string())
+			}
+			ModsError::NoClasses(path) => Self::invalid_argument(format!(
+				"мод не содержит каталога classes: {}",
+				path.display()
+			)),
+			ModsError::Serialize(error) => Self::internal(error),
+		}
+	}
+}
+
 impl From<sxmle_app::documents::DocumentError> for CommandError {
 	fn from(error: sxmle_app::documents::DocumentError) -> Self {
 		use sxmle_app::documents::DocumentError;

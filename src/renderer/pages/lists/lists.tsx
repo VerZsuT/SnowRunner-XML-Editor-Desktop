@@ -20,8 +20,8 @@ import './lists.scss'
 
 /** Параметры страницы списков. */
 export interface ListsPageProps {
-	/** Открыть редактор автомобиля. */
-	onOpen(name: string, kind: 'truck' | 'trailer'): void
+	/** Открыть редактор автомобиля; `modName` задаёт мод источника. */
+	onOpen(name: string, kind: 'truck' | 'trailer', modName: string | null): void
 
 	/** Открыть экран настройки. */
 	onSetup?(): void
@@ -291,7 +291,7 @@ export function ListsPage({
 										<div
 											key={[file.name, file.dlc, file.modName].filter(Boolean).join('/')}
 											className="lists-item"
-											onClick={() => onOpen(file.name, category === 'trailers' ? 'trailer' : 'truck')}
+											onClick={() => onOpen(file.name, category === 'trailers' ? 'trailer' : 'truck', file.modName)}
 										>
 											<Tooltip title={favorite ? texts.removeFavorite : texts.addFavorite}>
 												<Button

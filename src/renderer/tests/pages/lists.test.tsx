@@ -42,7 +42,7 @@ describe('ListsPage', () => {
 
 		await userEvent.click(await screen.findByText('ANK MK38'))
 
-		expect(onOpen).toHaveBeenCalledWith('ank_mk38', 'truck')
+		expect(onOpen).toHaveBeenCalledWith('ank_mk38', 'truck', null)
 	})
 
 	it('переключает избранное файла', async () => {
