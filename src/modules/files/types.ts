@@ -93,11 +93,29 @@ export interface IFs {
 	scan(path: string, args: IScanArgs): Promise<FsResult<IFsEntryInfo[]>>
 
 	/**
+	 * Найти сущности в нескольких деревьях папок.
+	 * Порядок результатов совпадает с порядком входного массива путей.
+	 * @param paths Пути к папкам.
+	 * @param args Аргументы поиска.
+	 * @returns Найденные сущности.
+	 */
+	scanMany(paths: string[], args: IScanArgs): Promise<FsResult<IFsEntryInfo[]>>
+
+	/**
 	 * Получить информацию о сущности.
 	 * @param path Путь к сущности.
 	 * @returns Информация о сущности или `null`, если её нет.
 	 */
 	stat(path: string): Promise<FsResult<IFsStat | null>>
+
+	/**
+	 * Получить информацию о сущностях.
+	 * Порядок результатов совпадает с порядком входного массива,
+	 * ошибка отдельной сущности возвращает `null`.
+	 * @param paths Пути к сущностям.
+	 * @returns Информация о сущностях.
+	 */
+	statMany(paths: string[]): Promise<FsResult<Array<IFsStat | null>>>
 
 	/**
 	 * Прочитать файл.

@@ -230,6 +230,27 @@ export class FsService {
 	}
 
 	/**
+	 * Найти сущности в нескольких деревьях папок чанками с ограничением параллельности.
+	 * Порядок результатов совпадает с порядком входного массива путей.
+	 * @param paths Пути к папкам.
+	 * @param args Аргументы поиска.
+	 * @returns Найденные сущности.
+	 */
+	async scanMany(paths: string[], args: IScanArgs): Promise<IFsEntryInfo[]> {
+		const result: IFsEntryInfo[] = []
+
+		for (const items of chunk(paths, CHUNK_SIZE)) {
+			const values = await runWithPool(items, OPERATIONS_POOL, path => this.scan(path, args))
+
+			for (const entries of values) {
+				result.push(...entries)
+			}
+		}
+
+		return result
+	}
+
+	/**
 	 * Получить информацию о сущности.
 	 * @param path Путь к сущности.
 	 * @returns Информация о сущности или null, если её нет.
@@ -251,6 +272,31 @@ export class FsService {
 
 			throw toFsError(error, path)
 		}
+	}
+
+	/**
+	 * Получить информацию о сущностях чанками с ограничением параллельности.
+	 * Порядок результатов совпадает с порядком входного массива,
+	 * ошибка отдельной сущности возвращает null.
+	 * @param paths Пути к сущностям.
+	 * @returns Информация о сущностях.
+	 */
+	async statMany(paths: string[]): Promise<Array<IFsStat | null>> {
+		const result: Array<IFsStat | null> = []
+
+		for (const items of chunk(paths, CHUNK_SIZE)) {
+			const values = await runWithPool(items, OPERATIONS_POOL, async path => {
+				try {
+					return await this.stat(path)
+				} catch {
+					return null
+				}
+			})
+
+			result.push(...values)
+		}
+
+		return result
 	}
 
 	/**

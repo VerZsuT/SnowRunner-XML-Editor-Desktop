@@ -12,7 +12,7 @@ import { WinchSet } from './set'
 /** Параметры списка лебёдок. */
 export type WinchesProps = ReadyProps & {
 	/** Геттер лебёдок. */
-	getter?(info: FileInfo): Promise<WinchVariants[]>
+	getter?(info: FileInfo, files?: IFile[]): Promise<WinchVariants[]>
 
 	/** Геттер файлов. */
 	filesGetter?(info: FileInfo): Promise<IFile[]>
@@ -43,7 +43,7 @@ export function Winches({ getter, filesGetter, onReady, onMount }: WinchesProps)
 
 		async function init() {
 			const foundFiles = await filesGetter?.(info) ?? []
-			const foundList = await getter?.(info) ?? []
+			const foundList = await getter?.(info, filesGetter ? foundFiles : undefined) ?? []
 
 			if (cancelled) {
 				return

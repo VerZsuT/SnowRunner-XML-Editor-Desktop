@@ -1,11 +1,12 @@
 import { ProgramError } from '@modules/errors/renderer'
 import type { IPaths } from '@modules/paths/renderer'
 import type { XMLElement } from '@modules/xml/renderer'
-import { getBridge, initMain, mainMethod } from '@utilities/bridge/renderer'
+import { getBridge, initMain, INIT_METHOD, mainMethod } from '@utilities/bridge/renderer'
 import { di, inject } from '@utilities/di/container'
 import { CONFIG_TOKEN, DIRS_TOKEN, FS_TOKEN, PATHS_TOKEN } from '@utilities/di/renderer/tokens'
 import { basename, dirname, extname, joinPath } from '@utilities/paths/renderer'
 import { ErrorText } from '../errors/enums'
+import { installFsStats, trackFsCall } from './stats'
 import type { FsFailure, FsResult, IDir, IDirs, IFile, IFiles, IFindDirsArgs, IFindFilesArgs, IFs, IFSEntry, IWatcher, IWatcherEvent, WatcherListener } from './types'
 
 export type * from './types'
@@ -20,7 +21,13 @@ export class Fs implements IFs {
 	scan!: IFs['scan']
 
 	@mainMethod()
+	scanMany!: IFs['scanMany']
+
+	@mainMethod()
 	stat!: IFs['stat']
+
+	@mainMethod()
+	statMany!: IFs['statMany']
 
 	@mainMethod()
 	readFile!: IFs['readFile']
@@ -54,6 +61,29 @@ export class Fs implements IFs {
 
 	@mainMethod()
 	unwatch!: IFs['unwatch']
+
+	/** Обернуть main-методы счётчиком вызовов в dev-режиме. */
+	[INIT_METHOD]() {
+		installFsStats()
+
+		if (!import.meta.env.DEV) {
+			return
+		}
+
+		const methods = this as unknown as Record<string, (...args: any[]) => Promise<unknown>>
+
+		for (const [name, method] of Object.entries(methods)) {
+			if (typeof method !== 'function') {
+				continue
+			}
+
+			methods[name] = (...args: any[]) => {
+				trackFsCall(name)
+
+				return method(...args)
+			}
+		}
+	}
 }
 
 /** Слушатели событий наблюдения по идентификаторам. */

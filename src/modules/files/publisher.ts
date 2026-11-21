@@ -15,7 +15,13 @@ export function publishFiles() {
 	publishFunction(`${CLASS_NAME}/scan`, (path: string, args: Parameters<typeof fsService.scan>[1]) => (
 		toResult(path, () => fsService.scan(path, args))
 	))
+	publishFunction(`${CLASS_NAME}/scanMany`, (paths: string[], args: Parameters<typeof fsService.scan>[1]) => (
+		toResult(paths[0] ?? '', () => fsService.scanMany(paths, args))
+	))
 	publishFunction(`${CLASS_NAME}/stat`, (path: string) => toResult(path, () => fsService.stat(path)))
+	publishFunction(`${CLASS_NAME}/statMany`, (paths: string[]) => (
+		toResult(paths[0] ?? '', () => fsService.statMany(paths))
+	))
 	publishFunction(`${CLASS_NAME}/readFile`, (path: string, encoding?: BufferEncoding) => (
 		toResult(path, () => fsService.readFile(path, encoding))
 	))

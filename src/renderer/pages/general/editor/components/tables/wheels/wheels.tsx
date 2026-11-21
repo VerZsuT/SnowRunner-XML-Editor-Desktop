@@ -12,7 +12,7 @@ import { WheelSet } from './set'
 /** Параметры списка наборов колёс. */
 export type WheelsProps = ReadyProps & {
 	/** Геттер набора колёс. */
-	getter?(info: FileInfo): Promise<WheelsXML | undefined>
+	getter?(info: FileInfo, file?: IFile): Promise<WheelsXML | undefined>
 
 	/** Геттер файла. */
 	fileGetter?(info: FileInfo): Promise<IFile | undefined>
@@ -43,7 +43,10 @@ export function Wheels({ getter, fileGetter, onReady, onMount }: WheelsProps) {
 
 		async function init() {
 			const file = await fileGetter?.(info)
-			const set = await getter?.(info)
+			// Если файл уже искали и не нашли, повторный резолв внутри getter не нужен.
+			const set = fileGetter
+				? file ? await getter?.(info, file) : undefined
+				: await getter?.(info)
 
 			if (cancelled) {
 				return

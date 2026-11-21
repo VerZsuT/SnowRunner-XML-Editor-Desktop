@@ -264,21 +264,19 @@ export function AddonsContent({ file, xml, onReady, onMount }: AddonsContentProp
 		const candidates: IFile[] = []
 
 		async function collectFiles(dir: IDir) {
-			if (!await dir.exists()) {
-				return
-			}
-
+			// Отсутствующая папка даёт пустой scan, отдельный exists не нужен.
 			candidates.push(...await dir.findFiles({ ext: 'xml' }))
 		}
 
-		async function collectTree(dir: IDir, filterPath: boolean) {
-			const found = await fs.scan(dir.path, { kind: 'all', recursive: true })
+		async function collectTrees(roots: IDir[], filterPath: boolean) {
+			const found = await fs.scanMany(roots.map(root => root.path), { kind: 'all', recursive: true })
 
 			if (!found.ok) {
 				return
 			}
 
-			const prefix = dir.path.toLowerCase()
+			// Без завершающего слэша: relative должен начинаться с него, как в прежнем filterPath.
+			const marker = '\\classes\\trucks'
 
 			for (const info of found.value) {
 				if (info.kind !== 'file' || !info.name.toLowerCase().endsWith('.xml')) {
@@ -286,7 +284,9 @@ export function AddonsContent({ file, xml, onReady, onMount }: AddonsContentProp
 				}
 
 				if (filterPath) {
-					const relative = info.path.toLowerCase().slice(prefix.length)
+					const path = info.path.toLowerCase()
+					const index = path.indexOf(marker)
+					const relative = index >= 0 ? path.slice(index + marker.length) : path
 
 					if (!relative.includes('\\addons\\') && !relative.includes('_tuning\\')) {
 						continue
@@ -299,13 +299,10 @@ export function AddonsContent({ file, xml, onReady, onMount }: AddonsContentProp
 
 		await collectFiles(dirs.classes.dir(`trucks/${truckName}_tuning`))
 		await collectFiles(dirs.classes.dir('trucks/addons'))
-
-		for (const dlc of di.resolve(DLC_TOKEN)) {
-			await collectTree(dlc.dir.dir('classes/trucks'), true)
-		}
+		await collectTrees([...di.resolve(DLC_TOKEN)].map(dlc => dlc.dir.dir('classes/trucks')), true)
 
 		if (mod) {
-			await collectTree(dirs.modsTemp.dir(mod, 'classes'), false)
+			await collectTrees([dirs.modsTemp.dir(mod, 'classes')], false)
 		}
 
 		return await filterCandidates(candidates)

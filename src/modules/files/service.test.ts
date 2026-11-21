@@ -200,6 +200,37 @@ describe('FsService', () => {
 		})
 	})
 
+	describe('scanMany', () => {
+		it('scanMany сохраняет порядок путей и пропускает отсутствующие папки', async () => {
+			const first = join(tempDir, 'first')
+			const second = join(tempDir, 'second')
+			const missing = join(tempDir, 'missing')
+
+			await service.writeFile(join(first, 'one.xml'), '<one />')
+			await service.writeFile(join(first, 'skip.txt'), 'skip')
+			await service.writeFile(join(second, 'two.xml'), '<two />')
+
+			const found = await service.scanMany([first, missing, second], { ext: 'xml' })
+
+			expect(found).toEqual([
+				{ path: join(first, 'one.xml'), name: 'one.xml', kind: 'file' },
+				{ path: join(second, 'two.xml'), name: 'two.xml', kind: 'file' }
+			])
+		})
+
+		it('scanMany поддерживает рекурсию и фильтр по имени', async () => {
+			const first = join(tempDir, 'first')
+			const second = join(tempDir, 'second')
+
+			await service.writeFile(join(first, 'sub', 'deep.xml'), '<deep />')
+			await service.writeFile(join(second, 'other.xml'), '<other />')
+
+			expect(await service.scanMany([first, second], { name: 'deep', recursive: true })).toEqual([
+				{ path: join(first, 'sub', 'deep.xml'), name: 'deep.xml', kind: 'file' }
+			])
+		})
+	})
+
 	describe('readMany', () => {
 		it('readMany сохраняет порядок и возвращает null для отсутствующего файла', async () => {
 			await service.writeMany(
@@ -326,6 +357,38 @@ describe('FsService', () => {
 			expect(dirStat).toMatchObject({ path: tempDir, name: basename(tempDir), kind: 'dir' })
 			expect(typeof dirStat?.size).toBe('number')
 			expect(await service.stat(join(tempDir, 'missing.txt'))).toBeNull()
+		})
+	})
+
+	describe('statMany', () => {
+		it('statMany сохраняет порядок и возвращает null для отсутствующих путей', async () => {
+			const file = join(tempDir, 'a.txt')
+			const dir = join(tempDir, 'sub')
+			const missing = join(tempDir, 'missing.txt')
+
+			await service.writeFile(file, 'hello')
+			await service.makeDir(dir)
+
+			const result = await service.statMany([missing, file, dir])
+
+			expect(result).toHaveLength(3)
+			expect(result[0]).toBeNull()
+			expect(result[1]).toEqual({ path: file, name: 'a.txt', kind: 'file', size: 5 })
+			expect(result[2]).toMatchObject({ path: dir, kind: 'dir' })
+		})
+
+		it('statMany обрабатывает больше одного чанка', async () => {
+			const paths = Array.from({ length: 101 }, (_, index) => join(tempDir, `file-${index}.txt`))
+
+			await service.writeFile(paths[0], 'first')
+			await service.writeFile(paths[100], 'last')
+
+			const result = await service.statMany(paths)
+
+			expect(result).toHaveLength(paths.length)
+			expect(result[0]?.size).toBe(5)
+			expect(result[1]).toBeNull()
+			expect(result[100]?.size).toBe(4)
 		})
 	})
 

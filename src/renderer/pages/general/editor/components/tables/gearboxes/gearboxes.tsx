@@ -12,7 +12,7 @@ import { GearboxSet } from './set'
 /** Параметры списка коробок передач. */
 export type GearboxesProps = ReadyProps & {
 	/** Геттер коробок передач. */
-	getter?(info: FileInfo): Promise<GearboxesXML[]>
+	getter?(info: FileInfo, files?: IFile[]): Promise<GearboxesXML[]>
 
 	/** Геттер файлов. */
 	filesGetter?(info: FileInfo): Promise<IFile[]>
@@ -43,7 +43,7 @@ export function Gearboxes({ getter, filesGetter, onReady, onMount }: GearboxesPr
 
 		async function init() {
 			const foundFiles = await filesGetter?.(info) ?? []
-			const foundList = await getter?.(info) ?? []
+			const foundList = await getter?.(info, filesGetter ? foundFiles : undefined) ?? []
 
 			if (cancelled) {
 				return

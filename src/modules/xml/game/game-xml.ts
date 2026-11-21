@@ -69,10 +69,10 @@ export class GameXML extends XMLElement {
 		Class: { from: typeof GameXML['from'] },
 		filesGetter: ReturnType<typeof this.files>
 	) {
-		return async (info: FileInfo): Promise<T[]> => {
-			const files = await filesGetter(info)
+		return async (info: FileInfo, files?: IFile[]): Promise<T[]> => {
+			const resolved = files ?? await filesGetter(info)
 
-			return this.elementsFromFiles<T>(files, async data => await Class.from(data) as T | undefined)
+			return this.elementsFromFiles<T>(resolved, async data => await Class.from(data) as T | undefined)
 		}
 	}
 
@@ -85,11 +85,11 @@ export class GameXML extends XMLElement {
 		Class: { from: typeof GameXML['from'] },
 		fileGetter: ReturnType<typeof this.file>
 	) {
-		return async (info: FileInfo): Promise<T | undefined> => {
-			const file = await fileGetter(info)
+		return async (info: FileInfo, file?: IFile): Promise<T | undefined> => {
+			const resolved = file ?? await fileGetter(info)
 
-			if (file) {
-				const [element] = await this.elementsFromFiles<T>([file], async data => await Class.from(data) as T | undefined)
+			if (resolved) {
+				const [element] = await this.elementsFromFiles<T>([resolved], async data => await Class.from(data) as T | undefined)
 
 				return element
 			}
@@ -174,25 +174,23 @@ export class GameXML extends XMLElement {
 		const dlcDir = isBackup
 			? this.dirs.backupInitialData.dir('[media]\\_dlc')
 			: this.dirs.dlc
-		const modFile = mod
-			? this.dirs.modsTemp.file(mod, `classes/${folder}/${name}.xml`)
-			: undefined
+		const dlcs = di.resolve(DLC_TOKEN).get()
 
-		const maybe = [
-			...modFile ? [modFile] : [],
+		// Порядок как раньше: DLC (в обратном порядке), затем мод, затем classes.
+		const maybe: IFile[] = [
+			...[...dlcs].reverse().map(dlc => dlcDir.file(dlc.name, `classes/${folder}/${name}.xml`)),
+			...mod ? [this.dirs.modsTemp.file(mod, `classes/${folder}/${name}.xml`)] : [],
 			classesDir.file(`${folder}/${name}.xml`)
 		]
-		const dlcs = di.resolve(DLC_TOKEN)
+		const stats = await di.resolve(FS_TOKEN).statMany(maybe.map(file => file.path))
 
-		for (const dlc of dlcs.get()) {
-			if (await dlcDir.dir(dlc.name).exists()) {
-				maybe.unshift(dlcDir.file(dlc.name, `classes/${folder}/${name}.xml`))
-			}
+		if (!stats.ok) {
+			return
 		}
 
-		for (const file of maybe) {
-			if (await file.exists()) {
-				return file
+		for (let index = 0; index < maybe.length; index += 1) {
+			if (stats.value[index]) {
+				return maybe[index]
 			}
 		}
 	}

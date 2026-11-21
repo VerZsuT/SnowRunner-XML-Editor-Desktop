@@ -35,7 +35,7 @@ export class XMLWithTemplates extends GameXML {
 	protected filesElementsWithTemplates<T extends XMLWithTemplates>(
 		Class: { from: typeof XMLWithTemplates['from'] },
 		filesGetter: ReturnType<typeof this.files>
-	): (info: FileInfo) => Promise<T[]> {
+	): (info: FileInfo, files?: IFile[]) => Promise<T[]> {
 		return super.filesElements<T>(Class, filesGetter)
 	}
 
@@ -47,7 +47,7 @@ export class XMLWithTemplates extends GameXML {
 	protected fileElementWithTemplates<T extends XMLWithTemplates>(
 		Class: { from: typeof XMLWithTemplates['from'] },
 		fileGetter: ReturnType<typeof this.file>
-	): (info: FileInfo) => Promise<T | undefined> {
+	): (info: FileInfo, file?: IFile) => Promise<T | undefined> {
 		return super.fileElement(Class, fileGetter)
 	}
 

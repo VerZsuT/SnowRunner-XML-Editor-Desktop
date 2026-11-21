@@ -6,7 +6,7 @@ import { useConfig, useLoadingState } from '@renderer/utilities/use-reactive'
 import { useWindowReady } from '@renderer/utilities/use-window-ready'
 import { hasItems } from '@utilities/checks/renderer'
 import { di } from '@utilities/di/container'
-import { CHECKS_TOKEN, DIRS_TOKEN, DLC_TOKEN, EDITED_TOKEN, FILES_TOKEN, SYSTEM_TOKEN, WINDOWS_TOKEN } from '@utilities/di/renderer/tokens'
+import { CHECKS_TOKEN, DIRS_TOKEN, DLC_TOKEN, EDITED_TOKEN, FILES_TOKEN, FS_TOKEN, SYSTEM_TOKEN, WINDOWS_TOKEN } from '@utilities/di/renderer/tokens'
 import { useEffect, useRef, useState } from 'react'
 import { Editor } from '../editor'
 import { Lists } from '../lists'
@@ -78,15 +78,15 @@ export function General() {
 		const dlcs = di.resolve(DLC_TOKEN)
 		const files = di.resolve(FILES_TOKEN)
 		const dirs = di.resolve(DIRS_TOKEN)
+		const fs = di.resolve(FS_TOKEN)
 		const filesToExport: IFile[] = []
 		const folders = ['trucks', 'trucks/trailers']
 
-		for (const dlcItem of dlcs) {
-			const classes = dlcItem.dir.dir('classes')
+		const dlcRoots = [...dlcs].flatMap(dlc => folders.map(folder => dlc.dir.dir('classes').dir(folder)))
+		const dlcFiles = await fs.scanMany(dlcRoots.map(root => root.path), { ext: 'xml' })
 
-			for (const postfix of folders) {
-				filesToExport.push(...await classes.dir(postfix).findFiles({ ext: 'xml' }))
-			}
+		if (dlcFiles.ok) {
+			filesToExport.push(...dlcFiles.value.map(entry => files.newFile(entry.path)))
 		}
 
 		for (const postfix of folders) {

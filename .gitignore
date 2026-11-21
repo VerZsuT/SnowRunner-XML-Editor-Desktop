@@ -90,6 +90,9 @@ out
 # program backup
 src/backups/
 
+# Plans
+PLAN-*.md
+
 .vscode/
 .idea/
 build-scripts/out

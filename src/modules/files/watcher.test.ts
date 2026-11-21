@@ -17,6 +17,7 @@ vi.mock('@utilities/bridge/renderer', () => ({
 		}
 	}),
 	initMain: () => (target: any) => target,
+	INIT_METHOD: Symbol('init method'),
 	mainMethod: () => () => {}
 }))
 

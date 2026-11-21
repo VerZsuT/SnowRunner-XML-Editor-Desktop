@@ -12,7 +12,7 @@ import { SuspensionSet } from './set'
 /** Параметры списка подвесок. */
 export type SuspensionsProps = ReadyProps & {
 	/** Геттер подвесок. */
-	getter?(info: FileInfo): Promise<SuspensionsXML[]>
+	getter?(info: FileInfo, files?: IFile[]): Promise<SuspensionsXML[]>
 
 	/** Геттер файлов. */
 	filesGetter?(info: FileInfo): Promise<IFile[]>
@@ -43,7 +43,7 @@ export function Suspensions({ getter, filesGetter, onReady, onMount }: Suspensio
 
 		async function init() {
 			const foundFiles = await filesGetter?.(info) ?? []
-			const foundList = await getter?.(info) ?? []
+			const foundList = await getter?.(info, filesGetter ? foundFiles : undefined) ?? []
 
 			if (cancelled) {
 				return

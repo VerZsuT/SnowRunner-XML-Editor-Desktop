@@ -171,6 +171,7 @@ export const useListStore = create<ListState>()((set, get) => ({
 	},
 
 	clearFiles() {
-		set({ files: { main: [], dlc: [], mods: [] } })
+		// Кеш элементов относится к прежнему набору файлов и пересобирается при загрузке.
+		set({ files: { main: [], dlc: [], mods: [] }, itemsCache: new Map() })
 	}
 }))

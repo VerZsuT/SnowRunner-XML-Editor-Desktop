@@ -11,8 +11,16 @@ export class NodeFs implements IFs {
 		return toResult(path, () => fsService.scan(path, args))
 	}
 
+	scanMany(paths: string[], args: Parameters<IFs['scan']>[1]) {
+		return toResult(paths[0] ?? '', () => fsService.scanMany(paths, args))
+	}
+
 	stat(path: string) {
 		return toResult(path, () => fsService.stat(path))
+	}
+
+	statMany(paths: string[]) {
+		return toResult(paths[0] ?? '', () => fsService.statMany(paths))
 	}
 
 	readFile(path: string, encoding?: BufferEncoding) {

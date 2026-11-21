@@ -12,7 +12,7 @@ import { EngineSet } from './set'
 /** Параметры списка двигателей. */
 export type EnginesProps = ReadyProps & {
 	/** Геттер двигателей. */
-	getter?(info: FileInfo): Promise<EnginesXML[]>
+	getter?(info: FileInfo, files?: IFile[]): Promise<EnginesXML[]>
 
 	/** Геттер файлов. */
 	filesGetter?(info: FileInfo): Promise<IFile[]>
@@ -43,7 +43,7 @@ export function Engines({ getter, filesGetter, onReady, onMount }: EnginesProps)
 
 		async function init() {
 			const foundFiles = await filesGetter?.(info) ?? []
-			const foundList = await getter?.(info) ?? []
+			const foundList = await getter?.(info, filesGetter ? foundFiles : undefined) ?? []
 
 			if (cancelled) {
 				return
