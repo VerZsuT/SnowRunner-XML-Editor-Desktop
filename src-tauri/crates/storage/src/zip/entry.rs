@@ -137,25 +137,4 @@ fn civil_from_days(days: u64) -> (i64, u32, u32) {
 }
 
 #[cfg(test)]
-mod tests {
-	use super::dos_datetime;
-
-	/// Известные даты и гранулярность DOS-времени.
-	#[test]
-	fn dos_datetime_known_dates() {
-		// 1980-01-01T00:00:00Z — начало DOS-эпохи.
-		assert_eq!(dos_datetime(315_532_800), (0, (1 << 5) | 1));
-		// 2024-01-01T00:00:00Z.
-		assert_eq!(dos_datetime(1_704_067_200), (0, (44 << 9) | (1 << 5) | 1));
-		// 2024-01-01T23:59:59Z: секунды усекаются до чётных (59 / 2 = 29).
-		let late = 1_704_067_200 + 23 * 3_600 + 59 * 60 + 59;
-		assert_eq!(
-			dos_datetime(late),
-			((23 << 11) | (59 << 5) | 29, (44 << 9) | (1 << 5) | 1)
-		);
-		// Двухсекундная гранулярность.
-		assert_eq!(dos_datetime(1_704_067_200).0, 0);
-		assert_eq!(dos_datetime(1_704_067_201).0, 0);
-		assert_eq!(dos_datetime(1_704_067_202).0, 1);
-	}
-}
+mod tests;

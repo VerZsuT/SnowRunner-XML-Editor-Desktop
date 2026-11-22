@@ -13,3 +13,6 @@ pub mod paths;
 pub mod system;
 pub mod texts;
 pub mod updates;
+
+#[cfg(test)]
+mod test_support;
