@@ -19,8 +19,20 @@ export default defineConfig({
 		target: 'es2025',
 		outDir: '../../dist',
 		emptyOutDir: true,
-		rollupOptions: {
-			input: { general: 'index.html' }
+		rolldownOptions: {
+			input: { general: 'index.html' },
+			output: {
+				// Вендоры отдельными чанками: webview разбирает их параллельно,
+				// а код приложения не смешивается с библиотеками.
+				codeSplitting: {
+					groups: [
+						{ name: 'react', test: /[\\/]node_modules[\\/](react|react-dom|scheduler)[\\/]/ },
+						{ name: 'icons', test: /[\\/]node_modules[\\/]@ant-design[\\/]icons/ },
+						{ name: 'rc', test: /[\\/]node_modules[\\/](@rc-component|rc-[^\\/]+)[\\/]/ },
+						{ name: 'antd', test: /[\\/]node_modules[\\/]/ }
+					]
+				}
+			}
 		}
 	},
 	plugins: [pluginReact({ compiler: true })],

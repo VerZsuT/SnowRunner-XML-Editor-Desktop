@@ -35,7 +35,6 @@
 		"@testing-library/jest-dom": "^8.0.0",
 		"@testing-library/react": "^16.3.3",
 		"@testing-library/user-event": "^14.6.13",
-		"@typescript/typescript6": "^6.0.2",
 		"@types/react": "^19.3.0",
 		"@types/react-dom": "^19.3.0",
 		"@vitejs/plugin-react": "^6.3.0",
@@ -56,7 +55,6 @@
 		"antd": "^6.7.1",
 		"react": "^19.3.1",
 		"react-dom": "^19.3.1",
-		"tslib": "^2.9.1",
 		"zustand": "^5.1.0"
 	},
 	"allowScripts": {

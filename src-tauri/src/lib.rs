@@ -101,8 +101,11 @@ pub fn specta_builder() -> tauri_specta::Builder<tauri::Wry> {
 		.error_handling(ErrorHandlingMode::Result)
 }
 
-/// Запускает приложение.
-pub fn run() {
+/// Запускает приложение с готовым контекстом.
+///
+/// Ассеты фронтенда встраивает `main.rs` (`generate_context!`): так библиотека
+/// не зависит от содержимого `dist` и не пересобирается после `vite build`.
+pub fn run(context: tauri::Context<tauri::Wry>) {
 	let builder = specta_builder();
 	let invoke_handler = builder.invoke_handler();
 
@@ -121,6 +124,6 @@ pub fn run() {
 
 			Ok(())
 		})
-		.run(tauri::generate_context!())
+		.run(context)
 		.expect("не удалось запустить приложение");
 }

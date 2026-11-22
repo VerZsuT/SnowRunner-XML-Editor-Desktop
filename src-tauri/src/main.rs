@@ -1,5 +1,5 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 fn main() {
-	sxmle::run()
+	sxmle::run(tauri::generate_context!())
 }

@@ -42,6 +42,12 @@ custom-protocol = ["tauri/custom-protocol"]
 members = ["crates/app", "crates/domain", "crates/storage"]
 resolver = "3"
 
+# Инкрементальная сборка release: пересборка корневой крейты (макрос
+# `generate_context!` со встроенным фронтендом) занимает секунды вместо минуты.
+# LTO выключен, поэтому на качество кода это не влияет.
+[profile.release]
+incremental = true
+
 [workspace.package]
 version = "1.4.0"
 edition = "2024"
