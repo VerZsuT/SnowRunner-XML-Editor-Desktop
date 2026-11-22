@@ -26,7 +26,7 @@ The difference between the versions is only in the installation method.
 
 - The installed version keeps settings, backups and temporary folders in `%APPDATA%\SnowRunner XML Editor` and does not require administrator rights at startup.
 - The portable version keeps data in the `data` folder next to the `.exe` when the `portable.txt` marker is present (it is included in the portable archive). Without the marker, data is written to `%APPDATA%`.
-- On the first run of a version with the new data folder, existing json files are copied from the installation folder to the new one; the originals are not deleted.
+- When the data mode changes, json files are copied to the new folder without overwriting existing ones; temporary files and backups are not transferred.
 
 ## How to use
 
@@ -56,6 +56,8 @@ npm run tauri:build
 
 The NSIS installer appears in `src-tauri/target/release/bundle/nsis`.  
 zustand keeps only interface state; game data, documents and configuration live in the Rust core.
+
+Developer documentation — [docs/README.md](docs/README.md).
 
 Project directories:
 
