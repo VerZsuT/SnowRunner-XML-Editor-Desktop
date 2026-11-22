@@ -1,11 +1,17 @@
 .editor-field {
-	display: grid;
-	grid-template-columns: minmax(200px, 1fr) minmax(160px, 1fr);
-	gap: 12px;
+	display: flex;
+	box-sizing: border-box;
+	flex: 1 1 0;
 	align-items: center;
-	padding: 3px 4px;
+	min-width: 650px;
+	min-height: 40px;
+	margin-top: 10px;
 
 	&-label {
+		box-sizing: border-box;
+		width: 50%;
+		/* 10px padding контента + 26px = текст шапки группы (16 + 12 + 8). */
+		padding-left: 26px;
 		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
@@ -13,15 +19,90 @@
 	}
 
 	&-content {
-		min-width: 0;
+		display: flex;
+		box-sizing: border-box;
+		flex-wrap: wrap;
+		gap: 10px;
+		align-content: center;
+		align-items: center;
+		justify-content: center;
+		width: 50%;
+		text-align: center;
 	}
 
 	&-input {
-		width: 100%;
+		width: 150px;
+		border-radius: 5px;
+	}
+
+	/* Ширина select следует за содержимым, как в 1.4.0. */
+	&-select {
+		width: auto;
+		min-width: 150px;
+		max-width: 100%;
+
+		.ant-select-selection-item,
+		.ant-select-selection-placeholder,
+		.ant-select-content {
+			text-align: left;
+		}
 	}
 
 	&-position {
 		display: flex;
-		gap: 6px;
+		flex-wrap: wrap;
+		gap: 10px;
+		align-items: center;
+		justify-content: center;
+	}
+
+	&-coordinate {
+		display: flex;
+		gap: 4px;
+		align-items: center;
+	}
+
+	&-axis {
+		color: var(--ant-color-text-secondary);
+	}
+
+	&-position &-input {
+		width: 70px;
+	}
+
+	&-tip-target {
+		display: inline-flex;
+		max-width: 100%;
+	}
+
+	&-tip {
+		max-width: 280px;
+	}
+}
+
+/* Портал select рендерится в body: выравниваем варианты по левому краю. */
+.editor-select-dropdown .ant-select-item-option-content {
+	text-align: left;
+}
+
+.editor-group-content > .editor-field:first-child {
+	margin-top: 0;
+}
+
+/* На широком окне параметры идут в две колонки, как в 1.4.0. */
+@media (min-width: 1430px) {
+	.editor-field {
+		flex: 0 0 50%;
+		width: 50%;
+		min-width: 0;
+
+		&:nth-child(odd) {
+			border-right: 1px solid #d9d9d9;
+		}
+
+		&-content {
+			justify-content: flex-end;
+			padding-right: 40px;
+		}
 	}
 }

@@ -1,21 +1,19 @@
 import { DeleteOutlined, SaveOutlined } from '@ant-design/icons'
-import { T } from '@/utilities/localization'
+import type { Locale } from '@/utilities/localization'
+import { LOCALES } from '@/utilities/localization'
 import { Header } from '@/components/header'
-import { applyConfig, fromConfigDto } from '@/config'
+import { applyConfig, fromConfigDto, useConfig } from '@/config'
 import { open } from '@tauri-apps/plugin-dialog'
 import { formatString } from '@/utilities/strings'
-import { App as AntApp, Button, Descriptions, Input, Result, Select, Space, Spin, Switch, Typography } from 'antd'
+import { App as AntApp, Button, Descriptions, Input, Result, Space, Spin, Typography } from 'antd'
 import { useEffect, useState } from 'react'
 import type { Config, ModEntry, PathsDto } from '@/api/bindings'
 import type { SetupClient } from './client'
 import { setupClient } from './client'
 import './setup.scss'
 
-/** Тексты страницы. */
-const texts = T.setup
-
 /** Действие экрана настройки, выполняемое сейчас. */
-type SetupAction = 'unpack' | 'backup' | 'verify' | 'restore' | 'update' | 'mods' | 'mode'
+type SetupAction = 'unpack' | 'backup' | 'verify' | 'restore' | 'update' | 'mods'
 
 /** Параметры экрана настройки. */
 export interface SetupPageProps {
@@ -29,6 +27,9 @@ export interface SetupPageProps {
 /** Экран настройки: пути, распаковка, бэкапы и параметры программы. */
 export function SetupPage({ onBack, client = setupClient }: SetupPageProps) {
 	const { message, modal } = AntApp.useApp()
+	const ui = useConfig()
+	// Тексты читаются из состояния: смена языка видна без перезагрузки окна.
+	const texts = LOCALES[ui.lang].setup
 	const [paths, setPaths] = useState<PathsDto | null>(null)
 	const [config, setConfig] = useState<Config | null>(null)
 	const [mods, setMods] = useState<ModEntry[]>([])
@@ -82,21 +83,6 @@ export function SetupPage({ onBack, client = setupClient }: SetupPageProps) {
 
 		try {
 			await update({ initialPath: path })
-		} catch (reason) {
-			message.error(toMessage(reason))
-		}
-	}
-
-	async function toggle(key: 'useMods' | 'advancedMode' | 'checkUpdates', value: boolean) {
-		const patch: Partial<Config> = key === 'useMods'
-			? { useMods: value }
-			: key === 'advancedMode'
-				? { advancedMode: value }
-				: { checkUpdates: value }
-
-		try {
-			await update(patch)
-			message.success(texts.saved)
 		} catch (reason) {
 			message.error(toMessage(reason))
 		}
@@ -201,43 +187,6 @@ export function SetupPage({ onBack, client = setupClient }: SetupPageProps) {
 		setBusy(null)
 	}
 
-	async function changeLang(lang: string) {
-		try {
-			await update({ lang })
-			message.success(texts.saved)
-			client.reload()
-		} catch (reason) {
-			message.error(toMessage(reason))
-		}
-	}
-
-	function confirmMode(portable: boolean) {
-		modal.confirm({
-			title: texts.modeConfirm,
-			okText: portable ? texts.modePortable : texts.modeInstalled,
-			cancelText: texts.cancel,
-			onOk: async () => {
-				setBusy('mode')
-
-				try {
-					const result = await client.switchMode(portable)
-
-					message.success(formatString(texts.modeSwitched, String(result.copied)))
-					modal.confirm({
-						title: texts.restartConfirm,
-						okText: texts.restart,
-						cancelText: texts.cancel,
-						onOk: () => client.restart()
-					})
-				} catch (reason) {
-					message.error(toMessage(reason))
-				}
-
-				setBusy(null)
-			}
-		})
-	}
-
 	function confirm(action: 'unpack' | 'restore') {
 		modal.confirm({
 			title: action === 'unpack' ? texts.unpackConfirm : texts.restoreConfirm,
@@ -277,7 +226,7 @@ export function SetupPage({ onBack, client = setupClient }: SetupPageProps) {
 												label: texts.dataRoot,
 												children: <Typography.Text copyable>{paths.dataRoot}</Typography.Text>
 											},
-											{ key: 'mode', label: texts.mode, children: modeText(paths.mode) },
+											{ key: 'mode', label: texts.mode, children: modeText(paths.mode, texts) },
 											{ key: 'classes', label: texts.classes, children: paths.classes },
 											{ key: 'mainTemp', label: texts.mainTemp, children: paths.mainTemp },
 											{ key: 'backupFolder', label: texts.backupFolder, children: paths.backupFolder },
@@ -380,52 +329,6 @@ export function SetupPage({ onBack, client = setupClient }: SetupPageProps) {
 									</Space>
 								</section>
 
-								<section className="setup-section">
-									<Typography.Title level={5}>{texts.options}</Typography.Title>
-									<div className="setup-option">
-										<Switch
-											checked={config.useMods ?? true}
-											onChange={value => void toggle('useMods', value)}
-										/>
-										<Typography.Text>{texts.useMods}</Typography.Text>
-									</div>
-									<div className="setup-option">
-										<Switch
-											checked={config.advancedMode ?? false}
-											onChange={value => void toggle('advancedMode', value)}
-										/>
-										<Typography.Text>{texts.advancedMode}</Typography.Text>
-									</div>
-									<div className="setup-option">
-										<Switch
-											checked={paths.mode === 'portable'}
-											disabled={paths.mode === 'dev' || busy === 'mode'}
-											onChange={value => confirmMode(value)}
-										/>
-										<Typography.Text>{texts.portableMode}</Typography.Text>
-									</div>
-									<div className="setup-option">
-										<Switch
-											checked={config.checkUpdates ?? true}
-											onChange={value => void toggle('checkUpdates', value)}
-										/>
-										<Typography.Text>{texts.checkUpdates}</Typography.Text>
-									</div>
-									<div className="setup-option">
-										<Typography.Text>{texts.language}</Typography.Text>
-										<Select
-											className="setup-language"
-											value={config.lang}
-											options={[
-												{ label: 'Русский', value: 'RU' },
-												{ label: 'English', value: 'EN' },
-												{ label: 'Deutsch', value: 'DE' },
-												{ label: '中文', value: 'CH' }
-											]}
-											onChange={value => void changeLang(value)}
-										/>
-									</div>
-								</section>
 							</Space>
 						)}
 			</div>
@@ -433,8 +336,12 @@ export function SetupPage({ onBack, client = setupClient }: SetupPageProps) {
 	)
 }
 
-/** Название режима хранения данных. */
-function modeText(mode: PathsDto['mode']): string {
+/**
+ * Название режима хранения данных.
+ * @param mode Режим хранения.
+ * @param texts Тексты страницы на текущем языке.
+ */
+function modeText(mode: PathsDto['mode'], texts: Locale['setup']): string {
 	switch (mode) {
 		case 'portable': return texts.modePortable
 		case 'dev': return texts.modeDev

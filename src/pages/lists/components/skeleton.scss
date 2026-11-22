@@ -1,0 +1,76 @@
+/* Заглушки списка: пульсация вместо одинокой крутилки в углу. */
+.lists-skeleton {
+	&-block {
+		background: linear-gradient(90deg, #dfe5eb 25%, #eef2f6 37%, #dfe5eb 63%);
+		background-size: 400% 100%;
+		animation: lists-skeleton-shimmer 1.4s ease infinite;
+	}
+
+	&-card {
+		overflow: hidden;
+		background: var(--ant-color-bg-container);
+		border-radius: 10px;
+		box-shadow: 0 1px 2px -2px rgba(0, 0, 0, 0.16), 0 3px 6px 0 rgba(0, 0, 0, 0.12);
+	}
+
+	&-image {
+		height: 336px;
+	}
+
+	&-card-title {
+		width: 55%;
+		height: 14px;
+		margin: 14px auto;
+		border-radius: 4px;
+	}
+
+	&-row {
+		display: flex;
+		gap: 20px;
+		align-items: center;
+		overflow: hidden;
+		background: var(--ant-color-bg-container);
+		border-radius: 10px;
+		box-shadow: 0 1px 2px 0 rgba(34, 60, 80, 0.6);
+	}
+
+	&-thumb {
+		flex-shrink: 0;
+		width: 63px;
+		height: 87px;
+	}
+
+	&-row-body {
+		flex: 1;
+		min-width: 0;
+		padding: 10px 0;
+	}
+
+	&-line {
+		width: 40%;
+		height: 14px;
+		border-radius: 4px;
+
+		&-short {
+			width: 24%;
+			height: 12px;
+			margin-top: 10px;
+		}
+	}
+}
+
+@keyframes lists-skeleton-shimmer {
+	0% {
+		background-position: 100% 50%;
+	}
+
+	100% {
+		background-position: 0 50%;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.lists-skeleton-block {
+		animation: none;
+	}
+}

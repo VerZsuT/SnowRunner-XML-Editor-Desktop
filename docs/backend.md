@@ -186,7 +186,10 @@ UI не парсит `selector`: он передаёт его обратно в 
 * открытие идемпотентно по пути: повторное открытие возвращает существующий документ;
 * `docId` — `doc-1`, `doc-2`, ...;
 * `revision` растёт при каждой успешной мутации и при сбросе;
-* `dirty` ставится мутацией и снимается сохранением/сбросом;
+* `apply_defaults` применяет выгрузку 1.4.0 ко всем найденным путям за одну мутацию,
+  отсутствующие элементы пропускаются;
+* `dirty` ставится мутацией и снимается сохранением; `reset_document` перечитывает файл
+  с диска, `reset_document_defaults` меняет значения в памяти и оставляет документ изменённым;
 * закрытие изменённого документа без `force` — ошибка `Conflict`;
 * `open_at` принимает только путь внутри данных игры, DLC или мода.
 
@@ -197,7 +200,7 @@ UI не парсит `selector`: он передаёт его обратно в 
 
 `save` пишет `to_bytes_formatted(FormatPolicy::default())` в исходный путь документа
 атомарной заменой; кодировка и BOM сохраняются. `save_all` сохраняет только `dirty`-документы.
-Сохранение не обновляет архив.
+Сам реестр архив не трогает: команды Tauri после записи пересобирают `initial.pak` или `.pak` мода.
 
 ## Tauri-слой
 
@@ -206,6 +209,8 @@ UI не парсит `selector`: он передаёт его обратно в 
 * `commands/` — по файлу на группу команд; все регистрируются в `commands/mod.rs`;
 * `state.rs` — `AppState` с мьютексами и путями;
 * `error.rs` — `CommandError` и `ErrorCode`, преобразования из доменных ошибок;
+* `defaults.rs` — сжатая выгрузка 1.4.0 (`assets/defaults.json.gz`), её распаковка,
+  преобразование селекторов `nth-of-type` в пути модели;
 * `lib.rs` — `specta_builder()`, регистрация типов, событий и `invoke_handler`;
 * `bin/typegen.rs` — запись `src/api/bindings.ts`.
 
@@ -218,5 +223,6 @@ UI не парсит `selector`: он передаёт его обратно в 
 | Новая сущность/поле | `domain/src/game/entities`, `attributes.rs`, `descriptor.rs` |
 | Новая мутация XML | `domain/src/xml/selector.rs`, `app/src/documents.rs`, команда в `commands/documents.rs` |
 | Новый сценарий | `app/src/<модуль>.rs`, команда в `src-tauri/src/commands` |
+| Обновить значения по умолчанию | `node scripts/import-defaults.mjs`, затем `src-tauri/assets/defaults.json.gz` |
 | Новый формат/правило zip | `storage/src/zip`, тесты в `zip/tests.rs` |
 | Ошибка | `error.rs` + маппинг в `CommandError` |

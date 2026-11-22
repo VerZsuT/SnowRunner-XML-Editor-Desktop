@@ -12,6 +12,11 @@ export async function saveConfig(config: Config): Promise<Config> {
 	return call(commands.saveConfig(config))
 }
 
+/** Распакованы ли файлы игры: если нет, нужна первоначальная настройка. */
+export async function gameDataReady(): Promise<boolean> {
+	return call(commands.gameDataReady())
+}
+
 /** Пути программы и каталоги данных. */
 export async function loadPaths(): Promise<PathsDto> {
 	return call(commands.paths())

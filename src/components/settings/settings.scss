@@ -1,0 +1,30 @@
+.settings {
+	margin: 0 40px;
+	text-align: center;
+
+	&-language {
+		display: flex;
+		gap: 12px;
+		align-items: center;
+		justify-content: center;
+	}
+
+	&-checkboxes {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		width: fit-content;
+		margin: 16px auto 0;
+	}
+
+	&-option {
+		display: flex;
+		gap: 10px;
+		align-items: center;
+		margin-bottom: 10px;
+	}
+
+	&-label {
+		line-height: 22px;
+	}
+}

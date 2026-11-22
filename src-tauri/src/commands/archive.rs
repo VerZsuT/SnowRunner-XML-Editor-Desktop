@@ -1,6 +1,6 @@
 //! Команды работы с архивами игры.
 
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 use crate::error::{AppResult, CommandError};
 use crate::state::AppState;
@@ -55,6 +55,13 @@ pub struct VerifyResultDto {
 
 	/// Длительность проверки в миллисекундах.
 	pub duration_ms: u32,
+}
+
+/// Ищет `initial.pak` в выбранном каталоге игры; `null` — архив не найден.
+#[tauri::command]
+#[specta::specta]
+pub fn find_initial(folder: String) -> AppResult<Option<String>> {
+	Ok(archive::find_initial(Path::new(&folder)).map(|path| path.to_string_lossy().into_owned()))
 }
 
 /// Распаковывает файлы игры из архива в каталог данных приложения.

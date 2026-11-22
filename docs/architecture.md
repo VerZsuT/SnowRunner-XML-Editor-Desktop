@@ -57,6 +57,7 @@ src-tauri/
   crates/app/              use-cases
   src/commands/            Tauri-команды
   src/state.rs             AppState
+  src/watcher.rs           наблюдение за файлами документов
   src/error.rs             CommandError / ErrorCode
   src/bin/typegen.rs       генератор bindings.ts
 site/                      статический сайт GitHub Pages
@@ -78,6 +79,8 @@ initialpak/                локальная фикстура (не в git)
 1. `list_trucks` / `list_trailers` обходят основную игру, DLC и моды.
 2. `game_texts` читает `strings_<язык>.str` игры и модов.
 3. `open_document` находит файл, разбирает XML, подхватывает `_templates`, регистрирует документ.
+4. `watch_documents` ставит файлы открытых документов под `notify`; при внешнем изменении
+   событие `documents-changed` заставляет webview перечитать модели.
 4. Редактор открывает связанные документы по сокетам (двигатель, коробка, подвеска, лебёдка, колёса)
    и аддоны по запросу.
 
@@ -87,8 +90,11 @@ initialpak/                локальная фикстура (не в git)
 2. Rust меняет XML-дерево в памяти, увеличивает `revision`, ставит `dirty`.
 3. `save_document` / `save_all_documents` пишут **форматированный** XML в файл в `mainTemp`
    (или `modsTemp`) атомарной заменой.
-4. Сохранение не трогает `initial.pak`: архив пересобирается отдельной командой
-   `update_archive` на экране настройки.
+4. Затем команда сразу пересобирает исходный `.pak`: `initial.pak` для основной игры
+   или `.pak` мода. Ручная команда `update_archive` остаётся для меню и экрана настройки.
+5. Сброс к значениям по умолчанию идёт в память: `reset_document_defaults` применяет
+   выгрузку 1.4.0 (`defaults.json.gz`) и ставит `dirty`, запись на диск — только по кнопке
+   сохранения.
 
 ### Пересборка архива
 

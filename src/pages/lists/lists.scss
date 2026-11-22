@@ -4,83 +4,185 @@
 	height: 100%;
 	overflow: hidden;
 
+	/* Панель фильтров анимируется высотой, поэтому остаётся в разметке. */
+	&-filters-reveal {
+		box-sizing: border-box;
+		height: 0;
+		overflow: hidden;
+		background: var(--ant-color-bg-container);
+		box-shadow: none;
+		opacity: 0;
+		transition: height 0.2s ease, opacity 0.2s ease, box-shadow 0.2s ease;
+		z-index: 1;
+
+		&.is-open {
+			height: 50px;
+			opacity: 1;
+			box-shadow: 0 0 3px 0 rgba(34, 60, 80, 0.6);
+		}
+	}
+
 	&-filters {
 		display: flex;
-		flex-wrap: wrap;
-		gap: 8px;
+		box-sizing: border-box;
+		justify-content: space-around;
 		align-items: center;
-		padding: 8px 16px;
-		border-bottom: 1px solid var(--ant-color-border-secondary);
+		flex-wrap: nowrap;
+		gap: 4px;
+		height: 50px;
+		min-height: 0;
+		padding: 5px 0;
+		overflow: hidden;
+		background: var(--ant-color-bg-container);
+		text-align: center;
 	}
 
 	&-filter {
-		min-width: 160px;
+		min-width: 150px;
+
+		.ant-select-content {
+			color: var(--ant-color-text);
+		}
 	}
 
 	&-search {
-		flex: 1;
-		min-width: 200px;
-		max-width: 320px;
+		width: 170px;
 	}
 
+	&-filter,
+	&-search {
+		transition: background-color 0.1s ease-in-out;
+
+		&:hover {
+			background: #f4f4f4;
+			border-radius: 5px;
+		}
+	}
+
+	/* Фон списка как в 1.4.0; gutter не даёт карточкам менять ширину без скролла. */
 	&-content {
 		flex: 1;
-		overflow: auto;
-		padding: 8px 16px 16px;
+		overflow-x: hidden;
+		overflow-y: auto;
+		scrollbar-gutter: stable;
+		background: #e7ebf0;
 	}
 
-	&-spin {
-		display: block;
-		margin: 48px auto;
+	/* Кнопка «Изменить» в режиме модов, как в 1.4.0. */
+	&-mods-button {
+		display: flex;
+		justify-content: center;
+		padding: 12px 8px 0;
 	}
 
 	&-empty {
 		margin-top: 96px;
 	}
 
-	&-list {
-		display: flex;
-		flex-direction: column;
-		gap: 2px;
+	&-cards {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+		align-content: flex-start;
+		gap: 10px;
+		padding: 12px 8px;
 	}
 
-	&-item {
-		display: flex;
-		gap: 16px;
-		justify-content: space-between;
-		align-items: center;
-		padding: 10px 12px;
+	&-card {
+		position: relative;
+		overflow: hidden;
 		cursor: pointer;
-		border-radius: 6px;
+		background: var(--ant-color-bg-container);
+		border-radius: 10px;
+		box-shadow: 0 1px 2px -2px rgba(0, 0, 0, 0.16), 0 3px 6px 0 rgba(0, 0, 0, 0.12);
+		transition: box-shadow 0.2s ease-in-out;
 
 		&:hover {
-			background: var(--ant-color-fill-quaternary);
+			box-shadow: 0 3px 6px -4px rgba(0, 0, 0, 0.16), 0 6px 16px 0 rgba(0, 0, 0, 0.12);
+		}
+
+		&-image {
+			display: block;
+			width: 100%;
+			height: 336px;
+			object-fit: cover;
+		}
+
+		&-title {
+			padding: 12px 15px;
+			font-weight: 500;
+			text-align: center;
+		}
+
+		&-marks {
+			position: absolute;
+			top: 10px;
+			left: 10px;
+			display: flex;
+			gap: 6px;
+			font-size: 16px;
 		}
 	}
 
-	&-item-favorite {
-		flex-shrink: 0;
-		width: 24px;
-		height: 24px;
-		padding: 0;
-		color: var(--ant-color-warning);
+	&-rows {
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+		padding: 10px 8px;
 	}
 
-	&-item-edited {
-		align-self: center;
+	&-row {
+		display: flex;
+		gap: 20px;
+		align-items: center;
+		overflow: hidden;
+		cursor: pointer;
+		background: var(--ant-color-bg-container);
+		border-radius: 10px;
+		box-shadow: 0 1px 2px 0 rgba(34, 60, 80, 0.6);
+		transition: filter 0.1s ease-in-out;
+
+		/* Как в 1.4.0: меняется яркость слоя, box-shadow не перерисовывается. */
+		&:hover {
+			filter: brightness(96%);
+		}
+
+		&-image {
+			display: block;
+			width: 63px;
+			height: 87px;
+			object-fit: cover;
+			box-shadow: 1px 0 3px 0 rgba(34, 60, 80, 0.6);
+			/* Сжатые превью в строках слишком резкие: слегка размываем. */
+			filter: blur(0.4px);
+			transform: scale(1.02);
+		}
+
+		&-body {
+			padding: 10px 0;
+		}
+
+		&-title {
+			font-size: 16px;
+			font-weight: bold;
+		}
+
+		&-tags {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 4px;
+			margin-top: 10px;
+		}
+	}
+
+	&-mark-favorite {
+		color: gold;
+	}
+
+	&-mark-edited {
 		color: var(--ant-color-text-tertiary);
 	}
 
-	&-item-name {
-		min-width: 0;
-		overflow: hidden;
-		text-overflow: ellipsis;
-		white-space: nowrap;
-	}
-
-	&-item-tags {
-		display: flex;
-		gap: 4px;
-		flex-shrink: 0;
+	&-match {
+		color: var(--ant-color-error);
 	}
 }

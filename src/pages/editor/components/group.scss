@@ -1,38 +1,171 @@
-.editor-group {
-	border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+$border: #d9d9d9;
+$header: #f7f7f7;
+$hover: #e9e9e9;
 
-	&-nested {
+.editor-table {
+	box-sizing: border-box;
+	overflow: hidden;
+	background: #fff;
+	border: 1px solid $border;
+	border-radius: 8px;
+
+	> .editor-group:last-child {
 		border-bottom: none;
-		margin-left: 12px;
 	}
+}
+
+.editor-group {
+	box-sizing: border-box;
+	background: #fff;
+	border-bottom: 1px solid $border;
 
 	&-header {
 		display: flex;
+		box-sizing: border-box;
 		gap: 8px;
 		align-items: center;
 		width: 100%;
-		padding: 8px 4px;
+		height: 45px;
+		padding: 0 16px;
 		border: none;
-		background: none;
-		font: inherit;
+		border-bottom: 1px solid transparent;
+		border-radius: 0;
+		background: $header;
 		color: inherit;
+		font: inherit;
 		text-align: left;
 		cursor: pointer;
+		transition: background-color 0.15s ease-in-out, border-color 0.2s ease-in-out;
 
 		&:hover {
-			background: rgba(0, 0, 0, 0.02);
+			background: $hover;
+		}
+
+		&:focus-visible {
+			outline: 2px solid #1677ff;
+			outline-offset: -2px;
 		}
 	}
 
+	&.is-open > &-header {
+		border-bottom-color: $border;
+	}
+
 	&-arrow {
+		flex: none;
 		font-size: 12px;
+		transition: transform 0.2s ease-in-out;
+	}
+
+	&.is-open > &-header > &-arrow {
+		transform: rotate(90deg);
 	}
 
 	&-label {
-		font-weight: 600;
+		flex: 1;
+		min-width: 0;
+		overflow: hidden;
+		font-weight: 400;
+		text-overflow: ellipsis;
+		white-space: nowrap;
 	}
 
+	&-icon {
+		flex: none;
+		width: 24px;
+		height: 24px;
+	}
+
+	/* Высота содержимого анимируется без измерения DOM; обёртка без padding
+	   сжимается в ноль и обрезает содержимое. */
+	&-body {
+		display: grid;
+		/* minmax(0, …) обязателен: у 0fr автоматический минимум 20px от padding. */
+		grid-template-rows: minmax(0, 0fr);
+		min-height: 0;
+		overflow: hidden;
+		opacity: 0;
+		transition: grid-template-rows 0.2s ease-in-out, opacity 0.2s ease-in-out;
+
+		&.is-visible {
+			grid-template-rows: minmax(0, 1fr);
+			opacity: 1;
+		}
+	}
+
+	&-body-inner {
+		box-sizing: border-box;
+		min-height: 0;
+		overflow: hidden;
+	}
+
+	/* Строки параметров как в 1.4.0: две колонки на широком окне. */
 	&-content {
-		padding: 0 8px 8px 20px;
+		display: flex;
+		flex-wrap: wrap;
+		align-content: flex-start;
+		align-items: center;
+		justify-content: center;
+		min-height: 0;
+		padding: 10px;
+		overflow: hidden;
+		background: #fff;
+	}
+
+	/* Вложенные группы — единая рамка, как у Collapse в 1.4.0. */
+	&-nested {
+		flex: 0 0 100%;
+		width: 100%;
+		margin-top: 10px;
+		overflow: hidden;
+		border: 1px solid $border;
+		border-radius: 5px 5px 0 0;
+
+		/* Следующая группа продолжает общую рамку без верхней границы. */
+		& + & {
+			margin-top: 0;
+			border-top: none;
+			border-radius: 0;
+		}
+
+		/* Скругление снизу остаётся только у последней группы файла. */
+		&:last-child,
+		&:has(+ .editor-file-info) {
+			border-bottom-left-radius: 5px;
+			border-bottom-right-radius: 5px;
+		}
+	}
+}
+
+/* Файл и первая группа — одна рамка, как в 1.4.0. */
+.editor-file-info + .editor-group {
+	margin-top: 0;
+	border-top: none;
+	border-top-left-radius: 0;
+	border-top-right-radius: 0;
+}
+
+@media (min-width: 1430px) {
+	.editor-group-content {
+		justify-content: space-between;
+	}
+}
+
+.editor-group-content {
+	> .editor-group-nested,
+	> .editor-addons-controls,
+	> .editor-addons-loading,
+	> .editor-actions-row,
+	> .editor-socket-buttons,
+	> .ant-typography,
+	> .editor-file-info {
+		flex: 0 0 100%;
+	}
+
+	> .ant-btn,
+	> .ant-tag,
+	> .ant-spin {
+		flex: 0 0 auto;
+		align-self: center;
 	}
 }

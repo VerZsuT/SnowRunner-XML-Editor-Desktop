@@ -1,11 +1,8 @@
-import { T } from '@/utilities/localization'
 import { useConfig } from '@/config'
+import { LOCALES } from '@/utilities/localization'
 import { Button, Modal } from 'antd'
 import { VersionInfo } from './version-info'
 import './whats-new.scss'
-
-/** Тексты окна. */
-const texts = T.whatsNew
 
 /** Параметры окна «Что нового». */
 export interface WhatsNewProps {
@@ -19,6 +16,8 @@ export interface WhatsNewProps {
 /** Окно «Что нового» с изменениями текущей версии. */
 export function WhatsNew({ open, onOpenChange }: WhatsNewProps) {
 	const config = useConfig()
+	// Тексты читаются из состояния: смена языка видна без перезагрузки.
+	const texts = LOCALES[config.lang].whatsNew
 	const version = config.version ? ` ${config.version}` : ''
 
 	return (

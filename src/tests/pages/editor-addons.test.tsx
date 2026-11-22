@@ -135,7 +135,10 @@ describe('действия с аддонами трака', () => {
 			</AntApp>
 		)
 
+		await screen.findByText('Разблокировка')
+		fireEvent.click(screen.getByRole('button', { name: 'Дополнительно' }))
 		expect(await screen.findByText('Краны')).toBeInTheDocument()
+		fireEvent.click(screen.getByRole('button', { name: 'Краны' }))
 		fireEvent.click(screen.getByRole('button', { name: 'Добавить' }))
 
 		await waitFor(() => expect(setCrane).toHaveBeenCalledWith('doc-1', 0, 'us', true))
@@ -150,25 +153,13 @@ describe('действия с аддонами трака', () => {
 			</AntApp>
 		)
 
+		await screen.findByText('Разблокировка')
+		fireEvent.click(screen.getByRole('button', { name: 'Дополнительно' }))
 		expect(await screen.findByText('Прицепы')).toBeInTheDocument()
+		fireEvent.click(screen.getByRole('button', { name: 'Прицепы' }))
 		fireEvent.click(screen.getByRole('button', { name: 'Добавить' }))
 
 		await waitFor(() => expect(setTrailer).toHaveBeenCalledWith('doc-1', 0, 'scout', true))
 	})
 
-	it('добавляет сокет в дерево аддонов', async () => {
-		const { client, addElement } = createClient(truck(['MinicraneRU']))
-
-		render(
-			<AntApp>
-				<EditorPage name="ank_mk38" client={client} texts={texts} onBack={() => {}} />
-			</AntApp>
-		)
-
-		expect(await screen.findByText('Сокеты аддонов')).toBeInTheDocument()
-		fireEvent.click(screen.getByText('Сокеты аддонов 1'))
-		fireEvent.click(screen.getByRole('button', { name: 'Добавить сокет' }))
-
-		await waitFor(() => expect(addElement).toHaveBeenCalledWith('doc-1', 0, '/Truck/GameData/AddonSockets[0]', 'Socket', null))
-	})
 })

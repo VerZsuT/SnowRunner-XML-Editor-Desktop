@@ -1,12 +1,36 @@
-.editor-actions-row {
+.editor-actions-grid {
 	display: flex;
+	flex: 0 0 100%;
+	flex-wrap: nowrap;
+	gap: 10px;
 	align-items: center;
-	justify-content: space-between;
-	gap: 12px;
-	margin-bottom: 8px;
+	justify-content: space-evenly;
+	width: 100%;
+	margin-top: 10px;
+	text-align: center;
+}
+
+.editor-actions-card {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	align-items: center;
+	justify-content: center;
+	min-width: 140px;
+	padding: 10px 12px;
+	border: 1px solid #d9d9d9;
+	border-radius: 5px;
 }
 
 .editor-action-warning {
-	margin-bottom: 4px;
+	margin: 0;
+	color: #f5222d;
 	font-weight: 600;
+	text-align: center;
+}
+
+.editor-action-message {
+	padding: 0 10px;
+	margin: 4px 0 0;
+	text-align: center;
 }

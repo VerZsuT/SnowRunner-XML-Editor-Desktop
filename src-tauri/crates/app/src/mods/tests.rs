@@ -64,6 +64,33 @@ fn убирает_пропавшие_файлы() {
 }
 
 #[test]
+fn находит_pak_в_каталоге_и_подкаталогах() {
+	let dir = work_dir();
+
+	fs::create_dir_all(dir.join("nested")).unwrap();
+	fs::write(dir.join("a.pak"), b"pak").unwrap();
+	fs::write(dir.join("nested/b.PAK"), b"pak").unwrap();
+	fs::write(dir.join("note.txt"), b"text").unwrap();
+
+	let found = find_candidates_in(&dir);
+
+	assert_eq!(
+		found
+			.iter()
+			.map(|item| item.name.as_str())
+			.collect::<Vec<_>>(),
+		["a", "b"]
+	);
+	assert!(
+		found
+			.iter()
+			.all(|item| item.path.to_ascii_lowercase().ends_with(".pak"))
+	);
+
+	let _ = fs::remove_dir_all(&dir);
+}
+
+#[test]
 fn битый_список_даёт_пустой() {
 	let dir = work_dir();
 

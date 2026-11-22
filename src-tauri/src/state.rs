@@ -79,6 +79,23 @@ impl AppState {
 			.lock()
 			.unwrap_or_else(PoisonError::into_inner)
 	}
+
+	/// Возвращает программу к первоначальному состоянию.
+	///
+	/// Удаляет распакованные данные игры, бэкапы, избранное, правки и моды,
+	/// затем записывает стандартную конфигурацию — как при первом запуске.
+	pub fn reset(&self) -> AppResult<()> {
+		let mut config = self.config.lock().unwrap_or_else(PoisonError::into_inner);
+		let fresh = sxmle_app::reset::reset(&self.paths, &config.version, tauri::is_dev())?;
+
+		*config = fresh;
+		drop(config);
+
+		*self.library() = Library::load(self.paths.json("favorites"), self.paths.json("edited"));
+		*self.mods() = Mods::load(self.paths.json("mods"));
+
+		Ok(())
+	}
 }
 
 /// Читает конфигурацию из каталога данных.

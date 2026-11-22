@@ -1,0 +1,44 @@
+.welcome {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	overflow: hidden;
+
+	&-content {
+		display: flex;
+		flex: 1;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		padding: 24px 15%;
+		text-align: center;
+		overflow: auto;
+	}
+
+	&-steps {
+		width: 100%;
+		max-width: 760px;
+		margin-top: 10px;
+	}
+
+	&-languages {
+		margin-top: 20px;
+	}
+
+	&-next {
+		margin-top: 20px;
+	}
+
+	&-actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 30px;
+		justify-content: center;
+		align-items: center;
+		margin-top: 20px;
+	}
+
+	.ant-typography-secondary {
+		margin-top: 20px;
+	}
+}

@@ -71,42 +71,43 @@ export function CranesGroup({ session, truck, onRefresh }: ActionProps) {
 	}
 
 	return (
-		<Group label={texts.cranes}>
+		<Group label={texts.cranes} icon="crane">
 			<Typography.Paragraph className="editor-action-warning">
 				{texts.cranesWarnTitle}
 			</Typography.Paragraph>
-			<Typography.Paragraph>
+			<Typography.Paragraph className="editor-action-message">
 				{texts.cranesWarnMessage}
 			</Typography.Paragraph>
 
-			<div className="editor-actions-row">
-				<Typography.Text>US {texts.crane}</Typography.Text>
-				{us
-					? (
-						<Button danger disabled={!ru} onClick={() => void toggle('us', false)}>
-							{texts.remove}
-						</Button>
-					)
-					: (
-						<Button type="primary" disabled={!ru} onClick={() => void toggle('us', true)}>
-							{texts.add}
-						</Button>
-					)}
-			</div>
-
-			<div className="editor-actions-row">
-				<Typography.Text>RU {texts.crane}</Typography.Text>
-				{ru
-					? (
-						<Button danger disabled={!us} onClick={() => void toggle('ru', false)}>
-							{texts.remove}
-						</Button>
-					)
-					: (
-						<Button type="primary" disabled={!us} onClick={() => void toggle('ru', true)}>
-							{texts.add}
-						</Button>
-					)}
+			<div className="editor-actions-grid">
+				<div className="editor-actions-card">
+					<Typography.Text>US {texts.crane}</Typography.Text>
+					{us
+						? (
+							<Button danger disabled={!ru} onClick={() => void toggle('us', false)}>
+								{texts.remove}
+							</Button>
+						)
+						: (
+							<Button type="primary" disabled={!ru} onClick={() => void toggle('us', true)}>
+								{texts.add}
+							</Button>
+						)}
+				</div>
+				<div className="editor-actions-card">
+					<Typography.Text>RU {texts.crane}</Typography.Text>
+					{ru
+						? (
+							<Button danger disabled={!us} onClick={() => void toggle('ru', false)}>
+								{texts.remove}
+							</Button>
+						)
+						: (
+							<Button type="primary" disabled={!us} onClick={() => void toggle('ru', true)}>
+								{texts.add}
+							</Button>
+						)}
+				</div>
 			</div>
 		</Group>
 	)
@@ -131,35 +132,36 @@ export function TrailersGroup({ session, truck, onRefresh }: ActionProps) {
 	}
 
 	return (
-		<Group label={texts.trailers}>
-			<div className="editor-actions-row">
-				<Typography.Text>{texts.scoutTrailers}</Typography.Text>
-				{state.scout
-					? (
-						<Button danger disabled={!state.truck} onClick={() => void toggle('scout', false)}>
-							{texts.remove}
-						</Button>
-					)
-					: (
-						<Button type="primary" disabled={!state.truck} onClick={() => void toggle('scout', true)}>
-							{texts.add}
-						</Button>
-					)}
-			</div>
-
-			<div className="editor-actions-row">
-				<Typography.Text>{texts.truckTrailers}</Typography.Text>
-				{state.truck
-					? (
-						<Button danger disabled={!state.scout} onClick={() => void toggle('truck', false)}>
-							{texts.remove}
-						</Button>
-					)
-					: (
-						<Button type="primary" disabled={!state.scout} onClick={() => void toggle('truck', true)}>
-							{texts.add}
-						</Button>
-					)}
+		<Group label={texts.trailers} icon="trailer">
+			<div className="editor-actions-grid">
+				<div className="editor-actions-card">
+					<Typography.Text>{texts.scoutTrailers}</Typography.Text>
+					{state.scout
+						? (
+							<Button danger disabled={!state.truck} onClick={() => void toggle('scout', false)}>
+								{texts.remove}
+							</Button>
+						)
+						: (
+							<Button type="primary" disabled={!state.truck} onClick={() => void toggle('scout', true)}>
+								{texts.add}
+							</Button>
+						)}
+				</div>
+				<div className="editor-actions-card">
+					<Typography.Text>{texts.truckTrailers}</Typography.Text>
+					{state.truck
+						? (
+							<Button danger disabled={!state.scout} onClick={() => void toggle('truck', false)}>
+								{texts.remove}
+							</Button>
+						)
+						: (
+							<Button type="primary" disabled={!state.scout} onClick={() => void toggle('truck', true)}>
+								{texts.add}
+							</Button>
+						)}
+				</div>
 			</div>
 		</Group>
 	)
@@ -185,7 +187,7 @@ export function BanditCraneGroup({ session, truck, onRefresh }: ActionProps) {
 	}
 
 	return (
-		<Group label={texts.banditCrane}>
+		<Group label={texts.banditCrane} icon="banana">
 			<Typography.Paragraph className="editor-action-warning">
 				{texts.cranesWarnTitle}
 			</Typography.Paragraph>

@@ -80,6 +80,31 @@ impl UnpackList {
 	}
 }
 
+/// Ищет `initial.pak` в каталоге игры или его типовых подкаталогах.
+///
+/// Пользователь может выбрать корень установки (Epic/Steam), папку игры или `client`:
+/// подходит первый существующий вариант из типового хвоста пути.
+pub fn find_initial(dir: &Path) -> Option<PathBuf> {
+	const TAIL: [&str; 8] = [
+		"steamapps",
+		"common",
+		"SnowRunner",
+		"en_us",
+		"preload",
+		"paks",
+		"client",
+		"initial.pak",
+	];
+
+	(0..TAIL.len())
+		.map(|start| {
+			TAIL[start..]
+				.iter()
+				.fold(dir.to_path_buf(), |path, part| path.join(part))
+		})
+		.find(|path| path.is_file())
+}
+
 /// Ошибка работы с архивом.
 #[derive(Debug, Error)]
 pub enum ArchiveError {
@@ -189,12 +214,17 @@ pub fn update_from_dir(archive_path: &Path, dir: &Path) -> Result<UpdateResult, 
 
 	let mut changed: Vec<(String, Vec<u8>)> = Vec::new();
 	let mut appended: Vec<(String, Vec<u8>)> = Vec::new();
+	let mut has_marker = false;
 
 	{
 		let archive = ZipArchive::open(archive_path)?;
 		let mut index: HashMap<String, &EntryMeta> = HashMap::new();
 
 		for entry in archive.entries() {
+			if entry.name.eq_ignore_ascii_case(EDITED_MARKER) {
+				has_marker = true;
+			}
+
 			if !entry.is_directory() {
 				index.entry(entry.name.to_lowercase()).or_insert(entry);
 			}
@@ -217,7 +247,9 @@ pub fn update_from_dir(archive_path: &Path, dir: &Path) -> Result<UpdateResult, 
 	let changed_names = changed.iter().map(|(name, _)| name.clone()).collect();
 	let added_names = appended.iter().map(|(name, _)| name.clone()).collect();
 
-	appended.push((EDITED_MARKER.to_owned(), Vec::new()));
+	if !has_marker {
+		appended.push((EDITED_MARKER.to_owned(), Vec::new()));
+	}
 
 	let report = zip::update(archive_path, &ArchiveUpdate { changed, appended })?;
 

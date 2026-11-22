@@ -12,14 +12,24 @@ export const commands = {
 	openDevtools: (options?: InvokeOptions) => typedError<null, CommandError>(__TAURI_INVOKE("open_devtools", undefined, options)),
 	/**  Перезапускает программу: нужно после смены режима хранения данных. */
 	restartApp: (options?: InvokeOptions) => typedError<null, CommandError>(__TAURI_INVOKE("restart_app", undefined, options)),
+	/**  Закрывает программу. */
+	quitApp: (options?: InvokeOptions) => typedError<null, CommandError>(__TAURI_INVOKE("quit_app", undefined, options)),
+	/**  Сбрасывает программу к первоначальному состоянию и перезапускает её. */
+	resetToDefaults: (options?: InvokeOptions) => typedError<null, CommandError>(__TAURI_INVOKE("reset_to_defaults", undefined, options)),
+	/**  Запускает деинсталлятор программы и закрывает её. */
+	uninstallApp: (options?: InvokeOptions) => typedError<null, CommandError>(__TAURI_INVOKE("uninstall_app", undefined, options)),
 	/**  Пути программы: каталоги данных, json-файлы, URL. */
 	paths: (options?: InvokeOptions) => typedError<PathsDto, CommandError>(__TAURI_INVOKE("paths", undefined, options)),
 	/**  Переключает режим хранения данных; применяется после перезапуска программы. */
 	switchDataMode: (portable: boolean, options?: InvokeOptions) => typedError<SwitchModeDto, CommandError>(__TAURI_INVOKE("switch_data_mode", { portable }, options)),
+	/**  Распакованы ли файлы игры: если нет, интерфейс открывает первоначальную настройку. */
+	gameDataReady: (options?: InvokeOptions) => typedError<boolean, CommandError>(__TAURI_INVOKE("game_data_ready", undefined, options)),
 	/**  Текущая конфигурация программы. */
 	config: (options?: InvokeOptions) => typedError<Config, CommandError>(__TAURI_INVOKE("config", undefined, options)),
 	/**  Сохраняет конфигурацию и возвращает её после проверки. */
 	saveConfig: (config: Config, options?: InvokeOptions) => typedError<Config, CommandError>(__TAURI_INVOKE("save_config", { config }, options)),
+	/**  Ищет `initial.pak` в выбранном каталоге игры; `null` — архив не найден. */
+	findInitial: (folder: string, options?: InvokeOptions) => typedError<string | null, CommandError>(__TAURI_INVOKE("find_initial", { folder }, options)),
 	/**  Распаковывает файлы игры из архива в каталог данных приложения. */
 	unpackInitial: (archivePath: string, list: UnpackListKind, options?: InvokeOptions) => typedError<UnpackResultDto, CommandError>(__TAURI_INVOKE("unpack_initial", { archivePath, list }, options)),
 	/**
@@ -44,6 +54,8 @@ export const commands = {
 	unmarkEdited: (name: string, options?: InvokeOptions) => typedError<boolean, CommandError>(__TAURI_INVOKE("unmark_edited", { name }, options)),
 	/**  Установленные моды. */
 	listMods: (options?: InvokeOptions) => __TAURI_INVOKE<ModEntry[]>("list_mods", undefined, options),
+	/**  Моды, найденные по стандартному пути SnowRunner. */
+	findMods: (options?: InvokeOptions) => __TAURI_INVOKE<ModCandidate[]>("find_mods", undefined, options),
 	/**  Добавляет `.pak` моду: распаковывает файлы игры и сохраняет запись в списке. */
 	addMod: (path: string, options?: InvokeOptions) => typedError<ModEntry[], CommandError>(__TAURI_INVOKE("add_mod", { path }, options)),
 	/**  Убирает мод из списка; `.pak` и распакованные файлы остаются на диске. */
@@ -118,12 +130,21 @@ export const commands = {
 	setTrailer: (docId: string, revision: number, trailer: Trailer, enabled: boolean, options?: InvokeOptions) => typedError<MutationResult, CommandError>(__TAURI_INVOKE("set_trailer", { docId, revision, trailer, enabled }, options)),
 	/**  Добавляет или убирает кран «Банан бандита». */
 	setBanditCrane: (docId: string, revision: number, enabled: boolean, options?: InvokeOptions) => typedError<MutationResult, CommandError>(__TAURI_INVOKE("set_bandit_crane", { docId, revision, enabled }, options)),
-	/**  Сохраняет документ на диск в форматированном виде. */
+	/**  Сохраняет документ на диск и сразу обновляет его архив. */
 	saveDocument: (docId: string, options?: InvokeOptions) => typedError<SaveResult, CommandError>(__TAURI_INVOKE("save_document", { docId }, options)),
-	/**  Сохраняет все изменённые документы. */
-	saveAllDocuments: (options?: InvokeOptions) => typedError<SaveResult[], CommandError>(__TAURI_INVOKE("save_all_documents", undefined, options)),
+	/**
+	 *  Сохраняет все изменённые документы и сразу обновляет их архивы.
+	 *
+	 *  `force` обновляет архив даже без dirty-правок: так сброс сразу
+	 *  переносится в исходный `.pak`, не дожидаясь отдельного «Обновить архив».
+	 */
+	saveAllDocuments: (force: boolean | null, options?: InvokeOptions) => typedError<SaveResult[], CommandError>(__TAURI_INVOKE("save_all_documents", { force }, options)),
 	/**  Читает документ заново с диска, отбрасывая правки в памяти. */
 	resetDocument: (docId: string, options?: InvokeOptions) => typedError<DocumentInfo, CommandError>(__TAURI_INVOKE("reset_document", { docId }, options)),
+	/**  Значения по умолчанию полей открытого документа. */
+	documentDefaults: (docId: string, options?: InvokeOptions) => typedError<DefaultValue[], CommandError>(__TAURI_INVOKE("document_defaults", { docId }, options)),
+	/**  Сбрасывает поля документа к значениям из выгрузки 1.4.0. */
+	resetDocumentDefaults: (docId: string, options?: InvokeOptions) => typedError<MutationResult, CommandError>(__TAURI_INVOKE("reset_document_defaults", { docId }, options)),
 	/**  Экспортирует параметры документа в файл `.epf`, дополняя совместимый файл. */
 	exportEpf: (docId: string, path: string, options?: InvokeOptions) => typedError<EpfExportReport, CommandError>(__TAURI_INVOKE("export_epf", { docId, path }, options)),
 	/**  Импортирует параметры из файла `.epf` в открытый документ. */
@@ -134,6 +155,8 @@ export const commands = {
 	openPath: (path: string, options?: InvokeOptions) => typedError<null, CommandError>(__TAURI_INVOKE("open_path", { path }, options)),
 	/**  Показывает файл в проводнике. */
 	showInFolder: (path: string, options?: InvokeOptions) => typedError<null, CommandError>(__TAURI_INVOKE("show_in_folder", { path }, options)),
+	/**  Наблюдает за файлами открытых документов. */
+	watchDocuments: (paths: string[], options?: InvokeOptions) => typedError<null, CommandError>(__TAURI_INVOKE("watch_documents", { paths }, options)),
 	/**
 	 *  Проверяет наличие новой версии программы.
 	 * 
@@ -152,6 +175,7 @@ export const commands = {
 
 /** Events */
 export const events = {
+	documentsChanged: makeEvent<DocumentsChanged, DocumentsChanged>("documents-changed"),
 	updateProgress: makeEvent<UpdateProgress, UpdateProgress>("update-progress"),
 };
 
@@ -343,6 +367,16 @@ export type DataMode =
 /**  Каталог `%APPDATA%` в режиме разработки. */
 "dev";
 
+/**  Значение по умолчанию для поля документа. */
+export type DefaultValue = {
+	/**  Стабильный путь элемента. */
+	selector: string,
+	/**  Имя XML-атрибута. */
+	name: string,
+	/**  Значение атрибута. */
+	value: string,
+};
+
 /**  Сведения об открытом документе. */
 export type DocumentInfo = {
 	/**  Идентификатор открытого документа. */
@@ -385,6 +419,12 @@ export type DocumentKind =
 "wheel" | 
 /**  Аддон. */
 "addon";
+
+/**  Изменённые файлы открытых документов. */
+export type DocumentsChanged = {
+	/**  Пути изменённых файлов. */
+	paths: string[],
+};
 
 /**  Изменённый пользователем файл игры. */
 export type EditedFile = {
@@ -599,6 +639,14 @@ export type Limit = {
 	max: number | null,
 	/**  Округлять значение до целого. */
 	fixed?: boolean,
+};
+
+/**  Найденный `.pak` модификации, ещё не добавленный в программу. */
+export type ModCandidate = {
+	/**  Название мода: имя `.pak` без расширения. */
+	name: string,
+	/**  Путь к `.pak` файлу. */
+	path: string,
 };
 
 /**  Модификация. */

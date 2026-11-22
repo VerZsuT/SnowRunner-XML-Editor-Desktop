@@ -29,6 +29,13 @@ pub fn paths(state: State<'_, AppState>) -> AppResult<PathsDto> {
 	Ok(state.paths().to_dto())
 }
 
+/// Распакованы ли файлы игры: если нет, интерфейс открывает первоначальную настройку.
+#[tauri::command]
+#[specta::specta]
+pub fn game_data_ready(state: State<'_, AppState>) -> AppResult<bool> {
+	Ok(state.paths().classes().is_dir())
+}
+
 /// Переключает режим хранения данных; применяется после перезапуска программы.
 #[tauri::command]
 #[specta::specta]

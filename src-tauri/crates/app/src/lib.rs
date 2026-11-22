@@ -10,6 +10,7 @@ pub mod info;
 pub mod lists;
 pub mod mods;
 pub mod paths;
+pub mod reset;
 pub mod system;
 pub mod texts;
 pub mod updates;

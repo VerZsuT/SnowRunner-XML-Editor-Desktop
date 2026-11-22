@@ -10,6 +10,31 @@ use specta::Type;
 /// Языки интерфейса программы.
 pub const LANGUAGES: [&str; 4] = ["RU", "EN", "DE", "CH"];
 
+/// Язык интерфейса, если локаль системы не распознана.
+pub const DEFAULT_LANG: &str = "EN";
+
+/// Определяет язык интерфейса по локали системы.
+pub fn detect_lang() -> String {
+	sys_locale::get_locale()
+		.as_deref()
+		.and_then(lang_from_locale)
+		.unwrap_or(DEFAULT_LANG)
+		.to_owned()
+}
+
+/// Преобразует тег локали (`ru-RU`, `zh-Hans-CN`) в язык программы.
+pub fn lang_from_locale(locale: &str) -> Option<&'static str> {
+	let primary = locale.split(['-', '_']).next()?.to_ascii_lowercase();
+
+	match primary.as_str() {
+		"ru" => Some("RU"),
+		"en" => Some("EN"),
+		"de" => Some("DE"),
+		"zh" => Some("CH"),
+		_ => None,
+	}
+}
+
 /// Конфигурация программы.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Type)]
 #[serde(rename_all = "camelCase", default)]
@@ -46,7 +71,7 @@ impl Default for Config {
 	fn default() -> Self {
 		Self {
 			version: String::new(),
-			lang: "EN".to_owned(),
+			lang: DEFAULT_LANG.to_owned(),
 			build_type: "prod".to_owned(),
 			initial_path: None,
 			check_updates: true,
@@ -64,6 +89,7 @@ impl Config {
 		Self {
 			version: version.to_owned(),
 			build_type: if is_dev { "dev" } else { "prod" }.to_owned(),
+			lang: detect_lang(),
 			..Self::default()
 		}
 	}

@@ -1,3 +1,4 @@
+import '@/styles/global.scss'
 import { Lang } from '@/utilities/localization'
 import { App as AntApp, ConfigProvider } from 'antd'
 import deDE from 'antd/locale/de_DE'
@@ -17,6 +18,22 @@ const ANTD_LOCALES = {
 	[Lang.ch]: zhCN
 }
 
+/**
+ * Убирает меню WebView2 по правому клику.
+ *
+ * Своё меню списка открывается компонентом `ContextMenu`, а в полях ввода
+ * остаётся системное: там нужны копирование и вставка.
+ */
+function disableBrowserContextMenu() {
+	window.addEventListener('contextmenu', event => {
+		const target = event.target as HTMLElement | null
+
+		if (!target?.closest('input, textarea, [contenteditable="true"]')) {
+			event.preventDefault()
+		}
+	})
+}
+
 /** Монтирует приложение после чтения конфигурации ядра. */
 async function start() {
 	const container = document.getElementById('main')
@@ -24,6 +41,8 @@ async function start() {
 	if (!container) {
 		throw new Error('Не найден контейнер #main')
 	}
+
+	disableBrowserContextMenu()
 
 	const dto = await loadConfig().catch(() => null)
 	const config = registerConfig(dto ? fromConfigDto(dto) : undefined)

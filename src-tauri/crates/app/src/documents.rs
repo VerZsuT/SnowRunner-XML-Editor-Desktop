@@ -472,6 +472,32 @@ impl Documents {
 		Ok(document.mutated(selector, value.map(str::to_owned)))
 	}
 
+	/// Применяет значения по умолчанию ко всем найденным путям.
+	///
+	/// Отсутствующие элементы пропускаются: выгрузка содержит селекторы для
+	/// полного набора игровых файлов, а конкретный документ может быть короче.
+	pub fn apply_defaults(
+		&mut self,
+		doc_id: &str,
+		defaults: &HashMap<String, HashMap<String, String>>,
+	) -> Result<MutationResult, DocumentError> {
+		let document = self
+			.items
+			.get_mut(doc_id)
+			.ok_or_else(|| DocumentError::NotFound(doc_id.to_owned()))?;
+		let mut changed = false;
+
+		for (selector, attributes) in defaults {
+			for (name, value) in attributes {
+				if xml_set_attr(&mut document.document, selector, name, Some(value)).is_ok() {
+					changed = true;
+				}
+			}
+		}
+
+		Ok(document.action_result(changed, "/"))
+	}
+
 	/// Заменяет текст элемента.
 	pub fn set_text(
 		&mut self,

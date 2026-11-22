@@ -1,15 +1,17 @@
 //! Точка входа Rust-ядра: сборка Tauri-приложения и генерация TS-типов.
 
 mod commands;
+mod defaults;
 mod error;
 mod state;
+mod watcher;
 
 use sxmle_app::actions::{Crane, Trailer};
 use sxmle_app::config::Config;
 use sxmle_app::documents::{DocumentInfo, DocumentKind, MutationResult, SaveResult};
 use sxmle_app::game::{AddonFile, VehicleFile};
 use sxmle_app::lists::EditedFile;
-use sxmle_app::mods::ModEntry;
+use sxmle_app::mods::{ModCandidate, ModEntry};
 
 use crate::commands::paths::SwitchModeDto;
 use sxmle_app::texts::GameTexts;
@@ -34,7 +36,10 @@ pub use error::{CommandError, ErrorCode};
 pub fn specta_builder() -> tauri_specta::Builder<tauri::Wry> {
 	tauri_specta::Builder::<tauri::Wry>::new()
 		.commands(commands::collect())
-		.events(collect_events![commands::update::UpdateProgress])
+		.events(collect_events![
+			commands::update::UpdateProgress,
+			watcher::DocumentsChanged
+		])
 		.typ::<Truck>()
 		.typ::<TruckData>()
 		.typ::<TruckGameData>()
@@ -87,6 +92,7 @@ pub fn specta_builder() -> tauri_specta::Builder<tauri::Wry> {
 		.typ::<EditedFile>()
 		.typ::<GameTexts>()
 		.typ::<ModEntry>()
+		.typ::<ModCandidate>()
 		.typ::<SwitchModeDto>()
 		.typ::<VehicleFile>()
 		.typ::<AddonFile>()
@@ -96,6 +102,7 @@ pub fn specta_builder() -> tauri_specta::Builder<tauri::Wry> {
 		.typ::<DocumentInfo>()
 		.typ::<MutationResult>()
 		.typ::<SaveResult>()
+		.typ::<crate::defaults::DefaultValue>()
 		// DTO только читаются webview: единый вид вместо пар `*_Serialize`/`*_Deserialize`.
 		.disable_serde_phases()
 		.error_handling(ErrorHandlingMode::Result)
@@ -117,8 +124,14 @@ pub fn run(context: tauri::Context<tauri::Wry>) {
 
 			let paths = state::resolve_paths(app.handle())?;
 			app.manage(state::AppState::new(paths));
+			app.manage(watcher::WatcherState::default());
 
 			if let Some(window) = app.get_webview_window("general") {
+				// Версия в заголовке окна — как в 1.4.0.
+				window.set_title(&format!(
+					"SnowRunner XML Editor v{}",
+					app.package_info().version
+				))?;
 				window.show()?;
 			}
 

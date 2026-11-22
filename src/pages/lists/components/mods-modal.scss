@@ -1,0 +1,57 @@
+.mods-modal {
+	&-spin {
+		display: flex;
+		justify-content: center;
+		padding: 24px 0;
+	}
+
+	&-list {
+		display: flex;
+		flex-direction: column;
+		gap: 6px;
+		max-height: 280px;
+		overflow-y: auto;
+		padding-right: 4px;
+	}
+
+	&-item {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		padding: 6px 8px;
+		border-radius: 6px;
+		background: var(--ant-color-fill-quaternary);
+	}
+
+	&-info {
+		display: flex;
+		flex: 1;
+		flex-direction: column;
+		min-width: 0;
+
+		.ant-typography {
+			margin: 0;
+		}
+	}
+
+	&-found {
+		display: flex;
+		flex-direction: column;
+		gap: 6px;
+		margin-top: 14px;
+		padding-top: 12px;
+		border-top: 1px solid var(--ant-color-split);
+	}
+
+	&-found-list {
+		max-height: 160px;
+	}
+
+	&-actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+		justify-content: center;
+		margin-top: 16px;
+	}
+}

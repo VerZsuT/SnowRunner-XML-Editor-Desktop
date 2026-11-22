@@ -1,10 +1,13 @@
-import { loadConfig, saveConfig } from '@/api/settings'
+import { gameDataReady, loadConfig, saveConfig } from '@/api/settings'
+import { MenuBar } from '@/components/menu-bar'
+import { SettingsModal } from '@/components/settings'
 import { UpdateAlert } from '@/components/update-alert'
 import { WhatsNew } from '@/components/whats-new'
 import { applyConfig, useConfig } from '@/config'
 import { EditorPage } from '@/pages/editor'
 import { ListsPage } from '@/pages/lists'
 import { SetupPage } from '@/pages/setup'
+import { WelcomePage } from '@/pages/welcome'
 import { useEffect, useState } from 'react'
 
 /** Открытый документ автомобиля. */
@@ -28,18 +31,43 @@ interface Selection {
 export function App() {
 	const config = useConfig()
 	const [selected, setSelected] = useState<Selection | null>(null)
-	const [setup, setSetup] = useState(false)
+	const [settings, setSettings] = useState(false)
+	const [data, setData] = useState(false)
+	const [gameReady, setGameReady] = useState<boolean | null>(null)
 	const [whatsNew, setWhatsNew] = useState(false)
 
 	useEffect(() => {
-		if (!config.openWhatsNew) {
+		let cancelled = false
+
+		gameDataReady().then(
+			ready => {
+				if (!cancelled) {
+					setGameReady(ready)
+				}
+			},
+			() => {
+				// Ошибка проверки не должна запирать программу в первоначальной настройке.
+				if (!cancelled) {
+					setGameReady(true)
+				}
+			}
+		)
+
+		return () => {
+			cancelled = true
+		}
+	}, [])
+
+	useEffect(() => {
+		// Первоначальная настройка не перекрывается окном «Что нового».
+		if (!config.openWhatsNew || !gameReady) {
 			return
 		}
 
 		const timer = setTimeout(() => setWhatsNew(true), 1000)
 
 		return () => clearTimeout(timer)
-	}, [config.openWhatsNew])
+	}, [config.openWhatsNew, gameReady])
 
 	async function closeWhatsNew(open: boolean) {
 		setWhatsNew(open)
@@ -59,6 +87,9 @@ export function App() {
 		}
 	}
 
+	const listsReady = gameReady === true
+	const listsHidden = selected !== null || data
+
 	let page
 
 	if (selected) {
@@ -70,22 +101,35 @@ export function App() {
 				onBack={() => setSelected(null)}
 			/>
 		)
-	} else if (setup) {
-		page = <SetupPage onBack={() => setSetup(false)} />
-	} else {
-		page = (
-			<ListsPage
-				onOpen={(name, kind, modName) => setSelected({ name, kind, modName })}
-				onSetup={() => setSetup(true)}
-			/>
-		)
+	} else if (data) {
+		page = <SetupPage onBack={() => setData(false)} />
+	} else if (gameReady === false) {
+		page = <WelcomePage />
 	}
 
 	return (
-		<>
-			{page}
+		<div className="app">
+			<MenuBar
+				onSettings={() => setSettings(true)}
+				onData={() => setData(true)}
+				onWhatsNew={() => setWhatsNew(true)}
+			/>
+			<div className="app-body">
+				{/* Список остаётся смонтированным: при возврате из редактора сохраняются
+				    фильтры, вид и позиция скролла, а файлы не запрашиваются заново. */}
+				{listsReady && (
+					<div className={listsHidden ? 'app-screen app-screen-hidden' : 'app-screen'}>
+						<ListsPage
+							active={!listsHidden}
+							onOpen={(name, kind, modName) => setSelected({ name, kind, modName })}
+						/>
+					</div>
+				)}
+				{page}
+			</div>
+			<SettingsModal open={settings} onClose={() => setSettings(false)} />
 			<UpdateAlert />
 			<WhatsNew open={whatsNew} onOpenChange={open => void closeWhatsNew(open)} />
-		</>
+		</div>
 	)
 }

@@ -191,7 +191,12 @@ impl Wheels {
 
 	/// Читает элемент TruckWheels.
 	pub fn read(reader: &AttrReader<'_>) -> Self {
-		let size = |name: &str| reader.float(name, Some(1.0)).limit(Limit::positive());
+		let size = |name: &str, key: &str| {
+			reader
+				.float(name, Some(1.0))
+				.label(key.to_owned())
+				.limit(Limit::positive())
+		};
 
 		let tires = reader
 			.child("TruckTires")
@@ -216,15 +221,14 @@ impl Wheels {
 			.unwrap_or_default();
 
 		Self {
-			damage_capacity: reader.integer("DamageCapacity", None).limit(Limit::new(
-				Some(0.0),
-				Some(64_000.0),
-				true,
-			)),
-			radius: size("Radius"),
-			width: size("Width"),
-			radius_rear: size("RadiusRear"),
-			width_rear: size("WidthRear"),
+			damage_capacity: reader
+				.integer("DamageCapacity", None)
+				.label("wheels.damageCapacity")
+				.limit(Limit::new(Some(0.0), Some(64_000.0), true)),
+			radius: size("Radius", "wheels.radius"),
+			width: size("Width", "wheels.width"),
+			radius_rear: size("RadiusRear", "wheels.radiusRear"),
+			width_rear: size("WidthRear", "wheels.widthRear"),
 			tires,
 			rims,
 		}
@@ -253,14 +257,20 @@ impl Wheel {
 		Self {
 			mass: reader
 				.integer("Mass", None)
+				.label("wheel.mass")
 				.limit(Limit::positive().rounded()),
-			radius: reader.float("Radius", None).limit(Limit::positive()),
-			width: reader.float("Width", None).limit(Limit::positive()),
-			damage_capacity: reader.integer("DamageCapacity", None).limit(Limit::new(
-				Some(0.0),
-				Some(64_000.0),
-				true,
-			)),
+			radius: reader
+				.float("Radius", None)
+				.label("wheel.radius")
+				.limit(Limit::positive()),
+			width: reader
+				.float("Width", None)
+				.label("wheel.width")
+				.limit(Limit::positive()),
+			damage_capacity: reader
+				.integer("DamageCapacity", None)
+				.label("wheel.damageCapacity")
+				.limit(Limit::new(Some(0.0), Some(64_000.0), true)),
 			wheel_friction: reader
 				.child("WheelFriction")
 				.map(|reader| BaseWheelFriction::read(&reader)),

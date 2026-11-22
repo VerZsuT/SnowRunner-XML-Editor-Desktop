@@ -1,10 +1,13 @@
+/* Шапка как в 1.4.0: заголовок по центру окна, кнопки белые и крупные. */
 .page-header {
+	position: relative;
 	display: flex;
 	width: 100%;
 	box-sizing: border-box;
 	align-items: center;
 	justify-content: space-between;
-	padding: 4px 5px 5px 5px;
+	padding: 4px 20px 5px 20px;
+	min-height: 49px;
 	max-height: 55px;
 	background-color: #1c7dca;
 	box-shadow: 0 0 3px 0 rgba(34, 60, 80, 0.6);
@@ -14,26 +17,71 @@
 		display: flex;
 		align-items: center;
 		min-width: 0;
+		z-index: 1;
+
+		/* «Назад» ведёт себя как кнопки сохранения и меню. */
+		.ant-btn {
+			color: #fff;
+			font-size: 25px;
+			background: transparent;
+			border: none !important;
+			transition: color 0.15s ease-in-out;
+		}
+
+		.ant-btn:hover {
+			color: #d3d3d3 !important;
+			background: transparent !important;
+		}
 	}
 
+	/* Заголовок не участвует в раскладке: кнопки справа больше не сдвигают его. */
 	&-title {
-		width: 100vw;
-		text-align: center;
-		color: #fafafa;
-		padding: 0;
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		max-width: calc(100% - 220px);
 		margin: 0;
+		padding: 0;
+		overflow: hidden;
+		color: #fafafa;
+		font-size: 20px;
+		font-weight: 600;
+		line-height: 32px;
+		text-align: center;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		transform: translate(-50%, -50%);
+		pointer-events: none;
 	}
 
 	&-back {
-		color: white;
-		margin-right: -20px;
-		left: 20px;
+		color: #fff;
+		font-size: 25px;
 	}
 
 	&-extra {
 		display: flex;
 		align-items: center;
-		margin: 0;
 		flex-shrink: 0;
+		gap: 4px;
+		margin: 0;
+		z-index: 1;
+
+		.ant-btn {
+			width: 32px;
+			height: 32px;
+			color: #fff;
+			font-size: 25px;
+			background: transparent;
+			/* Ant Design на :hover возвращает рамку через shorthand — гасим её
+			   важным правилом, иначе на кнопке мигает белая окантовка. */
+			border: none !important;
+			transition: color 0.15s ease-in-out;
+		}
+
+		.ant-btn:hover {
+			color: #d3d3d3 !important;
+			background: transparent !important;
+		}
 	}
 }

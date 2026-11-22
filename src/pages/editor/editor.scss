@@ -8,20 +8,43 @@
 		font-size: 20px;
 	}
 
+	/* Красная звёздочка несохранённых изменений в углу иконки сохранения. */
 	&-dirty {
-		margin-right: 8px;
-		font-size: 12px;
-		opacity: 0.65;
+		position: absolute;
+		top: -3px;
+		right: -4px;
+		color: #f5222d;
+		font-size: 18px;
+		font-weight: 700;
+		line-height: 1;
+		cursor: default;
+		pointer-events: none;
 	}
 
 	&-content {
 		flex: 1;
 		overflow: auto;
-		padding: 8px 16px 24px;
+		padding: 20px;
+		background: #e7ebf0;
 	}
 
 	&-spin {
 		display: block;
 		margin: 48px auto;
 	}
+}
+
+/* Обёртка кнопки сохранения: звезда позиционируется от неё. */
+.editor-save {
+	position: relative;
+	display: flex;
+}
+
+/* Пункт выпадающего меню редактора: иконка справа, как в 1.4.0. */
+.editor-menu-item {
+	display: flex;
+	gap: 24px;
+	align-items: center;
+	justify-content: space-between;
+	min-width: 160px;
 }

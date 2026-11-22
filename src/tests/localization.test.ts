@@ -40,6 +40,6 @@ describe('локализация', () => {
 		setTexts(Lang.ru)
 
 		expect(T.updateAlert.ignore).toBe('Игнорировать')
-		expect(T.lists.title).toBe('Автомобили и прицепы')
+		expect(T.lists.title).toBe('Список авто')
 	})
 })

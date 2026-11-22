@@ -44,6 +44,24 @@ fn битый_файл_даёт_значение_по_умолчанию() {
 }
 
 #[test]
+fn локаль_системы_превращается_в_язык() {
+	assert_eq!(lang_from_locale("ru-RU"), Some("RU"));
+	assert_eq!(lang_from_locale("en_US"), Some("EN"));
+	assert_eq!(lang_from_locale("de-AT"), Some("DE"));
+	assert_eq!(lang_from_locale("zh-Hans-CN"), Some("CH"));
+	assert_eq!(lang_from_locale("fr-FR"), None);
+	assert_eq!(lang_from_locale(""), None);
+}
+
+#[test]
+fn при_отсутствии_конфигурации_язык_берётся_из_системы() {
+	let dir = work_dir();
+	let config = ConfigStore::new(dir.join("missing.json")).load(Config::new("2.0.0", false));
+
+	assert!(LANGUAGES.contains(&config.lang.as_str()));
+}
+
+#[test]
 fn неизвестный_язык_заменяется() {
 	let dir = work_dir();
 	let path = dir.join("config.json");

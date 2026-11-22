@@ -191,6 +191,19 @@ impl From<sxmle_app::paths::SwitchError> for CommandError {
 	}
 }
 
+impl From<sxmle_app::reset::ResetError> for CommandError {
+	fn from(error: sxmle_app::reset::ResetError) -> Self {
+		use sxmle_app::reset::ResetError;
+
+		match error {
+			ResetError::Remove { path, source } => {
+				Self::io(source).with_path(path.display().to_string())
+			}
+			ResetError::Config(error) => error.into(),
+		}
+	}
+}
+
 impl From<sxmle_app::mods::ModsError> for CommandError {
 	fn from(error: sxmle_app::mods::ModsError) -> Self {
 		use sxmle_app::mods::ModsError;

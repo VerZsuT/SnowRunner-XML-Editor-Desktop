@@ -4,7 +4,8 @@ use std::fs;
 use std::path::{Path, PathBuf};
 
 use sxmle_app::archive::{
-	EDITED_MARKER, UnpackList, UnpackListKind, backup_file, unpack, update_from_dir, verify,
+	EDITED_MARKER, UnpackList, UnpackListKind, backup_file, find_initial, unpack, update_from_dir,
+	verify,
 };
 use sxmle_storage::zip::ZipArchive;
 
@@ -150,10 +151,27 @@ fn unpack_and_update_fixture() {
 		assert_eq!(before, &after, "запись {name} пересобрана");
 	}
 
+	drop(updated);
+
+	// Повторное сохранение не должно падать на уже существующем маркере.
+	let again = update_from_dir(&archive_path, &dest).expect("повторное обновление архива");
+
+	assert!(again.changed.is_empty());
+	assert!(again.added.is_empty());
+
+	let reopened = ZipArchive::open(&archive_path).expect("архив после повторного обновления");
+	let markers = reopened
+		.entries()
+		.iter()
+		.filter(|entry| entry.name == EDITED_MARKER)
+		.count();
+
+	assert_eq!(markers, 1);
+
 	let verified = verify(&archive_path, |_, _| {}).expect("проверка архива");
 	assert_eq!(
 		verified.entries,
-		updated
+		reopened
 			.entries()
 			.iter()
 			.filter(|entry| !entry.is_directory())
@@ -179,6 +197,21 @@ fn backup_restore_roundtrip() {
 	assert_eq!(fs::read(&target).expect("чтение"), b"data");
 
 	assert!(backup_file(&root.join("none.pak"), &backup).is_err());
+	let _ = fs::remove_dir_all(&root);
+}
+
+#[test]
+fn find_initial_ищет_архив_в_каталоге_игры() {
+	let root = work_dir("archive-find");
+	let client = root.join("SnowRunner/en_us/preload/paks/client");
+
+	fs::create_dir_all(&client).expect("каталог игры");
+	fs::write(client.join("initial.pak"), b"pak").expect("архив");
+
+	assert_eq!(find_initial(&root), Some(client.join("initial.pak")));
+	assert_eq!(find_initial(&client), Some(client.join("initial.pak")));
+	assert_eq!(find_initial(&root.join("empty")), None);
+
 	let _ = fs::remove_dir_all(&root);
 }
 

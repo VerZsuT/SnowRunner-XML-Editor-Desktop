@@ -3,7 +3,7 @@
 use std::fs;
 use std::path::{Path, PathBuf};
 
-use sxmle_app::mods::{self, ModEntry};
+use sxmle_app::mods::{self, ModCandidate, ModEntry};
 use tauri::State;
 
 use crate::error::{AppResult, CommandError};
@@ -14,6 +14,13 @@ use crate::state::AppState;
 #[specta::specta]
 pub fn list_mods(state: State<'_, AppState>) -> Vec<ModEntry> {
 	state.mods().entries().to_vec()
+}
+
+/// Моды, найденные по стандартному пути SnowRunner.
+#[tauri::command]
+#[specta::specta]
+pub fn find_mods() -> Vec<ModCandidate> {
+	mods::find_candidates()
 }
 
 /// Добавляет `.pak` моду: распаковывает файлы игры и сохраняет запись в списке.

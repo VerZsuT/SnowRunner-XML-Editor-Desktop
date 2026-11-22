@@ -29,11 +29,13 @@ sxmle-domain = { workspace = true }
 sxmle-storage = { workspace = true }
 tauri = { version = "2.12", features = [] }
 tauri-plugin-dialog = "2.8"
+notify = "8"
 tauri-specta = { version = "=2.0.0-rc.29", features = ["derive", "typescript"] }
 specta = { workspace = true }
 specta-typescript = "0.0.15"
 serde = { workspace = true }
 serde_json = { workspace = true }
+flate2 = { workspace = true }
 thiserror = { workspace = true }
 
 [features]

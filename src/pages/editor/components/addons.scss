@@ -1,17 +1,98 @@
 .editor-addons-controls {
 	display: flex;
-	align-items: center;
+	box-sizing: border-box;
+	flex: 0 0 100%;
 	gap: 8px;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
 	margin-bottom: 8px;
 }
 
+.editor-addons-filter {
+	width: 200px;
+}
+
 .editor-addons-select {
-	flex: 1;
-	min-width: 0;
+	width: 300px;
+	min-width: 200px;
+	max-width: 300px;
+
+	.ant-select-selection-item,
+	.ant-select-selection-placeholder,
+	.ant-select-content {
+		overflow: hidden;
+		text-align: left;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+}
+
+/* Длинные названия аддонов не растягивают выпадающий список. */
+.editor-addons-dropdown {
+	max-width: 300px;
+
+	.ant-select-item-option-content {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
 }
 
 .editor-addons-loading {
 	display: flex;
-	align-items: center;
+	box-sizing: border-box;
+	flex: 0 0 100%;
 	gap: 8px;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	min-height: 40px;
+	margin-bottom: 8px;
+	text-align: center;
+}
+
+.editor-addons-fields {
+	display: flex;
+	box-sizing: border-box;
+	flex: 0 0 100%;
+	flex-wrap: wrap;
+	gap: 10px 18px;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+}
+
+/* Компактные поля аддона в одну строку, как в 1.4.0. */
+.editor-addons-fields .editor-field {
+	flex: 0 0 auto;
+	gap: 8px;
+	width: auto;
+	min-width: 0;
+	margin-top: 0;
+}
+
+.editor-addons-fields .editor-field-label {
+	width: auto;
+	padding-left: 0;
+}
+
+.editor-addons-fields .editor-field-content {
+	justify-content: flex-start;
+	width: auto;
+}
+
+.editor-addons-fields .editor-field-input {
+	width: 85px;
+}
+
+.editor-addons-open {
+	display: block;
+	margin: 15px auto 0;
+}
+
+.editor-addon-draft {
+	flex: 0 0 100%;
+	width: 100%;
+	margin-top: 10px;
 }

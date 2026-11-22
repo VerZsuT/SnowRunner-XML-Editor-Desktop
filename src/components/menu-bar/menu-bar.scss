@@ -1,0 +1,23 @@
+/* Верхнее меню: высота и плотность пунктов как в 1.4.0. */
+.menu-bar.ant-menu {
+	flex-shrink: 0;
+	height: 30px;
+	line-height: 30px;
+	font-size: 14px;
+	padding-inline: 0;
+	background-color: #fff;
+	border-bottom: none;
+
+	> .ant-menu-item,
+	> .ant-menu-submenu {
+		height: 30px;
+		line-height: 30px;
+		padding: 0 16px;
+
+		.ant-menu-submenu-title {
+			height: 30px;
+			line-height: 30px;
+			padding: 0;
+		}
+	}
+}

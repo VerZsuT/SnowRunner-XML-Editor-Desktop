@@ -6,10 +6,11 @@
  * в очередь и отдаёт новое значение после каждой из них.
  */
 
-import { commands } from './bindings'
+import { commands, events } from './bindings'
 import type {
 	AttrDescriptor,
 	Crane,
+	DefaultValue,
 	DocumentInfo,
 	DocumentKind,
 	Engine,
@@ -99,8 +100,14 @@ export interface DocumentClient {
 	/** Сохраняет документ на диск. */
 	save(docId: string): Promise<SaveResult>
 
-	/** Сохраняет все изменённые документы. */
-	saveAll(): Promise<SaveResult[]>
+	/** Сохраняет все изменённые документы; `force` обновляет архив и без правок. */
+	saveAll(force?: boolean): Promise<SaveResult[]>
+
+	/** Значения по умолчанию полей документа. */
+	readDefaults(docId: string): Promise<DefaultValue[]>
+
+	/** Сбрасывает поля документа к значениям по умолчанию. */
+	resetDefaults(docId: string): Promise<MutationResult>
 
 	/** Читает документ заново с диска. */
 	reset(docId: string): Promise<DocumentInfo>
@@ -110,6 +117,9 @@ export interface DocumentClient {
 
 	/** Импортирует параметры из файла `.epf` в документ. */
 	importEpf(docId: string, path: string): Promise<EpfImportReport>
+
+	/** Наблюдает за файлами открытых документов. */
+	watch?(paths: string[], onChange: (paths: string[]) => void): Promise<() => void>
 }
 
 /** Клиент команд Tauri. */
@@ -137,10 +147,31 @@ export const documentClient: DocumentClient = {
 	setTrailer: (docId, revision, trailer, enabled) => call(commands.setTrailer(docId, revision, trailer, enabled)),
 	setBanditCrane: (docId, revision, enabled) => call(commands.setBanditCrane(docId, revision, enabled)),
 	save: docId => call(commands.saveDocument(docId)),
-	saveAll: () => call(commands.saveAllDocuments()),
+	saveAll: (force = false) => call(commands.saveAllDocuments(force)),
+	readDefaults: docId => call(commands.documentDefaults(docId)),
+	resetDefaults: docId => call(commands.resetDocumentDefaults(docId)),
 	reset: docId => call(commands.resetDocument(docId)),
 	exportEpf: (docId, path) => call(commands.exportEpf(docId, path)),
-	importEpf: (docId, path) => call(commands.importEpf(docId, path))
+	importEpf: (docId, path) => call(commands.importEpf(docId, path)),
+	watch: (paths, onChange) => watchDocuments(paths, onChange)
+}
+
+/** Наблюдает за файлами и возвращает функцию отписки. */
+export async function watchDocuments(
+	paths: string[],
+	onChange: (paths: string[]) => void
+): Promise<() => void> {
+	const stop = await events.documentsChanged.listen(event => onChange(event.payload.paths))
+
+	try {
+		await call(commands.watchDocuments(paths))
+	} catch (reason) {
+		stop()
+
+		throw reason
+	}
+
+	return stop
 }
 
 /** Открытый документ с последовательными правками. */
@@ -302,6 +333,22 @@ export class DocumentSession {
 			const result = await this.client.save(this.docId)
 
 			this.update({ revision: result.revision, dirty: false })
+
+			return result
+		})
+	}
+
+	/** Значения по умолчанию полей документа. */
+	readDefaults() {
+		return this.client.readDefaults(this.docId)
+	}
+
+	/** Сбрасывает поля документа к значениям из файла defaults. */
+	resetDefaults(): Promise<MutationResult> {
+		return this.enqueue(async () => {
+			const result = await this.client.resetDefaults(this.docId)
+
+			this.update(result)
 
 			return result
 		})

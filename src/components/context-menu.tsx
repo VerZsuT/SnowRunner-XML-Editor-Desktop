@@ -1,6 +1,7 @@
 import type { MenuProps } from 'antd'
 import { Menu } from 'antd'
 import { useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 import './context-menu.scss'
 
 /** Параметры контекстного меню. */
@@ -50,19 +51,25 @@ export function ContextMenu({ items, target, onClose }: ContextMenuProps) {
 		onClose?.()
 	}
 
-	return isShow
-		? (
-			<div className="context" onClick={hide}>
-				<div onClick={event => event.stopPropagation()}>
-					<Menu
-						className="context-menu"
-						selectable={false}
-						items={items}
-						style={{ top: position.y, left: position.x }}
-						onClick={() => hide()}
-					/>
-				</div>
+	if (!isShow) {
+		return null
+	}
+
+	// Портал обязателен: у строки списка есть filter на hover, а filter создаёт
+	// containing block для position: fixed. Без портала меню обрезается строкой
+	// и прыгает, когда курсор уходит с неё и filter снимается.
+	return createPortal(
+		<div className="context" onClick={hide}>
+			<div onClick={event => event.stopPropagation()}>
+				<Menu
+					className="context-menu"
+					selectable={false}
+					items={items}
+					style={{ top: position.y, left: position.x }}
+					onClick={() => hide()}
+				/>
 			</div>
-		)
-		: null
+		</div>,
+		document.body
+	)
 }

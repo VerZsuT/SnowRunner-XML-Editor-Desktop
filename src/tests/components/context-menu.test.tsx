@@ -41,6 +41,22 @@ describe('ContextMenu', () => {
 		expect(onClose).toHaveBeenCalledTimes(1)
 	})
 
+	it('рендерится в body, минуя filter и overflow контейнера', () => {
+		render(
+			<div style={{ overflow: 'hidden', filter: 'brightness(0.9)' }}>
+				<ContextMenuDemo />
+			</div>
+		)
+
+		fireEvent.contextMenu(screen.getByTestId('target'), { clientX: 10, clientY: 20 })
+
+		const overlay = document.querySelector('.context')
+
+		expect(overlay).not.toBeNull()
+		expect(overlay!.parentElement).toBe(document.body)
+		expect(screen.getByTestId('target').contains(overlay!)).toBe(false)
+	})
+
 	it('закрывается после клика по пункту меню', () => {
 		const onClose = vi.fn()
 

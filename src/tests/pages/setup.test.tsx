@@ -1,9 +1,10 @@
 import type { Config, ModEntry, PathsDto } from '@/api/bindings'
-import { registerConfig } from '@/config'
+import { applyConfig, registerConfig } from '@/config'
 import type { SetupClient } from '@/pages/setup/client'
 import { SetupPage } from '@/pages/setup'
 import { App as AntApp } from 'antd'
-import { render, screen, within } from '@testing-library/react'
+import { Lang } from '@/utilities/localization'
+import { act, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
@@ -102,38 +103,6 @@ describe('SetupPage', () => {
 		expect(screen.getByDisplayValue('C:/game/initial.pak')).toBeInTheDocument()
 	})
 
-	it('сохраняет переключатель модов', async () => {
-		const fake = client()
-
-		render(
-			<AntApp>
-				<SetupPage client={fake} onBack={() => {}} />
-			</AntApp>
-		)
-
-		const [mods] = await screen.findAllByRole('switch')
-
-		await userEvent.click(mods)
-
-		expect(fake.saveConfig).toHaveBeenCalledWith(expect.objectContaining({ useMods: false }))
-	})
-
-	it('сохраняет переключатель проверки обновлений', async () => {
-		const fake = client()
-
-		render(
-			<AntApp>
-				<SetupPage client={fake} onBack={() => {}} />
-			</AntApp>
-		)
-
-		const switches = await screen.findAllByRole('switch')
-
-		await userEvent.click(switches[3])
-
-		expect(fake.saveConfig).toHaveBeenCalledWith(expect.objectContaining({ checkUpdates: false }))
-	})
-
 	it('показывает моды и убирает их из списка', async () => {
 		const fake = client()
 
@@ -153,47 +122,6 @@ describe('SetupPage', () => {
 		expect(fake.removeMod).toHaveBeenCalledWith('my_mod')
 	})
 
-	it('сохраняет язык интерфейса и перезагружает экран', async () => {
-		const fake = client()
-
-		render(
-			<AntApp>
-				<SetupPage client={fake} onBack={() => {}} />
-			</AntApp>
-		)
-
-		await userEvent.click(await screen.findByRole('combobox'))
-
-		await userEvent.click(await screen.findByTitle('English'))
-
-		expect(fake.saveConfig).toHaveBeenCalledWith(expect.objectContaining({ lang: 'EN' }))
-		expect(fake.reload).toHaveBeenCalled()
-	})
-
-	it('переключает режим хранения данных и перезапускает программу', async () => {
-		const fake = client()
-
-		render(
-			<AntApp>
-				<SetupPage client={fake} onBack={() => {}} />
-			</AntApp>
-		)
-
-		const switches = await screen.findAllByRole('switch')
-
-		await userEvent.click(switches[2])
-
-		const dialog = await screen.findByRole('dialog')
-
-		await userEvent.click(within(dialog).getByRole('button', { name: /Портативн/ }))
-
-		expect(fake.switchMode).toHaveBeenCalledWith(true)
-
-		await userEvent.click(await screen.findByRole('button', { name: 'Перезапустить' }))
-
-		expect(fake.restart).toHaveBeenCalled()
-	})
-
 	it('делает бэкап выбранного архива', async () => {
 		const fake = client()
 
@@ -206,5 +134,24 @@ describe('SetupPage', () => {
 		await userEvent.click(await screen.findByRole('button', { name: 'Бэкап' }))
 
 		expect(fake.backup).toHaveBeenCalledWith('C:/game/initial.pak')
+	})
+
+	it('переводит экран вместе со сменой языка', async () => {
+		registerConfig({ lang: Lang.ru })
+
+		render(
+			<AntApp>
+				<SetupPage client={client()} onBack={() => {}} />
+			</AntApp>
+		)
+
+		expect(await screen.findByText('Пути программы')).toBeInTheDocument()
+
+		act(() => {
+			applyConfig({ lang: Lang.de })
+		})
+
+		expect(screen.getByText('Programmpfade')).toBeInTheDocument()
+		expect(screen.queryByText('Пути программы')).not.toBeInTheDocument()
 	})
 })

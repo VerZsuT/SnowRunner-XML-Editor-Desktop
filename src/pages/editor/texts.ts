@@ -87,6 +87,19 @@ const FIELD_TEXTS: Record<string, () => string> = {
 	'compatibleWheels.type': () => COMPATIBLE_WHEELS_LOCALIZATION.type,
 	'compatibleWheels.scale': () => COMPATIBLE_WHEELS_LOCALIZATION.scale,
 
+	// Набор колёс.
+	'wheels.damageCapacity': () => 'Прочность',
+	'wheels.radius': () => 'Радиус',
+	'wheels.width': () => 'Ширина',
+	'wheels.radiusRear': () => 'Радиус заднего колеса',
+	'wheels.widthRear': () => 'Ширина заднего колеса',
+
+	// Отдельное колесо.
+	'wheel.mass': () => 'Масса',
+	'wheel.radius': () => 'Радиус',
+	'wheel.width': () => 'Ширина',
+	'wheel.damageCapacity': () => 'Прочность',
+
 	// Бензобак.
 	'fuelTank.damageCapacity': () => FUEL_TANK_LOCALIZATION.damageCapacity,
 	'fuelTank.damageCapacityDesc': () => FUEL_TANK_LOCALIZATION.damageCapacityDesc,

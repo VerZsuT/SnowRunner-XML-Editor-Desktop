@@ -1,6 +1,11 @@
 import { commands } from './bindings'
 import { call } from './invoke'
 
+/** Ищет `initial.pak` в выбранном каталоге игры; `null` — архив не найден. */
+export async function findInitial(folder: string): Promise<string | null> {
+	return call(commands.findInitial(folder))
+}
+
 /** Распаковывает игровые файлы из `initial.pak`; возвращает число файлов. */
 export async function unpackInitial(archivePath: string): Promise<number> {
 	const result = await call(commands.unpackInitial(archivePath, 'optimized'))

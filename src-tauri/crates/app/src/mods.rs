@@ -32,6 +32,17 @@ pub struct ModEntry {
 	pub size: f64,
 }
 
+/// Найденный `.pak` модификации, ещё не добавленный в программу.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Type)]
+#[serde(rename_all = "camelCase")]
+pub struct ModCandidate {
+	/// Название мода: имя `.pak` без расширения.
+	pub name: String,
+
+	/// Путь к `.pak` файлу.
+	pub path: String,
+}
+
 /// Ошибка работы с модами.
 #[derive(Debug, Error)]
 pub enum ModsError {
@@ -171,6 +182,127 @@ pub fn unpack(pak: &Path, target: &Path, name: &str) -> Result<f64, ModsError> {
 		})?;
 
 	Ok(size)
+}
+
+/// Ищет моды в стандартном каталоге SnowRunner (`.modio/mods`).
+///
+/// Каталог документов может быть перенаправлен в OneDrive, поэтому
+/// проверяются оба варианта. Ошибки чтения пропускаются: список не обязателен.
+pub fn find_candidates() -> Vec<ModCandidate> {
+	let mut result = Vec::new();
+
+	for dir in standard_dirs() {
+		merge_candidates(&mut result, find_candidates_in(&dir));
+	}
+
+	result.sort_by(|left, right| left.name.cmp(&right.name));
+	result
+}
+
+/// `.pak` моды в каталоге и его непосредственных подкаталогах.
+pub fn find_candidates_in(dir: &Path) -> Vec<ModCandidate> {
+	let mut result = Vec::new();
+	let Ok(entries) = fs::read_dir(dir) else {
+		return result;
+	};
+
+	for entry in entries.flatten() {
+		let path = entry.path();
+
+		if path.is_file() {
+			push_candidate(&mut result, &path);
+			continue;
+		}
+
+		if !path.is_dir() {
+			continue;
+		}
+
+		let Ok(inner) = fs::read_dir(&path) else {
+			continue;
+		};
+
+		for entry in inner.flatten() {
+			let path = entry.path();
+
+			if path.is_file() {
+				push_candidate(&mut result, &path);
+			}
+		}
+	}
+
+	result.sort_by(|left, right| left.name.cmp(&right.name));
+	result
+}
+
+/// Стандартные каталоги установленных модов.
+fn standard_dirs() -> Vec<PathBuf> {
+	let Some(home) = std::env::var_os("USERPROFILE").or_else(|| std::env::var_os("HOME")) else {
+		return Vec::new();
+	};
+	let home = PathBuf::from(home);
+	let mut result = Vec::new();
+
+	for documents in [
+		home.join("Documents"),
+		home.join("OneDrive").join("Documents"),
+	] {
+		for games in ["My Games", "my games", "MyGames", "mygames"] {
+			result.push(
+				documents
+					.join(games)
+					.join("SnowRunner/base/Mods/.modio/mods"),
+			);
+		}
+	}
+
+	result
+}
+
+/// Добавляет `.pak` в список, если он ещё не добавлен.
+fn push_candidate(result: &mut Vec<ModCandidate>, path: &Path) {
+	if !path
+		.extension()
+		.and_then(|extension| extension.to_str())
+		.is_some_and(|extension| extension.eq_ignore_ascii_case("pak"))
+	{
+		return;
+	}
+
+	let Some(name) = path
+		.file_stem()
+		.and_then(|stem| stem.to_str())
+		.filter(|name| !name.is_empty())
+	else {
+		return;
+	};
+	let path = path.to_string_lossy().into_owned();
+
+	if result
+		.iter()
+		.any(|item| item.path.eq_ignore_ascii_case(&path))
+	{
+		return;
+	}
+
+	result.push(ModCandidate {
+		name: name.to_owned(),
+		path,
+	});
+}
+
+/// Переносит найденные моды без повторов.
+fn merge_candidates(target: &mut Vec<ModCandidate>, source: Vec<ModCandidate>) {
+	for candidate in source {
+		if target
+			.iter()
+			.any(|item| item.path.eq_ignore_ascii_case(&candidate.path))
+		{
+			continue;
+		}
+
+		target.push(candidate);
+	}
 }
 
 /// Готовит название файла к использованию в файловой системе.

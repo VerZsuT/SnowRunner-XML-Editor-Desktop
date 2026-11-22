@@ -3,7 +3,7 @@ import { registerConfig } from '@/config'
 import { EditorPage } from '@/pages/editor'
 import { open, save } from '@tauri-apps/plugin-dialog'
 import { App as AntApp } from 'antd'
-import { render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
@@ -71,6 +71,56 @@ function truck() {
 	}
 }
 
+/** Минимальный прицеп для отрисовки отдельной таблицы. */
+function trailer() {
+	return {
+		fileType: field('Type', '/Truck', 'Trailer'),
+		truckData: {
+			fuelCapacity: field('FuelCapacity', '/Truck/TruckData', 200, 'integer', 'truckData.fuelCapacity'),
+			waterCapacity: field('WaterCapacity', '/Truck/TruckData', 0, 'integer', 'truckData.waterCapacity'),
+			repairsCapacity: field('RepairsCapacity', '/Truck/TruckData', 100, 'integer', 'truckData.repairsCapacity'),
+			wheelRepairsCapacity: field('WheelRepairsCapacity', '/Truck/TruckData', 2, 'integer', 'truckData.wheelRepairsCapacity'),
+			wheels: {
+				wheels: [{
+					suspensionHeight: field('SuspensionHeight', '/Truck/TruckData/Wheels/Wheel', 0.1, 'float', 'truckWheel.suspensionHeight'),
+					suspensionStrength: field('SuspensionStrength', '/Truck/TruckData/Wheels/Wheel', 1, 'float', 'truckWheel.suspensionStrength')
+				}]
+			}
+		},
+		physicsModel: {
+			body: {
+				mass: field('Mass', '/Truck/PhysicsModel/Body', 1000, 'integer', 'physics.body.mass'),
+				centerOfMassOffset: field(
+					'CenterOfMassOffset',
+					'/Truck/PhysicsModel/Body',
+					{ x: 0, y: 0, z: 0 },
+					'position',
+					'physics.body.centerOfMassOffset'
+				),
+				body: null
+			}
+		},
+		fuelMass: {
+			body: {
+				mass: field('Mass', '/Truck/FuelMass/Body', 100, 'integer', 'physics.body.mass'),
+				centerOfMassOffset: null,
+				body: null
+			}
+		},
+		waterMass: null,
+		gameData: {
+			price: field('Price', '/Truck/GameData', 500, 'integer', 'gameData.price'),
+			addonSlots: {
+				quantity: field('Quantity', '/Truck/GameData/AddonSlots', 2, 'integer', 'addonSlots.quantity')
+			},
+			uiDesc: null,
+			addonSockets: [],
+			winchSockets: [],
+			craneSockets: []
+		}
+	}
+}
+
 /** Клиент команд с подставными ответами. */
 function client(): DocumentClient {
 	return {
@@ -95,6 +145,8 @@ function client(): DocumentClient {
 		readWheels: vi.fn(),
 		readWheel: vi.fn(),
 		readAddon: vi.fn(),
+		readDefaults: vi.fn(async () => []),
+		resetDefaults: vi.fn(),
 		setAttr: vi.fn(),
 		setText: vi.fn(),
 		addElement: vi.fn(),
@@ -120,8 +172,81 @@ describe('EditorPage', () => {
 
 		expect(await screen.findByText('Разблокировка')).toBeInTheDocument()
 		expect(screen.getByText('ANK MK38')).toBeInTheDocument()
-		expect(screen.getByText('Физическая модель')).toBeInTheDocument()
-		expect(screen.getByText('Смещение центра масс')).toBeInTheDocument()
+		expect(screen.getByText('Дополнительно')).toBeInTheDocument()
+		expect(screen.queryByText('Цена')).not.toBeInTheDocument()
+
+		await userEvent.click(screen.getByRole('button', { name: 'Разблокировка' }))
+
+		expect(await screen.findByText('Цена')).toBeInTheDocument()
+	})
+
+	it('открывает только одну верхнеуровневую группу', async () => {
+		render(
+			<AntApp>
+				<EditorPage name="ank_mk38" client={client()} onBack={() => {}} />
+			</AntApp>
+		)
+
+		await screen.findByText('Разблокировка')
+		await userEvent.click(screen.getByRole('button', { name: 'Разблокировка' }))
+
+		expect(await screen.findByText('Цена')).toBeInTheDocument()
+
+		await userEvent.click(screen.getByRole('button', { name: 'Дополнительно' }))
+
+		await waitFor(() => expect(screen.queryByText('Цена')).not.toBeInTheDocument())
+	})
+
+	it('сбрасывает группу из контекстного меню', async () => {
+		const setAttr = vi.fn(async () => ({
+			docId: 'doc-1',
+			revision: 1,
+			selector: '/Truck/GameData',
+			value: null,
+			dirty: true
+		}))
+		const document = { ...client(), setAttr } as unknown as DocumentClient
+
+		render(
+			<AntApp>
+				<EditorPage name="ank_mk38" client={document} onBack={() => {}} />
+			</AntApp>
+		)
+
+		await screen.findByText('Разблокировка')
+		await userEvent.click(screen.getByRole('button', { name: 'Разблокировка' }))
+		fireEvent.contextMenu(screen.getByRole('button', { name: 'Разблокировка' }))
+		fireEvent.click(await screen.findByText('Сбросить "Разблокировка"'))
+
+		await waitFor(() => expect(setAttr).toHaveBeenCalledWith(
+			'doc-1',
+			expect.any(Number),
+			expect.objectContaining({ name: 'Price' }),
+			null
+		))
+	})
+
+	it('показывает отдельную таблицу прицепа', async () => {
+		const document = { ...client(), readTruck: vi.fn(async () => trailer()) } as unknown as DocumentClient
+
+		render(
+			<AntApp>
+				<EditorPage name="scout_trailer_flatbed_1" kind="trailer" client={document} onBack={() => {}} />
+			</AntApp>
+		)
+
+		expect(await screen.findByText('Полезное содержимое')).toBeInTheDocument()
+		expect(screen.queryByText('Управление')).not.toBeInTheDocument()
+
+		await userEvent.click(screen.getByRole('button', { name: 'Полезное содержимое' }))
+
+		expect(await screen.findByText('Объём воды')).toBeInTheDocument()
+		expect(screen.getByText('Кол-во груза')).toBeInTheDocument()
+
+		await userEvent.click(screen.getByRole('button', { name: 'Масса' }))
+
+		expect(await screen.findByText('Масса прицепа')).toBeInTheDocument()
+		expect(screen.getByText('Масса топлива')).toBeInTheDocument()
 	})
 
 	it('показывает ошибку открытия', async () => {
@@ -149,7 +274,8 @@ describe('EditorPage', () => {
 		)
 
 		await screen.findByText('Разблокировка')
-		await userEvent.click(screen.getByLabelText('export-epf'))
+		await userEvent.click(screen.getByLabelText('editor-menu'))
+		await userEvent.click(await screen.findByText('Экспорт параметров'))
 
 		await waitFor(() => expect(exportEpf).toHaveBeenCalledWith('doc-1', 'ank_mk38.epf'))
 		expect(await screen.findByText('Экспортировано атрибутов: 2')).toBeInTheDocument()
@@ -168,9 +294,41 @@ describe('EditorPage', () => {
 		)
 
 		await screen.findByText('Разблокировка')
-		await userEvent.click(screen.getByLabelText('import-epf'))
+		await userEvent.click(screen.getByLabelText('editor-menu'))
+		await userEvent.click(await screen.findByText('Импорт параметров'))
 
 		await waitFor(() => expect(importEpf).toHaveBeenCalledWith('doc-1', 'ank_mk38.epf'))
+		expect(document.saveAll).toHaveBeenCalled()
 		expect(await screen.findByText('Импортировано атрибутов: 2')).toBeInTheDocument()
+	})
+
+	it('сбрасывает документ к значениям по умолчанию', async () => {
+		const resetDefaults = vi.fn(async () => ({
+			docId: 'doc-1',
+			revision: 1,
+			selector: '/',
+			value: null,
+			dirty: true
+		}))
+		const saveAll = vi.fn(async () => [])
+		const document = { ...client(), resetDefaults, saveAll } as unknown as DocumentClient
+
+		render(
+			<AntApp>
+				<EditorPage name="ank_mk38" client={document} onBack={() => {}} />
+			</AntApp>
+		)
+
+		await screen.findByText('Разблокировка')
+		await userEvent.click(screen.getByLabelText('editor-menu'))
+		await userEvent.click(await screen.findByText('Сбросить'))
+
+		const dialog = await screen.findByRole('dialog')
+
+		await userEvent.click(dialog.querySelector('.ant-btn-primary') as HTMLElement)
+
+		await waitFor(() => expect(resetDefaults).toHaveBeenCalledWith('doc-1'))
+		expect(saveAll).not.toHaveBeenCalled()
+		expect(await screen.findByText('Параметры сброшены. Не забудьте сохранить изменения')).toBeInTheDocument()
 	})
 })

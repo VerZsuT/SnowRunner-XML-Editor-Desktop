@@ -1,11 +1,14 @@
-import type { AttrDescriptor, Field, Position } from '@/api/bindings'
+import type { AttrDescriptor, Field, InputArea, Position } from '@/api/bindings'
 import type { DocumentSession } from '@/api/documents'
 import { fieldValue, formatPosition, writeField } from '@/api/fields'
 import { ContextMenu } from '@/components/context-menu'
+import { formatString } from '@/utilities/strings'
 import { App, Input, InputNumber, Popover, Select, Typography } from 'antd'
 import type { ReactNode } from 'react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { fieldText, optionText, texts } from '../texts'
+import { useFieldDefault } from './defaults'
+import { useGroupReset } from './group'
 import './field.scss'
 
 /** Параметры поля документа. */
@@ -26,6 +29,7 @@ export interface FieldProps {
 /** Состояние поля: значение, запись и сброс. */
 function useField({ session, field }: FieldProps) {
 	const { message } = App.useApp()
+	const defaultValue = useFieldDefault(session, field)
 	const [value, setValue] = useState<unknown>(() => fieldValue(field))
 
 	function change(next: unknown) {
@@ -33,15 +37,17 @@ function useField({ session, field }: FieldProps) {
 			return
 		}
 
+		const previous = value
+
 		setValue(next)
 
 		void writeField(session, field, next).catch((reason: unknown) => {
 			message.error(reason instanceof Error ? reason.message : String(reason))
-			setValue(value)
+			setValue(previous)
 		})
 	}
 
-	return { value, change, reset: () => change(field.defaultValue) }
+	return { value, change, defaultValue, reset: () => change(defaultValue) }
 }
 
 /** Общие параметры элемента управления. */
@@ -54,6 +60,9 @@ interface ControlProps {
 
 	/** Подписи значений перечисления. */
 	labels?: Record<string, string>
+
+	/** Значение по умолчанию из модели. */
+	defaultValue?: unknown
 
 	/** Текущее значение. */
 	value: unknown
@@ -83,11 +92,14 @@ interface FieldRowProps {
 /** Строка поля: подпись, подсказка и контекстное меню сброса. */
 function FieldRow({ descriptor, label, onReset, children }: FieldRowProps) {
 	const [target, setTarget] = useState<HTMLDivElement | null>(null)
+	const registerReset = useGroupReset()
 	const labelText = label ?? fieldText(descriptor.label)
 	const descText = fieldText(descriptor.desc)
 
+	useEffect(() => registerReset?.(onReset), [onReset, registerReset])
+
 	return (
-		<div className="editor-field">
+		<div ref={setTarget} className="editor-field">
 			<ContextMenu
 				target={target}
 				items={[{
@@ -96,7 +108,7 @@ function FieldRow({ descriptor, label, onReset, children }: FieldRowProps) {
 					onClick: onReset
 				}]}
 			/>
-			<div ref={setTarget} className="editor-field-label">
+			<div className="editor-field-label">
 				{descText
 					? (
 						<Popover placement="topLeft" content={<Typography.Text>{descText}</Typography.Text>}>
@@ -110,8 +122,138 @@ function FieldRow({ descriptor, label, onReset, children }: FieldRowProps) {
 	)
 }
 
+/** Подсказка поля ввода: ограничения и цветовые зоны, как в 1.4.0. */
+function FieldTip({ descriptor, labels, defaultValue, children }: {
+	descriptor: AttrDescriptor
+	labels?: Record<string, string>
+	defaultValue?: unknown
+	children: ReactNode
+}) {
+	const lines = tipLines(descriptor, defaultValue, labels)
+
+	if (!lines.length) {
+		return <>{children}</>
+	}
+
+	return (
+		<Popover
+			placement="topLeft"
+			content={(
+				<div className="editor-field-tip">
+					{lines.map(line => <div key={line}>{line}</div>)}
+				</div>
+			)}
+		>
+			<span className="editor-field-tip-target">{children}</span>
+		</Popover>
+	)
+}
+
+/** Строки подсказки по дескриптору. */
+function tipLines(
+	descriptor: AttrDescriptor,
+	defaultValue?: unknown,
+	labels?: Record<string, string>
+): string[] {
+	const lines: string[] = []
+	const limit = descriptor.limit
+
+	if (limit?.min !== null && limit?.min !== undefined) {
+		lines.push(formatString(texts.inputMin, String(limit.min)))
+	}
+
+	if (limit?.max !== null && limit?.max !== undefined) {
+		lines.push(formatString(texts.inputMax, String(limit.max)))
+	}
+
+	const fallback = tipValue(descriptor, defaultValue, labels)
+
+	if (fallback !== undefined) {
+		lines.push(formatString(texts.inputDefault, fallback))
+	}
+
+	const areas = descriptor.areas
+
+	for (const [name, area, text] of [
+		['green', areas?.green, texts.inputGreenArea],
+		['yellow', areas?.yellow, texts.inputYellowArea],
+		['red', areas?.red, texts.inputRedArea]
+	] as const) {
+		const value = formatAreas(area)
+
+		if (name && value) {
+			lines.push(formatString(text, value))
+		}
+	}
+
+	return lines
+}
+
+/** Значение для подсказки: только скалярные, логические — словами. */
+function tipValue(
+	descriptor: AttrDescriptor,
+	value: unknown,
+	labels?: Record<string, string>
+): string | undefined {
+	if (value === null || value === undefined || typeof value === 'object') {
+		return undefined
+	}
+
+	if (descriptor.attrType === 'boolean') {
+		return labels?.[String(value)] ?? (value === true || value === 'true' ? texts.yes : texts.no)
+	}
+
+	return String(value)
+}
+
+/** Статус поля по цветовым зонам: как status в 1.4.0. */
+function areaStatus(areas: AttrDescriptor['areas'], value: unknown): 'error' | 'warning' | undefined {
+	if (!areas) {
+		return undefined
+	}
+
+	const number = typeof value === 'number' && Number.isFinite(value) ? value : Number(value)
+	const current = Number.isFinite(number) ? number : 0
+	const inside = (list: InputArea[] | null) => list?.some(area => (
+		(current >= (area.start ?? -Infinity)) && (current <= (area.end ?? Infinity))
+	))
+
+	if (inside(areas.red)) {
+		return 'error'
+	}
+
+	return inside(areas.yellow) ? 'warning' : undefined
+}
+
+/** Цветовые зоны строкой. */
+function formatAreas(areas?: InputArea[] | null): string | undefined {
+	if (!areas?.length) {
+		return undefined
+	}
+
+	const parts = areas
+		.map(area => {
+			if (area.start === null && area.end === null) {
+				return ''
+			}
+
+			if (area.start === null) {
+				return `≤ ${area.end}`
+			}
+
+			if (area.end === null) {
+				return `≥ ${area.start}`
+			}
+
+			return `${area.start}–${area.end}`
+		})
+		.filter(Boolean)
+
+	return parts.length ? parts.join(', ') : undefined
+}
+
 /** Числовое поле. */
-function NumberControl({ descriptor, label, value, change, reset }: ControlProps) {
+function NumberControl({ descriptor, label, labels, defaultValue, value, change, reset }: ControlProps) {
 	const limit = descriptor.limit
 	const fixed = descriptor.attrType === 'integer' || limit?.fixed === true
 	const step = descriptor.step ?? (fixed ? 1 : 0.1)
@@ -124,36 +266,57 @@ function NumberControl({ descriptor, label, value, change, reset }: ControlProps
 	}
 
 	function commit() {
-		if (draft === null) {
-			if (value !== null) {
-				change(null)
-			}
+		if (draft === null || !Number.isFinite(draft)) {
+			setDraft(toNumber(value))
 
 			return
 		}
 
-		change(fixed ? Math.trunc(draft) : draft)
+		const next = fixed ? Math.trunc(draft) : draft
+
+		if (limit?.min !== null && limit?.min !== undefined && next < limit.min) {
+			setDraft(toNumber(value))
+
+			return
+		}
+
+		if (limit?.max !== null && limit?.max !== undefined && next > limit.max) {
+			setDraft(toNumber(value))
+
+			return
+		}
+
+		setDraft(next)
+
+		if (next !== value) {
+			change(next)
+		}
 	}
+
+	const status = areaStatus(descriptor.areas, draft)
 
 	return (
 		<FieldRow descriptor={descriptor} label={label} onReset={reset}>
-			<InputNumber
-				className="editor-field-input"
-				size="large"
-				value={draft}
-				step={step}
-				min={limit?.min ?? undefined}
-				max={limit?.max ?? undefined}
-				onChange={next => setDraft(typeof next === 'number' ? next : null)}
-				onBlur={commit}
-				onPressEnter={commit}
-			/>
+			<FieldTip descriptor={descriptor} labels={labels} defaultValue={defaultValue}>
+				<InputNumber
+					className="editor-field-input"
+					size="large"
+					status={status}
+					value={draft}
+					step={step}
+					min={limit?.min ?? undefined}
+					max={limit?.max ?? undefined}
+					onChange={next => setDraft(typeof next === 'number' ? next : null)}
+					onBlur={commit}
+					onPressEnter={commit}
+				/>
+			</FieldTip>
 		</FieldRow>
 	)
 }
 
 /** Текстовое поле. */
-function TextControl({ descriptor, label, value, change, reset }: ControlProps) {
+function TextControl({ descriptor, label, labels, defaultValue, value, change, reset }: ControlProps) {
 	const [draft, setDraft] = useState(() => toText(value))
 	const [previous, setPrevious] = useState(value)
 
@@ -166,40 +329,49 @@ function TextControl({ descriptor, label, value, change, reset }: ControlProps) 
 		change(draft === '' ? null : draft)
 	}
 
+	const status = areaStatus(descriptor.areas, draft)
+
 	return (
 		<FieldRow descriptor={descriptor} label={label} onReset={reset}>
-			<Input
-				className="editor-field-input"
-				size="large"
-				value={draft}
-				onChange={event => setDraft(event.target.value)}
-				onBlur={commit}
-				onPressEnter={commit}
-			/>
+			<FieldTip descriptor={descriptor} labels={labels} defaultValue={defaultValue}>
+				<Input
+					className="editor-field-input"
+					size="large"
+					status={status}
+					value={draft}
+					onChange={event => setDraft(event.target.value)}
+					onBlur={commit}
+					onPressEnter={commit}
+				/>
+			</FieldTip>
 		</FieldRow>
 	)
 }
 
 /** Поле-переключатель. */
-function BooleanControl({ descriptor, label, labels, value, change, reset }: ControlProps) {
+function BooleanControl({ descriptor, label, labels, defaultValue, value, change, reset }: ControlProps) {
 	return (
 		<FieldRow descriptor={descriptor} label={label} onReset={reset}>
-			<Select
-				className="editor-field-input"
-				size="large"
-				value={value === null || value === undefined ? undefined : String(value)}
-				options={[
-					{ value: 'true', label: labels?.['true'] ?? texts.yes },
-					{ value: 'false', label: labels?.['false'] ?? texts.no }
-				]}
-				onChange={next => change(next === 'true')}
-			/>
+			<FieldTip descriptor={descriptor} labels={labels} defaultValue={defaultValue}>
+				<Select
+					className="editor-field-input editor-field-select"
+					size="large"
+					popupMatchSelectWidth={false}
+					classNames={{ popup: { root: 'editor-select-dropdown' } }}
+					value={value === null || value === undefined ? undefined : String(value)}
+					options={[
+						{ value: 'true', label: labels?.['true'] ?? texts.yes },
+						{ value: 'false', label: labels?.['false'] ?? texts.no }
+					]}
+					onChange={next => change(next === 'true')}
+				/>
+			</FieldTip>
 		</FieldRow>
 	)
 }
 
 /** Поле выбора из допустимых значений. */
-function SelectControl({ descriptor, label, labels, value, change, reset }: ControlProps) {
+function SelectControl({ descriptor, label, labels, defaultValue, value, change, reset }: ControlProps) {
 	const multiple = descriptor.attrType === 'stringArray'
 	const options = (descriptor.options ?? []).map(item => ({
 		value: item,
@@ -214,22 +386,26 @@ function SelectControl({ descriptor, label, labels, value, change, reset }: Cont
 
 	return (
 		<FieldRow descriptor={descriptor} label={label} onReset={reset}>
-			<Select
-				className="editor-field-input"
-				size="large"
-				mode={multiple ? 'multiple' : undefined}
-				options={options}
-				value={multiple ? shown : String(value ?? '')}
-				onChange={next => change(emptyIsAll && Array.isArray(next) && next.length === options.length
-					? null
-					: next)}
-			/>
+			<FieldTip descriptor={descriptor} labels={labels} defaultValue={defaultValue}>
+				<Select
+					className="editor-field-input editor-field-select"
+					size="large"
+					popupMatchSelectWidth={false}
+					classNames={{ popup: { root: 'editor-select-dropdown' } }}
+					mode={multiple ? 'multiple' : undefined}
+					options={options}
+					value={multiple ? shown : String(value ?? '')}
+					onChange={next => change(emptyIsAll && Array.isArray(next) && next.length === options.length
+						? null
+						: next)}
+				/>
+			</FieldTip>
 		</FieldRow>
 	)
 }
 
 /** Поле позиции: три координаты. */
-function PositionControl({ descriptor, label, value, change, reset }: ControlProps) {
+function PositionControl({ descriptor, label, labels, defaultValue, value, change, reset }: ControlProps) {
 	const [draft, setDraft] = useState(() => toPosition(value))
 	const [previous, setPrevious] = useState(value)
 
@@ -239,6 +415,10 @@ function PositionControl({ descriptor, label, value, change, reset }: ControlPro
 	}
 
 	function commit(axis: keyof Position, next: number | null) {
+		if (next === null || !Number.isFinite(next)) {
+			return
+		}
+
 		const position = { ...draft, [axis]: next }
 
 		setDraft(position)
@@ -247,17 +427,20 @@ function PositionControl({ descriptor, label, value, change, reset }: ControlPro
 
 	return (
 		<FieldRow descriptor={descriptor} label={label} onReset={reset}>
-			<div className="editor-field-position">
-				{(['x', 'y', 'z'] as const).map(axis => (
-					<InputNumber
-						key={axis}
-						className="editor-field-input"
-						size="large"
-						value={draft[axis]}
-						onChange={next => commit(axis, typeof next === 'number' ? next : null)}
-					/>
-				))}
-			</div>
+			<FieldTip descriptor={descriptor} labels={labels} defaultValue={defaultValue}>
+				<div className="editor-field-position">
+					{(['x', 'y', 'z'] as const).map(axis => (
+						<div key={axis} className="editor-field-coordinate">
+							<span className="editor-field-axis">{axis.toUpperCase()}:</span>
+							<InputNumber
+								className="editor-field-input"
+								value={draft[axis]}
+								onChange={next => commit(axis, typeof next === 'number' ? next : null)}
+							/>
+						</div>
+					))}
+				</div>
+			</FieldTip>
 		</FieldRow>
 	)
 }
@@ -281,7 +464,12 @@ export function InfoField({ field, label }: { field: Field<unknown>, label?: str
 /** Поле документа: элемент управления выбирается по типу значения. */
 export function DocumentField({ session, field, label, labels }: FieldProps) {
 	const state = useField({ session, field })
-	const control = { descriptor: field.descriptor, label, labels, ...state }
+	const control = {
+		descriptor: field.descriptor,
+		label,
+		labels,
+		...state
+	}
 
 	switch (field.descriptor.attrType) {
 		case 'integer':

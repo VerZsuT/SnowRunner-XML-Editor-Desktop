@@ -1,10 +1,11 @@
-import type { AddonFile, GameTexts, PhysicsBody, Truck } from '@/api/bindings'
+import type { AddonFile, GameTexts, Truck, TruckAddon } from '@/api/bindings'
 import type { DocumentSession } from '@/api/documents'
+import { fieldValue } from '@/api/fields'
+import { EditorTable } from './accordion'
 import type { AddonDocument } from './addons'
-import { AddonSocketsGroup } from './addon-sockets'
 import { AddonsContent } from './addons'
 import { BanditCraneGroup, CranesGroup, TrailersGroup } from './actions'
-import { DocumentField, InfoField } from './field'
+import { DocumentField } from './field'
 import { Group } from './group'
 import type { RelatedDocument } from './related'
 import { EnginesField, GearboxesField, SuspensionsField, WheelsField, WinchesField } from './related'
@@ -31,7 +32,7 @@ export interface TruckTableProps {
 	onOpenAddon(addon: AddonFile): Promise<void>
 
 	/** Перечитывает модель открытого аддона. */
-	onRefreshAddon(doc: AddonDocument): Promise<void>
+	onRefreshAddon(doc: AddonDocument): Promise<TruckAddon | null>
 
 	/** Перечитывает модель трака. */
 	onRefresh(): Promise<void>
@@ -51,21 +52,19 @@ export function TruckTable({
 	const data = truck.truckData
 	const gameData = truck.gameData
 	const region = gameData?.uiDesc?.defaultRegion ?? gameData?.uiDesc
+	const centerOfMass = truck.physicsModel?.body?.centerOfMassOffset
 
 	return (
-		<>
+		<EditorTable>
 			{region && (
-				<Group label={texts.texts}>
+				<Group groupKey="texts" icon="texts" label={texts.texts}>
 					<DocumentField session={session} field={region.uiName} />
 					<DocumentField session={session} field={region.uiDesc} />
-					{gameData?.uiDesc?.uiIcon328x458 && (
-						<DocumentField session={session} field={gameData.uiDesc.uiIcon328x458} />
-					)}
 				</Group>
 			)}
 
 			{data && (
-				<Group label={texts.control}>
+				<Group groupKey="control" icon="steering-wheel" label={texts.control}>
 					<DocumentField session={session} field={data.responsiveness} />
 					<DocumentField session={session} field={data.backSteerSpeed} />
 					<DocumentField session={session} field={data.steerSpeed} />
@@ -73,35 +72,31 @@ export function TruckTable({
 			)}
 
 			{data && (
-				<Group label={texts.winch}>
+				<Group groupKey="winch" icon="winches" label={texts.winch}>
 					{data.winch && (
 						<>
 							<DocumentField session={session} field={data.winch.length} />
 							<DocumentField session={session} field={data.winch.strengthMult} />
 						</>
 					)}
-					<WinchesField documents={related} />
+					<WinchesField documents={related} gameTexts={gameTexts} />
 				</Group>
 			)}
 
 			{data && (
-				<Group label={texts.wheels}>
-					{data.wheels && (
-						<Group nested label={texts.wheels}>
-							<DocumentField session={session} field={data.wheels.defaultWheelType} />
-							{data.wheels.wheels.map((wheel, index) => (
-								<Group key={index} nested label={`${texts.wheel} ${index + 1}`}>
+				<Group groupKey="wheels" icon="wheels" label={texts.wheels}>
+					<WheelsField documents={related} gameTexts={gameTexts} />
+
+					{(data.wheels || data.extraWheels) && (
+						<Group nested label={texts.wheelExtra}>
+							{data.wheels?.wheels.map((wheel, index) => (
+								<Group key={`wheel-${index}`} nested label={`${texts.wheel} ${index + 1}`}>
 									<DocumentField session={session} field={wheel.torque} />
 									<DocumentField session={session} field={wheel.steeringAngle} />
 								</Group>
 							))}
-						</Group>
-					)}
-
-					{data.extraWheels && (
-						<Group nested label={texts.extraWheel}>
-							{data.extraWheels.wheels.map((wheel, index) => (
-								<Group key={index} nested label={`${texts.extraWheel} ${index + 1}`}>
+							{data.extraWheels?.wheels.map((wheel, index) => (
+								<Group key={`extra-wheel-${index}`} nested label={`${texts.extraWheel} ${index + 1}`}>
 									<DocumentField session={session} field={wheel.torque} />
 									<DocumentField session={session} field={wheel.steeringAngle} />
 								</Group>
@@ -112,54 +107,50 @@ export function TruckTable({
 					{data.compatibleWheels.length > 0 && (
 						<Group nested label={texts.wheelSizes}>
 							{data.compatibleWheels.map((wheels, index) => (
-								<Group key={index} nested label={`${texts.wheelSet} ${index + 1}`}>
-									<InfoField field={wheels.type} />
+								<Group
+									key={index}
+									nested
+									label={fieldValue(wheels.type) ?? `${texts.wheelSet} ${index + 1}`}
+								>
 									<DocumentField session={session} field={wheels.scale} />
 								</Group>
 							))}
 						</Group>
 					)}
-
-					<WheelsField documents={related} />
 				</Group>
 			)}
 
 			{data && (
-				<Group label={texts.suspensions}>
+				<Group groupKey="suspensions" icon="suspensions" label={texts.suspensions}>
+					{centerOfMass && <DocumentField session={session} field={centerOfMass} />}
 					<DocumentField session={session} field={data.diffLockType} />
-					<SuspensionsField documents={related} />
+					<SuspensionsField documents={related} gameTexts={gameTexts} />
 				</Group>
 			)}
 
 			{data && (
-				<Group label={texts.gearboxes}>
-					<GearboxesField documents={related} />
+				<Group groupKey="gearboxes" icon="gearboxes" label={texts.gearboxes}>
+					<GearboxesField documents={related} gameTexts={gameTexts} />
 				</Group>
 			)}
 
 			{data && (
-				<Group label={texts.engines}>
+				<Group groupKey="engines" icon="engines" label={texts.engines}>
 					<DocumentField session={session} field={data.engineStartDelay} />
 					<DocumentField session={session} field={data.exhaustStartTime} />
-					<EnginesField documents={related} />
+					<EnginesField documents={related} gameTexts={gameTexts} />
 				</Group>
 			)}
 
 			{data && (
-				<Group label={texts.fuel}>
+				<Group groupKey="fuel" icon="fuel" label={texts.fuel}>
 					{data.fuelTank && <DocumentField session={session} field={data.fuelTank.damageCapacity} />}
 					<DocumentField session={session} field={data.fuelCapacity} />
 				</Group>
 			)}
 
-			{truck.physicsModel?.body && (
-				<Group label={texts.physicsModel}>
-					<PhysicsBodyFields session={session} body={truck.physicsModel.body} />
-				</Group>
-			)}
-
 			{gameData && (
-				<Group label={texts.unlock}>
+				<Group groupKey="unlock" icon="unlock" label={texts.unlock}>
 					<DocumentField session={session} field={gameData.country} />
 					<DocumentField session={session} field={gameData.price} />
 					<DocumentField
@@ -171,35 +162,20 @@ export function TruckTable({
 				</Group>
 			)}
 
-			<AddonsContent
-				key={session.name}
-				truckName={session.name}
-				docs={addons}
-				gameTexts={gameTexts}
-				onOpen={onOpenAddon}
-				onRefresh={onRefreshAddon}
-			/>
+			<Group groupKey="extra" label={texts.extra}>
+				<AddonsContent
+					key={session.name}
+					truckName={session.name}
+					docs={addons}
+					gameTexts={gameTexts}
+					onOpen={onOpenAddon}
+					onRefresh={onRefreshAddon}
+				/>
 
-			<AddonSocketsGroup session={session} truck={truck} onRefresh={onRefresh} />
-			<CranesGroup session={session} truck={truck} onRefresh={onRefresh} />
-			<TrailersGroup session={session} truck={truck} onRefresh={onRefresh} />
-			<BanditCraneGroup session={session} truck={truck} onRefresh={onRefresh} />
-
-		</>
-	)
-}
-
-/** Тело физической модели и вложенные тела. */
-function PhysicsBodyFields({ session, body }: { session: DocumentSession, body: PhysicsBody }) {
-	return (
-		<>
-			<DocumentField session={session} field={body.mass} />
-			<DocumentField session={session} field={body.centerOfMassOffset} />
-			{body.body && (
-				<Group nested label={texts.physicsModel}>
-					<PhysicsBodyFields session={session} body={body.body} />
-				</Group>
-			)}
-		</>
+				<CranesGroup session={session} truck={truck} onRefresh={onRefresh} />
+				<TrailersGroup session={session} truck={truck} onRefresh={onRefresh} />
+				<BanditCraneGroup session={session} truck={truck} onRefresh={onRefresh} />
+			</Group>
+		</EditorTable>
 	)
 }

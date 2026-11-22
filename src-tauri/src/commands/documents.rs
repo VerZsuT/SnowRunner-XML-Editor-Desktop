@@ -4,9 +4,11 @@
 //! адресуются идентификатором docId, а мутации — ещё и ожидаемой версией
 //! revision, поэтому устаревшая правка не будет применена молча.
 
-use std::path::Path;
+use std::collections::BTreeSet;
+use std::path::{Path, PathBuf};
 
 use sxmle_app::actions::{Crane, Trailer};
+use sxmle_app::archive;
 use sxmle_app::documents::{Document, DocumentInfo, DocumentKind, MutationResult, SaveResult};
 use sxmle_app::lists::EditedFile;
 use sxmle_domain::game::entities::{
@@ -16,6 +18,7 @@ use sxmle_domain::xml::Element;
 use tauri::State;
 
 use crate::commands::game::files;
+use crate::defaults::{self, DefaultValue};
 use crate::error::{AppResult, CommandError};
 use crate::state::AppState;
 
@@ -300,26 +303,105 @@ pub fn set_bandit_crane(
 	Ok(documents.set_bandit_crane(&doc_id, revision, enabled)?)
 }
 
-/// Сохраняет документ на диск в форматированном виде.
+/// Сохраняет документ на диск и сразу обновляет его архив.
 #[tauri::command]
 #[specta::specta]
-pub fn save_document(state: State<'_, AppState>, doc_id: String) -> AppResult<SaveResult> {
+pub async fn save_document(state: State<'_, AppState>, doc_id: String) -> AppResult<SaveResult> {
 	let saved = state.documents().save(&doc_id)?;
 
 	mark_edited(&state, std::slice::from_ref(&saved))?;
 
+	let info = state.documents().get(&doc_id)?.info().clone();
+
+	update_archives(&state, vec![info]).await?;
+
 	Ok(saved)
 }
 
-/// Сохраняет все изменённые документы.
+/// Сохраняет все изменённые документы и сразу обновляет их архивы.
+///
+/// `force` обновляет архив даже без dirty-правок: так сброс сразу
+/// переносится в исходный `.pak`, не дожидаясь отдельного «Обновить архив».
 #[tauri::command]
 #[specta::specta]
-pub fn save_all_documents(state: State<'_, AppState>) -> AppResult<Vec<SaveResult>> {
+pub async fn save_all_documents(
+	state: State<'_, AppState>,
+	force: Option<bool>,
+) -> AppResult<Vec<SaveResult>> {
 	let saved = state.documents().save_all()?;
 
 	mark_edited(&state, &saved)?;
 
+	if saved.is_empty() && !force.unwrap_or(false) {
+		return Ok(saved);
+	}
+
+	let documents = state.documents().list();
+
+	update_archives(&state, documents).await?;
+
 	Ok(saved)
+}
+
+/// Архивы, которые нужно обновить после сохранения документов.
+fn archive_targets(
+	state: &AppState,
+	documents: &[DocumentInfo],
+) -> AppResult<Vec<(PathBuf, PathBuf)>> {
+	let config = state.config();
+	let mods = state.mods();
+	let mut seen = BTreeSet::new();
+	let mut targets = Vec::new();
+
+	for document in documents {
+		if !seen.insert(document.mod_name.clone()) {
+			continue;
+		}
+
+		match &document.mod_name {
+			Some(name) => {
+				let entry = mods
+					.entries()
+					.iter()
+					.find(|entry| entry.name == *name)
+					.ok_or_else(|| CommandError::not_found(format!("мод не найден: {name}")))?;
+
+				targets.push((
+					PathBuf::from(&entry.path),
+					state.paths().mods_temp().join(name),
+				));
+			}
+			None => {
+				let Some(path) = &config.initial_path else {
+					continue;
+				};
+
+				targets.push((PathBuf::from(path), state.paths().main_temp()));
+			}
+		}
+	}
+
+	Ok(targets)
+}
+
+/// Пересобирает архивы из распакованных каталогов в фоне.
+async fn update_archives(state: &AppState, documents: Vec<DocumentInfo>) -> AppResult<()> {
+	let targets = archive_targets(state, &documents)?;
+
+	if targets.is_empty() {
+		return Ok(());
+	}
+
+	tauri::async_runtime::spawn_blocking(move || {
+		for (archive_path, dir) in targets {
+			archive::update_from_dir(&archive_path, &dir)?;
+		}
+
+		Ok::<(), archive::ArchiveError>(())
+	})
+	.await
+	.map_err(CommandError::internal)?
+	.map_err(CommandError::archive)
 }
 
 /// Помечает сохранённые траки и прицепы изменёнными.
@@ -361,6 +443,37 @@ pub fn reset_document(state: State<'_, AppState>, doc_id: String) -> AppResult<D
 	let mut documents = state.documents();
 
 	Ok(documents.reset(&doc_id, &files)?)
+}
+
+/// Значения по умолчанию полей открытого документа.
+#[tauri::command]
+#[specta::specta]
+pub fn document_defaults(
+	state: State<'_, AppState>,
+	doc_id: String,
+) -> AppResult<Vec<DefaultValue>> {
+	let documents = state.documents();
+	let document = documents.get(&doc_id)?;
+
+	Ok(defaults::values(document.info()))
+}
+
+/// Сбрасывает поля документа к значениям из выгрузки 1.4.0.
+#[tauri::command]
+#[specta::specta]
+pub fn reset_document_defaults(
+	state: State<'_, AppState>,
+	doc_id: String,
+) -> AppResult<MutationResult> {
+	let values = {
+		let documents = state.documents();
+		let document = documents.get(&doc_id)?;
+
+		defaults::attributes(document.info())
+	};
+	let mut documents = state.documents();
+
+	Ok(documents.apply_defaults(&doc_id, &values)?)
 }
 
 /// Ошибка отсутствия корневого элемента документа.

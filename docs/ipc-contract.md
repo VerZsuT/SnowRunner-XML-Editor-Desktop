@@ -66,7 +66,11 @@ const info = await call(commands.openDocument('truck', 'ank_mk38', null))
 | `app_info` | — | `AppInfo` |
 | `open_devtools` | — | только debug |
 | `restart_app` | — | перезапуск |
+| `quit_app` | — | закрытие программы (меню «Файл → Выход») |
+| `reset_to_defaults` | — | сброс к первоначальному состоянию и перезапуск (меню «Настройки → Сбросить») |
+| `uninstall_app` | — | запуск `uninstall.exe` рядом с программой и закрытие (меню «Настройки → Удалить программу») |
 | `paths` | — | `PathsDto` |
+| `game_data_ready` | — | `bool`: распакованы ли файлы игры |
 | `switch_data_mode` | `portable` | `SwitchModeDto`, нужен перезапуск |
 
 ### Конфигурация
@@ -82,6 +86,7 @@ const info = await call(commands.openDocument('truck', 'ank_mk38', null))
 
 | Команда | Аргументы | Результат |
 |---|---|---|
+| `find_initial` | `folder` | путь к `initial.pak` или `null` |
 | `unpack_initial` | `archivePath`, `list` | `UnpackResultDto` |
 | `update_archive` | `archivePath`, `modName` | `UpdateResultDto` |
 | `verify_archive` | `archivePath` | `VerifyResultDto` |
@@ -89,6 +94,8 @@ const info = await call(commands.openDocument('truck', 'ank_mk38', null))
 | `restore_backup` | `archivePath` | число байт |
 
 `list` — `main`, `optimized`, `mods`. `modName` направляет обновление в `modsTemp/<mod>`.
+`find_initial` перебирает типовой хвост пути `steamapps/common/SnowRunner/en_us/preload/paks/client`,
+поэтому подходит корень установки, папка игры или `client`.
 
 ### Избранное и изменённые
 
@@ -104,6 +111,7 @@ const info = await call(commands.openDocument('truck', 'ank_mk38', null))
 | Команда | Аргументы | Результат |
 |---|---|---|
 | `list_mods` | — | `ModEntry[]` |
+| `find_mods` | — | `ModCandidate[]` |
 | `add_mod` | `path` | `ModEntry[]` |
 | `remove_mod` | `name` | `ModEntry[]` |
 | `sync_mods` | — | `ModEntry[]` |
@@ -154,16 +162,25 @@ const info = await call(commands.openDocument('truck', 'ank_mk38', null))
 | `set_trailer` | `docId`, `revision`, `trailer`, `enabled` | `MutationResult` |
 | `set_bandit_crane` | `docId`, `revision`, `enabled` | `MutationResult` |
 | `save_document` | `docId` | `SaveResult` |
-| `save_all_documents` | — | `SaveResult[]` |
-| `reset_document` | `docId` | `DocumentInfo` |
+| `save_all_documents` | `force?` | `SaveResult[]` |
+| `reset_document` | `docId` | `DocumentInfo` (перечитать с диска) |
+| `document_defaults` | `docId` | `DefaultValue[]` |
+| `reset_document_defaults` | `docId` | `MutationResult` |
 | `export_epf` | `docId`, `path` | `EpfExportReport` |
 | `import_epf` | `docId`, `path` | `EpfImportReport` |
+| `watch_documents` | `paths` | — |
 
 `DocumentKind`: `truck`, `trailer`, `engines`, `gearboxes`, `suspensions`, `winches`,
 `wheels`, `wheel`, `addon`. `Crane`: `ru`, `us`. `Trailer`: `scout`, `truck`.
 
 `value = null` в `set_attr` удаляет атрибут. `index = null` в `add_element` добавляет в конец.
 `force = null` в `close_document` трактуется как `false`.
+`save_document` и `save_all_documents` после записи пересобирают архив каждого открытого
+документа: `initial.pak` или `.pak` мода. `force = true` обновляет архив и без изменений.
+
+`document_defaults` отдаёт значения из встроенной выгрузки 1.4.0 для файла документа;
+`reset_document_defaults` применяет их ко всем найденным путям за одну мутацию и ставит
+`dirty`. `reset_document` по-прежнему отбрасывает правки, перечитывая файл с диска.
 
 ### Система и обновления
 
@@ -181,9 +198,14 @@ const info = await call(commands.openDocument('truck', 'ank_mk38', null))
 | Событие | Payload | Когда |
 |---|---|---|
 | `update-progress` | `{ percent, downloaded, total }` | загрузка обновления |
+| `documents-changed` | `{ paths: string[] }` | файл открытого документа изменён извне |
 
 `percent` — 0–99 (100 не отправляется), `total` — `null`, если сервер не сообщил размер.
 Подписка: `events.updateProgress.listen(...)` в [updates.ts](../src/api/updates.ts).
+`watch_documents` заменяет набор наблюдаемых файлов (пустой список выключает watcher);
+событие `documents-changed` приходит после 150 мс тишины, чтобы не дублировать записи
+одного сохранения. Подписка — `events.documentsChanged.listen(...)` в
+[documents.ts](../src/api/documents.ts).
 События объявляются в `specta_builder().events(collect_events![...])`.
 
 ## Генерация типов
