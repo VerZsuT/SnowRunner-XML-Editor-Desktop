@@ -1,6 +1,6 @@
 import type { DocumentClient } from '@renderer/api/documents'
 import { DocumentSession } from '@renderer/api/documents'
-import type { DocumentInfo, MutationResult } from '@renderer/api/bindings'
+import type { DocumentInfo, EpfExportReport, EpfImportReport, MutationResult } from '@renderer/api/bindings'
 import { describe, expect, it, vi } from 'vitest'
 
 /** Сведения об открытом документе. */
@@ -21,6 +21,16 @@ function info(revision = 0, dirty = false): DocumentInfo {
 /** Результат мутации. */
 function mutation(revision: number, value: string | null = null): MutationResult {
 	return { docId: 'doc-1', revision, selector: '/Truck/TruckData', value, dirty: true }
+}
+
+/** Отчёт об экспорте. */
+function exportReport(): EpfExportReport {
+	return { path: 'truck.epf', selectors: 1, attributes: 2, actions: 0 }
+}
+
+/** Отчёт об импорте. */
+function importReport(revision: number): EpfImportReport {
+	return { path: 'truck.epf', attributes: 2, actions: 0, skipped: 0, revision, dirty: true }
 }
 
 /** Клиент команд с подставными ответами. */
@@ -51,6 +61,8 @@ function createClient(overrides: Partial<DocumentClient> = {}): DocumentClient {
 		save: vi.fn(async () => ({ docId: 'doc-1', path: 'ank_mk38.xml', bytes: 100, revision: 0 })),
 		saveAll: vi.fn(async () => []),
 		reset: vi.fn(async () => info(5)),
+		exportEpf: vi.fn(async () => exportReport()),
+		importEpf: vi.fn(async () => importReport(1)),
 		...overrides
 	}
 }
@@ -190,5 +202,40 @@ describe('DocumentSession', () => {
 		await session.setAttr({ name: 'A', selector: '/Truck', attrType: 'string', label: null, desc: null, limit: null, step: null, areas: null, options: null }, 'value')
 
 		expect(listener).toHaveBeenCalledTimes(1)
+	})
+	it('экспортирует параметры через клиент', async () => {
+		const exportEpf = vi.fn(async () => exportReport())
+		const client = createClient({ exportEpf })
+		const session = new DocumentSession(info(), client)
+
+		const report = await session.exportEpf('truck.epf')
+
+		expect(exportEpf).toHaveBeenCalledWith('doc-1', 'truck.epf')
+		expect(report.attributes).toBe(2)
+		expect(session.dirty).toBe(false)
+	})
+
+	it('импорт обновляет версию и флаг изменений', async () => {
+		const importEpf = vi.fn(async () => importReport(3))
+		const client = createClient({ importEpf })
+		const session = new DocumentSession(info(), client)
+
+		await session.importEpf('truck.epf')
+
+		expect(importEpf).toHaveBeenCalledWith('doc-1', 'truck.epf')
+		expect(session.revision).toBe(3)
+		expect(session.dirty).toBe(true)
+	})
+
+	it('импорт выполняется после предыдущей правки', async () => {
+		const importEpf = vi.fn(async () => importReport(4))
+		const client = createClient({ setAttr: vi.fn(async () => mutation(1)), importEpf })
+		const session = new DocumentSession(info(), client)
+
+		await session.setAttr({ name: 'A', selector: '/Truck', attrType: 'string', label: null, desc: null, limit: null, step: null, areas: null, options: null }, 'value')
+		await session.importEpf('truck.epf')
+
+		expect(importEpf).toHaveBeenCalledWith('doc-1', 'truck.epf')
+		expect(session.revision).toBe(4)
 	})
 })

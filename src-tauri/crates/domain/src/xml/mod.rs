@@ -29,5 +29,5 @@ pub use model::{Attribute, Element, Node, Quote, XmlDeclaration, XmlDocument};
 pub use parse::{parse, parse_bytes};
 pub use selector::{
 	SelectorError, add_element, move_element, remove_element, resolve, resolve_mut, set_attr,
-	set_text,
+	set_text, walk_element, walk_paths,
 };

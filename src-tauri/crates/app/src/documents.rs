@@ -25,6 +25,7 @@ use sxmle_domain::xml::{
 use thiserror::Error;
 
 use crate::actions::{self, ActionError, Crane, Trailer};
+use crate::epf::{self, EpfError, EpfExportReport, EpfImportReport};
 use crate::game::{GameError, GameFiles};
 
 /// Вид документа игры: определяет каталог внутри classes.
@@ -191,6 +192,10 @@ pub enum DocumentError {
 	/// Действие с аддонами не применимо к документу.
 	#[error(transparent)]
 	Action(#[from] ActionError),
+
+	/// Ошибка обмена параметрами `.epf`.
+	#[error(transparent)]
+	Epf(#[from] EpfError),
 }
 
 /// Кэш файлов шаблонов _templates.
@@ -566,6 +571,47 @@ impl Documents {
 		Ok(document.action_result(changed, "/Truck/GameData"))
 	}
 
+	/// Экспортирует параметры документа в файл `.epf`.
+	pub fn export_epf(&self, doc_id: &str, path: &Path) -> Result<EpfExportReport, DocumentError> {
+		let document = self.get(doc_id)?;
+
+		ensure_vehicle(document)?;
+
+		Ok(epf::export(document.document(), document.info(), path)?)
+	}
+
+	/// Импортирует параметры из файла `.epf` в документ.
+	///
+	/// Импорт меняет дерево целиком: версия документа растёт один раз, если
+	/// применён хотя бы один атрибут или действие.
+	pub fn import_epf(
+		&mut self,
+		doc_id: &str,
+		path: &Path,
+	) -> Result<EpfImportReport, DocumentError> {
+		let document = self
+			.items
+			.get_mut(doc_id)
+			.ok_or_else(|| DocumentError::NotFound(doc_id.to_owned()))?;
+
+		ensure_vehicle(document)?;
+
+		let info = document.info.clone();
+		let mut report = epf::import(&mut document.document, &info, path)?;
+
+		if report.attributes > 0 || report.actions > 0 {
+			let result = document.mutated("/Truck", None);
+
+			report.revision = result.revision;
+			report.dirty = result.dirty;
+		} else {
+			report.revision = document.info.revision;
+			report.dirty = document.info.dirty;
+		}
+
+		Ok(report)
+	}
+
 	/// Сохраняет документ в форматированном виде в исходной кодировке.
 	pub fn save(&mut self, doc_id: &str) -> Result<SaveResult, DocumentError> {
 		let document = self
@@ -669,6 +715,18 @@ impl Documents {
 		self.next_id += 1;
 
 		format!("doc-{}", self.next_id)
+	}
+}
+
+/// Документ должен быть файлом трака или прицепа.
+fn ensure_vehicle(document: &Document) -> Result<(), DocumentError> {
+	if matches!(
+		document.info.kind,
+		DocumentKind::Truck | DocumentKind::Trailer
+	) {
+		Ok(())
+	} else {
+		Err(DocumentError::Epf(EpfError::NotVehicle))
 	}
 }
 
@@ -1166,6 +1224,73 @@ mod tests {
 			socket.attr_value("Names").as_deref(),
 			Some("MinicraneRU, MinicraneUS")
 		);
+
+		let _ = fs::remove_dir_all(&dir);
+	}
+
+	#[test]
+	fn экспортирует_и_импортирует_epf() {
+		let dir = work_dir();
+		write_truck(&dir, "truck", TRUCK);
+
+		let files = files(&dir);
+		let mut documents = Documents::new();
+		let info = documents
+			.open(&files, DocumentKind::Truck, "truck")
+			.unwrap();
+		let path = dir.join("truck.epf");
+		let exported = documents.export_epf(&info.doc_id, &path).unwrap();
+
+		assert_eq!(exported.attributes, 2);
+		assert!(path.is_file());
+		assert!(!documents.get(&info.doc_id).unwrap().info().dirty);
+
+		documents
+			.set_attr(
+				&info.doc_id,
+				0,
+				"/Truck/TruckData",
+				"FuelCapacity",
+				Some("100"),
+			)
+			.unwrap();
+
+		let imported = documents.import_epf(&info.doc_id, &path).unwrap();
+
+		assert_eq!(imported.attributes, 2);
+		assert_eq!(imported.revision, 2);
+		assert!(imported.dirty);
+
+		let document = documents.get(&info.doc_id).unwrap().document();
+		let element = sxmle_domain::xml::resolve(document, "/Truck/TruckData").unwrap();
+
+		assert_eq!(element.attr_value("FuelCapacity").as_deref(), Some("200"));
+
+		let _ = fs::remove_dir_all(&dir);
+	}
+
+	#[test]
+	fn импорт_отклоняется_для_чужого_файла() {
+		let dir = work_dir();
+		write_truck(&dir, "truck", TRUCK);
+		write_truck(&dir, "other", TRUCK);
+
+		let files = files(&dir);
+		let mut documents = Documents::new();
+		let truck = documents
+			.open(&files, DocumentKind::Truck, "truck")
+			.unwrap();
+		let other = documents
+			.open(&files, DocumentKind::Truck, "other")
+			.unwrap();
+		let path = dir.join("other.epf");
+
+		documents.export_epf(&other.doc_id, &path).unwrap();
+
+		assert!(matches!(
+			documents.import_epf(&truck.doc_id, &path),
+			Err(DocumentError::Epf(crate::epf::EpfError::Missing(_)))
+		));
 
 		let _ = fs::remove_dir_all(&dir);
 	}

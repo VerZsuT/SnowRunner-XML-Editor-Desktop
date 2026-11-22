@@ -263,6 +263,33 @@ pub fn set_bandit_crane(document: &mut XmlDocument, enabled: bool) -> Result<boo
 	Ok(true)
 }
 
+/// Установлен ли кран.
+pub fn has_crane(document: &XmlDocument, crane: Crane) -> bool {
+	has_socket_name(document, crane.name())
+}
+
+/// Установлен ли прицеп.
+pub fn has_trailer(document: &XmlDocument, trailer: Trailer) -> bool {
+	has_socket_name(document, trailer.name())
+}
+
+/// Установлен ли кран «Банан бандита».
+pub fn has_bandit_crane(document: &XmlDocument) -> bool {
+	has_socket_name(document, BANDIT_CRANE)
+}
+
+/// Имя типа аддона в сокетах трака.
+fn has_socket_name(document: &XmlDocument, name: &str) -> bool {
+	document
+		.element("Truck")
+		.and_then(|truck| truck.child("GameData"))
+		.is_some_and(|game_data| {
+			sockets(game_data)
+				.iter()
+				.any(|socket| contains_name(socket, "Names", name))
+		})
+}
+
 /// Элемент GameData трака.
 fn game_data_mut(document: &mut XmlDocument) -> Result<&mut Element, ActionError> {
 	let truck = document

@@ -44,6 +44,22 @@ export const EDITOR_PAGE_LOCALIZATION = loadLocalization(new Localization({
 		.ru('Сохранено')
 		.en('Saved'),
 
+	exportEpf: new LocalizationStrings()
+		.ru('Экспорт параметров')
+		.en('Export parameters'),
+
+	importEpf: new LocalizationStrings()
+		.ru('Импорт параметров')
+		.en('Import parameters'),
+
+	exported: new LocalizationStrings()
+		.ru('Экспортировано атрибутов: {}')
+		.en('Exported attributes: {}'),
+
+	imported: new LocalizationStrings()
+		.ru('Импортировано атрибутов: {}')
+		.en('Imported attributes: {}'),
+
 	unsaved: new LocalizationStrings()
 		.ru('Есть несохранённые изменения')
 		.en('There are unsaved changes'),

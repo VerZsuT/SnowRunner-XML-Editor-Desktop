@@ -7,6 +7,7 @@ pub mod app;
 pub mod archive;
 pub mod config;
 pub mod documents;
+pub mod epf;
 pub mod game;
 pub mod library;
 pub mod mods;
@@ -72,6 +73,8 @@ pub fn collect() -> Commands<Wry> {
 		documents::set_bandit_crane,
 		documents::save_document,
 		documents::save_all_documents,
-		documents::reset_document
+		documents::reset_document,
+		epf::export_epf,
+		epf::import_epf
 	]
 }

@@ -200,3 +200,62 @@ fn сброс_возвращает_сохранённые_значения() {
 
 	let _ = fs::remove_dir_all(&root);
 }
+
+#[test]
+fn обменивается_параметрами_epf() {
+	let Some(media) = fixture_media() else {
+		eprintln!("фикстура отсутствует, тест пропущен");
+
+		return;
+	};
+
+	let root = work_dir("documents-epf");
+
+	copy_dir(
+		&media.join("classes/trucks"),
+		&root.join("[media]/classes/trucks"),
+	);
+	copy_dir(&media.join("_templates"), &root.join("[media]/_templates"));
+
+	let files = files(&root);
+	let mut documents = Documents::new();
+	let info = documents
+		.open(&files, DocumentKind::Truck, "ank_mk38")
+		.expect("открытие трака фикстуры");
+	let path = root.join("ank_mk38.epf");
+	let exported = documents
+		.export_epf(&info.doc_id, &path)
+		.expect("экспорт параметров");
+
+	assert!(
+		exported.attributes > 100,
+		"атрибутов: {}",
+		exported.attributes
+	);
+	assert!(path.is_file());
+
+	documents
+		.set_attr(
+			&info.doc_id,
+			info.revision,
+			"/Truck/TruckData",
+			"FuelCapacity",
+			Some("1"),
+		)
+		.expect("правка атрибута");
+
+	let imported = documents
+		.import_epf(&info.doc_id, &path)
+		.expect("импорт параметров");
+
+	assert_eq!(imported.attributes, exported.attributes);
+	assert_eq!(imported.skipped, 0);
+	assert!(imported.dirty);
+
+	let document = documents.get(&info.doc_id).expect("документ после импорта");
+	let element = resolve(document.document(), "/Truck/TruckData").expect("элемент TruckData");
+
+	assert_eq!(element.attr_value("FuelCapacity").as_deref(), Some("200"));
+
+	let _ = fs::remove_dir_all(&root);
+}

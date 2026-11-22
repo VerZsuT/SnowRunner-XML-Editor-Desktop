@@ -13,6 +13,8 @@ import type {
 	DocumentInfo,
 	DocumentKind,
 	Engine,
+	EpfExportReport,
+	EpfImportReport,
 	Gearbox,
 	MutationResult,
 	SaveResult,
@@ -102,6 +104,12 @@ export interface DocumentClient {
 
 	/** Читает документ заново с диска. */
 	reset(docId: string): Promise<DocumentInfo>
+
+	/** Экспортирует параметры документа в файл `.epf`. */
+	exportEpf(docId: string, path: string): Promise<EpfExportReport>
+
+	/** Импортирует параметры из файла `.epf` в документ. */
+	importEpf(docId: string, path: string): Promise<EpfImportReport>
 }
 
 /** Клиент команд Tauri. */
@@ -130,7 +138,9 @@ export const documentClient: DocumentClient = {
 	setBanditCrane: (docId, revision, enabled) => call(commands.setBanditCrane(docId, revision, enabled)),
 	save: docId => call(commands.saveDocument(docId)),
 	saveAll: () => call(commands.saveAllDocuments()),
-	reset: docId => call(commands.resetDocument(docId))
+	reset: docId => call(commands.resetDocument(docId)),
+	exportEpf: (docId, path) => call(commands.exportEpf(docId, path)),
+	importEpf: (docId, path) => call(commands.importEpf(docId, path))
 }
 
 /** Открытый документ с последовательными правками. */
@@ -305,6 +315,22 @@ export class DocumentSession {
 			this.update(info)
 
 			return info
+		})
+	}
+
+	/** Экспортирует параметры документа в файл `.epf`. */
+	exportEpf(path: string): Promise<EpfExportReport> {
+		return this.enqueue(async () => this.client.exportEpf(this.docId, path))
+	}
+
+	/** Импортирует параметры из файла `.epf`; версия документа растёт. */
+	importEpf(path: string): Promise<EpfImportReport> {
+		return this.enqueue(async () => {
+			const report = await this.client.importEpf(this.docId, path)
+
+			this.update({ revision: report.revision, dirty: report.dirty })
+
+			return report
 		})
 	}
 

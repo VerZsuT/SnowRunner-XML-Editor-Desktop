@@ -1,10 +1,11 @@
-import { ReloadOutlined, SaveOutlined, UndoOutlined } from '@ant-design/icons'
+import { ExportOutlined, ImportOutlined, ReloadOutlined, SaveOutlined, UndoOutlined } from '@ant-design/icons'
 import type { AddonFile, GameTexts, Truck } from '@renderer/api/bindings'
 import type { DocumentClient, DocumentSession } from '@renderer/api/documents'
 import { DocumentSession as Session, documentClient } from '@renderer/api/documents'
 import { loadGameTexts, translate } from '@renderer/api/texts'
 import { Header } from '@renderer/components/header'
-import { prettyString } from '@utilities/strings'
+import { open, save as saveFileDialog } from '@tauri-apps/plugin-dialog'
+import { formatString, prettyString } from '@utilities/strings'
 import { App, Button, Result, Spin, Tooltip } from 'antd'
 import { useEffect, useReducer, useRef, useState } from 'react'
 import type { AddonDocument } from './components/addons'
@@ -221,6 +222,64 @@ export function EditorPage({
 		forceRender()
 	}
 
+	/** Экспортирует параметры трака в файл `.epf`. */
+	async function exportEpf() {
+		if (!data) {
+			return
+		}
+
+		const path = await saveFileDialog({
+			defaultPath: `${name}.epf`,
+			filters: [{ name: 'EPF', extensions: ['epf'] }]
+		})
+
+		if (!path) {
+			return
+		}
+
+		setBusy(true)
+
+		try {
+			const report = await data.session.exportEpf(path)
+
+			message.success(formatString(texts.exported, String(report.attributes)))
+		} catch (reason) {
+			message.error(toMessage(reason))
+		}
+
+		setBusy(false)
+	}
+
+	/** Импортирует параметры в трак и перечитывает модель. */
+	async function importEpf() {
+		if (!data) {
+			return
+		}
+
+		const path = await open({
+			multiple: false,
+			directory: false,
+			filters: [{ name: 'EPF', extensions: ['epf'] }]
+		})
+
+		if (typeof path !== 'string') {
+			return
+		}
+
+		setBusy(true)
+
+		try {
+			const report = await data.session.importEpf(path)
+
+			message.success(formatString(texts.imported, String(report.attributes)))
+			setReload(value => value + 1)
+		} catch (reason) {
+			message.error(toMessage(reason))
+		}
+
+		setBusy(false)
+	}
+
 	async function close() {
 		await Promise.all(sessions.map(async session => session.close(true).catch(() => false)))
 		onBack()
@@ -288,6 +347,28 @@ export function EditorPage({
 								disabled={!data}
 								icon={<SaveOutlined />}
 								onClick={() => void save()}
+							/>
+						</Tooltip>
+						<Tooltip title={texts.exportEpf}>
+							<Button
+								aria-label="export-epf"
+								className="editor-page-button"
+								type="text"
+								shape="circle"
+								disabled={!data}
+								icon={<ExportOutlined />}
+								onClick={() => void exportEpf()}
+							/>
+						</Tooltip>
+						<Tooltip title={texts.importEpf}>
+							<Button
+								aria-label="import-epf"
+								className="editor-page-button"
+								type="text"
+								shape="circle"
+								disabled={!data}
+								icon={<ImportOutlined />}
+								onClick={() => void importEpf()}
 							/>
 						</Tooltip>
 						<Tooltip title={texts.refresh}>

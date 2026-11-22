@@ -5,6 +5,8 @@
 //! Индекс по умолчанию — 0. Формат совпадает с `AttrDescriptor::selector`,
 //! поэтому интерфейс передаёт путь из дескриптора обратно в команды.
 
+use std::collections::HashMap;
+
 use super::entities::escape_text;
 use super::model::{Element, Node, XmlDocument};
 
@@ -367,6 +369,60 @@ pub fn move_element(
 	Ok(format!("{parent_selector}/{name}[{to}]", name = last.name))
 }
 
+/// Обходит элементы документа и передаёт их стабильные пути по порядку.
+///
+/// Путь строится так же, как в resolve: индекс пишется только для
+/// ненулевых одноимённых соседей.
+pub fn walk_paths<'a>(document: &'a XmlDocument, visit: &mut impl FnMut(String, &'a Element)) {
+	let mut indexes: HashMap<&'a str, usize> = HashMap::new();
+
+	for element in document.elements() {
+		let counter = indexes.entry(element.name.as_str()).or_default();
+		let index = *counter;
+
+		*counter += 1;
+
+		let path = format!("/{}{}", element.name, index_suffix(index));
+
+		walk_element(element, &path, visit);
+	}
+}
+
+/// Обходит элемент и его потомков, начиная с готового пути.
+pub fn walk_element<'a>(
+	element: &'a Element,
+	path: &str,
+	visit: &mut impl FnMut(String, &'a Element),
+) {
+	visit(path.to_owned(), element);
+
+	let mut indexes: HashMap<&'a str, usize> = HashMap::new();
+
+	for node in &element.children {
+		let Node::Element(child) = node else {
+			continue;
+		};
+
+		let counter = indexes.entry(child.name.as_str()).or_default();
+		let index = *counter;
+
+		*counter += 1;
+
+		let child_path = format!("{path}/{}{}", child.name, index_suffix(index));
+
+		walk_element(child, &child_path, visit);
+	}
+}
+
+/// Индекс среди одноимённых соседей: нулевой не пишется.
+fn index_suffix(index: usize) -> String {
+	if index == 0 {
+		String::new()
+	} else {
+		format!("[{index}]")
+	}
+}
+
 /// Позиции дочерних элементов с указанным именем.
 fn matching_positions(element: &Element, name: &str) -> Vec<usize> {
 	let mut positions = Vec::new();
@@ -560,5 +616,49 @@ mod tests {
 			move_element(&mut document, "/Gearbox/Gear[0]", 5),
 			Err(SelectorError::Index(_))
 		));
+	}
+
+	#[test]
+	fn обходит_элементы_по_путям() {
+		let document = document();
+		let mut paths = Vec::new();
+
+		walk_paths(&document, &mut |path, element| {
+			paths.push((path, element.name.clone()));
+		});
+
+		assert_eq!(
+			paths,
+			[
+				("/_templates".to_owned(), "_templates".to_owned()),
+				("/_templates/_template".to_owned(), "_template".to_owned()),
+				("/Truck".to_owned(), "Truck".to_owned()),
+				("/Truck/TruckData".to_owned(), "TruckData".to_owned()),
+				("/Truck/GameData".to_owned(), "GameData".to_owned()),
+				("/Truck/GameData/UiDesc".to_owned(), "UiDesc".to_owned()),
+			]
+		);
+	}
+
+	#[test]
+	fn обход_пишет_индексы_одноимённых_соседей() {
+		let document = parse(
+			"<Gearbox><Gear AngVel=\"1\" /><Gear AngVel=\"2\" /><Other /><Gear AngVel=\"3\" /></Gearbox>",
+		)
+		.unwrap();
+		let mut paths = Vec::new();
+
+		walk_paths(&document, &mut |path, _| paths.push(path));
+
+		assert_eq!(
+			paths,
+			[
+				"/Gearbox".to_owned(),
+				"/Gearbox/Gear".to_owned(),
+				"/Gearbox/Gear[1]".to_owned(),
+				"/Gearbox/Other".to_owned(),
+				"/Gearbox/Gear[2]".to_owned(),
+			]
+		);
 	}
 }

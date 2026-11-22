@@ -201,6 +201,29 @@ impl From<sxmle_app::mods::ModsError> for CommandError {
 	}
 }
 
+impl From<sxmle_app::epf::EpfError> for CommandError {
+	fn from(error: sxmle_app::epf::EpfError) -> Self {
+		use sxmle_app::epf::EpfError;
+
+		match error {
+			EpfError::Read { path, source } | EpfError::Write { path, source } => {
+				Self::io(source).with_path(path.display().to_string())
+			}
+			EpfError::Json(error) => Self::invalid_argument(error),
+			EpfError::Version(version) => {
+				Self::invalid_argument(format!("версия файла .epf {version} не поддерживается"))
+			}
+			EpfError::Missing(name) => {
+				Self::not_found(format!("в файле .epf нет параметров для {name}"))
+			}
+			EpfError::NotVehicle => {
+				Self::invalid_argument("документ не является файлом трака или прицепа")
+			}
+			EpfError::Action(error) => Self::not_found(error),
+		}
+	}
+}
+
 impl From<sxmle_app::documents::DocumentError> for CommandError {
 	fn from(error: sxmle_app::documents::DocumentError) -> Self {
 		use sxmle_app::documents::DocumentError;
@@ -226,6 +249,7 @@ impl From<sxmle_app::documents::DocumentError> for CommandError {
 			}
 			DocumentError::Game(error) => error.into(),
 			DocumentError::Action(error) => Self::not_found(error),
+			DocumentError::Epf(error) => error.into(),
 		}
 	}
 }

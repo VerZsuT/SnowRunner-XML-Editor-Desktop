@@ -123,6 +123,10 @@ export const commands = {
 	saveAllDocuments: (options?: InvokeOptions) => typedError<SaveResult[], CommandError>(__TAURI_INVOKE("save_all_documents", undefined, options)),
 	/**  Читает документ заново с диска, отбрасывая правки в памяти. */
 	resetDocument: (docId: string, options?: InvokeOptions) => typedError<DocumentInfo, CommandError>(__TAURI_INVOKE("reset_document", { docId }, options)),
+	/**  Экспортирует параметры документа в файл `.epf`, дополняя совместимый файл. */
+	exportEpf: (docId: string, path: string, options?: InvokeOptions) => typedError<EpfExportReport, CommandError>(__TAURI_INVOKE("export_epf", { docId, path }, options)),
+	/**  Импортирует параметры из файла `.epf` в открытый документ. */
+	importEpf: (docId: string, path: string, options?: InvokeOptions) => typedError<EpfImportReport, CommandError>(__TAURI_INVOKE("import_epf", { docId, path }, options)),
 };
 
 /* Types */
@@ -394,6 +398,34 @@ export type Engine = {
 	maxDeltaAngVel: Field<number | null>,
 	/**  Информация о взаимодействии с окружающим миром. */
 	gameData: BaseGameData | null,
+};
+
+/**  Отчёт об экспорте параметров. */
+export type EpfExportReport = {
+	/**  Путь файла `.epf`. */
+	path: string,
+	/**  Сколько узлов записано. */
+	selectors: number,
+	/**  Сколько атрибутов записано. */
+	attributes: number,
+	/**  Сколько блоков доп. действий записано. */
+	actions: number,
+};
+
+/**  Отчёт об импорте параметров. */
+export type EpfImportReport = {
+	/**  Путь файла `.epf`. */
+	path: string,
+	/**  Сколько атрибутов применено. */
+	attributes: number,
+	/**  Сколько действий применено. */
+	actions: number,
+	/**  Сколько значений пропущено: узла нет или значение не скалярное. */
+	skipped: number,
+	/**  Версия документа после импорта. */
+	revision: number,
+	/**  Есть несохранённые правки. */
+	dirty: boolean,
 };
 
 /**  Категория ошибки: по ней UI выбирает сообщение и реакцию. */

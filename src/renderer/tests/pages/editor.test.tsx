@@ -1,9 +1,16 @@
 import type { DocumentClient } from '@renderer/api/documents'
 import { registerConfig } from '@renderer/config'
 import { EditorPage } from '@renderer/pages/editor'
+import { open, save } from '@tauri-apps/plugin-dialog'
 import { App as AntApp } from 'antd'
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+
+vi.mock('@tauri-apps/plugin-dialog', () => ({
+	open: vi.fn(),
+	save: vi.fn()
+}))
 
 /** Поле документа. */
 function field(
@@ -128,5 +135,42 @@ describe('EditorPage', () => {
 
 		expect(await screen.findByText('Не удалось открыть файл')).toBeInTheDocument()
 		expect(screen.getByText('файл не найден')).toBeInTheDocument()
+	})
+	it('экспортирует параметры в .epf', async () => {
+		const exportEpf = vi.fn(async () => ({ path: 'ank_mk38.epf', selectors: 1, attributes: 2, actions: 0 }))
+		const document = { ...client(), exportEpf } as unknown as DocumentClient
+
+		vi.mocked(save).mockResolvedValue('ank_mk38.epf')
+
+		render(
+			<AntApp>
+				<EditorPage name="ank_mk38" client={document} onBack={() => {}} />
+			</AntApp>
+		)
+
+		await screen.findByText('Разблокировка')
+		await userEvent.click(screen.getByLabelText('export-epf'))
+
+		await waitFor(() => expect(exportEpf).toHaveBeenCalledWith('doc-1', 'ank_mk38.epf'))
+		expect(await screen.findByText('Экспортировано атрибутов: 2')).toBeInTheDocument()
+	})
+
+	it('импортирует параметры из .epf', async () => {
+		const importEpf = vi.fn(async () => ({ path: 'ank_mk38.epf', attributes: 2, actions: 1, skipped: 0, revision: 1, dirty: true }))
+		const document = { ...client(), importEpf } as unknown as DocumentClient
+
+		vi.mocked(open).mockResolvedValue('ank_mk38.epf')
+
+		render(
+			<AntApp>
+				<EditorPage name="ank_mk38" client={document} onBack={() => {}} />
+			</AntApp>
+		)
+
+		await screen.findByText('Разблокировка')
+		await userEvent.click(screen.getByLabelText('import-epf'))
+
+		await waitFor(() => expect(importEpf).toHaveBeenCalledWith('doc-1', 'ank_mk38.epf'))
+		expect(await screen.findByText('Импортировано атрибутов: 2')).toBeInTheDocument()
 	})
 })
