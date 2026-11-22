@@ -49,7 +49,7 @@ jobs:
 
       - name: Типы для TS не расходятся с Rust
         run: |
-          cargo run --manifest-path src-tauri/Cargo.toml --bin typegen
+          cargo run --manifest-path src-tauri/Cargo.toml --features typegen --bin typegen
           git diff --exit-code src/renderer/api/bindings.ts
 
       - run: cargo test --manifest-path src-tauri/Cargo.toml --workspace --all-targets

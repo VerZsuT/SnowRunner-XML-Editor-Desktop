@@ -12,7 +12,7 @@
 		"dev": "vite",
 		"build": "npm run typegen && npm run check && vite build",
 		"postinstall": "npm rebuild typescript",
-		"typegen": "cargo run --quiet --manifest-path src-tauri/Cargo.toml --bin typegen",
+		"typegen": "cargo run --quiet --manifest-path src-tauri/Cargo.toml --features typegen --bin typegen",
 		"tauri": "tauri",
 		"tauri:dev": "tauri dev",
 		"tauri:build": "tauri build",

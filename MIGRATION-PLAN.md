@@ -421,7 +421,7 @@ update(archive, changed_files):
 
 **Этап 0 — каркас Tauri.** `src-tauri` — Cargo-workspace (root-пакет `sxmle` + `crates/domain`, `crates/storage`, `crates/app`), edition 2024, Rust 1.100.
 Версии: `tauri` 2.12.7, `tauri-build` 2.7.6, `tauri-plugin-dialog` 2.8.4, `tauri-specta` 2.0.0-rc.29, `specta` 2.0.0-rc.28, `@tauri-apps/cli` 2.12.6.
-Фронтенд: `vite.config.ts` (root `src/renderer`, порт 1420), `src/renderer/index.html` + `entry.tsx`, типы — `src/renderer/api/bindings.ts` (генерируются `cargo run --bin typegen`), обёртка `call()` в `src/renderer/api/invoke.ts`.
+Фронтенд: `vite.config.ts` (root `src/renderer`, порт 1420), `src/renderer/index.html` + `entry.tsx`, типы — `src/renderer/api/bindings.ts` (генерируются `npm run typegen` (`cargo run --features typegen --bin typegen`)), обёртка `call()` в `src/renderer/api/invoke.ts`.
 Ошибки команд — `CommandError { code, message, path }` (`ErrorHandlingMode::Result`). Проверено: окно открывается, `app_info`/`paths` отдают типизированные DTO в antd, диалог выбора файла работает.
 
 **Этап 1 — zip-слой (библиотека).** `sxmle_storage::zip`: чтение EOCD/CD, потоковая распаковка по `unpack-list*.lst` (встроены в бинарник), обновление по алгоритму §4.2 с сохранением порядка и метаданных, атомарная замена, `ZipError`, zip64-guard.
@@ -502,8 +502,9 @@ DTO экспортируются в `bindings.ts`: `Truck`, `Engine`, `Field<T>`
 - Версия 2.0.0: `package.json`, `package-lock.json`, `src-tauri/Cargo.toml` (`[package]` и `[workspace.package]`), `tauri.conf.json`.
 - Портативный архив — `.zip` вместо `.rar`: `updates::file_name` отдаёт `SnowRunnerXMLEditor.zip`, тексты уведомления об обновлении обновлены, WinRAR в проекте больше нет. Портативные клиенты 1.4.0 ждут `.rar` и обновятся только вручную со страницы загрузки.
 - CI job `package` переименовывает артефакты под раскладку обновления: `SnowRunnerXMLEditor.exe` и `SnowRunnerXMLEditor.zip` — ровно эти имена апдейтер ждёт по адресу `<updateUrl>/v<версия>/`.
+- `typegen` больше не попадает в поставку: бин объявлен с `required-features = ["typegen"]`, поэтому `tauri build` его не собирает. Установщик 5,25 → 3,24 МиБ, в каталоге установки только `SnowRunnerXMLEditor.exe` и `uninstall.exe`.
 - Документация: README и README.EN — zip, требование WebView2 и переход на Tauri; `docs/download.html` — блок v2.0.0 с установщиком и портативным zip.
-- Проверка: `cargo test --workspace --all-targets`, clippy, `cargo fmt --check`, `npm test`, `npm run check`, `npm run lint` — чисто; `npm run tauri:build` собирает установщик 2.0.0 (5,25 МиБ) и бинарник (14,0 МиБ).
+- Проверка: `cargo test --workspace --all-targets` (154 теста), clippy, `cargo fmt --check`, `npm test` (74), `npm run check`, `npm run lint` — чисто; `npm run tauri:build` собирает установщик 2.0.0 (3,24 МиБ) и бинарник (14,0 МиБ). Тихая установка (`/S /D=<каталог>`) кладёт `SnowRunnerXMLEditor.exe` и `uninstall.exe`, окно открывается (`SnowRunner XML Editor`, 32 МиБ памяти), удаление убирает каталог; портативный запуск с `portable.txt` рядом с exe работает так же, данные при этом уходят в `data` (каталоги создаются при первой записи). Windows Sandbox на машине требует прав администратора, поэтому проверка на чистой Windows 10/11 остаётся ручной.
 
 ### Дальше
 

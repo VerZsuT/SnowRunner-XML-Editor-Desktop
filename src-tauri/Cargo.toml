@@ -17,6 +17,8 @@ path = "src/main.rs"
 [[bin]]
 name = "typegen"
 path = "src/bin/typegen.rs"
+# Без фичи `typegen` бин не собирается, поэтому не попадает в установщик.
+required-features = ["typegen"]
 
 [build-dependencies]
 tauri-build = { version = "2.7", features = [] }
@@ -37,6 +39,8 @@ thiserror = { workspace = true }
 [features]
 default = ["custom-protocol"]
 custom-protocol = ["tauri/custom-protocol"]
+# Генератор типов для интерфейса (dev-утилита, в поставку не входит).
+typegen = []
 
 [workspace]
 members = ["crates/app", "crates/domain", "crates/storage"]
