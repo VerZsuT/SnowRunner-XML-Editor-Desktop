@@ -19,24 +19,24 @@ export function WhatsNew({ open, onOpenChange }: WhatsNewProps) {
 	const config = useConfig()
 	const changes = new LocalizationStrings<string[]>()
 		.ru([
-			'Обновлены компоненты программы',
-			'Добавлены картинки новых авто',
-			'Обновлены стандартные параметры'
+			'Программа переведена на Tauri (Rust): меньше размер и потребление памяти',
+			'Портативная версия поставляется в архиве .zip',
+			'Нужны Windows 10 или 11 (x64) и WebView2'
 		])
 		.en([
-			'Updated program components',
-			'Added pictures of new cars',
-			'Standard parameters have been updated'
+			'The program is moved to Tauri (Rust): smaller size and memory usage',
+			'The portable version is shipped as a .zip archive',
+			'Windows 10 or 11 (x64) and WebView2 are required'
 		])
 		.de([
-			'Programmkomponenten wurden aktualisiert',
-			'Neue Autobilder hinzugefügt',
-			'Standardeinstellungen wurden aktualisiert'
+			'Das Programm läuft jetzt auf Tauri (Rust): kleiner und sparsamer',
+			'Die portable Version wird als .zip-Archiv geliefert',
+			'Erfordert Windows 10 oder 11 (x64) und WebView2'
 		])
 		.ch([
-			'更新的程序组件',
-			'新增新车图片',
-			'标准参数已更新'
+			'程序已迁移到 Tauri（Rust）：体积更小、内存占用更低',
+			'便携版以 .zip 压缩包提供',
+			'需要 Windows 10 或 11（x64）和 WebView2'
 		])
 		.get(config)
 	const version = config.version ? ` ${config.version}` : ''
