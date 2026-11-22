@@ -1,10 +1,8 @@
-import { Lang } from '@localization'
 import { UpdateAlert } from '@renderer/components/update-alert'
-import { registerConfig } from '@renderer/config'
 import { App as AntApp } from 'antd'
 import { act, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 
 /** Подписка, которая ничего не слушает. */
 async function subscribe() {
@@ -12,10 +10,6 @@ async function subscribe() {
 }
 
 describe('UpdateAlert', () => {
-	beforeEach(() => {
-		registerConfig({ lang: Lang.en })
-	})
-
 	it('показывает новую версию', async () => {
 		render(
 			<AntApp>
@@ -23,7 +17,7 @@ describe('UpdateAlert', () => {
 			</AntApp>
 		)
 
-		expect(await screen.findByText(/A new version of the program is available/)).toHaveTextContent('v1.5.0')
+		expect(await screen.findByText(/Доступна новая версия программы/)).toHaveTextContent('v1.5.0')
 	})
 
 	it('скрывается и выключает проверку по кнопке «Игнорировать»', async () => {
@@ -35,10 +29,10 @@ describe('UpdateAlert', () => {
 			</AntApp>
 		)
 
-		await userEvent.click(await screen.findByRole('button', { name: 'Ignore' }))
+		await userEvent.click(await screen.findByRole('button', { name: 'Игнорировать' }))
 
 		expect(disable).toHaveBeenCalledOnce()
-		expect(screen.queryByText(/A new version of the program is available/)).not.toBeInTheDocument()
+		expect(screen.queryByText(/Доступна новая версия программы/)).not.toBeInTheDocument()
 	})
 
 	it('загружает установщик и запускает его', async () => {
@@ -56,8 +50,8 @@ describe('UpdateAlert', () => {
 			</AntApp>
 		)
 
-		await userEvent.click(await screen.findByRole('button', { name: /Update/ }))
-		await userEvent.click(await screen.findByText('Installer (.exe)'))
+		await userEvent.click(await screen.findByRole('button', { name: /Обновить/ }))
+		await userEvent.click(await screen.findByText('Установщик (.exe)'))
 
 		await waitFor(() => expect(download).toHaveBeenCalledWith('1.5.0', false))
 		await waitFor(() => expect(install).toHaveBeenCalledWith(
@@ -88,8 +82,8 @@ describe('UpdateAlert', () => {
 			</AntApp>
 		)
 
-		await userEvent.click(await screen.findByRole('button', { name: /Update/ }))
-		await userEvent.click(await screen.findByText('Installer (.exe)'))
+		await userEvent.click(await screen.findByRole('button', { name: /Обновить/ }))
+		await userEvent.click(await screen.findByText('Установщик (.exe)'))
 		await waitFor(() => expect(download).toHaveBeenCalled())
 
 		act(() => notify?.({ percent: 42, downloaded: 42, total: 100 }))

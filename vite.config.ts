@@ -5,7 +5,7 @@ import { defineConfig } from 'vite'
 /** Порт dev-сервера, на который настроен Tauri (`tauri.conf.json`). */
 const DEV_PORT = 1420
 
-/** Алиасы путей (как в `src/renderer/tsconfig.json`). */
+/** Алиасы путей (как в `src/tsconfig.json`). */
 const alias = {
 	'@renderer': fileURLToPath(new URL('./src/renderer', import.meta.url)),
 	'@utilities': fileURLToPath(new URL('./src/utilities', import.meta.url)),

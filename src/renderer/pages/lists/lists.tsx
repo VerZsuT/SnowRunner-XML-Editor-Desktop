@@ -1,4 +1,5 @@
 import { EditFilled, ReloadOutlined, SettingOutlined, StarFilled, StarOutlined } from '@ant-design/icons'
+import { T } from '@localization'
 import { unpackInitial } from '@renderer/api/archive'
 import type { GameTexts, VehicleFile } from '@renderer/api/bindings'
 import type { UserLists } from '@renderer/api/lists'
@@ -13,10 +14,12 @@ import { open } from '@tauri-apps/plugin-dialog'
 import { formatString, prettyString } from '@utilities/strings'
 import { App as AntApp, Button, Empty, Input, Segmented, Select, Spin, Tag, Tooltip } from 'antd'
 import { useEffect, useMemo, useState } from 'react'
-import { LISTS_PAGE_LOCALIZATION as texts } from './localization'
 import type { VehicleSource } from './utilities'
 import { filterVehicles, sortVehicles } from './utilities'
 import './lists.scss'
+
+/** Тексты страницы. */
+const texts = T.lists
 
 /** Параметры страницы списков. */
 export interface ListsPageProps {

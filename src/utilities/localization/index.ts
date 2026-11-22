@@ -1,101 +1,36 @@
 import { Lang } from './lang'
-import type { ITextsToLocalize, LocalizedTexts } from './types'
+import { ch } from './locales/ch'
+import { de } from './locales/de'
+import { en } from './locales/en'
+import { ru } from './locales/ru'
 
 export * from './lang'
 
-/** Локализация. */
-export class Localization<
-	Value = string,
-	ToLocalize extends ITextsToLocalize<Value> = ITextsToLocalize<Value>
-> {
-	readonly value: ToLocalize
-	protected readonly localized = {} satisfies Partial<Record<Lang, LocalizedTexts<typeof this.value>>>
+/** Локализация интерфейса: структура русского файла — эталон для остальных языков. */
+export type Locale = typeof ru
 
-	constructor(obj: ToLocalize)
-	constructor(obj: Localization<Value, ToLocalize>)
-	constructor(obj: Localization<Value, ToLocalize> | ToLocalize)
-	constructor(obj: Localization<Value, ToLocalize> | ToLocalize) {
-		this.value = obj instanceof Localization ? obj.value : obj
-	}
-
-	/**
-	 * Получить локализованный объект.
-	 * @param config Конфиг.
-	 * @returns Локализованный объект.
-	 */
-	get(config: { lang: Lang }): LocalizedTexts<ToLocalize> {
-		if (Object.hasOwn(this.localized, config.lang)) {
-			return this.localized[config.lang]
-		}
-
-		const out = {} as any
-
-		for (const key in this.value) {
-			Object.defineProperty(out, key, {
-				get: () => this.value[key].get(config),
-				enumerable: true
-			})
-		}
-
-		return this.localized[config.lang] = out
-	}
+/** Тексты всех языков интерфейса. */
+export const LOCALES: Record<Lang, Locale> = {
+	[Lang.ru]: ru,
+	[Lang.en]: en,
+	[Lang.de]: de,
+	[Lang.ch]: ch
 }
 
-/** Базовая локализация. */
-export class LocalizationStrings<T = string> {
-	/** Содержимое локализации. */
-	protected readonly obj: { [key in Lang]?: T } = {}
+/**
+ * Тексты текущего языка интерфейса.
+ *
+ * Язык фиксируется при запуске интерфейса: смена языка перезагружает окно,
+ * поэтому выбор в рантайме не нужен. {@link setTexts} вызывается ровно один раз
+ * при регистрации конфигурации, а интерфейс грузится динамическим импортом уже
+ * после неё — иначе тексты зафиксируются на языке по умолчанию.
+ */
+export let T: Locale = ru
 
-	/**
-	 * Получить локализованное значение.
-	 * @param config Конфигурация.
-	 * @returns Локализованное значение.
-	 */
-	get(config: { lang: Lang }) {
-		const value = Object.hasOwn(this.obj, config.lang)
-			? this.obj[config.lang]
-			: undefined
-
-		return value ?? this.obj[Lang.en]!
-	}
-
-	/**
-	 * Установить значение для RU.
-	 * @param value Значение.
-	 */
-	ru(value: T) {
-		this.obj[Lang.ru] = value
-
-		return this
-	}
-
-	/**
-	 * Установить значение для EN.
-	 * @param value Значение.
-	 */
-	en(value: T) {
-		this.obj[Lang.en] = value
-
-		return this
-	}
-
-	/**
-	 * Установить значение для DE.
-	 * @param value Значение.
-	 */
-	de(value: T) {
-		this.obj[Lang.de] = value
-
-		return this
-	}
-
-	/**
-	 * Установить значение для CH.
-	 * @param value Значение.
-	 */
-	ch(value: T) {
-		this.obj[Lang.ch] = value
-
-		return this
-	}
+/**
+ * Применить язык интерфейса.
+ * @param lang Язык.
+ */
+export function setTexts(lang: Lang): void {
+	T = LOCALES[lang]
 }

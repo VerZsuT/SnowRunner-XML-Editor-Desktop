@@ -3,10 +3,11 @@
  *
  * Ядро хранит `jsons/config.json`, а снимок конфигурации живёт в zustand:
  * при старте регистрируется прочитанное значение, экран настроек обновляет его
- * через {@link applyConfig}, локализация читает язык из этого же снимка.
+ * через {@link applyConfig}, а язык интерфейса применяется к текстам сразу
+ * после чтения конфигурации.
  */
 
-import { Lang, setLocalizationConfig } from '@localization/renderer'
+import { Lang, setTexts } from '@localization'
 import { create } from 'zustand'
 import type { Config as ConfigDto } from './api/bindings'
 
@@ -70,8 +71,6 @@ interface ConfigState {
 
 const useConfigStore = create<ConfigState>()(() => ({ config: { ...defaultConfig } }))
 
-setLocalizationConfig(() => useConfigStore.getState().config)
-
 /**
  * Преобразует строку в `Lang`.
  * _Если преобразование невозможно, возвращает `undefined`_
@@ -101,6 +100,7 @@ export function registerConfig(initial: Partial<IConfig> = {}): IConfig {
 	const config = { ...defaultConfig, ...initial }
 
 	useConfigStore.setState({ config })
+	setTexts(config.lang)
 
 	return config
 }

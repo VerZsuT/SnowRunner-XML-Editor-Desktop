@@ -1,4 +1,5 @@
 import { DeleteOutlined, SaveOutlined } from '@ant-design/icons'
+import { T } from '@localization'
 import { Header } from '@renderer/components/header'
 import { applyConfig, fromConfigDto } from '@renderer/config'
 import { open } from '@tauri-apps/plugin-dialog'
@@ -8,8 +9,10 @@ import { useEffect, useState } from 'react'
 import type { Config, ModEntry, PathsDto } from '@renderer/api/bindings'
 import type { SetupClient } from './client'
 import { setupClient } from './client'
-import { SETUP_PAGE_LOCALIZATION as texts } from './localization'
 import './setup.scss'
+
+/** Тексты страницы. */
+const texts = T.setup
 
 /** Действие экрана настройки, выполняемое сейчас. */
 type SetupAction = 'unpack' | 'backup' | 'verify' | 'restore' | 'update' | 'mods' | 'mode'

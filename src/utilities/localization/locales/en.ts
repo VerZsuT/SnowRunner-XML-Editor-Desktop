@@ -1,0 +1,410 @@
+import type { Locale } from '../index'
+
+/** Английская локализация интерфейса. */
+export const en: Locale = {
+	lists: {
+		title: 'Trucks and trailers',
+		trucksCategory: 'Trucks',
+		trailersCategory: 'Trailers',
+		allSources: 'All sources',
+		mainSource: 'Main game',
+		dlcSource: 'DLC',
+		modsSource: 'Mods',
+		favoritesSource: 'Favorites',
+		editedSource: 'Edited',
+		addFavorite: 'Add to favorites',
+		removeFavorite: 'Remove from favorites',
+		editedMark: 'File is edited',
+		allTypes: 'All types',
+		heavyType: 'Heavy',
+		heavyDutyType: 'Heavy duty',
+		highwayType: 'Highway',
+		offroadType: 'Offroad',
+		scoutType: 'Scout',
+		specialType: 'Special',
+		search: 'Search by name',
+		nothingFound: 'Nothing found',
+		noGameFiles: 'Game files not found. Choose initial.pak to unpack them.',
+		openArchive: 'Choose initial.pak',
+		unpacking: 'Unpacking...',
+		unpacked: 'Unpacked files: {}',
+		setup: 'Setup',
+		refresh: 'Refresh',
+		retry: 'Retry'
+	},
+
+	setup: {
+		title: 'Setup',
+		paths: 'Program paths',
+		dataRoot: 'Data directory',
+		mode: 'Storage mode',
+		modeInstalled: 'Installed',
+		modePortable: 'Portable',
+		modeDev: 'Development',
+		classes: 'Game files',
+		mainTemp: 'Unpacked data',
+		backupFolder: 'Backups directory',
+		backupInitial: 'initial.pak backup',
+		game: 'Game files',
+		archivePath: 'initial.pak path',
+		noPath: 'Archive is not selected',
+		choose: 'Choose',
+		unpack: 'Unpack',
+		unpackConfirm: 'The archive will be backed up first, then the game files will be unpacked again. Continue?',
+		unpacked: 'Unpacked files: {}',
+		backup: 'Backup',
+		backedUp: 'Backup saved: {}',
+		update: 'Update archive',
+		updateMod: 'Write mod into .pak',
+		updated: 'Entries updated: {}',
+		verify: 'Verify',
+		verified: 'Entries verified: {}',
+		restore: 'Restore from backup',
+		restoreConfirm: 'Replace initial.pak with the copy from the data directory? Unsaved archive changes will be lost.',
+		restored: 'Archive restored from backup',
+		mods: 'Mods',
+		noMods: 'No mods added',
+		addMod: 'Add mod (.pak)',
+		syncMods: 'Refresh mods',
+		removeMod: 'Remove mod from the list',
+		language: 'Interface language',
+		portableMode: 'Portable mode',
+		modeConfirm: 'Switch the data storage mode? The program JSON files will be moved to the new directory; game files and backups must be unpacked again.',
+		modeSwitched: 'Mode changed. Files moved: {}. Restart the program.',
+		restartConfirm: 'Restart the program now?',
+		restart: 'Restart',
+		options: 'Options',
+		useMods: 'Use mods',
+		advancedMode: 'Advanced mode',
+		checkUpdates: 'Check for updates',
+		cancel: 'Cancel',
+		saved: 'Settings saved',
+		loadError: 'Failed to read the settings'
+	},
+
+	editor: {
+		title: 'Editor',
+		type: 'Type',
+		trucks: 'Trucks and trailers',
+		noGameFiles: 'Game files not found. Choose initial.pak to unpack them.',
+		openArchive: 'Choose initial.pak',
+		unpacking: 'Unpacking...',
+		unpacked: 'Unpacked files: {}',
+		refresh: 'Refresh',
+		save: 'Save',
+		saved: 'Saved',
+		exportEpf: 'Export parameters',
+		importEpf: 'Import parameters',
+		exported: 'Exported attributes: {}',
+		imported: 'Imported attributes: {}',
+		unsaved: 'There are unsaved changes',
+		reset: 'Reset parameter',
+		resetDocument: 'Reset all',
+		resetConfirm: 'Reset all the document parameters to the original values?',
+		resetDone: 'Parameters have been reset. Do not forget to save the changes',
+		discardConfirm: 'Changes are not saved and will be lost. Close the editor?',
+		loadError: 'Failed to open the file',
+		cancel: 'Cancel',
+		close: 'Close',
+		yes: 'Yes',
+		no: 'No',
+		texts: 'Texts',
+		control: 'Control',
+		winch: 'Winch',
+		wheels: 'Wheels',
+		wheel: 'Wheel',
+		extraWheel: 'Extra wheel',
+		wheelSizes: 'Available wheel sizes',
+		wheelSet: 'Set of wheels',
+		suspension: 'Suspension',
+		suspensions: 'Suspensions',
+		suspensionSet: 'Suspension set',
+		frontSuspension: 'Front suspension',
+		middleSuspension: 'Middle suspension',
+		rearSuspension: 'Rear suspension',
+		gearbox: 'Gearbox',
+		gearboxes: 'Gearboxes',
+		gearboxParams: 'Gearbox parameters',
+		gears: 'Gears',
+		gear: 'Gear',
+		reverseGear: 'Reverse gear',
+		highGear: 'High gear',
+		engine: 'Engine',
+		engines: 'Engines',
+		fuel: 'Fuel tank',
+		physicsModel: 'Physics model',
+		unlock: 'Unlock',
+		tire: 'Tire',
+		truck: 'Truck',
+		trailer: 'Trailer',
+		russia: 'Russia',
+		usa: 'USA',
+		cas: 'Central Asia',
+		ne: 'Northern Europe',
+		findOnMap: 'Find on map',
+		byRank: 'By rank',
+		torqueDefault: 'Drive',
+		torqueFull: 'Driving with AWD',
+		torqueNone: 'Driven',
+		torqueConnectable: 'Defined by the addon',
+		diffLockAlways: 'Always',
+		diffLockInstalled: 'Installed',
+		diffLockUninstalled: 'Uninstalled',
+		diffLockNone: 'None',
+		wheelFront: 'Front',
+		wheelMiddle: 'Middle',
+		wheelRear: 'Rear',
+		drive: 'Drive',
+		addonsContent: 'Addons content',
+		loadAddons: 'Load addons',
+		loadingAddons: 'Loading addons...',
+		addonFilter: 'Filter by name',
+		noAddons: 'No addons found',
+		allAddons: 'All',
+		installedAddons: 'Installed',
+		installedAddon: 'Installed',
+		notInstalledAddon: 'Not installed',
+		createTruckData: 'Create TruckData',
+		addonSockets: 'Addon sockets',
+		socket: 'Socket',
+		shift: 'Shift',
+		addSocket: 'Add socket',
+		addShift: 'Add shift',
+		moveUp: 'Move up',
+		moveDown: 'Move down',
+		removeConfirm: 'Delete the element?',
+		cranes: 'Cranes',
+		crane: 'crane',
+		cranesWarnTitle: 'Attention!',
+		cranesWarnMessage: 'Before removing the crane, be sure to remove it from the truck.',
+		banditCrane: 'Bandit banana',
+		banditWarnMessage: 'The purchased DLC with the KRS 58 Bandit car is required for use.',
+		trailers: 'Trailers',
+		scoutTrailers: 'Scout trailers',
+		truckTrailers: 'Conventional trailers',
+		add: 'Add',
+		remove: 'Delete'
+	},
+
+	updateAlert: {
+		title: 'Update',
+		available: 'A new version of the program is available ({})',
+		installer: 'Installer (.exe)',
+		portable: 'Portable (.zip)',
+		update: 'Update',
+		ignore: 'Ignore',
+		downloading: 'Downloading the update',
+		downloaded: 'Download complete. Starting the installer...',
+		downloadError: 'Failed to download the update',
+		close: 'Close'
+	},
+
+	whatsNew: {
+		title: "What's new in the version",
+		changes: [
+			'The program is moved to Tauri (Rust): smaller size and memory usage',
+			'The portable version is shipped as a .zip archive',
+			'Windows 10 or 11 (x64) and WebView2 are required'
+		]
+	},
+
+	dictionaries: {
+		engine: {
+			name: 'Name',
+			responsiveness: 'Responsiveness',
+			responsivenessDesc: 'Engine responsiveness (revving speed)',
+			fuelConsumption: 'Fuel consumption',
+			fuelConsumptionDesc: 'The basic fuel consumption of the engine',
+			damagedConsumptionModifier: 'Damage consumption modifier',
+			damagedConsumptionModifierDesc: 'The maximum value of the flow rate change in case of engine failure',
+			torque: 'Torque',
+			torqueDesc: 'Engine power',
+			damagedMinTorqueModifier: 'Damaged min torque modifier',
+			damagedMinTorqueModifierDesc: 'Power multiplier when engine damage has reached the breakdown threshold',
+			damagedMaxTorqueModifier: 'Damaged max torque modifier',
+			damagedMaxTorqueModifierDesc: 'Power multiplier when the engine is close to complete breakdown (to 0 strength)',
+			brakesDelay: 'Braking delay',
+			brakesDelayDesc: 'Braking delay',
+			maxDeltaAngVel: 'Max angular velocity delta',
+			maxDeltaAngVelDesc: 'The limiter of the maximum angular acceleration of the wheels. The smaller it is, the slower the car accelerates',
+			criticalDamageThreshold: 'Critical damage threshold',
+			criticalDamageThresholdDesc: 'The threshold of critical failure. After this threshold, the fuel consumption and engine power change',
+			damageCapacity: 'Damage capacity',
+			damageCapacityDesc: 'The amount of possible damage to the engine'
+		},
+
+		gearbox: {
+			name: 'Name',
+			awdConsumptionModifier: 'AWD consumption modifier',
+			awdConsumptionModifierDesc: 'The coefficient of change in fuel consumption when using all-wheel drive',
+			criticalDamageThreshold: 'Critical damage threshold',
+			criticalDamageThresholdDesc: 'The damage threshold, after which the box begins to show signs of failure - flying gears and increased fuel consumption',
+			damageCapacity: 'Damage capacity',
+			damageCapacityDesc: 'The amount of possible damage to the gearbox',
+			damagedConsumptionModifier: 'Damage consumption modifier',
+			damagedConsumptionModifierDesc: 'The maximum fuel consumption multiplier, the consumption comes to this multiplier when the box is completely broken',
+			fuelConsumption: 'Fuel consumption',
+			fuelConsumptionDesc: 'Basic fuel consumption of the gearbox',
+			idleFuelConsumption: 'IDLE fuel consumption',
+			idleFuelConsumptionDesc: 'Fuel consumption multiplier when the car is stationary with the engine running',
+			minBreakFreqDesc: 'The minimum frequency of transmission failure, at the moment when the strength has reached a critical threshold',
+			maxBreakFreqDesc: 'The maximum frequency of transmission failure, at the moment when the strength is approaching zero'
+		},
+
+		gearboxParams: {
+			isHighGearExists: 'High',
+			isHighGearExistsDesc: 'Is high gear available',
+			isLowerPlusGearExists: 'Lower+',
+			isLowerPlusGearExistsDesc: 'Is lower+ (first) gear available',
+			isLowerGearExists: 'Lower',
+			isLowerGearExistsDesc: 'Is lower gear available (45% of the first gear speed)',
+			isManualLowGear: 'Precise adjustment',
+			isManualLowGearDesc: 'Is a manual gear available',
+			isLowerMinusGearExists: 'Lower-',
+			isLowerMinusGearExistsDesc: 'Is lower- available (20% of the first gear speed)'
+		},
+
+		gear: {
+			angVel: 'Max wheel angular velocity',
+			angVelDesc: 'The maximum angular velocity of the wheel in this gear',
+			fuelModifier: 'Fuel modifier',
+			fuelModifierDesc: 'Fuel consumption multiplier in this gear'
+		},
+
+		suspension: {
+			height: 'Height',
+			heightDesc: 'Suspension height',
+			strength: 'Strength',
+			strengthDesc: 'Suspension stiffness',
+			damping: 'Damping',
+			dampingDesc: 'Reducing the speed and intensity of vibrations',
+			suspensionMin: 'Minimum suspension height',
+			suspensionMinDesc: 'Minimum suspension stroke (The position that the wheel can take when the suspension is fully sagged)',
+			suspensionMax: 'Maximum suspension height',
+			suspensionMaxDesc: 'Maximum suspension travel (The position that the wheel can take if the suspension is in working condition and its stiffness is zero when the wheel is hanging in the air)',
+			brokenSuspensionMax: 'Minimum suspension height in broken condition',
+			brokenSuspensionMaxDesc: 'The maximum stroke of a broken suspension'
+		},
+
+		suspensionSet: {
+			name: 'Name',
+			damageCapacity: 'Damage capacity',
+			damageCapacityDesc: 'The amount of possible damage to the suspension',
+			criticalDamageThreshold: 'Critical damage threshold',
+			criticalDamageThresholdDesc: 'Suspension Critical Damage Threshold',
+			brokenWheelDamageMultiplierDesc: 'The coefficient of increase in suspension damage with a punctured wheel'
+		},
+
+		winch: {
+			name: 'Name',
+			length: 'Length',
+			lengthDesc: 'Maximum length of the winch rope',
+			strengthMult: 'Strength',
+			isEngineIgnitionRequired: 'Works from',
+			isEngineIgnitionRequiredDesc: 'Can the winch work with the engine turned off'
+		},
+
+		truckWinch: {
+			winchLength: 'Winch length',
+			winchLengthDesc: 'Maximum length of the winch rope',
+			strengthMult: 'Winch strength'
+		},
+
+		truckWheel: {
+			torque: 'Type of wheel drive',
+			torqueDesc: 'Type of wheel drive',
+			steeringAngle: 'Steering angle',
+			steeringAngleDesc: 'The maximum angle of rotation of the wheel when taxiing',
+			steeringCastorDesc: 'The angle of inclination of the wheel in the direction of rotation',
+			suspensionHeight: 'Suspension height',
+			suspensionHeightDesc: 'Wheel suspension height',
+			suspensionStrength: 'Suspension strength',
+			suspensionStrengthDesc: 'Wheel suspension stiffness'
+		},
+
+		truckData: {
+			backSteerSpeed: 'Back steer speed',
+			backSteerSpeedDesc: 'The speed at which the steering wheel returns to its original position after turning',
+			diffLockType: 'Differential lock',
+			engineStartDelay: 'Engine start delay',
+			engineStartDelayDesc: 'Delay after pressing "turn on the engine"',
+			exhaustStartTime: 'Exhaust start time',
+			exhaustStartTimeDesc: 'Exhaust start time',
+			responsiveness: 'Steering wheel sensitivity',
+			responsivenessDesc: 'Steering sensitivity',
+			steerSpeed: 'Steer speed',
+			steerSpeedDesc: 'Steering wheel rotation speed'
+		},
+
+		addonTruckData: {
+			fuelCapacity: 'Fuel capacity',
+			fuelCapacityDesc: 'The amount of fuel in the addon',
+			waterCapacity: 'Water capacity',
+			waterCapacityDesc: 'The amount of water in the addon',
+			repairsCapacity: 'Repairs capacity',
+			repairsCapacityDesc: 'The number of repair parts in the addon',
+			wheelRepairsCapacity: 'Wheel repairs capacity',
+			wheelRepairsCapacityDesc: 'The number of repair wheels in the addon'
+		},
+
+		truckGameData: {
+			country: 'Country',
+			countryDesc: 'The region where the car is available for purchase'
+		},
+
+		addonSlots: {
+			quantity: 'Cargo quantity',
+			quantityDesc: 'Number of cargo slots'
+		},
+
+		compatibleWheels: {
+			scale: 'Wheel size',
+			type: 'Name'
+		},
+
+		fuelTank: {
+			damageCapacity: 'Damage capacity',
+			damageCapacityDesc: 'The amount of permissible damage to the gas tank'
+		},
+
+		gameData: {
+			price: 'Price',
+			priceDesc: 'The cost of the item / truck in the store. In the case of a truck, this is only the basic cost, which does not include the cost of standard equipment when purchased in a store',
+			unlockByExploration: 'Unlock method',
+			unlockByExplorationDesc: 'Does the item / truck unlock using location search',
+			unlockByRank: 'Unlock level',
+			unlockByRankDesc: 'Upon reaching which level the item / truck opens. It is ignored if it is worth unlocking by exploration'
+		},
+
+		uiDesc: {
+			uiDesc: 'Description',
+			uiDescDesc: 'Description of the item',
+			uiName: 'Name',
+			uiNameDesc: 'Name of the item'
+		},
+
+		physicsBody: {
+			mass: 'Mass',
+			centerOfMassOffset: 'Center of mass offset'
+		},
+
+		rim: {
+			name: 'Name'
+		},
+
+		tire: {
+			name: 'Name'
+		},
+
+		wheelFriction: {
+			bodyFriction: 'Body friction',
+			bodyFrictionDesc: 'Friction with the ground, without dirt and other objects',
+			bodyFrictionAsphalt: 'Body friction asphalt',
+			bodyFrictionAsphaltDesc: 'Friction with the road',
+			substanceFriction: 'Substance friction',
+			substanceFrictionDesc: 'Friction with mud',
+			isIgnoreIce: 'Rides on ice',
+			isIgnoreIceDesc: 'Does the wheel have good grip on ice'
+		}
+	}
+}

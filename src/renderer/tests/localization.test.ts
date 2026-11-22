@@ -1,33 +1,45 @@
-import { Lang, LocalizationStrings } from '@localization'
+import { Lang, LOCALES, setTexts, T } from '@localization'
 import { describe, expect, it } from 'vitest'
 
-describe('LocalizationStrings', () => {
-	it('возвращает строки для ru и en', () => {
-		const text = new LocalizationStrings()
-			.ru('Привет')
-			.en('Hello')
+/** Пути до листьев дерева локализации. */
+function leafPaths(value: unknown, prefix = ''): string[] {
+	if (typeof value !== 'object' || value === null) {
+		return [prefix]
+	}
 
-		expect(text.get({ lang: Lang.ru })).toBe('Привет')
-		expect(text.get({ lang: Lang.en })).toBe('Hello')
+	return Object.entries(value).flatMap(([key, child]) => leafPaths(child, prefix ? `${prefix}.${key}` : key))
+}
+
+describe('локализация', () => {
+	it('содержит одинаковый набор ключей во всех языках', () => {
+		const reference = leafPaths(LOCALES[Lang.ru]).sort()
+
+		for (const [lang, locale] of Object.entries(LOCALES)) {
+			expect(leafPaths(locale).sort(), lang).toEqual(reference)
+		}
 	})
 
-	it('использует en как fallback для непереведённого языка', () => {
-		const text = new LocalizationStrings().en('Hello')
+	it('не содержит пустых строк', () => {
+		for (const [lang, locale] of Object.entries(LOCALES)) {
+			for (const path of leafPaths(locale)) {
+				const value = path.split('.').reduce<unknown>((node, key) => (node as Record<string, unknown>)[key], locale)
 
-		expect(text.get({ lang: Lang.de })).toBe('Hello')
-		expect(text.get({ lang: Lang.ch })).toBe('Hello')
+				if (typeof value === 'string') {
+					expect(value.trim(), `${lang}.${path}`).not.toBe('')
+				}
+			}
+		}
 	})
 
-	it('переопределяет перевод и поддерживает de/ch', () => {
-		const text = new LocalizationStrings()
-			.en('Old')
-			.de('Hallo')
-			.ch('你好')
+	it('применяет язык к текущим текстам', () => {
+		setTexts(Lang.en)
 
-		text.en('New')
+		expect(T.updateAlert.ignore).toBe('Ignore')
+		expect(T.whatsNew.changes).toHaveLength(3)
 
-		expect(text.get({ lang: Lang.en })).toBe('New')
-		expect(text.get({ lang: Lang.de })).toBe('Hallo')
-		expect(text.get({ lang: Lang.ch })).toBe('你好')
+		setTexts(Lang.ru)
+
+		expect(T.updateAlert.ignore).toBe('Игнорировать')
+		expect(T.lists.title).toBe('Автомобили и прицепы')
 	})
 })

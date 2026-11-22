@@ -2,7 +2,7 @@ import pluginReact from '@vitejs/plugin-react'
 import { fileURLToPath } from 'node:url'
 import { configDefaults, defineConfig } from 'vitest/config'
 
-/** Алиасы путей (как в `src/renderer/tsconfig.json`). */
+/** Алиасы путей (как в `src/tsconfig.json`). */
 const alias = {
 	'@renderer': fileURLToPath(new URL('./src/renderer', import.meta.url)),
 	'@utilities': fileURLToPath(new URL('./src/utilities', import.meta.url)),

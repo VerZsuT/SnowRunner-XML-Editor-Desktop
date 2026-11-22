@@ -1,27 +1,37 @@
-import { ADDON_SLOTS_LOCALIZATION } from './dictionaries/addon-slots'
-import { TRUCK_DATA_LOCALIZATION as ADDON_TRUCK_DATA_LOCALIZATION } from './dictionaries/addon-truck-data'
-import { ENGINE_LOCALIZATION } from './dictionaries/engine'
-import { COMPATIBLE_WHEELS_LOCALIZATION } from './dictionaries/compatible-wheels'
-import { FUEL_TANK_LOCALIZATION } from './dictionaries/fuel-tank'
-import { GAME_DATA_LOCALIZATION } from './dictionaries/game-data'
-import { GEAR_LOCALIZATION } from './dictionaries/gear'
-import { GEARBOX_LOCALIZATION } from './dictionaries/gearbox'
-import { GEARBOX_LOCALIZATION as GEARBOX_PARAMS_LOCALIZATION } from './dictionaries/gearbox-params'
-import { BODY_LOCALIZATION } from './dictionaries/physics-body'
-import { RIM_LOCALIZATION } from './dictionaries/rim'
-import { SUSPENSION_LOCALIZATION } from './dictionaries/suspension'
-import { SUSPENSION_SET_LOCALIZATION } from './dictionaries/suspension-set'
-import { TIRE_LOCALIZATION } from './dictionaries/tire'
-import { TRUCK_DATA_LOCALIZATION } from './dictionaries/truck-data'
-import { ADDON_SOCKETS_LOCALIZATION } from './dictionaries/truck-game-data'
-import { WHEEL_LOCALIZATION } from './dictionaries/truck-wheel'
-import { WINCH_LOCALIZATION as TRUCK_WINCH_LOCALIZATION } from './dictionaries/truck-winch'
-import { UI_DESC_LOCALIZATION } from './dictionaries/ui-desc'
-import { WHEEL_FRICTION_LOCALIZATION } from './dictionaries/wheel-friction'
-import { WINCH_LOCALIZATION as WINCH_VARIANTS_LOCALIZATION } from './dictionaries/winch'
-import { ensureConfig } from '@renderer/config'
+import { T } from '@localization'
 import { prettyString } from '@utilities/strings'
-import { EDITOR_PAGE_LOCALIZATION as page } from './localization'
+
+/**
+ * Тексты текущего языка.
+ *
+ * Разбираются один раз при загрузке интерфейса: смена языка перезагружает окно,
+ * поэтому реактивность здесь не нужна.
+ */
+const page = T.editor
+
+const {
+	addonSlots: ADDON_SLOTS_LOCALIZATION,
+	addonTruckData: ADDON_TRUCK_DATA_LOCALIZATION,
+	compatibleWheels: COMPATIBLE_WHEELS_LOCALIZATION,
+	engine: ENGINE_LOCALIZATION,
+	fuelTank: FUEL_TANK_LOCALIZATION,
+	gameData: GAME_DATA_LOCALIZATION,
+	gear: GEAR_LOCALIZATION,
+	gearbox: GEARBOX_LOCALIZATION,
+	gearboxParams: GEARBOX_PARAMS_LOCALIZATION,
+	physicsBody: BODY_LOCALIZATION,
+	rim: RIM_LOCALIZATION,
+	suspension: SUSPENSION_LOCALIZATION,
+	suspensionSet: SUSPENSION_SET_LOCALIZATION,
+	tire: TIRE_LOCALIZATION,
+	truckData: TRUCK_DATA_LOCALIZATION,
+	truckGameData: ADDON_SOCKETS_LOCALIZATION,
+	truckWheel: WHEEL_LOCALIZATION,
+	truckWinch: TRUCK_WINCH_LOCALIZATION,
+	uiDesc: UI_DESC_LOCALIZATION,
+	wheelFriction: WHEEL_FRICTION_LOCALIZATION,
+	winch: WINCH_VARIANTS_LOCALIZATION
+} = T.dictionaries
 
 /**
  * Словарь подписей полей: ключ локализации из Rust (`модуль.поле`) —
@@ -29,7 +39,7 @@ import { EDITOR_PAGE_LOCALIZATION as page } from './localization'
  */
 const FIELD_TEXTS: Record<string, () => string> = {
 	// Трак.
-	'truck.type': () => 'Тип',
+	'truck.type': () => page.type,
 
 	// Физическая модель.
 	'physics.body.mass': () => BODY_LOCALIZATION.mass,
@@ -258,8 +268,6 @@ export function fieldText(key?: string | null): string {
 		return ''
 	}
 
-	ensureConfig()
-
 	const text = FIELD_TEXTS[key]
 
 	if (text) {
@@ -273,8 +281,6 @@ export function fieldText(key?: string | null): string {
 
 /** Подпись значения перечисления; без словаря возвращается само значение. */
 export function optionText(key: string | null | undefined, value: string): string {
-	ensureConfig()
-
 	const text = key ? OPTION_TEXTS[key]?.[value] : undefined
 
 	return text ? text() : value

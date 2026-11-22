@@ -1,4 +1,5 @@
 import { CloudDownloadOutlined, DownOutlined } from '@ant-design/icons'
+import { T } from '@localization'
 import { errorMessage } from '@renderer/api/errors'
 import {
 	checkUpdate,
@@ -13,8 +14,10 @@ import { formatString } from '@utilities/strings'
 import { Alert, Button, Dropdown, Modal, Progress, Space } from 'antd'
 import type { MenuProps } from 'antd'
 import { useEffect, useState } from 'react'
-import { UPDATE_ALERT_LOCALIZATION as texts } from './localization'
 import './update-alert.scss'
+
+/** Тексты окна. */
+const texts = T.updateAlert
 
 /** Состояние загрузки обновления. */
 interface DownloadState {

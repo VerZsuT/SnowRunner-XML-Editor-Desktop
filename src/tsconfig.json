@@ -12,7 +12,6 @@
 		"allowSyntheticDefaultImports": true,
 		"esModuleInterop": true,
 		"sourceMap": true,
-		"noImplicitAny": false,
 		"skipLibCheck": true,
 		"isolatedModules": true,
 		"paths": {

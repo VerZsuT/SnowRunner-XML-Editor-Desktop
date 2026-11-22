@@ -74,9 +74,9 @@ zustand хранит только состояние интерфейса; да�
       app.tsx            корневой экран.
       entry.tsx          монтирование приложения.
       config.ts          конфигурация интерфейса.
-      tsconfig.json      TS конфигурация интерфейса.
    /utilities:
       /localization      локализация интерфейса.
+         /locales           тексты языков: ru (эталон), en, de, ch.
       /strings           форматирование строк.
    global.d.ts
    tsconfig.json        основная TS конфигурация.

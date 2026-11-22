@@ -74,9 +74,9 @@ Project directories:
       app.tsx            root screen.
       entry.tsx          application mount.
       config.ts          interface configuration.
-      tsconfig.json      TS configuration for the interface.
    /utilities:
       /localization      interface localization.
+         /locales           language texts: ru (reference), en, de, ch.
       /strings           string formatting.
    global.d.ts
    tsconfig.json        main TS configuration.
