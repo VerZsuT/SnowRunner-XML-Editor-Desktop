@@ -3338,7 +3338,7 @@ dependencies = [
 
 [[package]]
 name = "sxmle"
-version = "1.4.0"
+version = "2.0.0"
 dependencies = [
  "serde",
  "serde_json",
@@ -3356,7 +3356,7 @@ dependencies = [
 
 [[package]]
 name = "sxmle-app"
-version = "1.4.0"
+version = "2.0.0"
 dependencies = [
  "crc32fast",
  "reqwest",
@@ -3370,7 +3370,7 @@ dependencies = [
 
 [[package]]
 name = "sxmle-domain"
-version = "1.4.0"
+version = "2.0.0"
 dependencies = [
  "encoding_rs",
  "quick-xml 0.42.0",
@@ -3382,7 +3382,7 @@ dependencies = [
 
 [[package]]
 name = "sxmle-storage"
-version = "1.4.0"
+version = "2.0.0"
 dependencies = [
  "crc32fast",
  "flate2",

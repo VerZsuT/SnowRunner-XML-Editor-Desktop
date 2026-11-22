@@ -22,10 +22,10 @@ export const UPDATE_ALERT_LOCALIZATION = loadLocalization(new Localization({
 		.ch('安装程序（.exe)'),
 
 	portable: new LocalizationStrings()
-		.ru('Портативная (.rar)')
-		.en('Portable (.rar)')
-		.de('Portable (.rar)')
-		.ch('便携式（.rar)'),
+		.ru('Портативная (.zip)')
+		.en('Portable (.zip)')
+		.de('Portable (.zip)')
+		.ch('便携式（.zip)'),
 
 	update: new LocalizationStrings()
 		.ru('Обновить')

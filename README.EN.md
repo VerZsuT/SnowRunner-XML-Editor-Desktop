@@ -16,7 +16,9 @@ The editor has the following functionality:
 There are two versions in the releases:
 
 - _installer_. Installs the program into the system (.exe).
-- _archive_. The portable version of the program (.rar).
+- _archive_. The portable version of the program (.zip).
+
+The program runs on Tauri (Rust) since version 2.0.0. Windows 10 or 11 (x64) and WebView2 are required: it is already installed on Windows 11, while on Windows 10 the installer fetches it when there is internet access.
 
 The difference between the versions is only in the installation method.
 

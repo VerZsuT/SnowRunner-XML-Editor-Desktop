@@ -234,7 +234,7 @@ pub fn download(
 /// Имя файла обновления: установщик или портативный архив.
 pub fn file_name(portable: bool) -> &'static str {
 	if portable {
-		"SnowRunnerXMLEditor.rar"
+		"SnowRunnerXMLEditor.zip"
 	} else {
 		"SnowRunnerXMLEditor.exe"
 	}
@@ -448,7 +448,7 @@ mod tests {
 		);
 		assert_eq!(
 			download_url("https://example.com/releases/", "1.5.0", true).unwrap(),
-			"https://example.com/releases/v1.5.0/SnowRunnerXMLEditor.rar"
+			"https://example.com/releases/v1.5.0/SnowRunnerXMLEditor.zip"
 		);
 		assert!(download_url("https://example.com", "../1.5.0", false).is_err());
 		assert!(download_url("http://example.com", "1.5.0", false).is_err());
@@ -466,6 +466,6 @@ mod tests {
 	#[test]
 	fn выбирает_имя_файла() {
 		assert_eq!(file_name(false), "SnowRunnerXMLEditor.exe");
-		assert_eq!(file_name(true), "SnowRunnerXMLEditor.rar");
+		assert_eq!(file_name(true), "SnowRunnerXMLEditor.zip");
 	}
 }

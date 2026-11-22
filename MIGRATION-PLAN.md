@@ -485,7 +485,7 @@ DTO экспортируются в `bindings.ts`: `Truck`, `Engine`, `Field<T>`
 
 **Этап 4 — завершение.** Мост и старый Electron-слой удалены; интерфейс работает только через команды ядра. Переводы новых строк — ru/en, немецкий и китайский берутся из английского.
 
-**Этап 5 — сборка и поставка.** `npm run tauri:build` собирает `SnowRunnerXMLEditor.exe` (`mainBinaryName`) и установщик NSIS `SnowRunnerXMLEditor_1.4.0_x64-setup.exe` (5.33 МиБ; `installMode: currentUser`). CI job `package` повторяет сборку на `windows-latest` и выкладывает установщик и портативный zip (`SnowRunnerXMLEditor.exe` + `portable.txt`). Обновление продолжает ждать `SnowRunnerXMLEditor.rar` в GitHub Releases: для апдейтера версии 1.4.0 первый Tauri-релиз должен сохранить этот файл, поэтому zip из CI — для ручной поставки.
+**Этап 5 — сборка и поставка.** `npm run tauri:build` собирает `SnowRunnerXMLEditor.exe` (`mainBinaryName`) и установщик NSIS `SnowRunnerXMLEditor_1.4.0_x64-setup.exe` (5.33 МиБ; `installMode: currentUser`). CI job `package` повторяет сборку на `windows-latest` и выкладывает установщик и портативный zip (`SnowRunnerXMLEditor.exe` + `portable.txt`). Формат портативного архива на этапе 6 сменился на `.zip` (см. ниже).
 - Проверка: `npm run tauri:build` и `cargo check --release -p sxmle` локально, бандл собран без предупреждений.
 
 **Оптимизация сборки.** Замеры на Windows, повторная сборка без изменений исходников:
@@ -497,6 +497,16 @@ DTO экспортируются в `bindings.ts`: `Truck`, `Engine`, `Field<T>`
 
 **Тесты и CI.** `cargo test --workspace --all-targets` — 154 теста (storage 9 + 1 `#[ignore]` WinRAR, domain 73, app 68; из них интеграционные `documents` на фикстуре: правка, сохранение, повторное открытие, сброс, действия крана и обмен `.epf`, `epf` — ключи источника, дополнение файла, версии, прицепы и краны, `game` — список из 1653 аддонов трака `ank_mk38` с установленными первыми); `cargo clippy --workspace --all-targets -- -D warnings` и `cargo fmt --check` — чисто; `npm test` — 74 теста (сессия документов и её операции `.epf`, преобразование полей, словари подписей, списки аддонов и связанных документов, дымовые тесты редактора с экспортом и импортом, списков и настройки, уведомление об обновлении); `npm run check`, `npm run lint` и `npm run build` — без ошибок. В CI job `rust` проверяет расхождение `bindings.ts` с Rust, тесты, clippy, fmt; job `package` собирает установщик и портативный zip через `tauri build`.
 
+**Этап 6 — остатки платформы и первый Tauri-релиз.** Electron, forge и мост удалены на этапе 4; здесь убраны последние следы прежней платформы и подготовлен релиз 2.0.0:
+- Удалён `inno-setup/installer.config.iss` — сборочный скрипт Electron (ссылался на `out/<app>/resources/app/.vite`), NSIS его заменил.
+- Версия 2.0.0: `package.json`, `package-lock.json`, `src-tauri/Cargo.toml` (`[package]` и `[workspace.package]`), `tauri.conf.json`.
+- Портативный архив — `.zip` вместо `.rar`: `updates::file_name` отдаёт `SnowRunnerXMLEditor.zip`, тексты уведомления об обновлении обновлены, WinRAR в проекте больше нет. Портативные клиенты 1.4.0 ждут `.rar` и обновятся только вручную со страницы загрузки.
+- CI job `package` переименовывает артефакты под раскладку обновления: `SnowRunnerXMLEditor.exe` и `SnowRunnerXMLEditor.zip` — ровно эти имена апдейтер ждёт по адресу `<updateUrl>/v<версия>/`.
+- Документация: README и README.EN — zip, требование WebView2 и переход на Tauri; `docs/download.html` — блок v2.0.0 с установщиком и портативным zip.
+- Проверка: `cargo test --workspace --all-targets`, clippy, `cargo fmt --check`, `npm test`, `npm run check`, `npm run lint` — чисто; `npm run tauri:build` собирает установщик 2.0.0 (5,25 МиБ) и бинарник (14,0 МиБ).
+
 ### Дальше
 
-1. Этап 6 — тег версии, проверка установщика на чистой Windows и финальная документация.
+1. Опубликовать релиз: push ветки и тега `v2.0.0`, затем загрузить в GitHub Releases два файла из артефакта CI (`SnowRunnerXMLEditor.exe`, `SnowRunnerXMLEditor.zip`) и только после этого поднять `docs/version-info.json` до 2.0.0 — иначе апдейтер получит 404.
+2. Проверка на чистой Windows 10/11: установщик (ставит WebView2 при его отсутствии), портативная сборка с `portable.txt`, обновление с 1.4.0 установщиком.
+3. Ручной чек-лист §6: открытие игры, правка, сохранение, бэкап/восстановление, импорт/экспорт, моды.
