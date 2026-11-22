@@ -20,7 +20,7 @@ There are two versions in the releases:
 
 The program runs on Tauri (Rust) since version 2.0.0. Windows 10 or 11 (x64) and WebView2 are required: it is already installed on Windows 11, while on Windows 10 the installer fetches it when there is internet access.
 
-The difference between the versions is only in the installation method.
+The versions differ in the installation method and the data location: the installed build keeps data in `%APPDATA%`, the portable one — in `data` next to the `.exe`.
 
 ### Where the data is stored
 
@@ -70,8 +70,9 @@ Project directories:
       favicon.ico        program icon.
    /api               core commands and generated types.
    /components        common components.
-   /pages             screens: lists, editor, setup.
+   /pages             screens: lists, editor, setup, first run.
    /tests             tests.
+   /styles            global application styles.
    /utilities:
       /localization      interface localization.
          /locales           language texts: ru (reference), en, de, ch.
@@ -85,7 +86,7 @@ Project directories:
 /src-tauri:           the Rust core.
    /crates/domain        XML, game models.
    /crates/storage       files, ZIP, atomic writes.
-   /crates/app           configuration, documents, mods, updates.
+   /crates/app           documents, archive, mods, configuration, updates, reset.
    /src                  Tauri commands.
    tauri.conf.json       window, build, installer.
 ```

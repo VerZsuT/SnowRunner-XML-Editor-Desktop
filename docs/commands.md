@@ -87,6 +87,16 @@ npm run typegen
 git diff --exit-code src/api/bindings.ts
 ```
 
+## Значения по умолчанию
+
+Выгрузка 1.4.0 для сброса полей встроена в бинарник (`src-tauri/assets/defaults.json.gz`).
+Пересобрать её:
+
+```powershell
+node scripts/import-defaults.mjs                  # источник — тег v1.4.0
+node scripts/import-defaults.mjs path/to/defaults.ts
+```
+
 ## Проверки
 
 ```powershell
@@ -165,12 +175,12 @@ gh release view v2.0.0
 gh release upload v2.0.0 release/SnowRunnerXMLEditor.exe release/SnowRunnerXMLEditor.zip --clobber
 ```
 
-Обновить источник GitHub Pages после переименования `docs/` → `site/`
-(ветку подставьте свою; для `main` — `main`):
+Источник GitHub Pages должен указывать на `site/`, а не на `docs/`
+(ветку подставьте свою; по умолчанию — `main`):
 
 ```powershell
 gh api --method PUT repos/VerZsuT/SnowRunner-XML-Editor-Desktop/pages `
-  -f 'source[branch]=dev' -f 'source[path]=/site'
+  -f 'source[branch]=main' -f 'source[path]=/site'
 ```
 
 Порядок релиза: сначала файлы в GitHub Releases, затем `site/version-info.json` на новую версию.

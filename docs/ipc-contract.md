@@ -34,9 +34,9 @@ type CommandResult<T> =
 const info = await call(commands.openDocument('truck', 'ank_mk38', null))
 ```
 
-Команды без `Result` (списки, которые не могут отказать) возвращают значение напрямую:
-`list_favorites`, `list_edited`, `list_mods`, `game_texts`, `list_documents`, `dirty_documents`.
-Для них `call()` не нужен.
+Команды без `Result` (списки и словари, которые не могут отказать) возвращают значение напрямую:
+`list_favorites`, `list_edited`, `list_mods`, `find_mods`, `game_texts`, `list_documents`,
+`dirty_documents`. Для них `call()` не нужен.
 
 ## Ошибки
 
@@ -175,8 +175,9 @@ const info = await call(commands.openDocument('truck', 'ank_mk38', null))
 
 `value = null` в `set_attr` удаляет атрибут. `index = null` в `add_element` добавляет в конец.
 `force = null` в `close_document` трактуется как `false`.
-`save_document` и `save_all_documents` после записи пересобирают архив каждого открытого
-документа: `initial.pak` или `.pak` мода. `force = true` обновляет архив и без изменений.
+`save_document` после записи пересобирает архив своего документа, `save_all_documents` —
+архивы всех открытых документов (по `modName`): `initial.pak` или `.pak` мода.
+`force = true` у `save_all_documents` пересобирает архивы и без изменений.
 
 `document_defaults` отдаёт значения из встроенной выгрузки 1.4.0 для файла документа;
 `reset_document_defaults` применяет их ко всем найденным путям за одну мутацию и ставит

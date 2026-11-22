@@ -66,8 +66,8 @@ npm run tauri:dev
 1. Поле в `Config` + дефолт + `serde(default)` ([config.rs](../src-tauri/crates/app/src/config.rs)).
 2. Учесть в `save_config`/`sanitize_lang`, если есть инварианты.
 3. Поле в `IConfig` и `fromConfigDto` ([config.ts](../src/config.ts)).
-4. Переключатель на экране настройки.
-5. Тест конфигурации и, если есть UI, тест экрана.
+4. Переключатель в окне настроек ([settings.tsx](../src/components/settings/settings.tsx)).
+5. Тест конфигурации и, если есть UI, тест окна.
 
 ### Новая строка локализации
 

@@ -15,8 +15,8 @@
 В настройках репозитория: **Settings → Pages → Source: Deploy from a branch**,
 ветка `main`, каталог `/site`.
 
-После переименования каталога источник нужно переключить, иначе старые URL
-вернут 404. Через GitHub CLI:
+Источник нужно переключить с `docs/` на `site/`, иначе старые URL вернут 404.
+Через GitHub CLI:
 
 ```powershell
 gh api --method PUT repos/VerZsuT/SnowRunner-XML-Editor-Desktop/pages `
@@ -36,9 +36,12 @@ Invoke-WebRequest https://verzsut.github.io/SnowRunner-XML-Editor-Desktop/versio
 
 ```json
 {
-  "latestVersion": "2.0.0"
+  "latestVersion": "1.4.0"
 }
 ```
+
+Сейчас в файле `1.4.0`: после публикации файлов 2.0.0 значение поднимается вместе
+со страницей загрузки.
 
 Приложение читает его по адресу
 `https://verzsut.github.io/SnowRunner-XML-Editor-Desktop/version-info.json`
@@ -55,6 +58,7 @@ Invoke-WebRequest https://verzsut.github.io/SnowRunner-XML-Editor-Desktop/versio
 
 ## Правила
 
-* Версии в `download.html`, `version-info.json` и теге релиза должны совпадать.
+* После публикации файлов версия в `download.html` и теге релиза совпадает с `version-info.json`.
+  До публикации `version-info.json` остаётся прежним (сейчас `1.4.0`, страница показывает 2.0.0).
 * Не добавлять сюда скрипты сборки и зависимости: Pages отдаёт статику.
 * Исторические релизы не удалять: на них ведут старые кнопки.
