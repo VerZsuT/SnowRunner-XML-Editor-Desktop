@@ -38,6 +38,7 @@ pub fn specta_builder() -> tauri_specta::Builder<tauri::Wry> {
 		.commands(commands::collect())
 		.events(collect_events![
 			commands::update::UpdateProgress,
+			commands::archive::ArchiveStatusChanged,
 			watcher::DocumentsChanged
 		])
 		.typ::<Truck>()

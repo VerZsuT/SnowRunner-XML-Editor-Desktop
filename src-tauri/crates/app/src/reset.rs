@@ -51,6 +51,7 @@ pub fn reset(paths: &Paths, version: &str, is_dev: bool) -> Result<Config, Reset
 		paths.json("favorites"),
 		paths.json("edited"),
 		paths.json("mods"),
+		paths.archive_fingerprint(),
 	] {
 		remove_file(&file)?;
 	}

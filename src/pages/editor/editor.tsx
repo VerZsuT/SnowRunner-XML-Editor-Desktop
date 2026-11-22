@@ -8,10 +8,12 @@ import {
 	UndoOutlined
 } from '@ant-design/icons'
 import type { AddonFile, DefaultValue, GameTexts, Truck, TruckAddon } from '@/api/bindings'
+import { isArchiveChanged } from '@/api/archive'
 import type { DocumentClient, DocumentSession } from '@/api/documents'
 import { DocumentSession as Session, documentClient } from '@/api/documents'
 import { openPath } from '@/api/system'
 import { loadGameTexts, translate } from '@/api/texts'
+import { useArchiveGuard } from '@/components/archive-guard'
 import { Header } from '@/components/header'
 import { useConfig } from '@/config'
 import { open, save as saveFileDialog } from '@tauri-apps/plugin-dialog'
@@ -91,6 +93,7 @@ export function EditorPage({
 }: EditorPageProps) {
 	const { message, modal } = App.useApp()
 	const config = useConfig()
+	const { readOnly, reportChanged } = useArchiveGuard()
 	const [data, setData] = useState<EditorData | null>(null)
 	const [menuOpen, setMenuOpen] = useState(false)
 	const [error, setError] = useState<string | null>(null)
@@ -416,6 +419,13 @@ export function EditorPage({
 	}
 
 	async function save() {
+		// Клик по сохранению в режиме чтения снова показывает окно, а не пишет файлы.
+		if (readOnly) {
+			reportChanged()
+
+			return
+		}
+
 		suppressWatcher(LONG_WATCH_SUPPRESSION)
 		setBusy(true)
 
@@ -438,7 +448,11 @@ export function EditorPage({
 			suppressWatcher()
 			message.success(texts.saved)
 		} catch (reason) {
-			message.error(toMessage(reason))
+			if (isArchiveChanged(reason)) {
+				reportChanged()
+			} else {
+				message.error(toMessage(reason))
+			}
 		}
 
 		setBusy(false)
@@ -479,6 +493,12 @@ export function EditorPage({
 			return
 		}
 
+		if (readOnly) {
+			reportChanged()
+
+			return
+		}
+
 		const path = await open({
 			multiple: false,
 			directory: false,
@@ -510,7 +530,11 @@ export function EditorPage({
 			message.success(formatString(texts.imported, String(report.attributes)))
 			setReload(value => value + 1)
 		} catch (reason) {
-			message.error(toMessage(reason))
+			if (isArchiveChanged(reason)) {
+				reportChanged()
+			} else {
+				message.error(toMessage(reason))
+			}
 		}
 
 		setBusy(false)

@@ -11,6 +11,8 @@ use specta::Type;
 use sxmle_storage::zip::{self, ArchiveUpdate, EntryMeta, UpdateReport, ZipArchive, ZipError};
 use thiserror::Error;
 
+use crate::integrity;
+
 /// Маркер отредактированного архива.
 pub const EDITED_MARKER: &str = "edited";
 
@@ -127,6 +129,25 @@ pub enum ArchiveError {
 	/// Архив не найден.
 	#[error("архив не найден: {0}")]
 	ArchiveNotFound(PathBuf),
+
+	/// Архив изменился с момента распаковки.
+	#[error("архив изменился с момента распаковки: {0}")]
+	Changed(PathBuf),
+
+	/// Отпечатка архива нет: запись запрещена до распаковки.
+	#[error("нет отпечатка архива: {0}")]
+	Unknown(PathBuf),
+
+	/// Отпечаток не записан или не удалён.
+	#[error("ошибка отпечатка {path}: {source}")]
+	Fingerprint {
+		/// Путь к файлу отпечатка.
+		path: PathBuf,
+
+		/// Ошибка ввода-вывода.
+		#[source]
+		source: io::Error,
+	},
 }
 
 /// Отчёт о распаковке.
@@ -179,6 +200,186 @@ pub fn unpack(
 		bytes: extracted.bytes,
 		duration: started.elapsed(),
 	})
+}
+
+/// Результат чистой распаковки.
+#[derive(Debug, Clone)]
+pub struct FreshUnpack {
+	/// Отчёт о распаковке.
+	pub report: UnpackReport,
+
+	/// Каталог, который не удалось удалить после подмены.
+	pub leftover: Option<PathBuf>,
+}
+
+/// Распаковывает архив в пустой каталог, не смешивая файлы старой и новой версии.
+///
+/// Прежний каталог при `previous = Some` уходит в `previous`, иначе удаляется
+/// после успешной подмены. Распаковка идёт в промежуточный каталог, поэтому
+/// битый архив не уничтожает рабочие файлы. Ошибка удаления старого каталога
+/// не блокирует операцию: путь возвращается в [FreshUnpack::leftover].
+pub fn unpack_fresh(
+	archive_path: &Path,
+	list: &UnpackList,
+	dest: &Path,
+	previous: Option<&Path>,
+	on_progress: impl FnMut(usize, usize),
+) -> Result<FreshUnpack, ArchiveError> {
+	remove_leftovers(dest);
+
+	let staging = sibling(dest, "new");
+	let trash = previous
+		.map(Path::to_path_buf)
+		.unwrap_or_else(|| sibling(dest, "old"));
+
+	let report = match unpack(archive_path, list, &staging, on_progress) {
+		Ok(report) => report,
+		Err(error) => {
+			let _ = fs::remove_dir_all(&staging);
+
+			return Err(error);
+		}
+	};
+
+	let leftover = replace_dir(dest, &staging, &trash, previous.is_some())?;
+
+	Ok(FreshUnpack { report, leftover })
+}
+
+/// Распаковывает архив и запоминает его отпечаток.
+pub fn unpack_and_remember(
+	archive_path: &Path,
+	list: &UnpackList,
+	dest: &Path,
+	previous: Option<&Path>,
+	store: &Path,
+	on_progress: impl FnMut(usize, usize),
+) -> Result<FreshUnpack, ArchiveError> {
+	let result = unpack_fresh(archive_path, list, dest, previous, on_progress)?;
+
+	integrity::remember(archive_path, store)?;
+
+	Ok(result)
+}
+
+/// Обновляет основной архив, если он не изменился с момента распаковки,
+/// и запоминает отпечаток пересобранного файла.
+pub fn update_checked(
+	archive_path: &Path,
+	dir: &Path,
+	store: &Path,
+) -> Result<UpdateResult, ArchiveError> {
+	integrity::require_unchanged(archive_path, store)?;
+
+	let result = update_from_dir(archive_path, dir)?;
+
+	integrity::remember(archive_path, store)?;
+
+	Ok(result)
+}
+
+/// Подменяет каталог `dir` готовым каталогом `staging`.
+///
+/// Прежний каталог переименовывается в `trash` до подмены: при сбое второго
+/// переименования он возвращается на место. С `keep_trash` прежний каталог
+/// остаётся, иначе удаляется после успеха; ошибка удаления возвращается как
+/// путь остатка и не блокирует операцию. `staging` при любой ошибке удаляется.
+pub fn replace_dir(
+	dir: &Path,
+	staging: &Path,
+	trash: &Path,
+	keep_trash: bool,
+) -> Result<Option<PathBuf>, ArchiveError> {
+	let result = swap_dir(dir, staging, trash, keep_trash);
+
+	if result.is_err() {
+		let _ = fs::remove_dir_all(staging);
+	}
+
+	result
+}
+
+/// Переименования подмены каталога; очистку `staging` делает [replace_dir].
+fn swap_dir(
+	dir: &Path,
+	staging: &Path,
+	trash: &Path,
+	keep_trash: bool,
+) -> Result<Option<PathBuf>, ArchiveError> {
+	let had_dir = dir.exists();
+
+	if had_dir {
+		if keep_trash {
+			if let Some(parent) = trash.parent() {
+				fs::create_dir_all(parent)?;
+			}
+
+			remove_dir_all_if_exists(trash)?;
+		}
+
+		fs::rename(dir, trash)?;
+	}
+
+	if let Err(source) = fs::rename(staging, dir) {
+		if had_dir {
+			let _ = fs::rename(trash, dir);
+		}
+
+		return Err(ArchiveError::Io(source));
+	}
+
+	if keep_trash {
+		return Ok(None);
+	}
+
+	match fs::remove_dir_all(trash) {
+		Ok(()) => Ok(None),
+		Err(error) if error.kind() == io::ErrorKind::NotFound => Ok(None),
+		Err(_) => Ok(Some(trash.to_path_buf())),
+	}
+}
+
+/// Убирает остатки прошлых распаковок рядом с целевым каталогом.
+fn remove_leftovers(dest: &Path) {
+	let Some(parent) = dest.parent() else {
+		return;
+	};
+	let Some(name) = dest.file_name().and_then(|name| name.to_str()) else {
+		return;
+	};
+	let Ok(entries) = fs::read_dir(parent) else {
+		return;
+	};
+
+	for entry in entries.flatten() {
+		let Some(file_name) = entry.file_name().to_str().map(str::to_owned) else {
+			continue;
+		};
+
+		if file_name.starts_with(&format!("{name}.new-"))
+			|| file_name.starts_with(&format!("{name}.old-"))
+		{
+			let _ = fs::remove_dir_all(entry.path());
+		}
+	}
+}
+
+/// Путь промежуточного каталога рядом с целевым: `<dest>.<kind>-<pid>`.
+fn sibling(dest: &Path, kind: &str) -> PathBuf {
+	let mut name = dest.as_os_str().to_os_string();
+
+	name.push(format!(".{kind}-{}", std::process::id()));
+
+	PathBuf::from(name)
+}
+
+/// Удаляет каталог, если он существует.
+fn remove_dir_all_if_exists(path: &Path) -> io::Result<()> {
+	match fs::remove_dir_all(path) {
+		Ok(()) => Ok(()),
+		Err(error) if error.kind() == io::ErrorKind::NotFound => Ok(()),
+		Err(source) => Err(source),
+	}
 }
 
 /// Обновляет архив файлами из каталога и добавляет маркер `edited`.

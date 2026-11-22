@@ -1,4 +1,5 @@
 import { gameDataReady, saveConfig } from '@/api/settings'
+import { ArchiveGuardProvider } from '@/components/archive-guard'
 import { MenuBar } from '@/components/menu-bar'
 import { SettingsModal } from '@/components/settings'
 import { UpdateAlert } from '@/components/update-alert'
@@ -104,27 +105,29 @@ export function App() {
 	}
 
 	return (
-		<div className="app">
-			<MenuBar
-				onSettings={() => setSettings(true)}
-				onWhatsNew={() => setWhatsNew(true)}
-			/>
-			<div className="app-body">
-				{/* Список остаётся смонтированным: при возврате из редактора сохраняются
-				    фильтры, вид и позиция скролла, а файлы не запрашиваются заново. */}
-				{listsReady && (
-					<div className={listsHidden ? 'app-screen app-screen-hidden' : 'app-screen'}>
-						<ListsPage
-							active={!listsHidden}
-							onOpen={(name, kind, modName) => setSelected({ name, kind, modName })}
-						/>
-					</div>
-				)}
-				{page}
+		<ArchiveGuardProvider ready={gameReady === true}>
+			<div className="app">
+				<MenuBar
+					onSettings={() => setSettings(true)}
+					onWhatsNew={() => setWhatsNew(true)}
+				/>
+				<div className="app-body">
+					{/* Список остаётся смонтированным: при возврате из редактора сохраняются
+					    фильтры, вид и позиция скролла, а файлы не запрашиваются заново. */}
+					{listsReady && (
+						<div className={listsHidden ? 'app-screen app-screen-hidden' : 'app-screen'}>
+							<ListsPage
+								active={!listsHidden}
+								onOpen={(name, kind, modName) => setSelected({ name, kind, modName })}
+							/>
+						</div>
+					)}
+					{page}
+				</div>
+				<SettingsModal open={settings} onClose={() => setSettings(false)} />
+				<UpdateAlert />
+				<WhatsNew open={whatsNew} onOpenChange={open => void closeWhatsNew(open)} />
 			</div>
-			<SettingsModal open={settings} onClose={() => setSettings(false)} />
-			<UpdateAlert />
-			<WhatsNew open={whatsNew} onOpenChange={open => void closeWhatsNew(open)} />
-		</div>
+		</ArchiveGuardProvider>
 	)
 }

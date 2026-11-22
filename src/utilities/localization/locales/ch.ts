@@ -82,6 +82,16 @@ export const ch: Locale = {
 		support: '支持'
 	},
 
+	/** 压缩包完整性窗口。 */
+	archive: {
+		changedTitle: '压缩包已更改',
+		changedText: '解压后 initial.pak 已更改：游戏已更新或压缩包被手动替换。禁止写入该压缩包，否则旧文件会回滚更新。请重新读取压缩包：当前解压副本将保存在 backups/previous_initial。打开的文档将被关闭，未保存的更改将丢失。',
+		unknownTitle: '压缩包未校验',
+		unknownText: '没有保存的压缩包指纹，因此禁止写入。请重新读取压缩包，以便将解压后的文件与当前 initial.pak 进行比对。打开的文档将被关闭，未保存的更改将丢失。',
+		refresh: '重新读取压缩包',
+		cancel: '取消'
+	},
+
 	setup: {
 		title: '游戏数据',
 		paths: '程序路径',

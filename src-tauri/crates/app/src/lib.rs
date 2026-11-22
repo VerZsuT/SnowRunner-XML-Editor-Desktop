@@ -6,6 +6,7 @@ pub mod config;
 pub mod documents;
 pub mod epf;
 pub mod game;
+pub mod integrity;
 pub mod lists;
 pub mod mods;
 pub mod paths;

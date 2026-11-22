@@ -43,6 +43,8 @@ pub fn collect() -> Commands<Wry> {
 		config::config,
 		config::save_config,
 		archive::find_initial,
+		archive::archive_status,
+		archive::refresh_archive,
 		archive::unpack_initial,
 		archive::update_archive,
 		archive::backup_archive,

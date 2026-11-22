@@ -47,6 +47,7 @@ const info = await call(commands.openDocument('truck', 'ank_mk38', null))
 | `io` | файл не прочитан/не записан | показать сообщение и путь |
 | `zip` | повреждённый или неподдерживаемый архив | предложить другой архив/бэкап |
 | `archive` | сценарий архива: нет каталога, пустой каталог | проверить распаковку |
+| `archiveChanged` | архив изменился или отпечаток неизвестен | показать окно «Перечитать архив» |
 | `xml` | разбор/запись XML, кодировка | показать файл, не сохранять |
 | `invalidArgument` | плохой путь, имя мода, версия `.epf` | исправить ввод |
 | `notFound` | нет документа, файла, элемента, сокета | обновить список |
@@ -85,6 +86,8 @@ const info = await call(commands.openDocument('truck', 'ank_mk38', null))
 | Команда | Аргументы | Результат |
 |---|---|---|
 | `find_initial` | `folder` | путь к `initial.pak` или `null` |
+| `archive_status` | — | `ArchiveStatusDto` |
+| `refresh_archive` | — | `RefreshResultDto` |
 | `unpack_initial` | `archivePath`, `list` | `UnpackResultDto` |
 | `update_archive` | `archivePath`, `modName` | `UpdateResultDto` |
 | `backup_archive` | `archivePath`, `suffix` | путь бэкапа |
@@ -93,6 +96,18 @@ const info = await call(commands.openDocument('truck', 'ank_mk38', null))
 `list` — `main`, `optimized`, `mods`. `modName` направляет обновление в `modsTemp/<mod>`.
 `find_initial` перебирает типовой хвост пути `steamapps/common/SnowRunner/en_us/preload/paks/client`,
 поэтому подходит корень установки, папка игры или `client`.
+
+`archive_status` всегда `Ok`: состояние `ok`/`changed`/`unknown`, наличие
+`backups/previous_initial`, число записей `edited.json` и маркер `edited` в архиве.
+`refresh_archive` перечитывает выбранный архив списком `optimized`, уносит прежний
+`mainTemp` в `previous_initial`, очищает реестр документов и пишет отпечаток.
+`unpack_initial` делает то же без сохранения прежнего каталога; оба возвращают
+`leftover` — каталог, который не удалось удалить.
+
+`update_archive` с `modName = null` пересобирает основной архив только при совпадении
+отпечатка и записывает новый; для мода отпечаток не используется. `restore_backup`
+отпечаток не перезаписывает. Ошибка `archiveChanged` означает, что архив изменился или
+его отпечатка нет: запись не выполнена.
 
 ### Избранное и изменённые
 
@@ -168,6 +183,10 @@ const info = await call(commands.openDocument('truck', 'ank_mk38', null))
 архивы всех открытых документов (по `modName`): `initial.pak` или `.pak` мода.
 `force = true` у `save_all_documents` пересобирает архивы и без изменений.
 
+Если среди затрагиваемых документов есть документ основной игры, обе команды до записи
+файлов проверяют отпечаток `initial.pak`: при `changed`/`unknown` возвращается
+`archiveChanged`, документы и флаг `dirty` не меняются. Модовые документы не блокируются.
+
 `document_defaults` отдаёт значения из встроенной выгрузки 1.4.0 для файла документа;
 `reset_document_defaults` применяет их ко всем найденным путям за одну мутацию и ставит
 `dirty`. `reset_document` по-прежнему отбрасывает правки, перечитывая файл с диска.
@@ -187,10 +206,17 @@ const info = await call(commands.openDocument('truck', 'ank_mk38', null))
 | Событие | Payload | Когда |
 |---|---|---|
 | `update-progress` | `{ percent, downloaded, total }` | загрузка обновления |
+| `archive-status-changed` | `{ state: 'ok' \| 'changed' \| 'unknown' }` | архив перечитан, пересобран или восстановлен из бэкапа |
 | `documents-changed` | `{ paths: string[] }` | файл открытого документа изменён извне |
 
 `percent` — 0–99 (100 не отправляется), `total` — `null`, если сервер не сообщил размер.
 Подписка: `events.updateProgress.listen(...)` в [updates.ts](../src/api/updates.ts).
+`archive-status-changed` отправляют `unpack_initial`, `refresh_archive`, `update_archive`,
+`save_document`/`save_all_documents` и `restore_backup`. После перечитывания и пересборки
+основного архива состояние `ok`; `restore_backup` сообщает фактическое состояние после
+подмены, а пересборка только мода — фактическое состояние основного архива (режим чтения
+не снимается ложно). Подписка — `onArchiveStatusChanged` в
+[archive.ts](../src/api/archive.ts).
 `watch_documents` заменяет набор наблюдаемых файлов (пустой список выключает watcher);
 событие `documents-changed` приходит после 150 мс тишины, чтобы не дублировать записи
 одного сохранения. Подписка — `events.documentsChanged.listen(...)` в
@@ -222,6 +248,10 @@ git diff --exit-code src/api/bindings.ts
 6. Добавьте обёртку в `src/api/*`; для fallible-команды — через `call()`.
 7. Напишите Rust-тест и, если есть UI, Vitest-тест.
 8. Обновите этот документ; при изменении сценариев — [data-and-archive.md](data-and-archive.md).
+
+Новая команда, которая пишет в основной архив, обязана проходить
+`integrity::require_unchanged` (или `archive::update_checked`), иначе обновление игры
+будет молча откатываться.
 
 Не переименовывайте существующие команды без необходимости: это ломает совместимость
 со старыми сборками и тестами.

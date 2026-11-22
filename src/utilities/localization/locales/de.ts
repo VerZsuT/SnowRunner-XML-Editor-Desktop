@@ -82,6 +82,16 @@ export const de: Locale = {
 		support: 'Unterstützen'
 	},
 
+	/** Fenster zur Archivintegrität. */
+	archive: {
+		changedTitle: 'Das Archiv hat sich geändert',
+		changedText: 'initial.pak hat sich nach dem Entpacken geändert: Das Spiel wurde aktualisiert oder das Archiv manuell ersetzt. Schreiben in dieses Archiv ist gesperrt, sonst würden alte Dateien das Update zurückrollen. Archiv neu einlesen: Die aktuelle entpackte Kopie bleibt in backups/previous_initial erhalten. Geöffnete Dokumente werden geschlossen, ungespeicherte Änderungen gehen verloren.',
+		unknownTitle: 'Das Archiv ist nicht geprüft',
+		unknownText: 'Es gibt keinen gespeicherten Archiv-Fingerabdruck, daher ist das Schreiben gesperrt. Lesen Sie das Archiv neu ein, damit die entpackten Dateien mit der aktuellen initial.pak verglichen werden. Geöffnete Dokumente werden geschlossen, ungespeicherte Änderungen gehen verloren.',
+		refresh: 'Archiv neu einlesen',
+		cancel: 'Abbrechen'
+	},
+
 	setup: {
 		title: 'Spieldaten',
 		paths: 'Programmpfade',

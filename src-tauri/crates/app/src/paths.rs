@@ -168,6 +168,11 @@ impl Paths {
 		self.data("backups/previous_initial")
 	}
 
+	/// Отпечаток распакованного архива.
+	pub fn archive_fingerprint(&self) -> PathBuf {
+		self.json("archive")
+	}
+
 	/// Временный каталог распакованных файлов игры.
 	pub fn main_temp(&self) -> PathBuf {
 		self.data("mainTemp")

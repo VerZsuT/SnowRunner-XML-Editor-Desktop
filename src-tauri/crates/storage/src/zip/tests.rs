@@ -11,7 +11,7 @@ use crc32fast::hash as crc32;
 
 use super::entry::EntryMeta;
 use super::reader::MAX_ENTRY_SIZE;
-use super::{ArchiveUpdate, ZipArchive, ZipError, update};
+use super::{ArchiveUpdate, ZipArchive, ZipError, read_entries, update};
 
 /// Счётчик уникальных рабочих каталогов.
 static COUNTER: AtomicU64 = AtomicU64::new(0);
@@ -496,6 +496,33 @@ fn build_zip(path: &Path, files: &[(&str, &[u8])], flags: u16, uncompressed: Opt
 	put_u32(&mut data, cd_offset);
 	put_u16(&mut data, 0);
 	fs::write(path, data).expect("синтетический архив должен записываться");
+}
+
+/// Разбор только central directory совпадает с полным открытием архива.
+#[test]
+fn reads_central_directory_without_local_headers() {
+	let dir = TempDir::new("entries");
+	let path = dir.path().join("entries.pak");
+	build_stored_zip(&path, &[("[media]\\a.txt", b"alpha"), ("b.bin", b"")]);
+
+	let opened = ZipArchive::open(&path).expect("архив должен открываться");
+	let entries = read_entries(&path).expect("central directory должна читаться");
+
+	assert_eq!(entries.len(), opened.entries().len());
+	assert_eq!(entries[0].name, "[media]\\a.txt");
+	assert_eq!(entries[0].crc32, crc32(b"alpha"));
+	assert_eq!(entries[0].uncompressed_size, 5);
+	for (entry, opened) in entries.iter().zip(opened.entries()) {
+		assert_eq!(entry.name, opened.name);
+		assert_eq!(entry.method, opened.method);
+		assert_eq!(entry.crc32, opened.crc32);
+		assert_eq!(entry.compressed_size, opened.compressed_size);
+		assert_eq!(entry.uncompressed_size, opened.uncompressed_size);
+		assert_eq!(entry.local_header_offset, opened.local_header_offset);
+		assert_eq!(entry.data_offset, 0, "локальные заголовки не читаются");
+	}
+	assert!(read_entries(dir.path().join("missing.pak")).is_err());
+	drop(opened);
 }
 
 /// Синтетический архив: чтение, обновление, распаковка без фикстуры.

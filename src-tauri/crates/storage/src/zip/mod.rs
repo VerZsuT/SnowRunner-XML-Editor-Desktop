@@ -22,7 +22,7 @@ mod writer;
 mod tests;
 
 pub use entry::EntryMeta;
-pub use reader::{ExtractReport, ZipArchive};
+pub use reader::{ExtractReport, ZipArchive, read_entries};
 pub use writer::{ArchiveUpdate, UpdateReport, update};
 
 use thiserror::Error;

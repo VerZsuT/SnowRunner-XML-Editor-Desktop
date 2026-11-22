@@ -5,7 +5,8 @@ import { MenuBar } from '@/components/menu-bar'
 import type { MenuBarClient, MenuBarHandlers } from '@/components/menu-bar'
 import { buildMenuItems } from '@/components/menu-bar'
 import { App as AntApp } from 'antd'
-import { act, render, screen } from '@testing-library/react'
+import { act, render, screen, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 /** Путь к архиву игры. */
@@ -60,7 +61,7 @@ function client(overrides: Partial<MenuBarClient> = {}): MenuBarClient {
 	return {
 		paths: vi.fn(),
 		backup: vi.fn(),
-		unpack: vi.fn(),
+		refresh: vi.fn(),
 		update: vi.fn(),
 		restore: vi.fn(),
 		openPath: vi.fn(),
@@ -75,7 +76,7 @@ function client(overrides: Partial<MenuBarClient> = {}): MenuBarClient {
 
 describe('buildMenuItems', () => {
 	it('показывает верхние пункты, как в 1.4.0', () => {
-		const items = buildMenuItems({ initialPath: ARCHIVE, busy: false }, handlers())
+		const items = buildMenuItems({ initialPath: ARCHIVE, busy: false, readOnly: false }, handlers())
 
 		expect(items?.map(item => item && 'label' in item ? item.label : null)).toEqual([
 			'Файл',
@@ -86,7 +87,7 @@ describe('buildMenuItems', () => {
 	})
 
 	it('блокирует работу с игрой без initial.pak', () => {
-		const items = buildMenuItems({ initialPath: null, busy: false }, handlers())
+		const items = buildMenuItems({ initialPath: null, busy: false, readOnly: false }, handlers())
 
 		expect(findItem(items, 'openFiles')?.disabled).toBe(true)
 		expect(findItem(items, 'updateArchive')?.disabled).toBe(true)
@@ -95,15 +96,24 @@ describe('buildMenuItems', () => {
 	})
 
 	it('блокирует архив во время операции', () => {
-		const items = buildMenuItems({ initialPath: ARCHIVE, busy: true }, handlers())
+		const items = buildMenuItems({ initialPath: ARCHIVE, busy: true, readOnly: false }, handlers())
 
 		expect(findItem(items, 'unpackArchive')?.disabled).toBe(true)
 		expect(findItem(items, 'saveBackup')?.disabled).toBe(true)
 	})
 
+	it('блокирует запись в изменившийся архив', () => {
+		const items = buildMenuItems({ initialPath: ARCHIVE, busy: false, readOnly: true }, handlers())
+
+		expect(findItem(items, 'updateArchive')?.disabled).toBe(true)
+		expect(findItem(items, 'unpackArchive')?.disabled).toBe(true)
+		expect(findItem(items, 'openFiles')?.disabled).toBe(false)
+		expect(findItem(items, 'saveBackup')?.disabled).toBe(false)
+	})
+
 	it('рассылает действия по пунктам меню', () => {
 		const fake = handlers()
-		const items = buildMenuItems({ initialPath: ARCHIVE, busy: false }, fake)
+		const items = buildMenuItems({ initialPath: ARCHIVE, busy: false, readOnly: false }, fake)
 
 		findItem(items, 'openFiles')?.onClick?.()
 		findItem(items, 'openBackup')?.onClick?.()
@@ -132,7 +142,7 @@ describe('buildMenuItems', () => {
 
 	it('открывает ссылки в меню помощи', () => {
 		const fake = handlers()
-		const items = buildMenuItems({ initialPath: ARCHIVE, busy: false }, fake)
+		const items = buildMenuItems({ initialPath: ARCHIVE, busy: false, readOnly: false }, fake)
 
 		findItem(items, 'github')?.onClick?.()
 
@@ -174,5 +184,26 @@ describe('MenuBar', () => {
 		for (const label of ['Файл', 'Бэкап', 'Настройки', 'Помощь']) {
 			expect(screen.getByText(label)).toBeInTheDocument()
 		}
+	})
+
+	it('делает бэкап, перечитывает архив и перезагружает окно', async () => {
+		const fake = client({
+			backup: vi.fn().mockResolvedValue('backups/initial.pak'),
+			refresh: vi.fn().mockResolvedValue(3)
+		})
+		const user = userEvent.setup()
+
+		render(
+			<AntApp>
+				<MenuBar client={fake} />
+			</AntApp>
+		)
+
+		await user.click(screen.getByText('Файл'))
+		await user.click(await screen.findByText('Распаковать архив'))
+
+		await waitFor(() => expect(fake.refresh).toHaveBeenCalledWith(ARCHIVE))
+		expect(fake.backup).toHaveBeenCalledWith(ARCHIVE)
+		expect(fake.reload).toHaveBeenCalledTimes(1)
 	})
 })

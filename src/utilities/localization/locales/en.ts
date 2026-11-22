@@ -82,6 +82,16 @@ export const en: Locale = {
 		support: 'Support'
 	},
 
+	/** Archive integrity window. */
+	archive: {
+		changedTitle: 'The archive has changed',
+		changedText: 'initial.pak changed after unpacking: the game was updated or the archive was replaced manually. Writing to this archive is disabled, otherwise the old files would roll back the update. Re-read the archive: the current unpacked copy will be kept in backups/previous_initial. Open documents will be closed and unsaved changes lost.',
+		unknownTitle: 'The archive is not verified',
+		unknownText: 'There is no saved archive fingerprint, so writing to it is disabled. Re-read the archive to compare the unpacked files with the current initial.pak. Open documents will be closed and unsaved changes lost.',
+		refresh: 'Re-read archive',
+		cancel: 'Cancel'
+	},
+
 	setup: {
 		title: 'Game data',
 		paths: 'Program paths',

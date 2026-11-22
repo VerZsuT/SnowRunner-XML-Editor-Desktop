@@ -214,7 +214,13 @@ pub fn unpack(pak: &Path, target: &Path, name: &str) -> Result<f64, ModsError> {
 			}
 		})?;
 
-	replace_dir(&dir, &staging, &previous)?;
+	archive::replace_dir(&dir, &staging, &previous, false).map_err(|error| match error {
+		ArchiveError::Io(source) => ModsError::Io {
+			path: dir.clone(),
+			source,
+		},
+		other => ModsError::Archive(other),
+	})?;
 
 	Ok(size)
 }
@@ -229,37 +235,6 @@ fn remove_dir(path: &Path) -> Result<(), ModsError> {
 		path: path.to_path_buf(),
 		source,
 	})
-}
-
-/// Подменяет готовый каталог прежним: при сбое второй шаг откатывается.
-fn replace_dir(dir: &Path, staging: &Path, previous: &Path) -> Result<(), ModsError> {
-	let had_previous = dir.exists();
-
-	if had_previous {
-		fs::rename(dir, previous).map_err(|source| ModsError::Io {
-			path: dir.to_path_buf(),
-			source,
-		})?;
-	}
-
-	if let Err(source) = fs::rename(staging, dir) {
-		if had_previous {
-			let _ = fs::rename(previous, dir);
-		}
-
-		let _ = fs::remove_dir_all(staging);
-
-		return Err(ModsError::Io {
-			path: dir.to_path_buf(),
-			source,
-		});
-	}
-
-	if had_previous {
-		let _ = fs::remove_dir_all(previous);
-	}
-
-	Ok(())
 }
 
 /// Ищет моды в стандартном каталоге SnowRunner (`.modio/mods`).

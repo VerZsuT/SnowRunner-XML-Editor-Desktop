@@ -16,6 +16,9 @@ pub enum ErrorCode {
 	/// Ошибка сценария работы с архивом.
 	Archive,
 
+	/// Архив изменился или его отпечаток неизвестен: запись запрещена.
+	ArchiveChanged,
+
 	/// Ошибка разбора или записи XML.
 	Xml,
 
@@ -72,6 +75,11 @@ impl CommandError {
 	/// Ошибка сценария работы с архивом.
 	pub fn archive(error: impl std::fmt::Display) -> Self {
 		Self::new(ErrorCode::Archive, error.to_string())
+	}
+
+	/// Архив изменился или его отпечаток неизвестен.
+	pub fn archive_changed(error: impl std::fmt::Display) -> Self {
+		Self::new(ErrorCode::ArchiveChanged, error.to_string())
 	}
 
 	/// Ошибка XML.
@@ -200,6 +208,35 @@ impl From<sxmle_app::reset::ResetError> for CommandError {
 				Self::io(source).with_path(path.display().to_string())
 			}
 			ResetError::Config(error) => error.into(),
+		}
+	}
+}
+
+impl From<sxmle_app::archive::ArchiveError> for CommandError {
+	fn from(error: sxmle_app::archive::ArchiveError) -> Self {
+		use sxmle_app::archive::ArchiveError;
+
+		match error {
+			ArchiveError::Zip(error) => Self::zip(error),
+			ArchiveError::Io(error) => Self::io(error),
+			ArchiveError::DirNotFound(path) => {
+				Self::not_found(format!("каталог не найден: {}", path.display()))
+			}
+			ArchiveError::EmptyDir(path) => {
+				Self::not_found(format!("в каталоге нет файлов: {}", path.display()))
+			}
+			ArchiveError::ArchiveNotFound(path) => Self::not_found(path.display().to_string()),
+			ArchiveError::Changed(path) => {
+				Self::archive_changed("архив изменился с момента распаковки: перечитайте архив")
+					.with_path(path.display().to_string())
+			}
+			ArchiveError::Unknown(path) => {
+				Self::archive_changed("нет отпечатка архива: перечитайте архив")
+					.with_path(path.display().to_string())
+			}
+			ArchiveError::Fingerprint { path, source } => {
+				Self::io(source).with_path(path.display().to_string())
+			}
 		}
 	}
 }

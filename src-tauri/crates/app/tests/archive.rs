@@ -5,8 +5,9 @@ use std::path::{Path, PathBuf};
 
 use sxmle_app::archive::{
 	EDITED_MARKER, UnpackList, UnpackListKind, backup_file, find_initial, restore_backup, unpack,
-	update_from_dir,
+	unpack_and_remember, update_checked, update_from_dir,
 };
+use sxmle_app::integrity::{self, ArchiveState};
 use sxmle_storage::zip::ZipArchive;
 
 /// Путь к фикстуре архива.
@@ -220,4 +221,297 @@ fn first_file(dir: &Path) -> Option<PathBuf> {
 	}
 
 	None
+}
+
+/// Остатки промежуточных каталогов рядом с целью.
+fn has_staging(root: &Path) -> bool {
+	let Ok(entries) = fs::read_dir(root) else {
+		return false;
+	};
+
+	entries.flatten().any(|entry| {
+		let name = entry.file_name().to_string_lossy().into_owned();
+
+		name.contains(".new-") || name.contains(".old-")
+	})
+}
+
+/// Записать little-endian u16.
+fn put_u16(buffer: &mut Vec<u8>, value: u16) {
+	buffer.extend_from_slice(&value.to_le_bytes());
+}
+
+/// Записать little-endian u32.
+fn put_u32(buffer: &mut Vec<u8>, value: u32) {
+	buffer.extend_from_slice(&value.to_le_bytes());
+}
+
+/// Собрать минимальный zip-архив с записями stored (метод 0).
+fn build_stored_zip(path: &Path, files: &[(&str, &[u8])]) {
+	let mut data = Vec::new();
+	let mut central = Vec::new();
+
+	for (name, content) in files {
+		let offset = data.len() as u32;
+		let crc = crc32fast::hash(content);
+		let size = content.len() as u32;
+		let name_bytes = name.as_bytes();
+		let name_length = name_bytes.len() as u16;
+
+		put_u32(&mut data, 0x0403_4b50);
+		put_u16(&mut data, 10);
+		put_u16(&mut data, 0);
+		put_u16(&mut data, 0);
+		put_u16(&mut data, 0);
+		put_u16(&mut data, 0);
+		put_u32(&mut data, crc);
+		put_u32(&mut data, size);
+		put_u32(&mut data, size);
+		put_u16(&mut data, name_length);
+		put_u16(&mut data, 0);
+		data.extend_from_slice(name_bytes);
+		data.extend_from_slice(content);
+
+		put_u32(&mut central, 0x0201_4b50);
+		put_u16(&mut central, 0x031e);
+		put_u16(&mut central, 10);
+		put_u16(&mut central, 0);
+		put_u16(&mut central, 0);
+		put_u16(&mut central, 0);
+		put_u16(&mut central, 0);
+		put_u32(&mut central, crc);
+		put_u32(&mut central, size);
+		put_u32(&mut central, size);
+		put_u16(&mut central, name_length);
+		put_u16(&mut central, 0);
+		put_u16(&mut central, 0);
+		put_u16(&mut central, 0);
+		put_u16(&mut central, 0);
+		put_u32(&mut central, 0);
+		put_u32(&mut central, offset);
+		central.extend_from_slice(name_bytes);
+	}
+
+	let cd_offset = data.len() as u32;
+	let cd_size = central.len() as u32;
+
+	data.extend_from_slice(&central);
+	put_u32(&mut data, 0x0605_4b50);
+	put_u16(&mut data, 0);
+	put_u16(&mut data, 0);
+	put_u16(&mut data, files.len() as u16);
+	put_u16(&mut data, files.len() as u16);
+	put_u32(&mut data, cd_size);
+	put_u32(&mut data, cd_offset);
+	put_u16(&mut data, 0);
+	fs::write(path, data).expect("синтетический архив");
+}
+
+#[test]
+fn unpack_and_remember_replaces_expanded_files() {
+	let root = work_dir("archive-fresh");
+	let archive = root.join("initial.pak");
+	let dest = root.join("mainTemp");
+	let store = root.join("jsons/archive.json");
+	let list = UnpackListKind::Main.list();
+
+	build_stored_zip(
+		&archive,
+		&[
+			("[media]\\classes\\trucks\\a.xml", b"first"),
+			(EDITED_MARKER, b""),
+		],
+	);
+	let first = unpack_and_remember(&archive, &list, &dest, None, &store, |_, _| {})
+		.expect("первая распаковка");
+
+	assert_eq!(first.report.files, 2);
+	assert!(first.leftover.is_none());
+	assert_eq!(
+		fs::read(dest.join("[media]/classes/trucks/a.xml")).expect("файл первой версии"),
+		b"first"
+	);
+	assert_eq!(
+		integrity::check(Some(&archive), &store).state,
+		ArchiveState::Ok
+	);
+	assert!(!has_staging(&root), "остался промежуточный каталог");
+
+	build_stored_zip(&archive, &[("[media]\\classes\\trucks\\b.xml", b"second")]);
+	unpack_and_remember(&archive, &list, &dest, None, &store, |_, _| {})
+		.expect("вторая распаковка");
+
+	assert!(
+		!dest.join("[media]/classes/trucks/a.xml").exists(),
+		"файл прежнего архива остался в mainTemp"
+	);
+	assert_eq!(
+		fs::read(dest.join("[media]/classes/trucks/b.xml")).expect("файл второй версии"),
+		b"second"
+	);
+	assert_eq!(
+		integrity::check(Some(&archive), &store).state,
+		ArchiveState::Ok
+	);
+	assert!(!has_staging(&root), "остался промежуточный каталог");
+
+	let _ = fs::remove_dir_all(&root);
+}
+
+#[test]
+fn unpack_fresh_keeps_previous_copy() {
+	let root = work_dir("archive-previous");
+	let archive = root.join("initial.pak");
+	let dest = root.join("mainTemp");
+	let previous = root.join("backups/previous_initial");
+	let store = root.join("jsons/archive.json");
+	let list = UnpackListKind::Main.list();
+
+	build_stored_zip(&archive, &[("[media]\\classes\\trucks\\a.xml", b"old")]);
+	unpack_and_remember(&archive, &list, &dest, None, &store, |_, _| {})
+		.expect("первая распаковка");
+
+	build_stored_zip(&archive, &[("[media]\\classes\\trucks\\b.xml", b"new")]);
+	unpack_and_remember(&archive, &list, &dest, Some(&previous), &store, |_, _| {})
+		.expect("вторая распаковка");
+
+	assert_eq!(
+		fs::read(previous.join("[media]/classes/trucks/a.xml")).expect("старая копия"),
+		b"old"
+	);
+	assert_eq!(
+		fs::read(dest.join("[media]/classes/trucks/b.xml")).expect("новая распаковка"),
+		b"new"
+	);
+	assert!(
+		!dest.join("[media]/classes/trucks/a.xml").exists(),
+		"старый файл попал в новый mainTemp"
+	);
+
+	let _ = fs::remove_dir_all(&root);
+}
+
+#[test]
+fn broken_archive_keeps_expanded_files() {
+	let root = work_dir("archive-broken");
+	let archive = root.join("initial.pak");
+	let dest = root.join("mainTemp");
+	let store = root.join("jsons/archive.json");
+	let list = UnpackListKind::Main.list();
+
+	build_stored_zip(&archive, &[("[media]\\classes\\trucks\\a.xml", b"first")]);
+	unpack_and_remember(&archive, &list, &dest, None, &store, |_, _| {}).expect("распаковка");
+
+	let before = fs::read(dest.join("[media]/classes/trucks/a.xml")).expect("прежний файл");
+	fs::write(&archive, b"not a zip archive").expect("битый архив");
+
+	assert!(
+		unpack_and_remember(&archive, &list, &dest, None, &store, |_, _| {}).is_err(),
+		"битый архив должен отвергаться"
+	);
+	assert_eq!(
+		fs::read(dest.join("[media]/classes/trucks/a.xml")).expect("файлы целы"),
+		before
+	);
+	assert!(!has_staging(&root), "остался промежуточный каталог");
+
+	let _ = fs::remove_dir_all(&root);
+}
+
+#[test]
+fn replacement_blocks_update_and_keeps_archive() {
+	let root = work_dir("archive-replaced");
+	let archive = root.join("initial.pak");
+	let dest = root.join("mainTemp");
+	let store = root.join("jsons/archive.json");
+	let list = UnpackListKind::Main.list();
+
+	build_stored_zip(&archive, &[("[media]\\classes\\trucks\\a.xml", b"first")]);
+	unpack_and_remember(&archive, &list, &dest, None, &store, |_, _| {}).expect("распаковка");
+
+	build_stored_zip(&archive, &[("[media]\\classes\\trucks\\a.xml", b"outside")]);
+	let before = fs::read(&archive).expect("архив читается");
+
+	assert!(matches!(
+		integrity::require_unchanged(&archive, &store),
+		Err(sxmle_app::archive::ArchiveError::Changed(_))
+	));
+	assert!(
+		update_checked(&archive, &dest, &store).is_err(),
+		"пересборка изменившегося архива запрещена"
+	);
+	assert_eq!(fs::read(&archive).expect("архив цел"), before);
+
+	let _ = fs::remove_dir_all(&root);
+}
+
+#[test]
+fn update_checked_refreshes_fingerprint() {
+	let root = work_dir("archive-update");
+	let archive = root.join("initial.pak");
+	let dest = root.join("mainTemp");
+	let store = root.join("jsons/archive.json");
+	let list = UnpackListKind::Main.list();
+
+	build_stored_zip(&archive, &[("[media]\\classes\\trucks\\a.xml", b"first")]);
+	unpack_and_remember(&archive, &list, &dest, None, &store, |_, _| {}).expect("распаковка");
+
+	let file = dest.join("[media]/classes/trucks/a.xml");
+	fs::write(&file, b"edited").expect("правка файла");
+
+	let result = update_checked(&archive, &dest, &store).expect("пересборка");
+	assert_eq!(result.changed.len(), 1);
+	assert_eq!(
+		integrity::check(Some(&archive), &store).state,
+		ArchiveState::Ok
+	);
+	assert!(
+		integrity::require_unchanged(&archive, &store).is_ok(),
+		"отпечаток пересобранного архива не принят"
+	);
+	assert!(integrity::check(Some(&archive), &store).marker_present);
+
+	let _ = fs::remove_dir_all(&root);
+}
+
+#[test]
+fn restore_backup_changes_or_keeps_state() {
+	let root = work_dir("archive-restore");
+	let archive = root.join("initial.pak");
+	let backup = root.join("backups/initial.pak");
+	let dest = root.join("mainTemp");
+	let store = root.join("jsons/archive.json");
+	let list = UnpackListKind::Main.list();
+
+	build_stored_zip(&archive, &[("[media]\\classes\\trucks\\a.xml", b"first")]);
+	unpack_and_remember(&archive, &list, &dest, None, &store, |_, _| {}).expect("распаковка");
+	backup_file(&archive, &backup).expect("бэкап");
+
+	let modified = fs::metadata(&archive)
+		.expect("метаданные")
+		.modified()
+		.expect("время");
+	restore_backup(&backup, &archive).expect("восстановление");
+	// Копирование сохраняет содержимое, но не всегда время изменения файла.
+	fs::File::options()
+		.write(true)
+		.open(&archive)
+		.expect("архив открыт")
+		.set_modified(modified)
+		.expect("время восстановлено");
+	assert_eq!(
+		integrity::check(Some(&archive), &store).state,
+		ArchiveState::Ok,
+		"та же копия архива не должна требовать перечитывания"
+	);
+
+	build_stored_zip(&archive, &[("[media]\\classes\\trucks\\a.xml", b"other")]);
+	backup_file(&archive, &backup).expect("новый бэкап");
+	restore_backup(&backup, &archive).expect("восстановление другого архива");
+	assert_eq!(
+		integrity::check(Some(&archive), &store).state,
+		ArchiveState::Changed
+	);
+
+	let _ = fs::remove_dir_all(&root);
 }

@@ -10,13 +10,15 @@ use std::path::{Path, PathBuf};
 use sxmle_app::actions::{Crane, Trailer};
 use sxmle_app::archive;
 use sxmle_app::documents::{Document, DocumentInfo, DocumentKind, MutationResult, SaveResult};
+use sxmle_app::integrity::{self, ArchiveState};
 use sxmle_app::lists::EditedFile;
 use sxmle_domain::game::entities::{
 	Engine, Gearbox, SuspensionSet, Truck, TruckAddon, Wheel, Wheels, Winch,
 };
 use sxmle_domain::xml::Element;
-use tauri::State;
+use tauri::{AppHandle, State};
 
+use crate::commands::archive::emit_state;
 use crate::commands::game::files;
 use crate::defaults::{self, DefaultValue};
 use crate::error::{AppResult, CommandError};
@@ -306,14 +308,20 @@ pub fn set_bandit_crane(
 /// Сохраняет документ на диск и сразу обновляет его архив.
 #[tauri::command]
 #[specta::specta]
-pub async fn save_document(state: State<'_, AppState>, doc_id: String) -> AppResult<SaveResult> {
+pub async fn save_document(
+	app: AppHandle,
+	state: State<'_, AppState>,
+	doc_id: String,
+) -> AppResult<SaveResult> {
+	let info = state.documents().get(&doc_id)?.info().clone();
+
+	ensure_initial_unchanged(&state, std::slice::from_ref(&info))?;
+
 	let saved = state.documents().save(&doc_id)?;
 
 	mark_edited(&state, std::slice::from_ref(&saved))?;
 
-	let info = state.documents().get(&doc_id)?.info().clone();
-
-	update_archives(&state, vec![info]).await?;
+	update_archives(&app, &state, vec![info]).await?;
 
 	Ok(saved)
 }
@@ -325,29 +333,66 @@ pub async fn save_document(state: State<'_, AppState>, doc_id: String) -> AppRes
 #[tauri::command]
 #[specta::specta]
 pub async fn save_all_documents(
+	app: AppHandle,
 	state: State<'_, AppState>,
 	force: Option<bool>,
 ) -> AppResult<Vec<SaveResult>> {
+	let force = force.unwrap_or(false);
+	// Без правок при force архив всё равно пересобирается: проверяем все документы.
+	let checked = if force {
+		state.documents().list()
+	} else {
+		state.documents().dirty()
+	};
+
+	ensure_initial_unchanged(&state, &checked)?;
+
 	let saved = state.documents().save_all()?;
 
 	mark_edited(&state, &saved)?;
 
-	if saved.is_empty() && !force.unwrap_or(false) {
+	if saved.is_empty() && !force {
 		return Ok(saved);
 	}
 
 	let documents = state.documents().list();
 
-	update_archives(&state, documents).await?;
+	update_archives(&app, &state, documents).await?;
 
 	Ok(saved)
 }
 
+/// Проверяет основной архив до записи файлов документов.
+///
+/// Модовые документы не блокируются сменой основного архива: у них свой `.pak`.
+fn ensure_initial_unchanged(state: &AppState, documents: &[DocumentInfo]) -> AppResult<()> {
+	if documents.iter().all(|document| document.mod_name.is_some()) {
+		return Ok(());
+	}
+
+	let Some(archive) = state.config().initial_path else {
+		return Ok(());
+	};
+
+	integrity::require_unchanged(Path::new(&archive), &state.paths().archive_fingerprint())?;
+
+	Ok(())
+}
+
+/// Цель обновления архива после сохранения документов.
+struct ArchiveTarget {
+	/// Файл архива.
+	archive: PathBuf,
+
+	/// Каталог с файлами для пересборки.
+	dir: PathBuf,
+
+	/// Цель — основной архив игры.
+	main: bool,
+}
+
 /// Архивы, которые нужно обновить после сохранения документов.
-fn archive_targets(
-	state: &AppState,
-	documents: &[DocumentInfo],
-) -> AppResult<Vec<(PathBuf, PathBuf)>> {
+fn archive_targets(state: &AppState, documents: &[DocumentInfo]) -> AppResult<Vec<ArchiveTarget>> {
 	let config = state.config();
 	let mods = state.mods();
 	let mut seen = BTreeSet::new();
@@ -366,17 +411,22 @@ fn archive_targets(
 					.find(|entry| entry.name == *name)
 					.ok_or_else(|| CommandError::not_found(format!("мод не найден: {name}")))?;
 
-				targets.push((
-					PathBuf::from(&entry.path),
-					state.paths().mods_temp().join(name),
-				));
+				targets.push(ArchiveTarget {
+					archive: PathBuf::from(&entry.path),
+					dir: state.paths().mods_temp().join(name),
+					main: false,
+				});
 			}
 			None => {
 				let Some(path) = &config.initial_path else {
 					continue;
 				};
 
-				targets.push((PathBuf::from(path), state.paths().main_temp()));
+				targets.push(ArchiveTarget {
+					archive: PathBuf::from(path),
+					dir: state.paths().main_temp(),
+					main: true,
+				});
 			}
 		}
 	}
@@ -385,25 +435,49 @@ fn archive_targets(
 }
 
 /// Пересобирает архивы из распакованных каталогов в фоне.
-async fn update_archives(state: &AppState, documents: Vec<DocumentInfo>) -> AppResult<()> {
+async fn update_archives(
+	app: &AppHandle,
+	state: &AppState,
+	documents: Vec<DocumentInfo>,
+) -> AppResult<()> {
 	let targets = archive_targets(state, &documents)?;
 
 	if targets.is_empty() {
 		return Ok(());
 	}
 
-	tauri::async_runtime::spawn_blocking(move || {
+	let store = state.paths().archive_fingerprint();
+	let main = state.config().initial_path.map(PathBuf::from);
+	let updated_main = targets.iter().any(|target| target.main);
+
+	let updated = tauri::async_runtime::spawn_blocking(move || {
 		let _guard = crate::commands::archive_guard();
 
-		for (archive_path, dir) in targets {
-			archive::update_from_dir(&archive_path, &dir)?;
+		for target in targets {
+			if target.main {
+				archive::update_checked(&target.archive, &target.dir, &store)?;
+			} else {
+				archive::update_from_dir(&target.archive, &target.dir)?;
+			}
 		}
 
-		Ok::<(), archive::ArchiveError>(())
+		// Сохранение мода не трогает основной архив: сообщаем его настоящее состояние,
+		// иначе UI снял бы режим чтения с изменившегося `initial.pak`.
+		let state = if updated_main {
+			ArchiveState::Ok
+		} else {
+			integrity::check(main.as_deref(), &store).state
+		};
+
+		Ok::<ArchiveState, archive::ArchiveError>(state)
 	})
 	.await
 	.map_err(CommandError::internal)?
-	.map_err(CommandError::archive)
+	.map_err(CommandError::from)?;
+
+	emit_state(app, updated);
+
+	Ok(())
 }
 
 /// Помечает сохранённые траки и прицепы изменёнными.

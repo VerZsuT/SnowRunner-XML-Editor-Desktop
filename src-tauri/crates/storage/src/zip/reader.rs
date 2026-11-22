@@ -243,6 +243,20 @@ impl ZipArchive {
 	}
 }
 
+/// Разбирает только central directory, без проверки локальных заголовков.
+///
+/// Дешёвая альтернатива [ZipArchive::open] для отпечатков и поиска маркера:
+/// локальные заголовки не читаются, поэтому `data_offset` у всех записей
+/// остаётся нулевым. Порядок записей — как в central directory.
+pub fn read_entries(path: impl AsRef<Path>) -> Result<Vec<EntryMeta>, ZipError> {
+	let file = File::open(path)?;
+	let file_size = file.metadata()?.len();
+	let mut reader = BufReader::with_capacity(BUFFER_SIZE, file);
+	let end = read_end_of_central_directory(&mut reader, file_size)?;
+
+	read_central_directory(&mut reader, &end)
+}
+
 /// Найти EOCD с конца файла, допуская комментарий архива.
 fn read_end_of_central_directory(
 	reader: &mut BufReader<File>,

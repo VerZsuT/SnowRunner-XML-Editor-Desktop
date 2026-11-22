@@ -1,7 +1,14 @@
 import type { PathsDto } from '@/api/bindings'
-import { backupArchive, restoreBackup, unpackInitial, updateArchive } from '@/api/archive'
+import {
+	backupArchive,
+	isArchiveChanged,
+	refreshArchive,
+	restoreBackup,
+	updateArchive
+} from '@/api/archive'
 import { loadPaths } from '@/api/settings'
 import { openPath, openUrl, quitApp, resetToDefaults, uninstallApp } from '@/api/system'
+import { useArchiveGuard } from '@/components/archive-guard'
 import { useConfig } from '@/config'
 import { formatString } from '@/utilities/strings'
 import type { Locale } from '@/utilities/localization'
@@ -34,8 +41,8 @@ export interface MenuBarClient {
 	/** Делает бэкап архива; возвращает путь копии. */
 	backup(archivePath: string): Promise<string>
 
-	/** Распаковывает архив; возвращает число файлов. */
-	unpack(archivePath: string): Promise<number>
+	/** Перечитывает архив; возвращает число файлов. */
+	refresh(archivePath: string): Promise<number>
 
 	/** Обновляет архив; возвращает число записей. */
 	update(archivePath: string): Promise<number>
@@ -58,7 +65,7 @@ export interface MenuBarClient {
 	/** Закрывает программу. */
 	quit(): Promise<void>
 
-	/** Перезагружает интерфейс: нужен после распаковки архива. */
+	/** Перезагружает интерфейс: нужен после перечитывания архива. */
 	reload(): void
 }
 
@@ -66,7 +73,7 @@ export interface MenuBarClient {
 export const menuBarClient: MenuBarClient = {
 	paths: loadPaths,
 	backup: backupArchive,
-	unpack: unpackInitial,
+	refresh: () => refreshArchive().then(result => result.files),
 	update: path => updateArchive(path, null),
 	restore: restoreBackup,
 	openPath,
@@ -84,6 +91,9 @@ export interface MenuBarState {
 
 	/** Идёт операция с архивом. */
 	busy: boolean
+
+	/** Архив изменился или не проверен: запись в него запрещена. */
+	readOnly: boolean
 }
 
 /** Обработчики пунктов меню. */
@@ -115,11 +125,12 @@ export interface MenuBarHandlers {
 
 /** Пункты верхнего меню: состав повторяет меню 1.4.0. */
 export function buildMenuItems(
-	{ initialPath, busy }: MenuBarState,
+	{ initialPath, busy, readOnly }: MenuBarState,
 	handlers: MenuBarHandlers,
 	texts: Locale['menu'] = T.menu
 ): MenuProps['items'] {
 	const archiveBlocked = !initialPath
+	const archiveLocked = archiveBlocked || readOnly
 
 	return [
 		{
@@ -135,13 +146,13 @@ export function buildMenuItems(
 				{
 					key: 'updateArchive',
 					label: texts.updateArchive,
-					disabled: archiveBlocked || busy,
+					disabled: archiveLocked || busy,
 					onClick: () => handlers.run('update')
 				},
 				{
 					key: 'unpackArchive',
 					label: texts.unpackArchive,
-					disabled: archiveBlocked || busy,
+					disabled: archiveLocked || busy,
 					onClick: () => handlers.run('unpack')
 				},
 				{ type: 'divider' },
@@ -219,6 +230,7 @@ export interface MenuBarProps {
 export function MenuBar({ onSettings, onWhatsNew, client = menuBarClient }: MenuBarProps) {
 	const { message, modal } = AntApp.useApp()
 	const config = useConfig()
+	const { readOnly, reportChanged } = useArchiveGuard()
 	// Меню читает тексты из состояния: смена языка в настройках видна сразу.
 	const texts = LOCALES[config.lang].menu
 	const setupTexts = LOCALES[config.lang].setup
@@ -253,11 +265,15 @@ export function MenuBar({ onSettings, onWhatsNew, client = menuBarClient }: Menu
 				message.success(setupTexts.restored)
 			} else {
 				await client.backup(initialPath)
-				message.success(formatString(setupTexts.unpacked, String(await client.unpack(initialPath))))
+				message.success(formatString(setupTexts.unpacked, String(await client.refresh(initialPath))))
 				client.reload()
 			}
 		} catch (reason) {
-			message.error(toMessage(reason))
+			if (isArchiveChanged(reason)) {
+				reportChanged()
+			} else {
+				message.error(toMessage(reason))
+			}
 		}
 
 		setBusy(false)
@@ -293,7 +309,7 @@ export function MenuBar({ onSettings, onWhatsNew, client = menuBarClient }: Menu
 		})
 	}
 
-	const items = buildMenuItems({ initialPath, busy }, {
+	const items = buildMenuItems({ initialPath, busy, readOnly }, {
 		openFolder: kind => void openFolder(kind),
 		run: action => void run(action),
 		openLink,

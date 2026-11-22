@@ -26,17 +26,31 @@ export const commands = {
 	saveConfig: (config: Config, options?: InvokeOptions) => typedError<Config, CommandError>(__TAURI_INVOKE("save_config", { config }, options)),
 	/**  Ищет `initial.pak` в выбранном каталоге игры; `null` — архив не найден. */
 	findInitial: (folder: string, options?: InvokeOptions) => typedError<string | null, CommandError>(__TAURI_INVOKE("find_initial", { folder }, options)),
-	/**  Распаковывает файлы игры из архива в каталог данных приложения. */
+	/**  Состояние архива относительно отпечатка. */
+	archiveStatus: (options?: InvokeOptions) => typedError<ArchiveStatusDto, CommandError>(__TAURI_INVOKE("archive_status", undefined, options)),
+	/**  Перечитывает архив игры, сохраняя прежнюю распаковку в `previous_initial`. */
+	refreshArchive: (options?: InvokeOptions) => typedError<RefreshResultDto, CommandError>(__TAURI_INVOKE("refresh_archive", undefined, options)),
+	/**
+	 *  Распаковывает файлы игры из архива в каталог данных приложения.
+	 * 
+	 *  Прежняя распаковка удаляется: новый `mainTemp` не смешивается со старым.
+	 */
 	unpackInitial: (archivePath: string, list: UnpackListKind, options?: InvokeOptions) => typedError<UnpackResultDto, CommandError>(__TAURI_INVOKE("unpack_initial", { archivePath, list }, options)),
 	/**
 	 *  Обновляет архив файлами из каталога данных и добавляет маркер `edited`.
 	 * 
 	 *  `mod_name` задаёт мод: его файлы берутся из `modsTemp/<мод>`.
+	 *  Основной архив пересобирается только при совпадении отпечатка.
 	 */
 	updateArchive: (archivePath: string, modName: string | null, options?: InvokeOptions) => typedError<UpdateResultDto, CommandError>(__TAURI_INVOKE("update_archive", { archivePath, modName }, options)),
 	/**  Делает бэкап архива в каталог данных приложения. */
 	backupArchive: (archivePath: string, suffix: string | null, options?: InvokeOptions) => typedError<string, CommandError>(__TAURI_INVOKE("backup_archive", { archivePath, suffix }, options)),
-	/**  Восстанавливает `initial.pak` из бэкапа каталога данных. */
+	/**
+	 *  Восстанавливает `initial.pak` из бэкапа каталога данных.
+	 * 
+	 *  Отпечаток не перезаписывается: событие несёт фактическое состояние, и обычно
+	 *  это `changed`, потому что содержимое архива уже не совпадает с распаковкой.
+	 */
 	restoreBackup: (archivePath: string, options?: InvokeOptions) => typedError<number | null, CommandError>(__TAURI_INVOKE("restore_backup", { archivePath }, options)),
 	/**  Избранные файлы. */
 	listFavorites: (options?: InvokeOptions) => __TAURI_INVOKE<string[]>("list_favorites", undefined, options),
@@ -151,6 +165,7 @@ export const commands = {
 
 /** Events */
 export const events = {
+	archiveStatusChanged: makeEvent<ArchiveStatusChanged, ArchiveStatusChanged>("archive-status-changed"),
 	documentsChanged: makeEvent<DocumentsChanged, DocumentsChanged>("documents-changed"),
 	updateProgress: makeEvent<UpdateProgress, UpdateProgress>("update-progress"),
 };
@@ -208,6 +223,35 @@ export type AddonTruckData = {
 	repairsCapacity: Field<number>,
 	/**  Количество колёс для ремонта. */
 	wheelRepairsCapacity: Field<number>,
+};
+
+/**  Состояние архива относительно сохранённого отпечатка. */
+export type ArchiveState = 
+/**  Архив совпадает с отпечатком. */
+"ok" | 
+/**  Архив изменился: запись в него запрещена. */
+"changed" | 
+/**  Отпечатка нет или архив не читается: запись запрещена до распаковки. */
+"unknown";
+
+/**  Состояние архива изменилось. */
+export type ArchiveStatusChanged = {
+	/**  Новое состояние. */
+	state: ArchiveState,
+};
+
+/**  Состояние архива относительно сохранённого отпечатка. */
+export type ArchiveStatusDto = {
+	/**  Путь к выбранному архиву. */
+	path: string | null,
+	/**  Состояние отпечатка. */
+	state: ArchiveState,
+	/**  Прежняя распаковка сохранена в `backups/previous_initial`. */
+	previousInitial: boolean,
+	/**  Сколько файлов отмечено изменёнными. */
+	editedCount: number,
+	/**  В архиве есть маркер `edited`. */
+	markerPresent: boolean,
 };
 
 /**  Дескриптор атрибута. */
@@ -460,6 +504,8 @@ export type ErrorCode =
 "zip" | 
 /**  Ошибка сценария работы с архивом. */
 "archive" | 
+/**  Архив изменился или его отпечаток неизвестен: запись запрещена. */
+"archiveChanged" | 
 /**  Ошибка разбора или записи XML. */
 "xml" | 
 /**  Аргумент команды некорректен. */
@@ -699,6 +745,20 @@ export type Position = {
 	y: number | null,
 	/**  Координата Z. */
 	z: number | null,
+};
+
+/**  Отчёт о повторной распаковке архива. */
+export type RefreshResultDto = {
+	/**  Сколько файлов извлечено. */
+	files: number,
+	/**  Сколько байт записано. */
+	bytes: number | null,
+	/**  Длительность операции в миллисекундах. */
+	durationMs: number,
+	/**  Прежняя распаковка сохранена в `backups/previous_initial`. */
+	previousInitial: boolean,
+	/**  Каталог, который не удалось удалить после подмены. */
+	leftover: string | null,
 };
 
 /**  Результат сохранения документа. */
@@ -1036,6 +1096,8 @@ export type UnpackResultDto = {
 	bytes: number | null,
 	/**  Длительность операции в миллисекундах. */
 	durationMs: number,
+	/**  Каталог, который не удалось удалить после подмены. */
+	leftover: string | null,
 };
 
 /**  Прогресс загрузки обновления. */
