@@ -50,6 +50,7 @@ pub fn reset(paths: &Paths, version: &str, is_dev: bool) -> Result<Config, Reset
 	for file in [
 		paths.json("favorites"),
 		paths.json("edited"),
+		paths.edited_documents(),
 		paths.json("mods"),
 		paths.archive_fingerprint(),
 	] {

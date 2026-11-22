@@ -37,7 +37,7 @@ export const commands = {
 	 */
 	unpackInitial: (archivePath: string, list: UnpackListKind, options?: InvokeOptions) => typedError<UnpackResultDto, CommandError>(__TAURI_INVOKE("unpack_initial", { archivePath, list }, options)),
 	/**
-	 *  Обновляет архив файлами из каталога данных и добавляет маркер `edited`.
+	 *  Обновляет архив файлами из каталога данных.
 	 * 
 	 *  `mod_name` задаёт мод: его файлы берутся из `modsTemp/<мод>`.
 	 *  Основной архив пересобирается только при совпадении отпечатка.
@@ -52,6 +52,21 @@ export const commands = {
 	 *  это `changed`, потому что содержимое архива уже не совпадает с распаковкой.
 	 */
 	restoreBackup: (archivePath: string, options?: InvokeOptions) => typedError<number | null, CommandError>(__TAURI_INVOKE("restore_backup", { archivePath }, options)),
+	/**
+	 *  Кандидаты на восстановление.
+	 * 
+	 *  Всегда `Ok`: нет копии `previous_initial` — пустой список. Тяжёлая часть
+	 *  (сравнение файлов) идёт в `spawn_blocking` под замком архива.
+	 */
+	recoveryCandidates: (options?: InvokeOptions) => typedError<RecoveryCandidatesDto, CommandError>(__TAURI_INVOKE("recovery_candidates", undefined, options)),
+	/**  План восстановления: что будет применено и где конфликты. Ничего не пишет. */
+	recoveryPlan: (options?: InvokeOptions) => typedError<RecoveryPlan, CommandError>(__TAURI_INVOKE("recovery_plan", undefined, options)),
+	/**  Восстанавливает документы по решениям пользователя. */
+	recoverPrevious: (decisions: RecoveryDecisions, options?: InvokeOptions) => typedError<RecoveryReport, CommandError>(__TAURI_INVOKE("recover_previous", { decisions }, options)),
+	/**  Отменяет идущее восстановление; false — восстановление не идёт. */
+	cancelRecovery: (options?: InvokeOptions) => typedError<boolean, CommandError>(__TAURI_INVOKE("cancel_recovery", undefined, options)),
+	/**  Удаляет копию `previous_initial`. */
+	discardPrevious: (options?: InvokeOptions) => typedError<boolean, CommandError>(__TAURI_INVOKE("discard_previous", undefined, options)),
 	/**  Избранные файлы. */
 	listFavorites: (options?: InvokeOptions) => __TAURI_INVOKE<string[]>("list_favorites", undefined, options),
 	/**  Переключает избранное и возвращает новое состояние файла. */
@@ -167,6 +182,7 @@ export const commands = {
 export const events = {
 	archiveStatusChanged: makeEvent<ArchiveStatusChanged, ArchiveStatusChanged>("archive-status-changed"),
 	documentsChanged: makeEvent<DocumentsChanged, DocumentsChanged>("documents-changed"),
+	recoveryProgress: makeEvent<RecoveryProgress, RecoveryProgress>("recovery-progress"),
 	updateProgress: makeEvent<UpdateProgress, UpdateProgress>("update-progress"),
 };
 
@@ -536,6 +552,16 @@ export type Field<T> = {
 	descriptor: AttrDescriptor,
 };
 
+/**  Решение по полю конфликта. */
+export type FieldDecision = {
+	/**  Индекс файла в плане. */
+	file: number,
+	/**  Индекс поля в файле плана. */
+	field: number,
+	/**  Что оставить. */
+	keep: RecoveryKeep,
+};
+
 /**  Игровые переводы. */
 export type GameTexts = {
 	/**  Строки самой игры. */
@@ -628,6 +654,14 @@ export type InputAreas = {
 	yellow: InputArea[] | null,
 	/**  Зелёная зона. */
 	green: InputArea[] | null,
+};
+
+/**  Решение по файлу в режиме «нет истории». */
+export type LegacyDecision = {
+	/**  Индекс файла в плане. */
+	file: number,
+	/**  Восстановить поля из старого файла. */
+	restore: boolean,
 };
 
 /**
@@ -745,6 +779,207 @@ export type Position = {
 	y: number | null,
 	/**  Координата Z. */
 	z: number | null,
+};
+
+/**  Кандидат на восстановление для интерфейса: без путей файлов. */
+export type RecoveryCandidateDto = {
+	/**  Вид документа. */
+	kind: DocumentKind,
+	/**  Имя файла без расширения. */
+	name: string,
+	/**  DLC, из которого взят файл. */
+	dlc: string | null,
+	/**  Откуда кандидат попал в список. */
+	origin: RecoveryCandidateOrigin,
+	/**  Состояние файлов. */
+	state: RecoveryCandidateState,
+	/**  В журнале есть история полей. */
+	history: boolean,
+};
+
+/**  Откуда кандидат попал в список. */
+export type RecoveryCandidateOrigin = 
+/**  Трак или прицеп из `edited.json`. */
+"edited" | 
+/**  Документ из журнала полей. */
+"saved";
+
+/**  Состояние файла кандидата. */
+export type RecoveryCandidateState = 
+/**  Оба файла есть, можно восстанавливать. */
+"ready" | 
+/**  Старого файла в `previous_initial` нет. */
+"missingSource" | 
+/**  Нового файла в распаковке нет. */
+"missingTarget";
+
+/**  Кандидаты на восстановление. */
+export type RecoveryCandidatesDto = {
+	/**  Документы к восстановлению. */
+	files: RecoveryCandidateDto[],
+	/**  Сколько модовых записей пропущено. */
+	mods: number,
+};
+
+/**  Решения пользователя по конфликтам и режиму «нет истории». */
+export type RecoveryDecisions = {
+	/**  Решения по конфликтам. */
+	fields?: FieldDecision[],
+	/**  Решения по режиму «нет истории». */
+	legacy?: LegacyDecision[],
+};
+
+/**  Отчёт по файлу. */
+export type RecoveryFileReport = {
+	/**  Имя файла без расширения. */
+	name: string,
+	/**  Вид документа. */
+	kind: DocumentKind,
+	/**  Откуда кандидат попал в список. */
+	origin: RecoveryCandidateOrigin,
+	/**  Состояние файлов. */
+	state: RecoveryCandidateState,
+	/**  Итог обработки. */
+	outcome: RecoveryOutcome,
+	/**  Сколько полей применено. */
+	fields: number,
+	/**  Сколько действий добавлено. */
+	actions: number,
+	/**  Сколько полей пропущено из-за отсутствия элемента. */
+	skippedFields: number,
+	/**  Ошибка обработки файла. */
+	error: string | null,
+};
+
+/**  Что делать с полем конфликта. */
+export type RecoveryKeep = 
+/**  Применить моё значение. */
+"mine" | 
+/**  Оставить значение игры. */
+"game";
+
+/**  Итог обработки файла. */
+export type RecoveryOutcome = 
+/**  Файл восстановлен. */
+"restored" | 
+/**  Изменений не потребовалось. */
+"unchanged" | 
+/**  Файл пропущен. */
+"skipped" | 
+/**  Ошибка обработки файла. */
+"failed" | 
+/**  Обработка отменена пользователем. */
+"cancelled";
+
+/**  План восстановления. */
+export type RecoveryPlan = {
+	/**  Файлы плана. */
+	files: RecoveryPlanFile[],
+	/**  Сколько полей в конфликте. */
+	conflicts: number,
+	/**  Сколько файлов в режиме «нет истории» с отличиями. */
+	legacy: number,
+};
+
+/**  Поле плана восстановления. */
+export type RecoveryPlanField = {
+	/**  Путь элемента. */
+	selector: string,
+	/**  Подпись поля для окна конфликтов. */
+	label: string,
+	/**  Имя атрибута. */
+	attribute: string,
+	/**  Моё (сохранённое) значение; None — атрибута нет. */
+	mine: string | null,
+	/**  Значение игры (в новом файле); None — атрибута нет. */
+	game: string | null,
+	/**  Что будет сделано. */
+	state: RecoveryPlanFieldState,
+};
+
+/**  Состояние поля в плане. */
+export type RecoveryPlanFieldState = 
+/**  Будет применено сохранённое значение. */
+"apply" | 
+/**  Уже совпадает — пропуск. */
+"same" | 
+/**  Конфликт: игра и пользователь изменили поле по-разному. */
+"conflict" | 
+/**  Элемента нет в новом файле — пропуск. */
+"missing" | 
+/**  Режим «нет истории»: значение отличается от нового файла. */
+"legacy";
+
+/**  План восстановления одного файла. */
+export type RecoveryPlanFile = {
+	/**  Имя файла без расширения. */
+	name: string,
+	/**  Вид документа. */
+	kind: DocumentKind,
+	/**  Откуда кандидат попал в список. */
+	origin: RecoveryCandidateOrigin,
+	/**  Состояние файлов. */
+	state: RecoveryCandidateState,
+	/**  Режим плана. */
+	mode: RecoveryPlanMode,
+	/**  Поля плана. */
+	fields: RecoveryPlanField[],
+	/**  Сколько действий будет добавлено (трак). */
+	actions: number,
+	/**  Ошибка чтения старого или нового файла во время плана. */
+	error: string | null,
+};
+
+/**  Режим плана для файла. */
+export type RecoveryPlanMode = 
+/**  Обычное сравнение по журналу полей. */
+"fields" | 
+/**  «Нет истории»: сравнение старого и нового файлов. */
+"legacy";
+
+/**  Прогресс восстановления. */
+export type RecoveryProgress = {
+	/**  Сколько файлов обработано. */
+	current: number,
+	/**  Всего файлов. */
+	total: number,
+	/**  Обрабатываемый файл; `null` — пересборка архива. */
+	file: string | null,
+};
+
+/**  Итог пересборки архива. */
+export type RecoveryRebuild = 
+/**  Пересборка не требовалась. */
+"none" | 
+/**  Архив пересобран. */
+"done" | 
+/**  Архив изменился: нужен повтор после перечитывания. */
+"archiveChanged" | 
+/**  Ошибка пересборки. */
+"failed";
+
+/**  Отчёт о восстановлении. */
+export type RecoveryReport = {
+	/**  Отчёты по файлам. */
+	files: RecoveryFileReport[],
+	/**  Сколько файлов восстановлено. */
+	restored: number,
+	/**  Сколько файлов без изменений. */
+	unchanged: number,
+	/**  Сколько файлов пропущено. */
+	skipped: number,
+	/**  Сколько файлов с ошибкой. */
+	failed: number,
+	/**  Обработка отменена пользователем. */
+	cancelled: boolean,
+	/**  Итог пересборки архива. */
+	rebuild: RecoveryRebuild,
+	/**  Ошибка пересборки архива. */
+	rebuildError: string | null,
+	/**  Ошибка записи журнала после применения; копия тогда остаётся. */
+	journalError: string | null,
+	/**  Копия `previous_initial` осталась на месте. */
+	previousPresent: boolean,
 };
 
 /**  Отчёт о повторной распаковке архива. */

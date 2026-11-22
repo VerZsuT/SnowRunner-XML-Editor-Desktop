@@ -79,7 +79,8 @@ export const ch: Locale = {
 		howToUse: '如何使用',
 		github: 'Github',
 		youtube: 'YouTube(RU)',
-		support: '支持'
+		support: '支持',
+		recoverPrevious: '游戏更新后恢复参数'
 	},
 
 	/** 压缩包完整性窗口。 */
@@ -88,8 +89,63 @@ export const ch: Locale = {
 		changedText: '解压后 initial.pak 已更改：游戏已更新或压缩包被手动替换。禁止写入该压缩包，否则旧文件会回滚更新。请重新读取压缩包：当前解压副本将保存在 backups/previous_initial。打开的文档将被关闭，未保存的更改将丢失。',
 		unknownTitle: '压缩包未校验',
 		unknownText: '没有保存的压缩包指纹，因此禁止写入。请重新读取压缩包，以便将解压后的文件与当前 initial.pak 进行比对。打开的文档将被关闭，未保存的更改将丢失。',
+		previousReplaced: '下次重新读取压缩包时，backups/previous_initial 中的副本将被替换。请在此之前恢复已保存的参数。',
 		refresh: '重新读取压缩包',
 		cancel: '取消'
+	},
+
+	/** 游戏更新后恢复参数。 */
+	recovery: {
+		title: '恢复参数',
+		intro: '游戏已更新：新版 initial.pak 中部分参数发生了变化。程序将恢复你在编辑器中保存的值，不会改动你没有编辑过的字段。如果同一个字段你和游戏都修改了，程序会询问保留哪个值。',
+		empty: '没有可恢复的内容：新版游戏没有已保存的修改。',
+		restore: '恢复',
+		later: '稍后',
+		discard: '删除副本',
+		discardConfirm: '删除上次解压的副本？之后将无法再恢复已保存的参数。',
+		laterNote: '可以推迟恢复，之后从“备份”菜单启动。在副本被删除之前，下次重新读取压缩包时它将被替换。',
+		modsNote: '已跳过模组记录：{}。游戏不会替换模组，因此不会恢复它们的参数。',
+		noHistory: '没有修改历史',
+		conflictsTitle: '参数冲突',
+		conflictsText: '这些字段你和游戏都修改过。请选择保留哪个值：你保存的值或游戏的新值。',
+		mine: '我的',
+		game: '游戏的',
+		mineAll: '全部用我的',
+		gameAll: '全部用游戏的',
+		legacyRestore: '从旧文件恢复字段',
+		legacySkip: '保留新值',
+		legacyText: '该文件没有修改历史：下方列出了新旧版本中所有不同的字段。恢复会覆盖这些字段的游戏值；如果游戏本身修改过它们，这些修改将会丢失。',
+		apply: '应用',
+		progress: '正在恢复',
+		building: '正在构建压缩包...',
+		cancel: '取消',
+		close: '关闭',
+		restored: '已恢复',
+		willApply: '将应用的字段数：{}',
+		unchanged: '无变化',
+		skipped: '已跳过',
+		failed: '错误',
+		cancelled: '恢复已取消。已应用的文件已保存，副本仍保留。',
+		archiveChanged: '恢复期间压缩包发生了变化。请重新读取压缩包并重试恢复。',
+		dirtyDocs: '存在未保存的文档：请保存或关闭它们后重试。',
+		busy: '恢复正在进行中。',
+		planStale: '恢复计划已过期：请重新检查冲突。',
+		kind: {
+			truck: '卡车',
+			trailer: '拖车',
+			engines: '发动机',
+			gearboxes: '变速箱',
+			suspensions: '悬挂',
+			winches: '绞盘',
+			wheels: '车轮组',
+			wheel: '车轮',
+			addon: '附加装置'
+		},
+		state: {
+			ready: '可以恢复',
+			missingSource: '缺少旧文件',
+			missingTarget: '缺少新文件'
+		}
 	},
 
 	setup: {

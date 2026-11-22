@@ -35,18 +35,26 @@ export interface ArchiveGuardValue {
 	/** Текущее состояние; `null` — архив ещё не выбран или не проверен. */
 	state: ArchiveState | null
 
+	/** Полный статус архива: для предупреждений окна целостности и восстановления. */
+	status: ArchiveStatusDto | null
+
 	/** Запись в основной архив запрещена: архив изменён или не проверен. */
 	readOnly: boolean
 
 	/** Показывает окно предупреждения снова. */
 	reportChanged(): void
+
+	/** Перечитывает статус архива: отпечаток и наличие копии `previous_initial`. */
+	refreshStatus(): void
 }
 
 /** Значение по умолчанию: компоненты и тесты работают без провайдера. */
 const FALLBACK: ArchiveGuardValue = {
 	state: null,
+	status: null,
 	readOnly: false,
-	reportChanged: () => {}
+	reportChanged: () => {},
+	refreshStatus: () => {}
 }
 
 const ArchiveGuardContext = createContext<ArchiveGuardValue>(FALLBACK)
@@ -86,35 +94,39 @@ export function ArchiveGuardProvider({
 	const texts = LOCALES[config.lang].archive
 	const initialPath = config.initialPath
 	const [state, setState] = useState<ArchiveState | null>(null)
+	const [status, setStatus] = useState<ArchiveStatusDto | null>(null)
 	const [dismissed, setDismissed] = useState(false)
 	const [refreshing, setRefreshing] = useState(false)
 	const [error, setError] = useState<string | null>(null)
+
+	/** Перечитывает статус: состояние и полный DTO для предупреждений. */
+	const refreshStatus = useCallback(() => {
+		if (!initialPath) {
+			return
+		}
+
+		void client.status().then(
+			next => {
+				setStatus(next)
+				setState(next.state)
+				setDismissed(false)
+			},
+			() => {
+				// Ошибка проверки трактуется как неизвестное состояние: запись запрещена.
+				setStatus(null)
+				setState('unknown')
+				setDismissed(false)
+			}
+		)
+	}, [client, initialPath])
 
 	useEffect(() => {
 		if (!initialPath || !ready) {
 			return
 		}
 
-		let cancelled = false
-
-		void client.status()
-			.then(status => {
-				if (!cancelled) {
-					setState(status.state)
-					setDismissed(false)
-				}
-			})
-			.catch(() => {
-				// Ошибка проверки трактуется как неизвестное состояние: запись запрещена.
-				if (!cancelled) {
-					setState('unknown')
-				}
-			})
-
-		return () => {
-			cancelled = true
-		}
-	}, [client, initialPath, ready])
+		refreshStatus()
+	}, [initialPath, ready, refreshStatus])
 
 	useEffect(() => {
 		let cancelled = false
@@ -122,6 +134,7 @@ export function ArchiveGuardProvider({
 
 		void client.subscribe(next => {
 			setState(next)
+			setStatus(current => current && { ...current, state: next })
 			setDismissed(false)
 		})
 			.then(unsubscribe => {
@@ -143,15 +156,8 @@ export function ArchiveGuardProvider({
 
 	const reportChanged = useCallback(() => {
 		setDismissed(false)
-
-		if (!initialPath) {
-			return
-		}
-
-		void client.status()
-			.then(status => setState(status.state))
-			.catch(() => setState('unknown'))
-	}, [client, initialPath])
+		refreshStatus()
+	}, [refreshStatus])
 
 	async function refresh() {
 		setRefreshing(true)
@@ -170,10 +176,11 @@ export function ArchiveGuardProvider({
 	// Без выбранного архива состояние не применяется: старое значение не должно
 	// блокировать работу после смены пути или сброса настроек.
 	const current = initialPath && ready ? state : null
+	const currentStatus = initialPath && ready ? status : null
 	const readOnly = current === 'changed' || current === 'unknown'
 	const value = useMemo(
-		() => ({ state: current, readOnly, reportChanged }),
-		[current, readOnly, reportChanged]
+		() => ({ state: current, status: currentStatus, readOnly, reportChanged, refreshStatus }),
+		[current, currentStatus, readOnly, reportChanged, refreshStatus]
 	)
 	const unknown = current === 'unknown'
 
@@ -197,6 +204,14 @@ export function ArchiveGuardProvider({
 					)}
 				>
 					<p>{unknown ? texts.unknownText : texts.changedText}</p>
+					{currentStatus?.previousInitial && (
+						<Alert
+							className="archive-previous"
+							type="warning"
+							showIcon
+							title={texts.previousReplaced}
+						/>
+					)}
 					{error && <Alert type="error" showIcon title={error} />}
 				</Modal>
 			)}

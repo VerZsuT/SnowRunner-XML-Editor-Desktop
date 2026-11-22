@@ -14,6 +14,7 @@ pub mod game;
 pub mod library;
 pub mod mods;
 pub mod paths;
+pub mod recovery;
 pub mod system;
 pub mod texts;
 pub mod update;
@@ -49,6 +50,11 @@ pub fn collect() -> Commands<Wry> {
 		archive::update_archive,
 		archive::backup_archive,
 		archive::restore_backup,
+		recovery::recovery_candidates,
+		recovery::recovery_plan,
+		recovery::recover_previous,
+		recovery::cancel_recovery,
+		recovery::discard_previous,
 		library::list_favorites,
 		library::toggle_favorite,
 		library::list_edited,

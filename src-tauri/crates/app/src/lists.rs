@@ -1,7 +1,7 @@
-//! Пользовательские списки: избранное и изменённые файлы.
+//! Пользовательские списки: избранное, изменённые файлы и журнал полей.
 //!
-//! Оба списка живут в каталоге json программы (`favorites.json`,
-//! `edited.json`): читаются при старте и пишутся атомарно при каждом
+//! Списки живут в каталоге json программы (`favorites.json`, `edited.json`,
+//! `edited-documents.json`): читаются при старте и пишутся атомарно при каждом
 //! изменении, поэтому падение процесса не портит данные.
 
 use std::fs;
@@ -11,6 +11,8 @@ use std::path::{Path, PathBuf};
 use serde::{Deserialize, Serialize};
 use specta::Type;
 use thiserror::Error;
+
+use crate::documents::DocumentKind;
 
 /// Изменённый пользователем файл игры.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Type)]
@@ -32,6 +34,40 @@ pub struct EditedFile {
 	pub mod_name: Option<String>,
 }
 
+/// Поле журнала: значение до первой правки и сохранённое значение.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Type)]
+#[serde(rename_all = "camelCase")]
+pub struct EditedField {
+	/// Путь элемента.
+	pub selector: String,
+
+	/// Имя атрибута.
+	pub attribute: String,
+
+	/// Значение до первой правки пользователя; None — атрибута не было.
+	pub base: Option<String>,
+
+	/// Сохранённое значение; None — атрибут удалён.
+	pub value: Option<String>,
+}
+
+/// Документ журнала: история полей, которые менял пользователь.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Type)]
+#[serde(rename_all = "camelCase")]
+pub struct EditedDocument {
+	/// Вид документа.
+	pub kind: DocumentKind,
+
+	/// Имя файла без расширения.
+	pub name: String,
+
+	/// Точный путь записи архива.
+	pub archive_name: String,
+
+	/// Изменённые поля; пустой список — история есть, правок нет.
+	pub fields: Vec<EditedField>,
+}
+
 /// Ошибка записи пользовательских списков.
 #[derive(Debug, Error)]
 pub enum LibraryError {
@@ -50,30 +86,41 @@ pub enum LibraryError {
 	Serialize(#[from] serde_json::Error),
 }
 
-/// Избранное и изменённые файлы.
+/// Избранное, изменённые файлы и журнал полей.
 #[derive(Debug)]
 pub struct Library {
 	/// Имена избранных файлов.
 	favorites: Vec<String>,
 	/// Изменённые файлы.
 	edited: Vec<EditedFile>,
+	/// Журнал документов и полей.
+	documents: Vec<EditedDocument>,
 	/// Файл избранного.
 	favorites_path: PathBuf,
 	/// Файл изменённых файлов.
 	edited_path: PathBuf,
+	/// Файл журнала документов.
+	documents_path: PathBuf,
 }
 
 impl Library {
 	/// Читает списки; отсутствующий или битый файл даёт пустой список.
-	pub fn load(favorites: impl Into<PathBuf>, edited: impl Into<PathBuf>) -> Self {
+	pub fn load(
+		favorites: impl Into<PathBuf>,
+		edited: impl Into<PathBuf>,
+		documents: impl Into<PathBuf>,
+	) -> Self {
 		let favorites_path = favorites.into();
 		let edited_path = edited.into();
+		let documents_path = documents.into();
 
 		Self {
 			favorites: read_json(&favorites_path).unwrap_or_default(),
 			edited: read_json(&edited_path).unwrap_or_default(),
+			documents: read_json(&documents_path).unwrap_or_default(),
 			favorites_path,
 			edited_path,
+			documents_path,
 		}
 	}
 
@@ -85,6 +132,38 @@ impl Library {
 	/// Изменённые файлы.
 	pub fn edited(&self) -> &[EditedFile] {
 		&self.edited
+	}
+
+	/// Журнал документов и полей.
+	pub fn documents(&self) -> &[EditedDocument] {
+		&self.documents
+	}
+
+	/// Запись журнала по точному пути записи архива (без учёта регистра).
+	pub fn document(&self, archive_name: &str) -> Option<&EditedDocument> {
+		self.documents
+			.iter()
+			.find(|document| document.archive_name.eq_ignore_ascii_case(archive_name))
+	}
+
+	/// Заменяет или добавляет запись журнала и сохраняет файл.
+	pub fn replace_document(&mut self, document: EditedDocument) -> Result<(), LibraryError> {
+		match self.documents.iter().position(|item| {
+			item.archive_name
+				.eq_ignore_ascii_case(&document.archive_name)
+		}) {
+			Some(index) => self.documents[index] = document,
+			None => self.documents.push(document),
+		}
+
+		self.documents.sort_by_cached_key(|item| {
+			(
+				item.archive_name.to_lowercase(),
+				item.kind.folder().to_owned(),
+			)
+		});
+
+		self.save_documents()
 	}
 
 	/// Является ли файл избранным.
@@ -125,12 +204,25 @@ impl Library {
 	}
 
 	/// Снимает пометку изменённого файла по имени.
+	///
+	/// Вместе с пометкой удаляется и запись журнала с тем же именем: иначе
+	/// осталась бы осиротевшая история полей.
 	pub fn unmark_edited(&mut self, name: &str) -> Result<bool, LibraryError> {
 		let Some(index) = self.edited.iter().position(|item| item.name == name) else {
 			return Ok(false);
 		};
 
 		self.edited.remove(index);
+
+		let before = self.documents.len();
+
+		self.documents
+			.retain(|document| !document.name.eq_ignore_ascii_case(name));
+
+		if self.documents.len() != before {
+			self.save_documents()?;
+		}
+
 		self.save_edited()?;
 
 		Ok(true)
@@ -144,6 +236,11 @@ impl Library {
 	/// Записывает изменённые файлы.
 	fn save_edited(&self) -> Result<(), LibraryError> {
 		write_json(&self.edited_path, &self.edited)
+	}
+
+	/// Записывает журнал документов и полей.
+	fn save_documents(&self) -> Result<(), LibraryError> {
+		write_json(&self.documents_path, &self.documents)
 	}
 }
 

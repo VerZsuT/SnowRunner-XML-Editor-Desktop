@@ -2,14 +2,17 @@
 
 pub mod actions;
 pub mod archive;
+pub mod changes;
 pub mod config;
 pub mod documents;
+pub mod editable;
 pub mod epf;
 pub mod game;
 pub mod integrity;
 pub mod lists;
 pub mod mods;
 pub mod paths;
+pub mod recovery;
 pub mod reset;
 pub mod system;
 pub mod texts;

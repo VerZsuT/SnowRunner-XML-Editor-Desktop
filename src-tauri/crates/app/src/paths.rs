@@ -143,6 +143,11 @@ impl Paths {
 		self.jsons_dir().join(format!("{name}.json"))
 	}
 
+	/// Журнал документов и полей, которые менял пользователь.
+	pub fn edited_documents(&self) -> PathBuf {
+		self.json("edited-documents")
+	}
+
 	/// Путь внутри каталога данных.
 	pub fn data(&self, relative: &str) -> PathBuf {
 		self.data_root.join(relative)

@@ -241,6 +241,19 @@ impl From<sxmle_app::archive::ArchiveError> for CommandError {
 	}
 }
 
+impl From<sxmle_app::recovery::RecoveryError> for CommandError {
+	fn from(error: sxmle_app::recovery::RecoveryError) -> Self {
+		use sxmle_app::recovery::RecoveryError;
+
+		match error {
+			RecoveryError::Archive(error) => error.into(),
+			RecoveryError::PlanStale | RecoveryError::MissingDecision => {
+				Self::conflict("план восстановления устарел: проверьте конфликты заново")
+			}
+		}
+	}
+}
+
 impl From<sxmle_app::mods::ModsError> for CommandError {
 	fn from(error: sxmle_app::mods::ModsError) -> Self {
 		use sxmle_app::mods::ModsError;

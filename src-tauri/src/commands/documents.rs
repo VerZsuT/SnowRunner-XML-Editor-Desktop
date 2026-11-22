@@ -9,13 +9,15 @@ use std::path::{Path, PathBuf};
 
 use sxmle_app::actions::{Crane, Trailer};
 use sxmle_app::archive;
+use sxmle_app::changes::{self, FieldMap};
 use sxmle_app::documents::{Document, DocumentInfo, DocumentKind, MutationResult, SaveResult};
+use sxmle_app::editable;
 use sxmle_app::integrity::{self, ArchiveState};
-use sxmle_app::lists::EditedFile;
+use sxmle_app::lists::{EditedDocument, EditedFile};
 use sxmle_domain::game::entities::{
 	Engine, Gearbox, SuspensionSet, Truck, TruckAddon, Wheel, Wheels, Winch,
 };
-use sxmle_domain::xml::Element;
+use sxmle_domain::xml::{Element, parse_bytes};
 use tauri::{AppHandle, State};
 
 use crate::commands::archive::emit_state;
@@ -317,8 +319,11 @@ pub async fn save_document(
 
 	ensure_initial_unchanged(&state, std::slice::from_ref(&info))?;
 
+	// Снимок старого файла читается до записи: иначе на диске уже новое дерево.
+	let snapshots = snapshots(&state, std::slice::from_ref(&info));
 	let saved = state.documents().save(&doc_id)?;
 
+	save_journal(&state, &snapshots)?;
 	mark_edited(&state, std::slice::from_ref(&saved))?;
 
 	update_archives(&app, &state, vec![info]).await?;
@@ -347,8 +352,11 @@ pub async fn save_all_documents(
 
 	ensure_initial_unchanged(&state, &checked)?;
 
+	let dirty = state.documents().dirty();
+	let snapshots = snapshots(&state, &dirty);
 	let saved = state.documents().save_all()?;
 
+	save_journal(&state, &snapshots)?;
 	mark_edited(&state, &saved)?;
 
 	if saved.is_empty() && !force {
@@ -480,6 +488,78 @@ async fn update_archives(
 	Ok(())
 }
 
+/// Поля документа до и после сохранения — для журнала истории полей.
+struct JournalSnapshot {
+	/// Сведения о документе.
+	info: DocumentInfo,
+
+	/// Поля файла на диске; None — старый файл не прочитан.
+	disk: Option<FieldMap>,
+
+	/// Поля сохраняемого дерева.
+	tree: FieldMap,
+}
+
+/// Снимок документа; None — у вида нет правил полей.
+fn snapshot(document: &Document) -> Option<JournalSnapshot> {
+	let info = document.info().clone();
+
+	editable::rules(info.kind)?;
+
+	let tree = changes::collect_fields(info.kind, document.document());
+	let disk = std::fs::read(&info.path)
+		.ok()
+		.and_then(|bytes| parse_bytes(&bytes).ok())
+		.map(|document| changes::collect_fields(info.kind, &document));
+
+	Some(JournalSnapshot { info, disk, tree })
+}
+
+/// Снимки открытых документов перед сохранением.
+fn snapshots(state: &AppState, documents: &[DocumentInfo]) -> Vec<JournalSnapshot> {
+	let open = state.documents();
+
+	documents
+		.iter()
+		.filter_map(|info| open.get(&info.doc_id).ok().and_then(snapshot))
+		.collect()
+}
+
+/// Обновление записи журнала после сохранения.
+///
+/// Виды без правил (одиночное колесо) и документы, у которых старый файл не
+/// прочитан, журнал не трогают: старая история остаётся как была.
+fn merge_snapshot(
+	info: &DocumentInfo,
+	disk: Option<&FieldMap>,
+	tree: &FieldMap,
+	current: Option<&EditedDocument>,
+) -> Option<EditedDocument> {
+	editable::rules(info.kind)?;
+
+	Some(changes::merge_saved(info, disk?, tree, current))
+}
+
+/// Записывает обновлённые записи журнала.
+fn save_journal(state: &AppState, snapshots: &[JournalSnapshot]) -> AppResult<()> {
+	let mut library = state.library();
+
+	for snapshot in snapshots {
+		let current = library.document(&snapshot.info.archive_name).cloned();
+
+		if let Some(document) = merge_snapshot(
+			&snapshot.info,
+			snapshot.disk.as_ref(),
+			&snapshot.tree,
+			current.as_ref(),
+		) {
+			library.replace_document(document)?;
+		}
+	}
+
+	Ok(())
+}
+
 /// Помечает сохранённые траки и прицепы изменёнными.
 fn mark_edited(state: &AppState, saved: &[SaveResult]) -> AppResult<()> {
 	let documents = state.documents();
@@ -562,4 +642,74 @@ pub fn reset_document_defaults(
 /// Ошибка отсутствия корневого элемента документа.
 fn missing(document: &Document, name: &str) -> CommandError {
 	CommandError::not_found(format!("{}: элемент {name}", document.info().archive_name))
+}
+
+#[cfg(test)]
+mod tests {
+	use std::collections::BTreeMap;
+
+	use super::*;
+
+	/// Сведения о документе для журнала.
+	fn info(kind: DocumentKind, name: &str) -> DocumentInfo {
+		DocumentInfo {
+			doc_id: "doc-1".to_owned(),
+			kind,
+			name: name.to_owned(),
+			path: String::new(),
+			archive_name: format!("[media]\\classes\\{name}.xml"),
+			dlc: None,
+			mod_name: None,
+			revision: 1,
+			dirty: true,
+		}
+	}
+
+	/// Снимок полей с одним значением.
+	fn map(attribute: &str, value: Option<&str>) -> FieldMap {
+		[(
+			("/Truck/TruckData".to_owned(), attribute.to_owned()),
+			value.map(str::to_owned),
+		)]
+		.into_iter()
+		.collect::<BTreeMap<_, _>>()
+	}
+
+	#[test]
+	fn журнал_запоминает_правку_двигателя_трака_и_аддона() {
+		for kind in [
+			DocumentKind::Engines,
+			DocumentKind::Truck,
+			DocumentKind::Addon,
+		] {
+			let disk = map("FuelCapacity", Some("100"));
+			let tree = map("FuelCapacity", Some("120"));
+			let merged = merge_snapshot(&info(kind, "a"), Some(&disk), &tree, None)
+				.expect("вид с правилами");
+
+			assert_eq!(merged.fields.len(), 1);
+			assert_eq!(merged.fields[0].base.as_deref(), Some("100"));
+			assert_eq!(merged.fields[0].value.as_deref(), Some("120"));
+		}
+	}
+
+	#[test]
+	fn вид_без_правил_не_пишется_в_журнал() {
+		let disk = map("FuelCapacity", Some("100"));
+		let tree = map("FuelCapacity", Some("120"));
+
+		assert!(
+			merge_snapshot(&info(DocumentKind::Wheel, "w"), Some(&disk), &tree, None).is_none()
+		);
+	}
+
+	#[test]
+	fn нечитаемый_старый_файл_не_меняет_журнал() {
+		let tree = map("FuelCapacity", Some("120"));
+
+		assert!(
+			merge_snapshot(&info(DocumentKind::Truck, "a"), None, &tree, None).is_none(),
+			"без снимка диска запись журнала остаётся прежней"
+		);
+	}
 }

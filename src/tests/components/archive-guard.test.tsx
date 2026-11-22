@@ -40,14 +40,26 @@ function client(overrides: Partial<ArchiveGuardClient> = {}): ArchiveGuardClient
 }
 
 /** Ответ состояния архива. */
-function status(state: ArchiveState) {
+function status(state: ArchiveState, previousInitial = false) {
 	return {
 		path: ARCHIVE,
 		state,
-		previousInitial: false,
+		previousInitial,
 		editedCount: 0,
 		markerPresent: false
 	}
+}
+
+/** Показывает полный статус и умеет его перечитывать. */
+function StatusProbe() {
+	const { status, refreshStatus } = useArchiveGuard()
+
+	return (
+		<>
+			<span data-testid="status">{status?.state ?? 'null'}</span>
+			<button onClick={refreshStatus}>refresh</button>
+		</>
+	)
 }
 
 describe('ArchiveGuardProvider', () => {
@@ -147,5 +159,45 @@ describe('ArchiveGuardProvider', () => {
 
 		expect(await screen.findByText('Архив не проверен')).toBeInTheDocument()
 		expect(screen.getByTestId('probe')).toHaveTextContent('unknown:true')
+	})
+
+	it('предупреждает о замене копии previous_initial', async () => {
+		const fake = client({ status: vi.fn().mockResolvedValue(status('changed', true)) })
+
+		render(
+			<ArchiveGuardProvider client={fake}>
+				<Probe />
+			</ArchiveGuardProvider>
+		)
+
+		expect(await screen.findByText('Архив изменился')).toBeInTheDocument()
+		expect(
+			screen.getByText(/Копия backups\/previous_initial будет заменена/)
+		).toBeInTheDocument()
+	})
+
+	it('хранит полный статус и перечитывает его по запросу', async () => {
+		const fake = client({
+			status: vi.fn()
+				.mockResolvedValueOnce(status('ok'))
+				.mockResolvedValue(status('changed', true))
+		})
+
+		render(
+			<ArchiveGuardProvider client={fake}>
+				<StatusProbe />
+			</ArchiveGuardProvider>
+		)
+
+		await waitFor(() => expect(screen.getByTestId('status')).toHaveTextContent('ok'))
+		expect(screen.queryByText('Архив изменился')).not.toBeInTheDocument()
+
+		await userEvent.click(screen.getByRole('button', { name: 'refresh' }))
+
+		expect(await screen.findByText('Архив изменился')).toBeInTheDocument()
+		expect(screen.getByTestId('status')).toHaveTextContent('changed')
+		expect(
+			screen.getByText(/Копия backups\/previous_initial будет заменена/)
+		).toBeInTheDocument()
 	})
 })

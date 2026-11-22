@@ -13,7 +13,10 @@ use thiserror::Error;
 
 use crate::integrity;
 
-/// Маркер отредактированного архива.
+/// Маркер отредактированного архива 1.x.
+///
+/// 2.0.0 маркер не пишет: обновление игры определяется отпечатком архива.
+/// Константа остаётся для чтения старых архивов в диагностике `integrity`.
 pub const EDITED_MARKER: &str = "edited";
 
 /// Списки файлов для распаковки.
@@ -382,9 +385,10 @@ fn remove_dir_all_if_exists(path: &Path) -> io::Result<()> {
 	}
 }
 
-/// Обновляет архив файлами из каталога и добавляет маркер `edited`.
+/// Обновляет архив файлами из каталога.
 ///
 /// Файлы, содержимое которых совпадает с записью архива (CRC32 и размер), не пересобираются.
+/// Маркер `edited` не добавляется: в 2.0.0 признак правки — обновлённый отпечаток архива.
 pub fn update_from_dir(archive_path: &Path, dir: &Path) -> Result<UpdateResult, ArchiveError> {
 	if !archive_path.is_file() {
 		return Err(ArchiveError::ArchiveNotFound(archive_path.to_path_buf()));
@@ -402,17 +406,12 @@ pub fn update_from_dir(archive_path: &Path, dir: &Path) -> Result<UpdateResult, 
 
 	let mut changed: Vec<(String, Vec<u8>)> = Vec::new();
 	let mut appended: Vec<(String, Vec<u8>)> = Vec::new();
-	let mut has_marker = false;
 
 	{
 		let archive = ZipArchive::open(archive_path)?;
 		let mut index: HashMap<String, &EntryMeta> = HashMap::new();
 
 		for entry in archive.entries() {
-			if entry.name.eq_ignore_ascii_case(EDITED_MARKER) {
-				has_marker = true;
-			}
-
 			if !entry.is_directory() {
 				index.entry(entry.name.to_lowercase()).or_insert(entry);
 			}
@@ -434,10 +433,6 @@ pub fn update_from_dir(archive_path: &Path, dir: &Path) -> Result<UpdateResult, 
 
 	let changed_names = changed.iter().map(|(name, _)| name.clone()).collect();
 	let added_names = appended.iter().map(|(name, _)| name.clone()).collect();
-
-	if !has_marker {
-		appended.push((EDITED_MARKER.to_owned(), Vec::new()));
-	}
 
 	let report = zip::update(archive_path, &ArchiveUpdate { changed, appended })?;
 

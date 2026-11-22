@@ -1,0 +1,96 @@
+/* Окно восстановления параметров после обновления игры. */
+
+.recovery-list {
+	margin-top: 8px;
+	max-height: 260px;
+	overflow: auto;
+}
+
+.recovery-file {
+	font-weight: 600;
+}
+
+.recovery-note {
+	margin-top: 12px;
+	color: var(--ant-color-text-secondary);
+	font-size: 12px;
+}
+
+.recovery-mods,
+.recovery-error {
+	margin-bottom: 12px;
+}
+
+.recovery-loading {
+	display: flex;
+	justify-content: center;
+	padding: 32px 0;
+}
+
+.recovery-conflicts {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+
+.recovery-conflict-list {
+	max-height: 260px;
+	overflow: auto;
+}
+
+.recovery-conflict {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	width: 100%;
+}
+
+.recovery-conflict-values {
+	display: flex;
+	gap: 24px;
+	color: var(--ant-color-text-secondary);
+	font-size: 12px;
+}
+
+.recovery-legacy {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	border-top: 1px solid var(--ant-color-border-secondary);
+	padding-top: 12px;
+}
+
+.recovery-legacy-fields {
+	max-height: 200px;
+	overflow: auto;
+}
+
+.recovery-summary {
+	color: var(--ant-color-text-secondary);
+}
+
+.recovery-actions {
+	margin-top: 4px;
+}
+
+.recovery-progress {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	padding: 8px 0;
+}
+
+.recovery-report {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+
+.recovery-report-counts {
+	font-size: 14px;
+}
+
+.recovery-problems {
+	max-height: 200px;
+	overflow: auto;
+}

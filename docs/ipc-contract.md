@@ -51,7 +51,7 @@ const info = await call(commands.openDocument('truck', 'ank_mk38', null))
 | `xml` | разбор/запись XML, кодировка | показать файл, не сохранять |
 | `invalidArgument` | плохой путь, имя мода, версия `.epf` | исправить ввод |
 | `notFound` | нет документа, файла, элемента, сокета | обновить список |
-| `conflict` | устаревшая `revision`, изменённый документ | перечитать/подтвердить закрытие |
+| `conflict` | устаревшая `revision`, изменённый документ, занятое восстановление, устаревший план восстановления | перечитать/подтвердить закрытие, перестроить план |
 | `update` | сеть, HTTP, версия, загрузка | повторить позже |
 | `internal` | прочее | лог и сообщение |
 
@@ -98,7 +98,9 @@ const info = await call(commands.openDocument('truck', 'ank_mk38', null))
 поэтому подходит корень установки, папка игры или `client`.
 
 `archive_status` всегда `Ok`: состояние `ok`/`changed`/`unknown`, наличие
-`backups/previous_initial`, число записей `edited.json` и маркер `edited` в архиве.
+`backups/previous_initial`, число записей `edited.json` и `markerPresent` — наличие
+старого маркера `edited` в архиве. Маркер 2.0.0 не пишет; `markerPresent` оставлен
+только диагностикой старых архивов, ни одно решение от него не зависит.
 `refresh_archive` перечитывает выбранный архив списком `optimized`, уносит прежний
 `mainTemp` в `previous_initial`, очищает реестр документов и пишет отпечаток.
 `unpack_initial` делает то же без сохранения прежнего каталога; оба возвращают
@@ -191,6 +193,50 @@ const info = await call(commands.openDocument('truck', 'ank_mk38', null))
 `reset_document_defaults` применяет их ко всем найденным путям за одну мутацию и ставит
 `dirty`. `reset_document` по-прежнему отбрасывает правки, перечитывая файл с диска.
 
+### Восстановление после обновления игры
+
+| Команда | Аргументы | Результат |
+|---|---|---|
+| `recovery_candidates` | — | `RecoveryCandidatesDto` |
+| `recovery_plan` | — | `RecoveryPlan` |
+| `recover_previous` | `decisions` | `RecoveryReport` |
+| `cancel_recovery` | — | `boolean`: отмена запрошена |
+| `discard_previous` | — | `boolean`: копия удалена |
+
+`recovery_candidates` всегда `Ok`: нет `previous_initial` — пустой список. Возвращает
+`{ files, mods }` без путей; `mods` — сколько модовых записей пропущено.
+`RecoveryCandidateDto { kind, name, dlc, origin, state, history }`: `origin` — `edited`
+(запись `edited.json`) или `saved` (запись журнала полей); `state` — `ready`,
+`missingSource`, `missingTarget`; `history` — в журнале есть запись, даже с пустыми
+`fields`.
+
+`recovery_plan` ничего не пишет: проверяет отпечаток и читает старый и новый XML;
+при изменившемся архиве возвращает `archiveChanged`.
+`RecoveryPlan { files, conflicts, legacy }`; `RecoveryPlanFile { name, kind, origin,
+state, mode, fields, actions, error }`; `mode` — `fields` (3-way по журналу) или
+`legacy` («нет истории»); `fields[]` — `RecoveryPlanField { selector, label, attribute,
+mine, game, state }`; `state` — `apply`, `same`, `conflict`, `missing`, `legacy`;
+`mine`/`game` — значения, `null` — атрибута нет; `label` — ключ подписи; `actions` —
+сколько действий будет добавлено траку.
+
+`recover_previous` применяет решения пользователя. `RecoveryDecisions { fields, legacy }`;
+`FieldDecision { file, field, keep }` — индексы файла и поля в плане, `keep` — `mine`
+или `game`; `LegacyDecision { file, restore }` — решение по файлу без истории.
+`RecoveryReport { files, restored, unchanged, skipped, failed, cancelled, rebuild,
+rebuildError, journalError, previousPresent }`; `RecoveryFileReport { name, kind, origin,
+state, outcome, fields, actions, skippedFields, error }`; `outcome` — `restored`,
+`unchanged`, `skipped`, `failed`, `cancelled`; `rebuild` — `none`, `done`,
+`archiveChanged`, `failed`.
+
+Перед работой команда проверяет `dirty`-документы, `initialPath` и `previous_initial`,
+занимает `RecoveryControl` и выключает watcher. Отмена — только между файлами:
+применённое сохраняется, копия остаётся.
+
+Ошибки: `conflict` — восстановление уже идёт, есть `dirty`-документы или решения не
+совпали с пересчитанным планом («план устарел»); `archiveChanged` — архив изменился
+между планом и применением; `notFound` — нет `previous_initial`; `invalidArgument` —
+архив не выбран.
+
 ### Система и обновления
 
 | Команда | Аргументы | Результат |
@@ -207,12 +253,14 @@ const info = await call(commands.openDocument('truck', 'ank_mk38', null))
 |---|---|---|
 | `update-progress` | `{ percent, downloaded, total }` | загрузка обновления |
 | `archive-status-changed` | `{ state: 'ok' \| 'changed' \| 'unknown' }` | архив перечитан, пересобран или восстановлен из бэкапа |
+| `recovery-progress` | `{ current, total, file: string \| null }` | идёт восстановление параметров; `file = null` — пересборка архива |
 | `documents-changed` | `{ paths: string[] }` | файл открытого документа изменён извне |
 
 `percent` — 0–99 (100 не отправляется), `total` — `null`, если сервер не сообщил размер.
 Подписка: `events.updateProgress.listen(...)` в [updates.ts](../src/api/updates.ts).
 `archive-status-changed` отправляют `unpack_initial`, `refresh_archive`, `update_archive`,
-`save_document`/`save_all_documents` и `restore_backup`. После перечитывания и пересборки
+`save_document`/`save_all_documents`, `restore_backup` и `recover_previous`.
+После перечитывания и пересборки
 основного архива состояние `ok`; `restore_backup` сообщает фактическое состояние после
 подмены, а пересборка только мода — фактическое состояние основного архива (режим чтения
 не снимается ложно). Подписка — `onArchiveStatusChanged` в

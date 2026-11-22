@@ -1,8 +1,11 @@
 //! Тесты сценариев работы с архивом: на синтетике и на фикстуре `initial.pak`.
 
+mod common;
+
 use std::fs;
 use std::path::{Path, PathBuf};
 
+use common::build_stored_zip;
 use sxmle_app::archive::{
 	EDITED_MARKER, UnpackList, UnpackListKind, backup_file, find_initial, restore_backup, unpack,
 	unpack_and_remember, update_checked, update_from_dir,
@@ -28,15 +31,18 @@ fn work_dir(name: &str) -> PathBuf {
 fn unpack_list_matches_prefixes_ignoring_case() {
 	let list = UnpackListKind::Main.list();
 
-	assert_eq!(list.items().len(), 13);
+	assert_eq!(list.items().len(), 12);
 	assert!(list.matches("[media]\\classes\\trucks\\truck.xml"));
 	assert!(list.matches("[MEDIA]\\Classes\\Trucks\\truck.xml"));
 	assert!(list.matches("[media]\\_dlc\\dlc_1\\classes\\trucks\\a.xml"));
-	assert!(list.matches("edited"));
+	assert!(
+		!list.matches("edited"),
+		"маркер 1.x не входит в список распаковки 2.0.0"
+	);
 	assert!(!list.matches("[media]\\classes\\trucks2\\truck.xml"));
 	assert!(!list.matches("[media]\\classes\\trailers\\a.xml"));
 	assert!(!list.matches("pak.load_list"));
-	assert_eq!(UnpackListKind::Optimized.list().items().len(), 44);
+	assert_eq!(UnpackListKind::Optimized.list().items().len(), 43);
 	assert_eq!(UnpackListKind::Mods.list().items().len(), 3);
 }
 
@@ -123,10 +129,10 @@ fn unpack_and_update_fixture() {
 		.map(|entry| entry.name.clone())
 		.collect();
 
-	assert_eq!(updated_names.len(), original_entries.len() + 1);
-	assert_eq!(
-		updated_names.last().map(String::as_str),
-		Some(EDITED_MARKER)
+	assert_eq!(updated_names.len(), original_entries.len());
+	assert!(
+		!updated_names.iter().any(|name| name == EDITED_MARKER),
+		"маркер 1.x не должен появляться в архиве"
 	);
 	assert_eq!(
 		&updated_names[..original_entries.len()],
@@ -154,20 +160,15 @@ fn unpack_and_update_fixture() {
 
 	drop(updated);
 
-	// Повторное сохранение не должно падать на уже существующем маркере.
+	// Повторное сохранение не должно падать и добавлять записи.
 	let again = update_from_dir(&archive_path, &dest).expect("повторное обновление архива");
 
 	assert!(again.changed.is_empty());
 	assert!(again.added.is_empty());
 
 	let reopened = ZipArchive::open(&archive_path).expect("архив после повторного обновления");
-	let markers = reopened
-		.entries()
-		.iter()
-		.filter(|entry| entry.name == EDITED_MARKER)
-		.count();
 
-	assert_eq!(markers, 1);
+	assert_eq!(reopened.entries().len(), original_entries.len());
 
 	let _ = fs::remove_dir_all(&root);
 }
@@ -236,77 +237,6 @@ fn has_staging(root: &Path) -> bool {
 	})
 }
 
-/// Записать little-endian u16.
-fn put_u16(buffer: &mut Vec<u8>, value: u16) {
-	buffer.extend_from_slice(&value.to_le_bytes());
-}
-
-/// Записать little-endian u32.
-fn put_u32(buffer: &mut Vec<u8>, value: u32) {
-	buffer.extend_from_slice(&value.to_le_bytes());
-}
-
-/// Собрать минимальный zip-архив с записями stored (метод 0).
-fn build_stored_zip(path: &Path, files: &[(&str, &[u8])]) {
-	let mut data = Vec::new();
-	let mut central = Vec::new();
-
-	for (name, content) in files {
-		let offset = data.len() as u32;
-		let crc = crc32fast::hash(content);
-		let size = content.len() as u32;
-		let name_bytes = name.as_bytes();
-		let name_length = name_bytes.len() as u16;
-
-		put_u32(&mut data, 0x0403_4b50);
-		put_u16(&mut data, 10);
-		put_u16(&mut data, 0);
-		put_u16(&mut data, 0);
-		put_u16(&mut data, 0);
-		put_u16(&mut data, 0);
-		put_u32(&mut data, crc);
-		put_u32(&mut data, size);
-		put_u32(&mut data, size);
-		put_u16(&mut data, name_length);
-		put_u16(&mut data, 0);
-		data.extend_from_slice(name_bytes);
-		data.extend_from_slice(content);
-
-		put_u32(&mut central, 0x0201_4b50);
-		put_u16(&mut central, 0x031e);
-		put_u16(&mut central, 10);
-		put_u16(&mut central, 0);
-		put_u16(&mut central, 0);
-		put_u16(&mut central, 0);
-		put_u16(&mut central, 0);
-		put_u32(&mut central, crc);
-		put_u32(&mut central, size);
-		put_u32(&mut central, size);
-		put_u16(&mut central, name_length);
-		put_u16(&mut central, 0);
-		put_u16(&mut central, 0);
-		put_u16(&mut central, 0);
-		put_u16(&mut central, 0);
-		put_u32(&mut central, 0);
-		put_u32(&mut central, offset);
-		central.extend_from_slice(name_bytes);
-	}
-
-	let cd_offset = data.len() as u32;
-	let cd_size = central.len() as u32;
-
-	data.extend_from_slice(&central);
-	put_u32(&mut data, 0x0605_4b50);
-	put_u16(&mut data, 0);
-	put_u16(&mut data, 0);
-	put_u16(&mut data, files.len() as u16);
-	put_u16(&mut data, files.len() as u16);
-	put_u32(&mut data, cd_size);
-	put_u32(&mut data, cd_offset);
-	put_u16(&mut data, 0);
-	fs::write(path, data).expect("синтетический архив");
-}
-
 #[test]
 fn unpack_and_remember_replaces_expanded_files() {
 	let root = work_dir("archive-fresh");
@@ -319,7 +249,7 @@ fn unpack_and_remember_replaces_expanded_files() {
 		&archive,
 		&[
 			("[media]\\classes\\trucks\\a.xml", b"first"),
-			(EDITED_MARKER, b""),
+			("[strings]\\strings_english.str", b""),
 		],
 	);
 	let first = unpack_and_remember(&archive, &list, &dest, None, &store, |_, _| {})
@@ -453,7 +383,13 @@ fn update_checked_refreshes_fingerprint() {
 	let store = root.join("jsons/archive.json");
 	let list = UnpackListKind::Main.list();
 
-	build_stored_zip(&archive, &[("[media]\\classes\\trucks\\a.xml", b"first")]);
+	build_stored_zip(
+		&archive,
+		&[
+			("[media]\\classes\\trucks\\a.xml", b"first"),
+			(EDITED_MARKER, b""),
+		],
+	);
 	unpack_and_remember(&archive, &list, &dest, None, &store, |_, _| {}).expect("распаковка");
 
 	let file = dest.join("[media]/classes/trucks/a.xml");
@@ -469,7 +405,19 @@ fn update_checked_refreshes_fingerprint() {
 		integrity::require_unchanged(&archive, &store).is_ok(),
 		"отпечаток пересобранного архива не принят"
 	);
-	assert!(integrity::check(Some(&archive), &store).marker_present);
+
+	let reopened = ZipArchive::open(&archive).expect("архив после пересборки");
+	let markers = reopened
+		.entries()
+		.iter()
+		.filter(|entry| entry.name == EDITED_MARKER)
+		.count();
+
+	assert_eq!(markers, 1, "старый маркер 1.x сохраняется как есть");
+	assert!(
+		integrity::check(Some(&archive), &store).marker_present,
+		"маркер 1.x остаётся диагностикой"
+	);
 
 	let _ = fs::remove_dir_all(&root);
 }

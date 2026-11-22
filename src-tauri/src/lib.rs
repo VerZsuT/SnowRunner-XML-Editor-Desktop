@@ -39,6 +39,7 @@ pub fn specta_builder() -> tauri_specta::Builder<tauri::Wry> {
 		.events(collect_events![
 			commands::update::UpdateProgress,
 			commands::archive::ArchiveStatusChanged,
+			commands::recovery::RecoveryProgress,
 			watcher::DocumentsChanged
 		])
 		.typ::<Truck>()
@@ -103,6 +104,9 @@ pub fn specta_builder() -> tauri_specta::Builder<tauri::Wry> {
 		.typ::<DocumentInfo>()
 		.typ::<MutationResult>()
 		.typ::<SaveResult>()
+		.typ::<sxmle_app::recovery::RecoveryPlan>()
+		.typ::<sxmle_app::recovery::RecoveryDecisions>()
+		.typ::<sxmle_app::recovery::RecoveryReport>()
 		.typ::<crate::defaults::DefaultValue>()
 		// DTO только читаются webview: единый вид вместо пар `*_Serialize`/`*_Deserialize`.
 		.disable_serde_phases()

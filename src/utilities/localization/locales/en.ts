@@ -79,7 +79,8 @@ export const en: Locale = {
 		howToUse: 'How to use',
 		github: 'Github',
 		youtube: 'YouTube(RU)',
-		support: 'Support'
+		support: 'Support',
+		recoverPrevious: 'Restore parameters after a game update'
 	},
 
 	/** Archive integrity window. */
@@ -88,8 +89,63 @@ export const en: Locale = {
 		changedText: 'initial.pak changed after unpacking: the game was updated or the archive was replaced manually. Writing to this archive is disabled, otherwise the old files would roll back the update. Re-read the archive: the current unpacked copy will be kept in backups/previous_initial. Open documents will be closed and unsaved changes lost.',
 		unknownTitle: 'The archive is not verified',
 		unknownText: 'There is no saved archive fingerprint, so writing to it is disabled. Re-read the archive to compare the unpacked files with the current initial.pak. Open documents will be closed and unsaved changes lost.',
+		previousReplaced: 'The backups/previous_initial copy will be replaced the next time the archive is re-read. Restore the saved parameters before that.',
 		refresh: 'Re-read archive',
 		cancel: 'Cancel'
+	},
+
+	/** Restoring parameters after a game update. */
+	recovery: {
+		title: 'Restore parameters',
+		intro: 'The game has updated: some parameters in the new initial.pak have changed. The program will restore the values you saved in the editor and leave the fields you did not change alone. If both you and the game changed the same field, it will ask which value to keep.',
+		empty: 'Nothing to restore: there are no saved edits for the new game version.',
+		restore: 'Restore',
+		later: 'Later',
+		discard: 'Delete copy',
+		discardConfirm: 'Delete the copy of the previous unpacked archive? The saved parameters can no longer be restored.',
+		laterNote: 'You can postpone the restore and run it later from the Backup menu. Until the copy is deleted, it will be replaced the next time the archive is re-read.',
+		modsNote: 'Skipped mod entries: {}. The game does not replace mods, so their parameters are not restored.',
+		noHistory: 'No edit history',
+		conflictsTitle: 'Parameter conflicts',
+		conflictsText: 'Both you and the game changed these fields. Choose which value to keep: the one you saved or the new game value.',
+		mine: 'Mine',
+		game: 'Game',
+		mineAll: 'Mine for all',
+		gameAll: 'Game for all',
+		legacyRestore: 'Restore fields from the old file',
+		legacySkip: 'Keep the new values',
+		legacyText: 'There is no edit history for this file: all fields that differ between the old and the new version are listed below. Restoring will overwrite the game values in these fields; if the game changed them, those changes will be lost.',
+		apply: 'Apply',
+		progress: 'Restoring',
+		building: 'Building the archive...',
+		cancel: 'Cancel',
+		close: 'Close',
+		restored: 'Restored',
+		willApply: 'Fields to apply: {}',
+		unchanged: 'Unchanged',
+		skipped: 'Skipped',
+		failed: 'Failed',
+		cancelled: 'The restore was cancelled. Files already applied are saved and the copy is kept.',
+		archiveChanged: 'The archive changed during the restore. Re-read the archive and repeat the restore.',
+		dirtyDocs: 'There are unsaved documents: save or close them and try again.',
+		busy: 'A restore is already running.',
+		planStale: 'The restore plan is stale: check the conflicts again.',
+		kind: {
+			truck: 'Truck',
+			trailer: 'Trailer',
+			engines: 'Engines',
+			gearboxes: 'Gearboxes',
+			suspensions: 'Suspensions',
+			winches: 'Winches',
+			wheels: 'Wheels',
+			wheel: 'Wheel',
+			addon: 'Addon'
+		},
+		state: {
+			ready: 'Ready to restore',
+			missingSource: 'Old file missing',
+			missingTarget: 'New file missing'
+		}
 	},
 
 	setup: {

@@ -52,6 +52,7 @@ function handlers(overrides: Partial<MenuBarHandlers> = {}): MenuBarHandlers {
 		uninstall: vi.fn(),
 		onSettings: vi.fn(),
 		onWhatsNew: vi.fn(),
+		recover: vi.fn(),
 		...overrides
 	}
 }
@@ -76,7 +77,7 @@ function client(overrides: Partial<MenuBarClient> = {}): MenuBarClient {
 
 describe('buildMenuItems', () => {
 	it('показывает верхние пункты, как в 1.4.0', () => {
-		const items = buildMenuItems({ initialPath: ARCHIVE, busy: false, readOnly: false }, handlers())
+		const items = buildMenuItems({ initialPath: ARCHIVE, busy: false, readOnly: false, recoveryAvailable: false }, handlers())
 
 		expect(items?.map(item => item && 'label' in item ? item.label : null)).toEqual([
 			'Файл',
@@ -87,7 +88,7 @@ describe('buildMenuItems', () => {
 	})
 
 	it('блокирует работу с игрой без initial.pak', () => {
-		const items = buildMenuItems({ initialPath: null, busy: false, readOnly: false }, handlers())
+		const items = buildMenuItems({ initialPath: null, busy: false, readOnly: false, recoveryAvailable: false }, handlers())
 
 		expect(findItem(items, 'openFiles')?.disabled).toBe(true)
 		expect(findItem(items, 'updateArchive')?.disabled).toBe(true)
@@ -96,14 +97,14 @@ describe('buildMenuItems', () => {
 	})
 
 	it('блокирует архив во время операции', () => {
-		const items = buildMenuItems({ initialPath: ARCHIVE, busy: true, readOnly: false }, handlers())
+		const items = buildMenuItems({ initialPath: ARCHIVE, busy: true, readOnly: false, recoveryAvailable: true }, handlers())
 
 		expect(findItem(items, 'unpackArchive')?.disabled).toBe(true)
 		expect(findItem(items, 'saveBackup')?.disabled).toBe(true)
 	})
 
 	it('блокирует запись в изменившийся архив', () => {
-		const items = buildMenuItems({ initialPath: ARCHIVE, busy: false, readOnly: true }, handlers())
+		const items = buildMenuItems({ initialPath: ARCHIVE, busy: false, readOnly: true, recoveryAvailable: true }, handlers())
 
 		expect(findItem(items, 'updateArchive')?.disabled).toBe(true)
 		expect(findItem(items, 'unpackArchive')?.disabled).toBe(true)
@@ -111,9 +112,45 @@ describe('buildMenuItems', () => {
 		expect(findItem(items, 'saveBackup')?.disabled).toBe(false)
 	})
 
+	it('блокирует восстановление без кандидатов, в режиме чтения и во время операции', () => {
+		const none = buildMenuItems(
+			{ initialPath: ARCHIVE, busy: false, readOnly: false, recoveryAvailable: false },
+			handlers()
+		)
+		const readOnly = buildMenuItems(
+			{ initialPath: ARCHIVE, busy: false, readOnly: true, recoveryAvailable: true },
+			handlers()
+		)
+		const busy = buildMenuItems(
+			{ initialPath: ARCHIVE, busy: true, readOnly: false, recoveryAvailable: true },
+			handlers()
+		)
+		const ready = buildMenuItems(
+			{ initialPath: ARCHIVE, busy: false, readOnly: false, recoveryAvailable: true },
+			handlers()
+		)
+
+		expect(findItem(none, 'recoverPrevious')?.disabled).toBe(true)
+		expect(findItem(readOnly, 'recoverPrevious')?.disabled).toBe(true)
+		expect(findItem(busy, 'recoverPrevious')?.disabled).toBe(true)
+		expect(findItem(ready, 'recoverPrevious')?.disabled).toBe(false)
+	})
+
+	it('открывает восстановление параметров', () => {
+		const fake = handlers()
+		const items = buildMenuItems(
+			{ initialPath: ARCHIVE, busy: false, readOnly: false, recoveryAvailable: true },
+			fake
+		)
+
+		findItem(items, 'recoverPrevious')?.onClick?.()
+
+		expect(fake.recover).toHaveBeenCalledTimes(1)
+	})
+
 	it('рассылает действия по пунктам меню', () => {
 		const fake = handlers()
-		const items = buildMenuItems({ initialPath: ARCHIVE, busy: false, readOnly: false }, fake)
+		const items = buildMenuItems({ initialPath: ARCHIVE, busy: false, readOnly: false, recoveryAvailable: false }, fake)
 
 		findItem(items, 'openFiles')?.onClick?.()
 		findItem(items, 'openBackup')?.onClick?.()
@@ -142,7 +179,7 @@ describe('buildMenuItems', () => {
 
 	it('открывает ссылки в меню помощи', () => {
 		const fake = handlers()
-		const items = buildMenuItems({ initialPath: ARCHIVE, busy: false, readOnly: false }, fake)
+		const items = buildMenuItems({ initialPath: ARCHIVE, busy: false, readOnly: false, recoveryAvailable: false }, fake)
 
 		findItem(items, 'github')?.onClick?.()
 

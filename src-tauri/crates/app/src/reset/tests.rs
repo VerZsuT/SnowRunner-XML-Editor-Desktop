@@ -45,6 +45,7 @@ fn удаляет_данные_и_пишет_стандартную_конфиг
 	for file in [
 		paths.json("favorites"),
 		paths.json("edited"),
+		paths.edited_documents(),
 		paths.json("mods"),
 	] {
 		fs::create_dir_all(file.parent().unwrap()).unwrap();
@@ -66,6 +67,7 @@ fn удаляет_данные_и_пишет_стандартную_конфиг
 		"датированный бэкап остался"
 	);
 	assert!(!paths.json("favorites").exists());
+	assert!(!paths.edited_documents().exists(), "журнал полей остался");
 
 	let saved = ConfigStore::new(paths.json("config")).load(Config::default());
 

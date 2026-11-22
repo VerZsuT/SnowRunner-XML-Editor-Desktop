@@ -2,6 +2,7 @@
 
 pub mod attributes;
 pub mod descriptor;
+pub mod editable;
 pub mod entities;
 pub mod field;
 pub mod limit;

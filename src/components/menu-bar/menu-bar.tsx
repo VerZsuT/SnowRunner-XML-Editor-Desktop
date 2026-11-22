@@ -9,6 +9,7 @@ import {
 import { loadPaths } from '@/api/settings'
 import { openPath, openUrl, quitApp, resetToDefaults, uninstallApp } from '@/api/system'
 import { useArchiveGuard } from '@/components/archive-guard'
+import { useRecovery } from '@/components/recovery'
 import { useConfig } from '@/config'
 import { formatString } from '@/utilities/strings'
 import type { Locale } from '@/utilities/localization'
@@ -94,6 +95,9 @@ export interface MenuBarState {
 
 	/** Архив изменился или не проверен: запись в него запрещена. */
 	readOnly: boolean
+
+	/** Есть документы, которые можно восстановить после обновления игры. */
+	recoveryAvailable: boolean
 }
 
 /** Обработчики пунктов меню. */
@@ -121,11 +125,14 @@ export interface MenuBarHandlers {
 
 	/** Открыть окно «Что нового». */
 	onWhatsNew?(): void
+
+	/** Открыть окно восстановления параметров после обновления игры. */
+	recover(): void
 }
 
 /** Пункты верхнего меню: состав повторяет меню 1.4.0. */
 export function buildMenuItems(
-	{ initialPath, busy, readOnly }: MenuBarState,
+	{ initialPath, busy, readOnly, recoveryAvailable }: MenuBarState,
 	handlers: MenuBarHandlers,
 	texts: Locale['menu'] = T.menu
 ): MenuProps['items'] {
@@ -181,6 +188,13 @@ export function buildMenuItems(
 					label: texts.restoreBackup,
 					disabled: busy,
 					onClick: () => handlers.run('restore')
+				},
+				{ type: 'divider' },
+				{
+					key: 'recoverPrevious',
+					label: texts.recoverPrevious,
+					disabled: !recoveryAvailable || readOnly || busy,
+					onClick: handlers.recover
 				}
 			]
 		},
@@ -231,6 +245,7 @@ export function MenuBar({ onSettings, onWhatsNew, client = menuBarClient }: Menu
 	const { message, modal } = AntApp.useApp()
 	const config = useConfig()
 	const { readOnly, reportChanged } = useArchiveGuard()
+	const { available: recoveryAvailable, open: openRecovery } = useRecovery()
 	// Меню читает тексты из состояния: смена языка в настройках видна сразу.
 	const texts = LOCALES[config.lang].menu
 	const setupTexts = LOCALES[config.lang].setup
@@ -309,13 +324,14 @@ export function MenuBar({ onSettings, onWhatsNew, client = menuBarClient }: Menu
 		})
 	}
 
-	const items = buildMenuItems({ initialPath, busy, readOnly }, {
+	const items = buildMenuItems({ initialPath, busy, readOnly, recoveryAvailable }, {
 		openFolder: kind => void openFolder(kind),
 		run: action => void run(action),
 		openLink,
 		quit,
 		reset,
 		uninstall,
+		recover: openRecovery,
 		onSettings,
 		onWhatsNew
 	}, texts)

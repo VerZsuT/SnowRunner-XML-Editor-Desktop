@@ -9,7 +9,21 @@ fn work_dir() -> PathBuf {
 
 /// Хранилище во временном каталоге.
 fn library(dir: &Path) -> Library {
-	Library::load(dir.join("favorites.json"), dir.join("edited.json"))
+	Library::load(
+		dir.join("favorites.json"),
+		dir.join("edited.json"),
+		dir.join("edited-documents.json"),
+	)
+}
+
+/// Запись журнала для трака.
+fn document(name: &str, fields: Vec<EditedField>) -> EditedDocument {
+	EditedDocument {
+		kind: DocumentKind::Truck,
+		name: name.to_owned(),
+		archive_name: format!("[media]\\classes\\trucks\\{name}.xml"),
+		fields,
+	}
 }
 
 #[test]
@@ -100,4 +114,101 @@ fn снимает_пометку_изменённого_файла() {
 	assert!(items.unmark_edited("t").unwrap());
 	assert!(!items.unmark_edited("t").unwrap());
 	assert!(library(&dir).edited().is_empty());
+}
+
+#[test]
+fn журнал_добавляет_и_читает_записи() {
+	let dir = work_dir();
+	let mut items = library(&dir);
+	let entry = document(
+		"ank_mk38",
+		vec![EditedField {
+			selector: "/Truck/TruckData".to_owned(),
+			attribute: "FuelCapacity".to_owned(),
+			base: Some("200".to_owned()),
+			value: Some("300".to_owned()),
+		}],
+	);
+
+	items.replace_document(entry.clone()).unwrap();
+
+	assert_eq!(items.document(&entry.archive_name), Some(&entry));
+	assert_eq!(
+		items.document(&entry.archive_name.to_uppercase()),
+		Some(&entry),
+		"путь записи сравнивается без учёта регистра"
+	);
+	assert_eq!(library(&dir).documents(), [entry]);
+}
+
+#[test]
+fn журнал_заменяет_запись_по_пути_записи() {
+	let dir = work_dir();
+	let mut items = library(&dir);
+	let first = document("ank_mk38", Vec::new());
+	let mut second = first.clone();
+
+	second.fields.push(EditedField {
+		selector: "/Truck/TruckData".to_owned(),
+		attribute: "Price".to_owned(),
+		base: Some("1".to_owned()),
+		value: Some("2".to_owned()),
+	});
+	second.archive_name = first.archive_name.to_uppercase();
+
+	items.replace_document(first).unwrap();
+	items.replace_document(second.clone()).unwrap();
+
+	assert_eq!(items.documents().len(), 1);
+	assert_eq!(items.documents()[0], second);
+	assert_eq!(library(&dir).documents(), [second]);
+}
+
+#[test]
+fn журнал_хранит_запись_с_пустыми_полями() {
+	let dir = work_dir();
+	let mut items = library(&dir);
+	let entry = document("ank_mk38", Vec::new());
+
+	items.replace_document(entry.clone()).unwrap();
+
+	assert_eq!(library(&dir).documents(), [entry]);
+}
+
+#[test]
+fn битый_журнал_даёт_пустой_список() {
+	let dir = work_dir();
+
+	fs::write(dir.join("edited-documents.json"), "{").unwrap();
+
+	assert!(library(&dir).documents().is_empty());
+}
+
+#[test]
+fn снятие_пометки_удаляет_запись_журнала() {
+	let dir = work_dir();
+	let mut items = library(&dir);
+	let entry = document("ank_mk38", Vec::new());
+
+	items
+		.mark_edited(EditedFile {
+			name: "ank_mk38".to_owned(),
+			is_trailer: false,
+			dlc: None,
+			mod_name: None,
+		})
+		.unwrap();
+	items.replace_document(entry).unwrap();
+	items
+		.mark_edited(EditedFile {
+			name: "other".to_owned(),
+			is_trailer: false,
+			dlc: None,
+			mod_name: None,
+		})
+		.unwrap();
+
+	assert!(items.unmark_edited("ank_mk38").unwrap());
+	assert!(items.documents().is_empty());
+	assert!(library(&dir).documents().is_empty());
 }

@@ -476,6 +476,28 @@ impl Documents {
 		Ok(document.mutated(selector, value.map(str::to_owned)))
 	}
 
+	/// Применяет изменение к дереву; ненулевой результат увеличивает версию и ставит dirty.
+	///
+	/// Нужен сценариям, которые меняют сразу несколько полей (восстановление после
+	/// обновления игры) и не должны дублировать правила `mutated`.
+	pub fn edit(
+		&mut self,
+		doc_id: &str,
+		apply: impl FnOnce(&mut XmlDocument) -> u32,
+	) -> Result<u32, DocumentError> {
+		let document = self
+			.items
+			.get_mut(doc_id)
+			.ok_or_else(|| DocumentError::NotFound(doc_id.to_owned()))?;
+		let changed = apply(&mut document.document);
+
+		if changed > 0 {
+			document.mutated("/", None);
+		}
+
+		Ok(changed)
+	}
+
 	/// Применяет значения по умолчанию ко всем найденным путям.
 	///
 	/// Отсутствующие элементы пропускаются: выгрузка содержит селекторы для

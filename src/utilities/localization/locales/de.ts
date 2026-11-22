@@ -79,7 +79,8 @@ export const de: Locale = {
 		howToUse: 'Wie benutzt man',
 		github: 'Github',
 		youtube: 'YouTube(RU)',
-		support: 'Unterstützen'
+		support: 'Unterstützen',
+		recoverPrevious: 'Parameter nach einem Spiel-Update wiederherstellen'
 	},
 
 	/** Fenster zur Archivintegrität. */
@@ -88,8 +89,63 @@ export const de: Locale = {
 		changedText: 'initial.pak hat sich nach dem Entpacken geändert: Das Spiel wurde aktualisiert oder das Archiv manuell ersetzt. Schreiben in dieses Archiv ist gesperrt, sonst würden alte Dateien das Update zurückrollen. Archiv neu einlesen: Die aktuelle entpackte Kopie bleibt in backups/previous_initial erhalten. Geöffnete Dokumente werden geschlossen, ungespeicherte Änderungen gehen verloren.',
 		unknownTitle: 'Das Archiv ist nicht geprüft',
 		unknownText: 'Es gibt keinen gespeicherten Archiv-Fingerabdruck, daher ist das Schreiben gesperrt. Lesen Sie das Archiv neu ein, damit die entpackten Dateien mit der aktuellen initial.pak verglichen werden. Geöffnete Dokumente werden geschlossen, ungespeicherte Änderungen gehen verloren.',
+		previousReplaced: 'Die Kopie in backups/previous_initial wird beim nächsten Neueinlesen des Archivs ersetzt. Stellen Sie die gespeicherten Parameter vorher wieder her.',
 		refresh: 'Archiv neu einlesen',
 		cancel: 'Abbrechen'
+	},
+
+	/** Wiederherstellung der Parameter nach einem Spiel-Update. */
+	recovery: {
+		title: 'Parameter wiederherstellen',
+		intro: 'Das Spiel wurde aktualisiert: Einige Parameter in der neuen initial.pak haben sich geändert. Das Programm stellt die im Editor gespeicherten Werte wieder her und lässt Felder unverändert, die Sie nicht bearbeitet haben. Haben sowohl Sie als auch das Spiel dasselbe Feld geändert, fragt es, welcher Wert bleiben soll.',
+		empty: 'Nichts wiederherzustellen: Für die neue Spielversion gibt es keine gespeicherten Änderungen.',
+		restore: 'Wiederherstellen',
+		later: 'Später',
+		discard: 'Kopie löschen',
+		discardConfirm: 'Die Kopie des zuvor entpackten Archivs löschen? Die gespeicherten Parameter können danach nicht mehr wiederhergestellt werden.',
+		laterNote: 'Die Wiederherstellung lässt sich aufschieben und später über das Menü „Sicherung“ starten. Solange die Kopie nicht gelöscht ist, wird sie beim nächsten Neueinlesen des Archivs ersetzt.',
+		modsNote: 'Übersprungene Mod-Einträge: {}. Das Spiel ersetzt Mods nicht, daher werden ihre Parameter nicht wiederhergestellt.',
+		noHistory: 'Keine Änderungshistorie',
+		conflictsTitle: 'Parameterkonflikte',
+		conflictsText: 'Diese Felder haben sowohl Sie als auch das Spiel geändert. Wählen Sie, welcher Wert bleiben soll: Ihr gespeicherter oder der neue Spielwert.',
+		mine: 'Meiner',
+		game: 'Spiel',
+		mineAll: 'Meiner für alle',
+		gameAll: 'Spiel für alle',
+		legacyRestore: 'Felder aus der alten Datei wiederherstellen',
+		legacySkip: 'Neue Werte behalten',
+		legacyText: 'Für diese Datei gibt es keine Änderungshistorie: Unten stehen alle Felder, die sich zwischen alter und neuer Version unterscheiden. Die Wiederherstellung überschreibt die Spielwerte in diesen Feldern; hat das Spiel sie selbst geändert, gehen diese Änderungen verloren.',
+		apply: 'Anwenden',
+		progress: 'Wiederherstellung',
+		building: 'Archiv wird zusammengestellt...',
+		cancel: 'Abbrechen',
+		close: 'Schließen',
+		restored: 'Wiederhergestellt',
+		willApply: 'Anzuwendende Felder: {}',
+		unchanged: 'Unverändert',
+		skipped: 'Übersprungen',
+		failed: 'Fehler',
+		cancelled: 'Die Wiederherstellung wurde abgebrochen. Bereits angewendete Dateien sind gespeichert, die Kopie bleibt erhalten.',
+		archiveChanged: 'Das Archiv hat sich während der Wiederherstellung geändert. Lesen Sie das Archiv neu ein und wiederholen Sie die Wiederherstellung.',
+		dirtyDocs: 'Es gibt ungespeicherte Dokumente: Speichern oder schließen Sie sie und versuchen Sie es erneut.',
+		busy: 'Es läuft bereits eine Wiederherstellung.',
+		planStale: 'Der Wiederherstellungsplan ist veraltet: Prüfen Sie die Konflikte erneut.',
+		kind: {
+			truck: 'LKW',
+			trailer: 'Anhänger',
+			engines: 'Motoren',
+			gearboxes: 'Getriebe',
+			suspensions: 'Federungen',
+			winches: 'Seilwinden',
+			wheels: 'Räder',
+			wheel: 'Rad',
+			addon: 'Aufsatz'
+		},
+		state: {
+			ready: 'Bereit zur Wiederherstellung',
+			missingSource: 'Alte Datei fehlt',
+			missingTarget: 'Neue Datei fehlt'
+		}
 	},
 
 	setup: {
