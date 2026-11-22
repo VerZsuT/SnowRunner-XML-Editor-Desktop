@@ -1,4 +1,4 @@
-import { Lang } from '@modules/data/config/enums'
+import { Lang } from '@localization'
 import { registerConfig, updateConfig } from '@renderer/config'
 import { loadGameTexts, translate } from '@renderer/api/texts'
 import { beforeEach, describe, expect, it, vi } from 'vitest'

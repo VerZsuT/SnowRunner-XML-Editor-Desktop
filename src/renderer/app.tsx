@@ -1,11 +1,10 @@
 import { loadConfig, saveConfig } from '@renderer/api/settings'
 import { UpdateAlert } from '@renderer/components/update-alert'
 import { WhatsNew } from '@renderer/components/whats-new'
-import { applyConfig } from '@renderer/config'
+import { applyConfig, useConfig } from '@renderer/config'
 import { EditorPage } from '@renderer/pages/editor'
 import { ListsPage } from '@renderer/pages/lists'
 import { SetupPage } from '@renderer/pages/setup'
-import { useConfig } from '@renderer/utilities/use-reactive'
 import { useEffect, useState } from 'react'
 
 /** Открытый документ автомобиля. */

@@ -1,14 +1,7 @@
 import '@testing-library/jest-dom/vitest'
 import { cleanup } from '@testing-library/react'
-import { FS_TOKEN } from '@utilities/di/renderer/tokens'
-import { di } from '@utilities/di/container'
-import { afterEach, beforeEach } from 'vitest'
-import { NodeFs } from './node-fs'
+import { afterEach } from 'vitest'
 
-// В renderer процесса нет node:fs — там клиент моста к main; в тестах его подменяет NodeFs.
-beforeEach(() => {
-	di.register(FS_TOKEN, new NodeFs())
-})
 if (typeof window !== 'undefined') {
 
 	// antd 6 опрашивает медиа-запросы при рендере.
@@ -66,6 +59,4 @@ afterEach(() => {
 	if (typeof window !== 'undefined') {
 		cleanup()
 	}
-
-	di.clear()
 })

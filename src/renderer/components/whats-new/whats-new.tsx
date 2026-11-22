@@ -1,5 +1,5 @@
 import { LocalizationStrings } from '@localization'
-import { useConfig } from '@renderer/utilities/use-reactive'
+import { useConfig } from '@renderer/config'
 import { Button, Modal } from 'antd'
 import { VersionInfo } from './version-info'
 import { WHATS_NEW_LOCALIZATION as texts } from './localization'

@@ -1,17 +1,53 @@
 /**
  * Конфигурация интерфейса.
  *
- * Ядро хранит `jsons/config.json`, а локализация и часть компонентов читают
- * конфигурацию из DI: при старте регистрируется прочитанное значение, а экран
- * настроек обновляет его через {@link applyConfig}.
+ * Ядро хранит `jsons/config.json`, а снимок конфигурации живёт в zustand:
+ * при старте регистрируется прочитанное значение, экран настроек обновляет его
+ * через {@link applyConfig}, локализация читает язык из этого же снимка.
  */
 
-import { BuildType, Lang, strToLang } from '@modules/data/config/enums'
-import type { IConfig } from '@modules/data/config/types'
+import { Lang, setLocalizationConfig } from '@localization/renderer'
+import { create } from 'zustand'
 import type { Config as ConfigDto } from './api/bindings'
-import { di } from '@utilities/di/container'
-import { CONFIG_TOKEN } from '@utilities/di/renderer/tokens'
-import { proxy } from 'valtio'
+
+/** Тип билда программы. */
+export enum BuildType {
+	/** Для разработки. */
+	dev = 'dev',
+
+	/** Для конечного пользователя. */
+	prod = 'prod'
+}
+
+/** Конфигурация интерфейса. */
+export interface IConfig {
+	/** Версия программы. */
+	version: string
+
+	/** Текущий язык перевода программы. */
+	lang: Lang
+
+	/** Тип билда, при dev доступны некоторые функции для отладки. */
+	buildType: BuildType
+
+	/** Путь к `initial.pak`. */
+	initialPath: string | null
+
+	/** Проверять обновления. */
+	checkUpdates: boolean
+
+	/** Использовать моды. */
+	useMods: boolean
+
+	/** Показывать "Что нового". */
+	openWhatsNew: boolean
+
+	/** Расширенный режим. */
+	advancedMode: boolean
+
+	/** Оптимизировать распаковку. */
+	optimizeUnpack: boolean
+}
 
 /** Конфигурация по умолчанию. */
 export const defaultConfig: IConfig = {
@@ -26,15 +62,45 @@ export const defaultConfig: IConfig = {
 	optimizeUnpack: true
 }
 
+/** Состояние конфигурации. */
+interface ConfigState {
+	/** Текущая конфигурация. */
+	config: IConfig
+}
+
+const useConfigStore = create<ConfigState>()(() => ({ config: { ...defaultConfig } }))
+
+setLocalizationConfig(() => useConfigStore.getState().config)
+
+/**
+ * Преобразует строку в `Lang`.
+ * _Если преобразование невозможно, возвращает `undefined`_
+ * @param str Строка.
+ * @returns Lang.
+ */
+export function strToLang(str?: string | null): Lang | undefined {
+	if (!str) {
+		return
+	}
+
+	const normalized = str.toUpperCase()
+
+	for (const value of Object.values(Lang)) {
+		if (normalized === value) {
+			return value
+		}
+	}
+}
+
 /**
  * Регистрирует конфигурацию интерфейса.
  * @param initial Значения поверх конфигурации по умолчанию.
  * @returns Зарегистрированная конфигурация.
  */
 export function registerConfig(initial: Partial<IConfig> = {}): IConfig {
-	const config = proxy({ ...defaultConfig, ...initial })
+	const config = { ...defaultConfig, ...initial }
 
-	di.register(CONFIG_TOKEN, config)
+	useConfigStore.setState({ config })
 
 	return config
 }
@@ -64,9 +130,9 @@ export function fromConfigDto(dto: ConfigDto): Partial<IConfig> {
  * @returns Обновлённая конфигурация.
  */
 export function applyConfig(values: Partial<IConfig>): IConfig {
-	const config = ensureConfig()
+	const config = { ...useConfigStore.getState().config, ...values }
 
-	Object.assign(config, values)
+	useConfigStore.setState({ config })
 
 	return config
 }
@@ -80,14 +146,15 @@ export function applyConfig(values: Partial<IConfig>): IConfig {
  * @param value Новое значение.
  */
 export function updateConfig<Key extends keyof IConfig>(key: Key, value: IConfig[Key]): void {
-	di.resolve(CONFIG_TOKEN)[key] = value
+	applyConfig({ [key]: value } as Partial<IConfig>)
 }
 
 /** Возвращает конфигурацию, регистрируя её при необходимости. */
 export function ensureConfig(): IConfig {
-	try {
-		return di.resolve(CONFIG_TOKEN)
-	} catch {
-		return registerConfig()
-	}
+	return useConfigStore.getState().config
+}
+
+/** Снимок конфигурации для чтения в рендере. */
+export function useConfig(): IConfig {
+	return useConfigStore(state => state.config)
 }

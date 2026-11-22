@@ -1,5 +1,4 @@
-import { Lang } from '@modules/data/config/enums'
-import { LocalizationStrings } from '@localization'
+import { Lang, LocalizationStrings } from '@localization'
 import { describe, expect, it } from 'vitest'
 
 describe('LocalizationStrings', () => {

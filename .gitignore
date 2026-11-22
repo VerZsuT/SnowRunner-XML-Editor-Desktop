@@ -83,11 +83,6 @@ typings/
 # DynamoDB Local files
 .dynamodb/
 
-.vite
-
-# Electron-Forge
-out
-
 # program backup
 src/backups/
 

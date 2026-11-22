@@ -1,5 +1,6 @@
+import { Lang } from '@localization'
 import { UpdateAlert } from '@renderer/components/update-alert'
-import { registerConfig } from '@renderer/tests/helpers'
+import { registerConfig } from '@renderer/config'
 import { App as AntApp } from 'antd'
 import { act, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
@@ -12,7 +13,7 @@ async function subscribe() {
 
 describe('UpdateAlert', () => {
 	beforeEach(() => {
-		registerConfig()
+		registerConfig({ lang: Lang.en })
 	})
 
 	it('показывает новую версию', async () => {

@@ -1,5 +1,7 @@
-import { Lang } from '@modules/data/config/enums'
+import { Lang } from './lang'
 import type { ITextsToLocalize, LocalizedTexts } from './types'
+
+export * from './lang'
 
 /** Локализация. */
 export class Localization<

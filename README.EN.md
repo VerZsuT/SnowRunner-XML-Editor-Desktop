@@ -1,9 +1,8 @@
 # SnowRunner XML Editor Desktop (EN)
 
 This program allows you to edit the XML files of the SnowRunner game by editing the visual parameter table.  
-The editor unpacks the necessary files from _initial.pak_ to a temporary folder, after which it goes to work with them. When saving, changes are made to the archive.  
-To work with _initial.pak_, the program uses a portable version of _WinRar_ for 64-bit systems.  
-Everything works using **Electron**, **Vite**, **React**, **Typescript**.
+The editor unpacks the necessary files from _initial.pak_ to a temporary folder and works with them through the UI. When saving, changes are made to the archive.  
+Everything works using **Rust**, **Tauri**, **Vite**, **React**, **Typescript**.
 
 The editor has the following functionality:
 
@@ -33,7 +32,7 @@ You can read about how to use the program in the [guide at the link](https://sno
 
 ## Development
 
-_It is understood that you have everything you need to work with NodeJS_.
+_NodeJS and Rust (stable) are required._
 
 Install dependencies:
 
@@ -41,70 +40,50 @@ Install dependencies:
 npm i
 ```
 
-To start the dev server:
+To run the application in development mode:
 
 ```cmd
-npm start
+npm run tauri:dev
 ```
 
-For a test build of the project:
+To build the installer:
 
 ```cmd
-npm run package
+npm run tauri:build
 ```
 
-The assembled test assembly for a 32-bit system will appear in the _out_ folder.  
-In this build, you can reset the program, update the window, developer tools (Ctrl+Shift+I), and the backup `initial.pak` is not saved.
+The NSIS installer appears in `src-tauri/target/release/bundle/nsis`.  
+zustand keeps only interface state; game data, documents and configuration live in the Rust core.
 
 Project directories:
 
 ```text
-/docs               page GitHub Pages.
-/inno-setup         InnoSetup configuration.
 /src:               the main resources of the program.
-   /build-configs       the Vite and Electron Forge configurations.
-   /images:             graphic resources.
-      /icons                other images.
-      /trailers             pictures of trailers.
-      /trucks               pictures of trucks.
-      favicon.ico           program icon.
-   /main:               main process.
-      index.ts              the start file.
-      tsconfig.json         TS configuration for the main process.
-   /modules:            different kinds of modules.
-      /archiver             working with the archiver.
-      /backup               working with backup.
-      /checks               basic checks.
-      /data                 stored data.
-      /dialogs              system dialogs.
-      /dlcs                 processing of game DLCs.
-      /epf                  exporting parameters.
-      /errors               throwing errors.
-      /files                working with the file system.
-      /game-texts           processing of game texts.
-      /helpers              utilities.
-      /images               working with images.
-      /messages             displays messages in the renderer process.
-      /paths                different paths.
-      /quit-params          program closing parameters.
-      /updates              program update.
-      /xml                  working with XML.
-   /renderer:           renderer process.
-      /components           common components.
-      /pages                program windows.
-         /general               main window.
-            /editor                 page of the editor (tables).
-            /lists                  page of lists of trucks / trailers.
-            /general                main page.
-      /utils                helper scripts.
-      style.scss            global styles.
-      preload.ts            preload script.
-      template-script.ts    template script.
-      tsconfig.json         TS configuration for the renderer process.
-      types.ts              common types for the renderer process.
-   /utils               common utilities.
-   consts.ts            useful flags.
+   /images:          graphic resources.
+      /icons             other images.
+      /trailers          pictures of trailers.
+      /trucks            pictures of trucks.
+      favicon.ico        program icon.
+   /renderer:        the interface (React).
+      /api               core commands and generated types.
+      /components        common components.
+      /pages             screens: lists, editor, setup.
+      /tests             tests.
+      app.tsx            root screen.
+      entry.tsx          application mount.
+      config.ts          interface configuration.
+      tsconfig.json      TS configuration for the interface.
+   /utilities:
+      /localization      interface localization.
+      /strings           string formatting.
+   global.d.ts
    tsconfig.json        main TS configuration.
+/src-tauri:           the Rust core.
+   /crates/domain        XML, game models.
+   /crates/storage       files, ZIP, atomic writes.
+   /crates/app           configuration, documents, mods, updates.
+   /src                  Tauri commands.
+   tauri.conf.json       window, build, installer.
 ```
 
 ## Pictures

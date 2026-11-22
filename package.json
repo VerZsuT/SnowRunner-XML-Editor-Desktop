@@ -8,11 +8,7 @@
 		"type": "git",
 		"url": "https://github.com/VerZsuT/SnowRunner-XML-Editor-Desktop.git"
 	},
-	"main": ".vite/build/index.js",
 	"scripts": {
-		"package": "electron-forge package --platform=win32 --arch=x64",
-		"package-prod": "npm i && cross-env NODE_ENV=production electron-forge package --platform=win32 --arch=x64",
-		"start": "cross-env NODE_ENV=development electron-forge start",
 		"dev": "vite",
 		"build": "npm run typegen && npm run check && vite build",
 		"postinstall": "npm rebuild typescript",
@@ -33,12 +29,7 @@
 		"email": "verzsut@gmail.com"
 	},
 	"license": "MIT",
-	"config": {
-		"forge": "./src/build-configs/forge.js"
-	},
 	"devDependencies": {
-		"@electron-forge/cli": "^8.0.1",
-		"@electron-forge/plugin-vite": "^8.0.1",
 		"@tauri-apps/cli": "^2.12.6",
 		"@testing-library/dom": "^10.4.2",
 		"@testing-library/jest-dom": "^8.0.0",
@@ -49,8 +40,6 @@
 		"@types/react-dom": "^19.3.0",
 		"@vitejs/plugin-react": "^6.3.0",
 		"@vitest/coverage-v8": "^5.1.1",
-		"cross-env": "^10.1.0",
-		"electron": "^45.4.1",
 		"jsdom": "^31.0.1",
 		"oxc-transform-react": "~0.156.0",
 		"oxlint": "^1.94.0",
@@ -58,7 +47,6 @@
 		"sass": "^1.108.2",
 		"typescript": "^7.0.2",
 		"vite": "^8.3.8",
-		"vite-plugin-static-copy": "^4.1.1",
 		"vitest": "^5.1.1"
 	},
 	"dependencies": {
@@ -66,14 +54,9 @@
 		"@tauri-apps/api": "^2.12.5",
 		"@tauri-apps/plugin-dialog": "^2.8.4",
 		"antd": "^6.7.1",
-		"cheerio": "^1.2.0",
-		"debounce": "^4.0.0",
-		"emr-bridge": "^2.1.0",
 		"react": "^19.3.1",
 		"react-dom": "^19.3.1",
 		"tslib": "^2.9.1",
-		"valtio": "^2.3.2",
-		"xml-formatter": "^3.7.1",
 		"zustand": "^5.1.0"
 	},
 	"allowScripts": {

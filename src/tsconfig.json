@@ -17,11 +17,8 @@
 		"skipLibCheck": true,
 		"isolatedModules": true,
 		"paths": {
-			"@src/*": ["./*"],
-			"@modules/*": ["./modules/*"],
 			"@renderer/*": ["./renderer/*"],
 			"@utilities/*": ["./utilities/*"],
-			"@bridge/*": ["./utilities/bridge/*"],
 			"@localization/*": ["./utilities/localization/*"],
 			"@localization": ["./utilities/localization/index"]
 		}

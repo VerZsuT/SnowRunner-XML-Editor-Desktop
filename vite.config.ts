@@ -1,9 +1,16 @@
+import { fileURLToPath } from 'node:url'
 import pluginReact from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
-import { alias } from './src/build-configs/vite.base.config.js'
 
 /** Порт dev-сервера, на который настроен Tauri (`tauri.conf.json`). */
 const DEV_PORT = 1420
+
+/** Алиасы путей (как в `src/renderer/tsconfig.json`). */
+const alias = {
+	'@renderer': fileURLToPath(new URL('./src/renderer', import.meta.url)),
+	'@utilities': fileURLToPath(new URL('./src/utilities', import.meta.url)),
+	'@localization': fileURLToPath(new URL('./src/utilities/localization', import.meta.url))
+}
 
 export default defineConfig({
 	root: 'src/renderer',
