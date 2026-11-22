@@ -72,7 +72,6 @@ export const ru = {
 		openFiles: 'Открыть файлы',
 		updateArchive: 'Обновить архив',
 		unpackArchive: 'Распаковать архив',
-		data: 'Данные игры',
 		exit: 'Выход',
 		openBackup: 'Открыть',
 		saveBackup: 'Сохранить',

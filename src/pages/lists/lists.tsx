@@ -72,7 +72,7 @@ export function ListsPage({
 	const ui = useConfig()
 	// Тексты читаются из состояния: смена языка видна без перезагрузки окна.
 	const texts = LOCALES[ui.lang].lists
-	const setupTexts = LOCALES[ui.lang].setup
+	const modsTexts = LOCALES[ui.lang].setup
 	const [category, setCategory] = useState<VehicleCategory>('trucks')
 	const [source, setSource] = useState<VehicleSource>('all')
 	const [truckType, setTruckType] = useState('')
@@ -404,7 +404,7 @@ export function ListsPage({
 								description={files.length === 0
 									? (error ?? texts.noGameFiles)
 									: source === 'mods' && !hasMods
-										? setupTexts.noMods
+										? modsTexts.noMods
 										: texts.nothingFound}
 							>
 								{files.length === 0 && (
@@ -441,7 +441,7 @@ export function ListsPage({
 			</div>
 			<ModsModal
 				open={modsOpen}
-				texts={setupTexts}
+				texts={modsTexts}
 				closeText={texts.close}
 				onClose={() => setModsOpen(false)}
 				onChanged={modsChanged}

@@ -109,9 +109,6 @@ export interface MenuBarHandlers {
 	/** Открыть окно настроек. */
 	onSettings?(): void
 
-	/** Открыть экран игровых данных. */
-	onData?(): void
-
 	/** Открыть окно «Что нового». */
 	onWhatsNew?(): void
 }
@@ -147,7 +144,6 @@ export function buildMenuItems(
 					disabled: archiveBlocked || busy,
 					onClick: () => handlers.run('unpack')
 				},
-				{ key: 'data', label: texts.data, onClick: handlers.onData },
 				{ type: 'divider' },
 				{ key: 'exit', label: texts.exit, onClick: handlers.quit }
 			]
@@ -212,9 +208,6 @@ export interface MenuBarProps {
 	/** Открыть окно настроек. */
 	onSettings?(): void
 
-	/** Открыть экран игровых данных. */
-	onData?(): void
-
 	/** Открыть окно «Что нового». */
 	onWhatsNew?(): void
 
@@ -223,7 +216,7 @@ export interface MenuBarProps {
 }
 
 /** Верхнее меню программы: файлы, бэкап, настройки и помощь. */
-export function MenuBar({ onSettings, onData, onWhatsNew, client = menuBarClient }: MenuBarProps) {
+export function MenuBar({ onSettings, onWhatsNew, client = menuBarClient }: MenuBarProps) {
 	const { message, modal } = AntApp.useApp()
 	const config = useConfig()
 	// Меню читает тексты из состояния: смена языка в настройках видна сразу.
@@ -308,7 +301,6 @@ export function MenuBar({ onSettings, onData, onWhatsNew, client = menuBarClient
 		reset,
 		uninstall,
 		onSettings,
-		onData,
 		onWhatsNew
 	}, texts)
 

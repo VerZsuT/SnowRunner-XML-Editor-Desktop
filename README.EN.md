@@ -70,7 +70,7 @@ Project directories:
       favicon.ico        program icon.
    /api               core commands and generated types.
    /components        common components.
-   /pages             screens: lists, editor, setup, first run.
+   /pages             screens: lists, editor, first run.
    /tests             tests.
    /styles            global application styles.
    /utilities:

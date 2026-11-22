@@ -66,7 +66,6 @@ export const ch: Locale = {
 		openFiles: '打开文件',
 		updateArchive: '更新压缩包',
 		unpackArchive: '解压缩包',
-		data: '游戏数据',
 		exit: '退出',
 		openBackup: '打开',
 		saveBackup: '保存',

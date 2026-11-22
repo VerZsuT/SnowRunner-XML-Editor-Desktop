@@ -46,7 +46,7 @@
 src/                       интерфейс (webview)
   api/                     обёртки команд и generated bindings.ts
   components/              общие компоненты
-  pages/                   lists, editor, setup, welcome
+  pages/                   lists, editor, welcome
   tests/                   Vitest (node + jsdom)
   utilities/               локализация, строки
   app.tsx, entry.tsx       корень и монтирование

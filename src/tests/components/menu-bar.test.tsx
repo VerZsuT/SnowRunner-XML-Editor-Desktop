@@ -50,7 +50,6 @@ function handlers(overrides: Partial<MenuBarHandlers> = {}): MenuBarHandlers {
 		reset: vi.fn(),
 		uninstall: vi.fn(),
 		onSettings: vi.fn(),
-		onData: vi.fn(),
 		onWhatsNew: vi.fn(),
 		...overrides
 	}
@@ -112,7 +111,6 @@ describe('buildMenuItems', () => {
 		findItem(items, 'unpackArchive')?.onClick?.()
 		findItem(items, 'saveBackup')?.onClick?.()
 		findItem(items, 'restoreBackup')?.onClick?.()
-		findItem(items, 'data')?.onClick?.()
 		findItem(items, 'openSettings')?.onClick?.()
 		findItem(items, 'resetSettings')?.onClick?.()
 		findItem(items, 'uninstall')?.onClick?.()
@@ -128,7 +126,6 @@ describe('buildMenuItems', () => {
 		expect(fake.reset).toHaveBeenCalledTimes(1)
 		expect(fake.uninstall).toHaveBeenCalledTimes(1)
 		expect(fake.onSettings).toHaveBeenCalledTimes(1)
-		expect(fake.onData).toHaveBeenCalledTimes(1)
 		expect(fake.onWhatsNew).toHaveBeenCalledTimes(1)
 		expect(fake.quit).toHaveBeenCalledTimes(1)
 	})

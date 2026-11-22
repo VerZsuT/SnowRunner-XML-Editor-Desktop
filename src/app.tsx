@@ -6,7 +6,6 @@ import { WhatsNew } from '@/components/whats-new'
 import { applyConfig, useConfig } from '@/config'
 import { EditorPage } from '@/pages/editor'
 import { ListsPage } from '@/pages/lists'
-import { SetupPage } from '@/pages/setup'
 import { WelcomePage } from '@/pages/welcome'
 import { useEffect, useState } from 'react'
 
@@ -23,16 +22,15 @@ interface Selection {
 }
 
 /**
- * Корневой экран: списки, редактор и настройка.
+ * Корневой экран: списки, редактор и первоначальная настройка.
  *
- * Навигация плоская: экран задаётся открытым документом или флагом настройки.
+ * Навигация плоская: экран задаётся открытым документом или проверкой игровых данных.
  * Уведомление об обновлении и окно «Что нового» живут над экраном.
  */
 export function App() {
 	const config = useConfig()
 	const [selected, setSelected] = useState<Selection | null>(null)
 	const [settings, setSettings] = useState(false)
-	const [data, setData] = useState(false)
 	const [gameReady, setGameReady] = useState<boolean | null>(null)
 	const [whatsNew, setWhatsNew] = useState(false)
 
@@ -88,7 +86,7 @@ export function App() {
 	}
 
 	const listsReady = gameReady === true
-	const listsHidden = selected !== null || data
+	const listsHidden = selected !== null
 
 	let page
 
@@ -101,8 +99,6 @@ export function App() {
 				onBack={() => setSelected(null)}
 			/>
 		)
-	} else if (data) {
-		page = <SetupPage onBack={() => setData(false)} />
 	} else if (gameReady === false) {
 		page = <WelcomePage />
 	}
@@ -111,7 +107,6 @@ export function App() {
 		<div className="app">
 			<MenuBar
 				onSettings={() => setSettings(true)}
-				onData={() => setData(true)}
 				onWhatsNew={() => setWhatsNew(true)}
 			/>
 			<div className="app-body">

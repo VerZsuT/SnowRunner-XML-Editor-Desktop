@@ -66,7 +66,6 @@ export const de: Locale = {
 		openFiles: 'Dateien öffnen',
 		updateArchive: 'Archiv aktualisieren',
 		unpackArchive: 'Archiv entpacken',
-		data: 'Spieldaten',
 		exit: 'Beenden',
 		openBackup: 'Öffnen',
 		saveBackup: 'Sichern',
