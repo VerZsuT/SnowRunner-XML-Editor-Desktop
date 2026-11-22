@@ -51,7 +51,3 @@ export function writeField(session: DocumentSession, field: Field<unknown>, valu
 	return session.setAttr(field.descriptor, formatValue(value))
 }
 
-/** Сбрасывает поле к значению по умолчанию. */
-export function resetField(session: DocumentSession, field: Field<unknown>): Promise<MutationResult> {
-	return writeField(session, field, field.defaultValue)
-}

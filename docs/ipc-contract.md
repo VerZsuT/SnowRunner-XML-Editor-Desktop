@@ -63,8 +63,6 @@ const info = await call(commands.openDocument('truck', 'ank_mk38', null))
 
 | Команда | Аргументы | Результат |
 |---|---|---|
-| `app_info` | — | `AppInfo` |
-| `open_devtools` | — | только debug |
 | `restart_app` | — | перезапуск |
 | `quit_app` | — | закрытие программы (меню «Файл → Выход») |
 | `reset_to_defaults` | — | сброс к первоначальному состоянию и перезапуск (меню «Настройки → Сбросить») |
@@ -89,7 +87,6 @@ const info = await call(commands.openDocument('truck', 'ank_mk38', null))
 | `find_initial` | `folder` | путь к `initial.pak` или `null` |
 | `unpack_initial` | `archivePath`, `list` | `UnpackResultDto` |
 | `update_archive` | `archivePath`, `modName` | `UpdateResultDto` |
-| `verify_archive` | `archivePath` | `VerifyResultDto` |
 | `backup_archive` | `archivePath`, `suffix` | путь бэкапа |
 | `restore_backup` | `archivePath` | число байт |
 
@@ -121,19 +118,11 @@ const info = await call(commands.openDocument('truck', 'ank_mk38', null))
 | Команда | Аргументы | Результат |
 |---|---|---|
 | `list_trucks` / `list_trailers` | — | `VehicleFile[]` |
-| `list_addons` | `truck` | `AddonFile[]` |
-| `open_truck` | `name` | `Truck` |
-| `open_engines` | `name` | `Engine[]` |
-| `open_gearboxes` | `name` | `Gearbox[]` |
-| `open_suspensions` | `name` | `SuspensionSet[]` |
-| `open_winches` | `name` | `Winch[]` |
-| `open_wheels` | `name` | `Wheels` |
-| `open_wheel` | `name` | `Wheel` |
-| `open_addon` | `name` | `TruckAddon` |
+| `list_addons` | `truck`, `modName` | `AddonFile[]` |
 | `game_texts` | `lang` | `GameTexts` |
 
-`name` — имя файла без `.xml`. `open_*` читают файл напрямую и не регистрируют документ;
-для редактирования используйте `open_document`/`document_*`.
+`truck` — имя файла без `.xml`; `modName` задаёт мод, из которого открыт трак.
+Для чтения и редактирования используйте `open_document`/`document_*`.
 
 ### Документы
 
@@ -189,7 +178,6 @@ const info = await call(commands.openDocument('truck', 'ank_mk38', null))
 |---|---|---|
 | `open_url` | `url` (только http/https) | — |
 | `open_path` | `path` | — |
-| `show_in_folder` | `path` | — |
 | `check_update` | `force` | версия или `null` |
 | `download_update` | `version`, `portable` | путь к файлу |
 | `run_installer` | `path`, `portable` | закрывает приложение |

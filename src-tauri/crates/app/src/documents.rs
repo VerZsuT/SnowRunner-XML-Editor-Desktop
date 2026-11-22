@@ -19,7 +19,7 @@ use specta::Type;
 use sxmle_domain::game::templates::Templates;
 use sxmle_domain::xml::{
 	FormatPolicy, SelectorError, XmlDocument, XmlError, add_element as xml_add_element,
-	move_element as xml_move_element, remove_element as xml_remove_element,
+	move_element as xml_move_element, remove_element as xml_remove_element, resolve, resolve_mut,
 	set_attr as xml_set_attr, set_text as xml_set_text,
 };
 use thiserror::Error;
@@ -235,16 +235,6 @@ impl TemplateCache {
 		self.items.insert(name.to_owned(), bytes);
 
 		value
-	}
-
-	/// Сколько записей в кэше.
-	pub fn len(&self) -> usize {
-		self.items.len()
-	}
-
-	/// Кэш пуст.
-	pub fn is_empty(&self) -> bool {
-		self.items.is_empty()
 	}
 }
 
@@ -466,6 +456,11 @@ impl Documents {
 		value: Option<&str>,
 	) -> Result<MutationResult, DocumentError> {
 		let document = self.document_mut(doc_id, revision)?;
+		let current = resolve(document.document(), selector)?.attr_value(name);
+
+		if current.as_deref() == value {
+			return Ok(document.action_result(false, selector));
+		}
 
 		xml_set_attr(&mut document.document, selector, name, value)?;
 
@@ -488,8 +483,13 @@ impl Documents {
 		let mut changed = false;
 
 		for (selector, attributes) in defaults {
+			let Ok(element) = resolve_mut(&mut document.document, selector) else {
+				continue;
+			};
+
 			for (name, value) in attributes {
-				if xml_set_attr(&mut document.document, selector, name, Some(value)).is_ok() {
+				if element.attr_value(name).as_deref() != Some(value.as_str()) {
+					element.set_attr_value(name, value);
 					changed = true;
 				}
 			}
@@ -507,6 +507,11 @@ impl Documents {
 		text: &str,
 	) -> Result<MutationResult, DocumentError> {
 		let document = self.document_mut(doc_id, revision)?;
+		let current = resolve(document.document(), selector)?.text_value();
+
+		if current == text {
+			return Ok(document.action_result(false, selector));
+		}
 
 		xml_set_text(&mut document.document, selector, text)?;
 

@@ -30,6 +30,14 @@ function parseDefault(descriptor: AttrDescriptor, raw: string | undefined): unkn
 		return undefined
 	}
 
+	if (
+		raw.trim() === ''
+		&& descriptor.attrType !== 'string'
+		&& descriptor.attrType !== 'stringArray'
+	) {
+		return undefined
+	}
+
 	switch (descriptor.attrType) {
 		case 'integer':
 		case 'float': {

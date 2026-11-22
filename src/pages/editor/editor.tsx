@@ -48,6 +48,17 @@ interface EditorData {
 /** До какого времени события watcher игнорируются: своё сохранение тоже меняет файлы. */
 let suppressWatcherUntil = 0
 
+/** Обычная пауза после своей записи: watcher успевает прислать событие. */
+const WATCH_SUPPRESSION = 1_500
+
+/** Пауза на время сохранения: пересборка большого архива длится дольше. */
+const LONG_WATCH_SUPPRESSION = 60_000
+
+/** Откладывает реакцию на события watcher. */
+function suppressWatcher(ms = WATCH_SUPPRESSION): void {
+	suppressWatcherUntil = Date.now() + ms
+}
+
 /** Параметры страницы редактора. */
 export interface EditorPageProps {
 	/** Имя файла трака без расширения. */
@@ -89,6 +100,8 @@ export function EditorPage({
 	const [defaults, setDefaults] = useState<DefaultsStore>({})
 	const [, forceRender] = useReducer((value: number) => value + 1, 0)
 	const opening = useRef(new Set<string>())
+	// Актуальная модель для обработчиков: подписки не пересоздаются на каждую правку.
+	const dataRef = useRef<EditorData | null>(null)
 	const identity = `${kind}:${name}:${modName ?? ''}`
 	const identityRef = useRef(identity)
 	const sessions = data
@@ -99,6 +112,26 @@ export function EditorPage({
 		]
 		: []
 
+	/** Закрывает открытые документы, которых нет в показанной модели. */
+	function closeUnused(opened: DocumentSession[]): void {
+		const current = dataRef.current
+		const shown = new Set(current
+			? [
+				current.session,
+				...current.related.map(item => item.session),
+				...current.addons.map(item => item.session)
+			].map(session => session.docId)
+			: [])
+
+		for (const session of opened) {
+			if (shown.has(session.docId)) {
+				continue
+			}
+
+			void session.close(true).catch(() => false)
+		}
+	}
+
 	useEffect(() => {
 		let cancelled = false
 		const sameTruck = identityRef.current === identity
@@ -106,21 +139,36 @@ export function EditorPage({
 		identityRef.current = identity
 
 		void (async () => {
-			try {
-				const session = await Session.open(kind, name, client, modName)
-				const truck = await session.readTruck()
-				const related = await loadRelated(client, truck, session.modName)
+			let session: DocumentSession | null = null
+			let opened: DocumentSession[] = []
 
-				if (!cancelled) {
-					setData(previous => ({
-						session,
-						truck,
-						related,
-						addons: sameTruck ? previous?.addons ?? [] : []
-					}))
-					setError(null)
+			try {
+				const current = await Session.open(kind, name, client, modName)
+
+				session = current
+
+				const truck = await current.readTruck()
+				const related = await loadRelated(client, truck, current.modName)
+
+				opened = [current, ...related.map(item => item.session)]
+
+				if (cancelled) {
+					closeUnused(opened)
+
+					return
 				}
+
+				setData(previous => ({
+					session: current,
+					truck,
+					related,
+					addons: sameTruck ? previous?.addons ?? [] : []
+				}))
+				setError(null)
 			} catch (reason) {
+				// Открытый, но не показанный документ иначе остался бы в Rust.
+				closeUnused(opened.length > 0 ? opened : session ? [session] : [])
+
 				if (!cancelled) {
 					setData(null)
 					setError(toMessage(reason))
@@ -150,8 +198,6 @@ export function EditorPage({
 		}
 	}, [data])
 
-	// Актуальная модель для обработчика watcher: подписка не пересоздаётся на каждую правку.
-	const dataRef = useRef<EditorData | null>(null)
 	const watchKey = data
 		? [
 			data.session.path,
@@ -267,16 +313,20 @@ export function EditorPage({
 			...data.addons.map(item => item.session)
 		]
 
-		void Promise.all(opened.map(async session => (
+		void Promise.allSettled(opened.map(async session => (
 			[session.docId, toDefaultsStore(await session.readDefaults())] as const
 		)))
-			.then(entries => {
-				if (!cancelled) {
-					setDefaults(Object.fromEntries(entries) as DefaultsStore)
+			.then(results => {
+				if (cancelled) {
+					return
 				}
-			})
-			.catch(() => {
-				// Без выгрузки остаются значения по умолчанию из модели.
+
+				// Один недоступный файл не должен лишать остальные поля подсказок.
+				const entries = results.flatMap(result => (
+					result.status === 'fulfilled' ? [result.value] : []
+				))
+
+				setDefaults(Object.fromEntries(entries) as DefaultsStore)
 			})
 
 		return () => {
@@ -366,11 +416,26 @@ export function EditorPage({
 	}
 
 	async function save() {
-		suppressWatcherUntil = Date.now() + 1500
+		suppressWatcher(LONG_WATCH_SUPPRESSION)
 		setBusy(true)
 
 		try {
-			await client.saveAll()
+			// force=true важен и для повтора после ошибки пересборки архива:
+			// документы уже записаны, dirty в Rust снят, и обычный saveAll
+			// не стал бы пересобирать архив.
+			const saved = await client.saveAll(true)
+
+			// saveAll сохраняет документы в Rust, минуя сессии: без этого
+			// звёздочка несохранённых правок осталась бы после записи.
+			for (const session of sessions) {
+				const item = saved.find(entry => entry.docId === session.docId)
+
+				if (item) {
+					session.markSaved(item.revision)
+				}
+			}
+
+			suppressWatcher()
 			message.success(texts.saved)
 		} catch (reason) {
 			message.error(toMessage(reason))
@@ -424,14 +489,24 @@ export function EditorPage({
 			return
 		}
 
-		suppressWatcherUntil = Date.now() + 2000
+		suppressWatcher(LONG_WATCH_SUPPRESSION)
 		setBusy(true)
 
 		try {
 			const report = await data.session.importEpf(path)
 
 			// Импорт сразу переносится в исходный архив, как и обычное сохранение.
-			await client.saveAll()
+			const saved = await client.saveAll(true)
+
+			for (const session of sessions) {
+				const item = saved.find(entry => entry.docId === session.docId)
+
+				if (item) {
+					session.markSaved(item.revision)
+				}
+			}
+
+			suppressWatcher()
 			message.success(formatString(texts.imported, String(report.attributes)))
 			setReload(value => value + 1)
 		} catch (reason) {
@@ -456,6 +531,9 @@ export function EditorPage({
 
 				try {
 					await Promise.all(sessions.map(async session => session.resetDefaults()))
+					// Сброс меняет и файлы аддонов: их модели перечитываются,
+					// иначе открытая группа показывала бы прежние значения.
+					await Promise.all((data?.addons ?? []).map(refreshAddon))
 					setReload(value => value + 1)
 					message.success(texts.resetDone)
 				} catch (reason) {
@@ -584,7 +662,7 @@ export function EditorPage({
 									type="text"
 									shape="circle"
 									loading={busy}
-									disabled={!data}
+									disabled={!data || !dirty}
 									icon={<SaveOutlined />}
 									onClick={() => void save()}
 								/>

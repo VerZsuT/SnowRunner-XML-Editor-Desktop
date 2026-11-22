@@ -34,14 +34,9 @@ pub struct GameDirs {
 impl GameDirs {
 	/// Строит каталоги по путям программы.
 	///
-	/// `backup` переключает `classes` и `_dlc` на копию данных до обновления игры;
-	/// шаблоны всегда читаются из текущих распакованных файлов.
-	pub fn from_paths(paths: &Paths, backup: bool) -> Self {
-		let base = if backup {
-			paths.backup_initial_data()
-		} else {
-			paths.main_temp()
-		};
+	/// Шаблоны всегда читаются из текущих распакованных файлов.
+	pub fn from_paths(paths: &Paths) -> Self {
+		let base = paths.main_temp();
 
 		Self {
 			root: base.clone(),
@@ -148,25 +143,34 @@ pub struct GameFiles {
 	pub dlcs: Vec<String>,
 	/// Название активной модификации.
 	pub mod_name: Option<String>,
-	/// Искать в копии данных до обновления игры.
-	pub backup: bool,
 }
 
 impl GameFiles {
 	/// Создаёт контекст и читает список DLC.
-	pub fn new(dirs: GameDirs, mod_name: Option<String>, backup: bool) -> Self {
+	pub fn new(dirs: GameDirs, mod_name: Option<String>) -> Self {
 		let dlcs = read_dirs(&dirs.dlc);
 
 		Self {
 			dirs,
 			dlcs,
 			mod_name,
-			backup,
 		}
 	}
 
 	/// Пути-кандидаты в порядке приоритета: DLC (обратный порядок), мод, `classes`.
 	pub fn candidates(&self, folder: &str, name: &str) -> Vec<PathBuf> {
+		// Имя приходит из webview: оно должно быть именем файла, а не путём.
+		// Иначе "../.." вышел бы за каталог игры и позволил открыть и сохранить
+		// произвольный XML-файл.
+		if !is_file_stem(name)
+			|| self
+				.mod_name
+				.as_deref()
+				.is_some_and(|value| !is_file_stem(value))
+		{
+			return Vec::new();
+		}
+
 		let file = Path::new(folder).join(format!("{name}.xml"));
 		let nested = Path::new("classes").join(&file);
 
@@ -384,6 +388,10 @@ impl GameFiles {
 	/// прежний интерфейс показывал только их. Файлы без корня TruckAddon
 	/// пропускаются.
 	pub fn addon_files(&self, truck: &str) -> io::Result<Vec<AddonFile>> {
+		if !is_file_stem(truck) {
+			return Ok(Vec::new());
+		}
+
 		let installed = self.installed_addon_types(truck);
 		let mut candidates = Vec::new();
 		let mut seen = HashSet::new();
@@ -641,6 +649,11 @@ impl GameFiles {
 		TruckAddon::from_document(&document, templates.as_ref())
 			.ok_or_else(|| GameError::NotFound(format!("{source}: элемент TruckAddon")))
 	}
+}
+
+/// Имя файла без расширения: без разделителей пути и двоеточий.
+fn is_file_stem(name: &str) -> bool {
+	!name.is_empty() && name != "." && name != ".." && !name.contains(['/', '\\', ':', '\0'])
 }
 
 /// Путь аддона внутри дерева DLC: каталог addons или <трак>_tuning.

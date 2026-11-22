@@ -60,20 +60,6 @@ impl Limit {
 
 		self
 	}
-
-	/// Приводит значение к ограничению.
-	pub fn apply(self, value: f64) -> f64 {
-		let value = if self.fixed { value.round() } else { value };
-		let value = match self.min {
-			Some(min) => value.max(min),
-			None => value,
-		};
-
-		match self.max {
-			Some(max) => value.min(max),
-			None => value,
-		}
-	}
 }
 
 #[cfg(test)]

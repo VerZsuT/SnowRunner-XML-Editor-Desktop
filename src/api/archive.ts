@@ -25,12 +25,6 @@ export async function updateArchive(archivePath: string, modName: string | null 
 	return result.changed.length + result.added.length
 }
 
-/** Проверяет целостность архива; возвращает число записей. */
-export async function verifyArchive(archivePath: string): Promise<number> {
-	const result = await call(commands.verifyArchive(archivePath))
-
-	return result.entries
-}
 
 /** Восстанавливает архив из бэкапа каталога данных. */
 export async function restoreBackup(archivePath: string): Promise<void> {

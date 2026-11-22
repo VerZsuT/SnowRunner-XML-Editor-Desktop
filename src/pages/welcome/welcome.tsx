@@ -6,7 +6,7 @@ import { Lang, LOCALES } from '@/utilities/localization'
 import { formatString } from '@/utilities/strings'
 import { open } from '@tauri-apps/plugin-dialog'
 import { App as AntApp, Button, Result, Segmented, Steps, Typography } from 'antd'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { WelcomeClient } from './client'
 import { welcomeClient } from './client'
 import './welcome.scss'
@@ -43,7 +43,14 @@ export function WelcomePage({ client = welcomeClient }: WelcomePageProps) {
 	const [saved, setSaved] = useState<Config | null>(null)
 	const [error, setError] = useState<string | null>(null)
 	const [busy, setBusy] = useState<'folder' | 'file' | null>(null)
+	const reloadTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 	const texts = LOCALES[lang].welcome
+
+	useEffect(() => () => {
+		if (reloadTimer.current !== null) {
+			clearTimeout(reloadTimer.current)
+		}
+	}, [])
 
 	useEffect(() => {
 		let cancelled = false
@@ -132,7 +139,7 @@ export function WelcomePage({ client = welcomeClient }: WelcomePageProps) {
 			const files = await client.unpack(initialPath)
 
 			message.success(formatString(texts.unpacked, String(files)))
-			setTimeout(() => client.reload(), RELOAD_DELAY)
+			reloadTimer.current = setTimeout(() => client.reload(), RELOAD_DELAY)
 		} catch (reason) {
 			message.error(toMessage(reason))
 			setBusy(null)

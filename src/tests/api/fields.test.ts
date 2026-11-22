@@ -1,6 +1,6 @@
 import type { DocumentClient } from '@/api/documents'
 import { DocumentSession } from '@/api/documents'
-import { fieldValue, formatPosition, formatValue, resetField, writeField } from '@/api/fields'
+import { fieldValue, formatPosition, formatValue, writeField } from '@/api/fields'
 import type { AttrDescriptor, Field } from '@/api/bindings'
 import { describe, expect, it, vi } from 'vitest'
 
@@ -70,21 +70,5 @@ describe('поля документа', () => {
 		expect(documentClient.setAttr).toHaveBeenCalledWith('doc-1', 0, descriptor(), '210')
 	})
 
-	it('сбрасывает поле к значению по умолчанию', async () => {
-		const documentClient = client()
-		const session = new DocumentSession({ docId: 'doc-1', kind: 'truck', name: 'truck', path: 'truck.xml', archiveName: 'truck.xml', dlc: null, modName: null, revision: 0, dirty: false }, documentClient)
 
-		await resetField(session, field<number>(210, 5))
-
-		expect(documentClient.setAttr).toHaveBeenCalledWith('doc-1', 0, descriptor(), '5')
-	})
-
-	it('сбрасывает поле без значения по умолчанию в null', async () => {
-		const documentClient = client()
-		const session = new DocumentSession({ docId: 'doc-1', kind: 'truck', name: 'truck', path: 'truck.xml', archiveName: 'truck.xml', dlc: null, modName: null, revision: 0, dirty: false }, documentClient)
-
-		await resetField(session, field<string>('value', null))
-
-		expect(documentClient.setAttr).toHaveBeenCalledWith('doc-1', 0, descriptor(), null)
-	})
 })

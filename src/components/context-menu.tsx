@@ -45,6 +45,23 @@ export function ContextMenu({ items, target, onClose }: ContextMenuProps) {
 		return () => target.removeEventListener('contextmenu', handleContextMenu)
 	}, [target])
 
+	useEffect(() => {
+		if (!isShow) {
+			return
+		}
+
+		function handleKeyDown(event: KeyboardEvent) {
+			if (event.key === 'Escape') {
+				setIsShow(false)
+				onClose?.()
+			}
+		}
+
+		window.addEventListener('keydown', handleKeyDown)
+
+		return () => window.removeEventListener('keydown', handleKeyDown)
+	}, [isShow, onClose])
+
 	function hide(event?: React.MouseEvent) {
 		event?.stopPropagation()
 		setIsShow(false)

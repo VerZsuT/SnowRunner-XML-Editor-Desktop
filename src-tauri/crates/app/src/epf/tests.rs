@@ -71,6 +71,24 @@ fn экспортирует_и_импортирует_атрибуты() {
 }
 
 #[test]
+fn повторный_импорт_не_считается_правкой() {
+	let dir = work_dir();
+	let path = dir.join("truck.epf");
+	let source = parse(TRUCK).unwrap();
+
+	export(&source, &info(DocumentKind::Truck), &path).unwrap();
+
+	let mut target = parse(TRUCK).unwrap();
+	let imported = import(&mut target, &info(DocumentKind::Truck), &path).unwrap();
+
+	assert_eq!(imported.attributes, 0);
+	assert_eq!(imported.actions, 0);
+	assert_eq!(imported.skipped, 0);
+
+	let _ = fs::remove_dir_all(&dir);
+}
+
+#[test]
 fn дополняет_совместимый_файл() {
 	let dir = work_dir();
 	let path = dir.join("shared.epf");

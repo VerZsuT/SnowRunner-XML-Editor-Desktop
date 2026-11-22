@@ -121,6 +121,17 @@ export function ModsModal({
 		onClose()
 	}
 
+	/** Перечитывает список после частичной ошибки: часть модов уже добавлена. */
+	async function reloadList(): Promise<void> {
+		try {
+			setItems(await client.list())
+		} catch {
+			// Прежний список остаётся: ошибку чтения уже показал вызывающий.
+		}
+
+		onChanged()
+	}
+
 	async function addFiles() {
 		const selected = await openDialog({
 			multiple: true,
@@ -147,6 +158,8 @@ export function ModsModal({
 			message.success(texts.saved)
 		} catch (reason) {
 			message.error(toMessage(reason))
+			// Добавленные до ошибки файлы должны попасть в список.
+			await reloadList()
 		} finally {
 			setBusy(false)
 		}
@@ -172,6 +185,7 @@ export function ModsModal({
 			message.success(texts.saved)
 		} catch (reason) {
 			message.error(toMessage(reason))
+			await reloadList()
 		} finally {
 			setBusy(false)
 		}

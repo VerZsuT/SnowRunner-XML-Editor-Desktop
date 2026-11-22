@@ -4,7 +4,7 @@ import { SettingsModal } from '@/components/settings'
 import { applyConfig, registerConfig } from '@/config'
 import { Lang } from '@/utilities/localization'
 import { App as AntApp } from 'antd'
-import { act, render, screen } from '@testing-library/react'
+import { act, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
@@ -28,11 +28,7 @@ function paths(): PathsDto {
 		edited: 'C:/data/jsons/edited.json',
 		favorites: 'C:/data/jsons/favorites.json',
 		mods: 'C:/data/jsons/mods.json',
-		sizes: 'C:/data/jsons/sizes.json',
-		texts: 'C:/data/jsons/game-texts.json',
-		exported: 'C:/data/jsons/exported.json',
 		publicInfoUrl: 'https://example.com/version-info.json',
-		downloadPageUrl: 'https://example.com/download.html',
 		updateUrl: 'https://example.com/releases'
 	}
 }
@@ -47,8 +43,7 @@ function config(): Config {
 		checkUpdates: true,
 		useMods: true,
 		openWhatsNew: false,
-		advancedMode: false,
-		optimizeUnpack: true
+		advancedMode: false
 	}
 }
 
@@ -105,6 +100,40 @@ describe('SettingsModal', () => {
 		expect(fake.saveConfig).toHaveBeenCalledWith(expect.objectContaining({ checkUpdates: false }))
 	})
 
+	it('не теряет первую правку при быстрых переключениях', async () => {
+		let release!: () => void
+		const firstSave = new Promise<void>(resolve => {
+			release = resolve
+		})
+		const saves: Config[] = []
+		const saveConfig = vi.fn(async (next: Config) => {
+			saves.push(next)
+
+			if (saves.length === 1) {
+				await firstSave
+			}
+
+			return next
+		})
+		const fake = client({ saveConfig })
+
+		render(
+			<AntApp>
+				<SettingsModal open onClose={() => {}} client={fake} />
+			</AntApp>
+		)
+
+		const switches = await screen.findAllByRole('switch')
+
+		await userEvent.click(switches[0])
+		await userEvent.click(switches[1])
+
+		release()
+
+		await waitFor(() => expect(saves).toHaveLength(2))
+		expect(saves[1]).toEqual(expect.objectContaining({ checkUpdates: false, useMods: false }))
+	})
+
 	it('сохраняет язык и перезагружает окно', async () => {
 		const fake = client()
 
@@ -119,6 +148,26 @@ describe('SettingsModal', () => {
 
 		expect(fake.saveConfig).toHaveBeenCalledWith(expect.objectContaining({ lang: 'EN' }))
 		expect(fake.reload).toHaveBeenCalled()
+	})
+
+	it('не перезагружает окно, если язык не сохранён', async () => {
+		const fake = client({
+			saveConfig: vi.fn(async () => {
+				throw new Error('нет доступа к файлу')
+			})
+		})
+
+		render(
+			<AntApp>
+				<SettingsModal open onClose={() => {}} client={fake} />
+			</AntApp>
+		)
+
+		await userEvent.click(await screen.findByRole('combobox'))
+		await userEvent.click(await screen.findByTitle('English'))
+
+		await waitFor(() => expect(fake.saveConfig).toHaveBeenCalled())
+		expect(fake.reload).not.toHaveBeenCalled()
 	})
 
 	it('закрывается кнопкой Ok', async () => {

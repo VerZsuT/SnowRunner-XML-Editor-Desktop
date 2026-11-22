@@ -393,6 +393,8 @@ async fn update_archives(state: &AppState, documents: Vec<DocumentInfo>) -> AppR
 	}
 
 	tauri::async_runtime::spawn_blocking(move || {
+		let _guard = crate::commands::archive_guard();
+
 		for (archive_path, dir) in targets {
 			archive::update_from_dir(&archive_path, &dir)?;
 		}
@@ -439,7 +441,14 @@ fn mark_edited(state: &AppState, saved: &[SaveResult]) -> AppResult<()> {
 #[tauri::command]
 #[specta::specta]
 pub fn reset_document(state: State<'_, AppState>, doc_id: String) -> AppResult<DocumentInfo> {
-	let files = files(&state, None);
+	// Путь документа абсолютный, но шаблоны читаются из GameFiles: для файла
+	// мода нужен контекст мода, иначе шаблоны возьмутся из основной игры.
+	let mod_name = {
+		let documents = state.documents();
+
+		documents.get(&doc_id)?.info().mod_name.clone()
+	};
+	let files = files(&state, mod_name);
 	let mut documents = state.documents();
 
 	Ok(documents.reset(&doc_id, &files)?)

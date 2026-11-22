@@ -17,10 +17,24 @@ export function loadGameTexts(): Promise<GameTexts> {
 
 	if (!loaded || loadedLang !== lang) {
 		loadedLang = lang
-		loaded = commands.gameTexts(lang)
+		// Ошибка не должна кэшироваться навсегда: следующий вызов повторит запрос.
+		loaded = commands.gameTexts(lang).catch((reason: unknown) => {
+			if (loadedLang === lang) {
+				loaded = null
+				loadedLang = ''
+			}
+
+			throw reason
+		})
 	}
 
 	return loaded
+}
+
+/** Сбрасывает кэш переводов: после распаковки или изменения модов. */
+export function invalidateGameTexts(): void {
+	loaded = null
+	loadedLang = ''
 }
 
 /**

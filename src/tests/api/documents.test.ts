@@ -152,6 +152,15 @@ describe('DocumentSession', () => {
 		expect(save).toHaveBeenCalledWith('doc-1')
 	})
 
+	it('отмечает документ сохранённым после saveAll', () => {
+		const session = new DocumentSession(info(2, true), createClient())
+
+		session.markSaved(7)
+
+		expect(session.revision).toBe(7)
+		expect(session.dirty).toBe(false)
+	})
+
 	it('сброс перечитывает документ и поднимает версию', async () => {
 		const client = createClient({ reset: vi.fn(async () => info(5, false)) })
 		const session = new DocumentSession(info(2, true), client)

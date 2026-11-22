@@ -1,4 +1,4 @@
-import { gameDataReady, loadConfig, saveConfig } from '@/api/settings'
+import { gameDataReady, saveConfig } from '@/api/settings'
 import { MenuBar } from '@/components/menu-bar'
 import { SettingsModal } from '@/components/settings'
 import { UpdateAlert } from '@/components/update-alert'
@@ -74,12 +74,12 @@ export function App() {
 			return
 		}
 
-		applyConfig({ openWhatsNew: false })
+		// Сохраняется текущий снимок настроек: повторное чтение файла
+		// перезаписало бы правки, сделанные в окне настроек.
+		const current = applyConfig({ openWhatsNew: false })
 
 		try {
-			const dto = await loadConfig()
-
-			await saveConfig({ ...dto, openWhatsNew: false })
+			await saveConfig({ ...current, openWhatsNew: false })
 		} catch {
 			// Несохранённый флаг покажет окно ещё раз при следующем запуске.
 		}

@@ -1,5 +1,5 @@
 import { Lang } from '@/utilities/localization'
-import { registerConfig, updateConfig } from '@/config'
+import { applyConfig, registerConfig } from '@/config'
 import { loadGameTexts, translate } from '@/api/texts'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
@@ -42,9 +42,17 @@ describe('игровые переводы', () => {
 		expect(await first).toEqual({ main: { ui_name: 'main-RU' }, mods: { my_mod: { ui_name: 'mod-RU' } } })
 		expect(gameTexts).toHaveBeenCalledTimes(1)
 
-		updateConfig('lang', Lang.en)
+		applyConfig({ lang: Lang.en })
 
 		expect(await loadGameTexts()).toEqual({ main: { ui_name: 'main-EN' }, mods: { my_mod: { ui_name: 'mod-EN' } } })
 		expect(gameTexts).toHaveBeenCalledTimes(2)
+	})
+
+	it('повторяет запрос после ошибки', async () => {
+		applyConfig({ lang: Lang.de })
+		gameTexts.mockRejectedValueOnce(new Error('нет файла строк'))
+
+		await expect(loadGameTexts()).rejects.toThrow('нет файла строк')
+		expect(await loadGameTexts()).toEqual({ main: { ui_name: 'main-DE' }, mods: { my_mod: { ui_name: 'mod-DE' } } })
 	})
 })

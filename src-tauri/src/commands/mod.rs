@@ -1,5 +1,7 @@
 //! Команды Tauri: единственный вход webview в Rust-ядро.
 
+use std::sync::{Mutex, MutexGuard, PoisonError};
+
 use tauri::Wry;
 use tauri_specta::{Commands, collect_commands};
 
@@ -16,11 +18,21 @@ pub mod system;
 pub mod texts;
 pub mod update;
 
+/// Один писатель для тяжёлых операций с архивами и распакованными каталогами.
+///
+/// Команды запускаются в `spawn_blocking` независимо друг от друга; без этого
+/// замка сохранение документа и обновление архива из меню могли бы
+/// одновременно писать один `.pak` или временный файл.
+static ARCHIVE_LOCK: Mutex<()> = Mutex::new(());
+
+/// Захватывает замок архивных операций.
+pub fn archive_guard() -> MutexGuard<'static, ()> {
+	ARCHIVE_LOCK.lock().unwrap_or_else(PoisonError::into_inner)
+}
+
 /// Все команды приложения.
 pub fn collect() -> Commands<Wry> {
 	collect_commands![
-		app::app_info,
-		app::open_devtools,
 		app::restart_app,
 		app::quit_app,
 		app::reset_to_defaults,
@@ -33,7 +45,6 @@ pub fn collect() -> Commands<Wry> {
 		archive::find_initial,
 		archive::unpack_initial,
 		archive::update_archive,
-		archive::verify_archive,
 		archive::backup_archive,
 		archive::restore_backup,
 		library::list_favorites,
@@ -48,14 +59,6 @@ pub fn collect() -> Commands<Wry> {
 		game::list_trucks,
 		game::list_trailers,
 		game::list_addons,
-		game::open_truck,
-		game::open_engines,
-		game::open_gearboxes,
-		game::open_suspensions,
-		game::open_winches,
-		game::open_wheels,
-		game::open_wheel,
-		game::open_addon,
 		texts::game_texts,
 		documents::open_document,
 		documents::open_addon_document,
@@ -88,7 +91,6 @@ pub fn collect() -> Commands<Wry> {
 		epf::import_epf,
 		system::open_url,
 		system::open_path,
-		system::show_in_folder,
 		crate::watcher::watch_documents,
 		update::check_update,
 		update::download_update,

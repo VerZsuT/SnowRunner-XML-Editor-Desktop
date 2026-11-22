@@ -9,6 +9,10 @@ use super::encoding;
 use super::encoding::DocumentEncoding;
 use super::model::{Attribute, Element, Node, Quote, XmlDeclaration, XmlDocument};
 
+/// Предел вложенности элементов: защищает рекурсивную запись и обход дерева
+/// от переполнения стека на повреждённом или вредоносном файле.
+const MAX_DEPTH: usize = 512;
+
 /// Разбирает XML-строку.
 pub fn parse(input: &str) -> Result<XmlDocument, XmlError> {
 	parse_impl(input, false)
@@ -66,6 +70,13 @@ fn parse_impl(input: &str, bom: bool) -> Result<XmlDocument, XmlError> {
 
 		match event {
 			Event::Start(start) => {
+				if stack.len() >= MAX_DEPTH {
+					return Err(XmlError::syntax(
+						"слишком глубокая вложенность элементов",
+						offset + reader.buffer_position() as usize,
+					));
+				}
+
 				any_node = true;
 				let element = element_from_start(&start, false, reader.buffer_position(), offset)?;
 

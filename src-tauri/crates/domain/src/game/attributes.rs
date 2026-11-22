@@ -159,8 +159,8 @@ impl<'a> AttrReader<'a> {
 /// Читатели однотипных элементов файла: элемент на верхнем уровне или внутри
 /// контейнера `<container>` (например, `Engine` внутри `EngineVariants`).
 ///
-/// Селекторы стабильны: `/Engine` для верхнего уровня и
-/// `/EngineVariants/Engine[0]` для элементов контейнера.
+/// Селекторы стабильны: /Engine или /Engine[1] для верхнего уровня и
+/// /EngineVariants/Engine[0] для элементов контейнера.
 pub fn variant_readers<'a>(
 	document: &'a XmlDocument,
 	tag: &'a str,
@@ -168,10 +168,18 @@ pub fn variant_readers<'a>(
 	templates: Option<&'a Templates>,
 ) -> Vec<AttrReader<'a>> {
 	let mut result = Vec::new();
+	let mut top_index = 0usize;
 
 	for element in document.elements() {
 		if element.name == tag {
-			result.push(AttrReader::root(element, templates));
+			let selector = if top_index == 0 {
+				format!("/{tag}")
+			} else {
+				format!("/{tag}[{top_index}]")
+			};
+
+			top_index += 1;
+			result.push(AttrReader::new(element, selector, Vec::new(), templates));
 		} else if element.name == container {
 			for (index, child) in element.children_named(tag).enumerate() {
 				let selector = format!("/{container}/{tag}[{index}]");

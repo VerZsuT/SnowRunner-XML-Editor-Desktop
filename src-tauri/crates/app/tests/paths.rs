@@ -1,11 +1,11 @@
-//! Тесты выбора каталога данных и миграции json-файлов.
+//! Тесты выбора каталога данных и переключения режима хранения.
 
 use std::fs;
 use std::path::{Path, PathBuf};
 
 use sxmle_app::paths::{
 	DataMode, LocationContext, PORTABLE_MARKER, Paths, PathsContext, SwitchError,
-	migrate_legacy_data, resolve_data_location, switch_data_mode,
+	resolve_data_location, switch_data_mode,
 };
 
 /// Каталог установки.
@@ -111,43 +111,6 @@ fn make_dir(name: &str) -> PathBuf {
 }
 
 #[test]
-fn migrate_copies_json_only() {
-	let root = make_dir("migrate-copies");
-	let legacy = root.join("jsons");
-	let data = root.join("userData/jsons");
-
-	fs::create_dir_all(&legacy).unwrap();
-	fs::write(legacy.join("config.json"), "{\"version\":\"1.0.0\"}").unwrap();
-	fs::write(legacy.join("edited.json"), "[]").unwrap();
-	fs::write(legacy.join("readme.txt"), "ignored").unwrap();
-
-	let copied = migrate_legacy_data(&legacy, &data).unwrap();
-
-	assert_eq!(
-		copied,
-		vec!["config.json".to_owned(), "edited.json".to_owned()]
-	);
-	assert!(data.join("config.json").is_file());
-	assert!(legacy.join("config.json").is_file());
-	assert!(!data.join("readme.txt").exists());
-}
-
-#[test]
-fn migrate_keeps_existing_data() {
-	let root = make_dir("migrate-existing");
-	let legacy = root.join("jsons");
-	let data = root.join("userData/jsons");
-
-	fs::create_dir_all(&legacy).unwrap();
-	fs::create_dir_all(&data).unwrap();
-	fs::write(legacy.join("config.json"), "old").unwrap();
-	fs::write(data.join("config.json"), "new").unwrap();
-
-	assert!(migrate_legacy_data(&legacy, &data).unwrap().is_empty());
-	assert_eq!(fs::read_to_string(data.join("config.json")).unwrap(), "new");
-}
-
-#[test]
 fn switch_to_portable_copies_json_and_creates_marker() {
 	let root = make_dir("switch-portable");
 	let exe_dir = root.join("app");
@@ -195,13 +158,4 @@ fn switch_in_dev_is_rejected() {
 		switch_data_mode(&context, true),
 		Err(SwitchError::Dev)
 	));
-}
-
-#[test]
-fn migrate_without_legacy_dir_does_nothing() {
-	let root = make_dir("migrate-none");
-	let copied = migrate_legacy_data(&root.join("jsons"), &root.join("data")).unwrap();
-
-	assert!(copied.is_empty());
-	assert!(!root.join("data").exists());
 }

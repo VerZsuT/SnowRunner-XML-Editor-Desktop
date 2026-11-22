@@ -2,23 +2,7 @@
 
 use crate::error::{AppResult, CommandError};
 use crate::state::AppState;
-use sxmle_app::info::AppInfo;
-use sxmle_app::paths::DataMode;
 use tauri::{AppHandle, State};
-
-/// Сведения о приложении и его каталогах.
-#[tauri::command]
-#[specta::specta]
-pub fn app_info(state: State<'_, AppState>) -> AppResult<AppInfo> {
-	let paths = state.paths();
-
-	Ok(AppInfo::new(
-		tauri::VERSION,
-		paths.data_root.to_string_lossy().into_owned(),
-		paths.mode == DataMode::Portable,
-		cfg!(debug_assertions),
-	))
-}
 
 /// Перезапускает программу: нужно после смены режима хранения данных.
 #[tauri::command]
@@ -40,6 +24,9 @@ pub fn quit_app(app: AppHandle) -> AppResult<()> {
 #[tauri::command]
 #[specta::specta]
 pub fn reset_to_defaults(app: AppHandle, state: State<'_, AppState>) -> AppResult<()> {
+	// Не удаляем каталоги, пока фоновая команда пишет архив.
+	let _guard = crate::commands::archive_guard();
+
 	state.reset()?;
 	app.restart();
 }
@@ -63,25 +50,6 @@ pub fn uninstall_app(app: AppHandle) -> AppResult<()> {
 
 	sxmle_app::system::run_file(&uninstaller)?;
 	app.exit(0);
-
-	Ok(())
-}
-
-/// Открывает инструменты разработчика у главного окна.
-#[tauri::command]
-#[specta::specta]
-pub fn open_devtools(app: AppHandle) -> AppResult<()> {
-	#[cfg(debug_assertions)]
-	{
-		use tauri::Manager;
-
-		if let Some(window) = app.get_webview_window("general") {
-			window.open_devtools();
-		}
-	}
-
-	#[cfg(not(debug_assertions))]
-	let _ = &app;
 
 	Ok(())
 }

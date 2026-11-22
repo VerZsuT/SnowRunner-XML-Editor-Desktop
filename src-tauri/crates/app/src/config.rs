@@ -62,9 +62,6 @@ pub struct Config {
 
 	/// Расширенный режим.
 	pub advanced_mode: bool,
-
-	/// Оптимизировать распаковку.
-	pub optimize_unpack: bool,
 }
 
 impl Default for Config {
@@ -78,7 +75,6 @@ impl Default for Config {
 			use_mods: true,
 			open_whats_new: true,
 			advanced_mode: false,
-			optimize_unpack: true,
 		}
 	}
 }
@@ -94,9 +90,13 @@ impl Config {
 		}
 	}
 
-	/// Оставляет допустимый язык интерфейса.
+	/// Оставляет допустимый язык интерфейса, приводя его к верхнему регистру.
 	pub fn sanitize_lang(&mut self) {
-		if !LANGUAGES.contains(&self.lang.as_str()) {
+		let lang = self.lang.trim().to_ascii_uppercase();
+
+		if LANGUAGES.contains(&lang.as_str()) {
+			self.lang = lang;
+		} else {
 			self.lang = Self::default().lang;
 		}
 	}

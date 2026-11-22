@@ -26,7 +26,6 @@ fn files(dir: &Path) -> GameFiles {
 			mods: dir.join("mods"),
 		},
 		None,
-		false,
 	)
 }
 
@@ -64,6 +63,77 @@ fn открывает_документ_и_возвращает_сведения(
 	assert!(Path::new(&info.path).is_file());
 	assert_eq!(documents.list().len(), 1);
 	assert!(documents.dirty().is_empty());
+
+	let _ = fs::remove_dir_all(&dir);
+}
+
+#[test]
+fn повторная_запись_того_же_значения_не_меняет_версию() {
+	let dir = work_dir();
+	write_truck(&dir, "truck", TRUCK);
+
+	let files = files(&dir);
+	let mut documents = Documents::new();
+	documents
+		.open(&files, DocumentKind::Truck, "truck")
+		.unwrap();
+
+	let same = documents
+		.set_attr("doc-1", 0, "/Truck/TruckData", "FuelCapacity", Some("200"))
+		.unwrap();
+
+	assert_eq!(same.revision, 0);
+	assert!(!same.dirty);
+
+	let changed = documents
+		.set_attr("doc-1", 0, "/Truck/TruckData", "FuelCapacity", Some("300"))
+		.unwrap();
+
+	assert_eq!(changed.revision, 1);
+	assert!(changed.dirty);
+
+	let again = documents
+		.set_attr("doc-1", 1, "/Truck/TruckData", "FuelCapacity", Some("300"))
+		.unwrap();
+
+	assert_eq!(again.revision, 1);
+
+	let _ = fs::remove_dir_all(&dir);
+}
+
+#[test]
+fn значения_по_умолчанию_не_помечают_документ_без_изменений() {
+	let dir = work_dir();
+	write_truck(&dir, "truck", TRUCK);
+
+	let files = files(&dir);
+	let mut documents = Documents::new();
+	documents
+		.open(&files, DocumentKind::Truck, "truck")
+		.unwrap();
+
+	let same = HashMap::from([(
+		"/Truck/TruckData".to_owned(),
+		HashMap::from([("FuelCapacity".to_owned(), "200".to_owned())]),
+	)]);
+	let result = documents.apply_defaults("doc-1", &same).unwrap();
+
+	assert_eq!(result.revision, 0);
+	assert!(!result.dirty);
+
+	let changed = HashMap::from([(
+		"/Truck/TruckData".to_owned(),
+		HashMap::from([("FuelCapacity".to_owned(), "300".to_owned())]),
+	)]);
+	let result = documents.apply_defaults("doc-1", &changed).unwrap();
+
+	assert_eq!(result.revision, 1);
+	assert!(result.dirty);
+
+	let result = documents.apply_defaults("doc-1", &changed).unwrap();
+
+	assert_eq!(result.revision, 1);
+	assert!(result.dirty);
 
 	let _ = fs::remove_dir_all(&dir);
 }
@@ -350,17 +420,21 @@ fn кэширует_файлы_шаблонов() {
 	cache.set_dir(&templates_dir);
 
 	assert!(cache.load("trucks").is_some());
-	assert_eq!(cache.len(), 1);
 
 	fs::remove_file(templates_dir.join("trucks.xml")).unwrap();
 
+	// Файл уже прочитан: удаление не сбрасывает кэш.
 	assert!(cache.load("trucks").is_some());
+	// Отсутствие файла тоже кэшируется.
 	assert!(cache.load("missing").is_none());
-	assert_eq!(cache.len(), 2);
+
+	fs::write(templates_dir.join("missing.xml"), "<_templates />").unwrap();
+
+	assert!(cache.load("missing").is_none());
 
 	cache.set_dir(&dir);
 
-	assert!(cache.is_empty());
+	// Смена каталога шаблонов сбрасывает кэш.
 	assert!(cache.load("trucks").is_none());
 
 	let _ = fs::remove_dir_all(&dir);
@@ -520,7 +594,8 @@ fn экспортирует_и_импортирует_epf() {
 
 	let imported = documents.import_epf(&info.doc_id, &path).unwrap();
 
-	assert_eq!(imported.attributes, 2);
+	// Позиция сокета совпадает с файлом, изменился только FuelCapacity.
+	assert_eq!(imported.attributes, 1);
 	assert_eq!(imported.revision, 2);
 	assert!(imported.dirty);
 

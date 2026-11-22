@@ -15,6 +15,13 @@ const SOURCE: &str =
 	"<Truck Type=\"trailer\"><TruckData Fuel=\"40\" /><Name>A &amp; B</Name></Truck>";
 
 #[test]
+fn отклоняет_слишком_глубокую_вложенность() {
+	let source = format!("{}{}", "<a>".repeat(1000), "</a>".repeat(1000));
+
+	assert!(matches!(parse(&source), Err(XmlError::Syntax { .. })));
+}
+
+#[test]
 fn разбирает_пустой_элемент() {
 	let document = parse("<a />").unwrap();
 

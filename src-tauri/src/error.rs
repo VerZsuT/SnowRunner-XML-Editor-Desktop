@@ -217,6 +217,9 @@ impl From<sxmle_app::mods::ModsError> for CommandError {
 				"мод не содержит каталога classes: {}",
 				path.display()
 			)),
+			ModsError::InvalidName(name) => {
+				Self::invalid_argument(format!("некорректное имя мода: {name}"))
+			}
 			ModsError::Serialize(error) => Self::internal(error),
 		}
 	}

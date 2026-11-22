@@ -42,13 +42,12 @@ pub fn reset(paths: &Paths, version: &str, is_dev: bool) -> Result<Config, Reset
 		paths.main_temp(),
 		paths.mods_temp(),
 		paths.update_temp(),
-		paths.backup_initial_data(),
+		paths.backup_folder(),
 	] {
 		remove_dir(&directory)?;
 	}
 
 	for file in [
-		paths.backup_initial(),
 		paths.json("favorites"),
 		paths.json("edited"),
 		paths.json("mods"),

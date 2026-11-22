@@ -11,10 +11,6 @@ export async function openPath(path: string): Promise<void> {
 	await call(commands.openPath(path))
 }
 
-/** Показывает файл в проводнике. */
-export async function showInFolder(path: string): Promise<void> {
-	await call(commands.showInFolder(path))
-}
 
 /** Закрывает программу. */
 export async function quitApp(): Promise<void> {

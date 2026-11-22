@@ -10,6 +10,7 @@ use std::sync::atomic::{AtomicU64, Ordering};
 use crc32fast::hash as crc32;
 
 use super::entry::EntryMeta;
+use super::reader::MAX_ENTRY_SIZE;
 use super::{ArchiveUpdate, ZipArchive, ZipError, update};
 
 /// Счётчик уникальных рабочих каталогов.
@@ -435,23 +436,29 @@ fn put_u32(buffer: &mut Vec<u8>, value: u32) {
 
 /// Собрать минимальный zip-архив с записями stored (метод 0).
 fn build_stored_zip(path: &Path, files: &[(&str, &[u8])]) {
+	build_zip(path, files, 0, None);
+}
+
+/// Собрать zip с заданными флагами и объявленным размером записей.
+fn build_zip(path: &Path, files: &[(&str, &[u8])], flags: u16, uncompressed: Option<u32>) {
 	let mut data = Vec::new();
 	let mut central = Vec::new();
 	for (name, content) in files {
 		let offset = data.len() as u32;
 		let crc = crc32(content);
-		let size = content.len() as u32;
+		let compressed = content.len() as u32;
+		let size = uncompressed.unwrap_or(compressed);
 		let name_bytes = name.as_bytes();
 		let name_length = name_bytes.len() as u16;
 		// Локальный заголовок.
 		put_u32(&mut data, 0x0403_4b50);
 		put_u16(&mut data, 10);
-		put_u16(&mut data, 0);
+		put_u16(&mut data, flags);
 		put_u16(&mut data, 0);
 		put_u16(&mut data, 0);
 		put_u16(&mut data, 0);
 		put_u32(&mut data, crc);
-		put_u32(&mut data, size);
+		put_u32(&mut data, compressed);
 		put_u32(&mut data, size);
 		put_u16(&mut data, name_length);
 		put_u16(&mut data, 0);
@@ -461,12 +468,12 @@ fn build_stored_zip(path: &Path, files: &[(&str, &[u8])]) {
 		put_u32(&mut central, 0x0201_4b50);
 		put_u16(&mut central, 0x031E);
 		put_u16(&mut central, 10);
-		put_u16(&mut central, 0);
+		put_u16(&mut central, flags);
 		put_u16(&mut central, 0);
 		put_u16(&mut central, 0);
 		put_u16(&mut central, 0);
 		put_u32(&mut central, crc);
-		put_u32(&mut central, size);
+		put_u32(&mut central, compressed);
 		put_u32(&mut central, size);
 		put_u16(&mut central, name_length);
 		put_u16(&mut central, 0);
@@ -555,6 +562,42 @@ fn round_trips_synthetic_archive() {
 		b"alpha".to_vec()
 	);
 	drop(rebuilt);
+}
+
+/// Отказ от шифрованных записей и записей больше предела чтения.
+#[test]
+fn rejects_encrypted_and_oversized_entries() {
+	let dir = TempDir::new("limits");
+
+	let encrypted = dir.path().join("encrypted.pak");
+	build_zip(&encrypted, &[("a.txt", b"a")], 1, None);
+	assert!(
+		matches!(ZipArchive::open(&encrypted), Err(ZipError::Unsupported(_))),
+		"шифрованная запись должна отвергаться"
+	);
+
+	let oversized = dir.path().join("oversized.pak");
+	build_zip(
+		&oversized,
+		&[("big.bin", b"small")],
+		0,
+		Some(u32::try_from(MAX_ENTRY_SIZE + 1).unwrap()),
+	);
+	let archive = ZipArchive::open(&oversized).expect("архив должен открываться");
+	let entry = archive
+		.entry("big.bin")
+		.expect("запись должна быть в архиве");
+	assert!(
+		matches!(archive.read(entry), Err(ZipError::Unsupported(_))),
+		"запись больше предела не должна читаться в память"
+	);
+	assert!(
+		matches!(
+			archive.read_compressed(entry),
+			Err(ZipError::Unsupported(_))
+		),
+		"сжатые данные слишком большой записи тоже не читаются"
+	);
 }
 
 /// Отказ от zip64 и повреждённых архивов до любой записи.

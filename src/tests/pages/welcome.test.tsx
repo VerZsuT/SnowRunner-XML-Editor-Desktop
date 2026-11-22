@@ -26,7 +26,6 @@ function config(overrides: Partial<Config> = {}): Config {
 		useMods: true,
 		openWhatsNew: false,
 		advancedMode: false,
-		optimizeUnpack: true,
 		...overrides
 	}
 }

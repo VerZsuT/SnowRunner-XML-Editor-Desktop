@@ -23,6 +23,9 @@ pub(super) const METHOD_DEFLATE: u16 = 8;
 /// Флаг «после данных идёт data descriptor».
 pub(super) const DATA_DESCRIPTOR_FLAG: u16 = 0x0008;
 
+/// Флаг шифрования записи.
+pub(super) const ENCRYPTED_FLAG: u16 = 0x0001;
+
 /// Секунд в сутках.
 const SECONDS_PER_DAY: u64 = 86_400;
 

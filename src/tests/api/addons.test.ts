@@ -1,5 +1,5 @@
 import type { AddonFile, GameTexts } from '@/api/bindings'
-import { addonLabel, selectableAddons } from '@/api/addons'
+import { addonLabel } from '@/api/addons'
 import { describe, expect, it } from 'vitest'
 
 /** Аддон с минимальными полями. */
@@ -17,19 +17,6 @@ function addon(name: string, installed: boolean, uiName: string | null = null): 
 	}
 }
 
-describe('selectableAddons', () => {
-	it('оставляет установленные аддоны', () => {
-		const list = [addon('a', false), addon('b', true)]
-
-		expect(selectableAddons(list).map(item => item.name)).toEqual(['b'])
-	})
-
-	it('без установленных отдаёт весь список', () => {
-		const list = [addon('a', false), addon('b', false)]
-
-		expect(selectableAddons(list)).toHaveLength(2)
-	})
-})
 
 describe('addonLabel', () => {
 	const texts: GameTexts = {

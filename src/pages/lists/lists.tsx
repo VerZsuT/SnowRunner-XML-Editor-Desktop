@@ -5,7 +5,7 @@ import type { GameTexts, VehicleFile } from '@/api/bindings'
 import type { UserLists } from '@/api/lists'
 import { loadUserLists, toggleFavorite as toggleFavoriteFile, unmarkEdited } from '@/api/lists'
 import { loadConfig, saveConfig } from '@/api/settings'
-import { loadGameTexts, translate } from '@/api/texts'
+import { invalidateGameTexts, loadGameTexts, translate } from '@/api/texts'
 import { applyConfig, fromConfigDto, useConfig } from '@/config'
 import type { VehicleCategory } from '@/api/vehicles'
 import { listVehicles } from '@/api/vehicles'
@@ -214,6 +214,7 @@ export function ListsPage({
 
 			message.success(formatString(texts.unpacked, String(count)))
 			invalidateVehicles(load)
+			invalidateGameTexts()
 			setReload(value => value + 1)
 		} catch (reason) {
 			message.error(toMessage(reason))
@@ -240,6 +241,7 @@ export function ListsPage({
 	/** После изменения модов список должен увидеть новые файлы. */
 	function modsChanged() {
 		invalidateVehicles(load)
+		invalidateGameTexts()
 		setReload(value => value + 1)
 	}
 

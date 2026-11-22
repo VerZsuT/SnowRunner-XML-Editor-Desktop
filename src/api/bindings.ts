@@ -6,10 +6,6 @@ import * as __TAURI_EVENT from "@tauri-apps/api/event";
 
 /** Commands */
 export const commands = {
-	/**  Сведения о приложении и его каталогах. */
-	appInfo: (options?: InvokeOptions) => typedError<AppInfo, CommandError>(__TAURI_INVOKE("app_info", undefined, options)),
-	/**  Открывает инструменты разработчика у главного окна. */
-	openDevtools: (options?: InvokeOptions) => typedError<null, CommandError>(__TAURI_INVOKE("open_devtools", undefined, options)),
 	/**  Перезапускает программу: нужно после смены режима хранения данных. */
 	restartApp: (options?: InvokeOptions) => typedError<null, CommandError>(__TAURI_INVOKE("restart_app", undefined, options)),
 	/**  Закрывает программу. */
@@ -38,8 +34,6 @@ export const commands = {
 	 *  `mod_name` задаёт мод: его файлы берутся из `modsTemp/<мод>`.
 	 */
 	updateArchive: (archivePath: string, modName: string | null, options?: InvokeOptions) => typedError<UpdateResultDto, CommandError>(__TAURI_INVOKE("update_archive", { archivePath, modName }, options)),
-	/**  Проверяет целостность всех записей архива. */
-	verifyArchive: (archivePath: string, options?: InvokeOptions) => typedError<VerifyResultDto, CommandError>(__TAURI_INVOKE("verify_archive", { archivePath }, options)),
 	/**  Делает бэкап архива в каталог данных приложения. */
 	backupArchive: (archivePath: string, suffix: string | null, options?: InvokeOptions) => typedError<string, CommandError>(__TAURI_INVOKE("backup_archive", { archivePath, suffix }, options)),
 	/**  Восстанавливает `initial.pak` из бэкапа каталога данных. */
@@ -67,23 +61,7 @@ export const commands = {
 	/**  Прицепы из основной игры, DLC и модов. */
 	listTrailers: (options?: InvokeOptions) => typedError<VehicleFile[], CommandError>(__TAURI_INVOKE("list_trailers", undefined, options)),
 	/**  Аддоны трака: <трак>_tuning, trucks/addons, DLC и моды. */
-	listAddons: (truck: string, options?: InvokeOptions) => typedError<AddonFile[], CommandError>(__TAURI_INVOKE("list_addons", { truck }, options)),
-	/**  Открывает трак по имени файла без расширения. */
-	openTruck: (name: string, options?: InvokeOptions) => typedError<Truck, CommandError>(__TAURI_INVOKE("open_truck", { name }, options)),
-	/**  Открывает двигатели файла по имени без расширения. */
-	openEngines: (name: string, options?: InvokeOptions) => typedError<Engine[], CommandError>(__TAURI_INVOKE("open_engines", { name }, options)),
-	/**  Открывает коробки передач файла по имени без расширения. */
-	openGearboxes: (name: string, options?: InvokeOptions) => typedError<Gearbox[], CommandError>(__TAURI_INVOKE("open_gearboxes", { name }, options)),
-	/**  Открывает наборы подвесок файла по имени без расширения. */
-	openSuspensions: (name: string, options?: InvokeOptions) => typedError<SuspensionSet[], CommandError>(__TAURI_INVOKE("open_suspensions", { name }, options)),
-	/**  Открывает лебёдки файла по имени без расширения. */
-	openWinches: (name: string, options?: InvokeOptions) => typedError<Winch[], CommandError>(__TAURI_INVOKE("open_winches", { name }, options)),
-	/**  Открывает набор шин и дисков по имени файла без расширения. */
-	openWheels: (name: string, options?: InvokeOptions) => typedError<Wheels, CommandError>(__TAURI_INVOKE("open_wheels", { name }, options)),
-	/**  Открывает одиночное колесо по имени файла без расширения. */
-	openWheel: (name: string, options?: InvokeOptions) => typedError<Wheel, CommandError>(__TAURI_INVOKE("open_wheel", { name }, options)),
-	/**  Открывает аддон по имени файла без расширения. */
-	openAddon: (name: string, options?: InvokeOptions) => typedError<TruckAddon, CommandError>(__TAURI_INVOKE("open_addon", { name }, options)),
+	listAddons: (truck: string, modName: string | null, options?: InvokeOptions) => typedError<AddonFile[], CommandError>(__TAURI_INVOKE("list_addons", { truck, modName }, options)),
 	/**  Игровые переводы языка интерфейса: строки игры и распакованных модов. */
 	gameTexts: (lang: string, options?: InvokeOptions) => __TAURI_INVOKE<GameTexts>("game_texts", { lang }, options),
 	/**  Открывает документ игры и регистрирует его в реестре. */
@@ -134,7 +112,7 @@ export const commands = {
 	saveDocument: (docId: string, options?: InvokeOptions) => typedError<SaveResult, CommandError>(__TAURI_INVOKE("save_document", { docId }, options)),
 	/**
 	 *  Сохраняет все изменённые документы и сразу обновляет их архивы.
-	 *
+	 * 
 	 *  `force` обновляет архив даже без dirty-правок: так сброс сразу
 	 *  переносится в исходный `.pak`, не дожидаясь отдельного «Обновить архив».
 	 */
@@ -153,8 +131,6 @@ export const commands = {
 	openUrl: (url: string, options?: InvokeOptions) => typedError<null, CommandError>(__TAURI_INVOKE("open_url", { url }, options)),
 	/**  Открывает файл или каталог программой по умолчанию. */
 	openPath: (path: string, options?: InvokeOptions) => typedError<null, CommandError>(__TAURI_INVOKE("open_path", { path }, options)),
-	/**  Показывает файл в проводнике. */
-	showInFolder: (path: string, options?: InvokeOptions) => typedError<null, CommandError>(__TAURI_INVOKE("show_in_folder", { path }, options)),
 	/**  Наблюдает за файлами открытых документов. */
 	watchDocuments: (paths: string[], options?: InvokeOptions) => typedError<null, CommandError>(__TAURI_INVOKE("watch_documents", { paths }, options)),
 	/**
@@ -232,22 +208,6 @@ export type AddonTruckData = {
 	repairsCapacity: Field<number>,
 	/**  Количество колёс для ремонта. */
 	wheelRepairsCapacity: Field<number>,
-};
-
-/**  Сведения о приложении и его каталогах. */
-export type AppInfo = {
-	/**  Имя приложения. */
-	name: string,
-	/**  Версия приложения. */
-	version: string,
-	/**  Версия Tauri. */
-	tauriVersion: string,
-	/**  Каталог данных приложения. */
-	userDataDir: string,
-	/**  Признак портативного режима. */
-	portable: boolean,
-	/**  Признак отладочной сборки. */
-	debug: boolean,
 };
 
 /**  Дескриптор атрибута. */
@@ -347,8 +307,6 @@ export type Config = {
 	openWhatsNew?: boolean,
 	/**  Расширенный режим. */
 	advancedMode?: boolean,
-	/**  Оптимизировать распаковку. */
-	optimizeUnpack?: boolean,
 };
 
 /**  Кран, который устанавливается в сокет трака. */
@@ -693,12 +651,6 @@ export type PathsDto = {
 	favorites: string,
 	/**  Файл модов. */
 	mods: string,
-	/**  Файл размеров архивов. */
-	sizes: string,
-	/**  Файл переводов игры. */
-	texts: string,
-	/**  Файл экспортированных параметров. */
-	exported: string,
 	/**  Каталог бэкапов. */
 	backupFolder: string,
 	/**  Бэкап `initial.pak`. */
@@ -719,8 +671,6 @@ export type PathsDto = {
 	strings: string,
 	/**  URL сведений об обновлениях. */
 	publicInfoUrl: string,
-	/**  URL страницы скачивания. */
-	downloadPageUrl: string,
 	/**  URL релизов. */
 	updateUrl: string,
 };
@@ -1128,16 +1078,6 @@ export type VehicleFile = {
 	modName: string | null,
 	/**  Ключ перевода названия из блока UiDesc. */
 	uiName: string | null,
-};
-
-/**  Отчёт о проверке архива. */
-export type VerifyResultDto = {
-	/**  Сколько записей проверено. */
-	entries: number,
-	/**  Сколько байт распаковано. */
-	bytes: number | null,
-	/**  Длительность проверки в миллисекундах. */
-	durationMs: number,
 };
 
 /**  Колесо (TruckWheel) из файлов classes/wheels. */

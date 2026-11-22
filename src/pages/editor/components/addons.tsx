@@ -29,6 +29,9 @@ export interface AddonsContentProps {
 	/** Имя файла трака без расширения. */
 	truckName: string
 
+	/** Мод, из которого открыт трак. */
+	modName: string | null
+
 	/** Открытые аддоны. */
 	docs: AddonDocument[]
 
@@ -43,7 +46,14 @@ export interface AddonsContentProps {
 }
 
 /** Содержимое аддонов: выбор аддона и его запасы. */
-export function AddonsContent({ truckName, docs, gameTexts, onOpen, onRefresh }: AddonsContentProps) {
+export function AddonsContent({
+	truckName,
+	modName,
+	docs,
+	gameTexts,
+	onOpen,
+	onRefresh
+}: AddonsContentProps) {
 	const { message } = App.useApp()
 	const advanced = useConfig().advancedMode
 	const [items, setItems] = useState<AddonFile[] | null>(null)
@@ -64,7 +74,7 @@ export function AddonsContent({ truckName, docs, gameTexts, onOpen, onRefresh }:
 		setLoading(true)
 
 		try {
-			const loaded = await loadAddons(truckName)
+			const loaded = await loadAddons(truckName, modName)
 			const first = loaded.find(addon => addon.installed) ?? loaded[0]
 
 			setItems(loaded)
@@ -228,10 +238,17 @@ function AddonDraft({ doc, onRefresh }: {
 			createdRef.current = true
 
 			const model = await onRefresh(doc)
-			const field = model?.truckData?.[key]
 
-			if (field) {
-				await writeField(doc.session, field, value)
+			// Переносим все введённые значения: после создания TruckData
+			// черновик заменяется обычными полями, и отложенные правки
+			// иначе потерялись бы.
+			for (const item of DRAFT_FIELDS) {
+				const next = values[item.key]
+				const field = model?.truckData?.[item.key]
+
+				if (field && next !== null) {
+					await writeField(doc.session, field, next)
+				}
 			}
 		} catch (reason) {
 			message.error(errorMessage(reason))

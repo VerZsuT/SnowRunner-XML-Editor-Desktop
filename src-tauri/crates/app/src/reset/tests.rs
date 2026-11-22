@@ -30,14 +30,19 @@ fn удаляет_данные_и_пишет_стандартную_конфиг
 		paths.main_temp(),
 		paths.mods_temp(),
 		paths.update_temp(),
-		paths.backup_initial_data(),
+		paths.backup_folder(),
 	] {
 		fs::create_dir_all(&directory).unwrap();
 		with_file(&directory, "file.xml");
 	}
 
+	fs::write(
+		paths.backup_initial_with_suffix("2026-01-01_00-00-00"),
+		"pak",
+	)
+	.unwrap();
+
 	for file in [
-		paths.backup_initial(),
 		paths.json("favorites"),
 		paths.json("edited"),
 		paths.json("mods"),
@@ -53,7 +58,13 @@ fn удаляет_данные_и_пишет_стандартную_конфиг
 	assert!(config.open_whats_new);
 	assert!(!paths.main_temp().exists());
 	assert!(!paths.update_temp().exists());
-	assert!(!paths.backup_initial().exists());
+	assert!(!paths.backup_folder().exists());
+	assert!(
+		!paths
+			.backup_initial_with_suffix("2026-01-01_00-00-00")
+			.exists(),
+		"датированный бэкап остался"
+	);
 	assert!(!paths.json("favorites").exists());
 
 	let saved = ConfigStore::new(paths.json("config")).load(Config::default());

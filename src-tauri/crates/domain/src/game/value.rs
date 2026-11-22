@@ -1,8 +1,9 @@
-//! Преобразования значений атрибутов: разбор и запись строк XML.
+//! Разбор значений атрибутов из строк XML.
 //!
-//! Повторяют `AttrValue` и `stringToNumber`/`stringToArray` из текущей модели:
-//! числа разбираются как `Number.parseInt`/`Number.parseFloat` (по префиксу),
-//! логическое значение — строго строка `true`.
+//! Повторяет `AttrValue` из текущей модели: числа разбираются как
+//! `Number.parseInt`/`Number.parseFloat` (по префиксу), логическое значение —
+//! строго строка `true`. Запись значений идёт из интерфейса: в XML попадает
+//! строка, которую пользователь видит в поле.
 
 /// Разбирает целое по префиксу строки, как `Number.parseInt`.
 pub fn parse_integer(value: &str) -> Option<i64> {
@@ -85,11 +86,6 @@ pub fn parse_boolean(value: &str) -> bool {
 	value == "true"
 }
 
-/// Записывает логическое значение в XML.
-pub const fn format_boolean(value: bool) -> &'static str {
-	if value { "true" } else { "false" }
-}
-
 /// Разбирает список строк через запятую (`First, Second`).
 ///
 /// Пустые значения отбрасываются, пустой хвост после последней запятой — тоже.
@@ -106,20 +102,6 @@ pub fn parse_list(value: &str) -> Vec<String> {
 	items.retain(|item| !item.is_empty());
 
 	items
-}
-
-/// Записывает список строк в XML через запятую.
-pub fn format_list(values: &[String]) -> String {
-	values.join(",")
-}
-
-/// Записывает число в XML так же, как `String(number)` в текущей модели.
-pub fn format_number(value: f64) -> String {
-	if value.fract() == 0.0 && value.abs() < 1e21 {
-		format!("{value:.0}")
-	} else {
-		format!("{value}")
-	}
 }
 
 #[cfg(test)]

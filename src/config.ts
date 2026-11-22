@@ -45,9 +45,6 @@ export interface IConfig {
 
 	/** Расширенный режим. */
 	advancedMode: boolean
-
-	/** Оптимизировать распаковку. */
-	optimizeUnpack: boolean
 }
 
 /** Конфигурация по умолчанию. */
@@ -59,8 +56,7 @@ export const defaultConfig: IConfig = {
 	checkUpdates: true,
 	useMods: true,
 	openWhatsNew: false,
-	advancedMode: false,
-	optimizeUnpack: true
+	advancedMode: false
 }
 
 /** Состояние конфигурации. */
@@ -119,8 +115,7 @@ export function fromConfigDto(dto: ConfigDto): Partial<IConfig> {
 		checkUpdates: dto.checkUpdates ?? true,
 		useMods: dto.useMods ?? true,
 		openWhatsNew: dto.openWhatsNew ?? false,
-		advancedMode: dto.advancedMode ?? false,
-		optimizeUnpack: dto.optimizeUnpack ?? true
+		advancedMode: dto.advancedMode ?? false
 	}
 }
 
@@ -137,17 +132,6 @@ export function applyConfig(values: Partial<IConfig>): IConfig {
 	return config
 }
 
-/**
- * Записать значение в конфигурацию.
- *
- * Мутация вынесена из компонентов: React Compiler запрещает изменять
- * захваченные во время рендера значения после его завершения.
- * @param key Ключ конфигурации.
- * @param value Новое значение.
- */
-export function updateConfig<Key extends keyof IConfig>(key: Key, value: IConfig[Key]): void {
-	applyConfig({ [key]: value } as Partial<IConfig>)
-}
 
 /** Возвращает конфигурацию, регистрируя её при необходимости. */
 export function ensureConfig(): IConfig {

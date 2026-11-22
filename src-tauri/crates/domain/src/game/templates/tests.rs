@@ -53,6 +53,14 @@ fn читает_значение_локального_шаблона() {
 }
 
 #[test]
+fn отклоняет_путь_в_include() {
+	let document = parse(r#"<_templates Include="../secret" />"#).unwrap();
+	let mut load = |_: &str| panic!("файл вне _templates не должен читаться");
+
+	assert!(Templates::from_document(&document, &mut load).is_some());
+}
+
+#[test]
 fn без_шаблона_значения_нет() {
 	let document = parse("<Truck><TruckData /></Truck>").unwrap();
 	let mut load = |_: &str| None;

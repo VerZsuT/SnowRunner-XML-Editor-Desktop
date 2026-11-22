@@ -3,7 +3,7 @@ import { applyConfig, fromConfigDto, useConfig } from '@/config'
 import { LOCALES } from '@/utilities/localization'
 import { formatString } from '@/utilities/strings'
 import { App as AntApp, Button, Modal, Select, Switch, Typography } from 'antd'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { SettingsClient } from './client'
 import { settingsClient } from './client'
 import './settings.scss'
@@ -42,6 +42,10 @@ export function SettingsModal({ open, onClose, client = settingsClient }: Settin
 	const setupTexts = LOCALES[ui.lang].setup
 	const [config, setConfig] = useState<Config | null>(null)
 	const [paths, setPaths] = useState<PathsDto | null>(null)
+	// Последняя сохранённая конфигурация и очередь записей: быстрые
+	// переключения не должны затирать друг друга устаревшим снимком.
+	const savedConfig = useRef<Config | null>(null)
+	const saveQueue = useRef<Promise<unknown>>(Promise.resolve())
 
 	useEffect(() => {
 		if (!open) {
@@ -53,6 +57,7 @@ export function SettingsModal({ open, onClose, client = settingsClient }: Settin
 		Promise.all([client.config(), client.paths()]).then(
 			([nextConfig, nextPaths]) => {
 				if (!cancelled) {
+					savedConfig.current = nextConfig
 					setConfig(nextConfig)
 					setPaths(nextPaths)
 				}
@@ -69,25 +74,39 @@ export function SettingsModal({ open, onClose, client = settingsClient }: Settin
 		}
 	}, [client, message, open])
 
-	async function update(patch: Partial<Config>) {
-		if (!config) {
-			return
-		}
+	/** Сохраняет одно изменение; очередь не даёт потерять соседнюю правку. */
+	function update(patch: Partial<Config>): Promise<boolean> {
+		const run = saveQueue.current.then(async () => {
+			const base = savedConfig.current
 
-		try {
-			const saved = await client.saveConfig({ ...config, ...patch })
+			if (!base) {
+				return false
+			}
 
-			setConfig(saved)
-			applyConfig(fromConfigDto(saved))
-		} catch (reason) {
-			message.error(toMessage(reason))
-		}
+			try {
+				const saved = await client.saveConfig({ ...base, ...patch })
+
+				savedConfig.current = saved
+				setConfig(saved)
+				applyConfig(fromConfigDto(saved))
+
+				return true
+			} catch (reason) {
+				message.error(toMessage(reason))
+
+				return false
+			}
+		})
+
+		saveQueue.current = run.then(() => undefined, () => undefined)
+
+		return run
 	}
 
 	async function changeLang(lang: string) {
-		await update({ lang })
-
-		client.reload()
+		if (await update({ lang })) {
+			client.reload()
+		}
 	}
 
 	function confirmMode(portable: boolean) {

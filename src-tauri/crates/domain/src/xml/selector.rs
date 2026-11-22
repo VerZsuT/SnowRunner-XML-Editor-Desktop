@@ -236,6 +236,10 @@ pub fn set_attr(
 	name: &str,
 	value: Option<&str>,
 ) -> Result<(), SelectorError> {
+	if !is_xml_name(name) {
+		return Err(SelectorError::Invalid(format!("{selector}: {name}")));
+	}
+
 	let element = resolve_mut(document, selector)?;
 
 	match value {
@@ -286,6 +290,10 @@ pub fn add_element(
 	name: &str,
 	index: Option<usize>,
 ) -> Result<String, SelectorError> {
+	if !is_xml_name(name) {
+		return Err(SelectorError::Invalid(format!("{parent}/{name}")));
+	}
+
 	let element = resolve_mut(document, parent)?;
 	let positions = matching_positions(element, name);
 	let position = match index {
@@ -421,6 +429,17 @@ fn index_suffix(index: usize) -> String {
 	} else {
 		format!("[{index}]")
 	}
+}
+
+/// Проверяет имя элемента или атрибута: без пробелов и символов разметки.
+fn is_xml_name(name: &str) -> bool {
+	let mut chars = name.chars();
+	let Some(first) = chars.next() else {
+		return false;
+	};
+
+	(first.is_alphabetic() || first == '_' || first == ':')
+		&& chars.all(|value| value.is_alphanumeric() || matches!(value, '_' | '-' | '.' | ':'))
 }
 
 /// Позиции дочерних элементов с указанным именем.

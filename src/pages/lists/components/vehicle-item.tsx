@@ -109,7 +109,7 @@ export function VehicleItem({
 				}}
 			>
 				<ContextMenu target={target} items={items} />
-				<img className="lists-card-image" src={image} alt="" loading="lazy" draggable={false} />
+				<img className="lists-card-image" src={image || undefined} alt="" loading="lazy" draggable={false} />
 				<div className="lists-card-marks">
 					{favorite && <StarFilled className="lists-mark-favorite" />}
 					{edited && (
@@ -141,7 +141,7 @@ export function VehicleItem({
 			}}
 		>
 			<ContextMenu target={target} items={items} />
-			<img className="lists-row-image" src={image} alt="" loading="lazy" draggable={false} />
+			<img className="lists-row-image" src={image || undefined} alt="" loading="lazy" draggable={false} />
 			<div className="lists-row-body">
 				<div className="lists-row-title">
 					<Highlight text={name} search={search} />

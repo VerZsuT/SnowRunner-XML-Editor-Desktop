@@ -43,7 +43,9 @@ pub fn open_path(path: &Path) -> Result<(), SystemError> {
 
 /// Показывает файл в проводнике.
 pub fn show_in_folder(path: &Path) -> Result<(), SystemError> {
-	let argument = format!("/select,{}", path.display());
+	// Explorer понимает /select только с кавычками вокруг пути: иначе каталог
+	// с пробелом (например, «SnowRunner XML Editor») откроется неверно.
+	let argument = format!("/select,\"{}\"", path.display());
 
 	spawn("explorer.exe", &[argument.as_str()], path)
 }

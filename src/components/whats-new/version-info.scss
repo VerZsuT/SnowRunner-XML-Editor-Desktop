@@ -1,3 +1,9 @@
 .version-info {
 	margin-left: 20px;
+	padding: 0;
+	list-style: none;
+
+	li + li {
+		margin-top: 4px;
+	}
 }

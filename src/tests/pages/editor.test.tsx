@@ -261,6 +261,42 @@ describe('EditorPage', () => {
 		expect(await screen.findByText('Не удалось открыть файл')).toBeInTheDocument()
 		expect(screen.getByText('файл не найден')).toBeInTheDocument()
 	})
+	it('снимает отметку несохранённых правок после сохранения', async () => {
+		const setAttr = vi.fn(async () => ({
+			docId: 'doc-1',
+			revision: 1,
+			selector: '/Truck/GameData',
+			value: null,
+			dirty: true
+		}))
+		const saveAll = vi.fn(async () => ([{
+			docId: 'doc-1',
+			path: 'ank_mk38.xml',
+			bytes: 10,
+			revision: 2
+		}]))
+		const document = { ...client(), setAttr, saveAll } as unknown as DocumentClient
+
+		render(
+			<AntApp>
+				<EditorPage name="ank_mk38" client={document} onBack={() => {}} />
+			</AntApp>
+		)
+
+		await screen.findByText('Разблокировка')
+		await userEvent.click(screen.getByRole('button', { name: 'Разблокировка' }))
+		fireEvent.contextMenu(screen.getByRole('button', { name: 'Разблокировка' }))
+		fireEvent.click(await screen.findByText('Сбросить "Разблокировка"'))
+
+		await waitFor(() => expect(setAttr).toHaveBeenCalled())
+		expect(screen.getByLabelText('unsaved')).toBeInTheDocument()
+
+		await userEvent.click(screen.getByRole('button', { name: 'save' }))
+
+		await waitFor(() => expect(screen.queryByLabelText('unsaved')).not.toBeInTheDocument())
+		expect(saveAll).toHaveBeenCalledWith(true)
+	})
+
 	it('экспортирует параметры в .epf', async () => {
 		const exportEpf = vi.fn(async () => ({ path: 'ank_mk38.epf', selectors: 1, attributes: 2, actions: 0 }))
 		const document = { ...client(), exportEpf } as unknown as DocumentClient

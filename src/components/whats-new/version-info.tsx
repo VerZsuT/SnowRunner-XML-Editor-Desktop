@@ -1,4 +1,4 @@
-import { List, Typography } from 'antd'
+import { Typography } from 'antd'
 import './version-info.scss'
 
 const { Text } = Typography
@@ -12,15 +12,12 @@ export interface VersionInfoProps {
 /** Список изменений версии. */
 export function VersionInfo({ changes }: VersionInfoProps) {
 	return (
-		<List
-			className="version-info"
-			size="small"
-			dataSource={changes}
-			renderItem={item => (
-				<List.Item>
+		<ul className="version-info">
+			{changes.map((item, index) => (
+				<li key={`${index}-${item}`}>
 					<Text>{item}.</Text>
-				</List.Item>
-			)}
-		/>
+				</li>
+			))}
+		</ul>
 	)
 }

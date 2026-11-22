@@ -106,13 +106,15 @@ impl WatcherState {
 				thread::spawn(move || {
 					thread::sleep(Duration::from_millis(150));
 
+					// Снимаем флаг до чтения набора: событие между drain и сбросом
+					// флага иначе осталось бы в pending без нового пробуждения.
+					scheduled.store(false, Ordering::SeqCst);
+
 					let paths = {
 						let mut pending = pending.lock().unwrap_or_else(|error| error.into_inner());
 
 						pending.drain().collect::<Vec<_>>()
 					};
-
-					scheduled.store(false, Ordering::SeqCst);
 
 					if paths.is_empty() {
 						return;

@@ -6,19 +6,10 @@ import { call } from './invoke'
 import { translate } from './texts'
 
 /** Загружает аддоны трака из основной игры, DLC и модов. */
-export function loadAddons(truck: string): Promise<AddonFile[]> {
-	return call(commands.listAddons(truck))
+export function loadAddons(truck: string, modName: string | null = null): Promise<AddonFile[]> {
+	return call(commands.listAddons(truck, modName))
 }
 
-/**
- * Аддоны, которые можно показать в выборе: установленные, а если их нет —
- * весь список. Прежний интерфейс показывал только установленные аддоны.
- */
-export function selectableAddons(addons: AddonFile[]): AddonFile[] {
-	const installed = addons.filter(addon => addon.installed)
-
-	return installed.length > 0 ? installed : addons
-}
 
 /** Подпись аддона: перевод UiName, сам ключ или имя файла. */
 export function addonLabel(addon: AddonFile, texts: GameTexts | null): string {

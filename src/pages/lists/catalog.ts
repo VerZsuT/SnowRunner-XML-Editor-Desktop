@@ -16,6 +16,17 @@ const values = new WeakMap<VehicleLoader, Map<VehicleCategory, VehicleFile[]>>()
 /** Запросы, которые ещё выполняются: параллельный вызов переиспользует тот же промис. */
 const pending = new WeakMap<VehicleLoader, Map<VehicleCategory, Promise<VehicleFile[]>>>()
 
+/** Поколение кэша: запрос, начатый до сброса, не должен вернуть старые данные. */
+const generations = new WeakMap<VehicleLoader, Map<VehicleCategory, number>>()
+
+/** Категории, кэш которых сбрасывается целиком. */
+const CATEGORIES: VehicleCategory[] = ['trucks', 'trailers']
+
+/** Текущее поколение кэша загрузчика и категории. */
+function generation(load: VehicleLoader, category: VehicleCategory): number {
+	return generations.get(load)?.get(category) ?? 0
+}
+
 /**
  * Готовый список из кэша.
  * @param load Загрузчик.
@@ -45,8 +56,14 @@ export function loadVehiclesCached(load: VehicleLoader, category: VehicleCategor
 		return running
 	}
 
+	const started = generation(load, category)
 	const promise = load(category).then(
 		files => {
+			// Пока запрос выполнялся, кэш могли сбросить: старый ответ не пишем.
+			if (generation(load, category) !== started) {
+				return files
+			}
+
 			let cache = values.get(load)
 
 			if (!cache) {
@@ -60,7 +77,9 @@ export function loadVehiclesCached(load: VehicleLoader, category: VehicleCategor
 			return files
 		},
 		reason => {
-			pending.get(load)?.delete(category)
+			if (generation(load, category) === started) {
+				pending.get(load)?.delete(category)
+			}
 
 			throw reason
 		}
@@ -84,6 +103,17 @@ export function loadVehiclesCached(load: VehicleLoader, category: VehicleCategor
  * @param category Категория; без него сбрасываются все категории.
  */
 export function invalidateVehicles(load: VehicleLoader, category?: VehicleCategory): void {
+	let versions = generations.get(load)
+
+	if (!versions) {
+		versions = new Map()
+		generations.set(load, versions)
+	}
+
+	for (const item of category ? [category] : CATEGORIES) {
+		versions.set(item, generation(load, item) + 1)
+	}
+
 	if (category) {
 		values.get(load)?.delete(category)
 		pending.get(load)?.delete(category)

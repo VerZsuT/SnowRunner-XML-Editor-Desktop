@@ -56,7 +56,6 @@ fn files(root: &Path) -> GameFiles {
 			mods: root.join("mods"),
 		},
 		None,
-		false,
 	)
 }
 
@@ -248,7 +247,8 @@ fn обменивается_параметрами_epf() {
 		.import_epf(&info.doc_id, &path)
 		.expect("импорт параметров");
 
-	assert_eq!(imported.attributes, exported.attributes);
+	// Импорт записывает только отличающиеся значения: изменён один FuelCapacity.
+	assert_eq!(imported.attributes, 1);
 	assert_eq!(imported.skipped, 0);
 	assert!(imported.dirty);
 

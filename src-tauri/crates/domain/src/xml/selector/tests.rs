@@ -64,6 +64,14 @@ fn отклоняет_некорректный_путь() {
 		resolve(&document, "/Truck/TruckData[1]"),
 		Err(SelectorError::NotFound(_))
 	));
+	assert!(matches!(
+		set_attr(&mut document, "/Truck/TruckData", "Bad Name", Some("1")),
+		Err(SelectorError::Invalid(_))
+	));
+	assert!(matches!(
+		add_element(&mut document, "/Truck/TruckData", "Bad<Name", None),
+		Err(SelectorError::Invalid(_))
+	));
 }
 
 #[test]

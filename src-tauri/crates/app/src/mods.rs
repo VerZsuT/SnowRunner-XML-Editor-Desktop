@@ -64,6 +64,10 @@ pub enum ModsError {
 	#[error("мод не содержит каталога classes: {0}")]
 	NoClasses(PathBuf),
 
+	/// Имя каталога мода некорректно: оно должно быть одним компонентом пути.
+	#[error("некорректное имя мода: {0}")]
+	InvalidName(String),
+
 	/// Список модов не сериализован.
 	#[error("ошибка сериализации списка модов: {0}")]
 	Serialize(#[from] serde_json::Error),
@@ -82,10 +86,13 @@ impl Mods {
 	/// Читает список; отсутствующий или битый файл даёт пустой список.
 	pub fn load(path: impl Into<PathBuf>) -> Self {
 		let path = path.into();
-		let entries = fs::read(&path)
+		let mut entries: Vec<ModEntry> = fs::read(&path)
 			.ok()
 			.and_then(|source| serde_json::from_slice(&source).ok())
 			.unwrap_or_default();
+
+		// mods.json можно изменить вручную: имя становится каталогом на диске.
+		entries.retain(|entry| is_valid_name(&entry.name));
 
 		Self { entries, path }
 	}
@@ -97,6 +104,10 @@ impl Mods {
 
 	/// Добавляет мод или обновляет запись с тем же именем.
 	pub fn store(&mut self, entry: ModEntry) -> Result<(), ModsError> {
+		if !is_valid_name(&entry.name) {
+			return Err(ModsError::InvalidName(entry.name));
+		}
+
 		match self.entries.iter_mut().find(|item| item.name == entry.name) {
 			Some(current) => *current = entry,
 			None => self.entries.push(entry),
@@ -119,6 +130,10 @@ impl Mods {
 
 	/// Заменяет записи целиком и сохраняет список.
 	pub fn set(&mut self, entries: Vec<ModEntry>) -> Result<(), ModsError> {
+		if let Some(entry) = entries.iter().find(|entry| !is_valid_name(&entry.name)) {
+			return Err(ModsError::InvalidName(entry.name.clone()));
+		}
+
 		self.entries = entries;
 		self.save()
 	}
@@ -156,32 +171,95 @@ impl Mods {
 }
 
 /// Распаковывает `.pak` мода в `target/<name>`, заменяя прежние файлы.
+///
+/// Распаковка идёт в промежуточный каталог, а готовый результат подменяет
+/// прежний одной операцией переименования: битый `.pak` не уничтожает
+/// рабочий мод, а обрыв операции не оставляет половину файлов.
 pub fn unpack(pak: &Path, target: &Path, name: &str) -> Result<f64, ModsError> {
-	let dir = target.join(name);
-
-	if dir.is_dir() {
-		fs::remove_dir_all(&dir).map_err(|source| ModsError::Io {
-			path: dir.clone(),
-			source,
-		})?;
+	if !is_valid_name(name) {
+		return Err(ModsError::InvalidName(name.to_owned()));
 	}
 
-	archive::unpack(pak, &UnpackListKind::Mods.list(), &dir, |_, _| {})?;
+	let dir = target.join(name);
+	let staging = target.join(format!(".{name}.unpack"));
+	let previous = target.join(format!(".{name}.old"));
 
-	if !dir.join("classes").is_dir() {
-		let _ = fs::remove_dir_all(&dir);
+	// Остатки прошлой неудачной распаковки или подмены.
+	remove_dir(&staging)?;
+	remove_dir(&previous)?;
+
+	let extracted = archive::unpack(pak, &UnpackListKind::Mods.list(), &staging, |_, _| {});
+
+	if let Err(error) = extracted {
+		let _ = fs::remove_dir_all(&staging);
+
+		return Err(error.into());
+	}
+
+	if !staging.join("classes").is_dir() {
+		let _ = fs::remove_dir_all(&staging);
 
 		return Err(ModsError::NoClasses(pak.to_path_buf()));
 	}
 
+	// Размер читается до подмены: ошибка метаданных не должна менять мод.
 	let size = fs::metadata(pak)
 		.map(|meta| meta.len() as f64)
-		.map_err(|source| ModsError::Io {
-			path: pak.to_path_buf(),
-			source,
+		.map_err(|source| {
+			let _ = fs::remove_dir_all(&staging);
+
+			ModsError::Io {
+				path: pak.to_path_buf(),
+				source,
+			}
 		})?;
 
+	replace_dir(&dir, &staging, &previous)?;
+
 	Ok(size)
+}
+
+/// Удаляет каталог, если он существует.
+fn remove_dir(path: &Path) -> Result<(), ModsError> {
+	if !path.exists() {
+		return Ok(());
+	}
+
+	fs::remove_dir_all(path).map_err(|source| ModsError::Io {
+		path: path.to_path_buf(),
+		source,
+	})
+}
+
+/// Подменяет готовый каталог прежним: при сбое второй шаг откатывается.
+fn replace_dir(dir: &Path, staging: &Path, previous: &Path) -> Result<(), ModsError> {
+	let had_previous = dir.exists();
+
+	if had_previous {
+		fs::rename(dir, previous).map_err(|source| ModsError::Io {
+			path: dir.to_path_buf(),
+			source,
+		})?;
+	}
+
+	if let Err(source) = fs::rename(staging, dir) {
+		if had_previous {
+			let _ = fs::rename(previous, dir);
+		}
+
+		let _ = fs::remove_dir_all(staging);
+
+		return Err(ModsError::Io {
+			path: dir.to_path_buf(),
+			source,
+		});
+	}
+
+	if had_previous {
+		let _ = fs::remove_dir_all(previous);
+	}
+
+	Ok(())
 }
 
 /// Ищет моды в стандартном каталоге SnowRunner (`.modio/mods`).
@@ -305,6 +383,11 @@ fn merge_candidates(target: &mut Vec<ModCandidate>, source: Vec<ModCandidate>) {
 	}
 }
 
+/// Имя каталога мода: один безопасный компонент пути.
+fn is_valid_name(name: &str) -> bool {
+	!name.is_empty() && name != "." && name != ".." && !name.contains(['/', '\\', ':', '\0'])
+}
+
 /// Готовит название файла к использованию в файловой системе.
 ///
 /// Повторяет правило программы: пробелы заменяются дефисом, запрещённые
@@ -343,8 +426,11 @@ pub fn sanitize_name(name: &str) -> String {
 		return "mod".to_owned();
 	}
 
+	// Windows считает зарезервированным и имя с расширением: CON.pak, LPT1.dir.
+	let base = name.split('.').next().unwrap_or(&name);
+
 	if matches!(
-		name.as_str(),
+		base,
 		"con"
 			| "prn"
 			| "aux"

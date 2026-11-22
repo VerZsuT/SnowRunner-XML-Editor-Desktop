@@ -27,6 +27,10 @@ const MAX_COMMENT_LENGTH: u64 = u16::MAX as u64;
 /// Предел начальной ёмкости списка записей.
 const MAX_ENTRIES_RESERVE: u64 = 1_048_576;
 
+/// Предел размера одной записи при чтении в память: защита от OOM на
+/// повреждённом или специально собранном архиве.
+pub(crate) const MAX_ENTRY_SIZE: u64 = 512 * 1024 * 1024;
+
 /// Итог извлечения записей из архива.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct ExtractReport {
@@ -115,6 +119,8 @@ impl ZipArchive {
 
 	/// Прочитать и распаковать запись, проверив CRC32 и размер.
 	pub fn read(&self, entry: &EntryMeta) -> Result<Vec<u8>, ZipError> {
+		check_entry_size(entry)?;
+
 		let data = match entry.method {
 			entry::METHOD_STORED => {
 				let mut guard = self.lock();
@@ -157,6 +163,8 @@ impl ZipArchive {
 
 	/// Прочитать сырые сжатые байты записи без распаковки.
 	pub fn read_compressed(&self, entry: &EntryMeta) -> Result<Vec<u8>, ZipError> {
+		check_entry_size(entry)?;
+
 		let mut guard = self.lock();
 		guard.seek(SeekFrom::Start(entry.data_offset))?;
 		let mut limited = (&mut *guard).take(entry.compressed_size);
@@ -388,6 +396,12 @@ fn read_central_directory(
 				"zip64 не поддерживается: запись {name} требует zip64"
 			)));
 		}
+		if le_u16(&header, 8) & entry::ENCRYPTED_FLAG != 0 {
+			return Err(ZipError::Unsupported(format!(
+				"шифрование не поддерживается: запись {name}"
+			)));
+		}
+
 		entries.push(EntryMeta {
 			name,
 			method: le_u16(&header, 10),
@@ -451,6 +465,19 @@ fn read_local_header(
 		)));
 	}
 	Ok(data_offset)
+}
+
+/// Проверяет, что запись не требует слишком много памяти.
+fn check_entry_size(entry: &EntryMeta) -> Result<(), ZipError> {
+	if entry.uncompressed_size > MAX_ENTRY_SIZE || entry.compressed_size > MAX_ENTRY_SIZE {
+		return Err(ZipError::Unsupported(format!(
+			"запись {} больше {} МиБ",
+			entry.name,
+			MAX_ENTRY_SIZE / (1024 * 1024)
+		)));
+	}
+
+	Ok(())
 }
 
 /// Построить путь распаковки для имени записи.

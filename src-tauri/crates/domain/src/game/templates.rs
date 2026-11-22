@@ -64,7 +64,8 @@ impl Templates {
 		let include = element
 			.attr(INCLUDE_ATTR)
 			.map(str::trim)
-			.filter(|name| !name.is_empty() && !loaded.iter().any(|loaded| loaded == name))
+			.filter(|name| is_include_name(name))
+			.filter(|name| !loaded.iter().any(|loaded| loaded == name))
 			.and_then(|name| {
 				loaded.push(name.to_owned());
 				let source = load(name)?;
@@ -191,6 +192,11 @@ impl Templates {
 
 		select_chain(element, rest)
 	}
+}
+
+/// Имя подключаемого файла шаблонов: без пути и служебных компонентов.
+fn is_include_name(name: &str) -> bool {
+	!name.is_empty() && name != "." && name != ".." && !name.contains(['/', '\\', ':', '\0'])
 }
 
 /// Ищет потомка по цепочке имён тегов.

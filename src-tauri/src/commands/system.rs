@@ -19,10 +19,3 @@ pub fn open_url(url: String) -> AppResult<()> {
 pub fn open_path(path: String) -> AppResult<()> {
 	system::open_path(&PathBuf::from(path)).map_err(Into::into)
 }
-
-/// Показывает файл в проводнике.
-#[tauri::command]
-#[specta::specta]
-pub fn show_in_folder(path: String) -> AppResult<()> {
-	system::show_in_folder(&PathBuf::from(path)).map_err(Into::into)
-}

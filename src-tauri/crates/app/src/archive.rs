@@ -155,19 +155,6 @@ pub struct UpdateResult {
 	pub added: Vec<String>,
 }
 
-/// Отчёт о проверке архива.
-#[derive(Debug, Clone, Copy)]
-pub struct VerifyReport {
-	/// Сколько записей проверено.
-	pub entries: usize,
-
-	/// Сколько байт распаковано.
-	pub bytes: u64,
-
-	/// Длительность проверки.
-	pub duration: Duration,
-}
-
 /// Распаковывает из архива записи по списку.
 pub fn unpack(
 	archive_path: &Path,
@@ -260,61 +247,47 @@ pub fn update_from_dir(archive_path: &Path, dir: &Path) -> Result<UpdateResult, 
 	})
 }
 
-/// Проверяет целостность всех записей архива (inflate + CRC32).
-pub fn verify(
-	archive_path: &Path,
-	mut on_progress: impl FnMut(usize, usize),
-) -> Result<VerifyReport, ArchiveError> {
-	if !archive_path.is_file() {
-		return Err(ArchiveError::ArchiveNotFound(archive_path.to_path_buf()));
-	}
-
-	let started = Instant::now();
-	let archive = ZipArchive::open(archive_path)?;
-	let entries: Vec<&EntryMeta> = archive
-		.entries()
-		.iter()
-		.filter(|entry| !entry.is_directory())
-		.collect();
-	let total = entries.len();
-	let mut bytes = 0;
-
-	for (index, entry) in entries.iter().enumerate() {
-		bytes += archive.read(entry)?.len() as u64;
-		on_progress(index + 1, total);
-	}
-
-	Ok(VerifyReport {
-		entries: total,
-		bytes,
-		duration: started.elapsed(),
-	})
-}
-
-/// Копирует файл в бэкап, создавая каталоги.
+/// Копирует файл в бэкап атомарной заменой, создавая каталоги.
 pub fn backup_file(source: &Path, target: &Path) -> Result<u64, ArchiveError> {
 	if !source.is_file() {
 		return Err(ArchiveError::ArchiveNotFound(source.to_path_buf()));
 	}
 
-	if let Some(parent) = target.parent() {
-		fs::create_dir_all(parent)?;
-	}
-
-	Ok(fs::copy(source, target)?)
+	copy_atomic(source, target).map_err(ArchiveError::Io)
 }
 
-/// Восстанавливает файл из бэкапа.
+/// Восстанавливает файл из бэкапа атомарной заменой.
 pub fn restore_backup(backup: &Path, target: &Path) -> Result<u64, ArchiveError> {
 	if !backup.is_file() {
 		return Err(ArchiveError::ArchiveNotFound(backup.to_path_buf()));
 	}
 
+	copy_atomic(backup, target).map_err(ArchiveError::Io)
+}
+
+/// Копирует файл во временный рядом с целевым и переименовывает:
+/// обрыв копирования не портит уже существующий файл.
+fn copy_atomic(source: &Path, target: &Path) -> io::Result<u64> {
 	if let Some(parent) = target.parent() {
 		fs::create_dir_all(parent)?;
 	}
 
-	Ok(fs::copy(backup, target)?)
+	let mut temporary = target.as_os_str().to_os_string();
+
+	temporary.push(".tmp");
+
+	let temporary = PathBuf::from(temporary);
+	let result = fs::copy(source, &temporary).and_then(|bytes| {
+		fs::rename(&temporary, target)?;
+
+		Ok(bytes)
+	});
+
+	if result.is_err() {
+		let _ = fs::remove_file(&temporary);
+	}
+
+	result
 }
 
 /// Собирает файлы каталога рекурсивно: пары «имя записи в архиве» и «путь на диске».

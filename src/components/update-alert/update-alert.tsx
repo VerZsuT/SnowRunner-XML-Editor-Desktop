@@ -13,7 +13,7 @@ import { applyConfig } from '@/config'
 import { formatString } from '@/utilities/strings'
 import { Alert, Button, Dropdown, Modal, Progress, Space } from 'antd'
 import type { MenuProps } from 'antd'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import './update-alert.scss'
 
 /** Тексты окна. */
@@ -57,6 +57,8 @@ export function UpdateAlert({
 	const [version, setVersion] = useState<string | null>(null)
 	const [visible, setVisible] = useState(true)
 	const [downloadState, setDownloadState] = useState<DownloadState | null>(null)
+	// Признак идущей загрузки: повторный клик не должен запускать вторую.
+	const downloading = useRef(false)
 
 	useEffect(() => {
 		let cancelled = false
@@ -103,10 +105,11 @@ export function UpdateAlert({
 	}, [subscribe])
 
 	async function startUpdate(portable: boolean) {
-		if (!version) {
+		if (!version || downloading.current) {
 			return
 		}
 
+		downloading.current = true
 		setDownloadState({ percent: 0, error: null })
 
 		try {
@@ -121,6 +124,8 @@ export function UpdateAlert({
 				...current,
 				error: errorMessage(reason)
 			})
+		} finally {
+			downloading.current = false
 		}
 	}
 

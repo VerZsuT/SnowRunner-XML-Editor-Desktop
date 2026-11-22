@@ -9,7 +9,7 @@ use crate::game::limit::Limit;
 use crate::game::position::Position;
 
 /// Имя элемента UI-описания для региона по умолчанию.
-pub const DEFAULT_REGION: &str = "region\\:default";
+pub const DEFAULT_REGION: &str = "region:default";
 
 /// Блок UI трака (UiDesc).
 #[derive(Debug, Clone, PartialEq, Serialize, Type)]

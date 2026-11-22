@@ -161,7 +161,8 @@ pub fn file_key(info: &DocumentInfo) -> String {
 	let source = info
 		.dlc
 		.as_deref()
-		.or(info.mod_name.as_deref())
+		.filter(|value| !value.is_empty())
+		.or(info.mod_name.as_deref().filter(|value| !value.is_empty()))
 		.unwrap_or("default");
 
 	format!("{}_{source}", info.name)
@@ -287,8 +288,12 @@ pub fn import(
 					continue;
 				};
 
-				element.set_attr_value(name, value);
-				attributes += 1;
+				// Совпадающее значение не считается правкой: импорт того же
+				// файла не должен помечать документ изменённым.
+				if element.attr_value(name).as_deref() != Some(value.as_str()) {
+					element.set_attr_value(name, value);
+					attributes += 1;
+				}
 			}
 		}
 	}

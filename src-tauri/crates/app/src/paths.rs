@@ -208,11 +208,6 @@ impl Paths {
 		format!("{PAGES_URL}/version-info.json")
 	}
 
-	/// URL страницы скачивания программы.
-	pub fn download_page_url(&self) -> String {
-		format!("{PAGES_URL}/download.html")
-	}
-
 	/// URL релизов программы.
 	pub fn update_url(&self) -> String {
 		format!("{REPOSITORY_URL}/releases/download")
@@ -351,55 +346,6 @@ fn copy_jsons(from: &Path, to: &Path) -> Result<usize, SwitchError> {
 	Ok(copied)
 }
 
-/// Переносит json-файлы из каталога установки в каталог данных.
-///
-/// Выполняется один раз: если в каталоге данных уже есть json-файлы, ничего не копируется.
-pub fn migrate_legacy_data(legacy_dir: &Path, data_dir: &Path) -> io::Result<Vec<String>> {
-	if !legacy_dir.is_dir() {
-		return Ok(Vec::new());
-	}
-
-	if data_dir.is_dir() {
-		let has_json = fs::read_dir(data_dir)?.flatten().any(|entry| {
-			entry
-				.path()
-				.extension()
-				.is_some_and(|extension| extension == "json")
-		});
-
-		if has_json {
-			return Ok(Vec::new());
-		}
-	}
-
-	let mut names = Vec::new();
-
-	for entry in fs::read_dir(legacy_dir)? {
-		let entry = entry?;
-		let path = entry.path();
-
-		if path
-			.extension()
-			.is_some_and(|extension| extension == "json")
-		{
-			names.push(entry.file_name().to_string_lossy().into_owned());
-		}
-	}
-
-	if names.is_empty() {
-		return Ok(names);
-	}
-
-	names.sort();
-	fs::create_dir_all(data_dir)?;
-
-	for name in &names {
-		fs::copy(legacy_dir.join(name), data_dir.join(name))?;
-	}
-
-	Ok(names)
-}
-
 /// Пути программы в виде, пригодном для webview.
 #[derive(Debug, Clone, Serialize, Deserialize, Type)]
 #[serde(rename_all = "camelCase")]
@@ -427,15 +373,6 @@ pub struct PathsDto {
 
 	/// Файл модов.
 	pub mods: String,
-
-	/// Файл размеров архивов.
-	pub sizes: String,
-
-	/// Файл переводов игры.
-	pub texts: String,
-
-	/// Файл экспортированных параметров.
-	pub exported: String,
 
 	/// Каталог бэкапов.
 	pub backup_folder: String,
@@ -467,9 +404,6 @@ pub struct PathsDto {
 	/// URL сведений об обновлениях.
 	pub public_info_url: String,
 
-	/// URL страницы скачивания.
-	pub download_page_url: String,
-
 	/// URL релизов.
 	pub update_url: String,
 }
@@ -488,9 +422,6 @@ impl Paths {
 			edited: path(self.json("edited")),
 			favorites: path(self.json("favorites")),
 			mods: path(self.json("mods")),
-			sizes: path(self.json("sizes")),
-			texts: path(self.json("game-texts")),
-			exported: path(self.json("exported")),
 			backup_folder: path(self.backup_folder()),
 			backup_initial: path(self.backup_initial()),
 			backup_initial_data: path(self.backup_initial_data()),
@@ -501,7 +432,6 @@ impl Paths {
 			dlc: path(self.dlc()),
 			strings: path(self.strings()),
 			public_info_url: self.public_info_url(),
-			download_page_url: self.download_page_url(),
 			update_url: self.update_url(),
 		}
 	}

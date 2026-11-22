@@ -122,10 +122,12 @@ pub fn set_crane(
 			duplicate_shifts(socket, other, crane.name());
 		}
 	} else {
-		let index = sockets
+		let Some(index) = sockets
 			.iter()
 			.position(|socket| contains_name(socket, "Names", crane.name()))
-			.expect("кран присутствует");
+		else {
+			return Ok(false);
+		};
 
 		remove_name(sockets[index], "Names", crane.name());
 
@@ -170,10 +172,12 @@ pub fn set_trailer(
 			}
 		}
 	} else {
-		let index = sockets
+		let Some(index) = sockets
 			.iter()
 			.position(|socket| contains_name(socket, "Names", trailer.name()))
-			.expect("прицеп присутствует");
+		else {
+			return Ok(false);
+		};
 
 		remove_name(sockets[index], "Names", trailer.name());
 

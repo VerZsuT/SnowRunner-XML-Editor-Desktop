@@ -1,4 +1,4 @@
-//! Тесты модуля `value`: разбор и форматирование значений.
+//! Тесты модуля `value`: разбор значений атрибутов.
 
 use super::*;
 
@@ -27,7 +27,6 @@ fn разбирает_списки() {
 	assert_eq!(parse_list("A, B ,C"), vec!["A", "B", "C"]);
 	assert_eq!(parse_list("A,B,"), vec!["A", "B"]);
 	assert!(parse_list("").is_empty());
-	assert_eq!(format_list(&["A".to_owned(), "B".to_owned()]), "A,B");
 }
 
 #[test]
@@ -35,13 +34,4 @@ fn разбирает_логические() {
 	assert!(parse_boolean("true"));
 	assert!(!parse_boolean("True"));
 	assert!(!parse_boolean("1"));
-	assert_eq!(format_boolean(true), "true");
-	assert_eq!(format_boolean(false), "false");
-}
-
-#[test]
-fn записывает_числа() {
-	assert_eq!(format_number(1.0), "1");
-	assert_eq!(format_number(1.5), "1.5");
-	assert_eq!(format_number(-0.25), "-0.25");
 }

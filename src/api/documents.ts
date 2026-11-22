@@ -156,22 +156,82 @@ export const documentClient: DocumentClient = {
 	watch: (paths, onChange) => watchDocuments(paths, onChange)
 }
 
+/** Сколько редакторов сейчас наблюдает за файлами. */
+let activeWatchers = 0
+
+/** Номер последнего запроса наблюдения: старые запросы не перебивают новые. */
+let watchSequence = 0
+
+/** Отложенная очистка watcher: новый редактор успевает перехватить наблюдение. */
+let clearTimer: ReturnType<typeof setTimeout> | null = null
+
+/** Отменяет отложенную очистку. */
+function clearWatcherTimer(): void {
+	if (clearTimer !== null) {
+		clearTimeout(clearTimer)
+		clearTimer = null
+	}
+}
+
+/** Выключает backend-watcher, если наблюдений больше нет. */
+function scheduleWatcherClear(): void {
+	clearWatcherTimer()
+	clearTimer = setTimeout(() => {
+		clearTimer = null
+
+		if (activeWatchers === 0) {
+			void call(commands.watchDocuments([])).catch(() => undefined)
+		}
+	}, 0)
+}
+
 /** Наблюдает за файлами и возвращает функцию отписки. */
 export async function watchDocuments(
 	paths: string[],
 	onChange: (paths: string[]) => void
 ): Promise<() => void> {
+	const sequence = ++watchSequence
 	const stop = await events.documentsChanged.listen(event => onChange(event.payload.paths))
+
+	if (sequence !== watchSequence) {
+		// Редактор уже пересоздал наблюдение: этот запрос устарел.
+		stop()
+
+		return () => undefined
+	}
+
+	activeWatchers += 1
+	clearWatcherTimer()
 
 	try {
 		await call(commands.watchDocuments(paths))
 	} catch (reason) {
 		stop()
+		activeWatchers = Math.max(0, activeWatchers - 1)
+
+		if (activeWatchers === 0) {
+			scheduleWatcherClear()
+		}
 
 		throw reason
 	}
 
-	return stop
+	let disposed = false
+
+	return () => {
+		if (disposed) {
+			return
+		}
+
+		disposed = true
+		stop()
+		activeWatchers = Math.max(0, activeWatchers - 1)
+
+		// Backend-watcher не должен оставаться после закрытия редактора.
+		if (activeWatchers === 0) {
+			scheduleWatcherClear()
+		}
+	}
 }
 
 /** Открытый документ с последовательными правками. */
@@ -336,6 +396,14 @@ export class DocumentSession {
 
 			return result
 		})
+	}
+
+	/**
+	 * Отмечает документ сохранённым после общей команды `saveAll`.
+	 * Версия берётся из её результата: повторный запрос `info` не нужен.
+	 */
+	markSaved(revision: number): void {
+		this.update({ revision, dirty: false })
 	}
 
 	/** Значения по умолчанию полей документа. */

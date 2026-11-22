@@ -41,6 +41,18 @@ describe('ContextMenu', () => {
 		expect(onClose).toHaveBeenCalledTimes(1)
 	})
 
+	it('закрывается клавишей Escape', () => {
+		const onClose = vi.fn()
+
+		render(<ContextMenuDemo onClose={onClose} />)
+
+		fireEvent.contextMenu(screen.getByTestId('target'))
+		fireEvent.keyDown(window, { key: 'Escape' })
+
+		expect(screen.queryByText('Action')).not.toBeInTheDocument()
+		expect(onClose).toHaveBeenCalledTimes(1)
+	})
+
 	it('рендерится в body, минуя filter и overflow контейнера', () => {
 		render(
 			<div style={{ overflow: 'hidden', filter: 'brightness(0.9)' }}>

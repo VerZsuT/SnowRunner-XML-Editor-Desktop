@@ -166,6 +166,7 @@ export function TruckTable({
 				<AddonsContent
 					key={session.name}
 					truckName={session.name}
+					modName={session.modName}
 					docs={addons}
 					gameTexts={gameTexts}
 					onOpen={onOpenAddon}

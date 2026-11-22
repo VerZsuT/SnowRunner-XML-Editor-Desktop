@@ -45,6 +45,7 @@ describe('AddonsContent', () => {
 			<AntApp>
 				<AddonsContent
 					truckName="ank_mk38"
+					modName="my_mod"
 					docs={[]}
 					gameTexts={null}
 					onOpen={onOpen}
@@ -55,7 +56,7 @@ describe('AddonsContent', () => {
 
 		fireEvent.click(screen.getByRole('button', { name: 'Загрузить аддоны' }))
 
-		await waitFor(() => expect(mocks.loadAddons).toHaveBeenCalledWith('ank_mk38'))
+		await waitFor(() => expect(mocks.loadAddons).toHaveBeenCalledWith('ank_mk38', 'my_mod'))
 		await waitFor(() => expect(onOpen).toHaveBeenCalledWith(installed))
 	})
 })

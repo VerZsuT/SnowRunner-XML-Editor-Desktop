@@ -60,6 +60,40 @@ fn читает_трак_с_шаблоном() {
 }
 
 #[test]
+fn нумерует_одноимённые_элементы_верхнего_уровня() {
+	let document = parse("<Winch Name=\"first\" /><Winch Name=\"second\" />").unwrap();
+	let readers =
+		crate::game::attributes::variant_readers(&document, "Winch", "WinchVariants", None);
+
+	assert_eq!(readers.len(), 2);
+	assert_eq!(readers[0].selector, "/Winch");
+	assert_eq!(readers[1].selector, "/Winch[1]");
+}
+
+#[test]
+fn читает_регион_по_умолчанию() {
+	let document = parse(
+		r#"<Truck>
+	<GameData>
+		<UiDesc>
+			<region:default UiName="UI_REGION_NAME" />
+		</UiDesc>
+	</GameData>
+</Truck>"#,
+	)
+	.unwrap();
+	let truck = Truck::from_document(&document, None).unwrap();
+	let ui_desc = truck.game_data.unwrap().ui_desc.unwrap();
+	let region = ui_desc.default_region.unwrap();
+
+	assert_eq!(region.ui_name.value.as_deref(), Some("UI_REGION_NAME"));
+	assert_eq!(
+		region.ui_name.descriptor.selector,
+		"/Truck/GameData/UiDesc/region:default"
+	);
+}
+
+#[test]
 fn читает_тип_прицепа() {
 	let document = parse("<Truck Type=\"Trailer\" />").unwrap();
 	let truck = Truck::from_document(&document, None).unwrap();

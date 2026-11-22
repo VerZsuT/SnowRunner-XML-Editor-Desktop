@@ -5,7 +5,7 @@ import { ContextMenu } from '@/components/context-menu'
 import { formatString } from '@/utilities/strings'
 import { App, Input, InputNumber, Popover, Select, Typography } from 'antd'
 import type { ReactNode } from 'react'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { fieldText, optionText, texts } from '../texts'
 import { useFieldDefault } from './defaults'
 import { useGroupReset } from './group'
@@ -31,6 +31,14 @@ function useField({ session, field }: FieldProps) {
 	const { message } = App.useApp()
 	const defaultValue = useFieldDefault(session, field)
 	const [value, setValue] = useState<unknown>(() => fieldValue(field))
+	const [previousField, setPreviousField] = useState(field)
+
+	// Модель может быть перечитана с диска (watcher, сброс): локальный черновик
+	// должен следовать за новым значением поля, иначе правка затрёт его старым.
+	if (previousField !== field) {
+		setPreviousField(field)
+		setValue(fieldValue(field))
+	}
 
 	function change(next: unknown) {
 		if (next === value) {
@@ -95,8 +103,12 @@ function FieldRow({ descriptor, label, onReset, children }: FieldRowProps) {
 	const registerReset = useGroupReset()
 	const labelText = label ?? fieldText(descriptor.label)
 	const descText = fieldText(descriptor.desc)
+	const resetRef = useRef(onReset)
 
-	useEffect(() => registerReset?.(onReset), [onReset, registerReset])
+	useEffect(() => {
+		resetRef.current = onReset
+	}, [onReset])
+	useEffect(() => registerReset?.(() => resetRef.current()), [registerReset])
 
 	return (
 		<div ref={setTarget} className="editor-field">
@@ -140,7 +152,7 @@ function FieldTip({ descriptor, labels, defaultValue, children }: {
 			placement="topLeft"
 			content={(
 				<div className="editor-field-tip">
-					{lines.map(line => <div key={line}>{line}</div>)}
+					{lines.map((line, index) => <div key={`${index}-${line}`}>{line}</div>)}
 				</div>
 			)}
 		>
@@ -174,14 +186,14 @@ function tipLines(
 
 	const areas = descriptor.areas
 
-	for (const [name, area, text] of [
-		['green', areas?.green, texts.inputGreenArea],
-		['yellow', areas?.yellow, texts.inputYellowArea],
-		['red', areas?.red, texts.inputRedArea]
+	for (const [area, text] of [
+		[areas?.green, texts.inputGreenArea],
+		[areas?.yellow, texts.inputYellowArea],
+		[areas?.red, texts.inputRedArea]
 	] as const) {
 		const value = formatAreas(area)
 
-		if (name && value) {
+		if (value) {
 			lines.push(formatString(text, value))
 		}
 	}
@@ -272,7 +284,7 @@ function NumberControl({ descriptor, label, labels, defaultValue, value, change,
 			return
 		}
 
-		const next = fixed ? Math.trunc(draft) : draft
+		const next = fixed ? Math.round(draft) : draft
 
 		if (limit?.min !== null && limit?.min !== undefined && next < limit.min) {
 			setDraft(toNumber(value))

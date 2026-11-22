@@ -56,9 +56,13 @@ fn локаль_системы_превращается_в_язык() {
 #[test]
 fn при_отсутствии_конфигурации_язык_берётся_из_системы() {
 	let dir = work_dir();
-	let config = ConfigStore::new(dir.join("missing.json")).load(Config::new("2.0.0", false));
+	let mut config = ConfigStore::new(dir.join("missing.json")).load(Config::new("2.0.0", false));
 
 	assert!(LANGUAGES.contains(&config.lang.as_str()));
+
+	config.lang = "de".to_owned();
+	config.sanitize_lang();
+	assert_eq!(config.lang, "DE");
 }
 
 #[test]

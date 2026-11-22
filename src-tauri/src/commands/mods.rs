@@ -42,6 +42,8 @@ pub async fn add_mod(state: State<'_, AppState>, path: String) -> AppResult<Vec<
 	let unpack_name = name.clone();
 
 	let size = tauri::async_runtime::spawn_blocking(move || {
+		let _guard = crate::commands::archive_guard();
+
 		mods::unpack(&unpack_pak, &target, &unpack_name)
 	})
 	.await
@@ -86,6 +88,7 @@ pub async fn sync_mods(state: State<'_, AppState>) -> AppResult<Vec<ModEntry>> {
 	let target = state.paths().mods_temp();
 
 	let synced = tauri::async_runtime::spawn_blocking(move || {
+		let _guard = crate::commands::archive_guard();
 		let mut result = Vec::with_capacity(entries.len());
 
 		for entry in entries {

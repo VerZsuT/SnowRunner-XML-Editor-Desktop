@@ -4,8 +4,8 @@ use std::fs;
 use std::path::{Path, PathBuf};
 
 use sxmle_app::archive::{
-	EDITED_MARKER, UnpackList, UnpackListKind, backup_file, find_initial, unpack, update_from_dir,
-	verify,
+	EDITED_MARKER, UnpackList, UnpackListKind, backup_file, find_initial, restore_backup, unpack,
+	update_from_dir,
 };
 use sxmle_storage::zip::ZipArchive;
 
@@ -168,17 +168,6 @@ fn unpack_and_update_fixture() {
 
 	assert_eq!(markers, 1);
 
-	let verified = verify(&archive_path, |_, _| {}).expect("проверка архива");
-	assert_eq!(
-		verified.entries,
-		reopened
-			.entries()
-			.iter()
-			.filter(|entry| !entry.is_directory())
-			.count()
-	);
-	assert!(verified.bytes > 0);
-
 	let _ = fs::remove_dir_all(&root);
 }
 
@@ -193,8 +182,9 @@ fn backup_restore_roundtrip() {
 
 	assert_eq!(backup_file(&source, &backup).expect("бэкап"), 4);
 	fs::write(&source, b"broken").expect("порча файла");
-	assert_eq!(backup_file(&backup, &target).expect("восстановление"), 4);
+	assert_eq!(restore_backup(&backup, &target).expect("восстановление"), 4);
 	assert_eq!(fs::read(&target).expect("чтение"), b"data");
+	assert!(!target.with_file_name("restored.pak.tmp").exists());
 
 	assert!(backup_file(&root.join("none.pak"), &backup).is_err());
 	let _ = fs::remove_dir_all(&root);

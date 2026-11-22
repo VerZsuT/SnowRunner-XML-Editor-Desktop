@@ -19,7 +19,6 @@ fn кандидаты_идут_по_приоритету() {
 		dirs: dirs(),
 		dlcs: vec!["dlc_1".to_owned(), "dlc_2".to_owned()],
 		mod_name: Some("my_mod".to_owned()),
-		backup: false,
 	};
 	let candidates = files.candidates("trucks", "ank_mk38");
 
@@ -40,7 +39,6 @@ fn источник_определяется_по_каталогу() {
 		dirs: dirs(),
 		dlcs: vec!["dlc_1".to_owned()],
 		mod_name: Some("my_mod".to_owned()),
-		backup: false,
 	};
 
 	assert_eq!(
@@ -54,12 +52,34 @@ fn источник_определяется_по_каталогу() {
 }
 
 #[test]
+fn отклоняет_путь_вместо_имени_файла() {
+	let files = GameFiles {
+		dirs: dirs(),
+		dlcs: Vec::new(),
+		mod_name: None,
+	};
+
+	assert!(files.candidates("trucks", "../outside").is_empty());
+	assert!(files.candidates("trucks", "dir/truck").is_empty());
+	assert!(files.candidates("trucks", r"dir\truck").is_empty());
+	assert!(files.candidates("trucks", "C:truck").is_empty());
+	assert!(files.candidates("trucks", "").is_empty());
+	assert!(files.candidates("trucks", "..").is_empty());
+
+	let files = GameFiles {
+		mod_name: Some("../outside".to_owned()),
+		..files
+	};
+
+	assert!(files.candidates("trucks", "truck").is_empty());
+}
+
+#[test]
 fn без_мода_кандидаты_короче() {
 	let files = GameFiles {
 		dirs: dirs(),
 		dlcs: Vec::new(),
 		mod_name: None,
-		backup: false,
 	};
 
 	assert_eq!(

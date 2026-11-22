@@ -28,7 +28,7 @@ fn находит_траки_и_двигатели_фикстуры() {
 
 		return;
 	};
-	let files = GameFiles::new(dirs, None, false);
+	let files = GameFiles::new(dirs, None);
 	let trucks = files.vehicle_files(false).unwrap();
 
 	assert_eq!(
@@ -109,7 +109,7 @@ fn открывает_остальные_сущности_фикстуры() {
 
 		return;
 	};
-	let files = GameFiles::new(dirs, None, false);
+	let files = GameFiles::new(dirs, None);
 
 	let gearboxes = files.open_gearboxes("gearboxes_scouts").unwrap();
 
@@ -166,7 +166,7 @@ fn перечисляет_аддоны_трака() {
 
 		return;
 	};
-	let files = GameFiles::new(dirs, None, false);
+	let files = GameFiles::new(dirs, None);
 	let addons = files.addon_files("ank_mk38").unwrap();
 
 	assert!(!addons.is_empty());
