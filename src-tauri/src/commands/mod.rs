@@ -12,7 +12,9 @@ pub mod game;
 pub mod library;
 pub mod mods;
 pub mod paths;
+pub mod system;
 pub mod texts;
+pub mod update;
 
 /// Все команды приложения.
 pub fn collect() -> Commands<Wry> {
@@ -75,6 +77,12 @@ pub fn collect() -> Commands<Wry> {
 		documents::save_all_documents,
 		documents::reset_document,
 		epf::export_epf,
-		epf::import_epf
+		epf::import_epf,
+		system::open_url,
+		system::open_path,
+		system::show_in_folder,
+		update::check_update,
+		update::download_update,
+		update::run_installer
 	]
 }

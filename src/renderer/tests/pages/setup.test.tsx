@@ -118,6 +118,22 @@ describe('SetupPage', () => {
 		expect(fake.saveConfig).toHaveBeenCalledWith(expect.objectContaining({ useMods: false }))
 	})
 
+	it('сохраняет переключатель проверки обновлений', async () => {
+		const fake = client()
+
+		render(
+			<AntApp>
+				<SetupPage client={fake} onBack={() => {}} />
+			</AntApp>
+		)
+
+		const switches = await screen.findAllByRole('switch')
+
+		await userEvent.click(switches[3])
+
+		expect(fake.saveConfig).toHaveBeenCalledWith(expect.objectContaining({ checkUpdates: false }))
+	})
+
 	it('показывает моды и убирает их из списка', async () => {
 		const fake = client()
 

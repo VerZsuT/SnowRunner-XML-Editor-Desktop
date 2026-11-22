@@ -84,9 +84,15 @@ export function SetupPage({ onBack, client = setupClient }: SetupPageProps) {
 		}
 	}
 
-	async function toggle(key: 'useMods' | 'advancedMode', value: boolean) {
+	async function toggle(key: 'useMods' | 'advancedMode' | 'checkUpdates', value: boolean) {
+		const patch: Partial<Config> = key === 'useMods'
+			? { useMods: value }
+			: key === 'advancedMode'
+				? { advancedMode: value }
+				: { checkUpdates: value }
+
 		try {
-			await update(key === 'useMods' ? { useMods: value } : { advancedMode: value })
+			await update(patch)
 			message.success(texts.saved)
 		} catch (reason) {
 			message.error(toMessage(reason))
@@ -394,6 +400,13 @@ export function SetupPage({ onBack, client = setupClient }: SetupPageProps) {
 											onChange={value => confirmMode(value)}
 										/>
 										<Typography.Text>{texts.portableMode}</Typography.Text>
+									</div>
+									<div className="setup-option">
+										<Switch
+											checked={config.checkUpdates ?? true}
+											onChange={value => void toggle('checkUpdates', value)}
+										/>
+										<Typography.Text>{texts.checkUpdates}</Typography.Text>
 									</div>
 									<div className="setup-option">
 										<Typography.Text>{texts.language}</Typography.Text>

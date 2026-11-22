@@ -26,7 +26,7 @@ use sxmle_domain::game::field::Field;
 use sxmle_domain::game::limit::Limit;
 use sxmle_domain::game::position::Position;
 use tauri::Manager;
-use tauri_specta::ErrorHandlingMode;
+use tauri_specta::{ErrorHandlingMode, collect_events};
 
 pub use error::{CommandError, ErrorCode};
 
@@ -34,6 +34,7 @@ pub use error::{CommandError, ErrorCode};
 pub fn specta_builder() -> tauri_specta::Builder<tauri::Wry> {
 	tauri_specta::Builder::<tauri::Wry>::new()
 		.commands(commands::collect())
+		.events(collect_events![commands::update::UpdateProgress])
 		.typ::<Truck>()
 		.typ::<TruckData>()
 		.typ::<TruckGameData>()

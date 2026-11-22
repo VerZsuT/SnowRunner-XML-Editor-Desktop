@@ -178,6 +178,11 @@ impl Paths {
 		self.data("modsTemp")
 	}
 
+	/// Временный каталог загруженных обновлений.
+	pub fn update_temp(&self) -> PathBuf {
+		self.data("updateTemp")
+	}
+
 	/// Каталог классов игры.
 	pub fn classes(&self) -> PathBuf {
 		self.main_temp().join("[media]/classes")

@@ -176,6 +176,10 @@ export const SETUP_PAGE_LOCALIZATION = loadLocalization(new Localization({
 		.ru('Расширенный режим')
 		.en('Advanced mode'),
 
+	checkUpdates: new LocalizationStrings()
+		.ru('Проверять обновления')
+		.en('Check for updates'),
+
 	cancel: new LocalizationStrings()
 		.ru('Отмена')
 		.en('Cancel'),

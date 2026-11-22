@@ -1,13 +1,11 @@
 import { LocalizationStrings } from '@localization'
 import { useConfig } from '@renderer/utilities/use-reactive'
-import { di } from '@utilities/di/container'
-import { APP_CONSTANTS_TOKEN } from '@utilities/di/renderer/tokens'
 import { Button, Modal } from 'antd'
 import { VersionInfo } from './version-info'
 import { WHATS_NEW_LOCALIZATION as texts } from './localization'
 import './whats-new.scss'
 
-/** Параметры окна "Что нового". */
+/** Параметры окна «Что нового». */
 export interface WhatsNewProps {
 	/** Открыто ли окно. */
 	open: boolean
@@ -16,11 +14,10 @@ export interface WhatsNewProps {
 	onOpenChange(open: boolean): void
 }
 
-/** Окно "Что нового". */
+/** Окно «Что нового» с изменениями текущей версии. */
 export function WhatsNew({ open, onOpenChange }: WhatsNewProps) {
 	const config = useConfig()
-	const appConstants = di.resolve(APP_CONSTANTS_TOKEN)
-	const info = new LocalizationStrings<string[]>()
+	const changes = new LocalizationStrings<string[]>()
 		.ru([
 			'Обновлены компоненты программы',
 			'Добавлены картинки новых авто',
@@ -42,20 +39,21 @@ export function WhatsNew({ open, onOpenChange }: WhatsNewProps) {
 			'标准参数已更新'
 		])
 		.get(config)
+	const version = config.version ? ` ${config.version}` : ''
 
 	return (
 		<Modal
 			open={open}
-			title={`${texts.whatsNewTitle} ${appConstants.VERSION}`}
+			title={`${texts.whatsNewTitle}${version}`}
 			onCancel={() => onOpenChange(false)}
 			footer={(
-				<Button key="submit" type="primary" onClick={() => onOpenChange(false)}>
+				<Button type="primary" onClick={() => onOpenChange(false)}>
 					Ok
 				</Button>
 			)}
 		>
 			<div className="whats-new-container">
-				<VersionInfo changes={info} />
+				<VersionInfo changes={changes} />
 			</div>
 		</Modal>
 	)

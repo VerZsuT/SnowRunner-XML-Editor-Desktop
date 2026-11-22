@@ -2,6 +2,7 @@
 
 import { invoke as __TAURI_INVOKE } from "@tauri-apps/api/core";
 import type { InvokeOptions } from "@tauri-apps/api/core";
+import * as __TAURI_EVENT from "@tauri-apps/api/event";
 
 /** Commands */
 export const commands = {
@@ -127,6 +128,31 @@ export const commands = {
 	exportEpf: (docId: string, path: string, options?: InvokeOptions) => typedError<EpfExportReport, CommandError>(__TAURI_INVOKE("export_epf", { docId, path }, options)),
 	/**  Импортирует параметры из файла `.epf` в открытый документ. */
 	importEpf: (docId: string, path: string, options?: InvokeOptions) => typedError<EpfImportReport, CommandError>(__TAURI_INVOKE("import_epf", { docId, path }, options)),
+	/**  Открывает ссылку в браузере по умолчанию. */
+	openUrl: (url: string, options?: InvokeOptions) => typedError<null, CommandError>(__TAURI_INVOKE("open_url", { url }, options)),
+	/**  Открывает файл или каталог программой по умолчанию. */
+	openPath: (path: string, options?: InvokeOptions) => typedError<null, CommandError>(__TAURI_INVOKE("open_path", { path }, options)),
+	/**  Показывает файл в проводнике. */
+	showInFolder: (path: string, options?: InvokeOptions) => typedError<null, CommandError>(__TAURI_INVOKE("show_in_folder", { path }, options)),
+	/**
+	 *  Проверяет наличие новой версии программы.
+	 * 
+	 *  С настройкой `checkUpdates = false` проверка выполняется только по `force`.
+	 */
+	checkUpdate: (force: boolean, options?: InvokeOptions) => typedError<string | null, CommandError>(__TAURI_INVOKE("check_update", { force }, options)),
+	/**  Загружает установщик или портативный архив и возвращает путь к файлу. */
+	downloadUpdate: (version: string, portable: boolean, options?: InvokeOptions) => typedError<string, CommandError>(__TAURI_INVOKE("download_update", { version, portable }, options)),
+	/**
+	 *  Запускает установщик обновления или показывает портативный архив.
+	 * 
+	 *  После запуска программа закрывается: установщик заменяет её файлы.
+	 */
+	runInstaller: (path: string, portable: boolean, options?: InvokeOptions) => typedError<null, CommandError>(__TAURI_INVOKE("run_installer", { path, portable }, options)),
+};
+
+/** Events */
+export const events = {
+	updateProgress: makeEvent<UpdateProgress, UpdateProgress>("update-progress"),
 };
 
 /* Types */
@@ -444,6 +470,8 @@ export type ErrorCode =
 "notFound" | 
 /**  Конфликт версий или несохранённые правки. */
 "conflict" | 
+/**  Ошибка проверки обновлений или загрузки файла. */
+"update" | 
 /**  Внутренняя ошибка приложения. */
 "internal";
 
@@ -1012,6 +1040,16 @@ export type UnpackResultDto = {
 	durationMs: number,
 };
 
+/**  Прогресс загрузки обновления. */
+export type UpdateProgress = {
+	/**  Процент загрузки от 0 до 99. */
+	percent: number,
+	/**  Сколько байт загружено. */
+	downloaded: number | null,
+	/**  Полный размер файла, если сервер его сообщил. */
+	total: number | null,
+};
+
 /**  Отчёт об обновлении архива. */
 export type UpdateResultDto = {
 	/**  Пересобранные записи. */
@@ -1108,4 +1146,29 @@ async function typedError<T, E>(result: Promise<T>): Promise<{ status: "ok"; dat
         if (e instanceof Error) throw e;
         return { status: "error", error: e as any };
     }
+}
+
+type EventEmit<T> = [T] extends [null] ? () => Promise<void> : (payload: T) => Promise<void>;
+
+type EventEmitTo<T> = [T] extends [null] ? (target: __TAURI_EVENT.EventTarget | string) => Promise<void> : (target: __TAURI_EVENT.EventTarget | string, payload: T) => Promise<void>;
+
+function makeEvent<TListen, TEmit = TListen>(name: string, serialize?: (payload: TEmit) => unknown, deserialize?: (payload: any) => TListen) {
+    const mapEvent = (cb: __TAURI_EVENT.EventCallback<TListen>) => (event: __TAURI_EVENT.Event<any>) => cb({ ...event, payload: deserialize ? deserialize(event.payload) : event.payload });
+    const mapPayload = (payload: TEmit) => serialize ? serialize(payload) : payload;
+
+    const base = {
+        listen: (cb: __TAURI_EVENT.EventCallback<TListen>) => __TAURI_EVENT.listen(name, mapEvent(cb)),
+        once: (cb: __TAURI_EVENT.EventCallback<TListen>) => __TAURI_EVENT.once(name, mapEvent(cb)),
+        emit: ((payload: TEmit) => __TAURI_EVENT.emit(name, mapPayload(payload)) as unknown) as EventEmit<TEmit>,
+        emitTo: ((to: __TAURI_EVENT.EventTarget | string, payload: TEmit) => __TAURI_EVENT.emitTo(to, name, mapPayload(payload)) as unknown) as EventEmitTo<TEmit>
+    };
+
+    const fn = (target: import("@tauri-apps/api/webview").Webview | import("@tauri-apps/api/window").Window) => ({
+        listen: (cb: __TAURI_EVENT.EventCallback<TListen>) => target.listen(name, mapEvent(cb)),
+        once: (cb: __TAURI_EVENT.EventCallback<TListen>) => target.once(name, mapEvent(cb)),
+        emit: ((payload: TEmit) => target.emit(name, mapPayload(payload)) as unknown) as EventEmit<TEmit>,
+        emitTo: ((to: __TAURI_EVENT.EventTarget | string, payload: TEmit) => target.emitTo(to, name, mapPayload(payload)) as unknown) as EventEmitTo<TEmit>
+    });
+
+    return Object.assign(fn, base);
 }

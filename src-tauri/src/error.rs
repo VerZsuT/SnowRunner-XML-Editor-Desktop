@@ -28,6 +28,9 @@ pub enum ErrorCode {
 	/// Конфликт версий или несохранённые правки.
 	Conflict,
 
+	/// Ошибка проверки обновлений или загрузки файла.
+	Update,
+
 	/// Внутренняя ошибка приложения.
 	Internal,
 }
@@ -89,6 +92,11 @@ impl CommandError {
 	/// Конфликт версий или несохранённые правки.
 	pub fn conflict(error: impl std::fmt::Display) -> Self {
 		Self::new(ErrorCode::Conflict, error.to_string())
+	}
+
+	/// Ошибка проверки обновлений или загрузки файла.
+	pub fn update(error: impl std::fmt::Display) -> Self {
+		Self::new(ErrorCode::Update, error.to_string())
 	}
 
 	/// Внутренняя ошибка.
@@ -250,6 +258,35 @@ impl From<sxmle_app::documents::DocumentError> for CommandError {
 			DocumentError::Game(error) => error.into(),
 			DocumentError::Action(error) => Self::not_found(error),
 			DocumentError::Epf(error) => error.into(),
+		}
+	}
+}
+
+impl From<sxmle_app::updates::UpdateError> for CommandError {
+	fn from(error: sxmle_app::updates::UpdateError) -> Self {
+		use sxmle_app::updates::UpdateError;
+
+		match error {
+			UpdateError::InvalidUrl(error) | UpdateError::InvalidVersion(error) => {
+				Self::invalid_argument(error)
+			}
+			UpdateError::Io { path, source } => {
+				Self::io(source).with_path(path.display().to_string())
+			}
+			error => Self::update(error),
+		}
+	}
+}
+
+impl From<sxmle_app::system::SystemError> for CommandError {
+	fn from(error: sxmle_app::system::SystemError) -> Self {
+		use sxmle_app::system::SystemError;
+
+		match error {
+			SystemError::InvalidUrl(error) => Self::invalid_argument(error),
+			SystemError::Spawn { path, source } => {
+				Self::io(source).with_path(path.display().to_string())
+			}
 		}
 	}
 }
