@@ -77,3 +77,19 @@ jobs:
 
       - run: npm ci
       - run: npm run tauri:build
+
+      - name: Портативная сборка
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force portable | Out-Null
+          Copy-Item src-tauri/target/release/SnowRunnerXMLEditor.exe portable/
+          New-Item -ItemType File -Force portable/portable.txt | Out-Null
+          Compress-Archive -Path portable/* -DestinationPath SnowRunnerXMLEditor-portable.zip
+
+      - name: Артефакты
+        uses: actions/upload-artifact@v4
+        with:
+          name: SnowRunnerXMLEditor
+          path: |
+            src-tauri/target/release/bundle/nsis/*.exe
+            SnowRunnerXMLEditor-portable.zip
