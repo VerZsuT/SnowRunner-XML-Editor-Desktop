@@ -207,7 +207,7 @@ UI не парсит `selector`: он передаёт его обратно в 
 * `state.rs` — `AppState` с мьютексами и путями;
 * `error.rs` — `CommandError` и `ErrorCode`, преобразования из доменных ошибок;
 * `lib.rs` — `specta_builder()`, регистрация типов, событий и `invoke_handler`;
-* `bin/typegen.rs` — запись `src/renderer/api/bindings.ts`.
+* `bin/typegen.rs` — запись `src/api/bindings.ts`.
 
 Контракт описан в [ipc-contract.md](ipc-contract.md).
 

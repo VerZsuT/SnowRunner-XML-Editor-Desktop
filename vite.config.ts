@@ -5,19 +5,18 @@ import { defineConfig } from 'vite'
 /** Порт dev-сервера, на который настроен Tauri (`tauri.conf.json`). */
 const DEV_PORT = 1420
 
-/** Алиасы путей (как в `src/tsconfig.json`). */
-const alias = {
-	'@renderer': fileURLToPath(new URL('./src/renderer', import.meta.url)),
-	'@utilities': fileURLToPath(new URL('./src/utilities', import.meta.url)),
-	'@localization': fileURLToPath(new URL('./src/utilities/localization', import.meta.url))
-}
+/** Корень интерфейса. */
+const source = fileURLToPath(new URL('./src', import.meta.url))
+
+/** Алиасы путей (как в `src/tsconfig.json`). Слэш в ключе не задевает scoped-пакеты. */
+const alias = { '@/': `${source}/` }
 
 export default defineConfig({
-	root: 'src/renderer',
+	root: 'src',
 	base: './',
 	build: {
 		target: 'es2025',
-		outDir: '../../dist',
+		outDir: '../dist',
 		emptyOutDir: true,
 		rolldownOptions: {
 			input: { general: 'index.html' },

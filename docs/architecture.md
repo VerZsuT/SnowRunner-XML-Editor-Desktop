@@ -38,19 +38,19 @@
 | `sxmle-storage` | Чтение/обновление zip без сторонних архиваторов; атомарная запись файлов | `crates/storage/src/zip`, `crates/storage/src/fs.rs` |
 | `sxmle-app` | Сценарии: пути, распаковка, игра, документы, моды, тексты, EPF, обновления | `crates/app/src/*` |
 | `sxmle` | Tauri-команды, состояние, ошибки, генерация TS-типов, окно | `src-tauri/src` |
-| Webview | Отображение и ввод; локальное UI-состояние | `src/renderer` |
+| Webview | Отображение и ввод; локальное UI-состояние | `src` |
 
 ## Структура репозитория
 
 ```text
-src/                       фронтенд
-  renderer/
-    api/                   обёртки команд и generated bindings.ts
-    components/            общие компоненты
-    pages/                 lists, editor, setup
-    tests/                 Vitest (node + jsdom)
-    app.tsx, entry.tsx     корень и монтирование
+src/                       интерфейс (webview)
+  api/                     обёртки команд и generated bindings.ts
+  components/              общие компоненты
+  pages/                   lists, editor, setup
+  tests/                   Vitest (node + jsdom)
   utilities/               локализация, строки
+  app.tsx, entry.tsx       корень и монтирование
+  index.html               точка входа Vite
 src-tauri/
   crates/domain/           XML и модель игры
   crates/storage/          zip и ФС
@@ -127,8 +127,8 @@ zustand хранит только UI-состояние. Игровые данн
 ## Сборка и типы
 
 ```text
-Rust DTO/команды ──specta──► src/renderer/api/bindings.ts ──► React
-Vite (src/renderer) ──► dist ──generate_context!──► exe
+Rust DTO/команды ──specta──► src/api/bindings.ts ──► React
+Vite (src) ──► dist ──generate_context!──► exe
 ```
 
 * `npm run typegen` перегенерирует `bindings.ts`; файл не редактируется руками.
@@ -142,8 +142,8 @@ Vite (src/renderer) ──► dist ──generate_context!──► exe
 |---|---|
 | Новая команда | `src-tauri/src/commands/*`, `commands/mod.rs`, `specta_builder()`, затем `npm run typegen` |
 | Новое поле/сущность | `crates/domain/src/game/entities`, `attributes.rs`, редактор и словарь подписей |
-| Новый экран | `src/renderer/pages`, `app.tsx`, API-обёртка |
-| Новая настройка | `crates/app/src/config.rs`, `src/renderer/config.ts`, `setup.tsx` |
+| Новый экран | `src/pages`, `app.tsx`, API-обёртка |
+| Новая настройка | `crates/app/src/config.rs`, `src/config.ts`, `setup.tsx` |
 | Новый язык | `src/utilities/localization/locales`, тип `Locale` |
 | Изменение формата архива | `crates/storage/src/zip`, `crates/app/src/archive.rs` |
 | Обновление программы | `crates/app/src/updates.rs`, `site/version-info.json` |

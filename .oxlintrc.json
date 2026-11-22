@@ -79,6 +79,6 @@
 		"react/set-state-in-effect": "warn"
 	},
 	"ignorePatterns": [
-		"src/renderer/api/bindings.ts"
+		"src/api/bindings.ts"
 	]
 }

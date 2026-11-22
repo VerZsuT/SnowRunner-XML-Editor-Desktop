@@ -11,7 +11,7 @@
 
 ## Точка входа
 
-`src/renderer/index.html` → `entry.tsx`:
+`src/index.html` → `entry.tsx`:
 
 1. читает конфигурацию через `loadConfig()` (ошибка не блокирует запуск);
 2. `registerConfig(fromConfigDto(dto))` применяет язык через `setTexts`;
@@ -38,18 +38,18 @@ zustand хранит только снимок конфигурации, игр�
 
 | Модуль | Назначение |
 |---|---|
-| [bindings.ts](../src/renderer/api/bindings.ts) | Сгенерированные команды, события и DTO. Руками не править |
-| [invoke.ts](../src/renderer/api/invoke.ts) | `call()`, `CommandResult`, `CommandFailure` |
-| [documents.ts](../src/renderer/api/documents.ts) | `DocumentClient`, `DocumentSession`, очередь мутаций |
-| [fields.ts](../src/renderer/api/fields.ts) | `Field<T>` → строка атрибута, запись и сброс |
-| [settings.ts](../src/renderer/api/settings.ts) | конфигурация, пути, режим данных, перезапуск |
-| [archive.ts](../src/renderer/api/archive.ts) | распаковка, обновление, проверка, бэкап |
-| [vehicles.ts](../src/renderer/api/vehicles.ts) | списки траков и прицепов |
-| [lists.ts](../src/renderer/api/lists.ts) | избранное и изменённые |
-| [texts.ts](../src/renderer/api/texts.ts) | игровые переводы, кэш на язык |
-| [updates.ts](../src/renderer/api/updates.ts) | проверка, загрузка, установка, событие прогресса |
-| [addons.ts](../src/renderer/api/addons.ts) | список аддонов |
-| [mods.ts](../src/renderer/api/mods.ts) | список/добавление/удаление/синхронизация модов |
+| [bindings.ts](../src/api/bindings.ts) | Сгенерированные команды, события и DTO. Руками не править |
+| [invoke.ts](../src/api/invoke.ts) | `call()`, `CommandResult`, `CommandFailure` |
+| [documents.ts](../src/api/documents.ts) | `DocumentClient`, `DocumentSession`, очередь мутаций |
+| [fields.ts](../src/api/fields.ts) | `Field<T>` → строка атрибута, запись и сброс |
+| [settings.ts](../src/api/settings.ts) | конфигурация, пути, режим данных, перезапуск |
+| [archive.ts](../src/api/archive.ts) | распаковка, обновление, проверка, бэкап |
+| [vehicles.ts](../src/api/vehicles.ts) | списки траков и прицепов |
+| [lists.ts](../src/api/lists.ts) | избранное и изменённые |
+| [texts.ts](../src/api/texts.ts) | игровые переводы, кэш на язык |
+| [updates.ts](../src/api/updates.ts) | проверка, загрузка, установка, событие прогресса |
+| [addons.ts](../src/api/addons.ts) | список аддонов |
+| [mods.ts](../src/api/mods.ts) | список/добавление/удаление/синхронизация модов |
 
 ### Контракт команд
 

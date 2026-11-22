@@ -15,10 +15,7 @@
 		"skipLibCheck": true,
 		"isolatedModules": true,
 		"paths": {
-			"@renderer/*": ["./renderer/*"],
-			"@utilities/*": ["./utilities/*"],
-			"@localization/*": ["./utilities/localization/*"],
-			"@localization": ["./utilities/localization/index"]
+			"@/*": ["./*"]
 		}
 	}
 }

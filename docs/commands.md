@@ -80,11 +80,11 @@ npm run typegen
 ```
 
 Запускает `cargo run --features typegen --bin typegen` и перезаписывает
-`src/renderer/api/bindings.ts`. Проверка расхождения, как в CI:
+`src/api/bindings.ts`. Проверка расхождения, как в CI:
 
 ```powershell
 npm run typegen
-git diff --exit-code src/renderer/api/bindings.ts
+git diff --exit-code src/api/bindings.ts
 ```
 
 ## Проверки
@@ -99,7 +99,7 @@ npm test           # vitest run
 Точечные тесты:
 
 ```powershell
-npx vitest run src/renderer/tests/pages/editor.test.tsx
+npx vitest run src/tests/pages/editor.test.tsx
 npx vitest run --project node
 npx vitest run --project jsdom
 npm run test:coverage
@@ -134,7 +134,7 @@ npm test
 
 npx vite build
 cargo run --manifest-path src-tauri/Cargo.toml --features typegen --bin typegen
-git diff --exit-code src/renderer/api/bindings.ts
+git diff --exit-code src/api/bindings.ts
 
 cargo test --manifest-path src-tauri/Cargo.toml --workspace --all-targets
 cargo clippy --manifest-path src-tauri/Cargo.toml --workspace --all-targets -- -D warnings

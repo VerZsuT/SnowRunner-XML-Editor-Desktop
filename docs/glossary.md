@@ -1,6 +1,6 @@
 # Глоссарий
 
-Термины проекта и SnowRunner. Для API-типов смотрите [bindings.ts](../src/renderer/api/bindings.ts).
+Термины проекта и SnowRunner. Для API-типов смотрите [bindings.ts](../src/api/bindings.ts).
 
 ## Игра и файлы
 

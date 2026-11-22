@@ -1,7 +1,7 @@
 # Контракт IPC
 
 Webview общается с Rust только через команды Tauri и события. Контракт генерируется
-из Rust в [bindings.ts](../src/renderer/api/bindings.ts); этот файл не редактируется руками.
+из Rust в [bindings.ts](../src/api/bindings.ts); этот файл не редактируется руками.
 
 ## Как устроен вызов
 
@@ -28,7 +28,7 @@ type CommandResult<T> =
   | { status: 'error', error: CommandError }
 ```
 
-`call()` из [invoke.ts](../src/renderer/api/invoke.ts) разворачивает результат:
+`call()` из [invoke.ts](../src/api/invoke.ts) разворачивает результат:
 
 ```ts
 const info = await call(commands.openDocument('truck', 'ank_mk38', null))
@@ -183,7 +183,7 @@ const info = await call(commands.openDocument('truck', 'ank_mk38', null))
 | `update-progress` | `{ percent, downloaded, total }` | загрузка обновления |
 
 `percent` — 0–99 (100 не отправляется), `total` — `null`, если сервер не сообщил размер.
-Подписка: `events.updateProgress.listen(...)` в [updates.ts](../src/renderer/api/updates.ts).
+Подписка: `events.updateProgress.listen(...)` в [updates.ts](../src/api/updates.ts).
 События объявляются в `specta_builder().events(collect_events![...])`.
 
 ## Генерация типов
@@ -193,10 +193,10 @@ npm run typegen
 ```
 
 Команда запускает `cargo run --features typegen --bin typegen` и пишет
-`src/renderer/api/bindings.ts`. CI выполняет её и падает, если файл изменился:
+`src/api/bindings.ts`. CI выполняет её и падает, если файл изменился:
 
 ```powershell
-git diff --exit-code src/renderer/api/bindings.ts
+git diff --exit-code src/api/bindings.ts
 ```
 
 Новые DTO нужно добавить в `specta_builder().typ::<T>()`, иначе тип не попадёт в bindings.
@@ -208,7 +208,7 @@ git diff --exit-code src/renderer/api/bindings.ts
 3. Зарегистрируйте функцию в `commands/mod.rs` (`collect_commands!`).
 4. Добавьте DTO в `specta_builder().typ::<T>()`, если это новый тип.
 5. Выполните `npm run typegen`.
-6. Добавьте обёртку в `src/renderer/api/*`; для fallible-команды — через `call()`.
+6. Добавьте обёртку в `src/api/*`; для fallible-команды — через `call()`.
 7. Напишите Rust-тест и, если есть UI, Vitest-тест.
 8. Обновите этот документ; при изменении сценариев — [data-and-archive.md](data-and-archive.md).
 

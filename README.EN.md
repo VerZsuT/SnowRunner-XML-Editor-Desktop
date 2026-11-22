@@ -68,18 +68,18 @@ Project directories:
       /trailers          pictures of trailers.
       /trucks            pictures of trucks.
       favicon.ico        program icon.
-   /renderer:        the interface (React).
-      /api               core commands and generated types.
-      /components        common components.
-      /pages             screens: lists, editor, setup.
-      /tests             tests.
-      app.tsx            root screen.
-      entry.tsx          application mount.
-      config.ts          interface configuration.
+   /api               core commands and generated types.
+   /components        common components.
+   /pages             screens: lists, editor, setup.
+   /tests             tests.
    /utilities:
       /localization      interface localization.
          /locales           language texts: ru (reference), en, de, ch.
       /strings           string formatting.
+   app.tsx            root screen.
+   entry.tsx          application mount.
+   config.ts          interface configuration.
+   index.html         Vite entry point.
    global.d.ts
    tsconfig.json        main TS configuration.
 /src-tauri:           the Rust core.

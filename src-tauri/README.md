@@ -29,7 +29,7 @@ cargo test --workspace --all-targets      # все тесты (Rust)
 cargo test -p sxmle-storage               # тесты zip-слоя
 cargo test -p sxmle-domain                # тесты XML-ядра
 cargo clippy --workspace --all-targets -- -D warnings # линт
-cargo run --features typegen --bin typegen # генерация src/renderer/api/bindings.ts
+cargo run --features typegen --bin typegen # генерация src/api/bindings.ts
 npm run tauri:dev                         # окно приложения (Vite dev-сервер + Rust)
 npm run tauri:build                       # установщик NSIS и exe
 ```
@@ -37,6 +37,6 @@ npm run tauri:build                       # установщик NSIS и exe
 ## Правила
 
 - webview не читает файлы и не разбирает XML: только команды и события;
-- ошибки команд — `CommandError { code, message, path }`, UI разворачивает их через `call()` из `src/renderer/api/invoke.ts`;
-- типы для TS генерируются из Rust (`tauri-specta`), `src/renderer/api/bindings.ts` руками не правится;
+- ошибки команд — `CommandError { code, message, path }`, UI разворачивает их через `call()` из `src/api/invoke.ts`;
+- типы для TS генерируются из Rust (`tauri-specta`), `src/api/bindings.ts` руками не правится;
 - комментарии и документация — на русском, форматирование — `cargo fmt` (табы, `rustfmt.toml`).

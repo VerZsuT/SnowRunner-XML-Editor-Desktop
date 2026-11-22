@@ -2,12 +2,11 @@ import pluginReact from '@vitejs/plugin-react'
 import { fileURLToPath } from 'node:url'
 import { configDefaults, defineConfig } from 'vitest/config'
 
-/** Алиасы путей (как в `src/tsconfig.json`). */
-const alias = {
-	'@renderer': fileURLToPath(new URL('./src/renderer', import.meta.url)),
-	'@utilities': fileURLToPath(new URL('./src/utilities', import.meta.url)),
-	'@localization': fileURLToPath(new URL('./src/utilities/localization', import.meta.url))
-}
+/** Корень интерфейса. */
+const source = fileURLToPath(new URL('./src', import.meta.url))
+
+/** Алиасы путей (как в `src/tsconfig.json`). Слэш в ключе не задевает scoped-пакеты. */
+const alias = { '@/': `${source}/` }
 
 /** Иконки: CJS-вход (index.mjs → lib) ломает именованные экспорты при предсборке, подменяем только ровно этот импорт. */
 const iconsEsm = {
@@ -20,8 +19,8 @@ const iconsEsm = {
  * Всё остальное идёт в проекте `jsdom`.
  */
 const nodeTests = [
-	'src/renderer/tests/api/**/*.test.ts',
-	'src/renderer/tests/{localization,strings}.test.ts'
+	'src/tests/api/**/*.test.ts',
+	'src/tests/{localization,strings}.test.ts'
 ]
 
 export default defineConfig({
@@ -50,7 +49,7 @@ export default defineConfig({
 				test: {
 					name: 'jsdom',
 					environment: 'jsdom',
-					setupFiles: ['./src/renderer/tests/setup.ts'],
+					setupFiles: ['./src/tests/setup.ts'],
 					include: ['src/**/*.test.{ts,tsx}'],
 					exclude: [...configDefaults.exclude, ...nodeTests]
 				}

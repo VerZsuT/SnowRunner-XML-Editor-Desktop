@@ -25,7 +25,7 @@ npm run tauri:dev
 ### TypeScript / React
 
 * табы, LF, одинарные кавычки, без точек с запятой;
-* strict TypeScript, path-aliases `@renderer`, `@utilities`, `@localization`;
+* strict TypeScript, path-alias `@/*` → `src/*` (без вложенных алиасов);
 * функциональные компоненты и хуки; побочные эффекты — в `useEffect`;
 * типы импортируются через `import type`;
 * SCSS рядом с компонентом;
@@ -48,7 +48,7 @@ npm run tauri:dev
 3. Регистрация в `commands/mod.rs`.
 4. Новый DTO — в `specta_builder().typ::<T>()`.
 5. `npm run typegen`.
-6. Обёртка в `src/renderer/api/*` (fallible — через `call()`).
+6. Обёртка в `src/api/*` (fallible — через `call()`).
 7. Rust-тест + Vitest при наличии UI.
 8. Обновить [ipc-contract.md](ipc-contract.md).
 
@@ -65,7 +65,7 @@ npm run tauri:dev
 
 1. Поле в `Config` + дефолт + `serde(default)` ([config.rs](../src-tauri/crates/app/src/config.rs)).
 2. Учесть в `save_config`/`sanitize_lang`, если есть инварианты.
-3. Поле в `IConfig` и `fromConfigDto` ([config.ts](../src/renderer/config.ts)).
+3. Поле в `IConfig` и `fromConfigDto` ([config.ts](../src/config.ts)).
 4. Переключатель на экране настройки.
 5. Тест конфигурации и, если есть UI, тест экрана.
 
@@ -74,7 +74,7 @@ npm run tauri:dev
 1. Добавить ключ в `ru.ts` (эталон).
 2. Добавить его в `en.ts`, `de.ts`, `ch.ts` — иначе `tsc` покажет расхождение структуры.
 3. Использовать через `T.<раздел>`.
-4. Прогнать `npm run check` и `npx vitest run src/renderer/tests/localization.test.ts`.
+4. Прогнать `npm run check` и `npx vitest run src/tests/localization.test.ts`.
 
 ### Изменение архива/zip
 

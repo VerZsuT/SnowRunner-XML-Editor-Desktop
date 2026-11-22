@@ -37,10 +37,10 @@ SnowRunner XML Editor Desktop — десктопный редактор XML-фа
 | Что | Где |
 |---|---|
 | Версия | [package.json](../package.json), [Cargo.toml](../src-tauri/Cargo.toml), [tauri.conf.json](../src-tauri/tauri.conf.json) — меняются вместе |
-| Контракт команд | `src-tauri/src/commands/` и сгенерированный [bindings.ts](../src/renderer/api/bindings.ts) |
+| Контракт команд | `src-tauri/src/commands/` и сгенерированный [bindings.ts](../src/api/bindings.ts) |
 | DTO и типы | Rust-структуры + `specta_builder()` в [lib.rs](../src-tauri/src/lib.rs) |
 | Каталоги и режимы данных | [paths.rs](../src-tauri/crates/app/src/paths.rs) |
-| Конфигурация | [config.rs](../src-tauri/crates/app/src/config.rs) и [config.ts](../src/renderer/config.ts) |
+| Конфигурация | [config.rs](../src-tauri/crates/app/src/config.rs) и [config.ts](../src/config.ts) |
 | Доменная модель игры | `src-tauri/crates/domain/src/game/` |
 | Сайт и автообновление | [site/README.md](../site/README.md), [site/version-info.json](../site/version-info.json) |
 | План миграции 1.x → 2.x | [MIGRATION-PLAN.md](../MIGRATION-PLAN.md) — исторический документ, не текущая спецификация |

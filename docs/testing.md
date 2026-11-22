@@ -6,8 +6,8 @@
 |---|---|---|
 | Rust unit | `#[cfg(test)] mod tests` рядом с модулем | значения, дескрипторы, лимиты, шаблоны, селекторы, zip-заголовки, пути |
 | Rust integration | `crates/*/tests` | XML на фикстурах, документы, архивы, EPF, игра |
-| Vitest node | `src/renderer/tests/api`, `localization`, `strings` | чистые преобразования, словари, строки |
-| Vitest jsdom | `src/renderer/tests/components`, `tests/pages` | компоненты и экраны с Testing Library |
+| Vitest node | `src/tests/api`, `localization`, `strings` | чистые преобразования, словари, строки |
+| Vitest jsdom | `src/tests/components`, `tests/pages` | компоненты и экраны с Testing Library |
 | Ручной чек-лист | ниже | то, что нельзя проверить в CI: реальная игра и Windows |
 
 E2E, визуальных и нагрузочных тестов нет.
